@@ -19,7 +19,8 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "prettier": "^3.0.0",
-    "turbo": "^1.10.12"
+    "turbo": "^1.10.12",
+    "tsconfig": "*"
   },
   "packageManager": "yarn@1.22.17",
   "workspaces": [
