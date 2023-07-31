@@ -17,6 +17,9 @@ module.exports = {
     'import/order': 'off',
     'import/no-absolute-path': 'off',
     'react/react-in-jsx-scope': 'off',
+    'react/function-component-definition': 'off',
+    'no-console': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
   },
   ignorePatterns: ['vite.config.ts', '.eslintrc.js'],
 };

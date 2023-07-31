@@ -44,7 +44,7 @@
 
 ## About 
 
-This repository is a mono-repository (using Turborepo) that contains the applications for suppliers and restaurants. They are built with React. 
+This repository is a mono-repository (using Turborepo) that contains the applications for suppliers and restaurants. They are built with React in Typescript. You can use Javascript or Typescript file, I recommand you to use Typescript to simplify developpement and avoid runtime errors. 
 
 
 <!-- GETTING STARTED -->
@@ -90,7 +90,7 @@ If you get some inconsistent errors and you don't know how to use eslint, do not
 You can start the both application using one command :
 `yarn dev` 
 
-But you can also launch each project separatly using `yarn dev --filter app_name` or by using `yarn dev` inside the desired app folder.
+But you can also launch each project separatly using `yarn dev` inside the desired app folder or by using  `yarn dev --filter app_name` from the root folder.
 
 ## Building the App
 
