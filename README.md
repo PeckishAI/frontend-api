@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/PeckishAI/frontend-api">
-    <img src="https://unicorn-cdn.b-cdn.net/948cea10-692b-4a1d-83ef-fe7e3b42f10b/white-logo---no-background.png?width=104&height=34" alt="Logo" width="210" height="65">
+    <img src="logo.png" alt="Logo" width="210" height="65">
   </a>
 
 <h3 align="center">Peckish Front-end</h3>
