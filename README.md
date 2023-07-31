@@ -10,7 +10,7 @@
 <h3 align="center">Peckish Front-end</h3>
 
   <p align="center">
-    Supplier & Restaurants applications
+    Suppliers & Restaurants applications
     <br />
     <a href="https://iampeckish.com/"><strong>See website »</strong></a>
     <br />
@@ -44,13 +44,13 @@
 
 ## About 
 
-This repository is a mono-repository (using Turborepo) that contain the applications for supplier and restaurants. They are built with React. 
+This repository is a mono-repository (using Turborepo) that contains the applications for suppliers and restaurants. They are built with React. 
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Follow those step to set-up the project on your computer.
+Follow those steps to set-up the project on your computer.
 
 ### Prerequisites
 
@@ -83,7 +83,7 @@ __ESLint__ :
 1. Install extension [here](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 2. Ready to use
 
-If you get some inconsistent errors and you don't know how to use eslint, do not hesitate to ask me.
+If you get some inconsistent errors and you don't know how to use eslint, do not hesitate to ask Jules.
 
 ## Running the App
 
@@ -96,7 +96,7 @@ But you can also launch each project separatly using `yarn dev --filter app_name
 
 To build all the apps : `yarn build`
 
-To build a specific app : `yarn build --filter app_name`
+To build a specific app : `yarn build --filter app_name` or by using `yarn build` inside the desired app folder.
 
 
 ## Contribution
