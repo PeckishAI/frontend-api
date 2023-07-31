@@ -20,6 +20,8 @@ module.exports = {
     'react/function-component-definition': 'off',
     'no-console': 'off',
     '@typescript-eslint/no-unused-vars': 'warn',
+    'arrow-body-style': 'off',
+    'react/destructuring-assignment': 'off',
   },
   ignorePatterns: ['vite.config.ts', '.eslintrc.js'],
 };

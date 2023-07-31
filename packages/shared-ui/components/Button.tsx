@@ -5,6 +5,12 @@ type Props = {
   count: number;
 };
 
-export const Button = (props: Props) => {
-  return <button onClick={props.onClick}>Count is {props.count}</button>;
+const Button = (props: Props) => {
+  return (
+    <button type="button" onClick={props.onClick}>
+      Count is {props.count}
+    </button>
+  );
 };
+
+export default Button;
