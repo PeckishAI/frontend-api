@@ -1,0 +1,28 @@
+.slidebar-separator {
+  width: 100%;
+  height: 65px;
+  display: flex;
+  align-items: flex-end;
+  padding: 10px 10px;
+  position: relative;
+
+  span {
+    width: 100%;
+    opacity: 0.3;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: var(--semiBold);
+    // position: relative;
+  }
+}
+.slidebar-separator::after {
+  content: '';
+  position: absolute;
+  height: 1px;
+  opacity: 0.2;
+  background-color: var(--onBackgroundColor);
+  width: 90%;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+}
