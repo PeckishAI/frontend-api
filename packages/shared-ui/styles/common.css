@@ -1,0 +1,49 @@
+:root {
+  /* Colors */
+  --primaryColor: #5e72e4;
+  --onPrimaryColor: #fcfcfc;
+  --backgroundColor: #ffffff;
+  --onBackgroundColor: #151515;
+  --cardColor: #272727;
+  --navbarColor: #f6f1f1;
+  /* --backgroundColor: #ffffff;
+    --typographyPrimaryColor: #151515; */
+
+  /* Font weight */
+  --thin: 100;
+  --extraLight: 200;
+  --light: 300;
+  --regular: 400;
+  --medium: 500;
+  --semiBold: 600;
+  --bold: 700;
+  --extraBold: 800;
+  --black: 900;
+
+  /* Values */
+  --btnRadius: 10px;
+  --transitionDuration: 0.4s;
+  --navbarHeight: 80px;
+}
+* {
+  font-family: 'Montserrat', sans-serif;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+}
+#root {
+  display: flex;
+}
+.company-name {
+  font-family: 'MuseoModerno', cursive;
+  font-weight: var(--extraBold);
+  color: var(--primaryColor);
+}
+.main {
+  width: 100%;
+}
+
+.content {
+  padding: 20px;
+}
