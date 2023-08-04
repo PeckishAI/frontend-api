@@ -3,6 +3,7 @@ import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import Dropdown from '../components/Dropdown/Dropdown';
 import { OptionsDefinitionType } from '../components/Dropdown/Dropdown';
 import { useMemo, useState } from 'react';
+import { Tooltip } from 'react-tooltip';
 
 // type Props = {};
 
@@ -91,7 +92,15 @@ const Orders = () => {
         key: 'detail',
         header: 'Detail',
         renderItem: () => {
-          return <i className="fa-solid fa-arrow-up-right-from-square"></i>;
+          return (
+            <>
+              <i
+                className="fa-solid fa-arrow-up-right-from-square"
+                data-tooltip-id="nav-tooltip"
+                data-tooltip-content="View detail"></i>
+              <Tooltip className="nav-tooltip" id="nav-tooltip" />
+            </>
+          );
         },
       },
     ],
