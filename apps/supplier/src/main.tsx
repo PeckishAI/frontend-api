@@ -5,6 +5,8 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from './routes/routes';
 import 'shared-ui/styles/common.css';
 
+import './translation/i18n';
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <RouterProvider router={router} />
