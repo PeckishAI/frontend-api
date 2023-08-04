@@ -1,0 +1,12 @@
+.dropdown {
+  select {
+    padding: 5px 8px;
+    border-radius: 100px;
+    color: var(--onBackgroundColor);
+    background-color: transparent;
+    // border-right: 10px solid transparent;
+    font-weight: var(--light);
+    cursor: pointer;
+    outline: none;
+  }
+}
