@@ -1,8 +1,11 @@
 import './navbar.scss';
 import { useLocation } from 'react-router-dom';
-type Props = {};
-
-const userLogged = false;
+import { Tooltip } from 'react-tooltip';
+import React from 'react';
+type Props = {
+  refreshIcon: React.ReactNode;
+  onRefresh: () => void;
+};
 
 const Navbar = (props: Props) => {
   const location = useLocation();
@@ -13,16 +16,20 @@ const Navbar = (props: Props) => {
     <div className="navbar">
       <h2 className="page-title">{pathNameFormated}</h2>
       <div className="nav-actions">
-        <div className="refresh icon">
-          <i className="fa-solid fa-rotate"></i>
+        <div
+          className="refresh"
+          onClick={props.onRefresh}
+          data-tooltip-id="nav-tooltip"
+          data-tooltip-content="Refresh">
+          {props.refreshIcon}
         </div>
-        <div className="my-account icon">
-          {userLogged ? (
-            <i className="fa-solid fa-arrow-right-from-bracket"></i>
-          ) : (
-            <i className="fa-solid fa-arrow-right-to-bracket"></i>
-          )}
+        <div
+          className="my-account icon"
+          data-tooltip-id="nav-tooltip"
+          data-tooltip-content="Log-out">
+          <i className="fa-solid fa-arrow-right-from-bracket"></i>
         </div>
+        <Tooltip className="nav-tooltip" id="nav-tooltip" />
       </div>
     </div>
   );
