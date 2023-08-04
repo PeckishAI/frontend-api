@@ -1,0 +1,15 @@
+.orders {
+  .fa-solid {
+    font-size: 1rem;
+    color: var(--primaryColor);
+    cursor: pointer;
+  }
+}
+
+.nav-tooltip {
+  background-color: var(--primaryColor) !important;
+  color: var(--onPrimaryColor) !important;
+  font-size: 0.8rem !important;
+  border-radius: 5px !important;
+  padding: 5px 8px !important;
+}

@@ -1,10 +1,16 @@
+import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Slidebar, SlidebarItem, SlidebarSeparator, Navbar } from 'shared-ui';
+import LottieFile from './Lottie/Lottie';
 
 // type Props = {};
 
 const Layout = () => {
   const navigate = useNavigate();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const handleIconClick = () => {
+    setIsRefreshing(true);
+  };
   return (
     <>
       <Slidebar>
@@ -39,7 +45,16 @@ const Layout = () => {
         />
       </Slidebar>
       <div className="main">
-        <Navbar />
+        <Navbar
+          refreshIcon={
+            isRefreshing ? (
+              <LottieFile />
+            ) : (
+              <i className="fa-solid fa-rotate icon"></i>
+            )
+          }
+          onRefresh={handleIconClick}
+        />
         <div className="content">
           <Outlet />
         </div>
