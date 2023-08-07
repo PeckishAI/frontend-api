@@ -22,8 +22,7 @@ const tabs = ['Tab 1', 'Tab 2', 'Tab 3'];
 
 const orderStatus: OptionsDefinitionType[] = [
   { label: 'Predicted', value: 'predicted', color: '#5e72e4' },
-  { label: 'On going', value: 'onGoing', color: '#f1f1f1' },
-  { label: 'Preparing', value: 'preparing', color: '#fffb90' },
+  { label: 'Ordered', value: 'ordered', color: '#fffb90' },
   { label: 'Shipped', value: 'shipped', color: '#7ef5b7' },
 ];
 
