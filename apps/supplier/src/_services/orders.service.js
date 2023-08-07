@@ -1,5 +1,4 @@
-import axios from './caller.service';
-
+import axios from './index';
 let getOrderList = () => {
   return axios.get('/orders');
 };
