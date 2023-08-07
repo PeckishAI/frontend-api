@@ -1,0 +1,38 @@
+.tabs {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 25px;
+
+  span {
+    font-size: 0.9rem;
+    font-weight: var(--bold);
+    opacity: 0.2;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .active {
+    opacity: 1;
+  }
+  .active::after {
+    content: '';
+    position: absolute;
+    height: 2px;
+    background-color: var(--primaryColor);
+    border-radius: 5px;
+    width: 100%;
+    animation-name: widthTransition;
+    animation-duration: 0.5s;
+    bottom: -3px;
+    left: 0;
+  }
+  @keyframes widthTransition {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+}
