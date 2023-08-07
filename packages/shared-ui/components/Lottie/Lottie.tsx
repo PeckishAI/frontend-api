@@ -1,5 +1,5 @@
 import Lottie from 'react-lottie';
-import validate from '../../assets/lotties/validate.json';
+import validate from '../../asset/lotties/validate.json';
 type Props = {
   //   lottie: string;
   //   width: number;
@@ -7,7 +7,7 @@ type Props = {
 
 const LottieFile = (props: Props) => {
   return (
-    <div>
+    <div className="lottie-container">
       <Lottie
         options={{ animationData: validate, autoplay: true, loop: false }}
       />

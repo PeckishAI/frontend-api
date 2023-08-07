@@ -7,6 +7,8 @@ import SlidebarSeparator from './components/Slidebar/SlidebarSeparator';
 import Navbar from './components/Navbar/Navbar';
 import Table from './components/Table/Table';
 import Tabs from './components/Tabs/Tabs';
+import Dropdown from './components/Dropdown/Dropdown';
+import Lottie from './components/Lottie/Lottie';
 
 export {
   Header,
@@ -17,4 +19,6 @@ export {
   Navbar,
   Table,
   Tabs,
+  Dropdown,
+  Lottie,
 };

@@ -1,8 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { Slidebar, SlidebarItem, SlidebarSeparator, Navbar } from 'shared-ui';
-import LottieFile from './Lottie/Lottie';
+import {
+  Slidebar,
+  SlidebarItem,
+  SlidebarSeparator,
+  Navbar,
+  Lottie,
+} from 'shared-ui';
 
 // type Props = {};
 
@@ -50,7 +55,7 @@ const Layout = () => {
         <Navbar
           refreshIcon={
             isRefreshing ? (
-              <LottieFile />
+              <Lottie />
             ) : (
               <i className="fa-solid fa-rotate icon"></i>
             )

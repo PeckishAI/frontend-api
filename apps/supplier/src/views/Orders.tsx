@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { Table, Tabs } from 'shared-ui';
+import { Table, Tabs, Dropdown } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
-import Dropdown from '../components/Dropdown/Dropdown';
-import { OptionsDefinitionType } from '../components/Dropdown/Dropdown';
+import { OptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { useMemo, useState, useEffect } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { orderService } from '../_services';
