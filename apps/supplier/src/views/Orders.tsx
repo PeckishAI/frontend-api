@@ -1,9 +1,11 @@
-import { Table } from 'shared-ui';
+import { useTranslation } from 'react-i18next';
+import { Table, Tabs } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import Dropdown from '../components/Dropdown/Dropdown';
 import { OptionsDefinitionType } from '../components/Dropdown/Dropdown';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Tooltip } from 'react-tooltip';
+import { orderService } from '../_services';
 
 // type Props = {};
 
@@ -16,35 +18,8 @@ type Order = {
   detail: string;
   price: number;
 };
-const data: Order[] = [
-  {
-    id: '1',
-    orderDate: '2023-08-03',
-    deliveryDate: '2023-08-10',
-    customer: 'Nude Burger',
-    status: 'Shipped',
-    detail: 'Sample order',
-    price: 100.99,
-  },
-  {
-    id: '2',
-    orderDate: '2023-08-02',
-    deliveryDate: '2023-08-12',
-    customer: 'La Madonna',
-    status: 'On going',
-    detail: 'Bulk order',
-    price: 350.25,
-  },
-  {
-    id: '3',
-    orderDate: '2023-08-01',
-    deliveryDate: '2023-08-05',
-    customer: `Humphrey's`,
-    status: 'Preparing',
-    detail: 'Urgent order',
-    price: 50.5,
-  },
-];
+
+const tabs = ['Tab 1', 'Tab 2', 'Tab 3'];
 
 const orderStatus: OptionsDefinitionType[] = [
   { label: 'Predicted', value: 'predicted', color: '#5e72e4' },
@@ -54,10 +29,17 @@ const orderStatus: OptionsDefinitionType[] = [
 ];
 
 const Orders = () => {
+  const { t } = useTranslation('common');
+
+  const [selectedTab, setSelectedTab] = useState(0);
+  const toggleTab = (tabIndex: number) => {
+    setSelectedTab(tabIndex);
+    console.log('tab' + tabIndex + 'clicked');
+  };
+
   const [selectedOrderStatus, setSelectedOrderStatus] = useState<{
     [key: string]: string;
   }>({});
-
   const sendNewOrderStatus = (row, event) => {
     setSelectedOrderStatus({
       ...selectedOrderStatus,
@@ -65,15 +47,24 @@ const Orders = () => {
     });
     console.log(event.target.value);
   };
+
+  const [orderList, setOrderList] = useState<Order[]>();
+  useEffect(() => {
+    orderService.getOrderList().then((res) => {
+      console.log(res);
+      setOrderList(res.data);
+    });
+  }, []);
+
   const columns: ColumnDefinitionType<Order, keyof Order>[] = useMemo(
     () => [
-      { key: 'id', header: '#' },
-      { key: 'orderDate', header: 'Order date' },
-      { key: 'deliveryDate', header: 'Delivery date' },
-      { key: 'customer', header: 'Customer' },
+      { key: 'id', header: t('orderId') },
+      { key: 'orderDate', header: t('orderDate') },
+      { key: 'deliveryDate', header: t('deliveryDate') },
+      { key: 'customer', header: t('customer') },
       {
         key: 'status',
-        header: 'Status',
+        header: t('status'),
         renderItem: (row) => (
           <Dropdown
             options={orderStatus}
@@ -84,21 +75,20 @@ const Orders = () => {
       },
       {
         key: 'price',
-        header: 'Price',
+        header: t('price'),
         renderItem: (row) => `${row.price} €`,
         classname: 'column-bold',
       },
       {
         key: 'detail',
-        header: 'Detail',
+        header: t('detail'),
         renderItem: () => {
           return (
             <>
               <i
                 className="fa-solid fa-arrow-up-right-from-square"
-                data-tooltip-id="nav-tooltip"
-                data-tooltip-content="View detail"></i>
-              <Tooltip className="nav-tooltip" id="nav-tooltip" />
+                data-tooltip-id="detail-tooltip"
+                data-tooltip-content={t('viewDetail')}></i>
             </>
           );
         },
@@ -109,7 +99,10 @@ const Orders = () => {
 
   return (
     <div className="orders">
-      <Table data={data} columns={columns} />
+      <Tabs tabs={tabs} onClick={toggleTab} selectedIndex={selectedTab} />
+
+      {selectedTab === 0 && <Table data={orderList} columns={columns} />}
+      <Tooltip className="tooltip" id="detail-tooltip" />
     </div>
   );
 };

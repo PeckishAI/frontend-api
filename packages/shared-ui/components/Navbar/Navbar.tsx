@@ -29,7 +29,7 @@ const Navbar = (props: Props) => {
           data-tooltip-content="Log-out">
           <i className="fa-solid fa-arrow-right-from-bracket"></i>
         </div>
-        <Tooltip className="nav-tooltip" id="nav-tooltip" />
+        <Tooltip className="tooltip" id="nav-tooltip" />
       </div>
     </div>
   );

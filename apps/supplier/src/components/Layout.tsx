@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Slidebar, SlidebarItem, SlidebarSeparator, Navbar } from 'shared-ui';
@@ -6,6 +7,7 @@ import LottieFile from './Lottie/Lottie';
 // type Props = {};
 
 const Layout = () => {
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const handleIconClick = () => {
@@ -15,21 +17,21 @@ const Layout = () => {
     <>
       <Slidebar>
         <SlidebarItem
-          name="Orders"
+          name={t('orders')}
           icon={<i className="fa-solid fa-list-ul"></i>}
           onClick={() => {
             navigate('/orders');
           }}
         />
         <SlidebarItem
-          name="Catalog"
+          name={t('catalog')}
           icon={<i className="fa-solid fa-shop"></i>}
           onClick={() => {
             navigate('/catalog');
           }}
         />
         <SlidebarItem
-          name="Map"
+          name={t('map')}
           icon={<i className="fa-solid fa-map-location-dot"></i>}
           onClick={() => {
             navigate('/map');
@@ -37,7 +39,7 @@ const Layout = () => {
         />
         <SlidebarSeparator sectionName="Resources" />
         <SlidebarItem
-          name="Support"
+          name={t('support')}
           icon={<i className="fa-regular fa-handshake"></i>}
           onClick={() => {
             navigate('/support');

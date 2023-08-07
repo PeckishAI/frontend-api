@@ -11,7 +11,7 @@ export type ColumnDefinitionType<T, K extends keyof T> = {
 };
 
 type Props<T, K extends keyof T> = {
-  data: Array<T>;
+  data?: Array<T>;
   columns: Array<ColumnDefinitionType<T, K>>;
 };
 
