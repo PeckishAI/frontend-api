@@ -1,3 +1,20 @@
 {
-  "catalog": "Catalog"
+  "orders": "Orders",
+  "catalog": "Catalog",
+  "map": "Map",
+  "support": "Support",
+
+  "orderId": "#",
+  "orderDate": "Order date",
+  "deliveryDate": "Delivery date",
+  "customer": "Customer",
+  "status": "Status",
+  "price": "Price",
+  "detail": "Detail",
+
+  "predicted": "Predicted",
+  "onGoing": "On going",
+  "preparing": "Preparing",
+  "shipped": "Shipped",
+  "viewDetail": "View detail"
 }

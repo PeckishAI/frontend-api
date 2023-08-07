@@ -1,3 +1,20 @@
 {
-  "catalog": "Catalogue"
+  "orders": "Commandes",
+  "catalog": "Catalogue",
+  "map": "Carte",
+  "support": "Support",
+
+  "orderId": "#",
+  "orderDate": "Date de commande",
+  "deliveryDate": "Date de livraison",
+  "customer": "Client",
+  "status": "Statut",
+  "price": "Prix",
+  "detail": "Détail",
+
+  "predicted": "Prévue",
+  "onGoing": "Commandé",
+  "preparing": "En préparation",
+  "shipped": "Expédiée",
+  "viewDetail": "Voir détail"
 }
