@@ -1,0 +1,47 @@
+import LottieFile from '../Lottie/Lottie';
+import './style.scss';
+
+type Props = {
+  type: 'warning' | 'info';
+  msg: string;
+  subMsg: string;
+  revele: boolean;
+  togglePopup: () => void;
+  onConfirm?: () => void;
+};
+
+const Popup = (props: Props) => {
+  if (!props.revele) {
+    return null;
+  }
+  return (
+    <div className="popup-container">
+      <div className="overlay" onClick={props.togglePopup}></div>
+      <div className="popup">
+        {props.type === 'info' && <LottieFile width="80px" type="info" />}
+        {props.type === 'warning' && <LottieFile width="80px" type="warning" />}
+        <span className="msg1">{props.msg}</span>
+        <span className="msg2">{props.subMsg}</span>
+        <div className="button-container">
+          {props.type === 'info' && (
+            <button onClick={props.togglePopup} className="cancel">
+              Ok
+            </button>
+          )}
+          {props.type === 'warning' && (
+            <>
+              <button onClick={props.togglePopup} className="cancel">
+                Cancel
+              </button>
+              <button onClick={props.onConfirm} className="confirm">
+                Confirmer
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Popup;

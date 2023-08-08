@@ -9,6 +9,7 @@ import Table from './components/Table/Table';
 import Tabs from './components/Tabs/Tabs';
 import Dropdown from './components/Dropdown/Dropdown';
 import Lottie from './components/Lottie/Lottie';
+import Popup from './components/Popup/Popup';
 
 export {
   Header,
@@ -21,4 +22,5 @@ export {
   Tabs,
   Dropdown,
   Lottie,
+  Popup,
 };
