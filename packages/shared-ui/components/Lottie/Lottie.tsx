@@ -7,11 +7,12 @@ import warning from '../../asset/lotties/warning.json';
 
 type Props = {
   type: 'error' | 'info' | 'loading' | 'validate' | 'warning';
+  width: string;
 };
 
 const LottieFile = (props: Props) => {
   return (
-    <div className="lottie-container">
+    <div style={{ width: props.width }} className="lottie-container">
       {props.type === 'error' && (
         <Lottie
           options={{ animationData: error, autoplay: true, loop: false }}
