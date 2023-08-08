@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Table, Tabs, Dropdown } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
-import { OptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
+import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { useMemo, useState, useEffect } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { orderService } from '../_services';
@@ -20,7 +20,7 @@ type Order = {
 
 const tabs = ['Tab 1', 'Tab 2', 'Tab 3'];
 
-const orderStatus: OptionsDefinitionType[] = [
+const orderStatus: DropdownOptionsDefinitionType[] = [
   { label: 'Predicted', value: 'predicted', color: '#5e72e4' },
   { label: 'Ordered', value: 'ordered', color: '#fffb90' },
   { label: 'Shipped', value: 'shipped', color: '#7ef5b7' },
@@ -32,7 +32,6 @@ const Orders = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const toggleTab = (tabIndex: number) => {
     setSelectedTab(tabIndex);
-    console.log('tab' + tabIndex + 'clicked');
   };
 
   const [selectedOrderStatus, setSelectedOrderStatus] = useState<{
@@ -43,7 +42,6 @@ const Orders = () => {
       ...selectedOrderStatus,
       [row.id]: event.target.value,
     });
-    console.log(event.target.value);
   };
 
   const [orderList, setOrderList] = useState<Order[]>();

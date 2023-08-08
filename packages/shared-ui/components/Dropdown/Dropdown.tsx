@@ -1,13 +1,13 @@
 import './style.scss';
 
-export type OptionsDefinitionType = {
+export type DropdownOptionsDefinitionType = {
   label: string;
   value: string;
   color?: string;
 };
 
 type Props = {
-  options: Array<OptionsDefinitionType>;
+  options: Array<DropdownOptionsDefinitionType>;
   selectedOption: string;
   onOptionChange: (event) => void;
 };
