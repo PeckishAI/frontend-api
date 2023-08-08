@@ -55,7 +55,7 @@ const Layout = () => {
         <Navbar
           refreshIcon={
             isRefreshing ? (
-              <Lottie />
+              <Lottie type="validate" />
             ) : (
               <i className="fa-solid fa-rotate icon"></i>
             )
