@@ -43,6 +43,12 @@
     tbody tr:hover {
       background-color: var(--navbarColor);
     }
+
+    .fa-solid {
+      font-size: 1rem;
+      color: var(--primaryColor);
+      cursor: pointer;
+    }
   }
   .column-bold {
     font-weight: var(--semiBold);
