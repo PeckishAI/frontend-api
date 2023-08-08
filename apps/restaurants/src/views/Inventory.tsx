@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Table, Tabs, Dropdown } from 'shared-ui';
+import { Table, Tabs, Dropdown, Popup } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { useEffect, useState } from 'react';
@@ -47,6 +47,7 @@ const Inventory = (props: Props) => {
   const [selectedSupplier, setSelectedSupplier] = useState<{
     [key: string]: string;
   }>({});
+  const [popupRevele, setPopupRevele] = useState(false);
 
   const toggleTab = (tabIndex: number) => {
     setSelectedTab(tabIndex);
@@ -72,8 +73,16 @@ const Inventory = (props: Props) => {
     });
   };
 
+  const togglePopup = () => {
+    setPopupRevele(!popupRevele);
+  };
+
   const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
-    { key: 'ingredientName', header: t('ingredientName') },
+    {
+      key: 'ingredientName',
+      header: t('ingredientName'),
+      classname: 'column-bold',
+    },
     { key: 'theoriticalStock', header: t('theoriticalStock') },
     { key: 'actualStock', header: t('actualStock') },
     {
@@ -107,7 +116,7 @@ const Inventory = (props: Props) => {
     {
       key: 'actions',
       header: t('actions'),
-      renderItem: () => {
+      renderItem: (row) => {
         return (
           <div className="actions">
             <i
@@ -117,7 +126,8 @@ const Inventory = (props: Props) => {
             <i
               className="fa-solid fa-trash"
               data-tooltip-id="actions-tooltip"
-              data-tooltip-content={t('delete')}></i>
+              data-tooltip-content={t('delete')}
+              onClick={togglePopup}></i>
           </div>
         );
       },
@@ -130,6 +140,17 @@ const Inventory = (props: Props) => {
 
       {selectedTab === 0 && <Table data={ingredientsList} columns={columns} />}
       <Tooltip className="tooltip" id="actions-tooltip" />
+      <Popup
+        type="warning"
+        msg="Are you sure you want to delete it ?"
+        subMsg='Cette action aura des impactes sur les éléments suivant : trousse, bonjour..."'
+        onConfirm={() => {
+          console.log('supression confirmée');
+          togglePopup();
+        }}
+        revele={popupRevele}
+        togglePopup={togglePopup}
+      />
     </div>
   );
 };
