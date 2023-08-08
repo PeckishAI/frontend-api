@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import {
-  Slidebar,
-  SlidebarItem,
-  SlidebarSeparator,
+  Sidebar,
+  SidebarItem,
+  SidebarSeparator,
   Navbar,
   Lottie,
 } from 'shared-ui';
@@ -20,44 +20,44 @@ const Layout = () => {
   };
   return (
     <>
-      <Slidebar>
-        <SlidebarItem
+      <Sidebar>
+        <SidebarItem
           name={t('myRestaurant')}
           icon={<i className="fa-solid fa-utensils"></i>}
           onClick={() => {
             navigate('/myRestaurant');
           }}
         />
-        <SlidebarItem
+        <SidebarItem
           name={t('overview')}
           icon={<i className="fa-solid fa-chart-line"></i>}
           onClick={() => {
             navigate('/overview');
           }}
         />
-        <SlidebarItem
+        <SidebarItem
           name={t('inventory')}
           icon={<i className="fa-solid fa-cubes-stacked"></i>}
           onClick={() => {
             navigate('/inventory');
           }}
         />
-        <SlidebarItem
+        <SidebarItem
           name={t('recipes')}
           icon={<i className="fa-solid fa-burger"></i>}
           onClick={() => {
             navigate('/recipes');
           }}
         />
-        <SlidebarSeparator sectionName="Services" />
-        <SlidebarItem
+        <SidebarSeparator sectionName="Services" />
+        <SidebarItem
           name={t('simulation')}
           icon={<i className="fa-brands fa-unity"></i>}
           onClick={() => {
             navigate('/simulation');
           }}
         />
-      </Slidebar>
+      </Sidebar>
       <div className="main">
         <Navbar
           refreshIcon={

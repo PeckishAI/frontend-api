@@ -1,9 +1,9 @@
 // components
 import Header from './components/Header';
 import Button from './components/Button';
-import Slidebar from './components/Slidebar/Slidebar';
-import SlidebarItem from './components/Slidebar/SlidebarItem';
-import SlidebarSeparator from './components/Slidebar/SlidebarSeparator';
+import Sidebar from './components/Sidebar/Sidebar';
+import SidebarItem from './components/Sidebar/SidebarItem';
+import SidebarSeparator from './components/Sidebar/SidebarSeparator';
 import Navbar from './components/Navbar/Navbar';
 import Table from './components/Table/Table';
 import Tabs from './components/Tabs/Tabs';
@@ -13,9 +13,9 @@ import Lottie from './components/Lottie/Lottie';
 export {
   Header,
   Button,
-  Slidebar,
-  SlidebarItem,
-  SlidebarSeparator,
+  Sidebar,
+  SidebarItem,
+  SidebarSeparator,
   Navbar,
   Table,
   Tabs,

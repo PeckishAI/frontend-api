@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import {
-  Slidebar,
-  SlidebarItem,
-  SlidebarSeparator,
+  Sidebar,
+  SidebarItem,
+  SidebarSeparator,
   Navbar,
   Lottie,
 } from 'shared-ui';
@@ -20,37 +20,37 @@ const Layout = () => {
   };
   return (
     <>
-      <Slidebar>
-        <SlidebarItem
+      <Sidebar>
+        <SidebarItem
           name={t('orders')}
           icon={<i className="fa-solid fa-list-ul"></i>}
           onClick={() => {
             navigate('/orders');
           }}
         />
-        <SlidebarItem
+        <SidebarItem
           name={t('catalog')}
           icon={<i className="fa-solid fa-shop"></i>}
           onClick={() => {
             navigate('/catalog');
           }}
         />
-        <SlidebarItem
+        <SidebarItem
           name={t('map')}
           icon={<i className="fa-solid fa-map-location-dot"></i>}
           onClick={() => {
             navigate('/map');
           }}
         />
-        <SlidebarSeparator sectionName="Resources" />
-        <SlidebarItem
+        <SidebarSeparator sectionName="Resources" />
+        <SidebarItem
           name={t('support')}
           icon={<i className="fa-regular fa-handshake"></i>}
           onClick={() => {
             navigate('/support');
           }}
         />
-      </Slidebar>
+      </Sidebar>
       <div className="main">
         <Navbar
           refreshIcon={

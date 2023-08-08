@@ -1,4 +1,4 @@
-import './SlidebarItem.scss';
+import './sidebarItem.scss';
 import React from 'react';
 
 type Props = {
@@ -7,13 +7,13 @@ type Props = {
   onClick: () => void;
 };
 
-const SlidebarItem = (props: Props) => {
+const SidebarItem = (props: Props) => {
   return (
-    <div className="slidebar-item" onClick={props.onClick}>
+    <div className="sidebar-item" onClick={props.onClick}>
       <div className="icon-container">{props.icon}</div>
       <span>{props.name}</span>
     </div>
   );
 };
 
-export default SlidebarItem;
+export default SidebarItem;
