@@ -11,6 +11,8 @@ import Dropdown from './components/Dropdown/Dropdown';
 import Lottie from './components/Lottie/Lottie';
 import Popup from './components/Popup/Popup';
 import Input from './components/Input/Input';
+import Card from './components/Card/Card';
+import LoginModal from './components/LoginModal/LoginModal';
 
 export {
   Header,
@@ -25,4 +27,6 @@ export {
   Lottie,
   Popup,
   Input,
+  Card,
+  LoginModal,
 };

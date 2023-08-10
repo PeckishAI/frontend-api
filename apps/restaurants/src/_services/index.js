@@ -1,4 +1,5 @@
 export * from './inventory.service';
+export * from './onboarding.service';
 
 import { config } from '../local_config/config';
 import axios from 'axios';
