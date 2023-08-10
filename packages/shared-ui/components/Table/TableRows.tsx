@@ -12,7 +12,10 @@ const TableRows = <T, K extends keyof T>(props: Props<T, K>) => {
         props.data.map((row, index) => (
           <tr key={`row-${index}`}>
             {props.columns.map((column, index2) => (
-              <td key={`cell-${index2}`} className={column.classname}>
+              <td
+                key={`cell-${index2}`}
+                className={column.classname}
+                style={{ width: column.width }}>
                 {column.renderItem === undefined ? (
                   <>{row[column.key]}</>
                 ) : (

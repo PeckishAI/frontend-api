@@ -22,7 +22,9 @@ const Dropdown = (props: Props) => {
     <div className="dropdown">
       <select
         value={props.selectedOption}
-        onChange={props.onOptionChange}
+        onChange={(event) => {
+          props.onOptionChange(event.target.value);
+        }}
         style={{ backgroundColor: selectedOption?.color }}>
         {props.options.map((option) => (
           <option key={option.value} value={option.value}>

@@ -4,7 +4,7 @@ import './style.scss';
 type Props = {
   type: 'warning' | 'info';
   msg: string;
-  subMsg: string;
+  subMsg?: string;
   revele: boolean;
   togglePopup: () => void;
   onConfirm?: () => void;

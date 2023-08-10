@@ -8,6 +8,7 @@ export type ColumnDefinitionType<T, K extends keyof T> = {
   header: string;
   renderItem?: (row: T) => React.ReactNode | string;
   classname?: string;
+  width?: string;
 };
 
 type Props<T, K extends keyof T> = {
