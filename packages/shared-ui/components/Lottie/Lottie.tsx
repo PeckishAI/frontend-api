@@ -15,17 +15,15 @@ const LottieFile = (props: Props) => {
     <div style={{ width: props.width }} className="lottie-container">
       {props.type === 'error' && (
         <Lottie
-          options={{ animationData: error, autoplay: true, loop: false }}
+          options={{ animationData: error, autoplay: true, loop: true }}
         />
       )}
       {props.type === 'info' && (
-        <Lottie
-          options={{ animationData: info, autoplay: true, loop: false }}
-        />
+        <Lottie options={{ animationData: info, autoplay: true, loop: true }} />
       )}
       {props.type === 'loading' && (
         <Lottie
-          options={{ animationData: loading, autoplay: true, loop: false }}
+          options={{ animationData: loading, autoplay: true, loop: true }}
         />
       )}
       {props.type === 'validate' && (
@@ -35,7 +33,7 @@ const LottieFile = (props: Props) => {
       )}
       {props.type === 'warning' && (
         <Lottie
-          options={{ animationData: warning, autoplay: true, loop: false }}
+          options={{ animationData: warning, autoplay: true, loop: true }}
         />
       )}
     </div>
