@@ -15,5 +15,7 @@
   "actions": "Actions",
 
   "edit": "modifier",
-  "delete": "Supprimer"
+  "delete": "Supprimer",
+  "validate": "Valider",
+  "cancel": "Annuler"
 }

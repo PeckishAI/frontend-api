@@ -26,7 +26,7 @@ i18next
   // })
   .init({
     debug: process.env.NODE_ENV !== 'production',
-    // lng: 'en',
+    // lng: 'fr',
     fallbackLng: 'en',
     ns: ['common', 'language', 'scan'],
     defaultNS,
