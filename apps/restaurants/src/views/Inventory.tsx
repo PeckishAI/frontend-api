@@ -236,7 +236,20 @@ const Inventory = (props: Props) => {
 
   return (
     <div className="inventory">
-      <Tabs tabs={tabs} onClick={toggleTab} selectedIndex={selectedTab} />
+      <div className="tabs-and-tools">
+        <Tabs tabs={tabs} onClick={toggleTab} selectedIndex={selectedTab} />
+        <div className="tools">
+          <Input
+            type="text"
+            value={''}
+            placeholder="Search"
+            onChange={() => null}
+          />
+          <span>Filter</span>
+          <button className="button upload">Upload CSV</button>
+          <button className="button add">Add ingredient</button>
+        </div>
+      </div>
 
       {selectedTab === 0 && <Table data={ingredientsList} columns={columns} />}
       <Tooltip className="tooltip" id="actions-tooltip" />
