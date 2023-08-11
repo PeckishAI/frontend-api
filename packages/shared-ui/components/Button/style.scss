@@ -1,0 +1,20 @@
+.button {
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.primary {
+  background-color: var(--primaryColor);
+  color: var(--backgroundColor);
+}
+.secondary {
+  background-color: var(--secondaryColor);
+}
+.primary:hover {
+  background-color: var(--primaryColorAccentued);
+}
+.secondary:hover {
+  background-color: var(--secondaryColorAccentued);
+}
