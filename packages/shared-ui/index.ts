@@ -11,6 +11,7 @@ import Lottie from './components/Lottie/Lottie';
 import Popup from './components/Popup/Popup';
 import Input from './components/Input/Input';
 import Button from './components/Button/Button';
+import UploadCsv from './components/UploadCsv/UploadCsv';
 
 export {
   Header,
@@ -25,4 +26,5 @@ export {
   Popup,
   Input,
   Button,
+  UploadCsv,
 };

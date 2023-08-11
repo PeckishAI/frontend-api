@@ -1,8 +1,17 @@
 import { useTranslation } from 'react-i18next';
-import { Table, Tabs, Dropdown, Popup, Input, Button, Lottie } from 'shared-ui';
+import {
+  Table,
+  Tabs,
+  Dropdown,
+  Popup,
+  Input,
+  Button,
+  Lottie,
+  UploadCsv,
+} from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { inventoryService } from '../_services';
 
@@ -48,6 +57,8 @@ const Inventory = (props: Props) => {
   const [popupDelete, setPopupDelete] = useState(false);
   const [popupError, setPopupError] = useState('');
   const [loadingData, setLoadingdata] = useState(false);
+  const [uploadPopup, setUploadPopup] = useState(false);
+  const [loadingButton, setLoadingButton] = useState(false);
 
   const toggleTab = (tabIndex: number) => {
     setSelectedTab(tabIndex);
@@ -157,6 +168,26 @@ const Inventory = (props: Props) => {
     setAddingRow(true);
     setEditingRowId(newIngredient.id);
     setEditedValues(newIngredient);
+  };
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setLoadingButton(true);
+      inventoryService
+        .uploadCsvFile(file)
+        .then((res) => {
+          console.log('Upload success : ', res.data);
+          setUploadPopup(true);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setLoadingButton(false);
+        });
+    }
   };
 
   const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
@@ -300,9 +331,15 @@ const Inventory = (props: Props) => {
           <Button
             value="Upload CSV"
             type="secondary"
-            onClick={() => {
-              console.log('Upload CSV');
-            }}
+            loading={loadingButton}
+            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+          />
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleFileUpload}
+            style={{ display: 'none' }} // hide input
+            ref={fileInputRef}
           />
           <Button
             value="Add ingredient"
@@ -314,6 +351,14 @@ const Inventory = (props: Props) => {
       </div>
 
       {selectedTab === 0 && <Table data={ingredientsList} columns={columns} />}
+
+      {uploadPopup && (
+        <UploadCsv
+          onCancelClick={() => setUploadPopup(false)}
+          onValidateClick={() => null}
+        />
+      )}
+
       <Tooltip className="tooltip" id="actions-tooltip" />
       <Popup
         type="warning"
