@@ -13,7 +13,7 @@ const Button = (props: Props) => {
   return (
     <button
       className={`button ${props.type} ${props.className ?? ''}`}
-      onClick={props.onClick}>
+      onClick={!props.loading ? props.onClick : undefined}>
       <span style={props.loading ? { opacity: 0 } : undefined}>
         {props.value}
       </span>
