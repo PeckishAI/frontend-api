@@ -4,6 +4,19 @@
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  .lottie-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    margin-top: 2px;
+  }
 }
 .primary {
   background-color: var(--primaryColor);
