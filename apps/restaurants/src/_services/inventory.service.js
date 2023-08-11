@@ -39,10 +39,25 @@ let deleteIngredient = (id) => {
   return axios.post('/inventory/' + id + '/delete');
 };
 
+let uploadCsvFile = (file) => {
+  let formData = new FormData();
+  formData.append('file', file);
+  return axios.post(
+    '/inventory/' + restaurantUUIDExemple + '/upload/smart_reader',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+};
+
 export const inventoryService = {
   getIngredientList,
   addIngredient,
   updateIngredient,
   getIngredientPreview,
   deleteIngredient,
+  uploadCsvFile,
 };
