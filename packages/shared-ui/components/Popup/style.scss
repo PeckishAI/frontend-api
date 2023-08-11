@@ -26,12 +26,15 @@
     align-items: center;
     flex-direction: column;
     gap: 15px;
+    min-width: 300px;
+    max-width: 500px;
   }
 
   span {
     color: var(--onBackgroundColor);
     font-size: 1rem;
     font-weight: var(--light);
+    text-align: center;
   }
   .msg1 {
     font-weight: var(--bold);

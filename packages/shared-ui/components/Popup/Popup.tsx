@@ -2,7 +2,7 @@ import LottieFile from '../Lottie/Lottie';
 import './style.scss';
 
 type Props = {
-  type: 'warning' | 'info';
+  type: 'warning' | 'info' | 'error';
   msg: string;
   subMsg?: string;
   revele: boolean;
@@ -20,10 +20,11 @@ const Popup = (props: Props) => {
       <div className="popup">
         {props.type === 'info' && <LottieFile width="80px" type="info" />}
         {props.type === 'warning' && <LottieFile width="80px" type="warning" />}
+        {props.type === 'error' && <LottieFile width="80px" type="error" />}
         <span className="msg1">{props.msg}</span>
         <span className="msg2">{props.subMsg}</span>
         <div className="button-container">
-          {props.type === 'info' && (
+          {['error', 'info'].includes(props.type) && (
             <button onClick={props.togglePopup} className="cancel">
               Ok
             </button>
