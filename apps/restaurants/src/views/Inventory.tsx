@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Table, Tabs, Dropdown, Popup, Input, Lottie } from 'shared-ui';
+import { Table, Tabs, Dropdown, Popup, Input, Button, Lottie } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { useEffect, useState } from 'react';
@@ -40,31 +40,42 @@ const Inventory = (props: Props) => {
   const { t } = useTranslation('common');
 
   const [selectedTab, setSelectedTab] = useState(0);
-  const [ingredientsList, setIngredientsList] = useState<Ingredient[]>();
+  const [ingredientsList, setIngredientsList] = useState<Ingredient[]>([]);
   const [editingRowId, setEditingRowId] = useState<string | null>();
   const [deletingRowId, setDeletingRowId] = useState<string | null>();
+  const [addingRow, setAddingRow] = useState(false);
   const [editedValues, setEditedValues] = useState<Ingredient | null>(null);
-  const [popupRevele, setPopupRevele] = useState(false);
+  const [popupDelete, setPopupDelete] = useState(false);
+  const [popupError, setPopupError] = useState('');
   const [loadingData, setLoadingdata] = useState(false);
 
   const toggleTab = (tabIndex: number) => {
     setSelectedTab(tabIndex);
   };
 
-  function reloadInventoryData() {
-    (async () => {
-      try {
-        setLoadingdata(true);
-        const list = await inventoryService.getIngredientList();
-        if (list.requestStatus === 200) {
-          setLoadingdata(false);
-        }
-        setIngredientsList(list.data);
-      } catch (error) {
-        console.error('Error fetching ingredient list:', error);
+  async function reloadInventoryData() {
+    setLoadingdata(true);
+    try {
+      const response = await inventoryService.getIngredientList();
+      const list = response.data; // Accès à la propriété data de la réponse
+
+      const convertedData = Object.keys(list).map((key) => ({
+        id: key,
+        theoriticalStock: 0, // Tempoprary till API implementation
+        ...list[key],
+      }));
+      setIngredientsList(convertedData);
+    } catch (err) {
+      if (err instanceof Error) {
+        togglePopupError(err.message);
+      } else {
+        console.error('Unexpected error type:', err);
       }
-    })();
+    }
+
+    setLoadingdata(false);
   }
+
   useEffect(() => {
     reloadInventoryData();
   }, []);
@@ -75,21 +86,39 @@ const Inventory = (props: Props) => {
   };
 
   const handleSaveEdit = () => {
-    console.log('line edited saved'); // request to api on /update...
     setLoadingdata(true);
-    inventoryService.updateIngredient(editedValues).then((res) => {
-      if (res.status === 200) {
-        reloadInventoryData();
-      }
-    });
-
-    setEditingRowId(null);
-    setEditedValues(null);
+    if (editingRowId !== null && !addingRow) {
+      console.log('API request to edit ingredient');
+      inventoryService
+        .updateIngredient(editedValues)
+        .catch((err) => {
+          togglePopupError(err.message);
+        })
+        .then(() => reloadInventoryData());
+      setEditingRowId(null);
+      setEditedValues(null);
+    } else {
+      console.log('API request to Add new ingredient');
+      inventoryService
+        .addIngredient(editedValues)
+        .catch((err) => {
+          togglePopupError(err.message);
+        })
+        .then(() => reloadInventoryData());
+      setAddingRow(false);
+    }
   };
 
   const handleCancelEdit = () => {
     setEditingRowId(null);
     setEditedValues(null);
+    if (addingRow) {
+      const updatedList = ingredientsList.filter(
+        (ingredient) => ingredient.id !== ''
+      );
+      setIngredientsList(updatedList);
+      setAddingRow(false);
+    }
   };
 
   const handleDeleteClick = (row: Ingredient) => {
@@ -105,7 +134,29 @@ const Inventory = (props: Props) => {
   };
 
   const togglePopupDelete = () => {
-    setPopupRevele(!popupRevele);
+    setPopupDelete(!popupDelete);
+  };
+
+  const togglePopupError = (msg: string) => {
+    setPopupError(msg);
+  };
+
+  const handleAddNewIngredient = () => {
+    const newIngredient: Ingredient = {
+      id: '',
+      name: '',
+      theoriticalStock: 0,
+      quantity: 0,
+      unit: '',
+      supplier: '',
+      cost: 0,
+      actions: undefined,
+    };
+
+    setIngredientsList([newIngredient, ...ingredientsList]);
+    setAddingRow(true);
+    setEditingRowId(newIngredient.id);
+    setEditedValues(newIngredient);
   };
 
   const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
@@ -119,7 +170,7 @@ const Inventory = (props: Props) => {
           <Input
             type="text"
             min={0}
-            placeholder="Quantity"
+            placeholder="Name"
             onChange={(value) => handleValueChange('name', value)}
             value={editedValues!.name}
           />
@@ -246,8 +297,19 @@ const Inventory = (props: Props) => {
             onChange={() => null}
           />
           <span>Filter</span>
-          <button className="button upload">Upload CSV</button>
-          <button className="button add">Add ingredient</button>
+          <Button
+            value="Upload CSV"
+            type="secondary"
+            onClick={() => {
+              console.log('Upload CSV');
+            }}
+          />
+          <Button
+            value="Add ingredient"
+            type="primary"
+            className="add"
+            onClick={!addingRow ? handleAddNewIngredient : () => null}
+          />
         </div>
       </div>
 
@@ -258,15 +320,23 @@ const Inventory = (props: Props) => {
         msg="Are you sure you want to delete it ?"
         // subMsg='Cette action aura des impactes sur les éléments suivant : trousse, bonjour..."'
         onConfirm={() => {
-          console.log('editing row id :', deletingRowId);
-
-          inventoryService.deleteIngredient(deletingRowId);
-          console.log('after');
-
+          inventoryService
+            .deleteIngredient(deletingRowId)
+            .catch((err) => {
+              togglePopupError(err.message);
+            })
+            .then(() => reloadInventoryData());
           togglePopupDelete();
         }}
-        revele={popupRevele}
+        revele={popupDelete}
         togglePopup={togglePopupDelete}
+      />
+      <Popup
+        type="error"
+        msg={t('error.trigger') + '. ' + t('error.tryLater') + '.'}
+        subMsg={popupError}
+        revele={popupError === '' ? false : true}
+        togglePopup={() => togglePopupError('')}
       />
       {loadingData && (
         <div className="loading-middle-page-overlay">
