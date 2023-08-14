@@ -53,6 +53,40 @@ let uploadCsvFile = (file) => {
   );
 };
 
+let getPreviewUploadedCsv = (file, headerValues) => {
+  let formData = new FormData();
+  formData.append('file', file);
+  formData.append('ingredient', headerValues.ingredient);
+  formData.append('quantity', headerValues.quantity);
+  formData.append('unit', headerValues.unit);
+  return axios.post(
+    '/inventory/' + restaurantUUIDExemple + '/upload/preview',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+};
+
+let validUploadedCsv = (file, headerValues) => {
+  let formData = new FormData();
+  formData.append('file', file);
+  formData.append('ingredient', headerValues.ingredient);
+  formData.append('quantity', headerValues.quantity);
+  formData.append('unit', headerValues.unit);
+  return axios.post(
+    '/inventory/' + restaurantUUIDExemple + '/upload',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+};
+
 export const inventoryService = {
   getIngredientList,
   addIngredient,
@@ -60,4 +94,6 @@ export const inventoryService = {
   getIngredientPreview,
   deleteIngredient,
   uploadCsvFile,
+  getPreviewUploadedCsv,
+  validUploadedCsv,
 };
