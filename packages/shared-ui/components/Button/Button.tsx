@@ -7,6 +7,7 @@ type Props = {
   className?: string;
   loading?: boolean;
   onClick?: () => void;
+  icon?: React.ReactNode;
 };
 
 const Button = (props: Props) => {
@@ -16,6 +17,7 @@ const Button = (props: Props) => {
       onClick={!props.loading ? props.onClick : undefined}>
       <span style={props.loading ? { opacity: 0 } : undefined}>
         {props.value}
+        {props.icon}
       </span>
       {props.loading && <Lottie type="loading" width="45px" />}
     </button>
