@@ -6,6 +6,7 @@ type Props = {
   min?: number;
   max?: number;
   value: string | number;
+  width?: string;
   onChange: (value: string) => void;
 };
 
@@ -19,7 +20,13 @@ const Input = (props: Props) => {
       value={props.value}
       placeholder={props.placeholder}
       onChange={(e) => props.onChange(e.target.value)}
-      style={props.type === 'number' ? { width: '100px' } : { width: 'auto' }}
+      style={
+        props.type === 'number'
+          ? { width: '70px' }
+          : props.width !== undefined
+          ? { width: props.width }
+          : { width: 'auto' }
+      }
     />
   );
 };
