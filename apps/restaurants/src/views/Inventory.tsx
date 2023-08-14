@@ -17,7 +17,7 @@ import { inventoryService } from '../_services';
 
 type Props = {};
 
-type Ingredient = {
+export type Ingredient = {
   id: string;
   name: string;
   theoriticalStock: number;
@@ -40,9 +40,9 @@ const units: DropdownOptionsDefinitionType[] = [
 ];
 
 const suppliers: DropdownOptionsDefinitionType[] = [
-  { label: 'Supply Depot', value: 'supplyDepot' },
-  { label: 'Crown Distributing', value: 'crownDistributing' },
-  { label: 'Worldwide Beverages', value: 'worldwideBeverages' },
+  { label: 'Supplier 1', value: 'supplier1' },
+  { label: 'Supplier 2', value: 'supplier2' },
+  { label: 'Supplier 3', value: 'supplier3' },
 ];
 
 const Inventory = (props: Props) => {
@@ -57,7 +57,8 @@ const Inventory = (props: Props) => {
   const [popupDelete, setPopupDelete] = useState(false);
   const [popupError, setPopupError] = useState('');
   const [loadingData, setLoadingdata] = useState(false);
-  const [uploadPopup, setUploadPopup] = useState(false);
+  const [uploadPopup, setUploadPopup] = useState<any | null>(null);
+  const [csvFile, setCsvFile] = useState<File | null>(null);
   const [loadingButton, setLoadingButton] = useState(false);
 
   const toggleTab = (tabIndex: number) => {
@@ -178,8 +179,8 @@ const Inventory = (props: Props) => {
       inventoryService
         .uploadCsvFile(file)
         .then((res) => {
-          console.log('Upload success : ', res.data);
-          setUploadPopup(true);
+          setUploadPopup(res.data);
+          setCsvFile(file);
         })
         .catch((err) => {
           console.log(err);
@@ -188,6 +189,11 @@ const Inventory = (props: Props) => {
           setLoadingButton(false);
         });
     }
+  };
+
+  const handleUploadCsvValidate = () => {
+    setUploadPopup(null);
+    reloadInventoryData();
   };
 
   const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
@@ -352,10 +358,15 @@ const Inventory = (props: Props) => {
 
       {selectedTab === 0 && <Table data={ingredientsList} columns={columns} />}
 
-      {uploadPopup && (
+      {uploadPopup !== null && (
         <UploadCsv
-          onCancelClick={() => setUploadPopup(false)}
-          onValidateClick={() => null}
+          fileCsv={csvFile}
+          extractedData={uploadPopup}
+          onCancelClick={() => {
+            setUploadPopup(null);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+          }}
+          onValidateClick={handleUploadCsvValidate}
         />
       )}
 
