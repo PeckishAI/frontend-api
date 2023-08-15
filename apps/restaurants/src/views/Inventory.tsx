@@ -13,8 +13,7 @@ import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
-import { inventoryService } from '../services';
-import { Ingredient } from '../services/types';
+import { inventoryService, Ingredient } from '../services';
 
 const tabs = ['Stock', 'analyses', 'Orders'];
 

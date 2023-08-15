@@ -1,6 +1,8 @@
 export * from './inventory.service';
+export * from './inventory.service';
 export * from './restaurant.service';
 export * from './onboarding.service';
+export * from './types';
 
 import { applyAxiosInterceptors } from 'user-management';
 import axios from 'axios';
