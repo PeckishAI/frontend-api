@@ -1,0 +1,224 @@
+.Auth {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+
+  .form-section {
+    position: relative;
+    width: 50%;
+    background-color: var(--navbarColor);
+    padding: 40px 75px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .company-name {
+      font-size: 2.3rem;
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      // background-color: var(--backgroundColor);
+      // width: 100px;
+      // height: 100px;
+      // border-radius: 50px;
+    }
+
+    .title {
+      margin-bottom: 10px;
+    }
+    .description {
+      margin-bottom: 40px;
+    }
+
+    .form-error {
+      color: var(--errorColor);
+      font-size: 0.8rem;
+      margin-bottom: 20px;
+    }
+    .inputs-container {
+      // max-width: 80%;
+      display: flex;
+      flex-direction: column;
+      row-gap: 20px;
+
+      .password-row {
+        display: flex;
+        column-gap: 20px;
+
+        .Input {
+          flex: 1;
+        }
+      }
+    }
+
+    .or {
+      display: flex;
+      text-align: center;
+      border: 0px rgba(0, 0, 0, 0.04);
+
+      span {
+        display: inline-block;
+        padding-left: 15px;
+        padding-right: 15px;
+        color: rgba(0, 0, 0, 0.54);
+      }
+
+      &::before,
+      &::after {
+        content: '';
+        position: relative;
+        width: 100%;
+        border-top: thin solid rgba(0, 0, 0, 0.12);
+        top: 50%;
+      }
+    }
+
+    .submit {
+      font-size: 0.9rem;
+      height: 40px;
+      border-radius: 5px;
+    }
+
+    .google-button {
+      cursor: pointer;
+      height: 40px;
+      background-color: white;
+      border-radius: 5px;
+      border: none;
+      font-size: 0.9rem;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: 200ms ease-in-out;
+
+      &:hover {
+        background-color: #e2e2e2;
+      }
+    }
+
+    .create-account {
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: 5px;
+
+      a {
+        cursor: pointer;
+        color: var(--primaryColor);
+      }
+    }
+
+    .choice-row {
+      display: flex;
+      gap: 20px;
+      justify-content: space-evenly;
+      margin-top: 25px;
+      .choice-card {
+        flex-basis: 0;
+        flex-grow: 1;
+        min-width: 0;
+        max-width: 200px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        padding: 20px;
+        background-color: var(--backgroundColor);
+        border-radius: 10px;
+        // box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        // box-shadow: 0 0 5px #000;
+        box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
+        transition: all 200ms;
+        cursor: pointer;
+
+        &:hover {
+          // box-shadow: none;
+          // transform: scaleZ(100);
+          transform: translateY(-5px);
+        }
+
+        .icon {
+          width: 45px;
+          height: 45px;
+          color: var(--primaryColor);
+          margin-bottom: 10px;
+        }
+        .title {
+          font-weight: 600;
+          font-size: 1rem;
+        }
+        .description {
+          font-style: italic;
+          font-size: 0.75rem;
+          margin-bottom: 0;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .loading-fullscreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f6f1f19a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .image-section {
+    width: 50%;
+    background-color: var(--primaryColor);
+  }
+
+  @media screen and (max-width: 800px) {
+    .form-section {
+      position: absolute;
+      width: 80%;
+      border-radius: 10px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      .title {
+        font-size: 1.5rem;
+      }
+
+      .company-name {
+        position: relative;
+        top: 0;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+    }
+    .image-section {
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    .form-section {
+      padding: 30px 30px;
+
+      .title {
+        font-size: 1.3rem;
+      }
+      .description {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+      }
+    }
+    // .image-section {
+    // }
+
+    .choice-row {
+      flex-direction: column;
+    }
+  }
+}
