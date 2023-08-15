@@ -1,7 +1,7 @@
 import axios from './index';
 
 let getPOSList = async () => {
-  const res = await axios.get('/onboarding/pos');
+  const res = await axios.get('/integrations');
   console.log('Onboarding request status', res.status);
   return res;
 };

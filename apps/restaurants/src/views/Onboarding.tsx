@@ -5,14 +5,14 @@ import { useTranslation } from 'react-i18next';
 
 type Props = {};
 
-type POS = {
+export type POS = {
   pos_uuid: string;
   name: string;
   display_name: string;
   button_display: string;
   auth_type: string;
   oauth_url: string;
-  image_url: string;
+  logo_uri: string;
 };
 
 const Onboarding = (props: Props) => {
@@ -20,9 +20,7 @@ const Onboarding = (props: Props) => {
   const [loadingData, setLoadingdata] = useState(false);
   const [posList, setPOSList] = useState<POS[]>([]);
   const [loginModalVisible, setLoginModalVisible] = useState(false);
-  const [buttonModalRedirect, setButtonModalRedirect] = useState<
-    string | null
-  >();
+  const [selectedPOS, setSelectedPOS] = useState<POS | undefined>();
 
   // Fetch data from API Backend (Get POS)
   function reloadPOSData() {
@@ -48,19 +46,20 @@ const Onboarding = (props: Props) => {
     <>
       {/* modal */}
 
-      <LoginModal isVisible={loginModalVisible} />
+      <LoginModal pos={selectedPOS} isVisible={loginModalVisible} />
 
       {posList.map((pos) => {
         return (
           <Card
             key={pos.pos_uuid}
             name={pos.display_name}
-            description={pos.button_display}
-            image={pos.image_url}
+            image={pos.logo_uri}
+            button_display={pos.button_display}
             onClick={() => {
               if (pos.auth_type === 'modal') {
                 // Show login modal
                 setLoginModalVisible(true);
+                setSelectedPOS(pos);
               } else {
                 // Redirect to oauth_url
               }

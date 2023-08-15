@@ -2,17 +2,17 @@ import './style.scss';
 
 type Props = {
   name: string;
-  description: string;
   image: string;
+  button_display: string;
   onClick: () => void;
 };
 
 const Card = (props: Props) => {
   return (
-    <div className="card" onClick={props.onClick}>
+    <div className="card">
       <h2>{props.name}</h2>
-      <p>{props.description}</p>
-      <img src={props.image}></img>
+      <img className="logo--integrations" src={props.image}></img>
+      <button onClick={props.onClick}>{props.button_display}</button>
     </div>
   );
 };
