@@ -17,7 +17,9 @@
     "strict": true,
     "jsx": "react-jsx",
     "allowJs": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"]
   },
+
   "exclude": ["node_modules", "**/dist"]
 }

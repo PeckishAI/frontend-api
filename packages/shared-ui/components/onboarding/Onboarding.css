@@ -1,0 +1,132 @@
+/* Onboarding container styles */
+.onboarding-container {
+  max-width: 81rem; /* Increased max-width for better layout */
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Search input styles */
+.search-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  outline: none; /* Remove default outline */
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  border-color: #007bff; /* Change border color on focus */
+}
+
+/* Software card container styles */
+.software-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Software card styles */
+.software-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  transition: transform 0.3s, box-shadow 0.3s;
+  width: 12rem; /* 5 cards in a row */
+  height: 12rem;
+  min-width: 200px; /* Minimum width for better responsiveness */
+  cursor: pointer;
+}
+
+.software-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 1em 0px #5E72E4;
+}
+
+.software-card h2 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.software-card p {
+  margin: 0;
+  color: #888;
+}
+
+.software-card button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  transition: background-color 0.3s;
+}
+
+.software-card button:hover {
+  background-color: #0056b3;
+}
+
+/* Login modal styles */
+.login-modal {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-modal h2 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.login-modal input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.login-modal button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-modal button:hover {
+  background-color: #0056b3;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  margin: 10px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+

@@ -7,6 +7,9 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@types/node": "^20.4.7",
+    "@types/react-slick": "^0.23.10",
+    "@types/slick-carousel": "^1.6.37",
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@typescript-eslint/parser": "^6.2.0",
     "eslint": "^8.46.0",
@@ -15,13 +18,17 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "prettier": "^3.0.0",
-    "sass": "^1.64.1",
-    "turbo": "^1.10.12",
-    "tsconfig": "*"
+    "tsconfig": "*",
+    "turbo": "^1.10.12"
   },
   "packageManager": "yarn@1.22.17",
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "react-router-dom": "^6.15.0",
+    "react-slick": "^0.29.0",
+    "slick-carousel": "^1.8.1"
+  }
 }

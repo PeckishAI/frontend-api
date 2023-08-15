@@ -1,31 +1,19 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import { Button } from 'shared-ui';
+// App.tsx
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Onboarding from '/home/proow/frontend-api/packages/shared-ui/components/onboarding/Onboarding';
+import Restaurants from '/home/proow/frontend-api/packages/shared-ui/components/Restaurants/Reastaurants';
 
-import './App.css';
-
-function App() {
-  const [count, setCount] = useState(0);
+const App: React.FC = () => {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noopener noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Restaurants site</h1>
-      <div className="card">
-        <Button
-          onClick={() => setCount((_count) => _count + 1)}
-          count={count}
-        />
-      </div>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/restaurants" element={<Restaurants />} />
+        {/* ... other routes ... */}
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
