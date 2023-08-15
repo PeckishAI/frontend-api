@@ -8,7 +8,7 @@
     thead tr:first-child {
       text-align: left;
       border-radius: 10px;
-      background-color: var(--navbarColor);
+      background-color: var(--secondaryColor);
       border-radius: 10px;
       position: sticky;
       top: 0;
@@ -41,7 +41,7 @@
       transition: all 0.1s;
     }
     tbody tr:hover {
-      background-color: var(--navbarColor);
+      background-color: var(--secondaryColor);
     }
 
     .fa-solid {

@@ -17,5 +17,8 @@
   "edit": "modifier",
   "delete": "Supprimer",
   "validate": "Valider",
-  "cancel": "Annuler"
+  "cancel": "Annuler",
+
+  "error.trigger": "Une erreur est survenue",
+  "error.tryLater": "Veuillez essayer plus tard"
 }

@@ -1,6 +1,9 @@
 :root {
   /* Colors */
   --primaryColor: #5e72e4;
+  --primaryColorAccentued: #5567cd;
+  --secondaryColor: #f6f1f1;
+  --secondaryColorAccentued: #dedcdc;
   --onPrimaryColor: #fcfcfc;
   --backgroundColor: #ffffff;
   --onBackgroundColor: #151515;

@@ -1,0 +1,37 @@
+.button {
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  i {
+    margin-left: 10px;
+  }
+
+  .lottie-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    margin-top: 2px;
+  }
+}
+.primary {
+  background-color: var(--primaryColor);
+  color: var(--backgroundColor);
+}
+.secondary {
+  background-color: var(--secondaryColor);
+}
+.primary:hover {
+  background-color: var(--primaryColorAccentued);
+}
+.secondary:hover {
+  background-color: var(--secondaryColorAccentued);
+}

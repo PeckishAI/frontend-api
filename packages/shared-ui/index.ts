@@ -1,6 +1,5 @@
 // components
 import Header from './components/Header';
-import Button from './components/Button';
 import Sidebar from './components/Sidebar/Sidebar';
 import SidebarItem from './components/Sidebar/SidebarItem';
 import SidebarSeparator from './components/Sidebar/SidebarSeparator';
@@ -11,13 +10,14 @@ import Dropdown from './components/Dropdown/Dropdown';
 import Lottie from './components/Lottie/Lottie';
 import Popup from './components/Popup/Popup';
 import Input from './components/Input/Input';
+import Button from './components/Button/Button';
+import UploadCsv from './components/UploadCsv/UploadCsv';
 import Card from './components/Card/Card';
 import LoginModal from './components/LoginModal/LoginModal';
 import RestaurantCard from './components/RestaurantCard/RestaurantCard';
 
 export {
   Header,
-  Button,
   Sidebar,
   SidebarItem,
   SidebarSeparator,
@@ -28,7 +28,4 @@ export {
   Lottie,
   Popup,
   Input,
-  Card,
-  LoginModal,
-  RestaurantCard,
 };
