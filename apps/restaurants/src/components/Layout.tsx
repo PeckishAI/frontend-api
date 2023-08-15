@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import {
   Sidebar,
@@ -8,6 +8,7 @@ import {
   Navbar,
   Lottie,
 } from 'shared-ui';
+import useUserStore from '../store/useUserStore';
 
 // type Props = {};
 
@@ -15,9 +16,18 @@ const Layout = () => {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { accessToken } = useUserStore();
+
   const handleIconClick = () => {
     setIsRefreshing(true);
   };
+
+  useEffect(() => {
+    if (!accessToken) {
+      navigate('/login-handler');
+    }
+  }, [accessToken, navigate]);
+
   return (
     <>
       <Sidebar>
