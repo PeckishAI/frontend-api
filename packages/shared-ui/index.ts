@@ -28,4 +28,9 @@ export {
   Lottie,
   Popup,
   Input,
+  Button,
+  UploadCsv,
+  Card,
+  LoginModal,
+  RestaurantCard,
 };
