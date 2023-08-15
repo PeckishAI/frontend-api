@@ -5,6 +5,7 @@ import React from 'react';
 type Props = {
   refreshIcon: React.ReactNode;
   onRefresh: () => void;
+  onLogout: () => void;
 };
 
 const Navbar = (props: Props) => {
@@ -26,7 +27,8 @@ const Navbar = (props: Props) => {
         <div
           className="my-account icon"
           data-tooltip-id="nav-tooltip"
-          data-tooltip-content="Log-out">
+          data-tooltip-content="Log-out"
+          onClick={props.onLogout}>
           <i className="fa-solid fa-arrow-right-from-bracket"></i>
         </div>
         <Tooltip className="tooltip" id="nav-tooltip" />

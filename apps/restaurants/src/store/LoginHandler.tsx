@@ -10,11 +10,16 @@ export const LoginHandler = () => {
 
   useEffect(() => {
     const accessToken = Cookies.get('accessToken');
+    console.log(accessToken);
+
     if (accessToken) {
       // TODO: Fetch user data
       setAccessToken(accessToken);
       navigate('/');
-    } else window.location.href = 'app.localhost:5123';
+    } else {
+      window.location.href = 'http://app.localhost:5123';
+      console.log('redirect');
+    }
   }, [setAccessToken, navigate]);
 
   return (

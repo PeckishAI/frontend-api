@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { create } from 'zustand';
 
 type User = {
@@ -13,15 +14,19 @@ type User = {
 };
 
 type UserStore = {
-  accessToken: string;
+  accessToken?: string;
   setAccessToken: (accessToken: string) => void;
   user?: User;
+  logout: () => void;
 };
 
 const useUserStore = create<UserStore>()((set) => ({
-  accessToken: '',
+  accessToken: undefined,
   user: undefined,
-
+  logout: () => {
+    Cookies.remove('accessToken', { domain: 'app.localhost' });
+    set({ user: undefined, accessToken: undefined });
+  },
   setAccessToken: (accessToken: string) => {
     set({ accessToken });
   },

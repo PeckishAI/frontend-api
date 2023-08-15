@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Outlet, Navigate, useNavigate } from 'react-router-dom';
 import {
   Sidebar,
   SidebarItem,
@@ -14,19 +14,21 @@ import useUserStore from '../store/useUserStore';
 
 const Layout = () => {
   const { t } = useTranslation('common');
-  const navigate = useNavigate();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const { accessToken } = useUserStore();
+  const { accessToken, logout } = useUserStore();
+  const navigate = useNavigate();
 
   const handleIconClick = () => {
     setIsRefreshing(true);
   };
 
-  useEffect(() => {
-    if (!accessToken) {
-      navigate('/login-handler');
-    }
-  }, [accessToken, navigate]);
+  const handleLogout = () => {
+    logout();
+  };
+
+  if (!accessToken) {
+    return <Navigate to="/login-handler" />;
+  }
 
   return (
     <>
@@ -78,6 +80,7 @@ const Layout = () => {
             )
           }
           onRefresh={handleIconClick}
+          onLogout={handleLogout}
         />
         <div className="content">
           <Outlet />

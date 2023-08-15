@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MyRestaurant from '../views/MyRestaurant';
 import Overview from '../views/Overview';
 import Inventory from '../views/Inventory';
@@ -31,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: '/recipes',
         element: <Recipes />,
+      },
+      {
+        path: '*',
+        element: <Navigate to={'/overview'} />,
       },
     ],
   },
