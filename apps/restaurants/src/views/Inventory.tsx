@@ -14,17 +14,7 @@ import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dro
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { inventoryService } from '../services';
-
-type Ingredient = {
-  id: string;
-  name: string;
-  theoriticalStock: number;
-  quantity: number;
-  unit: string;
-  supplier: string;
-  cost: number;
-  actions: void;
-};
+import { Ingredient } from '../services/types';
 
 const tabs = ['Stock', 'analyses', 'Orders'];
 
