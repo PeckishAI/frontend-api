@@ -13,6 +13,7 @@ import Popup from './components/Popup/Popup';
 import Input from './components/Input/Input';
 import Card from './components/Card/Card';
 import LoginModal from './components/LoginModal/LoginModal';
+import RestaurantCard from './components/RestaurantCard/RestaurantCard';
 
 export {
   Header,
@@ -29,4 +30,5 @@ export {
   Input,
   Card,
   LoginModal,
+  RestaurantCard,
 };
