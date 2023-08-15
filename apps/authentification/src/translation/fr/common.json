@@ -1,0 +1,28 @@
+{
+  "sign-in.title": "Content de vous revoir!",
+  "sign-in.description": "Entrez votre email et votre mot de passe pour vous connecter à Peckish",
+  "sign-in.create-account": "Vous n'avez pas de compte ?",
+
+  "sign-up.title": "Créer un compte",
+  "sign-up.description": "Inscrivez-vous pour commencer à utiliser Peckish",
+  "sign-up.already-register": "Vous avez déjà un compte ?",
+  "sign-up.tos-checkbox": "Accepter les conditions d'utilisation",
+
+  "choose-usage.title": "Qui êtes vous ?",
+  "choose-usage.description": "À quelles fins souhaitez-vous utiliser Peckish.",
+  "choose-usage.supplier.name": "Fournisseur",
+  "choose-usage.supplier.description": "Analyser mes parts de marché",
+  "choose-usage.restaurant.name": "Restaurant",
+  "choose-usage.restaurant.description": "Gestion de stock améliorée",
+
+  "name": "Nom",
+  "email": "E-mail",
+  "password": "Mot de passe",
+  "confirm-password": "Confirmation",
+  "remember-me": "Se souvenir de moi",
+  "sign-in": "Se connecter",
+  "sign-in-google": "Connexion avec Google",
+  "sign-up": "Créer un compte",
+  "sign-up-google": "Créer un compte avec Google",
+  "or-separator": "ou"
+}

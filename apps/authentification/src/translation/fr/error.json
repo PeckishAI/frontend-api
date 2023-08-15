@@ -1,0 +1,21 @@
+{
+  "email-required": "L'adresse e-mail est requise",
+  "valid-email": "Doit être une adresse e-mail valide",
+  "password-required": "Le mot de passe est requis",
+  "password-length": "Le mot de passe doit comporter 8 caractères",
+  "confirm-password-required": "La confirmation du mot de passe est requise",
+  "password-dont-match": "Les mots de passe ne correspondent pas",
+  "accept-tos": "Vous devez accepter les termes et conditions",
+
+  "unknown-error": "Une erreur inconnue est survenue. Veuillez réessayer.",
+
+  "sign-in.account-not-found": "Compte introuvable, veuillez en créer un d'abord.",
+  "sign-in.bad-credentials": "Identifiants incorrects",
+
+  "sign-up.already-taken": "Cette adresse mail est déjà utilisée.",
+
+  "choose-usage.bad-args": "Le choix à échoué veuillez réessayer.",
+
+  "google-auth.aborted": "L'authentification Google a été interrompue.",
+  "google-auth.failed": "L'authentification Google a échoué."
+}

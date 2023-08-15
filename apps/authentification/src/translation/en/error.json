@@ -1,0 +1,21 @@
+{
+  "email-required": "Email is required",
+  "valid-email": "Must be a valid email",
+  "password-required": "Password is required",
+  "password-length": "Password must be 8 character long",
+  "confirm-password-required": "Confirm password is required",
+  "password-dont-match": "Passwords don't match",
+  "accept-tos": "You must accept the terms & conditions",
+
+  "unknown-error": "An error occured while sign-in. Please try again",
+
+  "sign-in.account-not-found": "Account not found, please create one first.",
+  "sign-in.bad-credentials": "Bad credentials",
+
+  "sign-up.already-taken": "An account with this email already exists.",
+
+  "choose-usage.bad-args": "The choice failed, please try again.",
+
+  "google-auth.aborted": "Google authentification aborted.",
+  "google-auth.failed": "Google authentification failed."
+}
