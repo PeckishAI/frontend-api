@@ -1,4 +1,4 @@
-import './RestaurantCard.scss';
+import './style.scss';
 import Slider from 'react-slick';
 
 type Props = {
