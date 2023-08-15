@@ -19,7 +19,12 @@ const Button = (props: Props) => {
         {props.value}
         {props.icon}
       </span>
-      {props.loading && <Lottie type="loading" width="45px" />}
+      {props.loading && (
+        <Lottie
+          type={props.type === 'primary' ? 'loading_white' : 'loading'}
+          width="45px"
+        />
+      )}
     </button>
   );
 };
