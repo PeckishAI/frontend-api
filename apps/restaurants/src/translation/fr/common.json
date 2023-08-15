@@ -1,0 +1,21 @@
+{
+  "myRestaurant": "Mon Restaurant",
+  "overview": "Vue d'ensemble",
+  "inventory": "Inventaire",
+  "recipes": "Recettes",
+
+  "simulation": "Simulation",
+
+  "ingredientName": "Nom ingredient",
+  "theoriticalStock": "Stock théorique",
+  "actualStock": "Stock actuel",
+  "unit": "Unité",
+  "supplier": "Fournisseur",
+  "price": "Prix",
+  "actions": "Actions",
+
+  "edit": "modifier",
+  "delete": "Supprimer",
+  "validate": "Valider",
+  "cancel": "Annuler"
+}

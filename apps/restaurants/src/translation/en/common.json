@@ -1,0 +1,21 @@
+{
+  "myRestaurant": "My Restaurant",
+  "overview": "Overview",
+  "inventory": "Inventory",
+  "recipes": "Recipes",
+
+  "simulation": "Simulation",
+
+  "ingredientName": "Ingredient name",
+  "theoriticalStock": "Theoritical stock",
+  "actualStock": "Actual stock",
+  "unit": "Unit",
+  "supplier": "Supplier",
+  "price": "Price",
+  "actions": "Actions",
+
+  "edit": "Edit",
+  "delete": "Delete",
+  "validate": "Validate",
+  "cancel": "Cancel"
+}

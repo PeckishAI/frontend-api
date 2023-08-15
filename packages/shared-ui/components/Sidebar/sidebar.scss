@@ -1,0 +1,22 @@
+.sidebar {
+  background-color: var(--navbarColor);
+  height: 100vh;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0 10px;
+  box-shadow: 1px 0px 5px 0px #00000024;
+
+  .company-name {
+    height: var(--navbarHeight);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .sidebar-items-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}

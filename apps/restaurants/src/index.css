@@ -1,0 +1,51 @@
+.inventory {
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  .tabs-and-tools {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+  }
+  .tools {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+
+    .button {
+      background-color: var(--navbarColor);
+      padding: 6px 10px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .add {
+      background-color: var(--primaryColor);
+      color: var(--backgroundColor);
+    }
+  }
+  .loading-middle-page-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--navbarColor);
+    opacity: 0.8;
+  }
+  .loading-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+  }
+}
+
+@media screen and (max-width: 1050px) {
+  .tabs-and-tools {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+}
