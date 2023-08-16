@@ -21,10 +21,10 @@ const Input = (props: Props) => {
       placeholder={props.placeholder}
       onChange={(e) => props.onChange(e.target.value)}
       style={
-        props.type === 'number'
-          ? { width: '70px' }
-          : props.width !== undefined
+        props.width
           ? { width: props.width }
+          : props.type === 'number'
+          ? { width: '70px' }
           : { width: 'auto' }
       }
     />
