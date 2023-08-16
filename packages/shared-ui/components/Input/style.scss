@@ -3,7 +3,6 @@
   border: 1px solid rgba(0, 0, 0, 0.229);
   border: 1px solid var(--secondaryColorAccentued);
   border-radius: 10px;
-  text-align: center;
   outline: none;
   transition: all 0.2s;
 }
@@ -19,6 +18,7 @@
 
 .input[type='number'] {
   -moz-appearance: textfield;
+  // text-align: center;
 }
 .input:focus {
   border: 1px solid var(--primaryColor);
