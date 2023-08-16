@@ -3,11 +3,14 @@
     padding: 5px 8px;
     border-radius: 10px;
     color: var(--onBackgroundColor);
-    background-color: var(--backgroundColor);
-    // border-right: 10px solid transparent;
+    background-color: transparent;
+    border: 1px solid var(--secondaryColorAccentued);
     font-weight: var(--light);
     cursor: pointer;
     outline: none;
-    width: 100%;
+    transition: all 0.3s;
+  }
+  select:focus {
+    border: 1px solid var(--primaryColor);
   }
 }
