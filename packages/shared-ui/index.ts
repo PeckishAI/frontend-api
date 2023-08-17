@@ -1,5 +1,4 @@
 // components
-import Header from './components/Header';
 import Sidebar from './components/Sidebar/Sidebar';
 import SidebarItem from './components/Sidebar/SidebarItem';
 import SidebarSeparator from './components/Sidebar/SidebarSeparator';
@@ -15,9 +14,9 @@ import UploadCsv from './components/UploadCsv/UploadCsv';
 import Card from './components/Card/Card';
 import LoginModal from './components/LoginModal/LoginModal';
 import RestaurantCard from './components/RestaurantCard/RestaurantCard';
+import './styles/common.css';
 
 export {
-  Header,
   Sidebar,
   SidebarItem,
   SidebarSeparator,
