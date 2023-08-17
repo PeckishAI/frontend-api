@@ -2,11 +2,13 @@
   /* Colors */
   --primaryColor: #5e72e4;
   --primaryColorAccentued: #5567cd;
+  --onPrimaryColor: #fcfcfc;
   --secondaryColor: #f6f1f1;
   --secondaryColorAccentued: #dedcdc;
-  --onPrimaryColor: #fcfcfc;
   --backgroundColor: #ffffff;
   --onBackgroundColor: #151515;
+  --borderColor: #dbdbdb;
+  --textSecondaryColor: #7f7f7f;
   --cardColor: #272727;
   --navbarColor: #f6f1f1;
   --errorColor: #fc4343;
@@ -37,6 +39,9 @@
   margin: 0;
   text-decoration: none;
 }
+body {
+  overflow: hidden;
+}
 #root {
   display: flex;
 }
@@ -47,6 +52,9 @@
 }
 .main {
   width: 100%;
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 
 .content {
