@@ -1,0 +1,18 @@
+.trends {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-bottom: 20px;
+
+  // @media (min-width: 600px) {
+  //   grid-template-columns: repeat(2, 1fr);
+  // }
+
+  // @media (min-width: 900px) {
+  //   grid-template-columns: repeat(4, 1fr);
+  // }
+
+  & > div {
+    flex: 1;
+  }
+}

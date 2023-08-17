@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { useEffect } from 'react';
-import useUserStore from './useUserStore';
+import useUserStore from '../store/useUserStore';
 import { Lottie } from 'shared-ui';
 import { useNavigate } from 'react-router-dom';
 

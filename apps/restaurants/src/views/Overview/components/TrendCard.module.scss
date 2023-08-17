@@ -1,0 +1,63 @@
+.container {
+  background-color: var(--navbarColor);
+  // max-width: 300px;
+  min-width: 200px;
+  padding: 15px 25px;
+  border-radius: 5px;
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .title {
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      color: var(--textSecondaryColor);
+      margin-bottom: 5px;
+    }
+
+    .value {
+      font-size: 1.35rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .icon {
+      font-size: 1.5rem;
+      margin-left: 10px;
+      color: var(--primaryColor);
+    }
+  }
+
+  .trend {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+
+    .percentage {
+      &.equalTrend {
+        color: black;
+      }
+      &.upTrend {
+        color: green;
+      }
+      &.downTrend {
+        color: red;
+      }
+
+      display: inline-flex;
+      align-items: center;
+
+      .percentageIcon {
+        margin-right: 5px;
+      }
+    }
+    .periodText {
+      margin-left: 10px;
+      color: var(--textSecondaryColor);
+    }
+  }
+}

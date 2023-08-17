@@ -1,3 +1,4 @@
 {
-  "conventionalCommits.scopes": ["auth", "restaurant"]
+  "conventionalCommits.scopes": ["auth", "restaurant"],
+  "typescript.tsserver.pluginPaths": ["typescript-plugin-css-modules"]
 }
