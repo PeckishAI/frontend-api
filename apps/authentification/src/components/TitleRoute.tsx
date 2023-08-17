@@ -1,6 +1,8 @@
+import Cookies from 'js-cookie';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation } from 'react-router-dom';
+import { handleRedirect } from '../utils';
 
 export const TitleRoute = () => {
   const { t } = useTranslation(['routes']);
@@ -23,6 +25,11 @@ export const TitleRoute = () => {
     });
     document.title = title !== '' ? `Peckish - ${title}` : 'Peckish';
   }, [t, pathname]);
+
+  // TODO: get clientType to redirect to good app
+  const auth = Cookies.get('accessToken');
+
+  if (auth) handleRedirect(auth, 'restaurant');
 
   return <Outlet />;
 };

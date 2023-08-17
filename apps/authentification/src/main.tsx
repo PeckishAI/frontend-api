@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.scss';
 import { SignIn } from './pages/SignIn.js';
-import 'shared-ui/styles/common.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { SignUp } from './pages/SignUp';
