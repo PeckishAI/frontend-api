@@ -1,61 +1,82 @@
 import { FaRegMoneyBillAlt } from 'react-icons/fa';
-import { PiBankBold } from 'react-icons/pi';
 import { HiOutlineUserGroup } from 'react-icons/hi';
-import { MdOutlineSavings } from 'react-icons/md';
-import { TrendCard } from './components/TrendCard';
+import { TrendCard, TrendCardSkeleton } from './components/TrendCard';
 import { prettyNumber } from '../../utils/helpers';
 import styles from './Overview.module.scss';
 import { ForecastCard } from './components/ForecastCard';
 import { Tooltip } from 'react-tooltip';
+import { useEffect, useState } from 'react';
+import overviewService, {
+  Forecast,
+  RestaurantMetric,
+} from '../../_services/overview.service';
+import { useRestaurantStore } from '../../store/useRestaurantStore';
 
-// import dayjs from 'dayjs';
-type Props = {};
-
-type ForecastDay = {
-  date: Date;
-  revenue: number;
-  profit: number;
-  sales: number;
-  savings: number;
+const metricIcon: { [K in keyof RestaurantMetric]: React.ReactNode } = {
+  occupancy: <HiOutlineUserGroup />,
+  sales: <FaRegMoneyBillAlt />,
 };
 
-export type Forecast = {
-  // ISO currency
-  currency: 'EUR' | 'USD';
-  days: ForecastDay[];
+const metricFormat: {
+  [K in keyof RestaurantMetric]: (value: string) => string;
+} = {
+  occupancy: (value) => `${value}`,
+  sales: (value) => `${value}€`,
 };
+
+// Savings <MdOutlineSavings />
+// Profits <PiBankBold />
 
 const Overview = (props: Props) => {
+  const [loadingMetrics, setLoadingMetrics] = useState(false);
+  const [metrics, setMetrics] = useState<RestaurantMetric>();
+
+  const [loadingForecast, setLoadingForecast] = useState(true);
+  const [forecast, setForecast] = useState<Forecast>();
+
+  const { selectedRestaurantUUID } = useRestaurantStore();
+
+  useEffect(() => {
+    if (!selectedRestaurantUUID) return;
+    setLoadingMetrics(true);
+    overviewService
+      .getMetrics(selectedRestaurantUUID)
+      .then((res) => {
+        setMetrics(res);
+      })
+      .finally(() => {
+        setLoadingMetrics(false);
+      });
+
+    setLoadingForecast(true);
+    overviewService
+      .getForecast(selectedRestaurantUUID)
+      .then((res) => {
+        setForecast(res);
+      })
+      .finally(() => {
+        setLoadingForecast(false);
+      });
+  }, [selectedRestaurantUUID]);
+
   return (
     <>
       <div>
         <div className={styles.trends}>
-          <TrendCard
-            title="Revenue"
-            value={`${prettyNumber(752152)}€`}
-            icon={<FaRegMoneyBillAlt />}
-            percentage={-3.5}
-          />
-          <TrendCard
-            title="Profit"
-            value={`${prettyNumber(7521)}€`}
-            icon={<PiBankBold />}
-            percentage={-5}
-          />
-          <TrendCard
-            title="Sales"
-            value={prettyNumber('42')}
-            icon={<HiOutlineUserGroup />}
-            percentage={3}
-          />
-          <TrendCard
-            title="Revenue"
-            value={prettyNumber('150€')}
-            icon={<MdOutlineSavings />}
-            percentage={0}
-          />
+          {loadingMetrics && [1, 2].map((i) => <TrendCardSkeleton key={i} />)}
+          {!loadingMetrics &&
+            metrics &&
+            (Object.keys(metrics) as (keyof RestaurantMetric)[]).map((key) => (
+              <TrendCard
+                key={key}
+                title={key}
+                value={metricFormat[key](prettyNumber(metrics[key].value))}
+                icon={metricIcon[key]}
+                percentage={metrics[key].mom}
+              />
+            ))}
         </div>
-        <ForecastCard />
+        <ForecastCard data={forecast} loading={loadingForecast} />
       </div>
       <Tooltip id="overview-tooltip" />
     </>

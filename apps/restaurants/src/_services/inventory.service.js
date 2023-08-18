@@ -3,11 +3,14 @@ import axios from './index';
 let restaurantUUIDExemple = '514db708-3b64-4cb0-a048-ae1a001e68ad';
 
 let getIngredientList = () => {
-  return axios.get('/inventory/' + restaurantUUIDExemple);
+  return axios.get('/restaurant/inventory/' + restaurantUUIDExemple);
 };
 
 let addIngredient = (ingredient) => {
-  return axios.post('/inventory/' + restaurantUUIDExemple, ingredient);
+  return axios.post(
+    '/restaurant/inventory/' + restaurantUUIDExemple,
+    ingredient
+  );
 };
 
 let updateIngredient = (ingredient) => {
@@ -25,25 +28,25 @@ let updateIngredient = (ingredient) => {
       return obj;
     }, {});
   return axios.post(
-    '/inventory/' + ingredient.id + '/update',
+    '/restaurant/inventory/' + ingredient.id + '/update',
     ingredientFormated
   );
 };
 
 let getIngredientPreview = (ingredient) => {
-  return axios.get('/inventory/' + ingredient.id + '/preview');
+  return axios.get('/restaurant/inventory/' + ingredient.id + '/preview');
 };
 
 let deleteIngredient = (id) => {
   console.log('delete request');
-  return axios.post('/inventory/' + id + '/delete');
+  return axios.post('/restaurant/inventory/' + id + '/delete');
 };
 
 let uploadCsvFile = (file) => {
   let formData = new FormData();
   formData.append('file', file);
   return axios.post(
-    '/inventory/' + restaurantUUIDExemple + '/upload/smart_reader',
+    '/restaurant/inventory/' + restaurantUUIDExemple + '/upload/smart_reader',
     formData,
     {
       headers: {

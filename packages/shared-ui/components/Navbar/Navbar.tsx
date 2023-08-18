@@ -1,21 +1,17 @@
 import './navbar.scss';
-import { useLocation } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import React from 'react';
 type Props = {
+  title: string;
   refreshIcon: React.ReactNode;
   onRefresh: () => void;
   onLogout: () => void;
 };
 
 const Navbar = (props: Props) => {
-  const location = useLocation();
-  const pathName = location.pathname.replace('/', '');
-  const pathNameFormated = pathName.charAt(0).toUpperCase() + pathName.slice(1);
-
   return (
     <div className="navbar">
-      <h2 className="page-title">{pathNameFormated}</h2>
+      <h2 className="page-title">{props.title}</h2>
       <div className="nav-actions">
         <div
           className="refresh"

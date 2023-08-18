@@ -6,10 +6,13 @@ import dayjs from 'dayjs';
 import { Tooltip } from 'react-tooltip';
 import { useState } from 'react';
 import { ForecastChart } from './ForecastChart';
+import { Forecast } from '../../../_services/overview.service';
+import Skeleton from 'react-loading-skeleton';
 
-type Props = {};
-
-//TODO: Vertical table (header = days)
+type Props = {
+  data?: Forecast;
+  loading: boolean;
+};
 
 const chartModes = [
   {
@@ -22,6 +25,7 @@ const chartModes = [
   },
 ];
 
+//TODO: Vertical table (header = days)
 export const ForecastCard = (props: Props) => {
   const [selectedMode, setSelectedMode] = useState(0);
   const [selectedChartMode, setSelectedChartMode] = useState<
@@ -46,7 +50,9 @@ export const ForecastCard = (props: Props) => {
               <Dropdown
                 options={chartModes}
                 selectedOption={selectedChartMode}
-                onOptionChange={setSelectedChartMode}
+                onOptionChange={(value) =>
+                  setSelectedChartMode(value as 'revenue' | 'profit')
+                }
               />
             )}
             <FaInfoCircle
@@ -58,27 +64,65 @@ export const ForecastCard = (props: Props) => {
         <div className={styles.content}>
           {/* {Children} */}
           {selectedMode === 0 ? (
-            <Table
-              data={forecastMock.days}
-              columns={[
-                {
-                  header: 'Date',
-                  key: 'date',
-                  renderItem: (row) => dayjs(row.date).format('ddd D'),
-                },
-                { header: 'Revenue', key: 'revenue' },
-                { header: 'Profit', key: 'profit' },
-                { header: 'Sales', key: 'sales' },
-                { header: 'Savings', key: 'savings' },
-              ]}
-            />
+            props.loading ? (
+              <ForecastTableSkeleton />
+            ) : (
+              <Table
+                data={props.data}
+                columns={[
+                  {
+                    header: 'Date',
+                    key: 'date',
+                    renderItem: (row) => dayjs(row.date).format('ddd D'),
+                  },
+                  // occupancy
+                  // sales
+                  { header: 'Occupancy', key: 'occupancy' },
+                  { header: 'Sales', key: 'sales' },
+                  { header: 'Profit', key: 'profit' },
+                  { header: 'Savings', key: 'savings' },
+                ]}
+              />
+            )
           ) : (
-            <ForecastChart data={forecastMock} visibleKey={selectedChartMode} />
+            <ForecastChart
+              data={props.data}
+              visibleMetric={selectedChartMode}
+            />
           )}
         </div>
       </div>
 
       <Tooltip id="forecast-tooltip" />
     </>
+  );
+};
+
+const ForecastTableSkeleton = () => {
+  const renderItem = () => <Skeleton width={50} />;
+
+  return (
+    <Table
+      data={[...Array(7)].map<Forecast[number]>((_, i) => ({
+        date: dayjs().add(i, 'day').toDate(),
+        occupancy: 0,
+        profit: 0,
+        sales: 0,
+        savings: 0,
+      }))}
+      columns={[
+        {
+          header: 'Date',
+          key: 'date',
+          renderItem: (row) => dayjs(row.date).format('ddd D'),
+        },
+        // occupancy
+        // sales
+        { header: 'Occupancy', key: 'occupancy', renderItem },
+        { header: 'Sales', key: 'sales', renderItem },
+        { header: 'Profit', key: 'profit', renderItem },
+        { header: 'Savings', key: 'savings', renderItem },
+      ]}
+    />
   );
 };

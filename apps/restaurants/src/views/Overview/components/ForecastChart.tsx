@@ -1,7 +1,7 @@
-import { Forecast } from '../Overview';
 import dayjs from 'dayjs';
 import { Chart } from 'react-chartjs-2';
 import 'chart.js/auto';
+import { Forecast } from '../../../_services/overview.service';
 
 // Get css variable color
 const cssvar = (name: string) => {
@@ -11,28 +11,25 @@ const cssvar = (name: string) => {
 const primaryColor = cssvar('--primaryColor');
 
 type Props = {
-  data: Forecast;
-  visibleKey: keyof Forecast['days'][number];
+  data?: Forecast;
+  visibleMetric: Omit<keyof Forecast[number], 'date'>;
 };
 
 export const ForecastChart = (props: Props) => {
   if (!props.data) return;
-  const selectedKey =
-    props.visibleKey && typeof props.data.days[0][props.visibleKey] === 'number'
-      ? props.visibleKey
-      : 'revenue';
+  const selectedMetric = props.visibleMetric ?? 'revenue';
 
   return (
     <Chart
       type="line"
       height={300}
       data={{
-        labels: props.data.days.map((day) => dayjs(day.date).format('ddd D')),
+        labels: props.data.map((day) => dayjs(day.date).format('ddd D')),
         datasets: [
           {
             type: 'line',
             label: 'Revenue',
-            data: props.data.days.map((day) => day[selectedKey]),
+            data: props.data.map((day) => day[selectedMetric]),
             borderColor: primaryColor,
             tension: 0.4,
             pointBorderColor: 'white',
@@ -47,8 +44,8 @@ export const ForecastChart = (props: Props) => {
           {
             type: 'line',
             label: 'Error max',
-            data: props.data.days.map(
-              (day) => day[selectedKey] + day[selectedKey] * 0.15
+            data: props.data.map(
+              (day) => day[selectedMetric] + day[selectedMetric] * 0.15
             ),
 
             borderColor: primaryColor + '40',
@@ -65,8 +62,8 @@ export const ForecastChart = (props: Props) => {
           {
             type: 'line',
             label: 'Error min',
-            data: props.data.days.map(
-              (day) => day[selectedKey] - day[selectedKey] * 0.15
+            data: props.data.map(
+              (day) => day[selectedMetric] - day[selectedMetric] * 0.15
             ),
 
             borderColor: primaryColor + '40',
