@@ -1,8 +1,8 @@
 import Cookies from 'js-cookie';
 import { create } from 'zustand';
 
-type User = {
-  created_at: string;
+export type User = {
+  created_at: Date;
   data: object | null;
   email: string;
   name: string;
@@ -15,9 +15,10 @@ type User = {
 
 type UserStore = {
   accessToken?: string;
-  setAccessToken: (accessToken: string) => void;
-  user?: User;
+  storeAccessToken: (accessToken: string) => void;
   logout: () => void;
+  user?: User;
+  setUser: (user: User) => void;
 };
 
 const useUserStore = create<UserStore>()((set) => ({
@@ -27,14 +28,16 @@ const useUserStore = create<UserStore>()((set) => ({
     Cookies.remove('accessToken', { domain: 'app.localhost' });
     set({ user: undefined, accessToken: undefined });
   },
-  setAccessToken: (accessToken: string) => {
+  storeAccessToken: (accessToken: string) => {
     set({ accessToken });
   },
-
-  fetchData: async () => {
-    // Call user api & get user
-    // set((state) => ({ ...state, loading: true }));
+  setUser: (user: User) => {
+    set({ user });
   },
+  // fetchData: async () => {
+  //   // Call user api & get user
+  //   // set((state) => ({ ...state, loading: true }));
+  // },
 }));
 
 export default useUserStore;

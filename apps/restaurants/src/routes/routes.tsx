@@ -5,40 +5,42 @@ import Inventory from '../views/Inventory';
 import Recipes from '../views/Recipes';
 import Onboarding from '../views/Onboarding';
 import Layout from '../components/Layout';
-import { LoginHandler } from './LoginHandler';
+import { ProtectedRoute } from './ProtectedRoute';
 
 export const router = createBrowserRouter([
   {
-    index: true,
-    element: <Navigate to={'/overview'} />,
-  },
-  {
-    path: '/login-handler',
-    element: <LoginHandler />,
-  },
-  {
     path: '/',
-    element: <Layout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        path: '/myRestaurant',
-        element: <MyRestaurant />,
-      },
-      {
-        path: '/overview',
-        element: <Overview />,
-      },
-      {
-        path: '/inventory',
-        element: <Inventory />,
-      },
-      {
-        path: '/recipes',
-        element: <Recipes />,
-      },
-      {
-        path: '*',
+        index: true,
         element: <Navigate to={'/overview'} />,
+      },
+      {
+        path: '/',
+        element: <Layout />,
+        children: [
+          {
+            path: '/myRestaurant',
+            element: <MyRestaurant />,
+          },
+          {
+            path: '/overview',
+            element: <Overview />,
+          },
+          {
+            path: '/inventory',
+            element: <Inventory />,
+          },
+          {
+            path: '/recipes',
+            element: <Recipes />,
+          },
+          {
+            path: '*',
+            element: <Navigate to={'/overview'} />,
+          },
+        ],
       },
     ],
   },
