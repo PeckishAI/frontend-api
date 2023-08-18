@@ -3,10 +3,11 @@
     padding: 5px 8px;
     border-radius: 10px;
     color: var(--onBackgroundColor);
-    background-color: transparent;
+    background-color: var(--backgroundColor);
     // border-right: 10px solid transparent;
     font-weight: var(--light);
     cursor: pointer;
     outline: none;
+    width: 100%;
   }
 }

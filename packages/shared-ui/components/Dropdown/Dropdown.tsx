@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import './style.scss';
 
 export type DropdownOptionsDefinitionType = {
@@ -8,8 +9,9 @@ export type DropdownOptionsDefinitionType = {
 
 type Props = {
   options: Array<DropdownOptionsDefinitionType>;
-  selectedOption: string;
-  onOptionChange: (event) => void;
+  selectedOption?: string;
+  onOptionChange: (event: DropdownOptionsDefinitionType['value']) => void;
+  className?: string;
 };
 
 const Dropdown = (props: Props) => {
@@ -19,7 +21,7 @@ const Dropdown = (props: Props) => {
     )[0] ?? props.options[0];
 
   return (
-    <div className="dropdown">
+    <div className={classNames('dropdown', props.className)}>
       <select
         value={props.selectedOption}
         onChange={(event) => {

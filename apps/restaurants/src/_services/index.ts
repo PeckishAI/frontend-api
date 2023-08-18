@@ -4,19 +4,19 @@ import { config } from '../local_config/config';
 import axios from 'axios';
 import useUserStore from '../store/useUserStore';
 
-const Axios = axios.create({
+const axiosClient = axios.create({
   baseURL: config.API_URL,
 });
 
 // Request interceptor for API calls
-Axios.interceptors.request.use(async (config) => {
+axiosClient.interceptors.request.use(async (config) => {
   const accessToken = useUserStore.getState().accessToken;
   config.headers.Authorization = `Bearer ${accessToken}`;
   return config;
 });
 
 // Response interceptor for API calls
-Axios.interceptors.response.use(
+axiosClient.interceptors.response.use(
   (res) => res,
   async function (error) {
     if (!axios.isAxiosError(error)) return Promise.reject(error);
@@ -40,4 +40,4 @@ Axios.interceptors.response.use(
   }
 );
 
-export default Axios;
+export default axiosClient;

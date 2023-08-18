@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import {
   Sidebar,
@@ -7,16 +7,29 @@ import {
   SidebarSeparator,
   Navbar,
   Lottie,
+  Dropdown,
 } from 'shared-ui';
 import useUserStore from '../store/useUserStore';
+import { useRestaurantStore } from '../store/useRestaurantStore';
 
 // type Props = {};
 
 const Layout = () => {
   const { t } = useTranslation('common');
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const { logout } = useUserStore();
   const navigate = useNavigate();
+
+  const { logout } = useUserStore();
+  const {
+    selectedRestaurantUUID,
+    setSelectedRestaurantUUID,
+    restaurants,
+    loadRestaurants,
+  } = useRestaurantStore();
+
+  useEffect(() => {
+    loadRestaurants();
+  }, [loadRestaurants]);
 
   const handleIconClick = () => {
     setIsRefreshing(true);
@@ -33,7 +46,7 @@ const Layout = () => {
           name={t('myRestaurant')}
           icon={<i className="fa-solid fa-utensils"></i>}
           onClick={() => {
-            navigate('/myRestaurant');
+            navigate('/');
           }}
         />
         <SidebarItem
@@ -65,9 +78,21 @@ const Layout = () => {
             navigate('/simulation');
           }}
         />
+        <div className="restaurant-dropdown">
+          <p className="label">Restaurants :</p>
+          <Dropdown
+            options={restaurants.map((restaurant) => ({
+              label: restaurant.name,
+              value: restaurant.uuid,
+            }))}
+            onOptionChange={setSelectedRestaurantUUID}
+            selectedOption={selectedRestaurantUUID}
+          />
+        </div>
       </Sidebar>
       <div className="main">
         <Navbar
+          title="Peckish"
           refreshIcon={
             isRefreshing ? (
               <Lottie width="30px" type="validate" />

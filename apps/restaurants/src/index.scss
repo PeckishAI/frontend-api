@@ -13,6 +13,18 @@
     display: flex;
     gap: 25px;
     align-items: center;
+
+    .button {
+      background-color: var(--navbarColor);
+      padding: 6px 10px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .add {
+      background-color: var(--primaryColor);
+      color: var(--backgroundColor);
+    }
   }
   .loading-middle-page-overlay {
     position: absolute;
@@ -27,6 +39,20 @@
     position: fixed;
     top: 50%;
     left: 50%;
+  }
+}
+
+.sidebar {
+  .label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0.4;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+  .restaurant-dropdown {
+    width: 100%;
+    margin-top: auto;
   }
 }
 
