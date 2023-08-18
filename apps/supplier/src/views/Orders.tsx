@@ -61,7 +61,7 @@ const Orders = () => {
       {
         key: 'status',
         header: t('status'),
-        renderItem: (row) => (
+        renderItem: ({ row }) => (
           <Dropdown
             options={orderStatus}
             selectedOption={selectedOrderStatus[row.id]}
@@ -72,7 +72,7 @@ const Orders = () => {
       {
         key: 'price',
         header: t('price'),
-        renderItem: (row) => `${row.price} €`,
+        renderItem: ({ row }) => `${row.price} €`,
         classname: 'column-bold',
       },
       {

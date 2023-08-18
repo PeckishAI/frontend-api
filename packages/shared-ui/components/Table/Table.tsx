@@ -6,7 +6,8 @@ import TableRows from './TableRows';
 export type ColumnDefinitionType<T, K extends keyof T> = {
   key: K;
   header: string;
-  renderItem?: (row: T) => React.ReactNode | string;
+  // renderItem?: (params: { row: T; value: T[K] }) => React.ReactNode | string;
+  renderItem?: (params: { row: T; value: T[K] }) => React.ReactNode | string;
   classname?: string;
   width?: string;
 };

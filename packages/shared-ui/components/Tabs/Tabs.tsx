@@ -4,7 +4,7 @@ type Props = {
   tabs: Array<string>;
   onClick: (index: number) => void;
   selectedIndex: number;
-  className: string;
+  className?: string;
 };
 
 const Tabs = (props: Props) => {

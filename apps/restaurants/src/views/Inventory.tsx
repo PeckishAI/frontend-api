@@ -15,9 +15,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { inventoryService } from '../_services';
 
-type Props = {};
-
-export type Ingredient = {
+type Ingredient = {
   id: string;
   name: string;
   theoriticalStock: number;
@@ -45,7 +43,7 @@ const suppliers: DropdownOptionsDefinitionType[] = [
   { label: 'Supplier 3', value: 'supplier3' },
 ];
 
-const Inventory = (props: Props) => {
+const Inventory = () => {
   const { t } = useTranslation('common');
 
   const [selectedTab, setSelectedTab] = useState(0);
@@ -202,7 +200,7 @@ const Inventory = (props: Props) => {
       header: t('ingredientName'),
       width: '15%',
       classname: 'column-bold',
-      renderItem: (row) =>
+      renderItem: ({ row }) =>
         editingRowId === row.id ? (
           <Input
             type="text"
@@ -221,7 +219,7 @@ const Inventory = (props: Props) => {
       key: 'quantity',
       header: t('actualStock'),
       width: '15%',
-      renderItem: (row) =>
+      renderItem: ({ row }) =>
         editingRowId === row.id ? (
           <Input
             type="number"
@@ -238,7 +236,7 @@ const Inventory = (props: Props) => {
       key: 'unit',
       header: t('unit'),
       width: '10%',
-      renderItem: (row) =>
+      renderItem: ({ row }) =>
         editingRowId === row.id ? (
           <Dropdown
             options={units}
@@ -253,7 +251,7 @@ const Inventory = (props: Props) => {
       key: 'supplier',
       header: t('supplier'),
       width: '15%',
-      renderItem: (row) =>
+      renderItem: ({ row }) =>
         editingRowId === row.id ? (
           <Dropdown
             options={suppliers}
@@ -269,7 +267,7 @@ const Inventory = (props: Props) => {
       header: t('price'),
       width: '10%',
       classname: 'column-bold',
-      renderItem: (row) =>
+      renderItem: ({ row }) =>
         editingRowId === row.id ? (
           <Input
             type="number"
@@ -286,7 +284,7 @@ const Inventory = (props: Props) => {
       key: 'actions',
       header: t('actions'),
       width: '10%',
-      renderItem: (row) => {
+      renderItem: ({ row }) => {
         return (
           <div className="actions">
             {editingRowId === row.id ? (

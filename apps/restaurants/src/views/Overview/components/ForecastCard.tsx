@@ -1,7 +1,6 @@
 import { FaInfoCircle } from 'react-icons/fa';
 import styles from './ForecastCard.module.scss';
 import { Dropdown, Table, Tabs } from 'shared-ui';
-import { forecastMock } from '../mock';
 import dayjs from 'dayjs';
 import { Tooltip } from 'react-tooltip';
 import { useState } from 'react';
@@ -31,6 +30,9 @@ export const ForecastCard = (props: Props) => {
   const [selectedChartMode, setSelectedChartMode] = useState<
     'revenue' | 'profit'
   >('revenue');
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const renderItem = ({ value }: { value: any }) => (value ? value : '--');
 
   return (
     <>
@@ -73,14 +75,12 @@ export const ForecastCard = (props: Props) => {
                   {
                     header: 'Date',
                     key: 'date',
-                    renderItem: (row) => dayjs(row.date).format('ddd D'),
+                    renderItem: ({ row }) => dayjs(row.date).format('ddd D'),
                   },
-                  // occupancy
-                  // sales
-                  { header: 'Occupancy', key: 'occupancy' },
-                  { header: 'Sales', key: 'sales' },
-                  { header: 'Profit', key: 'profit' },
-                  { header: 'Savings', key: 'savings' },
+                  { header: 'Occupancy', key: 'occupancy', renderItem },
+                  { header: 'Sales', key: 'sales', renderItem },
+                  { header: 'Profit', key: 'profit', renderItem },
+                  { header: 'Savings', key: 'savings', renderItem },
                 ]}
               />
             )
@@ -114,10 +114,8 @@ const ForecastTableSkeleton = () => {
         {
           header: 'Date',
           key: 'date',
-          renderItem: (row) => dayjs(row.date).format('ddd D'),
+          renderItem: ({ row }) => dayjs(row.date).format('ddd D'),
         },
-        // occupancy
-        // sales
         { header: 'Occupancy', key: 'occupancy', renderItem },
         { header: 'Sales', key: 'sales', renderItem },
         { header: 'Profit', key: 'profit', renderItem },

@@ -27,7 +27,7 @@ const metricFormat: {
 // Savings <MdOutlineSavings />
 // Profits <PiBankBold />
 
-const Overview = (props: Props) => {
+const Overview = () => {
   const [loadingMetrics, setLoadingMetrics] = useState(false);
   const [metrics, setMetrics] = useState<RestaurantMetric>();
 
