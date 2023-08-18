@@ -1,5 +1,5 @@
 .container {
-  background-color: var(--navbarColor);
+  background-color: var(--secondaryColor);
   // max-width: 300px;
   min-width: 200px;
   padding: 15px 25px;
@@ -58,6 +58,7 @@
     .periodText {
       margin-left: 10px;
       color: var(--textSecondaryColor);
+      white-space: nowrap;
     }
   }
 }
