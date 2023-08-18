@@ -14,6 +14,7 @@ import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dro
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { inventoryService, Ingredient } from '../services';
+import FuseInput from '../components/FuseInput/FuseInput';
 
 const tabs = ['Stock', 'analyses', 'Orders'];
 
@@ -47,6 +48,7 @@ const Inventory = () => {
   const [uploadPopup, setUploadPopup] = useState<any | null>(null);
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [loadingButton, setLoadingButton] = useState(false);
+  const [searchValue, setSearchValue] = useState<string | null>(null);
 
   const toggleTab = (tabIndex: number) => {
     setSelectedTab(tabIndex);
@@ -183,6 +185,10 @@ const Inventory = () => {
     reloadInventoryData();
   };
 
+  const handleOnSearchValueChange = (value: string) => {
+    setSearchValue(value);
+  };
+
   const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
     {
       key: 'name',
@@ -253,7 +259,7 @@ const Inventory = () => {
     },
     {
       key: 'cost',
-      header: t('price'),
+      header: t('cost'),
       width: '10%',
       classname: 'column-bold',
       renderItem: ({ row }) =>
@@ -261,7 +267,7 @@ const Inventory = () => {
           <Input
             type="number"
             min={0}
-            placeholder={t('price')}
+            placeholder={t('cost')}
             onChange={(value) => handleValueChange('cost', value)}
             value={editedValues!.cost}
           />
@@ -316,9 +322,11 @@ const Inventory = () => {
         <div className="tools">
           <Input
             type="text"
-            value={''}
+            value={searchValue ?? ''}
             placeholder="Search"
-            onChange={() => null}
+            onChange={(value) => {
+              handleOnSearchValueChange(value);
+            }}
           />
           <span>Filter</span>
           <Button
