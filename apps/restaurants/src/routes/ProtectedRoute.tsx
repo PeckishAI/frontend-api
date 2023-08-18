@@ -5,8 +5,9 @@ import Cookies from 'js-cookie';
 import { Lottie } from 'shared-ui';
 import userService from '../_services/user.service';
 
+// Route overlay that requires authentication
 export const ProtectedRoute = () => {
-  const [loadingUser, setLoadingUser] = useState(true);
+  const [loadingUser, setLoadingUser] = useState(false);
   const { storeAccessToken, user, setUser } = useUserStore();
   const navigate = useNavigate();
 

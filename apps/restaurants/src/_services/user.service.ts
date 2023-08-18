@@ -1,4 +1,4 @@
-import Axios from '.';
+import axiosClient from '.';
 import { User } from '../store/useUserStore';
 
 type UserResponse = {
@@ -14,7 +14,7 @@ type UserResponse = {
 };
 
 const getMe = (): Promise<User> => {
-  return Axios.get<UserResponse>('/auth/me').then((res) => {
+  return axiosClient.get<UserResponse>('/auth/me').then((res) => {
     return {
       ...res.data,
       uuid: res.data.user_uuid,

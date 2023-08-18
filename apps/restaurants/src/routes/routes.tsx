@@ -12,16 +12,16 @@ export const router = createBrowserRouter([
     path: '/',
     element: <ProtectedRoute />,
     children: [
-      {
-        index: true,
-        element: <Navigate to={'/overview'} />,
-      },
+      // {
+      //   index: true,
+      //   element: <Navigate to={'/overview'} />,
+      // },
       {
         path: '/',
         element: <Layout />,
         children: [
           {
-            path: '/myRestaurant',
+            index: true,
             element: <MyRestaurant />,
           },
           {
@@ -38,7 +38,7 @@ export const router = createBrowserRouter([
           },
           {
             path: '*',
-            element: <Navigate to={'/overview'} />,
+            element: <Navigate to={'/'} />,
           },
         ],
       },
