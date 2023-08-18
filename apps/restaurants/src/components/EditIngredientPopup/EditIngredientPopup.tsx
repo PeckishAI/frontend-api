@@ -10,9 +10,6 @@ type Props = {
   recipe: Recipe | null;
   togglePopup: () => void;
   onClose: () => void;
-  // onDeleteClick: () => void;
-  // onCancelClick: () => void;
-  // onValideClick: () => void;
 };
 
 const EditIngredientPopup = (props: Props) => {
@@ -69,8 +66,6 @@ const EditIngredientPopup = (props: Props) => {
 
     try {
       for (const ingredient of selectedIngredients) {
-        console.log('trying to delete : ', ingredient.ingredient_name);
-
         await recipesService.deleteIngredient(
           props.recipe?.id,
           ingredient.ingredient_uuid
@@ -86,9 +81,6 @@ const EditIngredientPopup = (props: Props) => {
     setDeleteLoading(true);
     recipesService
       .deleteRecipe(props.recipe?.id)
-      .then((res) => {
-        console.log('delete recipe success');
-      })
       .catch((err) => {
         console.log(err);
       })
@@ -104,9 +96,6 @@ const EditIngredientPopup = (props: Props) => {
       setValideLoading(true);
       recipesService
         .updateRecipe(ingredients, props.recipe?.id)
-        .then((res) => {
-          console.log('update recipe success');
-        })
         .catch((err) => {
           console.log(err);
         })

@@ -37,7 +37,6 @@ const AddIngredientPopup = (props: Props) => {
         ...res.data[key],
       }));
       setIngredients(convertedData);
-      console.log(res.data);
     });
   }, []);
 
@@ -84,13 +83,9 @@ const AddIngredientPopup = (props: Props) => {
       };
       ingredient.ingredient_uuid = selectedIngredient.id;
       ingredient.unit = selectedIngredient.unit;
-      console.log('recipe id: ', props.recipe?.id, 'ingredient : ', ingredient);
 
       recipesService
         .addIngredient(props.recipe?.id, ingredient)
-        .then((res) => {
-          console.log('add ingredient status : ', res.status);
-        })
         .catch((err) => {
           console.log(err);
         })
@@ -99,8 +94,6 @@ const AddIngredientPopup = (props: Props) => {
         });
     }
   };
-
-  // if (!values) return;
 
   return (
     <div className="add-ingredient-popup">
@@ -123,7 +116,6 @@ const AddIngredientPopup = (props: Props) => {
               onChange={(value) => {
                 setSelectedIngredient(undefined);
                 handleNameChange(value);
-                console.log(value);
               }}
             />
           </div>

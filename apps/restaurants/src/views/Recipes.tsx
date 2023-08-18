@@ -1,5 +1,4 @@
-import { useTranslation } from 'react-i18next';
-import { Lottie, Popup } from 'shared-ui';
+import { Lottie } from 'shared-ui';
 import RecipeCard from '../components/RecipeCard/RecipeCard';
 import AddIngredientPopup from '../components/AddIngredientPopup/AddIngredientPopup';
 import { useEffect, useState } from 'react';
@@ -16,7 +15,6 @@ const Recipes = (props: Props) => {
   const [reveleEditIngredientPopup, setReveleEditIngredientPopup] =
     useState(false);
   const [editingRecipeIndex, setEditingRecipeIndex] = useState<number>(0);
-  const [popupDelete, setPopupDelete] = useState(false);
 
   function reloadRecipes() {
     setLoadingData(true);
@@ -68,27 +66,6 @@ const Recipes = (props: Props) => {
     reloadRecipes();
   };
 
-  // const handleDeleteEditRecipeClick = () => {
-  //   setPopupDelete(true);
-  // };
-
-  // const handleValideEditRecipeClick = () => {
-  //   toggleEditIngredientPopup();
-  //   reloadRecipes();
-  // };
-
-  // // Handle for warning popup
-  // const handleOnConfirmDeleteRecipe = () => {
-  //   // request api to delete recipe
-  //   togglePopupDelete();
-  //   toggleEditIngredientPopup();
-  //   reloadRecipes();
-  // };
-
-  // const togglePopupDelete = () => {
-  //   setPopupDelete(!popupDelete);
-  // };
-
   return (
     <div className="recipes">
       {recipesList.map((recipe, i) => (
@@ -120,19 +97,9 @@ const Recipes = (props: Props) => {
         <EditIngredientPopup
           recipe={recipesList[editingRecipeIndex]}
           togglePopup={toggleEditIngredientPopup}
-          // onCancelClick={toggleEditIngredientPopup}
-          // onDeleteClick={handleDeleteEditRecipeClick}
-          // onValideClick={handleValideEditRecipeClick}
           onClose={handleOnCloseEditIngredientPopup}
         />
       )}
-      {/* <Popup
-        type="warning"
-        msg="Are you sure you want to delete it ?"
-        onConfirm={handleOnConfirmDeleteRecipe}
-        revele={popupDelete}
-        togglePopup={togglePopupDelete}
-      /> */}
     </div>
   );
 };
