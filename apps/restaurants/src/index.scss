@@ -61,10 +61,26 @@
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
+.recipes {
+  /* display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap; */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 10px;
+  margin: 0 auto;
+  position: relative;
+  /* temporary */
+  overflow-y: auto;
+  height: 80vh;
+}
+
 @media screen and (max-width: 1050px) {
-  .tabs-and-tools {
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
+  .inventory {
+    .tabs-and-tools {
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
   }
 }
