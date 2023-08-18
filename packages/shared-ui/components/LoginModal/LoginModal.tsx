@@ -1,10 +1,11 @@
 import './style.scss';
+import { Button } from 'shared-ui';
 
 type POS = {
   pos_uuid: string;
   name: string;
   display_name: string;
-  button_display: string;
+  button_display?: string;
   auth_type: string;
   oauth_url: string;
   logo_uri: string;
@@ -14,6 +15,10 @@ type Props = {
   isVisible: boolean;
   pos?: POS;
 };
+
+function oauth(auth_type: string | undefined, oauth_url: string | undefined) {
+  console.log(auth_type, oauth_url);
+}
 
 const LoginModal = (props: Props) => {
   return (
@@ -32,7 +37,14 @@ const LoginModal = (props: Props) => {
           <br></br>
           <input type="password" id="password"></input>
         </div>
-        <div className="modal-footer"></div>
+        <div className="modal-footer">
+          <Button
+            value={'' + props.pos?.button_display}
+            type="primary"
+            className="login"
+            onClick={}
+          />
+        </div>
       </div>
     </div>
   );
