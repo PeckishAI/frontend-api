@@ -209,7 +209,12 @@ const Inventory = () => {
         ),
     },
 
-    { key: 'theoriticalStock', header: t('theoriticalStock'), width: '15%' },
+    {
+      key: 'theoriticalStock',
+      header: t('theoriticalStock'),
+      width: '15%',
+      renderItem: () => '-',
+    },
     {
       key: 'quantity',
       header: t('actualStock'),
