@@ -19,7 +19,7 @@ const TableRows = <T, K extends keyof T>(props: Props<T, K>) => {
                 {column.renderItem === undefined ? (
                   <>{row[column.key]}</>
                 ) : (
-                  column.renderItem({ row, value: row[column.key] })
+                  column.renderItem({ row, value: row[column.key], index })
                 )}
               </td>
             ))}

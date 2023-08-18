@@ -1,24 +1,17 @@
+import React from 'react';
 import './style.scss';
 
 type Props = {
-  type: string;
-  placeholder?: string;
-  min?: number;
-  max?: number;
-  value: string | number;
   width?: string;
   onChange: (value: string) => void;
-};
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>;
 
-const Input = (props: Props) => {
+const Input = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
   return (
     <input
+      ref={ref}
+      {...props}
       className="input"
-      type={props.type}
-      min={props.min}
-      max={props.max}
-      value={props.value}
-      placeholder={props.placeholder}
       onChange={(e) => props.onChange(e.target.value)}
       style={
         props.width
@@ -29,6 +22,8 @@ const Input = (props: Props) => {
       }
     />
   );
-};
+});
+
+Input.displayName = 'Input';
 
 export default Input;

@@ -168,7 +168,9 @@ const UploadCsv = (props: Props) => {
           </div>
         </div>
         {error && (
-          <span className="error">An error has occured. Please try again</span>
+          <span className="text-error">
+            An error has occured. Please try again
+          </span>
         )}
 
         <div className="button-container">
