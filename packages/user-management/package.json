@@ -1,0 +1,19 @@
+{
+  "name": "user-management",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "files": [
+    "index.ts"
+  ],
+  "main": "index.ts",
+  "scripts": {
+    "depcheck": "depcheck"
+  },
+  "dependencies": {
+    "js-cookie": "^3.0.5",
+    "react": "^18.2.0",
+    "shared-config": "*",
+    "zustand": "^4.4.1"
+  }
+}

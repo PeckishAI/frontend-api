@@ -9,8 +9,8 @@ import {
   Lottie,
   Dropdown,
 } from 'shared-ui';
-import useUserStore from '../store/useUserStore';
 import { useRestaurantStore } from '../store/useRestaurantStore';
+import { useUserStore } from 'user-management';
 
 // type Props = {};
 
