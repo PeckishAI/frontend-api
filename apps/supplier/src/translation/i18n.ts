@@ -10,9 +10,9 @@ export const resources = {
   en,
 } as const;
 
-i18next.on('languageChanged', function (lng) {
-  // localStorage.setItem('lng', lng);
-});
+// i18next.on('languageChanged', function (lng) {
+// localStorage.setItem('lng', lng);
+// });
 
 i18next
   .use(initReactI18next)

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Table, Tabs, Dropdown } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { orderService } from '../_services';
 
@@ -37,12 +37,16 @@ const Orders = () => {
   const [selectedOrderStatus, setSelectedOrderStatus] = useState<{
     [key: string]: string;
   }>({});
-  const sendNewOrderStatus = (row, event) => {
-    setSelectedOrderStatus({
-      ...selectedOrderStatus,
-      [row.id]: event.target.value,
-    });
-  };
+
+  const sendNewOrderStatus = useCallback(
+    (row: Order, value: string) => {
+      setSelectedOrderStatus((oldState) => ({
+        ...oldState,
+        [row.id]: value,
+      }));
+    },
+    [setSelectedOrderStatus]
+  );
 
   const [orderList, setOrderList] = useState<Order[]>();
   useEffect(() => {
@@ -65,7 +69,7 @@ const Orders = () => {
           <Dropdown
             options={orderStatus}
             selectedOption={selectedOrderStatus[row.id]}
-            onOptionChange={(e) => sendNewOrderStatus(row, e)}
+            onOptionChange={(value) => sendNewOrderStatus(row, value)}
           />
         ),
       },
@@ -90,7 +94,7 @@ const Orders = () => {
         },
       },
     ],
-    [selectedOrderStatus]
+    [selectedOrderStatus, sendNewOrderStatus, t]
   );
 
   return (

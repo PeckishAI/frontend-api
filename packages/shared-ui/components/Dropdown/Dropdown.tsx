@@ -10,7 +10,7 @@ export type DropdownOptionsDefinitionType = {
 type Props = {
   options: Array<DropdownOptionsDefinitionType>;
   selectedOption?: string;
-  onOptionChange: (event: DropdownOptionsDefinitionType['value']) => void;
+  onOptionChange: (value: DropdownOptionsDefinitionType['value']) => void;
   className?: string;
 };
 

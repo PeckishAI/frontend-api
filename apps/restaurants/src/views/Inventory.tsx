@@ -11,7 +11,7 @@ import {
 } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { inventoryService } from '../_services';
 
@@ -63,7 +63,7 @@ const Inventory = () => {
     setSelectedTab(tabIndex);
   };
 
-  async function reloadInventoryData() {
+  const reloadInventoryData = useCallback(async () => {
     setLoadingdata(true);
     try {
       const response = await inventoryService.getIngredientList();
@@ -84,11 +84,11 @@ const Inventory = () => {
     }
 
     setLoadingdata(false);
-  }
+  }, []);
 
   useEffect(() => {
     reloadInventoryData();
-  }, []);
+  }, [reloadInventoryData]);
 
   const handleEditClick = (row: Ingredient) => {
     setEditingRowId(row.id);
@@ -136,7 +136,7 @@ const Inventory = () => {
     togglePopupDelete();
   };
 
-  const handleValueChange = (field: keyof Ingredient, value: any) => {
+  const handleValueChange = (field: keyof Ingredient, value: string) => {
     setEditedValues((prevValues) => ({
       ...prevValues!,
       [field]: value,

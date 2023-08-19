@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
-  "publishConfig": {
-    "access": "public"
+  "peerDependencies": {
+    "typescript-plugin-css-modules": "^5.0.1"
   },
   "devDependencies": {
     "typescript-plugin-css-modules": "^5.0.1"

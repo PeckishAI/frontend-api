@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-type Props = {};
-
-const Catalog = (props: Props) => {
+const Catalog = () => {
   const { t } = useTranslation('common');
   return <div>{t('catalog')}</div>;
 };
