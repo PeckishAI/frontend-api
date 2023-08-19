@@ -1,16 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.scss';
 import { SignIn } from './pages/SignIn.js';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { SignUp } from './pages/SignUp';
-import './translation/i18n';
 import { TitleRoute } from './components/TitleRoute';
 import { ChooseUsage } from './pages/ChooseUsage';
+import { GLOBAL_CONFIG } from 'shared-config';
+import './translation/i18n';
+import './index.scss';
 
-const GOOGLE_CLIENT_ID =
-  '167544806451-lhqrqpn83tje89en5n73af3tiu3sm11o.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = GLOBAL_CONFIG.GOOGLE_CLIENT_ID;
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

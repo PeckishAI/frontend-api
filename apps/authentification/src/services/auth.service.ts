@@ -1,24 +1,14 @@
 import axios from 'axios';
+import { GLOBAL_CONFIG } from 'shared-config';
+import { User } from 'user-management';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8000/auth', // kong url
+  baseURL: GLOBAL_CONFIG.apiUrl + '/auth',
 });
 
 type ApiResult<T> = {
   data: T;
   message: string;
-};
-
-type User = {
-  created_at: string;
-  data: object | null;
-  email: string;
-  name: string;
-  onboarded: boolean;
-  client_type?: 'supplier' | 'restaurant';
-  premium: boolean;
-  telephone: string;
-  user_uuid: string;
 };
 
 export type LogInResult = ApiResult<{

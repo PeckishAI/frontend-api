@@ -13,7 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
-import { handleRedirect } from '../utils';
+import { redirectToApplication } from '../utils';
 
 const SignInSchema = z.object({
   email: z
@@ -40,7 +40,7 @@ export const SignIn = () => {
     resolver: zodResolver(SignInSchema),
   });
 
-  const handleLogin = (apiCall: Promise<LogInResult>) => {
+  const handleLogin = async (apiCall: Promise<LogInResult>) => {
     setLoading(true);
 
     return apiCall
@@ -51,7 +51,10 @@ export const SignIn = () => {
             state: res.data,
           });
         } else {
-          handleRedirect(res.data.access_token, res.data.user.client_type);
+          redirectToApplication(
+            res.data.access_token,
+            res.data.user.client_type
+          );
         }
       })
       .catch((err) => {

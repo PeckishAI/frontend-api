@@ -7,7 +7,7 @@ import { BsBoxes } from 'react-icons/bs';
 import { GiCook } from 'react-icons/gi';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Lottie } from 'shared-ui';
-import { handleRedirect } from '../utils';
+import { redirectToApplication } from '../utils';
 
 export const ChooseUsage = () => {
   const { t } = useTranslation(['error', 'common']);
@@ -23,7 +23,7 @@ export const ChooseUsage = () => {
     authService
       .chooseUsage(type, state.access_token)
       .then(() => {
-        handleRedirect(state.access_token, type);
+        redirectToApplication(state.access_token, type);
       })
       .catch((err) => {
         if (isAxiosError(err) && err.response) {

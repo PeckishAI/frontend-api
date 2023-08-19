@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation } from 'react-router-dom';
-import { handleRedirect } from '../utils';
+import { redirectToApplication } from '../utils';
 
 export const TitleRoute = () => {
   const { t } = useTranslation(['routes']);
@@ -29,7 +29,7 @@ export const TitleRoute = () => {
   // TODO: get clientType to redirect to good app
   const auth = Cookies.get('accessToken');
 
-  if (auth) handleRedirect(auth, 'restaurant');
+  if (auth) redirectToApplication(auth, 'restaurant');
 
   return <Outlet />;
 };
