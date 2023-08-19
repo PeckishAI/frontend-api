@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import useUserStore, { User } from './useUserStore';
-import restaurantService from '../_services/restaurant.service';
+import restaurantService from '../services/restaurant.service';
+import { User, useUserStore } from 'user-management';
 
 export type Restaurant = {
   uuid: string;

@@ -13,7 +13,7 @@ import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
-import { inventoryService } from '../_services';
+import { inventoryService } from '../services';
 
 type Ingredient = {
   id: string;

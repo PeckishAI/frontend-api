@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import overviewService, {
   Forecast,
   RestaurantMetric,
-} from '../../_services/overview.service';
+} from '../../services/overview.service';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 
 const metricIcon: { [K in keyof RestaurantMetric]: React.ReactNode } = {
@@ -31,14 +31,14 @@ const Overview = () => {
   const [loadingMetrics, setLoadingMetrics] = useState(false);
   const [metrics, setMetrics] = useState<RestaurantMetric>();
 
-  const [loadingForecast, setLoadingForecast] = useState(true);
+  const [loadingForecast, setLoadingForecast] = useState(false);
   const [forecast, setForecast] = useState<Forecast>();
 
   const { selectedRestaurantUUID } = useRestaurantStore();
 
   useEffect(() => {
-    if (!selectedRestaurantUUID) return;
     setLoadingMetrics(true);
+    if (!selectedRestaurantUUID) return;
     overviewService
       .getMetrics(selectedRestaurantUUID)
       .then((res) => {

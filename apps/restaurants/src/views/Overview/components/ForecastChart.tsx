@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { Chart } from 'react-chartjs-2';
 import 'chart.js/auto';
-import { Forecast } from '../../../_services/overview.service';
+import { Forecast } from '../../../services/overview.service';
 
 // Get css variable color
 const cssvar = (name: string) => {

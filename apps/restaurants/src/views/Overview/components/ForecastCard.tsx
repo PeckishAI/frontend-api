@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import { Tooltip } from 'react-tooltip';
 import { useState } from 'react';
 import { ForecastChart } from './ForecastChart';
-import { Forecast } from '../../../_services/overview.service';
+import { Forecast } from '../../../services/overview.service';
 import Skeleton from 'react-loading-skeleton';
 
 type Props = {
@@ -13,14 +13,15 @@ type Props = {
   loading: boolean;
 };
 
+// TODO: Calculate depending on available values
 const chartModes = [
   {
-    label: 'Revenue',
-    value: 'revenue',
+    label: 'Occupancy',
+    value: 'occupancy',
   },
   {
-    label: 'Profit',
-    value: 'profit',
+    label: 'Sales',
+    value: 'sales',
   },
 ];
 
