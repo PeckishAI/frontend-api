@@ -1,1 +1,1 @@
-ignores: ["tsconfig"]
+ignores: ["tsconfig", "prettier", "typescript"]

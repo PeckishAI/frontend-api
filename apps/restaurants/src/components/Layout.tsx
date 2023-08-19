@@ -12,8 +12,6 @@ import {
 import { useRestaurantStore } from '../store/useRestaurantStore';
 import { useUserStore } from 'user-management';
 
-// type Props = {};
-
 const Layout = () => {
   const { t } = useTranslation('common');
   const [isRefreshing, setIsRefreshing] = useState(false);

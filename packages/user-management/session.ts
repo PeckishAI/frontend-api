@@ -14,11 +14,16 @@ const storeAuthentification = (accessToken: string) => {
   });
 };
 
+const getAuthentification = () => {
+  return { accessToken: Cookies.get('accessToken') };
+};
+
 const removeAuthentification = () => {
   Cookies.remove('accessToken', { domain: GLOBAL_CONFIG.cookieDomain });
 };
 
 export const userSession = {
   storeAuthentification,
-  deleteAuthentification: removeAuthentification,
+  removeAuthentification,
+  getAuthentification,
 };

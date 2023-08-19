@@ -1,5 +1,5 @@
 import './style.scss';
-import { Lottie } from 'shared-ui';
+import Lottie from '../Lottie/Lottie';
 
 type Props = {
   value: string;

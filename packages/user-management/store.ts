@@ -14,7 +14,7 @@ export const useUserStore = create<UserStore>()((set) => ({
   accessToken: undefined,
   user: undefined,
   logout: () => {
-    userSession.deleteAuthentification();
+    userSession.removeAuthentification();
     set({ user: undefined, accessToken: undefined });
   },
   storeAccessToken: (accessToken: string) => {

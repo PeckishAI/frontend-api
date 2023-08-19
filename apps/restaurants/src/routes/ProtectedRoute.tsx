@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { Lottie } from 'shared-ui';
 import { GLOBAL_CONFIG } from 'shared-config';
-import { useUserStore, userService } from 'user-management';
+import { useUserStore, userService, userSession } from 'user-management';
 
 // Route overlay that requires authentication
 export const ProtectedRoute = () => {
@@ -14,7 +13,7 @@ export const ProtectedRoute = () => {
   useEffect(() => {
     if (user) return;
 
-    const accessToken = Cookies.get('accessToken');
+    const { accessToken } = userSession.getAuthentification();
     if (accessToken) {
       storeAccessToken(accessToken);
       console.log('accessToken', accessToken);
