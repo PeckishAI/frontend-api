@@ -5,7 +5,8 @@
   "types": "./index.ts",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint \"**/*.ts\""
+    "lint": "eslint \"**/*.ts\"",
+    "depcheck": "depcheck"
   },
   "devDependencies": {
     "@types/react-slick": "^0.23.10",
