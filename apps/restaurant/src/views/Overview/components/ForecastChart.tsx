@@ -112,7 +112,7 @@ export const ForecastChart = (props: Props) => {
           },
         },
         layout: {
-          padding: { left: 40, right: 40, bottom: 20, top: 40 },
+          padding: { left: 20, right: 40, bottom: 20, top: 40 },
         },
         interaction: {
           intersect: false,
@@ -126,14 +126,22 @@ export const ForecastChart = (props: Props) => {
 
         scales: {
           y: {
+            title: {
+              display: true,
+              padding: 0,
+              text: selectedMetric,
+            },
             border: {
               display: false,
 
               dash: [5],
             },
             ticks: {
-              display: false,
-              color: 'red',
+              // display: false,
+              padding: 10,
+              font: {
+                family: 'Montserrat',
+              },
             },
             grid: {
               drawTicks: false,

@@ -20,6 +20,7 @@ const metricIcon: { [K in keyof RestaurantMetric]: React.ReactNode } = {
   occupancy: <HiOutlineUserGroup />,
   sales: <FaRegMoneyBillAlt />,
 };
+
 // Savings <MdOutlineSavings />
 // Profits <PiBankBold />
 
@@ -61,7 +62,17 @@ const Overview = () => {
     overviewService
       .getMetrics(selectedRestaurantUUID)
       .then((res) => {
-        setMetrics(res);
+        // setMetrics(res);
+        setMetrics({
+          occupancy: {
+            value: 432,
+            mom: -2,
+          },
+          sales: {
+            value: 435 * 14.5,
+            mom: 1.5,
+          },
+        });
       })
       .finally(() => {
         setLoadingMetrics(false);
