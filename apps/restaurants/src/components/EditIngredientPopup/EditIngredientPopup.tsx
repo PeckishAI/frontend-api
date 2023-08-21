@@ -211,7 +211,11 @@ const EditIngredientPopup = (props: Props) => {
               }`}
               data-tooltip-id="actions-tooltip"
               data-tooltip-content={t('delete')}
-              onClick={togglePopupDeleteIngredients}></i>
+              onClick={() => {
+                selectedIngredients.length > 0
+                  ? togglePopupDeleteIngredients()
+                  : null;
+              }}></i>
             <Table columns={columns} data={ingredients} />
           </div>
           <span
