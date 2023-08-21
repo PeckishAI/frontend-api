@@ -1,9 +1,10 @@
 .dropdown {
   select {
+    width: 100%;
     padding: 5px 8px;
     border-radius: 10px;
     color: var(--onBackgroundColor);
-    background-color: transparent;
+    background-color: var(--backgroundColor);
     border: 1px solid var(--secondaryColorAccentued);
     font-weight: var(--light);
     cursor: pointer;

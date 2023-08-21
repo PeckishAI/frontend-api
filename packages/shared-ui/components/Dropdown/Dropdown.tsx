@@ -5,6 +5,7 @@ export type DropdownOptionsDefinitionType = {
   label: string;
   value: string;
   color?: string;
+  disabled?: boolean;
 };
 
 type Props = {
@@ -35,7 +36,10 @@ const Dropdown = (props: Props) => {
           </option>
         )}
         {props.options.map((option) => (
-          <option key={option.value} value={option.value}>
+          <option
+            key={option.value}
+            value={option.value}
+            disabled={option.disabled}>
             {option.label}
           </option>
         ))}

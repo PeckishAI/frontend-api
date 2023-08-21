@@ -29,8 +29,8 @@ const chartModes = [
 export const ForecastCard = (props: Props) => {
   const [selectedMode, setSelectedMode] = useState(0);
   const [selectedChartMode, setSelectedChartMode] = useState<
-    'revenue' | 'profit'
-  >('revenue');
+    'occupancy' | 'sales'
+  >('occupancy');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderItem = ({ value }: { value: any }) => (value ? value : '--');
@@ -54,7 +54,7 @@ export const ForecastCard = (props: Props) => {
                 options={chartModes}
                 selectedOption={selectedChartMode}
                 onOptionChange={(value) =>
-                  setSelectedChartMode(value as 'revenue' | 'profit')
+                  setSelectedChartMode(value as 'occupancy' | 'sales')
                 }
               />
             )}

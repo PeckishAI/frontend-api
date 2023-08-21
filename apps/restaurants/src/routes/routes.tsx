@@ -17,6 +17,10 @@ export const router = createBrowserRouter([
       //   element: <Navigate to={'/overview'} />,
       // },
       {
+        path: '/onboarding',
+        element: <Onboarding />,
+      },
+      {
         path: '/',
         element: <Layout />,
         children: [
@@ -32,10 +36,7 @@ export const router = createBrowserRouter([
             path: '/inventory',
             element: <Inventory />,
           },
-          {
-            path: '/onboarding',
-            element: <Onboarding />,
-          },
+
           {
             path: '/recipes',
             element: <Recipes />,

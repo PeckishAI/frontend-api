@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { Chart } from 'react-chartjs-2';
 import 'chart.js/auto';
-import { Forecast } from '../../../services/overview.service';
+import { Forecast, MetricType } from '../../../services/overview.service';
 
 // Get css variable color
 const cssvar = (name: string) => {
@@ -12,12 +12,12 @@ const primaryColor = cssvar('--primaryColor');
 
 type Props = {
   data?: Forecast;
-  visibleMetric: Omit<keyof Forecast[number], 'date'>;
+  visibleMetric: MetricType;
 };
 
 export const ForecastChart = (props: Props) => {
   if (!props.data) return;
-  const selectedMetric = props.visibleMetric ?? 'revenue';
+  const selectedMetric: MetricType = props.visibleMetric ?? 'occupancy';
 
   return (
     <Chart
@@ -45,7 +45,7 @@ export const ForecastChart = (props: Props) => {
             type: 'line',
             label: 'Error max',
             data: props.data.map(
-              (day) => day[selectedMetric] + day[selectedMetric] * 0.15
+              (day) => day[selectedMetric]! + day[selectedMetric]! * 0.15
             ),
 
             borderColor: primaryColor + '40',
@@ -63,7 +63,7 @@ export const ForecastChart = (props: Props) => {
             type: 'line',
             label: 'Error min',
             data: props.data.map(
-              (day) => day[selectedMetric] - day[selectedMetric] * 0.15
+              (day) => day[selectedMetric]! - day[selectedMetric]! * 0.15
             ),
 
             borderColor: primaryColor + '40',
