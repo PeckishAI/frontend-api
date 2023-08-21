@@ -43,20 +43,26 @@ const RecipeCard = (props: Props) => {
       </div>
       <div className={`ingredients-container${unfolding ? ' unfolding' : ''}`}>
         <div className="ingredients">
-          <div className="list">
-            <div className="item header">
-              <span>Name</span>
-              <span>Quantity</span>
-              <span>Unit</span>
-            </div>
-            {props.ingredientList.map((ingredient, index) => (
-              <div className="item" key={`row-${index}`}>
-                <span key={`name-${index}`}>{ingredient.ingredient_name}</span>
-                <span key={`quantity-${index}`}>{ingredient.quantity}</span>
-                <span key={`unit-${index}`}>{ingredient.unit}</span>
+          {props.ingredientList.length !== 0 ? (
+            <div className="list">
+              <div className="item header">
+                <span>Name</span>
+                <span>Quantity</span>
+                <span>Unit</span>
               </div>
-            ))}
-          </div>
+              {props.ingredientList.map((ingredient, index) => (
+                <div className="item" key={`row-${index}`}>
+                  <span key={`name-${index}`}>
+                    {ingredient.ingredient_name}
+                  </span>
+                  <span key={`quantity-${index}`}>{ingredient.quantity}</span>
+                  <span key={`unit-${index}`}>{ingredient.unit}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <span id="no-ingredients">No ingredients.</span>
+          )}
           <div className="butttons-container">
             {/* {props.ingredientList.length !== 0 && ( */}
             <Button
