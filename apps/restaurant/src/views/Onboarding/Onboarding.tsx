@@ -1,10 +1,10 @@
-import { Card, LoginModal, Lottie } from 'shared-ui';
+import { OnboardingCard, LoginModal, Lottie, Input } from 'shared-ui';
 import { useEffect, useState } from 'react';
 import { onboardingService } from '../../services';
 import { useTranslation } from 'react-i18next';
 import { useUserStore } from 'user-management';
 import { Navigate } from 'react-router-dom';
-import styles from './Onboarding.module.scss';
+import './Onboarding.scss';
 
 export type POS = {
   name: string;
@@ -49,35 +49,39 @@ const Onboarding = () => {
 
   // Loop through object and return cards
   return (
-    <div className={styles.onboardingContainer}>
-      <input
+    <div className="onboarding">
+      <h1 className="title">Onboarding</h1>
+      <p>Select the software that you want to integrate to Peckish !</p>
+      <Input
         type="text"
         placeholder="Search software"
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="search-input"
+        onChange={(value) => setSearchTerm(value)}
+        className="onboarding-search"
       />
       {/* modal */}
       <LoginModal pos={selectedPOS} isVisible={loginModalVisible} />
-      {filteredSoftwareList.map((pos) => {
-        return (
-          <Card
-            key={pos.display_name}
-            name={pos.display_name}
-            image={pos.logo_uri}
-            button_display={pos.button_display}
-            onClick={() => {
-              if (pos.auth_type === 'modal') {
-                // Show login modal
-                setLoginModalVisible(true);
-                setSelectedPOS(pos);
-              } else {
-                // Redirect to oauth_url
-              }
-            }}
-          />
-        );
-      })}
+      <div className="cards-container">
+        {filteredSoftwareList.map((pos) => {
+          return (
+            <OnboardingCard
+              key={pos.display_name}
+              name={pos.display_name}
+              image={pos.logo_uri}
+              button_display={pos.button_display}
+              onClick={() => {
+                if (pos.auth_type === 'modal') {
+                  // Show login modal
+                  setLoginModalVisible(true);
+                  setSelectedPOS(pos);
+                } else {
+                  // Redirect to oauth_url
+                }
+              }}
+            />
+          );
+        })}
+      </div>
       {loadingData && (
         <div className="loading-middle-page-overlay">
           <div className="loading-container">

@@ -11,7 +11,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
     <input
       ref={ref}
       {...props}
-      className="input"
+      className={`input ${props.className}`}
       onChange={(e) => props.onChange(e.target.value)}
       style={
         props.width
