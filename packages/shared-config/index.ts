@@ -18,7 +18,7 @@ const prodConfig = {
 
   cookieDomain: 'iampeckish.com',
 
-  apiUrl: 'https://api-gateway-zqjpx7oxsq-ew.a.run.app/auth',
+  apiUrl: 'https://api-gateway-zqjpx7oxsq-ew.a.run.app',
 
   GOOGLE_CLIENT_ID:
     '902125317537-r9ck7q1bi9m01f1ilopjlvi2itrupdut.apps.googleusercontent.com',
