@@ -1,6 +1,6 @@
 import axiosClient from '.';
 
-export type MetricType = 'occupancy' | 'profits' | 'sales' | 'savings';
+export type MetricType = 'occupancy' | 'profit' | 'sales' | 'savings';
 
 export type RestaurantMetric = {
   occupancy: {
@@ -71,7 +71,7 @@ const getForecast = async (restaurantUUID: string): Promise<Forecast> => {
     date: new Date(date),
     occupancy: res.data[date].occupancy?.pred,
     sales: res.data[date].sales?.pred,
-    profit: res.data[date].profits?.pred,
+    profit: res.data[date].profit?.pred,
     savings: res.data[date].savings?.pred,
   }));
 };

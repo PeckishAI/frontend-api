@@ -2,6 +2,8 @@ import { Card, LoginModal, Lottie } from 'shared-ui';
 import { useEffect, useState } from 'react';
 import { onboardingService } from '../services';
 import { useTranslation } from 'react-i18next';
+import { useUserStore } from 'user-management';
+import { Navigate } from 'react-router-dom';
 
 export type POS = {
   name: string;
@@ -18,6 +20,7 @@ const Onboarding = () => {
   const [posList, setPOSList] = useState<POS[]>([]);
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const [selectedPOS, setSelectedPOS] = useState<POS | undefined>();
+  const { user } = useUserStore();
 
   // Fetch data from API Backend (Get POS)
   useEffect(() => {
@@ -34,6 +37,10 @@ const Onboarding = () => {
       }
     })();
   }, []);
+
+  if (user && user.onboarded) {
+    return <Navigate to="/" />;
+  }
 
   // Loop through object and return cards
   return (
