@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import restaurantService from '../services/restaurant.service';
+import { restaurantService } from '../services';
 import { User, useUserStore } from 'user-management';
 
 export type Restaurant = {
@@ -9,7 +9,7 @@ export type Restaurant = {
   city: string;
   country: string;
   created_at: Date;
-  users: Pick<User, 'email' | 'user_uuid' | 'name'>[];
+  users: Pick<User, 'email' | 'user_uuid' | 'name' | 'picture'>[];
 };
 
 type RestaurantStore = {
@@ -33,6 +33,8 @@ export const useRestaurantStore = create<RestaurantStore>()((set) => ({
     const restaurants = await restaurantService.getUserRestaurants(
       user.user_uuid
     );
+
+    console.log(restaurants);
 
     set({ restaurants, selectedRestaurantUUID: restaurants[0].uuid });
   },

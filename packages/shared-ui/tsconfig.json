@@ -1,5 +1,5 @@
 {
-  "extends": "tsconfig/base.json",
-  "include": [".", "components/Card/Card.tsx"],
+  "extends": "tsconfig/vite.json",
+  "include": ["*.ts", "*.tsx"],
   "exclude": ["node_modules"]
 }

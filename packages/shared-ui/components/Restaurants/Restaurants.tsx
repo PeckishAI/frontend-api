@@ -17,7 +17,7 @@ interface Restaurant {
   employees: Employee[];
 }
 
-const App: React.FC = () => {
+const Restaurants = () => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
 
   useEffect(() => {

@@ -14,6 +14,7 @@ import UploadCsv from './components/UploadCsv/UploadCsv';
 import Card from './components/Card/Card';
 import LoginModal from './components/LoginModal/LoginModal';
 import RestaurantCard from './components/RestaurantCard/RestaurantCard';
+import ProfilePicture from './components/ProfilePicture/ProfilePicture';
 import './styles/common.css';
 
 export {
@@ -32,4 +33,5 @@ export {
   Card,
   LoginModal,
   RestaurantCard,
+  ProfilePicture,
 };

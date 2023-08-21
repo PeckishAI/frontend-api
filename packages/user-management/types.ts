@@ -8,4 +8,5 @@ export type User = {
   premium: boolean;
   telephone: string;
   user_uuid: string;
+  picture?: string;
 };

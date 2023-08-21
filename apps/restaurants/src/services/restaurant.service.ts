@@ -36,6 +36,6 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
   }));
 };
 
-export default {
+export const restaurantService = {
   getUserRestaurants,
 };

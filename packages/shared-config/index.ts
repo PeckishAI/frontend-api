@@ -1,9 +1,9 @@
 const devConfig = {
-  authentificationUrl: 'http://app.localhost:5123',
-  restaurantUrl: 'http://restaurant.app.localhost:5124',
-  supplierUrl: 'http://app.localhost:5125',
+  authentificationUrl: 'http://localhost:5123',
+  restaurantUrl: 'http://localhost:5124',
+  supplierUrl: 'http://localhost:5125',
 
-  cookieDomain: 'app.localhost',
+  cookieDomain: 'localhost',
 
   apiUrl: 'https://api-gateway-k2w3p2ptza-ew.a.run.app',
 

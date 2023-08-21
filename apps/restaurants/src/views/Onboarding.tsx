@@ -1,12 +1,9 @@
 import { Card, LoginModal, Lottie } from 'shared-ui';
 import { useEffect, useState } from 'react';
-import { onboardingService } from '../_services';
+import { onboardingService } from '../services';
 import { useTranslation } from 'react-i18next';
 
-type Props = {};
-
 export type POS = {
-  pos_uuid: string;
   name: string;
   display_name: string;
   button_display: string;
@@ -15,7 +12,7 @@ export type POS = {
   logo_uri: string;
 };
 
-const Onboarding = (props: Props) => {
+const Onboarding = () => {
   const { t } = useTranslation('common');
   const [loadingData, setLoadingdata] = useState(false);
   const [posList, setPOSList] = useState<POS[]>([]);
@@ -23,35 +20,31 @@ const Onboarding = (props: Props) => {
   const [selectedPOS, setSelectedPOS] = useState<POS | undefined>();
 
   // Fetch data from API Backend (Get POS)
-  function reloadPOSData() {
+  useEffect(() => {
     (async () => {
       try {
         setLoadingdata(true);
         const list = await onboardingService.getPOSList();
         setLoadingdata(false);
+        console.log(list.data);
+
         setPOSList(list.data);
       } catch (error) {
         console.error('Error fetching pos list:', error);
       }
     })();
-  }
-  useEffect(() => {
-    reloadPOSData();
   }, []);
-
-  // cards
 
   // Loop through object and return cards
   return (
     <>
       {/* modal */}
-
       <LoginModal pos={selectedPOS} isVisible={loginModalVisible} />
 
       {posList.map((pos) => {
         return (
           <Card
-            key={pos.pos_uuid}
+            key={pos.display_name}
             name={pos.display_name}
             image={pos.logo_uri}
             button_display={pos.button_display}

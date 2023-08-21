@@ -33,6 +33,10 @@ export const router = createBrowserRouter([
             element: <Inventory />,
           },
           {
+            path: '/onboarding',
+            element: <Onboarding />,
+          },
+          {
             path: '/recipes',
             element: <Recipes />,
           },

@@ -2,7 +2,6 @@ import './style.scss';
 import { Button } from 'shared-ui';
 
 type POS = {
-  pos_uuid: string;
   name: string;
   display_name: string;
   button_display?: string;
@@ -42,7 +41,7 @@ const LoginModal = (props: Props) => {
             value={'' + props.pos?.button_display}
             type="primary"
             className="login"
-            onClick={}
+            onClick={() => undefined}
           />
         </div>
       </div>

@@ -1,20 +1,11 @@
+import { Restaurant } from '../../../../apps/restaurants/src/store/useRestaurantStore';
+import ProfilePicture from '../ProfilePicture/ProfilePicture';
 import './style.scss';
 import Slider from 'react-slick';
 
 type Props = {
-  restaurant_uuid: string;
-  restaurant_name: string;
-  restaurant_address: string;
-  restaurant_city: string;
-  restaurant_country: string;
-  user: [
-    {
-      user_uuid: string;
-      user_picture: string;
-      user_email: string;
-      username: string;
-    },
-  ];
+  restaurant: Restaurant;
+
   onClick: () => void;
 };
 
@@ -28,25 +19,27 @@ const sliderSettings = {
 
 const RestaurantCard = (props: Props) => {
   return (
-    <div className="card" onClick={props.onClick}>
-      <h2>{props.restaurant_name}</h2>
+    <div className="RestaurantCard" onClick={props.onClick}>
+      <h2>{props.restaurant.name}</h2>
       <p>
-        {props.restaurant_address}, {props.restaurant_city},{' '}
-        {props.restaurant_country}
+        {props.restaurant.address}, {props.restaurant.city},{' '}
+        {props.restaurant.country}
       </p>
       <div className="employees-container">
         <Slider {...sliderSettings}>
-          {props.user.map((user) => (
+          {props.restaurant.users.map((user) => (
             <div key={user.user_uuid} className="employee">
-              <div className="avatar">
-                <img
-                  src={`../src/images/${user.user_picture}`}
-                  alt={user.username}
-                />
+              {/* <div className="avatar">
+                <img src={`../src/images/${user.picture}`} alt={user.name} />
                 <div className="employee-popup">
-                  <div className="employee-popup-content">{user.username}</div>
+                  <div className="employee-popup-content">{user.name}</div>
                 </div>
-              </div>
+              </div> */}
+              <ProfilePicture
+                picture={user.picture}
+                alt={user.name}
+                tooltip={user.name}
+              />
             </div>
           ))}
         </Slider>

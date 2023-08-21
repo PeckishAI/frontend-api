@@ -1,68 +1,38 @@
 import { RestaurantCard } from 'shared-ui';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { restaurantService } from '../_services';
+import { restaurantService } from '../services';
 import { useNavigate } from 'react-router-dom';
+import { useUserStore } from 'user-management';
+import { Restaurant, useRestaurantStore } from '../store/useRestaurantStore';
 
-type Props = {};
-
-type Restaurant = {
-  restaurant_uuid: string;
-  name: string;
-  city: string;
-  country: string;
-  address: string;
-  users: [
-    {
-      user_uuid: string;
-      username: string;
-      user_email: string;
-      user_picture: string;
-    },
-  ];
-};
-
-const MyRestaurant = (props: Props) => {
+const MyRestaurant = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
-  const [restaurantList, setRestaurantList] = useState<Restaurant[]>([]);
+  const { restaurants, loadRestaurants } = useRestaurantStore();
 
-  // Fetch data from API Backend (Get POS)
-  function reloadRestaurantData() {
-    (async () => {
-      try {
-        const list = await restaurantService.getRestaurantsList();
-        setRestaurantList(list.data);
-        console.log(list.data);
-      } catch (error) {
-        console.error('Error fetching pos list:', error);
-      }
-    })();
-  }
+  // Fetch data from API Backend (Get restaurants)
   useEffect(() => {
-    reloadRestaurantData();
-  }, []);
+    if (restaurants) return;
+
+    loadRestaurants();
+  }, [restaurants, loadRestaurants]);
 
   return (
-    <>
-      {restaurantList &&
-        restaurantList.map((restaurant) => {
+    <div className="my-restaurants">
+      {restaurants &&
+        restaurants.map((restaurant) => {
           return (
             <RestaurantCard
-              key={restaurant.restaurant_uuid}
-              restaurant_uuid={restaurant.restaurant_uuid}
-              restaurant_name={restaurant.name}
-              restaurant_address={restaurant.address}
-              restaurant_city={restaurant.city}
-              restaurant_country={restaurant.country}
-              user={restaurant.users}
+              key={restaurant.uuid}
+              restaurant={restaurant}
               onClick={() => {
-                navigate('/restaurant/test');
+                // navigate('/restaurant/test');
               }}
             />
           );
         })}
-    </>
+    </div>
   );
 };
 
