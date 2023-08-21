@@ -1,5 +1,5 @@
 import './style.scss';
-import { IngredientForRecipe, Recipe, recipesService } from '../../_services';
+import { IngredientForRecipe, Recipe, recipesService } from '../../services';
 import { Button, Input, Popup, Table } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { useTranslation } from 'react-i18next';
@@ -154,7 +154,7 @@ const EditIngredientPopup = (props: Props) => {
       header: '',
       classname: 'delete',
       width: '5%',
-      renderItem: (row, index) => (
+      renderItem: ({ row, index }) => (
         <Input
           type="checkbox"
           onChange={() => handleCheckbox(row)}
@@ -180,7 +180,7 @@ const EditIngredientPopup = (props: Props) => {
       header: 'quantity', // translate it
       width: '25%',
       classname: 'column-bold',
-      renderItem: (row, index) => (
+      renderItem: ({ row, index }) => (
         <Input
           type="number"
           placeholder="Qty"

@@ -1,9 +1,9 @@
 import axios from './index';
 
-let restaurantUUIDExemple = '514db708-3b64-4cb0-a048-ae1a001e68ad';
+const restaurantUUIDExemple = '514db708-3b64-4cb0-a048-ae1a001e68ad';
 
 let getRecipes = async () => {
-  const res = await axios.get('/recipe/' + restaurantUUIDExemple);
+  const res = await axios.get('/restaurant/recipe/' + restaurantUUIDExemple);
   const convertedData = Object.keys(res.data).map((key) => ({
     id: key,
     ...res.data[key],
@@ -19,13 +19,13 @@ let updateRecipe = (ingredients, recipeId) => {
   }));
   console.log('update recipe with : ', ingredientsWithRestaurantUUID);
   return axios.post(
-    'recipe/' + recipeId + '/update',
+    '/restaurant/recipe/' + recipeId + '/update',
     ingredientsWithRestaurantUUID
   );
 };
 
 let deleteRecipe = (recipeId) => {
-  return axios.post('/recipe/' + recipeId + '/delete');
+  return axios.post('/restaurant/recipe/' + recipeId + '/delete');
 };
 
 let addIngredient = (recipeId, ingredient) => {
@@ -36,13 +36,15 @@ let addIngredient = (recipeId, ingredient) => {
   };
   console.log('add ingredient to recipe : ', ingredientWithRestaurantUUID);
   return axios.post(
-    'recipe/' + recipeId + '/add',
+    '/restaurant/recipe/' + recipeId + '/add',
     ingredientWithRestaurantUUID
   );
 };
 
 let deleteIngredient = (recipeId, ingredientUuid) => {
-  return axios.post('/recipe/' + recipeId + '/' + ingredientUuid + '/delete');
+  return axios.post(
+    '/restaurant/recipe/' + recipeId + '/' + ingredientUuid + '/delete'
+  );
 };
 
 export const recipesService = {

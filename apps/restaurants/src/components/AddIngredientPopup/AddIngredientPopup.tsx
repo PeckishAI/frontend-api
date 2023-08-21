@@ -3,11 +3,11 @@ import './style.scss';
 import { useEffect, useState } from 'react';
 import {
   Ingredient,
-  IngredientForRecipe,
   Recipe,
   inventoryService,
   recipesService,
-} from '../../_services';
+} from '../../services';
+
 import FuseInput from '../FuseInput/FuseInput';
 
 type Props = {
@@ -63,7 +63,7 @@ const AddIngredientPopup = (props: Props) => {
       return false;
     }
 
-    if (quantityValue < 0) {
+    if (parseFloat(quantityValue) < 0) {
       setFieldError('Quantity must be greater than or equal to 0.');
       return false;
     }
