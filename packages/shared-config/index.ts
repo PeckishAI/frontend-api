@@ -12,16 +12,16 @@ const devConfig = {
 };
 
 const prodConfig = {
-  authentificationUrl: 'https://iampeckish.com',
+  authentificationUrl: 'https://platform.iampeckish.com',
   restaurantUrl: 'https://restaurant.iampeckish.com',
   supplierUrl: 'https://supplier.iampeckish.com',
 
   cookieDomain: 'iampeckish.com',
 
-  apiUrl: 'https://api-gateway-k2w3p2ptza-ew.a.run.app',
+  apiUrl: 'https://api-gateway-zqjpx7oxsq-ew.a.run.app/auth',
 
   GOOGLE_CLIENT_ID:
-    '167544806451-lhqrqpn83tje89en5n73af3tiu3sm11o.apps.googleusercontent.com',
+    '902125317537-r9ck7q1bi9m01f1ilopjlvi2itrupdut.apps.googleusercontent.com',
 };
 
 export const GLOBAL_CONFIG =
