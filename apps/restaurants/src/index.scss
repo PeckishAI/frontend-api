@@ -26,20 +26,6 @@
       color: var(--backgroundColor);
     }
   }
-  .loading-middle-page-overlay {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: var(--secondaryColor);
-    opacity: 0.8;
-  }
-  .loading-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-  }
 }
 
 .sidebar {
@@ -62,17 +48,29 @@
 }
 
 .recipes {
-  /* display: flex;
-  justify-content: space-evenly;
-  flex-wrap: wrap; */
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 10px;
   margin: 0 auto;
-  position: relative;
+
   /* temporary */
   overflow-y: auto;
   height: 80vh;
+}
+
+.loading-middle-page-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--secondaryColor);
+  opacity: 0.8;
+}
+.loading-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
 }
 
 @media screen and (max-width: 1050px) {
