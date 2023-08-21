@@ -1,7 +1,7 @@
 export type Ingredient = {
   id: string;
   name: string;
-  theoriticalStock: number;
+  theoreticalStock: number;
   quantity: number;
   unit: string;
   supplier: string;

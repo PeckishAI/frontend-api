@@ -7,7 +7,7 @@
   "simulation": "Simulation",
 
   "ingredientName": "Nom ingredient",
-  "theoriticalStock": "Stock théorique",
+  "theoreticalStock": "Stock théorique",
   "actualStock": "Stock actuel",
   "unit": "Unité",
   "supplier": "Fournisseur",
