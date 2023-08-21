@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import {
   Sidebar,
   SidebarItem,
@@ -17,7 +17,7 @@ const Layout = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const navigate = useNavigate();
 
-  const { logout } = useUserStore();
+  const { logout, user } = useUserStore();
   const {
     selectedRestaurantUUID,
     setSelectedRestaurantUUID,
@@ -36,6 +36,10 @@ const Layout = () => {
   const handleLogout = () => {
     logout();
   };
+
+  if (user && !user.onboarded) {
+    return <Navigate to="/onboarding" />;
+  }
 
   return (
     <>

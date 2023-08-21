@@ -1,9 +1,10 @@
 import { Card, LoginModal, Lottie } from 'shared-ui';
 import { useEffect, useState } from 'react';
-import { onboardingService } from '../services';
+import { onboardingService } from '../../services';
 import { useTranslation } from 'react-i18next';
 import { useUserStore } from 'user-management';
 import { Navigate } from 'react-router-dom';
+import styles from './Onboarding.module.scss';
 
 export type POS = {
   name: string;
@@ -20,6 +21,7 @@ const Onboarding = () => {
   const [posList, setPOSList] = useState<POS[]>([]);
   const [loginModalVisible, setLoginModalVisible] = useState(false);
   const [selectedPOS, setSelectedPOS] = useState<POS | undefined>();
+  const [searchTerm, setSearchTerm] = useState('');
   const { user } = useUserStore();
 
   // Fetch data from API Backend (Get POS)
@@ -38,17 +40,30 @@ const Onboarding = () => {
     })();
   }, []);
 
+  const filteredSoftwareList = posList.filter((software) =>
+    software.display_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  console.log('aaaaaaaaaaaaaaaaaaaaaaaa');
   if (user && user.onboarded) {
+    console.log('oooooooooooooo');
+
     return <Navigate to="/" />;
   }
 
   // Loop through object and return cards
   return (
-    <>
+    <div className={styles.onboardingContainer}>
+      <input
+        type="text"
+        placeholder="Search software"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="search-input"
+      />
       {/* modal */}
       <LoginModal pos={selectedPOS} isVisible={loginModalVisible} />
-
-      {posList.map((pos) => {
+      {filteredSoftwareList.map((pos) => {
         return (
           <Card
             key={pos.display_name}
@@ -74,7 +89,7 @@ const Onboarding = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

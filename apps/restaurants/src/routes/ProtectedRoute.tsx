@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, Outlet, Navigate } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 import { Lottie } from 'shared-ui';
 import { GLOBAL_CONFIG } from 'shared-config';
 import { useUserStore, userService, userSession } from 'user-management';
@@ -52,10 +52,6 @@ export const ProtectedRoute = () => {
         <Lottie width="150px" type="loading" />
       </div>
     );
-  }
-
-  if (user && !user.onboarded) {
-    return <Navigate to="/onboarding" />;
   }
 
   return <Outlet />;
