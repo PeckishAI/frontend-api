@@ -1,6 +1,6 @@
 # build environment
 FROM node:current-alpine as react-build
-WORKDIR /app
+WORKDIR /build
 COPY . .
 
 RUN yarn
@@ -10,8 +10,8 @@ RUN yarn build --filter authentification
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/configfile.template
 
-COPY ./apps/authentification/dist /usr/share/nginx/html
-# COPY --from=react-build /app/dist /usr/share/nginx/html
+COPY --from=react-build /build/apps/authentification/dist /usr/share/nginx/html
+# COPY --from=react-build /build/dist /usr/share/nginx/html
 
 ENV PORT $PORT
 ENV HOST 0.0.0.0
