@@ -45,11 +45,7 @@ const getMetrics = async (
 
 type ForecastResponse = {
   [date: string]: {
-    [metric in MetricType]?: {
-      high: number;
-      low: number;
-      pred: number;
-    };
+    [metric in MetricType]?: number;
   };
 };
 
@@ -69,10 +65,10 @@ const getForecast = async (restaurantUUID: string): Promise<Forecast> => {
 
   return Object.keys(res.data).map((date) => ({
     date: new Date(date),
-    occupancy: res.data[date].occupancy?.pred,
-    sales: res.data[date].sales?.pred,
-    profit: res.data[date].profit?.pred,
-    savings: res.data[date].savings?.pred,
+    occupancy: res.data[date].occupancy,
+    sales: res.data[date].sales,
+    profit: res.data[date].profit,
+    savings: res.data[date].savings,
   }));
 };
 
