@@ -33,6 +33,7 @@
   "addIngredient": "Add ingredient",
   "addIngredientTo": "Add ingredient to",
   "editIngredientsOf": "Edit ingredients of",
+  "editRecipe": "Edit recipe",
   "deleteRecipe": "Delete recipe",
   "warningDeleteRecipe": "Are you sure you want to delete the recipe ?",
   "warningDeleteIngredients": "Are you sure you want to delete selected ingredients ?",
@@ -55,5 +56,7 @@
   "field.error.name": "Name field is required.",
   "field.error.doesntExist": "Select existing ingredient.",
   "field.error.quantity": "Quantity field is required.",
-  "field.error.quantityNegative": "Quantity must be greater than or equal to 0."
+  "field.error.quantityNegative": "Quantity must be greater than or equal to 0.",
+
+  "noIngredient": "No ingredient"
 }

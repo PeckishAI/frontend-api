@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { IngredientForRecipe } from '../../_services';
 import './style.scss';
 import { Button } from 'shared-ui';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   name: string;
@@ -13,6 +14,8 @@ type Props = {
 };
 
 const RecipeCard = (props: Props) => {
+  const { t } = useTranslation('common');
+
   const [unfolding, setUnfolding] = useState(false);
   const [editingRowId, setEditingRowId] = useState<string | null>();
   const [editedValues, setEditedValues] = useState<Ingredient | null>(null);
@@ -46,9 +49,9 @@ const RecipeCard = (props: Props) => {
           {props.ingredientList.length !== 0 ? (
             <div className="list">
               <div className="item header">
-                <span>Name</span>
-                <span>Quantity</span>
-                <span>Unit</span>
+                <span>{t('name')}</span>
+                <span>{t('quantity')}</span>
+                <span>{t('unit')}</span>
               </div>
               {props.ingredientList.map((ingredient, index) => (
                 <div className="item" key={`row-${index}`}>
@@ -61,14 +64,14 @@ const RecipeCard = (props: Props) => {
               ))}
             </div>
           ) : (
-            <span id="no-ingredients">No ingredients.</span>
+            <span id="no-ingredients">{t('noIngredient')}.</span>
           )}
           <div className="butttons-container">
             {/* {props.ingredientList.length !== 0 && ( */}
             <Button
               type="secondary"
               icon={<i className="fa-solid fa-edit"></i>}
-              value="Edit recipe"
+              value={t('editRecipe')}
               onClick={props.onEditClick}
             />
             {/* )} */}
@@ -76,7 +79,7 @@ const RecipeCard = (props: Props) => {
             <Button
               type="primary"
               icon={<i className="fa-solid fa-plus"></i>}
-              value="Add ingredient"
+              value={t('addIngredient')}
               onClick={props.onAddIngredientClick}
             />
           </div>

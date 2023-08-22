@@ -34,6 +34,7 @@
   "addIngredient": "Ajouter un ingrédient",
   "addIngredientTo": "Ajouter un ingrédient à",
   "editIngredientsOf": "Modifier les ingrédients de",
+  "editRecipe": "Modifier la recette",
   "deleteRecipe": "Supprimer la recette",
   "warningDeleteRecipe": "Êtes-vous sure de vouloir supprimer la recette ?",
   "warningDeleteIngredients": "Êtes-vous sure de vouloir supprimer les ingrédients sélectionnés ?",
@@ -55,5 +56,7 @@
   "field.error.name": "Le champ nom est requis.",
   "field.error.doesntExist": "Sélectionner un ingrédient existant.",
   "field.error.quantity": "Le champ quantité est requis.",
-  "field.error.quantityNegative": "La quantité doit être suppérieure ou égale à 0."
+  "field.error.quantityNegative": "La quantité doit être suppérieure ou égale à 0.",
+
+  "noIngredient": "Pas d'ingrédient"
 }
