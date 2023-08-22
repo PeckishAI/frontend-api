@@ -27,7 +27,9 @@
   "upload": "Charger",
   "refresh": "Recharger",
   "logout": "Déconnexion",
+  "preview": "Prévisualiser",
 
+  "ingredient": "ingredient",
   "addIngredient": "Ajouter ingrédient",
 
   "warning.delete": "Êtes-vous sure de vouloir supprimer cela ?",

@@ -26,7 +26,9 @@
   "upload": "Upload",
   "refresh": "Refresh",
   "logout": "Log out",
+  "preview": "Preview",
 
+  "ingredient": "ingredient",
   "addIngredient": "Add ingredient",
 
   "warning.delete": "Are you sure you want to delete it ?",
