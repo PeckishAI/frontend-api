@@ -9,6 +9,8 @@ steps:
       - '-f'
       - auth.Dockerfile
     id: Build
+    env:
+      - 'VITE_CONFIG_MODE=${_VITE_CONFIG_MODE}'
   - name: gcr.io/cloud-builders/docker
     args:
       - push
