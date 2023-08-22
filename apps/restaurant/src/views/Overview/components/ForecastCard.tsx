@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { ForecastChart } from './ForecastChart';
 import { Forecast } from '../../../services/overview.service';
 import Skeleton from 'react-loading-skeleton';
+import { prettyNumber } from '../../../utils/helpers';
 
 type Props = {
   data?: Forecast;
@@ -33,7 +34,8 @@ export const ForecastCard = (props: Props) => {
   >('occupancy');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const renderItem = ({ value }: { value: any }) => (value ? value : '--');
+  const renderItem = ({ value }: { value: any }) =>
+    value ? prettyNumber(value) : '--';
 
   return (
     <>
