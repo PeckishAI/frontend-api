@@ -12,7 +12,7 @@ const devConfig = {
 };
 
 const stagingConfig = {
-  authentificationUrl: 'https://auth-frontend-k2w3p2ptza-ew.a.run.app/sign-in',
+  authentificationUrl: 'https://auth-frontend-k2w3p2ptza-ew.a.run.app',
   restaurantUrl: 'https://restaurant-frontend-k2w3p2ptza-ew.a.run.app',
   supplierUrl: 'https://supplier.iampeckish.com',
 

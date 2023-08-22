@@ -28,13 +28,13 @@ export const ProtectedRoute = () => {
           console.log('Error retrieve user', err);
 
           logout();
-          window.location.href = GLOBAL_CONFIG.authentificationUrl;
+          // window.location.href = GLOBAL_CONFIG.authentificationUrl;
         })
         .finally(() => {
           setLoadingUser(false);
         });
     } else {
-      window.location.href = GLOBAL_CONFIG.authentificationUrl;
+      // window.location.href = GLOBAL_CONFIG.authentificationUrl;
       console.log('redirect to login');
     }
   }, [storeAccessToken, navigate, user, setUser, logout]);
