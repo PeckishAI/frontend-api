@@ -1,4 +1,4 @@
-import { Restaurant } from '../../../../apps/restaurants/src/store/useRestaurantStore';
+import { Restaurant } from '../../../../apps/restaurant/src/store/useRestaurantStore';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
 import './style.scss';
 import Slider from 'react-slick';
