@@ -12,11 +12,11 @@ const devConfig = {
 };
 
 const stagingConfig = {
-  authentificationUrl: 'https://coucou.iampeckish.com',
-  restaurantUrl: 'https://ok.iampeckish.com',
+  authentificationUrl: 'https://auth-frontend-k2w3p2ptza-ew.a.run.app/sign-in',
+  restaurantUrl: 'https://restaurant-frontend-k2w3p2ptza-ew.a.run.app',
   supplierUrl: 'https://supplier.iampeckish.com',
 
-  cookieDomain: 'iampeckish.com',
+  cookieDomain: 'a.run.app',
 
   apiUrl: 'https://api-gateway-k2w3p2ptza-ew.a.run.app',
 
@@ -36,8 +36,6 @@ const prodConfig = {
   GOOGLE_CLIENT_ID:
     '902125317537-r9ck7q1bi9m01f1ilopjlvi2itrupdut.apps.googleusercontent.com',
 };
-
-console.log('ENV ::::', import.meta.env);
 
 export const GLOBAL_CONFIG =
   import.meta.env.MODE === 'development'
