@@ -87,7 +87,7 @@ const UploadCsv = (props: Props) => {
             <span>Ingredient</span>
             <Input
               type="text"
-              placeholder="Ingredient"
+              placeholder={t('ingredient')}
               value={headerValues!.ingredient}
               width="120px"
               onChange={(value) => handleValueChange('ingredient', value)}
@@ -97,37 +97,37 @@ const UploadCsv = (props: Props) => {
             <span>Quantity</span>
             <Input
               type="text"
-              placeholder="Quantity"
+              placeholder={t('quantity')}
               value={headerValues!.quantity}
               width="120px"
               onChange={(value) => handleValueChange('quantity', value)}
             />
           </div>
           <div className="header">
-            <span>Unit</span>
+            <span>{t('unit')}</span>
             <Input
               type="text"
-              placeholder="Unit"
+              placeholder={t('unit')}
               value={headerValues!.unit}
               width="120px"
               onChange={(value) => handleValueChange('unit', value)}
             />
           </div>
           <div className="header">
-            <span>Supplier</span>
+            <span>{t('supplier')}</span>
             <Input
               type="text"
-              placeholder="Supplier"
+              placeholder={t('supplier')}
               value={headerValues!.supplier}
               width="120px"
               onChange={(value) => handleValueChange('supplier', value)}
             />
           </div>
           <div className="header">
-            <span>Cost</span>
+            <span>{t('cost')}</span>
             <Input
               type="text"
-              placeholder="Cost"
+              placeholder={t('cost')}
               value={headerValues!.cost}
               width="120px"
               onChange={(value) => handleValueChange('cost', value)}
@@ -137,7 +137,7 @@ const UploadCsv = (props: Props) => {
         <div>
           <Button
             type="secondary"
-            value="Preview"
+            value={t('preview')}
             onClick={handlePreviewClick}
             icon={
               preview ? (
@@ -153,9 +153,9 @@ const UploadCsv = (props: Props) => {
           style={preview ? { height: '200px' } : { height: 0 }}>
           <div className="table">
             <div className="row first-row">
-              <span>Ingredient</span>
-              <span>Quantity</span>
-              <span>Unit</span>
+              <span>{t('ingredient')}</span>
+              <span>{t('quantity')}</span>
+              <span>{t('unit')}</span>
             </div>
             {previewData &&
               previewData.map((data: any, index) => (
@@ -173,7 +173,7 @@ const UploadCsv = (props: Props) => {
         </div>
         {error && (
           <span className="text-error">
-            An error has occured. Please try again
+            {t('error.trigger')}. {t('error.tryLater')}
           </span>
         )}
 

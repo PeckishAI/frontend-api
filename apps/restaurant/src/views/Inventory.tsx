@@ -156,7 +156,7 @@ const Inventory = () => {
     const newIngredient: Ingredient = {
       id: '',
       name: '',
-      theoriticalStock: 0,
+      theoreticalStock: 0,
       quantity: 0,
       unit: '',
       supplier: '',
@@ -212,7 +212,7 @@ const Inventory = () => {
           <Input
             type="text"
             min={0}
-            placeholder="Name"
+            placeholder={t('name')}
             onChange={(value) => handleValueChange('name', value)}
             value={editedValues!.name}
           />
@@ -236,7 +236,7 @@ const Inventory = () => {
           <Input
             type="number"
             min={0}
-            placeholder="Quantity"
+            placeholder={t('quantity')}
             onChange={(value) => handleValueChange('quantity', value)}
             value={editedValues!.quantity}
           />
@@ -342,14 +342,14 @@ const Inventory = () => {
           <Input
             type="text"
             value={searchValue ?? ''}
-            placeholder="Search"
+            placeholder={t('search')}
             onChange={(value) => {
               handleOnSearchValueChange(value);
             }}
           />
           <span>Filter</span>
           <Button
-            value="Upload CSV"
+            value={`${t('upload')} CSV`}
             type="secondary"
             loading={loadingButton}
             onClick={() => fileInputRef.current && fileInputRef.current.click()}
@@ -362,7 +362,7 @@ const Inventory = () => {
             ref={fileInputRef}
           />
           <Button
-            value="Add ingredient"
+            value={t('addIngredient')}
             type="primary"
             className="add"
             onClick={!addingRow ? handleAddNewIngredient : () => null}
@@ -387,7 +387,7 @@ const Inventory = () => {
       <Tooltip className="tooltip" id="actions-tooltip" />
       <Popup
         type="warning"
-        msg="Are you sure you want to delete it ?"
+        msg={t('warning.delete')}
         // subMsg='Cette action aura des impactes sur les éléments suivant : trousse, bonjour..."'
         onConfirm={() => {
           if (!deletingRowId) return;

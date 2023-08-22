@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import LottieFile from '../Lottie/Lottie';
 import './style.scss';
 
@@ -11,6 +12,7 @@ type Props = {
 };
 
 const Popup = (props: Props) => {
+  const { t } = useTranslation('common');
   if (!props.revele) {
     return null;
   }
@@ -26,16 +28,16 @@ const Popup = (props: Props) => {
         <div className="button-container">
           {['error', 'info'].includes(props.type) && (
             <button onClick={props.togglePopup} className="cancel">
-              Ok
+              {t('ok}')}
             </button>
           )}
           {props.type === 'warning' && (
             <>
               <button onClick={props.togglePopup} className="cancel">
-                Cancel
+                {t('cancel}')}
               </button>
               <button onClick={props.onConfirm} className="confirm">
-                Confirmer
+                {t('confirm}')}
               </button>
             </>
           )}
