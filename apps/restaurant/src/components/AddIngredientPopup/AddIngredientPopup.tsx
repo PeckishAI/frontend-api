@@ -10,6 +10,7 @@ import {
 
 import FuseInput from '../FuseInput/FuseInput';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   recipe: Recipe | null;
@@ -22,6 +23,8 @@ const fuseOptions = {
 };
 
 const AddIngredientPopup = (props: Props) => {
+  const { t } = useTranslation('common');
+
   const [nameValue, setNameValue] = useState<string>('');
   const [quantityValue, setQuantityValue] = useState<string>('');
   const [fieldError, setFieldError] = useState<string | null>(null);
@@ -54,22 +57,22 @@ const AddIngredientPopup = (props: Props) => {
 
   const validateFields = () => {
     if (!nameValue) {
-      setFieldError('Name field is required.');
+      setFieldError(t('field.error.name'));
       return false;
     }
 
     if (!selectedIngredient?.id) {
-      setFieldError('Select existing ingredient.');
+      setFieldError(t('field.error.doesntExist'));
       return false;
     }
 
     if (quantityValue === undefined || !quantityValue) {
-      setFieldError('Quantity field is required.');
+      setFieldError(t('field.error.quantity'));
       return false;
     }
 
     if (parseFloat(quantityValue) < 0) {
-      setFieldError('Quantity must be greater than or equal to 0.');
+      setFieldError(t('field.error.quantityNegative'));
       return false;
     }
 
@@ -106,15 +109,16 @@ const AddIngredientPopup = (props: Props) => {
       <div className="overlay" onClick={props.togglePopup}></div>
       <div className="popup">
         <span className="title">
-          Add ingredient to <span id="recipeName">{props.recipe?.name}</span>
+          {t('addIngredientTo')}{' '}
+          <span id="recipeName">{props.recipe?.name}</span>
         </span>
         <div className="form">
           <div className="field">
-            <span>Name</span>
+            <span>{t('name')}</span>
             <FuseInput
               itemList={ingredients}
               fuseOptions={fuseOptions}
-              placeholder="Ex : Salad"
+              placeholder={t('placeholder.ingredientName')}
               width="100%"
               extractKey="name"
               value={nameValue}
@@ -127,12 +131,12 @@ const AddIngredientPopup = (props: Props) => {
           </div>
           <div className="grouped-filed">
             <div className="field">
-              <span>Quantity</span>
+              <span>{t('quantity')}</span>
               <div className="quantity-unit">
                 <Input
                   type="number"
                   value={quantityValue}
-                  placeholder="Ex : 180"
+                  placeholder={t('placeholder.ingredientQuantity')}
                   min={0}
                   width="100%"
                   onChange={(value) => handleQuantityChange(value)}
@@ -150,8 +154,12 @@ const AddIngredientPopup = (props: Props) => {
           </span>
         </div>
         <div className="buttons-container">
-          <Button type="secondary" value="Cancel" onClick={props.togglePopup} />
-          <Button type="primary" value="Add" onClick={handleAdd} />
+          <Button
+            type="secondary"
+            value={t('cancel')}
+            onClick={props.togglePopup}
+          />
+          <Button type="primary" value={t('add')} onClick={handleAdd} />
         </div>
       </div>
     </div>

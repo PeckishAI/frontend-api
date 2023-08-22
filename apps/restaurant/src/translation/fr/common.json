@@ -23,6 +23,7 @@
   "ok": "Ok",
   "confirm": "Confirmer",
   "cancel": "Annuler",
+  "add": "Ajouter",
   "search": "Rechercher",
   "upload": "Charger",
   "refresh": "Recharger",
@@ -30,7 +31,10 @@
   "preview": "Prévisualiser",
 
   "ingredient": "ingredient",
-  "addIngredient": "Ajouter ingrédient",
+  "addIngredient": "Ajouter un ingrédient",
+  "addIngredientTo": "Ajouter un ingrédient à",
+  "placeholder.ingredientName": "Ex : Salade",
+  "placeholder.ingredientQuantity": "Ex : 180",
 
   "warning.delete": "Êtes-vous sure de vouloir supprimer cela ?",
 
@@ -38,5 +42,13 @@
   "error.tryLater": "Veuillez essayer plus tard",
 
   "date": "Date",
-  "navbar.restaurants": "Restaurants"
+  "navbar.restaurants": "Restaurants",
+
+  "myRestaurants.emptyTitle": "Vous n'avez pas de restaurant",
+  "myrestaurants.emptyText": "Veuillez ajouter une intégration afin de voir vos restaurants sur Peckish",
+
+  "field.error.name": "Le champ nom est requis.",
+  "field.error.doesntExist": "Sélectionner un ingrédient existant.",
+  "field.error.quantity": "Le champ quantité est requis.",
+  "field.error.quantityNegative": "La quantité doit être suppérieure ou égale à 0."
 }

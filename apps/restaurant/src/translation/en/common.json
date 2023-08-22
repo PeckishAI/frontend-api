@@ -22,6 +22,7 @@
   "ok": "Ok",
   "confirm": "Confirm",
   "cancel": "Cancel",
+  "add": "Add",
   "search": "Search",
   "upload": "Upload",
   "refresh": "Refresh",
@@ -30,6 +31,9 @@
 
   "ingredient": "ingredient",
   "addIngredient": "Add ingredient",
+  "addIngredientTo": "Add ingredient to",
+  "placeholder.ingredientName": "Ex : Salad",
+  "placeholder.ingredientQuantity": "Ex : 180",
 
   "warning.delete": "Are you sure you want to delete it ?",
 
@@ -41,5 +45,10 @@
   "navbar.restaurants": "Restaurants",
 
   "myRestaurants.emptyTitle": "You don't have any restaurant",
-  "myrestaurants.emptyText": "First add a new integration to see your restaurants in Peckish"
+  "myrestaurants.emptyText": "First add a new integration to see your restaurants in Peckish",
+
+  "field.error.name": "Name field is required.",
+  "field.error.doesntExist": "Select existing ingredient.",
+  "field.error.quantity": "Quantity field is required.",
+  "field.error.quantityNegative": "Quantity must be greater than or equal to 0."
 }
