@@ -40,6 +40,6 @@ const prodConfig = {
 export const GLOBAL_CONFIG =
   import.meta.env.MODE === 'development'
     ? devConfig
-    : import.meta.env.VITE_CONFIG_MODE === 'prod'
-    ? prodConfig
-    : stagingConfig;
+    : import.meta.env.VITE_CONFIG_MODE === 'staging'
+    ? stagingConfig
+    : prodConfig;
