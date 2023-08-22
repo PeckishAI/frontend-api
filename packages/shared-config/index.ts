@@ -16,7 +16,7 @@ const stagingConfig = {
   restaurantUrl: 'https://restaurant-frontend-k2w3p2ptza-ew.a.run.app',
   supplierUrl: 'https://supplier.iampeckish.com',
 
-  cookieDomain: 'a.run.app',
+  cookieDomain: 'run.app',
 
   apiUrl: 'https://api-gateway-k2w3p2ptza-ew.a.run.app',
 
