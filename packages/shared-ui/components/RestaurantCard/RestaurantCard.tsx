@@ -19,7 +19,7 @@ const sliderSettings = {
 
 const RestaurantCard = (props: Props) => {
   return (
-    <div className="RestaurantCard" onClick={props.onClick}>
+    <div className="RestaurantCard">
       <h2>{props.restaurant.name}</h2>
       <p>
         {props.restaurant.address}, {props.restaurant.city},{' '}
@@ -45,7 +45,9 @@ const RestaurantCard = (props: Props) => {
         </Slider>
       </div>
       <div className="buttons-container">
-        <button className="overview-btn">Overview</button>
+        <button className="overview-btn" onClick={props.onClick}>
+          Overview
+        </button>
       </div>
     </div>
   );

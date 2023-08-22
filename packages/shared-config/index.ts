@@ -37,6 +37,8 @@ const prodConfig = {
     '902125317537-r9ck7q1bi9m01f1ilopjlvi2itrupdut.apps.googleusercontent.com',
 };
 
+console.log(import.meta.env.VITE_CONFIG_MODE);
+
 export const GLOBAL_CONFIG =
   import.meta.env.MODE === 'development'
     ? devConfig

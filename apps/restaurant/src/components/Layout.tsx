@@ -72,14 +72,14 @@ const Layout = () => {
             navigate('/recipes');
           }}
         />
-        <SidebarSeparator sectionName="Services" />
+        {/* <SidebarSeparator sectionName="Services" />
         <SidebarItem
           name={t('simulation')}
           icon={<i className="fa-brands fa-unity"></i>}
           onClick={() => {
             navigate('/simulation');
           }}
-        />
+        /> */}
         <div className="restaurant-dropdown">
           <p className="label">Restaurants :</p>
           <Dropdown

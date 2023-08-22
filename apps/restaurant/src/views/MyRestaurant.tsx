@@ -9,7 +9,8 @@ import { Restaurant, useRestaurantStore } from '../store/useRestaurantStore';
 const MyRestaurant = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('common');
-  const { restaurants, loadRestaurants } = useRestaurantStore();
+  const { restaurants, loadRestaurants, setSelectedRestaurantUUID } =
+    useRestaurantStore();
 
   // Fetch data from API Backend (Get restaurants)
   useEffect(() => {
@@ -27,7 +28,8 @@ const MyRestaurant = () => {
               key={restaurant.uuid}
               restaurant={restaurant}
               onClick={() => {
-                // navigate('/restaurant/test');
+                setSelectedRestaurantUUID(restaurant.uuid);
+                navigate('/overview');
               }}
             />
           );
