@@ -2,6 +2,7 @@ steps:
   - name: gcr.io/cloud-builders/docker
     args:
       - build
+      - '--build-arg=VITE_CONFIG_MODE=${_VITE_CONFIG_MODE}'
       - '-t'
       - >-
         $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA
@@ -9,8 +10,6 @@ steps:
       - '-f'
       - restaurant.Dockerfile
     id: Build
-    env:
-      - 'VITE_CONFIG_MODE=${_VITE_CONFIG_MODE}'
   - name: gcr.io/cloud-builders/docker
     args:
       - push
@@ -31,6 +30,7 @@ steps:
       - '--region=$_DEPLOY_REGION'
       - '--quiet'
       - '--port=8000'
+      - '--set-env-vars=VITE_CONFIG_MODE=${_VITE_CONFIG_MODE}'
     id: Deploy
     entrypoint: gcloud
 images:

@@ -3,6 +3,8 @@ FROM node:current-alpine as react-build
 WORKDIR /build
 COPY . .
 
+ARG VITE_CONFIG_MODE
+
 RUN yarn
 RUN yarn build --filter authentification
 
