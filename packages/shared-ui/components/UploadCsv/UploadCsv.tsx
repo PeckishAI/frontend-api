@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Input } from 'shared-ui';
 import { useState } from 'react';
 import { inventoryService } from '../../../../apps/restaurant/src/services';
+import { useRestaurantStore } from '../../../../apps/restaurant/src/store/useRestaurantStore';
 
 type Props = {
   fileCsv: File | null;
@@ -33,6 +34,9 @@ const UploadCsv = (props: Props) => {
   const [preview, setPreview] = useState(false);
   const [previewData, setPreviewData] = useState([]);
   const [error, setErrror] = useState(false);
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
 
   const handleValueChange = (field: keyof Headers, value: any) => {
     setHeaderValues((prevValues) => ({
@@ -58,9 +62,9 @@ const UploadCsv = (props: Props) => {
   };
 
   const handleValidClick = () => {
-    if (headerValues !== null) {
+    if (headerValues !== null && selectedRestaurantUUID !== undefined) {
       inventoryService
-        .validUploadedCsv(props.fileCsv, headerValues)
+        .validUploadedCsv(selectedRestaurantUUID, props.fileCsv, headerValues)
         .then(() => {
           setErrror(false);
           props.onValidateClick();

@@ -4,6 +4,7 @@ import AddIngredientPopup from '../components/AddIngredientPopup/AddIngredientPo
 import { useEffect, useState } from 'react';
 import { recipesService, Recipe } from '../services';
 import EditIngredientPopup from '../components/EditIngredientPopup/EditIngredientPopup';
+import { useRestaurantStore } from '../store/useRestaurantStore';
 
 type Props = {};
 
@@ -16,10 +17,15 @@ const Recipes = (props: Props) => {
     useState(false);
   const [editingRecipeIndex, setEditingRecipeIndex] = useState<number>(0);
 
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
+
   function reloadRecipes() {
+    if (!selectedRestaurantUUID) return;
     setLoadingData(true);
     recipesService
-      .getRecipes()
+      .getRecipes(selectedRestaurantUUID)
       .then((res) => {
         setRecipesList(res);
       })
@@ -33,7 +39,7 @@ const Recipes = (props: Props) => {
 
   useEffect(() => {
     reloadRecipes();
-  }, []);
+  }, [selectedRestaurantUUID]);
 
   // Handle for Add ingredient popup
   const toggleAddIngredientPopup = () => {

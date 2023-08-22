@@ -9,6 +9,7 @@ import {
 } from '../../services';
 
 import FuseInput from '../FuseInput/FuseInput';
+import { useRestaurantStore } from '../../store/useRestaurantStore';
 
 type Props = {
   recipe: Recipe | null;
@@ -28,9 +29,13 @@ const AddIngredientPopup = (props: Props) => {
   const [selectedIngredient, setSelectedIngredient] = useState<
     Ingredient | undefined
   >();
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
 
   useEffect(() => {
-    inventoryService.getIngredientList().then((res) => {
+    if (!selectedRestaurantUUID) return;
+    inventoryService.getIngredientList(selectedRestaurantUUID).then((res) => {
       const convertedData = Object.keys(res.data).map((key) => ({
         id: key,
         theoriticalStock: 0, // Tempoprary till API implementation
@@ -73,6 +78,7 @@ const AddIngredientPopup = (props: Props) => {
   };
 
   const handleAdd = () => {
+    if (!selectedRestaurantUUID) return;
     const valid = validateFields();
     if (valid && selectedIngredient?.id) {
       const ingredient = {
@@ -85,7 +91,7 @@ const AddIngredientPopup = (props: Props) => {
       ingredient.unit = selectedIngredient.unit;
 
       recipesService
-        .addIngredient(props.recipe?.id, ingredient)
+        .addIngredient(selectedRestaurantUUID, props.recipe?.id, ingredient)
         .catch((err) => {
           console.log(err);
         })

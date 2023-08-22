@@ -1,19 +1,14 @@
 import axios from './index';
 
-let restaurantUUIDExemple = '514db708-3b64-4cb0-a048-ae1a001e68ad';
-
-let getIngredientList = () => {
-  return axios.get('/restaurant/inventory/' + restaurantUUIDExemple);
+const getIngredientList = (restaurantUUID: string) => {
+  return axios.get('/restaurant/inventory/' + restaurantUUID);
 };
 
-let addIngredient = (ingredient) => {
-  return axios.post(
-    '/restaurant/inventory/' + restaurantUUIDExemple,
-    ingredient
-  );
+const addIngredient = (restaurantUUID: string, ingredient) => {
+  return axios.post('/restaurant/inventory/' + restaurantUUID, ingredient);
 };
 
-let updateIngredient = (ingredient) => {
+const updateIngredient = (ingredient) => {
   const ingredientFormated = Object.keys(ingredient)
     .filter(
       (key) =>
@@ -33,20 +28,20 @@ let updateIngredient = (ingredient) => {
   );
 };
 
-let getIngredientPreview = (ingredient) => {
+const getIngredientPreview = (ingredient) => {
   return axios.get('/restaurant/inventory/' + ingredient.id + '/preview');
 };
 
-let deleteIngredient = (id) => {
+const deleteIngredient = (id: string) => {
   console.log('delete request');
   return axios.post('/restaurant/inventory/' + id + '/delete');
 };
 
-let uploadCsvFile = (file) => {
-  let formData = new FormData();
+const uploadCsvFile = (restaurantUUID: string, file) => {
+  const formData = new FormData();
   formData.append('file', file);
   return axios.post(
-    '/restaurant/inventory/' + restaurantUUIDExemple + '/upload/smart_reader',
+    '/restaurant/inventory/' + restaurantUUID + '/upload/smart_reader',
     formData,
     {
       headers: {
@@ -56,14 +51,14 @@ let uploadCsvFile = (file) => {
   );
 };
 
-let getPreviewUploadedCsv = (file, headerValues) => {
-  let formData = new FormData();
+const getPreviewUploadedCsv = (restaurantUUID: string, file, headerValues) => {
+  const formData = new FormData();
   formData.append('file', file);
   formData.append('ingredient', headerValues.ingredient);
   formData.append('quantity', headerValues.quantity);
   formData.append('unit', headerValues.unit);
   return axios.post(
-    '/inventory/' + restaurantUUIDExemple + '/upload/preview',
+    '/inventory/' + restaurantUUID + '/upload/preview',
     formData,
     {
       headers: {
@@ -73,21 +68,17 @@ let getPreviewUploadedCsv = (file, headerValues) => {
   );
 };
 
-let validUploadedCsv = (file, headerValues) => {
-  let formData = new FormData();
+const validUploadedCsv = (restaurantUUID: string, file, headerValues) => {
+  const formData = new FormData();
   formData.append('file', file);
   formData.append('ingredient', headerValues.ingredient);
   formData.append('quantity', headerValues.quantity);
   formData.append('unit', headerValues.unit);
-  return axios.post(
-    '/inventory/' + restaurantUUIDExemple + '/upload',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
-  );
+  return axios.post('/inventory/' + restaurantUUID + '/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 };
 
 export const inventoryService = {

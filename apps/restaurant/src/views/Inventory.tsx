@@ -14,7 +14,7 @@ import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dro
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { inventoryService, Ingredient } from '../services';
-import FuseInput from '../components/FuseInput/FuseInput';
+import { useRestaurantStore } from '../store/useRestaurantStore';
 
 const tabs = ['Stock', 'analyses', 'Orders'];
 
@@ -50,14 +50,22 @@ const Inventory = () => {
   const [loadingButton, setLoadingButton] = useState(false);
   const [searchValue, setSearchValue] = useState<string | null>(null);
 
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
+
   const toggleTab = (tabIndex: number) => {
     setSelectedTab(tabIndex);
   };
 
   const reloadInventoryData = useCallback(async () => {
+    if (!selectedRestaurantUUID) return;
+
     setLoadingdata(true);
     try {
-      const response = await inventoryService.getIngredientList();
+      const response = await inventoryService.getIngredientList(
+        selectedRestaurantUUID
+      );
       const list = response.data; // Accès à la propriété data de la réponse
 
       const convertedData = Object.keys(list).map((key) => ({
@@ -75,7 +83,7 @@ const Inventory = () => {
     }
 
     setLoadingdata(false);
-  }, []);
+  }, [selectedRestaurantUUID]);
 
   useEffect(() => {
     reloadInventoryData();
@@ -87,6 +95,8 @@ const Inventory = () => {
   };
 
   const handleSaveEdit = () => {
+    if (!selectedRestaurantUUID) return;
+
     setLoadingdata(true);
     if (editingRowId !== null && !addingRow) {
       console.log('API request to edit ingredient');
@@ -101,7 +111,7 @@ const Inventory = () => {
     } else {
       console.log('API request to Add new ingredient');
       inventoryService
-        .addIngredient(editedValues)
+        .addIngredient(selectedRestaurantUUID, editedValues)
         .catch((err) => {
           togglePopupError(err.message);
         })
@@ -162,11 +172,13 @@ const Inventory = () => {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!selectedRestaurantUUID) return;
+
     const file = e.target.files?.[0];
     if (file) {
       setLoadingButton(true);
       inventoryService
-        .uploadCsvFile(file)
+        .uploadCsvFile(selectedRestaurantUUID, file)
         .then((res) => {
           setUploadPopup(res.data);
           setCsvFile(file);
@@ -376,6 +388,7 @@ const Inventory = () => {
         msg="Are you sure you want to delete it ?"
         // subMsg='Cette action aura des impactes sur les éléments suivant : trousse, bonjour..."'
         onConfirm={() => {
+          if (!deletingRowId) return;
           inventoryService
             .deleteIngredient(deletingRowId)
             .catch((err) => {

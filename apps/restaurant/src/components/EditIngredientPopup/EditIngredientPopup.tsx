@@ -5,6 +5,7 @@ import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
+import { useRestaurantStore } from '../../store/useRestaurantStore';
 
 type Props = {
   recipe: Recipe | null;
@@ -24,6 +25,10 @@ const EditIngredientPopup = (props: Props) => {
   const [popupDeleteIngredients, setPopupDeleteIngredients] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [valideLoading, setValideLoading] = useState(false);
+
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
 
   useEffect(() => {
     if (props.recipe) {
@@ -91,11 +96,12 @@ const EditIngredientPopup = (props: Props) => {
   };
 
   const handleValidate = () => {
+    if (!selectedRestaurantUUID) return;
     const fieldsValid = validateFields();
     if (fieldsValid && ingredients.length !== 0) {
       setValideLoading(true);
       recipesService
-        .updateRecipe(ingredients, props.recipe?.id)
+        .updateRecipe(selectedRestaurantUUID, ingredients, props.recipe?.id)
         .catch((err) => {
           console.log(err);
         })
@@ -180,7 +186,7 @@ const EditIngredientPopup = (props: Props) => {
       header: 'quantity', // translate it
       width: '25%',
       classname: 'column-bold',
-      renderItem: ({ row, index }) => (
+      renderItem: ({ index }) => (
         <Input
           type="number"
           placeholder="Qty"
