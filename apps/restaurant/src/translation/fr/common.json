@@ -20,6 +20,8 @@
   "edit": "modifier",
   "delete": "Supprimer",
   "validate": "Valider",
+  "ok": "Ok",
+  "confirm": "Confirmer",
   "cancel": "Annuler",
   "search": "Rechercher",
   "upload": "Charger",
