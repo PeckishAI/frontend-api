@@ -1,14 +1,10 @@
 import { RestaurantCard } from 'shared-ui';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { restaurantService } from '../services';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from 'user-management';
-import { Restaurant, useRestaurantStore } from '../store/useRestaurantStore';
+import { useRestaurantStore } from '../store/useRestaurantStore';
 
 const MyRestaurant = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation('common');
   const { restaurants, loadRestaurants, setSelectedRestaurantUUID } =
     useRestaurantStore();
 
