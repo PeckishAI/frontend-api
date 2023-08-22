@@ -3,7 +3,6 @@
   "overview": "Overview",
   "inventory": "Inventory",
   "recipes": "Recipes",
-
   "simulation": "Simulation",
 
   "ingredientName": "Ingredient name",
@@ -14,10 +13,19 @@
   "cost": "Cost",
   "actions": "Actions",
 
+  "name": "Name",
+  "quantity": "Quantity",
+
   "edit": "Edit",
   "delete": "Delete",
   "validate": "Validate",
   "cancel": "Cancel",
+  "search": "Search",
+  "upload": "Upload",
+
+  "addIngredient": "Add ingredient",
+
+  "warning.delete": "Are you sure you want to delete it ?",
 
   "error.trigger": "An error has occurred",
   "error.tryLater": "Please try later",

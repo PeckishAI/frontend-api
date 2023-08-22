@@ -14,10 +14,19 @@
   "cost": "Prix",
   "actions": "Actions",
 
+  "name": "Nom",
+  "quantity": "Quantité",
+
   "edit": "modifier",
   "delete": "Supprimer",
   "validate": "Valider",
   "cancel": "Annuler",
+  "search": "Rechercher",
+  "upload": "Charger",
+
+  "addIngredient": "Ajouter ingrédient",
+
+  "warning.delete": "Êtes-vous sure de vouloir supprimer cela ?",
 
   "error.trigger": "Une erreur est survenue",
   "error.tryLater": "Veuillez essayer plus tard",
