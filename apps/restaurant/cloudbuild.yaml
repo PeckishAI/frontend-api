@@ -41,4 +41,4 @@ substitutions:
   _TRIGGER_ID: abd71837-929b-41bd-adf4-ed704963c118
   _AR_HOSTNAME: europe-west1-docker.pkg.dev
   _PLATFORM: managed
-  _SERVICE_NAME: api-gateway
+  _SERVICE_NAME: restaurant-app
