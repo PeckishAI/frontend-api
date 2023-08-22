@@ -116,12 +116,12 @@ const EditIngredientPopup = (props: Props) => {
     let isValid = true;
     ingredients.forEach((ingredient) => {
       if (ingredient.quantity === undefined || !ingredient.quantity) {
-        setFieldError('Quantity field is required.');
+        setFieldError(t('field.error.quantity'));
         isValid = false;
       }
 
       if (ingredient.quantity < 0) {
-        setFieldError('Quantity must be greater than or equal to 0.');
+        setFieldError(t('field.error.quantityNegative'));
 
         isValid = false;
       }
@@ -177,19 +177,19 @@ const EditIngredientPopup = (props: Props) => {
     },
     {
       key: 'ingredient_name',
-      header: 'name', // translate it
+      header: t('name'),
       width: '50%',
       classname: 'column-bold',
     },
     {
       key: 'quantity',
-      header: 'quantity', // translate it
+      header: t('quantity'),
       width: '25%',
       classname: 'column-bold',
       renderItem: ({ index }) => (
         <Input
           type="number"
-          placeholder="Qty"
+          placeholder={t('quantity')}
           onChange={(value) => handleQuantityChange(value, index)}
           value={ingredients ? ingredients[index].quantity : 0}
         />
@@ -207,8 +207,9 @@ const EditIngredientPopup = (props: Props) => {
         <div className="overlay" onClick={props.togglePopup}></div>
         <div className="popup">
           <span id="title">
-            Edit <span id="recipe-name">{props.recipe?.name}'s</span>{' '}
-            ingredients :
+            {t('editIngredientsOf')}{' '}
+            <span id="recipe-name">{props.recipe?.name}</span>
+            {' :'}
           </span>
           <div className="tab-container">
             <i
@@ -232,19 +233,19 @@ const EditIngredientPopup = (props: Props) => {
           <div className="buttons-container">
             <Button
               type="secondary"
-              value="Cancel"
+              value={t('cancel')}
               onClick={props.togglePopup}
             />
             <Button
               type="secondary"
-              value="Delete Recipe"
+              value={t('deleteRecipe')}
               className="delete"
               onClick={togglePopupDeleteRecipe}
               loading={deleteLoading}
             />
             <Button
               type="primary"
-              value="Valide"
+              value={t('validate')}
               onClick={handleValidate}
               loading={valideLoading}
             />
@@ -253,14 +254,14 @@ const EditIngredientPopup = (props: Props) => {
       </div>
       <Popup
         type="warning"
-        msg="Are you sure you want to delete the recipe ?"
+        msg={t('warningDeleteRecipe')}
         onConfirm={handleOnConfirmDeleteRecipe}
         revele={popupDeleteRecipe}
         togglePopup={togglePopupDeleteRecipe}
       />
       <Popup
         type="warning"
-        msg="Are you sure you want to delete selected ingredients ?"
+        msg={t('warningDeleteIngredients')}
         onConfirm={handleOnConfirmDeleteIngredients}
         revele={popupDeleteIngredients}
         togglePopup={togglePopupDeleteIngredients}

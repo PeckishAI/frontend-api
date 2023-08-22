@@ -32,6 +32,11 @@
   "ingredient": "ingredient",
   "addIngredient": "Add ingredient",
   "addIngredientTo": "Add ingredient to",
+  "editIngredientsOf": "Edit ingredients of",
+  "deleteRecipe": "Delete recipe",
+  "warningDeleteRecipe": "Are you sure you want to delete the recipe ?",
+  "warningDeleteIngredients": "Are you sure you want to delete selected ingredients ?",
+
   "placeholder.ingredientName": "Ex : Salad",
   "placeholder.ingredientQuantity": "Ex : 180",
 
