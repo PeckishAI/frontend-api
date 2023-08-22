@@ -42,7 +42,3 @@ substitutions:
   _AR_HOSTNAME: europe-west1-docker.pkg.dev
   _PLATFORM: managed
   _SERVICE_NAME: api-gateway
-tags:
-  - gcp-cloud-build-deploy-cloud-run
-  - gcp-cloud-build-deploy-cloud-run-managed
-  - api-gateway
