@@ -1,4 +1,4 @@
-import { OnboardingCard, LoginModal, Lottie, Input, Button } from 'shared-ui';
+import { IntegrationCard, LoginModal, Lottie, Input, Button } from 'shared-ui';
 import { useEffect, useState } from 'react';
 import { onboardingService } from '../../services';
 import { useTranslation } from 'react-i18next';
@@ -100,7 +100,7 @@ const Integrations = (props: Props) => {
       <div className="cards-container">
         {filteredSoftwareList.map((pos) => {
           return (
-            <OnboardingCard
+            <IntegrationCard
               key={pos.display_name}
               name={pos.display_name}
               image={pos.logo_uri}

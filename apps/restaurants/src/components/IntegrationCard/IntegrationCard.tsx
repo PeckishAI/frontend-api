@@ -1,4 +1,4 @@
-import Button from '../Button/Button';
+import Button from 'shared-ui/components/Button/Button';
 import './style.scss';
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   onClick: () => void;
 };
 
-const OnboardingCard = (props: Props) => {
+const IntegrationCard = (props: Props) => {
   return (
     <div className="onboarding-card">
       <div className="name-login">
@@ -26,4 +26,4 @@ const OnboardingCard = (props: Props) => {
   );
 };
 
-export default OnboardingCard;
+export default IntegrationCard;
