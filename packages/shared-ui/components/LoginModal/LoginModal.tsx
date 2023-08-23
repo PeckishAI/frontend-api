@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import './style.scss';
-import { Button } from 'shared-ui';
+import { Button, Input } from 'shared-ui';
+import { useTranslation } from 'react-i18next';
 
 type POS = {
   name: string;
@@ -13,6 +15,8 @@ type POS = {
 type Props = {
   isVisible: boolean;
   pos?: POS;
+  toggleModal: () => void;
+  onIntegrated: () => void;
 };
 
 function oauth(auth_type: string | undefined, oauth_url: string | undefined) {
@@ -20,28 +24,67 @@ function oauth(auth_type: string | undefined, oauth_url: string | undefined) {
 }
 
 const LoginModal = (props: Props) => {
+  const { t } = useTranslation('common');
+
+  const [userName, setUserName] = useState<string>('');
+  const [userPassword, setUserPassword] = useState<string>('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  function FieldsValid() {
+    if (!userName) {
+      setError(t('field.error.userName'));
+      return false;
+    }
+    if (!userPassword) {
+      setError(t('field.error.password'));
+      return false;
+    }
+    setError(t(''));
+    return true;
+  }
+
+  function simulationRequest() {
+    setLoading(false);
+    props.toggleModal();
+  }
+  const handleLoginClick = () => {
+    if (FieldsValid()) {
+      setLoading(true);
+      setTimeout(simulationRequest, 3000);
+      props.onIntegrated();
+    }
+  };
   return (
     <div className={'modal ' + (props.isVisible ? ' visible' : '')}>
       <div className="modal-content">
-        <div className="modal-header">
-          <span className="close">&times;</span>
-          <h2>{props.pos?.name}</h2>
-        </div>
-        <div className="modal-body">
-          <label>Email / Username</label>
-          <br></br>
-          <input type="email" id="username"></input>
-          <br></br>
-          <label>Password / API KEY</label>
-          <br></br>
-          <input type="password" id="password"></input>
-        </div>
-        <div className="modal-footer">
+        <h2>{props.pos?.name}</h2>
+        <Input
+          type="text"
+          width="300px"
+          value={userName}
+          placeholder="Username"
+          onChange={(value) => setUserName(value)}
+        />
+        <Input
+          type="password"
+          width="300px"
+          value={userPassword}
+          placeholder="Password"
+          onChange={(value) => setUserPassword(value)}
+        />
+        <span className="text-error">{error}</span>
+        <div className="button-container">
+          <Button
+            value={t('cancel')}
+            type="secondary"
+            onClick={props.toggleModal}
+          />
           <Button
             value={'' + props.pos?.button_display}
             type="primary"
-            className="login"
-            onClick={() => undefined}
+            onClick={handleLoginClick}
+            loading={loading}
           />
         </div>
       </div>

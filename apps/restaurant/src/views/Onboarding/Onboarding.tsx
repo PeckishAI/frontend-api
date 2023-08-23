@@ -15,6 +15,11 @@ export type POS = {
   logo_uri: string;
 };
 
+type Integration = {
+  name: string;
+  restaurantNumber: number;
+};
+
 const Onboarding = () => {
   const { t } = useTranslation('common');
   const [loadingData, setLoadingdata] = useState(false);
@@ -23,6 +28,7 @@ const Onboarding = () => {
   const [selectedPOS, setSelectedPOS] = useState<POS | undefined>();
   const [searchTerm, setSearchTerm] = useState('');
   const { user } = useUserStore();
+  const [integrated, setIntegrated] = useState<Integration[]>([]);
 
   // Fetch data from API Backend (Get POS)
   useEffect(() => {
@@ -47,20 +53,44 @@ const Onboarding = () => {
     return <Navigate to="/" />;
   }
 
+  const toggleModal = () => {
+    setLoginModalVisible(!loginModalVisible);
+  };
+
+  const handleOnIntegrated = () => {
+    setIntegrated((prevValues) => [
+      ...prevValues,
+      {
+        name: 'burger king',
+        restaurantNumber: '8',
+      },
+    ]);
+  };
+
   // Loop through object and return cards
   return (
     <div className="onboarding">
-      <h1 className="title">Onboarding</h1>
-      <p>Select the software that you want to integrate to Peckish !</p>
+      <h1 className="title">{t('onboarding')}</h1>
+      <p>{t('onboarding.msg')}</p>
       <Input
         type="text"
-        placeholder="Search software"
+        placeholder={t('onboarding.search')}
         value={searchTerm}
         onChange={(value) => setSearchTerm(value)}
         className="onboarding-search"
       />
-      {/* modal */}
-      <LoginModal pos={selectedPOS} isVisible={loginModalVisible} />
+      {integrated.length !== 0 ? (
+        <p className="integrated-systems">
+          <span style={{ color: 'var(--primaryColor)' }}>
+            Congratulation ! You have integrated :{' '}
+          </span>
+          {integrated?.map((system, i) => (
+            <span key={i}>
+              {system.name} : {system.restaurantNumber} restaurant(s){', '}
+            </span>
+          ))}
+        </p>
+      ) : undefined}
       <div className="cards-container">
         {filteredSoftwareList.map((pos) => {
           return (
@@ -82,6 +112,12 @@ const Onboarding = () => {
           );
         })}
       </div>
+      <LoginModal
+        pos={selectedPOS}
+        isVisible={loginModalVisible}
+        toggleModal={toggleModal}
+        onIntegrated={handleOnIntegrated}
+      />
       {loadingData && (
         <div className="loading-middle-page-overlay">
           <div className="loading-container">

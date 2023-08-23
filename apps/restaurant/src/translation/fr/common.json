@@ -3,8 +3,12 @@
   "overview": "Vue d'ensemble",
   "inventory": "Inventaire",
   "recipes": "Recettes",
+  "onboarding": "Intégrations",
+  "onboarding.msg": "Séléctionnez un système que vous souhaitez intégrer à Peckish !",
+  "onboarding.search": "Rechercher un système",
 
   "simulation": "Simulation",
+  "integrations": "Intégrations",
 
   "ingredientName": "Nom ingredient",
   "theoreticalStock": "Stock théorique",
@@ -54,6 +58,8 @@
   "myrestaurants.emptyText": "Veuillez ajouter une intégration afin de voir vos restaurants sur Peckish",
 
   "field.error.name": "Le champ nom est requis.",
+  "field.error.userName": "Le champ nom d'utilisateur est requis.",
+  "field.error.password": "Le champ mot de passe est requis.",
   "field.error.doesntExist": "Sélectionner un ingrédient existant.",
   "field.error.quantity": "Le champ quantité est requis.",
   "field.error.quantityNegative": "La quantité doit être suppérieure ou égale à 0.",
