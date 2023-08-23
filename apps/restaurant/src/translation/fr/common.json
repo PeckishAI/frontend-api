@@ -33,6 +33,8 @@
   "refresh": "Recharger",
   "logout": "Déconnexion",
   "preview": "Prévisualiser",
+  "next": "Suivant",
+  "finish": "Terminé",
 
   "ingredient": "ingredient",
   "addIngredient": "Ajouter un ingrédient",
@@ -64,5 +66,8 @@
   "field.error.quantity": "Le champ quantité est requis.",
   "field.error.quantityNegative": "La quantité doit être suppérieure ou égale à 0.",
 
-  "noIngredient": "Pas d'ingrédient"
+  "noIngredient": "Pas d'ingrédient",
+
+  "onboarding.recoverData": "Récupération des données en cours...",
+  "onboarding.wait": "Cette action peut prendre du temps."
 }

@@ -33,6 +33,8 @@
   "refresh": "Refresh",
   "logout": "Log out",
   "preview": "Preview",
+  "next": "Next",
+  "finish": "Finish",
 
   "ingredient": "ingredient",
   "addIngredient": "Add ingredient",
@@ -65,5 +67,8 @@
   "field.error.quantity": "Quantity field is required.",
   "field.error.quantityNegative": "Quantity must be greater than or equal to 0.",
 
-  "noIngredient": "No ingredient"
+  "noIngredient": "No ingredient",
+
+  "onboarding.recoverData": "Data recovery in progress...",
+  "onboarding.wait": "This may take some time."
 }
