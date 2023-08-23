@@ -1,4 +1,5 @@
 .inventory {
+  min-height: 75vh; // to make loading lottie in middle of the page
   .actions {
     display: flex;
     justify-content: center;
@@ -54,10 +55,11 @@
   margin: 0 auto;
 
   /* temporary */
-  height: 80vh;
+  overflow-y: auto;
+  min-height: 75vh; // to make loading lottie in middle of the page
 }
 
-.loading-middle-page-overlay {
+.loading-container {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -65,11 +67,9 @@
   right: 0;
   background-color: var(--secondaryColor);
   opacity: 0.8;
-}
-.loading-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media screen and (max-width: 1050px) {

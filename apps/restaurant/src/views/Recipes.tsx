@@ -86,10 +86,8 @@ const Recipes = (props: Props) => {
         />
       ))}
       {loadingData && (
-        <div className="loading-middle-page-overlay">
-          <div className="loading-container">
-            <Lottie type="loading" width="200px" />
-          </div>
+        <div className="loading-container">
+          <Lottie type="loading" width="200px" />
         </div>
       )}
       {reveleAddIngredientPopup && (
