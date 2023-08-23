@@ -47,12 +47,12 @@ const LoginModal = (props: Props) => {
   function simulationRequest() {
     setLoading(false);
     props.toggleModal();
+    props.onIntegrated();
   }
   const handleLoginClick = () => {
     if (FieldsValid()) {
       setLoading(true);
-      setTimeout(simulationRequest, 3000);
-      props.onIntegrated();
+      setTimeout(simulationRequest, 1000);
     }
   };
   return (
