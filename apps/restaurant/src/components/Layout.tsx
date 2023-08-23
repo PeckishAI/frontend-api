@@ -99,6 +99,21 @@ const Layout = () => {
           }}
         />
         {/* <SidebarSeparator sectionName="Services" />
+        <SidebarSeparator sectionName="Services" />
+        {/* <SidebarItem
+          name={t('simulation')}
+          icon={<i className="fa-brands fa-unity"></i>}
+          onClick={() => {
+            navigate('/simulation');
+          }}
+        /> */}
+        <SidebarItem
+          name={t('integrations')}
+          icon={<i className="fa-solid fa-puzzle-piece"></i>}
+          onClick={() => {
+            navigate('/integrations');
+          }}
+        />
         <SidebarItem
           name={t('simulation')}
           icon={<i className="fa-brands fa-unity"></i>}
