@@ -1,40 +1,16 @@
 .onboarding {
-  padding: 30px;
   width: 100%;
-  background-color: var(--secondaryColor);
   height: 100vh;
-  overflow-y: scroll;
+  padding: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+  background-color: var(--secondaryColor);
 
   .title {
     font-size: 2.5rem;
     color: var(--primaryColor);
     font-weight: var(--semiBold);
-  }
-
-  p {
-    font-weight: var(--light);
-  }
-  .onboarding-search {
-    width: 300px !important;
-    margin: 10px 0;
-  }
-  .cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    grid-auto-flow: row;
-    gap: 40px;
-    width: 100%;
-    margin-top: 40px;
-
-    .card {
-      background-color: red;
-    }
-  }
-
-  .integrated-systems {
+    margin: 20px;
   }
 }
