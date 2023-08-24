@@ -49,8 +49,4 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: '/onboarding',
-    element: <Onboarding />,
-  },
 ]);

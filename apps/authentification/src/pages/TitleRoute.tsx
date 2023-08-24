@@ -1,8 +1,8 @@
-import Cookies from 'js-cookie';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation } from 'react-router-dom';
-import { redirectToApplication } from '../utils';
+import { handleAuthentification } from '../utils';
+import { userSession } from 'user-management';
 
 export const TitleRoute = () => {
   const { t } = useTranslation(['routes']);
@@ -26,10 +26,11 @@ export const TitleRoute = () => {
     document.title = title !== '' ? `Peckish - ${title}` : 'Peckish';
   }, [t, pathname]);
 
+  // Redirect if already logged in
   // TODO: get clientType to redirect to good app
-  const auth = Cookies.get('accessToken');
+  const token = userSession.get();
 
-  if (auth) redirectToApplication(auth, 'restaurant');
+  if (token) handleAuthentification(token, 'restaurant');
 
   return <Outlet />;
 };

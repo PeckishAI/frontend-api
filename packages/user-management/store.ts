@@ -1,6 +1,7 @@
 import { User } from './types';
 import { create } from 'zustand';
 import { userSession } from './session';
+import { GLOBAL_CONFIG } from 'shared-config';
 
 type UserStore = {
   accessToken?: string;
@@ -14,8 +15,9 @@ export const useUserStore = create<UserStore>()((set) => ({
   accessToken: undefined,
   user: undefined,
   logout: () => {
-    userSession.removeAuthentification();
+    userSession.clear();
     set({ user: undefined, accessToken: undefined });
+    window.location.href = GLOBAL_CONFIG.authentificationUrl + '/logout';
   },
   storeAccessToken: (accessToken: string) => {
     set({ accessToken });

@@ -1,45 +1,53 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, Outlet } from 'react-router-dom';
-import { Lottie } from 'shared-ui';
+import { useEffect } from 'react';
+import { Outlet, useSearchParams, useLocation } from 'react-router-dom';
 import { GLOBAL_CONFIG } from 'shared-config';
+import { Lottie } from 'shared-ui';
 import { useUserStore, userService, userSession } from 'user-management';
 
 // Route overlay that requires authentication
 export const ProtectedRoute = () => {
-  const [loadingUser, setLoadingUser] = useState(false);
-  const { storeAccessToken, user, setUser, logout } = useUserStore();
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { storeAccessToken, setUser, logout, user } = useUserStore();
+  const location = useLocation();
 
   useEffect(() => {
+    // If user already stored in store, no need to check
     if (user) return;
 
-    const { accessToken } = userSession.getAuthentification();
-    if (accessToken) {
-      storeAccessToken(accessToken);
-      console.log('accessToken', accessToken);
+    // Get from url ortherwise from localstorage
+    const token = searchParams.get('token') ?? userSession.get();
+    // const token = accessToken ?? userSession.get();
 
-      setLoadingUser(true);
-      userService
-        .getMe()
-        .then((user) => {
-          setUser(user);
-        })
-        .catch((err) => {
-          console.log('Error retrieve user', err);
+    console.log('CHECK USER');
 
-          logout();
-          // window.location.href = GLOBAL_CONFIG.authentificationUrl;
-        })
-        .finally(() => {
-          setLoadingUser(false);
-        });
-    } else {
-      // window.location.href = GLOBAL_CONFIG.authentificationUrl;
-      console.log('redirect to login');
+    if (!token) {
+      console.log('No token, redirect to authentification');
+      window.location.href =
+        GLOBAL_CONFIG.authentificationUrl + '?from=' + location.pathname;
+      return;
     }
-  }, [storeAccessToken, navigate, user, setUser, logout]);
 
-  if (loadingUser || !user) {
+    const rememberMe = !!searchParams.get('rememberMe');
+
+    userService
+      .getMe(token)
+      .then((user) => {
+        userSession.save(token, rememberMe);
+        storeAccessToken(token);
+        setUser(user);
+      })
+      .catch((err) => {
+        console.log('Error retrieve user', err);
+        logout();
+      })
+      .finally(() => {
+        if (searchParams.get('token')) searchParams.delete('token');
+        if (searchParams.get('rememberMe')) searchParams.delete('rememberMe');
+        setSearchParams(searchParams);
+      });
+  }, []);
+
+  if (!user) {
     return (
       <div
         style={{

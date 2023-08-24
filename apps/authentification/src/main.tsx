@@ -4,11 +4,13 @@ import { SignIn } from './pages/SignIn.js';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { SignUp } from './pages/SignUp';
-import { TitleRoute } from './components/TitleRoute';
+import { TitleRoute } from './pages/TitleRoute.js';
 import { ChooseUsage } from './pages/ChooseUsage';
 import { GLOBAL_CONFIG } from 'shared-config';
 import './translation/i18n';
 import './index.scss';
+import { Logout } from './pages/Logout.js';
+import { FromHandler } from './pages/FromHandler.js';
 
 const GOOGLE_CLIENT_ID = GLOBAL_CONFIG.GOOGLE_CLIENT_ID;
 
@@ -17,12 +19,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <BrowserRouter>
         <Routes>
-          <Route index element={<Navigate to={'sign-in'} />} />
-          <Route path="/" element={<TitleRoute />}>
-            <Route path="sign-in" element={<SignIn />} />
-            <Route path="sign-up" element={<SignUp />} />
-            <Route path="choose-usage" element={<ChooseUsage />} />
-            <Route path="*" element={<Navigate to="/sign-in" replace />} />
+          <Route path="/" element={<FromHandler />}>
+            <Route index element={<Navigate to={'sign-in'} replace />} />
+            <Route path="logout" element={<Logout />} />
+            <Route path="/" element={<TitleRoute />}>
+              <Route path="sign-in" element={<SignIn />} />
+              <Route path="sign-up" element={<SignUp />} />
+              <Route path="choose-usage" element={<ChooseUsage />} />
+              <Route path="*" element={<Navigate to="/sign-in" replace />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

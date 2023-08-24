@@ -19,12 +19,11 @@ type UserResponse = {
   user_uuid: string;
 };
 
-const getMe = (): Promise<User> => {
-  const accessToken = useUserStore.getState().accessToken;
+const getMe = (token: string): Promise<User> => {
   return axiosClient
     .get<UserResponse>('/me', {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${token}`,
       },
     })
     .then((res) => {

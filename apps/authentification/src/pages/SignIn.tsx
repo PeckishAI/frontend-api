@@ -13,7 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
-import { redirectToApplication } from '../utils';
+import { handleAuthentification } from '../utils';
 
 const SignInSchema = z.object({
   email: z
@@ -51,7 +51,7 @@ export const SignIn = () => {
             state: res.data,
           });
         } else {
-          redirectToApplication(
+          handleAuthentification(
             res.data.access_token,
             res.data.user.client_type
           );

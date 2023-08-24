@@ -23,10 +23,11 @@
     "react-i18next": "^13.1.2",
     "react-icons": "^4.10.1",
     "react-router-dom": "^6.15.0",
-    "shared-ui": "*",
     "shared-config": "*",
+    "shared-ui": "*",
     "user-management": "*",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.3",
