@@ -3,6 +3,7 @@ import { Chart } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { Forecast, MetricType } from '../../../services/overview.service';
 import { metricFormat } from '../Overview';
+import { useTranslation } from 'react-i18next';
 
 // Get css variable color
 const cssvar = (name: string) => {
@@ -17,6 +18,8 @@ type Props = {
 };
 
 export const ForecastChart = (props: Props) => {
+  const { t } = useTranslation('overview');
+
   if (!props.data) return;
   const selectedMetric: MetricType = props.visibleMetric ?? 'occupancy';
 
@@ -96,7 +99,7 @@ export const ForecastChart = (props: Props) => {
             },
             callbacks: {
               label: (item) =>
-                metricFormat[selectedMetric](item.formattedValue),
+                metricFormat[selectedMetric](item.raw as number, t),
             },
             filter: function (tooltipItem) {
               return tooltipItem.datasetIndex === 0;

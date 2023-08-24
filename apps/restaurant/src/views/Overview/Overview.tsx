@@ -14,6 +14,7 @@ import overviewService, {
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { useTranslation } from 'react-i18next';
 import { EmptyPage } from 'shared-ui';
+import { TFunction } from 'i18next';
 
 const metricIcon: { [K in keyof RestaurantMetric]: React.ReactNode } = {
   occupancy: <HiOutlineUserGroup />,
@@ -23,12 +24,16 @@ const metricIcon: { [K in keyof RestaurantMetric]: React.ReactNode } = {
 // Profits <PiBankBold />
 
 export const metricFormat: {
-  [K in MetricType]: (value: string) => string;
+  [K in MetricType]: (
+    value: number,
+    t: TFunction<['overview', 'common'], undefined>
+  ) => string;
 } = {
-  occupancy: (value) => `${value} people`,
-  sales: (value) => `${value}€`,
-  profit: (value) => `${value}€`,
-  savings: (value) => `${value}€`,
+  occupancy: (value, t) =>
+    t('trend.people', { count: value, formattedCount: prettyNumber(value) }),
+  sales: (value) => `${prettyNumber(value)}€`,
+  profit: (value) => `${prettyNumber(value)}€`,
+  savings: (value) => `${prettyNumber(value)}€`,
 };
 
 const Overview = () => {
@@ -78,7 +83,7 @@ const Overview = () => {
                   <TrendCard
                     key={key}
                     title={t(key)}
-                    value={metricFormat[key](prettyNumber(metrics[key].value))}
+                    value={metricFormat[key](metrics[key].value, t)}
                     icon={metricIcon[key]}
                     percentage={metrics[key].mom}
                   />

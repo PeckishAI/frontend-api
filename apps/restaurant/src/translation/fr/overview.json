@@ -1,5 +1,5 @@
 {
-  "occupancy": "Occupation",
+  "occupancy": "Fréquentation",
   "profit": "Profit",
   "sales": "Ventes",
   "savings": "Économies",
@@ -9,5 +9,8 @@
   "forecastTooltip": "Ces données générées par Peckish sont des prévisions des performances futures",
 
   "tab.table": "Tableau",
-  "tab.chart": "Graphique"
+  "tab.chart": "Graphique",
+
+  "trend.people_one": "{{formattedCount}} visiteur",
+  "trend.people_other": "{{formattedCount}} visiteurs"
 }
