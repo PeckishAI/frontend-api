@@ -11,11 +11,14 @@ import overviewService, {
   RestaurantMetric,
 } from '../../services/overview.service';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
+import { useTranslation } from 'react-i18next';
 
 const metricIcon: { [K in keyof RestaurantMetric]: React.ReactNode } = {
   occupancy: <HiOutlineUserGroup />,
   sales: <FaRegMoneyBillAlt />,
 };
+// Savings <MdOutlineSavings />
+// Profits <PiBankBold />
 
 const metricFormat: {
   [K in keyof RestaurantMetric]: (value: string) => string;
@@ -24,10 +27,8 @@ const metricFormat: {
   sales: (value) => `${value}€`,
 };
 
-// Savings <MdOutlineSavings />
-// Profits <PiBankBold />
-
 const Overview = () => {
+  const { t } = useTranslation('overview');
   const [loadingMetrics, setLoadingMetrics] = useState(false);
   const [metrics, setMetrics] = useState<RestaurantMetric>();
 
@@ -69,7 +70,7 @@ const Overview = () => {
             (Object.keys(metrics) as (keyof RestaurantMetric)[]).map((key) => (
               <TrendCard
                 key={key}
-                title={key}
+                title={t(key)}
                 value={metricFormat[key](prettyNumber(metrics[key].value))}
                 icon={metricIcon[key]}
                 percentage={metrics[key].mom}

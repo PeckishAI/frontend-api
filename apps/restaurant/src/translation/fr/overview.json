@@ -1,0 +1,13 @@
+{
+  "occupancy": "Occupation",
+  "profit": "Profit",
+  "sales": "Ventes",
+  "savings": "Économies",
+
+  "mom": "MoM",
+  "forecast": "Prévision",
+  "forecastTooltip": "Ces données générées par Peckish sont des prévisions des performances futures",
+
+  "tab.table": "Tableau",
+  "tab.chart": "Graphique"
+}

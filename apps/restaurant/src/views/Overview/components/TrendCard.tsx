@@ -4,6 +4,7 @@ import { FiTrendingDown, FiTrendingUp } from 'react-icons/fi';
 import { FaEquals } from 'react-icons/fa';
 import classnames from 'classnames';
 import Skeleton from 'react-loading-skeleton';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   title: string;
@@ -13,6 +14,8 @@ type Props = {
 };
 
 export const TrendCard = ({ icon, title, percentage, value }: Props) => {
+  const { t } = useTranslation('overview');
+
   return (
     <div className={styles.container}>
       <div className={styles.row}>
@@ -40,7 +43,7 @@ export const TrendCard = ({ icon, title, percentage, value }: Props) => {
           ) : null}
           {percentage ?? '--'}%
         </span>
-        <span className={styles.periodText}>MoM</span>
+        <span className={styles.periodText}>{t('mom')}</span>
       </p>
     </div>
   );

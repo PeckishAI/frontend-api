@@ -6,7 +6,7 @@ import { useRestaurantStore } from '../store/useRestaurantStore';
 import { useUserStore } from 'user-management';
 
 const Layout = () => {
-  const { t } = useTranslation(['common']);
+  const { t } = useTranslation();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [navTitle, setNavTitle] = useState('');
   const { pathname } = useLocation();
@@ -96,7 +96,7 @@ const Layout = () => {
           }}
         /> */}
         <div className="restaurant-dropdown">
-          <p className="label">Restaurants :</p>
+          <p className="label">{t('navbar.restaurants')} :</p>
           <Dropdown
             options={restaurants.map((restaurant) => ({
               label: restaurant.name,

@@ -20,5 +20,9 @@
   "cancel": "Cancel",
 
   "error.trigger": "An error has occurred",
-  "error.tryLater": "Please try later"
+  "error.tryLater": "Please try later",
+
+  "date": "Date",
+
+  "navbar.restaurants": "Restaurants"
 }

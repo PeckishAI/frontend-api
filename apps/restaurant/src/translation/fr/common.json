@@ -20,5 +20,8 @@
   "cancel": "Annuler",
 
   "error.trigger": "Une erreur est survenue",
-  "error.tryLater": "Veuillez essayer plus tard"
+  "error.tryLater": "Veuillez essayer plus tard",
+
+  "date": "Date",
+  "navbar.restaurants": "Restaurants"
 }

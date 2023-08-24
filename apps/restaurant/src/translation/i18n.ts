@@ -28,7 +28,7 @@ i18next
     debug: process.env.NODE_ENV !== 'production',
     // lng: 'fr',
     fallbackLng: 'en',
-    ns: ['common', 'language', 'scan'],
+    ns: ['common', 'language', 'scan', 'overview'],
     defaultNS,
     resources,
     interpolation: {
