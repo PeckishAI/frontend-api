@@ -1,7 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Sidebar, SidebarItem, Navbar, Lottie, Dropdown } from 'shared-ui';
+import {
+  Sidebar,
+  SidebarItem,
+  Navbar,
+  Lottie,
+  Dropdown,
+  SidebarSeparator,
+} from 'shared-ui';
 import { useRestaurantStore } from '../store/useRestaurantStore';
 import { useUserStore } from 'user-management';
 import { restaurantService } from '../services';
@@ -98,15 +105,7 @@ const Layout = () => {
             navigate('/recipes');
           }}
         />
-        {/* <SidebarSeparator sectionName="Services" />
         <SidebarSeparator sectionName="Services" />
-        {/* <SidebarItem
-          name={t('simulation')}
-          icon={<i className="fa-brands fa-unity"></i>}
-          onClick={() => {
-            navigate('/simulation');
-          }}
-        /> */}
         <SidebarItem
           name={t('integrations')}
           icon={<i className="fa-solid fa-puzzle-piece"></i>}
@@ -115,12 +114,12 @@ const Layout = () => {
           }}
         />
         <SidebarItem
-          name={t('simulation')}
-          icon={<i className="fa-brands fa-unity"></i>}
+          name={t('support')}
+          icon={<i className="fa-solid fa-circle-question"></i>}
           onClick={() => {
-            navigate('/simulation');
+            navigate('/support');
           }}
-        /> */}
+        />
         <div className="restaurant-dropdown">
           <p className="label">{t('navbar.restaurants')} :</p>
           <Dropdown
