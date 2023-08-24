@@ -8,6 +8,7 @@ import { Tooltip } from 'react-tooltip';
 import { useEffect, useState } from 'react';
 import overviewService, {
   Forecast,
+  MetricType,
   RestaurantMetric,
 } from '../../services/overview.service';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
@@ -21,11 +22,13 @@ const metricIcon: { [K in keyof RestaurantMetric]: React.ReactNode } = {
 // Savings <MdOutlineSavings />
 // Profits <PiBankBold />
 
-const metricFormat: {
-  [K in keyof RestaurantMetric]: (value: string) => string;
+export const metricFormat: {
+  [K in MetricType]: (value: string) => string;
 } = {
-  occupancy: (value) => `${value}`,
+  occupancy: (value) => `${value} people`,
   sales: (value) => `${value}€`,
+  profit: (value) => `${value}€`,
+  savings: (value) => `${value}€`,
 };
 
 const Overview = () => {

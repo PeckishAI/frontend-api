@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import { Chart } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { Forecast, MetricType } from '../../../services/overview.service';
+import { metricFormat } from '../Overview';
 
 // Get css variable color
 const cssvar = (name: string) => {
@@ -94,7 +95,8 @@ export const ForecastChart = (props: Props) => {
               family: 'Montserrat',
             },
             callbacks: {
-              label: (item) => item.formattedValue + '€',
+              label: (item) =>
+                metricFormat[selectedMetric](item.formattedValue),
             },
             filter: function (tooltipItem) {
               return tooltipItem.datasetIndex === 0;
