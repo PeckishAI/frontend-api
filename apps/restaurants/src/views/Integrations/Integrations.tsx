@@ -124,12 +124,12 @@ const Integrations = (props: Props) => {
         toggleModal={toggleModal}
         onIntegrated={handleOnIntegrated}
       />
-      {loadingData && !integrated.length && (
+      {loadingData && !integrated && (
         <div className="loading-container">
           <Lottie type="loading" width="200px" />
         </div>
       )}
-      {loadingData && integrated.length && (
+      {loadingData && integrated && (
         <div className="loading-container retrieve-data-loading">
           <Lottie type="loading" width="200px" />
           <span id="bold">{t('onboarding.recoverData')}</span>
