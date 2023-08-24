@@ -17,7 +17,7 @@ const Button = (props: Props) => {
       onClick={!props.loading ? props.onClick : undefined}>
       <span style={props.loading ? { opacity: 0 } : undefined}>
         {props.value}
-        <span className="icon">{props.icon}</span>
+        {props.icon && <span className="icon">{props.icon}</span>}
       </span>
       {props.loading && (
         <Lottie
