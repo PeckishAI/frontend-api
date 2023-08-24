@@ -6,7 +6,7 @@ import { useRestaurantStore } from '../store/useRestaurantStore';
 import { useUserStore } from 'user-management';
 
 const Layout = () => {
-  const { t } = useTranslation(['common', 'routes']);
+  const { t } = useTranslation(['common']);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [navTitle, setNavTitle] = useState('');
   const { pathname } = useLocation();
