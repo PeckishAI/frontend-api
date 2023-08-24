@@ -69,5 +69,6 @@
   "noIngredient": "Pas d'ingrédient",
 
   "onboarding.recoverData": "Récupération des données en cours...",
-  "onboarding.wait": "Cette action peut prendre du temps."
+  "onboarding.wait": "Cette action peut prendre du temps.",
+  "onboarding.success": "Récupération des données avec succès !"
 }

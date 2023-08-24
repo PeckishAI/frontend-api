@@ -70,5 +70,6 @@
   "noIngredient": "No ingredient",
 
   "onboarding.recoverData": "Data recovery in progress...",
-  "onboarding.wait": "This may take some time."
+  "onboarding.wait": "This may take some time.",
+  "onboarding.success": "Successful data recovery !"
 }

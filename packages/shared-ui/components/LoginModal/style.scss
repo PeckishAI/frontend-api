@@ -2,15 +2,13 @@
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
   padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
   height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  backdrop-filter: blur(3px);
 }
 
 /* Modal Content */
@@ -18,18 +16,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 30px;
   position: relative;
-  background-color: #fefefe;
+  background-color: var(--backgroundColor);
   margin: auto;
   padding: 30px 20px;
   border-radius: 5px;
   width: 500px;
-  box-shadow:
-    0 4px 8px 0 rgba(0, 0, 0, 0.2),
-    0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  -webkit-animation-name: animatetop;
-  -webkit-animation-duration: 0.4s;
+  height: 300px;
+  box-shadow: 0 0 10px 0 #00000033;
   animation-name: animatetop;
   animation-duration: 0.4s;
 
@@ -41,6 +37,25 @@
   .button-container {
     display: flex;
     gap: 30px;
+  }
+  .retrieve-data-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .loading-info {
+      margin-bottom: 10px;
+      font-weight: var(--light);
+      font-size: 0.9rem;
+    }
+    #bold {
+      font-weight: var(--semiBold);
+      font-size: 1.1rem;
+    }
+    .button {
+      margin-top: 30px;
+      min-width: 60px;
+    }
   }
 }
 .visible {
