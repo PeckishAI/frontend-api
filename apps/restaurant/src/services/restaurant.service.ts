@@ -1,3 +1,4 @@
+import { log } from 'console';
 import axiosClient from '.';
 import { Restaurant } from '../store/useRestaurantStore';
 
@@ -21,6 +22,10 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
   const res = await axiosClient.get<RestaurantResponse[]>(
     `/restaurant/overview/${userId}`
   );
+
+  if (!res.data) {
+    return new Promise(() => []);
+  }
 
   return res.data.map((r) => ({
     ...r,

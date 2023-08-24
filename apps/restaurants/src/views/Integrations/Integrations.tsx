@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { onboardingService } from '../../services';
 import { useTranslation } from 'react-i18next';
 import './style.scss';
-import { log } from 'console';
 
 export type POS = {
   name: string;
@@ -19,7 +18,7 @@ type Integration = {
   restaurantNumber: number;
 };
 
-const Integrations = (props: Props) => {
+const Integrations = () => {
   const { t } = useTranslation('common');
   const [loadingData, setLoadingdata] = useState(false);
   const [posList, setPOSList] = useState<POS[]>([]);
@@ -44,9 +43,12 @@ const Integrations = (props: Props) => {
     })();
   }, []);
 
-  const filteredSoftwareList = posList.filter((software) =>
-    software.display_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredSoftwareList =
+    posList.length > 0
+      ? posList.filter((software) =>
+          software.display_name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      : [];
 
   const toggleModal = () => {
     setLoginModalVisible(!loginModalVisible);
@@ -63,7 +65,7 @@ const Integrations = (props: Props) => {
   };
 
   const handleValidIntegrations = () => {
-    setLoadingdata(true);
+    // setLoadingdata(true);
   };
 
   // Loop through object and return cards
@@ -129,6 +131,11 @@ const Integrations = (props: Props) => {
           <Lottie type="loading" width="200px" />
         </div>
       )}
+      {/* <a
+        href="https://docs.google.com/forms/d/e/1FAIpQLSfeAmgiexP5rexbb8bSkFAz4LbH3WPUVIXl8JioAiS_d5Od1w/viewform?usp=sf_link"
+        target="blank">
+        Form
+      </a> */}
     </div>
   );
 };
