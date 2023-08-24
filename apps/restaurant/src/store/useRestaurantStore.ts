@@ -30,13 +30,15 @@ export const useRestaurantStore = create<RestaurantStore>()((set) => ({
   loadRestaurants: async () => {
     const user = useUserStore.getState().user;
     if (!user) return;
+
     const restaurants = await restaurantService.getUserRestaurants(
       user.user_uuid
     );
 
-    console.log(restaurants);
-
-    set({ restaurants, selectedRestaurantUUID: restaurants[0].uuid });
+    set({
+      restaurants,
+      selectedRestaurantUUID: restaurants[0]?.uuid ?? undefined,
+    });
   },
   addRestaurant: (restaurant: Restaurant) => {
     set((state) => ({ restaurants: [...state.restaurants, restaurant] }));
