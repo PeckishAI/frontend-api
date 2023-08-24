@@ -28,11 +28,10 @@ const LoginModal = (props: Props) => {
 
   const [userName, setUserName] = useState<string>('');
   const [userPassword, setUserPassword] = useState<string>('');
-  // const [loading, setLoading] = useState(false);
   const [errorField, setErrorField] = useState('');
-  const [retrieveDataStatus, setRetrieveDataStatus] = useState<string | null>(
-    null
-  );
+  const [retrieveDataStatus, setRetrieveDataStatus] = useState<
+    'loading' | 'success' | 'fail' | null
+  >(null);
 
   function FieldsValid() {
     if (!userName) {
@@ -48,14 +47,10 @@ const LoginModal = (props: Props) => {
   }
 
   function simulationRequest() {
-    // setLoading(false);
-    // props.toggleModal();
-    // props.onIntegrated();
     setRetrieveDataStatus('success');
   }
   const handleLoginClick = () => {
     if (FieldsValid()) {
-      // setLoading(true);
       setRetrieveDataStatus('loading');
       setTimeout(simulationRequest, 5000);
     }
@@ -109,6 +104,24 @@ const LoginModal = (props: Props) => {
                 <Lottie type="validate" width="100px" />
                 <span className="loading-info" id="bold">
                   {t('onboarding.success')}
+                </span>
+                <Button
+                  value={t('ok')}
+                  type="secondary"
+                  onClick={() => {
+                    props.toggleModal();
+                    props.onIntegrated();
+                    setRetrieveDataStatus(null);
+                    setUserName('');
+                    setUserPassword('');
+                  }}
+                />
+              </>
+            ) : retrieveDataStatus === 'fail' ? (
+              <>
+                <Lottie type="error" width="100px" />
+                <span className="loading-info" id="bold">
+                  {t('onboarding.error')}
                 </span>
                 <Button
                   value={t('ok')}

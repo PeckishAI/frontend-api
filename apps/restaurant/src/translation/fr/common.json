@@ -70,5 +70,6 @@
 
   "onboarding.recoverData": "Récupération des données en cours...",
   "onboarding.wait": "Cette action peut prendre du temps.",
-  "onboarding.success": "Récupération des données avec succès !"
+  "onboarding.success": "Récupération des données avec succès !",
+  "onboarding.error": "Echec de la récupération des données."
 }

@@ -71,5 +71,6 @@
 
   "onboarding.recoverData": "Data recovery in progress...",
   "onboarding.wait": "This may take some time.",
-  "onboarding.success": "Successful data recovery !"
+  "onboarding.success": "Successful data recovery !",
+  "onboarding.error": "Data recovery failed."
 }
