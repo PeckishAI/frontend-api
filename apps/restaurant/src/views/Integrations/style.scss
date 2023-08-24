@@ -10,8 +10,13 @@
   gap: 30px;
   min-height: 75vh;
 
+  #welcome {
+    font-size: 1.2rem;
+    font-weight: var(--medium);
+  }
   p {
-    font-weight: var(--light);
+    font-size: 0.9rem;
+    font-weight: var(--medium);
   }
   .onboarding-search {
     width: 300px !important;

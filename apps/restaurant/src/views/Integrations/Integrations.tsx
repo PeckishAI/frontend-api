@@ -71,7 +71,7 @@ const Integrations = () => {
   // Loop through object and return cards
   return (
     <div className="integrations">
-      <p>{t('onboarding.msg')}</p>
+      <p id="welcome">{t('onboarding.msg')}</p>
       <Input
         type="text"
         placeholder={t('onboarding.search')}
