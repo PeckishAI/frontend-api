@@ -15,6 +15,7 @@ import Card from './components/Card/Card';
 import LoginModal from './components/LoginModal/LoginModal';
 import RestaurantCard from './components/RestaurantCard/RestaurantCard';
 import ProfilePicture from './components/ProfilePicture/ProfilePicture';
+import EmptyPage from './components/EmptyPage/EmptyPage';
 import './styles/common.css';
 
 export {
@@ -34,4 +35,5 @@ export {
   LoginModal,
   RestaurantCard,
   ProfilePicture,
+  EmptyPage,
 };

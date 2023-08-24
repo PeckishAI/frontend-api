@@ -1,9 +1,11 @@
-import { RestaurantCard } from 'shared-ui';
+import { EmptyPage, RestaurantCard } from 'shared-ui';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRestaurantStore } from '../store/useRestaurantStore';
+import { useTranslation } from 'react-i18next';
 
 const MyRestaurant = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { restaurants, loadRestaurants, setSelectedRestaurantUUID } =
     useRestaurantStore();
@@ -15,7 +17,9 @@ const MyRestaurant = () => {
     loadRestaurants();
   }, [restaurants, loadRestaurants]);
 
-  return (
+  console.log('restaurants', restaurants);
+
+  return restaurants.length > 0 ? (
     <div className="my-restaurants">
       {restaurants &&
         restaurants.map((restaurant) => {
@@ -31,6 +35,11 @@ const MyRestaurant = () => {
           );
         })}
     </div>
+  ) : (
+    <EmptyPage
+      title={t('myRestaurants.emptyTitle')}
+      description={t('myrestaurants.emptyText')}
+    />
   );
 };
 

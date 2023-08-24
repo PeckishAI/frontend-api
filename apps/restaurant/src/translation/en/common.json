@@ -24,5 +24,8 @@
 
   "date": "Date",
 
-  "navbar.restaurants": "Restaurants"
+  "navbar.restaurants": "Restaurants",
+
+  "myRestaurants.emptyTitle": "You don't have any restaurant",
+  "myrestaurants.emptyText": "First add a new integration to see your restaurants in Peckish"
 }

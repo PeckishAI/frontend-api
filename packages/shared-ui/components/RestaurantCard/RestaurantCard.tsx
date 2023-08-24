@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Restaurant } from '../../../../apps/restaurant/src/store/useRestaurantStore';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
 import './style.scss';
@@ -18,6 +19,7 @@ const sliderSettings = {
 };
 
 const RestaurantCard = (props: Props) => {
+  const { t } = useTranslation();
   return (
     <div className="RestaurantCard">
       <h2>{props.restaurant.name}</h2>
@@ -46,7 +48,7 @@ const RestaurantCard = (props: Props) => {
       </div>
       <div className="buttons-container">
         <button className="overview-btn" onClick={props.onClick}>
-          Overview
+          {t('overview')}
         </button>
       </div>
     </div>

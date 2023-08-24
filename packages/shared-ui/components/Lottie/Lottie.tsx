@@ -1,13 +1,21 @@
 import Lottie from 'react-lottie';
 import validate from '../../asset/lotties/validate.json';
 import error from '../../asset/lotties/error.json';
+import empty from '../../asset/lotties/empty.json';
 import info from '../../asset/lotties/info.json';
 import loading from '../../asset/lotties/loading.json';
 import loading_white from '../../asset/lotties/loading_white.json';
 import warning from '../../asset/lotties/warning.json';
 
 type Props = {
-  type: 'error' | 'info' | 'loading' | 'loading_white' | 'validate' | 'warning';
+  type:
+    | 'empty'
+    | 'error'
+    | 'info'
+    | 'loading'
+    | 'loading_white'
+    | 'validate'
+    | 'warning';
   width: string;
 };
 
@@ -18,6 +26,12 @@ const LottieFile = (props: Props) => {
         <Lottie
           isClickToPauseDisabled
           options={{ animationData: error, autoplay: true, loop: true }}
+        />
+      )}{' '}
+      {props.type === 'empty' && (
+        <Lottie
+          isClickToPauseDisabled
+          options={{ animationData: empty, autoplay: true, loop: true }}
         />
       )}
       {props.type === 'info' && (
