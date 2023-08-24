@@ -3,6 +3,9 @@ FROM node:current-alpine as react-build
 WORKDIR /build
 COPY . .
 
+# Given by --build-arg on the cloudbuild task
+ARG VITE_CONFIG_MODE
+
 RUN yarn
 RUN yarn build --filter restaurant
 
