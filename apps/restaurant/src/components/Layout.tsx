@@ -1,20 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
-import { Navigate, Outlet, useNavigate } from 'react-router-dom';
-import {
-  Sidebar,
-  SidebarItem,
-  SidebarSeparator,
-  Navbar,
-  Lottie,
-  Dropdown,
-} from 'shared-ui';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Sidebar, SidebarItem, Navbar, Lottie, Dropdown } from 'shared-ui';
 import { useRestaurantStore } from '../store/useRestaurantStore';
 import { useUserStore } from 'user-management';
 
 const Layout = () => {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['common', 'routes']);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [navTitle, setNavTitle] = useState('');
+  const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const { logout, user } = useUserStore();
@@ -36,6 +31,26 @@ const Layout = () => {
   const handleLogout = () => {
     logout();
   };
+
+  useEffect(() => {
+    // Convert path to dot notation (ex :user.profile)
+    let path = pathname;
+    if (pathname.slice(-1) === '/') {
+      path = pathname.slice(0, -1);
+    }
+    if (pathname.charAt(0) === '/') {
+      path = path.substring(1);
+    }
+    path = path.replaceAll('/', '.');
+
+    if (path === '') path = 'myRestaurant';
+
+    // Get possible translation
+    const title: string = t(path as unknown as TemplateStringsArray, {
+      defaultValue: '',
+    });
+    setNavTitle(title !== '' ? title : path);
+  }, [t, pathname]);
 
   if (user && !user.onboarded) {
     return <Navigate to="/onboarding" />;
@@ -94,7 +109,7 @@ const Layout = () => {
       </Sidebar>
       <div className="main">
         <Navbar
-          title="Peckish"
+          title={navTitle}
           refreshIcon={
             isRefreshing ? (
               <Lottie width="30px" type="validate" />

@@ -10,18 +10,9 @@ type Props = {
   value: string | number;
   icon: React.ReactNode;
   percentage?: number;
-  period?: 'last-month';
 };
 
-export const TrendCard = ({
-  icon,
-  title,
-  percentage,
-  value,
-  period = 'last-month',
-}: Props) => {
-  const periodText = period === 'last-month' ? 'Since last month' : '';
-
+export const TrendCard = ({ icon, title, percentage, value }: Props) => {
   return (
     <div className={styles.container}>
       <div className={styles.row}>
@@ -49,7 +40,7 @@ export const TrendCard = ({
           ) : null}
           {percentage ?? '--'}%
         </span>
-        <span className={styles.periodText}>{periodText}</span>
+        <span className={styles.periodText}>MoM</span>
       </p>
     </div>
   );
