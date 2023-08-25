@@ -28,8 +28,10 @@ const updateIngredient = (ingredient) => {
   );
 };
 
-const getIngredientPreview = (ingredient) => {
-  return axios.get('/restaurant/inventory/' + ingredient.id + '/preview');
+const getIngredientPreview = (ingredientId) => {
+  return axios.get<string[]>(
+    '/restaurant/inventory/' + ingredientId + '/preview'
+  );
 };
 
 const deleteIngredient = (id: string) => {
