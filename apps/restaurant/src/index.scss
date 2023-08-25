@@ -14,18 +14,6 @@
     display: flex;
     gap: 25px;
     align-items: center;
-
-    .button {
-      background-color: var(--navbarColor);
-      padding: 6px 10px;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .add {
-      background-color: var(--primaryColor);
-      color: var(--backgroundColor);
-    }
   }
 }
 
