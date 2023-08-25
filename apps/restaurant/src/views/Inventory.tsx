@@ -454,8 +454,10 @@ const Inventory = () => {
       <Popup
         type="warning"
         msg={t('warning.delete')}
-        subMsg={popupDelete && t('warning.impactedRecipes')}
-        list={popupDelete}
+        subMsg={
+          popupDelete?.length !== 0 ? t('warning.impactedRecipes') : undefined
+        }
+        list={popupDelete?.length !== 0 ? popupDelete : undefined}
         onConfirm={handleConfirmPopupDelete}
         revele={popupDelete === undefined ? false : true}
         togglePopup={() => togglePopupDelete(undefined)}
@@ -463,8 +465,12 @@ const Inventory = () => {
       <Popup
         type="warning"
         msg={t('warning.edit')}
-        subMsg={popupPreviewEdit && t('warning.impactedRecipes')}
-        list={popupPreviewEdit}
+        subMsg={
+          popupPreviewEdit?.length !== 0
+            ? t('warning.impactedRecipes')
+            : undefined
+        }
+        list={popupPreviewEdit?.length !== 0 ? popupPreviewEdit : undefined}
         onConfirm={handleConfirmPopupPreviewEdit}
         revele={popupPreviewEdit === undefined ? false : true}
         togglePopup={() => togglePopupPreviewEdit(undefined)}
