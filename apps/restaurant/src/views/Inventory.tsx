@@ -42,7 +42,12 @@ const Inventory = () => {
   const [deletingRowId, setDeletingRowId] = useState<string | null>();
   const [addingRow, setAddingRow] = useState(false);
   const [editedValues, setEditedValues] = useState<Ingredient | null>(null);
-  const [popupDelete, setPopupDelete] = useState(false);
+  const [popupDelete, setPopupDelete] = useState<string[] | undefined>(
+    undefined
+  );
+  const [popupPreviewEdit, setPopupPreviewEdit] = useState<
+    string[] | undefined
+  >(undefined);
   const [popupError, setPopupError] = useState('');
   const [loadingData, setLoadingdata] = useState(false);
   const [uploadPopup, setUploadPopup] = useState<any | null>(null);
@@ -89,6 +94,7 @@ const Inventory = () => {
     reloadInventoryData();
   }, [reloadInventoryData]);
 
+  // Handle for actions in tab
   const handleEditClick = (row: Ingredient) => {
     setEditingRowId(row.id);
     setEditedValues({ ...row });
@@ -100,14 +106,27 @@ const Inventory = () => {
     setLoadingdata(true);
     if (editingRowId !== null && !addingRow) {
       console.log('API request to edit ingredient');
+      console.log(editingRowId);
+      setLoadingdata(false);
       inventoryService
-        .updateIngredient(editedValues)
-        .catch((err) => {
-          togglePopupError(err.message);
+        .getIngredientPreview(editingRowId)
+        .then((res) => {
+          togglePopupPreviewEdit(res.data);
+          // let recipeList: string = '';
+          // res.data.forEach((element) => {
+          //   recipeList += element;
+          //   recipeList += ', ';
+          // });
+          // togglePopupPreviewEdit(
+          //   recipeList.substring(0, recipeList.length - 2)
+          // );
         })
-        .then(() => reloadInventoryData());
-      setEditingRowId(null);
-      setEditedValues(null);
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setLoadingdata(false);
+        });
     } else {
       console.log('API request to Add new ingredient');
       inventoryService
@@ -134,9 +153,29 @@ const Inventory = () => {
 
   const handleDeleteClick = (row: Ingredient) => {
     setDeletingRowId(row.id);
-    togglePopupDelete();
+    setLoadingdata(true);
+    inventoryService
+      .getIngredientPreview(row.id)
+      .then((res) => {
+        console.log('preview with id :', row.id, res.data);
+        togglePopupDelete(res.data);
+
+        // let recipeList: string = '';
+        // res.data.forEach((element) => {
+        //   recipeList += element;
+        //   recipeList += ', ';
+        // });
+        // togglePopupDelete(recipeList.substring(0, recipeList.length - 2));
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoadingdata(false);
+      });
   };
 
+  // Handle for inputs change
   const handleValueChange = (field: keyof Ingredient, value: string) => {
     setEditedValues((prevValues) => ({
       ...prevValues!,
@@ -144,14 +183,41 @@ const Inventory = () => {
     }));
   };
 
-  const togglePopupDelete = () => {
-    setPopupDelete(!popupDelete);
+  // Handle for Popups
+  const togglePopupDelete = (msg: string[] | undefined) => {
+    setPopupDelete(msg);
+  };
+  const handleConfirmPopupDelete = () => {
+    if (!deletingRowId) return;
+    inventoryService
+      .deleteIngredient(deletingRowId)
+      .catch((err) => {
+        togglePopupError(err.message);
+      })
+      .then(() => reloadInventoryData());
+    togglePopupDelete(undefined);
+  };
+
+  const togglePopupPreviewEdit = (msg: string[] | undefined) => {
+    setPopupPreviewEdit(msg);
+  };
+  const handleConfirmPopupPreviewEdit = () => {
+    inventoryService
+      .updateIngredient(editedValues)
+      .catch((err) => {
+        togglePopupError(err.message);
+      })
+      .then(() => reloadInventoryData());
+    setEditingRowId(null);
+    setEditedValues(null);
+    togglePopupPreviewEdit(undefined);
   };
 
   const togglePopupError = (msg: string) => {
     setPopupError(msg);
   };
 
+  // Handle for actions above the tab component
   const handleAddNewIngredient = () => {
     const newIngredient: Ingredient = {
       id: '',
@@ -388,19 +454,20 @@ const Inventory = () => {
       <Popup
         type="warning"
         msg={t('warning.delete')}
-        // subMsg='Cette action aura des impactes sur les éléments suivant : trousse, bonjour..."'
-        onConfirm={() => {
-          if (!deletingRowId) return;
-          inventoryService
-            .deleteIngredient(deletingRowId)
-            .catch((err) => {
-              togglePopupError(err.message);
-            })
-            .then(() => reloadInventoryData());
-          togglePopupDelete();
-        }}
-        revele={popupDelete}
-        togglePopup={togglePopupDelete}
+        subMsg={popupDelete && t('warning.impactedRecipes')}
+        list={popupDelete}
+        onConfirm={handleConfirmPopupDelete}
+        revele={popupDelete === undefined ? false : true}
+        togglePopup={() => togglePopupDelete(undefined)}
+      />
+      <Popup
+        type="warning"
+        msg={t('warning.edit')}
+        subMsg={popupPreviewEdit && t('warning.impactedRecipes')}
+        list={popupPreviewEdit}
+        onConfirm={handleConfirmPopupPreviewEdit}
+        revele={popupPreviewEdit === undefined ? false : true}
+        togglePopup={() => togglePopupPreviewEdit(undefined)}
       />
       <Popup
         type="error"
