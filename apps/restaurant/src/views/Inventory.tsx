@@ -288,8 +288,10 @@ const Inventory = () => {
             onChange={(value) => handleValueChange('cost', value)}
             value={editedValues!.cost}
           />
-        ) : (
+        ) : row.cost ? (
           `${row.cost} €`
+        ) : (
+          '-'
         ),
     },
     {
