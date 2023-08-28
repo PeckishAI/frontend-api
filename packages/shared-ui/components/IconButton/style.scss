@@ -1,0 +1,28 @@
+.icon {
+  width: 35px;
+  height: 35px;
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: var(--primaryColor);
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 1.1rem;
+  }
+
+  .lottie-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    margin-top: 2px;
+  }
+}
+.icon:hover {
+  background-color: var(--secondaryColor);
+}
