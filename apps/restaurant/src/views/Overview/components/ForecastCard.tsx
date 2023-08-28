@@ -3,9 +3,9 @@ import styles from './ForecastCard.module.scss';
 import { Dropdown, Table, Tabs } from 'shared-ui';
 import dayjs from 'dayjs';
 import { Tooltip } from 'react-tooltip';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ForecastChart } from './ForecastChart';
-import { Forecast } from '../../../services/overview.service';
+import { Forecast, MetricType } from '../../../services/overview.service';
 import Skeleton from 'react-loading-skeleton';
 import { prettyNumber } from '../../../utils/helpers';
 import { useTranslation } from 'react-i18next';
@@ -22,36 +22,62 @@ type Props = {
 export const ForecastCard = (props: Props) => {
   const { t } = useTranslation(['overview', 'common']);
   const [selectedMode, setSelectedMode] = useState(0);
-  const [selectedChartMode, setSelectedChartMode] = useState<
-    'occupancy' | 'sales'
-  >('occupancy');
+  const [selectedChartMode, setSelectedChartMode] =
+    useState<MetricType>('occupancy');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderItem = ({ value }: { value: any }) =>
     value ? prettyNumber(value) : '--';
+  console.log('here', props.data && props.data[0]?.occupancy);
 
-  const chartModes = [
-    {
-      label: t('occupancy'),
-      value: 'occupancy',
-      disabled: !props.data || props.data[0]?.occupancy === undefined,
-    },
-    {
-      label: t('sales'),
-      value: 'sales',
-      disabled: !props.data || props.data[0]?.sales === undefined,
-    },
-    {
-      label: t('profit'),
-      value: 'profit',
-      disabled: !props.data || props.data[0]?.profit === undefined,
-    },
-    {
-      label: t('savings'),
-      value: 'savings',
-      disabled: !props.data || props.data[0]?.savings === undefined,
-    },
-  ];
+  const chartModes = useMemo(() => {
+    const hasOccupancy = props.data && props.data[0]?.occupancy != null;
+    const hasSales = props.data && props.data[0]?.sales != null;
+    const hasProfit = props.data && props.data[0]?.profit != null;
+    const hasSavings = props.data && props.data[0]?.savings != null;
+
+    console.log('props.data[0]', props.data && props.data[0]);
+    console.log('hasOccupancy', hasOccupancy);
+    console.log('hasSales', hasSales);
+    console.log('hasProfit', hasProfit);
+    console.log('hasSavings', hasSavings);
+
+    const modes = [
+      {
+        label: t('occupancy'),
+        value: 'occupancy',
+        disabled: !hasOccupancy,
+      },
+      {
+        label: t('sales'),
+        value: 'sales',
+        disabled: !hasSales,
+      },
+      {
+        label: t('profit'),
+        value: 'profits',
+        disabled: !hasProfit,
+      },
+      {
+        label: t('savings'),
+        value: 'savings',
+        disabled: !hasSavings,
+      },
+    ];
+
+    if (hasOccupancy) {
+      setSelectedChartMode('occupancy');
+    } else if (hasSales) {
+      setSelectedChartMode('sales');
+    } else if (hasProfit) {
+      setSelectedChartMode('profits');
+    } else if (hasSavings) {
+      setSelectedChartMode('savings');
+    } else {
+      setSelectedChartMode('occupancy');
+    }
+    return modes;
+  }, [props.data]);
 
   return (
     <>

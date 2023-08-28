@@ -36,7 +36,7 @@ export const metricFormat: {
       formattedCount: prettyNumber(value),
     }),
   sales: ({ value, currency }) => formatCurrency(value, currency),
-  profit: ({ value, currency }) => formatCurrency(value, currency),
+  profits: ({ value, currency }) => formatCurrency(value, currency),
   savings: ({ value, currency }) => formatCurrency(value, currency),
 };
 
@@ -72,6 +72,7 @@ const Overview = () => {
       .getForecast(selectedRestaurantUUID)
       .then((res) => {
         setForecast(res);
+        console.log('res', res);
       })
       .finally(() => {
         setLoadingForecast(false);
