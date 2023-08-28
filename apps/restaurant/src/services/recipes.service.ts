@@ -15,7 +15,6 @@ const updateRecipe = (restaurantUUID: string, ingredients, recipeId) => {
     restaurant_uuid: restaurantUUID,
     ingredient_uuid: ingredient.ingredient_uuid,
   }));
-  console.log('update recipe with : ', ingredientsWithRestaurantUUID);
   return axios.post(
     '/restaurant/recipe/' + recipeId + '/update',
     ingredientsWithRestaurantUUID
@@ -32,7 +31,6 @@ const addIngredient = (restaurantUUID: string, recipeId, ingredient) => {
     restaurant_uuid: restaurantUUID,
     ingredient_uuid: ingredient.ingredient_uuid,
   };
-  console.log('add ingredient to recipe : ', ingredientWithRestaurantUUID);
   return axios.post(
     '/restaurant/recipe/' + recipeId + '/add',
     ingredientWithRestaurantUUID

@@ -18,8 +18,6 @@ export const ProtectedRoute = () => {
     const token = searchParams.get('token') ?? userSession.get();
     // const token = accessToken ?? userSession.get();
 
-    console.log('CHECK USER');
-
     if (!token) {
       console.log('No token, redirect to authentification');
       window.location.href =

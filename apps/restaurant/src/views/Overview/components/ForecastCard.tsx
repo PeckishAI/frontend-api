@@ -28,19 +28,12 @@ export const ForecastCard = (props: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderItem = ({ value }: { value: any }) =>
     value ? prettyNumber(value) : '--';
-  console.log('here', props.data && props.data[0]?.occupancy);
 
   const chartModes = useMemo(() => {
     const hasOccupancy = props.data && props.data[0]?.occupancy != null;
     const hasSales = props.data && props.data[0]?.sales != null;
     const hasProfit = props.data && props.data[0]?.profit != null;
     const hasSavings = props.data && props.data[0]?.savings != null;
-
-    console.log('props.data[0]', props.data && props.data[0]);
-    console.log('hasOccupancy', hasOccupancy);
-    console.log('hasSales', hasSales);
-    console.log('hasProfit', hasProfit);
-    console.log('hasSavings', hasSavings);
 
     const modes = [
       {

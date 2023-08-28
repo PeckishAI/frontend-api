@@ -72,7 +72,6 @@ const Overview = () => {
       .getForecast(selectedRestaurantUUID)
       .then((res) => {
         setForecast(res);
-        console.log('res', res);
       })
       .finally(() => {
         setLoadingForecast(false);

@@ -31,7 +31,6 @@ const Onboarding = () => {
         setLoadingdata(true);
         const list = await onboardingService.getPOSList();
         setLoadingdata(false);
-        console.log(list.data);
 
         setPOSList(list.data);
       } catch (error) {
@@ -44,10 +43,7 @@ const Onboarding = () => {
     software.display_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  console.log('aaaaaaaaaaaaaaaaaaaaaaaa');
   if (user && user.onboarded) {
-    console.log('oooooooooooooo');
-
     return <Navigate to="/" />;
   }
 

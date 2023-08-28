@@ -22,8 +22,6 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
     `/restaurant/overview/${userId}`
   );
 
-  console.log(res.data);
-
   return res.data.map((r) => ({
     ...r,
     uuid: r.restaurant_uuid,

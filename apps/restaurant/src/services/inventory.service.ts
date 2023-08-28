@@ -33,7 +33,6 @@ const getIngredientPreview = (ingredient) => {
 };
 
 const deleteIngredient = (id: string) => {
-  console.log('delete request');
   return axios.post('/restaurant/inventory/' + id + '/delete');
 };
 

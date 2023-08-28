@@ -31,8 +31,6 @@ const FuseInput = <T extends object>(props: Props<T>) => {
   };
 
   const handleOnSuggestedItemClick = (value: T) => {
-    console.log('selected ingredint : ', value);
-
     props.onChange(value[props.extractKey]);
     props.onSelectItem && props.onSelectItem(value);
 
