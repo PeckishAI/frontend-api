@@ -11,6 +11,10 @@
   font-size: 0.9rem;
   gap: 10px;
 
+  span {
+    white-space: nowrap;
+  }
+
   &:hover {
     background-color: var(--backgroundColor);
   }

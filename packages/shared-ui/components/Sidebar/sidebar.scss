@@ -7,7 +7,18 @@
   gap: 20px;
   padding: 0 10px;
   box-shadow: 1px 0px 5px 0px #00000024;
+  transition: all 0.5s;
 
+  .burger {
+    position: fixed;
+    top: 30px;
+    left: 20px;
+    font-size: 1.5rem;
+    color: var(--primaryColor);
+    margin-right: 20px;
+    display: none;
+    visibility: visible;
+  }
   .company-name {
     height: var(--navbarHeight);
     display: flex;
@@ -20,5 +31,23 @@
     align-items: center;
     flex: 1;
     margin-bottom: 10px;
+  }
+}
+
+.sidebar-floating {
+  width: 250px !important;
+  padding: 0 10px !important;
+}
+
+@media screen and (max-width: 800px) {
+  .sidebar {
+    position: absolute;
+    z-index: 99999;
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    .burger {
+      display: inline-block;
+    }
   }
 }
