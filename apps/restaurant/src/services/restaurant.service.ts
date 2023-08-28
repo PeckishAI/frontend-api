@@ -8,6 +8,7 @@ type RestaurantResponse = {
   created_at: string;
   name: string;
   restaurant_uuid: string;
+  currency: string | null;
   users: {
     user_email: string;
     user_picture: string;

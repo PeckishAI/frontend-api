@@ -14,6 +14,7 @@ const primaryColor = cssvar('--primaryColor');
 
 type Props = {
   data?: Forecast;
+  currency?: string | null;
   visibleMetric: MetricType;
 };
 
@@ -99,7 +100,11 @@ export const ForecastChart = (props: Props) => {
             },
             callbacks: {
               label: (item) =>
-                metricFormat[selectedMetric](item.raw as number, t),
+                metricFormat[selectedMetric]({
+                  value: item.raw as number,
+                  t,
+                  currency: props.currency,
+                }),
             },
             filter: function (tooltipItem) {
               return tooltipItem.datasetIndex === 0;

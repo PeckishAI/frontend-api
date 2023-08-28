@@ -1,7 +1,7 @@
 import { FaRegMoneyBillAlt } from 'react-icons/fa';
 import { HiOutlineUserGroup } from 'react-icons/hi';
 import { TrendCard, TrendCardSkeleton } from './components/TrendCard';
-import { prettyNumber } from '../../utils/helpers';
+import { formatCurrency, prettyNumber } from '../../utils/helpers';
 import styles from './Overview.module.scss';
 import { ForecastCard } from './components/ForecastCard';
 import { Tooltip } from 'react-tooltip';
@@ -24,16 +24,20 @@ const metricIcon: { [K in keyof RestaurantMetric]: React.ReactNode } = {
 // Profits <PiBankBold />
 
 export const metricFormat: {
-  [K in MetricType]: (
-    value: number,
-    t: TFunction<['overview', 'common'], undefined>
-  ) => string;
+  [K in MetricType]: (options: {
+    value?: number | null;
+    t: TFunction<['overview', 'common'], undefined>;
+    currency?: string | null;
+  }) => string;
 } = {
-  occupancy: (value, t) =>
-    t('trend.people', { count: value, formattedCount: prettyNumber(value) }),
-  sales: (value) => `${prettyNumber(value)}€`,
-  profit: (value) => `${prettyNumber(value)}€`,
-  savings: (value) => `${prettyNumber(value)}€`,
+  occupancy: ({ value, t }) =>
+    t('trend.people', {
+      count: value ?? 0,
+      formattedCount: prettyNumber(value),
+    }),
+  sales: ({ value, currency }) => formatCurrency(value, currency),
+  profit: ({ value, currency }) => formatCurrency(value, currency),
+  savings: ({ value, currency }) => formatCurrency(value, currency),
 };
 
 const Overview = () => {
@@ -44,7 +48,11 @@ const Overview = () => {
   const [loadingForecast, setLoadingForecast] = useState(false);
   const [forecast, setForecast] = useState<Forecast>();
 
-  const { selectedRestaurantUUID } = useRestaurantStore();
+  const { selectedRestaurantUUID, restaurants } = useRestaurantStore();
+
+  const currentCurrency = restaurants.find(
+    (restaurant) => restaurant.uuid === selectedRestaurantUUID
+  )?.currency;
 
   useEffect(() => {
     if (!selectedRestaurantUUID) return;
@@ -83,14 +91,22 @@ const Overview = () => {
                   <TrendCard
                     key={key}
                     title={t(key)}
-                    value={metricFormat[key](metrics[key].value, t)}
+                    value={metricFormat[key]({
+                      value: metrics[key].value,
+                      t,
+                      currency: currentCurrency,
+                    })}
                     icon={metricIcon[key]}
                     percentage={metrics[key].mom}
                   />
                 )
               )}
           </div>
-          <ForecastCard data={forecast} loading={loadingForecast} />
+          <ForecastCard
+            data={forecast}
+            loading={loadingForecast}
+            currency={currentCurrency}
+          />
         </>
       ) : (
         <EmptyPage

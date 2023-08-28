@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 type Props = {
   data?: Forecast;
+  currency?: string | null;
   loading: boolean;
 };
 
@@ -106,6 +107,7 @@ export const ForecastCard = (props: Props) => {
             <ForecastChart
               data={props.data}
               visibleMetric={selectedChartMode}
+              currency={props.currency}
             />
           )}
         </div>

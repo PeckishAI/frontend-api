@@ -4,23 +4,23 @@ export type MetricType = 'occupancy' | 'profit' | 'sales' | 'savings';
 
 export type RestaurantMetric = {
   occupancy: {
-    value: number;
-    mom: number;
+    value?: number;
+    mom?: number;
   };
   sales: {
-    value: number;
-    mom: number;
+    value?: number;
+    mom?: number;
   };
 };
 
 type MetricsResponse = {
   Occupancy: {
-    curr_month: number;
-    mom: number;
+    curr_month?: number;
+    mom?: number;
   };
   Sales: {
-    curr_month: number;
-    mom: number;
+    curr_month?: number;
+    mom?: number;
   };
 };
 

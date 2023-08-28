@@ -10,6 +10,7 @@ export type Restaurant = {
   country: string;
   created_at: Date;
   users: Pick<User, 'email' | 'user_uuid' | 'name' | 'picture'>[];
+  currency: string | null;
 };
 
 type RestaurantStore = {
