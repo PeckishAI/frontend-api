@@ -8,6 +8,7 @@ import {
   Button,
   Lottie,
   UploadCsv,
+  IconButton,
 } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
@@ -370,13 +371,13 @@ const Inventory = () => {
             {editingRowId === row.id ? (
               <i
                 className="fa-solid fa-check"
-                data-tooltip-id="actions-tooltip"
+                data-tooltip-id="inventory-tooltip"
                 data-tooltip-content={t('validate')}
                 onClick={handleSaveEdit}></i>
             ) : (
               <i
                 className="fa-solid fa-pen-to-square"
-                data-tooltip-id="actions-tooltip"
+                data-tooltip-id="inventory-tooltip"
                 data-tooltip-content={t('edit')}
                 onClick={() => handleEditClick(row)}></i>
             )}
@@ -384,13 +385,13 @@ const Inventory = () => {
             {editingRowId === row.id ? (
               <i
                 className="fa-solid fa-times"
-                data-tooltip-id="actions-tooltip"
+                data-tooltip-id="inventory-tooltip"
                 data-tooltip-content={t('cancel')}
                 onClick={handleCancelEdit}></i>
             ) : (
               <i
                 className="fa-solid fa-trash"
-                data-tooltip-id="actions-tooltip"
+                data-tooltip-id="inventory-tooltip"
                 data-tooltip-content={t('delete')}
                 onClick={() => handleDeleteClick(row)}></i>
             )}
@@ -413,12 +414,24 @@ const Inventory = () => {
               handleOnSearchValueChange(value);
             }}
           />
-          <span>Filter</span>
-          <Button
-            value={`${t('upload')} CSV`}
-            type="secondary"
-            loading={loadingButton}
+          <IconButton
+            icon={<i className="fa-solid fa-filter"></i>}
+            onClick={() => null}
+            tooltipMsg="Filter"
+            tooltipId="inventory-tooltip"
+          />
+          <IconButton
+            icon={<i className="fa-solid fa-download"></i>}
+            onClick={() => null}
+            tooltipMsg={t('export')}
+            tooltipId="inventory-tooltip"
+          />
+          <IconButton
+            icon={<i className="fa-solid fa-file-arrow-down"></i>}
             onClick={() => fileInputRef.current && fileInputRef.current.click()}
+            tooltipMsg={`${t('import')} CSV`}
+            tooltipId="inventory-tooltip"
+            loading={loadingButton}
           />
           <input
             type="file"
@@ -430,7 +443,6 @@ const Inventory = () => {
           <Button
             value={t('addIngredient')}
             type="primary"
-            className="add"
             onClick={!addingRow ? handleAddNewIngredient : () => null}
           />
         </div>
@@ -450,7 +462,7 @@ const Inventory = () => {
         />
       )}
 
-      <Tooltip className="tooltip" id="actions-tooltip" />
+      <Tooltip className="tooltip" id="inventory-tooltip" />
       <Popup
         type="warning"
         msg={t('warning.delete')}

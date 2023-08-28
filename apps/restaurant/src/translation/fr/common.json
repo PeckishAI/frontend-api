@@ -31,6 +31,9 @@
   "add": "Ajouter",
   "search": "Rechercher",
   "upload": "Charger",
+  "download": "Télécharger",
+  "import": "Importer",
+  "export": "Exporter",
   "refresh": "Recharger",
   "logout": "Déconnexion",
   "preview": "Prévisualiser",
@@ -50,6 +53,7 @@
   "placeholder.ingredientQuantity": "Ex : 180",
 
   "warning.delete": "Êtes-vous sure de vouloir supprimer cela ?",
+  "warning.impactedRecipes": "Ces recettes seront impactées par cette action :",
 
   "error.trigger": "Une erreur est survenue",
   "error.tryLater": "Veuillez essayer plus tard",

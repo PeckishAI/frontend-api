@@ -12,7 +12,7 @@
   }
   .tools {
     display: flex;
-    gap: 25px;
+    gap: 15px;
     align-items: center;
   }
 }
@@ -66,6 +66,10 @@
       flex-direction: column;
       gap: 20px;
       align-items: center;
+      .tools {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
     }
   }
 }

@@ -10,6 +10,7 @@ import Lottie from './components/Lottie/Lottie';
 import Popup from './components/Popup/Popup';
 import Input from './components/Input/Input';
 import Button from './components/Button/Button';
+import IconButton from './components/IconButton/IconButton';
 import UploadCsv from './components/UploadCsv/UploadCsv';
 import IntegrationCard from '../../apps/restaurant/src/components/IntegrationCard/IntegrationCard';
 import LoginModal from './components/LoginModal/LoginModal';
@@ -30,6 +31,7 @@ export {
   Popup,
   Input,
   Button,
+  IconButton,
   UploadCsv,
   IntegrationCard,
   LoginModal,

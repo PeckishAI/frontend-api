@@ -17,11 +17,14 @@ type Props = {
     | 'validate'
     | 'warning';
   width: string;
+  height?: string;
 };
 
 const LottieFile = (props: Props) => {
   return (
-    <div style={{ width: props.width }} className="lottie-container">
+    <div
+      style={{ width: props.width, height: props.height }}
+      className="lottie-container">
       {props.type === 'error' && (
         <Lottie
           isClickToPauseDisabled

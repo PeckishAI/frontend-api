@@ -31,6 +31,9 @@
   "add": "Add",
   "search": "Search",
   "upload": "Upload",
+  "download": "Download",
+  "import": "Import",
+  "export": "Export",
   "refresh": "Refresh",
   "logout": "Log out",
   "preview": "Preview",
@@ -50,6 +53,8 @@
   "placeholder.ingredientQuantity": "Ex : 180",
 
   "warning.delete": "Are you sure you want to delete it ?",
+  "warning.edit": "Are you sure you want to edit it ?",
+  "warning.impactedRecipes": "These recipes will be affected by this action :",
 
   "error.trigger": "An error has occurred",
   "error.tryLater": "Please try later",

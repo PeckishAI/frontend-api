@@ -1,6 +1,6 @@
 import { FaInfoCircle } from 'react-icons/fa';
 import styles from './ForecastCard.module.scss';
-import { Dropdown, Table, Tabs } from 'shared-ui';
+import { Dropdown, IconButton, Table, Tabs } from 'shared-ui';
 import dayjs from 'dayjs';
 import { Tooltip } from 'react-tooltip';
 import { useState, useMemo } from 'react';
@@ -72,6 +72,36 @@ export const ForecastCard = (props: Props) => {
     return modes;
   }, [props.data]);
 
+  const handleExportDataClick = () => {
+    const rows = props.data;
+    if (rows) {
+      const header = 'Date, Occupency, Sales, Profit, Savings\n';
+      const csvContent =
+        'data:text/csv;charset=utf-8,' +
+        header +
+        rows
+          .map((row) => {
+            const values = [];
+            values.push(row.date.toISOString()); // Convertir la date en format ISO string
+            values.push(row.occupancy || '-');
+            values.push(row.sales || '-');
+            values.push(row.profit || '-');
+            values.push(row.savings || '-');
+            return values.join(',');
+          })
+          .join('\n');
+
+      // Créer un lien d'ancrage pour le téléchargement
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'forecast.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   return (
     <>
       <div className={styles.card}>
@@ -95,6 +125,13 @@ export const ForecastCard = (props: Props) => {
                 }
               />
             )}
+            <IconButton
+              icon={<i className="fa-solid fa-download"></i>}
+              onClick={handleExportDataClick}
+              tooltipMsg={t('export')}
+              tooltipId="forecast-tooltip"
+              className={styles.forecastIiconBtn}
+            />
             <FaInfoCircle
               data-tooltip-id="forecast-tooltip"
               data-tooltip-content={t('forecastTooltip')}
