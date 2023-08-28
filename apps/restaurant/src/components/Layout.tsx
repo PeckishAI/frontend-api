@@ -4,6 +4,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Sidebar, SidebarItem, Navbar, Lottie, Dropdown } from 'shared-ui';
 import { useRestaurantStore } from '../store/useRestaurantStore';
 import { useUserStore } from 'user-management';
+import { restaurantService } from '../services';
 
 const Layout = () => {
   const { t } = useTranslation();
@@ -25,7 +26,10 @@ const Layout = () => {
   }, [loadRestaurants]);
 
   const handleIconClick = () => {
+    if (!selectedRestaurantUUID) return;
+
     setIsRefreshing(true);
+    restaurantService.reloadPOS(selectedRestaurantUUID);
   };
 
   const handleLogout = () => {
