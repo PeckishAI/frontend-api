@@ -28,8 +28,15 @@ const Layout = () => {
   const handleIconClick = () => {
     if (!selectedRestaurantUUID) return;
 
-    setIsRefreshing(true);
-    restaurantService.reloadPOS(selectedRestaurantUUID);
+    restaurantService.reloadPOS(selectedRestaurantUUID).then((success) => {
+      if (success) {
+        setIsRefreshing(true);
+
+        setTimeout(() => {
+          navigate(0);
+        }, 2500);
+      }
+    });
   };
 
   const handleLogout = () => {

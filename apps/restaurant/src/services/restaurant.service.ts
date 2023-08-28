@@ -40,7 +40,7 @@ const reloadPOS = async (restaurantId: string): Promise<boolean> => {
   return await axiosClient
     .post(`/papapoule/refresh/${restaurantId}`, {
       username: 'pascal',
-      password: '2512512',
+      password: '25122512',
     })
     .then(() => true)
     .catch(() => false);
