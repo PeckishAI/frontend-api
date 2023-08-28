@@ -38,7 +38,10 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
 
 const reloadPOS = async (restaurantId: string): Promise<boolean> => {
   return await axiosClient
-    .post(`/papapoule/refresh/${restaurantId}`)
+    .post(`/papapoule/refresh/${restaurantId}`, {
+      username: 'pascal',
+      password: '2512512',
+    })
     .then(() => true)
     .catch(() => false);
 };
