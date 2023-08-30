@@ -11,14 +11,6 @@
   "integrations": "Integrations",
   "support": "Support",
 
-  "ingredientName": "Ingredient name",
-  "theoreticalStock": "Theoretical stock",
-  "actualStock": "Actual stock",
-  "unit": "Unit",
-  "supplier": "Supplier",
-  "cost": "Cost",
-  "actions": "Actions",
-
   "name": "Name",
   "quantity": "Quantity",
 
@@ -39,18 +31,6 @@
   "preview": "Preview",
   "next": "Next",
   "finish": "Finish",
-
-  "ingredient": "ingredient",
-  "addIngredient": "Add ingredient",
-  "addIngredientTo": "Add ingredient to",
-  "editIngredientsOf": "Edit ingredients of",
-  "editRecipe": "Edit recipe",
-  "deleteRecipe": "Delete recipe",
-  "warningDeleteRecipe": "Are you sure you want to delete the recipe ?",
-  "warningDeleteIngredients": "Are you sure you want to delete selected ingredients ?",
-
-  "placeholder.ingredientName": "Ex : Salad",
-  "placeholder.ingredientQuantity": "Ex : 180",
 
   "warning.delete": "Are you sure you want to delete it ?",
   "warning.edit": "Are you sure you want to edit it ?",
@@ -75,8 +55,6 @@
   "field.error.doesntExist": "Select existing ingredient.",
   "field.error.quantity": "Quantity field is required.",
   "field.error.quantityNegative": "Quantity must be greater than or equal to 0.",
-
-  "noIngredient": "No ingredient",
 
   "onboarding.recoverData": "Data recovery in progress...",
   "onboarding.wait": "This may take some time.",

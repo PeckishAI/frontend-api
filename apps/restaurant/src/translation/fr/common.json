@@ -11,14 +11,6 @@
   "integrations": "Intégrations",
   "support": "Support",
 
-  "ingredientName": "Nom ingredient",
-  "theoreticalStock": "Stock théorique",
-  "actualStock": "Stock actuel",
-  "unit": "Unité",
-  "supplier": "Fournisseur",
-  "cost": "Prix",
-  "actions": "Actions",
-
   "name": "Nom",
   "quantity": "Quantité",
 
@@ -40,19 +32,8 @@
   "next": "Suivant",
   "finish": "Terminé",
 
-  "ingredient": "ingredient",
-  "addIngredient": "Ajouter un ingrédient",
-  "addIngredientTo": "Ajouter un ingrédient à",
-  "editIngredientsOf": "Modifier les ingrédients de",
-  "editRecipe": "Modifier la recette",
-  "deleteRecipe": "Supprimer la recette",
-  "warningDeleteRecipe": "Êtes-vous sure de vouloir supprimer la recette ?",
-  "warningDeleteIngredients": "Êtes-vous sure de vouloir supprimer les ingrédients sélectionnés ?",
-
-  "placeholder.ingredientName": "Ex : Salade",
-  "placeholder.ingredientQuantity": "Ex : 180",
-
   "warning.delete": "Êtes-vous sure de vouloir supprimer cela ?",
+  "warning.edit": "Êtes-vous sure de vouloir modifier cela ?",
   "warning.impactedRecipes": "Ces recettes seront impactées par cette action :",
 
   "inventory.addIngredientBtn": "Ajouter un ingrédient",
@@ -73,8 +54,6 @@
   "field.error.doesntExist": "Sélectionner un ingrédient existant.",
   "field.error.quantity": "Le champ quantité est requis.",
   "field.error.quantityNegative": "La quantité doit être suppérieure ou égale à 0.",
-
-  "noIngredient": "Pas d'ingrédient",
 
   "onboarding.recoverData": "Récupération des données en cours...",
   "onboarding.wait": "Cette action peut prendre du temps.",
