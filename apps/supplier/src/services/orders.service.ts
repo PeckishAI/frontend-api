@@ -1,5 +1,6 @@
 import axios from './index';
-let getOrderList = () => {
+
+const getOrderList = () => {
   return axios.get('/orders');
 };
 
