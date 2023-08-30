@@ -1,6 +1,7 @@
 import './navbar.scss';
 import { Tooltip } from 'react-tooltip';
 import React from 'react';
+import { Link } from 'react-router-dom';
 type Props = {
   title: string;
   refreshIcon: React.ReactNode;
@@ -19,6 +20,15 @@ const Navbar = (props: Props) => {
           data-tooltip-id="nav-tooltip"
           data-tooltip-content="Refresh">
           {props.refreshIcon}
+        </div>
+        <div className="my-account icon">
+          <Link
+            to="/profile"
+            className="profile-icon"
+            data-tooltip-id="nav-tooltip"
+            data-tooltip-content="Profile">
+            <i className="fa-solid fa-user-ninja"></i>
+          </Link>
         </div>
         <div
           className="my-account icon"

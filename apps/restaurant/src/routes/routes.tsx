@@ -5,6 +5,7 @@ import Inventory from '../views/Inventory';
 import Recipes from '../views/Recipes';
 import Onboarding from '../views/Onboarding/Onboarding';
 import Layout from '../components/Layout';
+import Profile from '../views/Profile/Profile';
 import { ProtectedRoute } from './ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
           {
             path: '/recipes',
             element: <Recipes />,
+          },
+          {
+            path: '/profile',
+            element: <Profile />,
           },
           {
             path: '*',
