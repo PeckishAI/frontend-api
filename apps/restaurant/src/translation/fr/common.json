@@ -55,6 +55,9 @@
   "warning.delete": "Êtes-vous sure de vouloir supprimer cela ?",
   "warning.impactedRecipes": "Ces recettes seront impactées par cette action :",
 
+  "inventory.addIngredientBtn": "Ajouter un ingrédient",
+  "inventory.addSupplierBtn": "Ajouter un fournisseur",
+
   "error.trigger": "Une erreur est survenue",
   "error.tryLater": "Veuillez essayer plus tard",
 

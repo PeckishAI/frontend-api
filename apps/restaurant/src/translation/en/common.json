@@ -56,6 +56,9 @@
   "warning.edit": "Are you sure you want to edit it ?",
   "warning.impactedRecipes": "These recipes will be affected by this action :",
 
+  "inventory.addIngredientBtn": "Add an ingredient",
+  "inventory.addSupplierBtn": "Add a supplier",
+
   "error.trigger": "An error has occurred",
   "error.tryLater": "Please try later",
 

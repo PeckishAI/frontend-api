@@ -3,7 +3,7 @@ import './style.scss';
 
 type Props = {
   width?: string;
-  onChange: (value: string | number) => void;
+  onChange: (value: string) => void;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>;
 
 const Input = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
