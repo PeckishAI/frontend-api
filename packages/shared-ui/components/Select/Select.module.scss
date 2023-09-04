@@ -1,0 +1,37 @@
+.selectContainer {
+  .control {
+    border-color: var(--borderColor);
+    cursor: pointer;
+
+    &.controlFocused {
+      border-color: var(--primaryColor);
+      box-shadow: 0 0 0 1px var(--primaryColor);
+    }
+
+    &:hover {
+      border-color: var(--primaryColor);
+    }
+
+    .controlValueContainer {
+      font-size: 0.9rem;
+    }
+  }
+
+  .option {
+    background-color: var(--backgroundColor);
+    color: var(--textPrimaryColor);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 8px 10px;
+
+    &.optionSelected {
+      background-color: var(--primaryColor);
+      color: var(--onPrimaryColor);
+    }
+
+    &:hover:not(.optionSelected) {
+      background-color: var(--primaryColorLighten);
+      color: var(--textPrimaryColor);
+    }
+  }
+}

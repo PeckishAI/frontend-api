@@ -1,5 +1,3 @@
 {
-  "extends": "tsconfig/vite.json",
-  "include": ["*.ts", "*.tsx"],
-  "exclude": ["node_modules"]
+  "extends": "tsconfig/vite.json"
 }

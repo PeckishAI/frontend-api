@@ -7,7 +7,7 @@ import Table from './components/Table/Table';
 import Tabs from './components/Tabs/Tabs';
 import Dropdown from './components/Dropdown/Dropdown';
 import Lottie from './components/Lottie/Lottie';
-import Popup from './components/Popup/Popup';
+import DialogBox from './components/DialogBox/DialogBox';
 import Input from './components/Input/Input';
 import Button from './components/Button/Button';
 import IconButton from './components/IconButton/IconButton';
@@ -17,6 +17,8 @@ import LoginModal from './components/LoginModal/LoginModal';
 import RestaurantCard from './components/RestaurantCard/RestaurantCard';
 import ProfilePicture from './components/ProfilePicture/ProfilePicture';
 import EmptyPage from './components/EmptyPage/EmptyPage';
+import Popup from './components/Popup/Popup';
+import Select from './components/Select/Select';
 import './styles/common.css';
 
 export {
@@ -28,7 +30,7 @@ export {
   Tabs,
   Dropdown,
   Lottie,
-  Popup,
+  DialogBox,
   Input,
   Button,
   IconButton,
@@ -38,4 +40,6 @@ export {
   RestaurantCard,
   ProfilePicture,
   EmptyPage,
+  Popup,
+  Select,
 };
