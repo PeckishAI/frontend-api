@@ -1,6 +1,6 @@
 import './style.scss';
 import { IngredientForRecipe, Recipe, recipesService } from '../../services';
-import { Button, Input, Popup, Table } from 'shared-ui';
+import { Button, Input, DialogBox, Table } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
@@ -252,14 +252,14 @@ const EditIngredientPopup = (props: Props) => {
           </div>
         </div>
       </div>
-      <Popup
+      <DialogBox
         type="warning"
         msg={t('warningDeleteRecipe')}
         onConfirm={handleOnConfirmDeleteRecipe}
         revele={popupDeleteRecipe}
         togglePopup={togglePopupDeleteRecipe}
       />
-      <Popup
+      <DialogBox
         type="warning"
         msg={t('warningDeleteIngredients')}
         onConfirm={handleOnConfirmDeleteIngredients}

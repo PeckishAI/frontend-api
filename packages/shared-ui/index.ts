@@ -1,24 +1,26 @@
 // components
-import Sidebar from './components/Sidebar/Sidebar';
-import SidebarItem from './components/Sidebar/SidebarItem';
-import SidebarSeparator from './components/Sidebar/SidebarSeparator';
-import Navbar from './components/Navbar/Navbar';
+import Sidebar from './components/layout/Sidebar/Sidebar';
+import SidebarItem from './components/layout/Sidebar/SidebarItem';
+import SidebarSeparator from './components/layout/Sidebar/SidebarSeparator';
+import Navbar from './components/layout/Navbar/Navbar';
 import Table from './components/Table/Table';
 import Tabs from './components/Tabs/Tabs';
 import Dropdown from './components/Dropdown/Dropdown';
 import Lottie from './components/Lottie/Lottie';
-import DialogBox from './components/DialogBox/DialogBox';
-import Input from './components/Input/Input';
+import DialogBox from './components/layout/DialogBox/DialogBox';
+import Input from './components/form/Input/Input';
 import Button from './components/Button/Button';
 import IconButton from './components/IconButton/IconButton';
-import UploadCsv from './components/UploadCsv/UploadCsv';
+import UploadCsv from './components/layout/UploadCsv/UploadCsv';
 import IntegrationCard from '../../apps/restaurant/src/components/IntegrationCard/IntegrationCard';
-import LoginModal from './components/LoginModal/LoginModal';
+import LoginModal from './components/layout/LoginModal/LoginModal';
 import RestaurantCard from './components/RestaurantCard/RestaurantCard';
 import ProfilePicture from './components/ProfilePicture/ProfilePicture';
-import EmptyPage from './components/EmptyPage/EmptyPage';
-import Popup from './components/Popup/Popup';
-import Select from './components/Select/Select';
+import EmptyPage from './components/layout/EmptyPage/EmptyPage';
+import Popup from './components/layout/Popup/Popup';
+import Select from './components/form/Select/Select';
+import { LabeledInput } from './components/form/LabeledInput';
+import PhoneNumberInput from './components/form/PhoneNumberInput/PhoneNumberInput';
 import './styles/common.css';
 
 export {
@@ -42,4 +44,6 @@ export {
   EmptyPage,
   Popup,
   Select,
+  LabeledInput,
+  PhoneNumberInput,
 };

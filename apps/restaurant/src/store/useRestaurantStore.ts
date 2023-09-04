@@ -16,6 +16,7 @@ export type Restaurant = {
 type RestaurantStore = {
   selectedRestaurantUUID?: string;
   restaurants: Restaurant[];
+  restaurantsLoading: boolean;
   setSelectedRestaurantUUID: (uuid: string) => void;
   loadRestaurants: () => void;
   addRestaurant: (restaurant: Restaurant) => void;
@@ -24,6 +25,7 @@ type RestaurantStore = {
 export const useRestaurantStore = create<RestaurantStore>()((set) => ({
   restaurants: [],
   selectedRestaurantUUID: undefined,
+  restaurantsLoading: false,
 
   setSelectedRestaurantUUID: (uuid: string) => {
     set({ selectedRestaurantUUID: uuid });
@@ -32,6 +34,10 @@ export const useRestaurantStore = create<RestaurantStore>()((set) => ({
     const user = useUserStore.getState().user;
     if (!user) return;
 
+    set({
+      restaurantsLoading: true,
+    });
+
     const restaurants = await restaurantService.getUserRestaurants(
       user.user_uuid
     );
@@ -39,6 +45,7 @@ export const useRestaurantStore = create<RestaurantStore>()((set) => ({
     set({
       restaurants,
       selectedRestaurantUUID: restaurants[0]?.uuid ?? undefined,
+      restaurantsLoading: false,
     });
   },
   addRestaurant: (restaurant: Restaurant) => {

@@ -11,7 +11,7 @@ import {
   Dropdown,
   IconButton,
   Input,
-  Popup,
+  DialogBox,
   UploadCsv,
 } from 'shared-ui';
 import { Ingredient, inventoryService } from '../../services';
@@ -464,7 +464,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         )}
 
         <Tooltip className="tooltip" id="inventory-tooltip" />
-        <Popup
+        <DialogBox
           type="warning"
           msg={t('warning.delete')}
           subMsg={
@@ -475,7 +475,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           revele={popupDelete === undefined ? false : true}
           togglePopup={() => togglePopupDelete(undefined)}
         />
-        <Popup
+        <DialogBox
           type="warning"
           msg={t('warning.edit')}
           subMsg={
@@ -488,7 +488,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           revele={popupPreviewEdit === undefined ? false : true}
           togglePopup={() => togglePopupPreviewEdit(undefined)}
         />
-        <Popup
+        <DialogBox
           type="error"
           msg={t('error.trigger') + '. ' + t('error.tryLater') + '.'}
           subMsg={popupError}

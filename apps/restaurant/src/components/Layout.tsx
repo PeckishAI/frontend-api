@@ -6,8 +6,8 @@ import {
   SidebarItem,
   Navbar,
   Lottie,
-  Dropdown,
   SidebarSeparator,
+  Select,
 } from 'shared-ui';
 import { useRestaurantStore } from '../store/useRestaurantStore';
 import { useUserStore } from 'user-management';
@@ -26,6 +26,7 @@ const Layout = () => {
     setSelectedRestaurantUUID,
     restaurants,
     loadRestaurants,
+    restaurantsLoading,
   } = useRestaurantStore();
 
   useEffect(() => {
@@ -73,6 +74,11 @@ const Layout = () => {
   if (user && !user.onboarded) {
     return <Navigate to="/onboarding" />;
   }
+
+  const restaurantsOptions = restaurants.map((restaurant) => ({
+    label: restaurant.name,
+    value: restaurant.uuid,
+  }));
 
   return (
     <>
@@ -122,13 +128,17 @@ const Layout = () => {
         />
         <div className="restaurant-dropdown">
           <p className="label">{t('navbar.restaurants')} :</p>
-          <Dropdown
-            options={restaurants.map((restaurant) => ({
-              label: restaurant.name,
-              value: restaurant.uuid,
-            }))}
-            onOptionChange={setSelectedRestaurantUUID}
-            selectedOption={selectedRestaurantUUID}
+          <Select
+            menuPlacement="top"
+            isLoading={restaurantsLoading}
+            options={restaurantsOptions}
+            value={restaurantsOptions.find(
+              (opt) => opt.value === selectedRestaurantUUID
+            )}
+            onChange={(option) => {
+              if (option === null) return;
+              setSelectedRestaurantUUID(option.value);
+            }}
           />
         </div>
       </Sidebar>
