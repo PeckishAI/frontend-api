@@ -1,0 +1,63 @@
+.card {
+  padding: 15px 20px;
+  // box-shadow: ;
+  background-color: var(--secondaryColor);
+  border-radius: 5px;
+
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+
+    .cardTitle {
+      font-size: 1.25rem;
+      color: var(--textPrimaryColor);
+    }
+
+    .cardMore {
+      color: var(--primaryColor);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .cardLinkedAt {
+    font-size: 0.8rem;
+    color: var(--textSecondaryColor);
+    margin-bottom: 15px;
+  }
+
+  .cardContactContainer {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    margin-bottom: 5px;
+  }
+
+  .cardContactIcon {
+    color: var(--primaryColor);
+    margin-right: 10px;
+  }
+
+  .cardContactText {
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    color: var(--textSecondaryColor);
+    width: fit-content;
+
+    &:hover {
+      color: var(--primaryColor);
+    }
+  }
+}
+
+.menuIcon {
+  margin-right: 5px;
+}
+
+.menuDelete {
+  color: var(--errorColor);
+}

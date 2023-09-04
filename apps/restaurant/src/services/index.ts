@@ -14,4 +14,5 @@ export * from './inventory.service';
 export * from './restaurant.service';
 export * from './onboarding.service';
 export * from './recipes.service';
+export * from './supplier.service';
 export * from './types';

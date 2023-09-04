@@ -12,7 +12,7 @@ const Inventory = () => {
   const supplierTabRef = useRef<SupplierTabRef>(null);
   const ingredientTabRef = useRef<IngredientTabRef>(null);
 
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedTab, setSelectedTab] = useState(1);
   const [searchValue, setSearchValue] = useState<string>('');
   const [loadingData, setLoadingData] = useState<boolean>(false);
 
