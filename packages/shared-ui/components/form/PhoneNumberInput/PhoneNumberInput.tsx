@@ -5,20 +5,35 @@ import PhoneInput, { Props } from 'react-phone-number-input';
 import './PhoneNumberInput.scss';
 import 'react-phone-number-input/style.css';
 import { FieldValues } from 'react-hook-form';
+import { ErrorMessage } from '../common';
+
+// To fix unknown extend
+type Extend = NonNullable<unknown>;
 
 type PhoneNumberInputProps<FV extends FieldValues> = {
   mode?: 'input' | 'form';
-} & (FV extends undefined ? Props<{}> : FormProps<{}, FV>);
+  error?: string;
+} & (FV extends undefined ? Props<Extend> : FormProps<Extend, FV>);
 
 const PhoneNumberInput = <FV extends FieldValues>(
   props: PhoneNumberInputProps<FV>
 ) => {
-  const { mode, ...rest } = props;
+  const { mode, error, ...rest } = props;
 
+  let phoneInput;
   if (mode === 'form') {
-    return <PhoneInputForm {...(rest as FormProps<{}, FV>)} />;
+    phoneInput = (
+      <PhoneInputForm {...(rest as unknown as FormProps<Extend, FV>)} />
+    );
   } else {
-    return <PhoneInput {...(rest as unknown as Props<{}>)} />;
+    phoneInput = <PhoneInput {...(rest as unknown as Props<Extend>)} />;
   }
+
+  return (
+    <div>
+      {phoneInput}
+      {error && <ErrorMessage text={error} />}
+    </div>
+  );
 };
 export default PhoneNumberInput;

@@ -1,6 +1,7 @@
 :root {
   /* Colors */
   --primaryColor: #5e72e4;
+  --primaryColorLighten: #dee1f7;
   --primaryColorAccentued: #5567cd;
   --onPrimaryColor: #fcfcfc;
   --secondaryColor: #f6f1f1;
@@ -8,10 +9,12 @@
   --backgroundColor: #ffffff;
   --onBackgroundColor: #151515;
   --borderColor: #dbdbdb;
-  --textSecondaryColor: #7f7f7f;
   --cardColor: #272727;
   --navbarColor: #f6f1f1;
   --errorColor: #fc4343;
+
+  --textPrimaryColor: #242424;
+  --textSecondaryColor: #7f7f7f;
 
   /* --backgroundColor: #ffffff;
     --typographyPrimaryColor: #151515; */
@@ -31,6 +34,11 @@
   --btnRadius: 10px;
   --transitionDuration: 0.4s;
   --navbarHeight: 80px;
+
+  /* Input variables */
+  --input-large-height: 40px;
+  --input-small-height: 30px;
+  --input-text-size: 14px;
 }
 * {
   font-family: 'Montserrat', sans-serif;

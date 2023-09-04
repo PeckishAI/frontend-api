@@ -4,6 +4,7 @@ import Lottie from '../Lottie/Lottie';
 type Props = {
   value: string;
   type: 'primary' | 'secondary';
+  actionType?: 'submit' | 'button';
   className?: string;
   loading?: boolean;
   onClick?: () => void;
@@ -13,6 +14,7 @@ type Props = {
 const Button = (props: Props) => {
   return (
     <button
+      type={props.actionType ?? 'button'}
       className={`button ${props.type} ${props.className ?? ''}`}
       onClick={!props.loading ? props.onClick : undefined}>
       <span style={props.loading ? { opacity: 0 } : undefined}>

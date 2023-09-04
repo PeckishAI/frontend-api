@@ -1,6 +1,6 @@
 import LottieFile from '../../Lottie/Lottie';
 import styles from './EmptyPage.module.scss';
- 
+
 type Props = {
   title: string;
   description: string;
