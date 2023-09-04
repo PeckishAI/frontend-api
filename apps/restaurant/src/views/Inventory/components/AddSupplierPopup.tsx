@@ -24,6 +24,21 @@ type Props = {
   onRequestClose: () => void;
 };
 
+const SUPPLIERS = [
+  {
+    label: 'Metro',
+    value: 'metro',
+  },
+  {
+    label: 'Rekki',
+    value: 'rekki',
+  },
+  {
+    label: 'REKKI FRANCE',
+    value: 'rekki-fr',
+  },
+];
+
 const AddSupplierPopup = (props: Props) => {
   const [addingMode, setAddingMode] = useState(false);
 
@@ -50,13 +65,23 @@ const AddSupplierPopup = (props: Props) => {
     setValue('name', value);
   };
 
+  const handleSubmitForm = handleSubmit((data) => {
+    console.log(data);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        props.onRequestClose();
+        resolve(true);
+      }, 1000);
+    });
+  });
+
   return (
     <Popup
       isVisible={props.isVisible}
       onRequestClose={props.onRequestClose}
       title="Add a new supplier"
       subtitle="Search your supplier here or create a new one if you don't find it">
-      <form onSubmit={handleSubmit((data) => console.log(data))}>
+      <form onSubmit={handleSubmitForm}>
         <div className={styles.inputContainer}>
           {!addingMode ? (
             <Select
@@ -69,16 +94,7 @@ const AddSupplierPopup = (props: Props) => {
               formatCreateLabel={(inputValue) =>
                 `Create supplier "${inputValue}"`
               }
-              options={[
-                {
-                  label: 'Test',
-                  value: 'test',
-                },
-                {
-                  label: 'Test 2',
-                  value: 'test2',
-                },
-              ]}
+              options={SUPPLIERS}
             />
           ) : (
             <>
@@ -92,7 +108,7 @@ const AddSupplierPopup = (props: Props) => {
               <LabeledInput
                 lighter
                 placeholder="Email"
-                type="email"
+                type="text"
                 error={errors.email?.message}
                 {...register('email')}
               />
