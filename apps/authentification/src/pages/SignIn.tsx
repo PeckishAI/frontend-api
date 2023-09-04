@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { Input } from '../components/Input';
 import { MdAlternateEmail } from 'react-icons/md';
 import { FaLock } from 'react-icons/fa';
 import { Checkbox } from '../components/Checkbox';
 import { useGoogleLogin } from '@react-oauth/google';
 import { FcGoogle } from 'react-icons/fc';
-import { Button } from 'shared-ui';
+import { Button, LabeledInput } from 'shared-ui';
 import { useForm } from 'react-hook-form';
 import authService, { LogInResult } from '../services/auth.service';
 import { z } from 'zod';
@@ -105,7 +104,7 @@ export const SignIn = () => {
         {errorMessage && <p className="form-error">{errorMessage}</p>}
 
         <form className="inputs-container" onSubmit={onSubmit}>
-          <Input
+          <LabeledInput
             placeholder={t('common:email')}
             type="text"
             autoComplete="email"
@@ -113,7 +112,7 @@ export const SignIn = () => {
             {...register('email')}
             error={errors.email?.message}
           />
-          <Input
+          <LabeledInput
             placeholder={t('common:password')}
             type="password"
             autoComplete="current-password"

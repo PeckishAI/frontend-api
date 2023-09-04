@@ -1,0 +1,48 @@
+.PhoneInput {
+  // background-color: red;
+  height: var(--input-large-height);
+  border-radius: 5px;
+  border: 1px solid var(--borderColor);
+  overflow: visible;
+  box-shadow: none;
+  transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+
+  // Shadow flag color
+  --PhoneInputCountryFlag-borderColor: #5f5f5f6c;
+  --PhoneInputCountryFlag-borderColor--focus: var(--primaryColor);
+
+  --PhoneInputCountrySelectArrow-color--focus: var(--primaryColor);
+
+  &--focus {
+    box-shadow: 0 0 0 2px var(--primaryColor);
+  }
+
+  &Country {
+    padding-left: 10px;
+
+    &Icon {
+      border-radius: 2px;
+
+      // &--border {
+      //   box-shadow: 0 0 0 2px #727272;
+      // }
+    }
+  }
+
+  &Input {
+    height: 100%;
+    width: 100%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+
+    color: var(--textPrimaryColor);
+    font-size: var(--input-text-size);
+    font-weight: 400;
+    // padding: 0 5px;
+
+    &::placeholder {
+      color: var(--textSecondaryColor);
+    }
+  }
+}

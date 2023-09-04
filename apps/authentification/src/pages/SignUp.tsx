@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { Input } from '../components/Input';
 import { MdAlternateEmail } from 'react-icons/md';
 import { FaLock, FaUser } from 'react-icons/fa';
 import { Checkbox } from '../components/Checkbox';
 import { useGoogleLogin } from '@react-oauth/google';
 import { FcGoogle } from 'react-icons/fc';
-import { Button } from 'shared-ui';
+import { Button, LabeledInput } from 'shared-ui';
 import { useForm } from 'react-hook-form';
 import authService, { LogInResult } from '../services/auth.service';
 import { z } from 'zod';
@@ -123,7 +122,7 @@ export const SignUp = () => {
             <span>{t('common:or-separator')}</span>
           </div>
 
-          <Input
+          <LabeledInput
             placeholder={t('common:name')}
             type="text"
             autoComplete="name"
@@ -132,7 +131,7 @@ export const SignUp = () => {
             error={errors.name?.message}
           />
 
-          <Input
+          <LabeledInput
             placeholder={t('common:email')}
             type="text"
             autoComplete="email"
@@ -141,7 +140,7 @@ export const SignUp = () => {
             error={errors.email?.message}
           />
           <div className="password-row">
-            <Input
+            <LabeledInput
               placeholder={t('common:password')}
               type="password"
               autoComplete="new-password"
@@ -149,7 +148,7 @@ export const SignUp = () => {
               {...register('password')}
               error={errors.password?.message}
             />
-            <Input
+            <LabeledInput
               placeholder={t('common:confirm-password')}
               type="password"
               autoComplete="off"

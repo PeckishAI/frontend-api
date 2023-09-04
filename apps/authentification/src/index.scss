@@ -46,7 +46,7 @@
         display: flex;
         column-gap: 20px;
 
-        .Input {
+        .LabeledInput {
           flex: 1;
         }
       }
@@ -76,13 +76,13 @@
 
     .submit {
       font-size: 0.9rem;
-      height: 40px;
+      height: var(--input-large-height);
       border-radius: 5px;
     }
 
     .google-button {
       cursor: pointer;
-      height: 40px;
+      height: var(--input-large-height);
       background-color: white;
       border-radius: 5px;
       border: none;
