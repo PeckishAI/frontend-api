@@ -1,0 +1,49 @@
+.selectContainer {
+  // font-family: 'Montserrat', sans-serif;
+
+  .control {
+    border-color: var(--borderColor);
+    box-shadow: none;
+    transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+
+    &.controlFocused {
+      border-color: var(--borderColor);
+      box-shadow: 0 0 0 2px var(--primaryColor);
+    }
+
+    &:hover {
+      border-color: var(--borderColor);
+    }
+
+    .controlValueContainer {
+      font-size: var(--input-text-size);
+
+      .valueText {
+        color: var(--textSecondaryColor);
+        font-size: var(--input-text-size);
+        font-weight: 400;
+
+        &.valueTextFilled {
+          color: var(--textPrimaryColor);
+        }
+      }
+    }
+  }
+
+  .option {
+    background-color: var(--backgroundColor);
+    color: var(--textPrimaryColor);
+    cursor: pointer;
+    font-size: var(--input-text-size);
+
+    &.optionSelected {
+      background-color: var(--primaryColor);
+      color: var(--onPrimaryColor);
+    }
+
+    &:hover:not(.optionSelected) {
+      background-color: var(--primaryColorLighten);
+      color: var(--textPrimaryColor);
+    }
+  }
+}

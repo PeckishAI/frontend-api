@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import LottieFile from '../Lottie/Lottie';
+import LottieFile from '../../Lottie/Lottie';
 import './style.scss';
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
   onConfirm?: () => void;
 };
 
-const Popup = (props: Props) => {
+const DialogBox = (props: Props) => {
   const { t } = useTranslation('common');
   if (!props.revele) {
     return null;
@@ -55,4 +55,4 @@ const Popup = (props: Props) => {
   );
 };
 
-export default Popup;
+export default DialogBox;

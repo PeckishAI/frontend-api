@@ -2,8 +2,8 @@ import './style.scss';
 import { useTranslation } from 'react-i18next';
 import { Button, Input } from 'shared-ui';
 import { useState } from 'react';
-import { inventoryService } from '../../../../apps/restaurant/src/services';
-import { useRestaurantStore } from '../../../../apps/restaurant/src/store/useRestaurantStore';
+import { inventoryService } from '../../../../../apps/restaurant/src/services';
+import { useRestaurantStore } from '../../../../../apps/restaurant/src/store/useRestaurantStore';
 
 type Props = {
   fileCsv: File | null;

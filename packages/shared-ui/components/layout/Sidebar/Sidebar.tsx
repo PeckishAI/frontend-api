@@ -1,7 +1,5 @@
-import Lottie from 'react-lottie';
 import './sidebar.scss';
-import React, { useRef, useState } from 'react';
-import bruger from '../../asset/lotties/burger.json';
+import React, {  useState } from 'react';
 
 type Props = {
   children: React.ReactNode;

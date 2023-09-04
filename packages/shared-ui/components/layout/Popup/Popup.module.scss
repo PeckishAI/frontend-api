@@ -1,0 +1,73 @@
+/* Modal background */
+.modal {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  animation: 0.4s fadeBackground forwards;
+
+  &.visible {
+    display: block;
+  }
+}
+
+@keyframes fadeBackground {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+    // Check if browser don't lag
+    backdrop-filter: blur(0px);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3px);
+  }
+}
+
+.centeringContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.modalContent {
+  background-color: var(--backgroundColor);
+  box-shadow: 0 0 10px 0 #00000033;
+  padding: 25px 30px;
+  border-radius: 10px;
+
+  min-width: 400px;
+  max-width: 75%;
+  min-height: 200px;
+  max-height: 75%;
+
+  transform-origin: 50% 100%;
+  animation: 0.4s animateFromTop;
+
+  .modalTitle {
+    font-size: 1.3rem;
+    color: var(--textPrimaryColor);
+    margin-bottom: 5px;
+  }
+
+  .modalSubtitle {
+    font-size: 0.85rem;
+    color: var(--textSecondaryColor);
+    margin-bottom: 20px;
+  }
+}
+
+@keyframes animateFromTop {
+  from {
+    // top: -300px;
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    // top: 0;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
