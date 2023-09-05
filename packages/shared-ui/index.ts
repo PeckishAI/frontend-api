@@ -20,6 +20,7 @@ import EmptyPage from './components/layout/EmptyPage/EmptyPage';
 import Popup from './components/layout/Popup/Popup';
 import Select from './components/form/Select/Select';
 import { LabeledInput } from './components/form/LabeledInput';
+import { Checkbox } from './components/form/Checkbox';
 import PhoneNumberInput from './components/form/PhoneNumberInput/PhoneNumberInput';
 import './styles/common.css';
 
@@ -45,5 +46,6 @@ export {
   Popup,
   Select,
   LabeledInput,
+  Checkbox,
   PhoneNumberInput,
 };

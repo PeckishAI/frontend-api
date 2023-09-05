@@ -2,6 +2,7 @@ import React from 'react';
 import { FaCheck } from 'react-icons/fa';
 import './style.scss';
 import { useTranslation } from 'react-i18next';
+import { ErrorMessage } from '../common';
 
 type Props = Omit<React.HTMLProps<HTMLInputElement>, 'checked' | 'onCheck'> & {
   checked?: boolean;
@@ -27,9 +28,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, Props>(
           {label && <span>{label}</span>}
         </label>
         {error && (
-          <p className="error-message">
-            {t(error as unknown as TemplateStringsArray)}
-          </p>
+          <ErrorMessage text={t(error as unknown as TemplateStringsArray)} />
         )}
       </div>
     );

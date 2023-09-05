@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { MdAlternateEmail } from 'react-icons/md';
 import { FaLock, FaUser } from 'react-icons/fa';
-import { Checkbox } from '../components/Checkbox';
 import { useGoogleLogin } from '@react-oauth/google';
 import { FcGoogle } from 'react-icons/fc';
-import { Button, LabeledInput } from 'shared-ui';
+import { Button, LabeledInput, Checkbox } from 'shared-ui';
 import { useForm } from 'react-hook-form';
 import authService, { LogInResult } from '../services/auth.service';
 import { z } from 'zod';
@@ -168,6 +167,7 @@ export const SignUp = () => {
 
           <Button
             type="primary"
+            actionType="submit"
             value={t('common:sign-up')}
             className="submit"
             loading={loading}
