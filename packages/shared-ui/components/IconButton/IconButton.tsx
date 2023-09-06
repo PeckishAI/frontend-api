@@ -18,7 +18,7 @@ const IconButton = (props: Props) => {
   const tooltipeId = useId();
   return (
     <div
-      className={`icon ${props.className ?? ''}`}
+      className={`IconButton ${props.className ?? ''}`}
       data-tooltip-id={props.tooltipId ?? tooltipeId}
       data-tooltip-content={props.tooltipMsg}
       onClick={!props.loading ? props.onClick : undefined}>

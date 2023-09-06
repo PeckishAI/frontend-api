@@ -1,4 +1,4 @@
-.icon {
+.IconButton {
   width: 35px;
   height: 35px;
   padding: 8px;
@@ -23,6 +23,6 @@
     margin-top: 2px;
   }
 }
-.icon:hover {
+.IconButton:hover {
   background-color: var(--secondaryColor);
 }
