@@ -21,6 +21,7 @@ const Button = (props: Props) => {
         {props.value}
         {props.icon && <span className="icon">{props.icon}</span>}
       </span>
+      {props.icon}
       {props.loading && (
         <Lottie
           type={props.type === 'primary' ? 'loading_white' : 'loading'}
