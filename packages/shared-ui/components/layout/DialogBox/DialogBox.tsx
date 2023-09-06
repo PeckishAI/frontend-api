@@ -8,7 +8,7 @@ type Props = {
   subMsg?: string;
   list?: string[];
   revele: boolean;
-  togglePopup: () => void;
+  onRequestClose: () => void;
   onConfirm?: () => void;
 };
 
@@ -19,7 +19,7 @@ const DialogBox = (props: Props) => {
   }
   return (
     <div className="popup-container">
-      <div className="overlay" onClick={props.togglePopup}></div>
+      <div className="overlay" onClick={props.onRequestClose}></div>
       <div className="popup">
         {props.type === 'info' && <LottieFile width="80px" type="info" />}
         {props.type === 'warning' && <LottieFile width="80px" type="warning" />}
@@ -35,13 +35,13 @@ const DialogBox = (props: Props) => {
         )}
         <div className="button-container">
           {['error', 'info'].includes(props.type) && (
-            <button onClick={props.togglePopup} className="cancel">
+            <button onClick={props.onRequestClose} className="cancel">
               {t('ok')}
             </button>
           )}
           {props.type === 'warning' && (
             <>
-              <button onClick={props.togglePopup} className="cancel">
+              <button onClick={props.onRequestClose} className="cancel">
                 {t('cancel')}
               </button>
               <button onClick={props.onConfirm} className="confirm">

@@ -473,7 +473,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           list={popupDelete?.length !== 0 ? popupDelete : undefined}
           onConfirm={handleConfirmPopupDelete}
           revele={popupDelete === undefined ? false : true}
-          togglePopup={() => togglePopupDelete(undefined)}
+          onRequestClose={() => togglePopupDelete(undefined)}
         />
         <DialogBox
           type="warning"
@@ -486,14 +486,14 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           list={popupPreviewEdit?.length !== 0 ? popupPreviewEdit : undefined}
           onConfirm={handleConfirmPopupPreviewEdit}
           revele={popupPreviewEdit === undefined ? false : true}
-          togglePopup={() => togglePopupPreviewEdit(undefined)}
+          onRequestClose={() => togglePopupPreviewEdit(undefined)}
         />
         <DialogBox
           type="error"
           msg={t('error.trigger') + '. ' + t('error.tryLater') + '.'}
           subMsg={popupError}
           revele={popupError === '' ? false : true}
-          togglePopup={() => togglePopupError('')}
+          onRequestClose={() => togglePopupError('')}
         />
       </>
     );

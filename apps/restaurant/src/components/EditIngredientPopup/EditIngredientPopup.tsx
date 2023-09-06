@@ -257,14 +257,14 @@ const EditIngredientPopup = (props: Props) => {
         msg={t('warningDeleteRecipe')}
         onConfirm={handleOnConfirmDeleteRecipe}
         revele={popupDeleteRecipe}
-        togglePopup={togglePopupDeleteRecipe}
+        onRequestClose={togglePopupDeleteRecipe}
       />
       <DialogBox
         type="warning"
         msg={t('warningDeleteIngredients')}
         onConfirm={handleOnConfirmDeleteIngredients}
         revele={popupDeleteIngredients}
-        togglePopup={togglePopupDeleteIngredients}
+        onRequestClose={togglePopupDeleteIngredients}
       />
       <Tooltip className="tooltip" id="actions-tooltip" />
     </>

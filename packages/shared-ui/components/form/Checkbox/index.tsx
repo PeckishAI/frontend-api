@@ -3,6 +3,7 @@ import { FaCheck } from 'react-icons/fa';
 import './style.scss';
 import { useTranslation } from 'react-i18next';
 import { ErrorMessage } from '../common';
+import classNames from 'classnames';
 
 type Props = Omit<React.HTMLProps<HTMLInputElement>, 'checked' | 'onCheck'> & {
   checked?: boolean;
@@ -12,10 +13,10 @@ type Props = Omit<React.HTMLProps<HTMLInputElement>, 'checked' | 'onCheck'> & {
 };
 
 export const Checkbox = React.forwardRef<HTMLInputElement, Props>(
-  ({ label, checked, onCheck, error, ...props }: Props, ref) => {
+  ({ label, checked, onCheck, error, className, ...props }: Props, ref) => {
     const { t } = useTranslation('error');
     return (
-      <div className="Checkbox">
+      <div className={classNames('Checkbox', className)}>
         <label>
           <input
             {...props}
