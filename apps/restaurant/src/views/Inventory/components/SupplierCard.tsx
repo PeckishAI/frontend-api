@@ -7,6 +7,7 @@ import { MdAlternateEmail } from 'react-icons/md';
 import { LinkedSupplier } from '../../../services';
 import styles from './SupplierCard.module.scss';
 import dayjs from 'dayjs';
+import Skeleton from 'react-loading-skeleton';
 
 type Props = {
   supplier: LinkedSupplier;
@@ -70,6 +71,32 @@ export const SupplierCard = ({
             {supplier.email}
           </a>
         )}
+      </div>
+    </div>
+  );
+};
+
+export const SupplierCardSkeleton = () => {
+  return (
+    <div className={styles.card}>
+      <div className={styles.cardHeader}>
+        <h3 className={styles.cardTitle}>
+          <Skeleton width={100} />
+        </h3>
+      </div>
+      <p className={styles.cardLinkedAt}>
+        {/* {dayjs(supplier.linkedAt).calendar()} */}
+        <Skeleton width={150} />
+      </p>
+      <div className={styles.cardContactContainer}>
+        <a className={styles.cardContactText}>
+          {/* <FaPhone className={styles.cardContactIcon} /> */}
+          <Skeleton width={175} />
+        </a>
+        <a className={styles.cardContactText}>
+          {/* <MdAlternateEmail className={styles.cardContactIcon} /> */}
+          <Skeleton width={175} />
+        </a>
       </div>
     </div>
   );

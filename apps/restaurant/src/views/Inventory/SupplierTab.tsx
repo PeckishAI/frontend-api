@@ -1,20 +1,14 @@
-import React, { useImperativeHandle, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  DialogBox,
-  LabeledInput,
-  PhoneNumberInput,
-  Popup,
-  Select,
-} from 'shared-ui';
+import { Button, DialogBox } from 'shared-ui';
 import { LinkedSupplier } from '../../services/supplier.service';
 import styles from './SupplierTab.module.scss';
-import { SupplierCard } from './components/SupplierCard';
+import { SupplierCard, SupplierCardSkeleton } from './components/SupplierCard';
 import { toast } from 'react-hot-toast';
 import { GLOBAL_CONFIG } from 'shared-config';
 import Fuse from 'fuse.js';
 import AddSupplierPopup from './components/AddSupplierPopup';
+import Skeleton from 'react-loading-skeleton';
 
 let SUPPLIERS: LinkedSupplier[] = [
   {
@@ -49,6 +43,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
   (props, forwardedRef) => {
     const { t } = useTranslation('common');
 
+    const [isLoading, setLoading] = useState(true);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [deletingSupplierUUID, setDeletingSupplierUUID] = useState<
       string | null
@@ -69,6 +64,12 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
       }),
       []
     );
+
+    useEffect(() => {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }, []);
 
     const handleCopyInvitationLink = (invitationKey?: string) => {
       if (!invitationKey) {
@@ -113,6 +114,21 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     const linkedSuppliers = suppliers.filter((s) => s.linked);
     const pendingSuppliers = suppliers.filter((s) => !s.linked);
+
+    if (isLoading) {
+      return (
+        <>
+          <h1 className={styles.sectionTitle}>
+            <Skeleton width={250} />
+          </h1>
+          <div className={styles.cardContainer}>
+            {[...Array(5)].map((_, i) => (
+              <SupplierCardSkeleton key={i} />
+            ))}
+          </div>
+        </>
+      );
+    }
 
     return (
       <>
@@ -161,7 +177,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           subMsg="Voulez-vous supprimer l'accès de REKKI à votre inventaire ?"
           revele={showDeleteDialog}
           onRequestClose={() => {
-            setShowDeleteDialog(!showDeleteDialog);
+            setShowDeleteDialog(false);
             setDeletingSupplierUUID(null);
           }}
           onConfirm={handleDeleteSupplier}
@@ -171,6 +187,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           isVisible={showAddPopup}
           onRequestClose={() => setShowAddPopup(false)}
           onSupplierAdded={(supplier) => {
+            // TEMPORARY (until we have the backend)
             SUPPLIERS.push({
               ...supplier,
               uuid: Math.random().toString(),
