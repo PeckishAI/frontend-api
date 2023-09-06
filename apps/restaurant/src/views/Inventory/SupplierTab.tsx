@@ -16,7 +16,7 @@ import { GLOBAL_CONFIG } from 'shared-config';
 import Fuse from 'fuse.js';
 import AddSupplierPopup from './components/AddSupplierPopup';
 
-const SUPPLIERS: LinkedSupplier[] = [
+let SUPPLIERS: LinkedSupplier[] = [
   {
     uuid: '1',
     name: 'Rekki',
@@ -50,8 +50,12 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     const { t } = useTranslation('common');
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [deletingSupplierUUID, setDeletingSupplierUUID] = useState<
+      string | null
+    >(null);
     const [showAddPopup, setShowAddPopup] = useState(false);
 
+    // Render options for the tab bar
     useImperativeHandle(
       forwardedRef,
       () => ({
@@ -80,11 +84,22 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     const handleDeleteSupplier = () => {
       setShowDeleteDialog(false);
-      toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-        loading: 'Deleting supplier...',
-        success: 'Supplier deleted',
-        error: 'Error deleting supplier',
-      });
+      toast.promise(
+        new Promise((resolve) =>
+          setTimeout(() => {
+            SUPPLIERS = SUPPLIERS.filter(
+              (s) => s.uuid !== deletingSupplierUUID
+            );
+            setDeletingSupplierUUID(null);
+            resolve(true);
+          }, 1000)
+        ),
+        {
+          loading: 'Deleting supplier...',
+          success: 'Supplier deleted',
+          error: 'Error deleting supplier',
+        }
+      );
     };
 
     const suppliers = props.searchValue
@@ -109,7 +124,10 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
                 <SupplierCard
                   key={supplier.uuid}
                   supplier={supplier}
-                  onPressDelete={() => setShowDeleteDialog(true)}
+                  onPressDelete={() => {
+                    setShowDeleteDialog(true);
+                    setDeletingSupplierUUID(supplier.uuid);
+                  }}
                 />
               ))}
             </div>
@@ -127,7 +145,10 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
                   onPressCopy={() =>
                     handleCopyInvitationLink(supplier.invitationKey)
                   }
-                  onPressDelete={() => setShowDeleteDialog(true)}
+                  onPressDelete={() => {
+                    setShowDeleteDialog(true);
+                    setDeletingSupplierUUID(supplier.uuid);
+                  }}
                 />
               ))}
             </div>
@@ -139,13 +160,24 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           msg="Révoquer l'accès à l'inventaire"
           subMsg="Voulez-vous supprimer l'accès de REKKI à votre inventaire ?"
           revele={showDeleteDialog}
-          togglePopup={() => setShowDeleteDialog(!showDeleteDialog)}
+          onRequestClose={() => {
+            setShowDeleteDialog(!showDeleteDialog);
+            setDeletingSupplierUUID(null);
+          }}
           onConfirm={handleDeleteSupplier}
         />
 
         <AddSupplierPopup
           isVisible={showAddPopup}
           onRequestClose={() => setShowAddPopup(false)}
+          onSupplierAdded={(supplier) => {
+            SUPPLIERS.push({
+              ...supplier,
+              uuid: Math.random().toString(),
+              linked: false,
+              linkedAt: new Date(),
+            });
+          }}
         />
       </>
     );

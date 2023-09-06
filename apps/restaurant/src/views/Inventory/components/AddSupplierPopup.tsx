@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   LabeledInput,
   PhoneNumberInput,
   Popup,
@@ -7,37 +8,54 @@ import {
 } from 'shared-ui';
 import styles from './AddSupplierPopup.module.scss';
 import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 const SupplierSchema = z.object({
-  name: z.string().min(1, { message: 'name-required' }),
-  email: z.string().min(1, { message: 'email-required' }).email('valid-email'),
-  phone: z.string().min(1, { message: 'phone-required' }),
+  supplierSelect: z.string(),
+  automaticInvitation: z.boolean(),
 });
 
-type SupplierForm = z.infer<typeof SupplierSchema>;
+const AddSupplierSchema = z.object({
+  name: z.string().min(1, { message: 'required' }),
+  email: z.string().min(1, { message: 'required' }).email('valid-email'),
+  phone: z.string().min(1, { message: 'required' }),
+  automaticInvitation: z.boolean(),
+});
 
-type Props = {
-  isVisible: boolean;
-  onRequestClose: () => void;
-};
+type SupplierForm = z.infer<typeof SupplierSchema & typeof AddSupplierSchema>;
 
 const SUPPLIERS = [
   {
     label: 'Metro',
     value: 'metro',
+    phone: '+31 7 52 15 45',
+    email: 'metro@metro.com',
   },
   {
     label: 'Rekki',
     value: 'rekki',
+    phone: '+31 7 52 15 45',
+    email: 'supply@rekki.com',
   },
   {
     label: 'REKKI FRANCE',
     value: 'rekki-fr',
+    phone: '+31 7 52 15 45',
+    email: 'supply@rekki.fr',
   },
 ];
+
+type Props = {
+  isVisible: boolean;
+  onRequestClose: () => void;
+  onSupplierAdded: (supplier: {
+    name: string;
+    email: string;
+    phone: string;
+  }) => void;
+};
 
 const AddSupplierPopup = (props: Props) => {
   const [addingMode, setAddingMode] = useState(false);
@@ -50,7 +68,10 @@ const AddSupplierPopup = (props: Props) => {
     setValue,
     reset,
   } = useForm<SupplierForm>({
-    resolver: zodResolver(SupplierSchema),
+    resolver: zodResolver(addingMode ? AddSupplierSchema : SupplierSchema),
+    defaultValues: {
+      automaticInvitation: true,
+    },
   });
 
   useEffect(() => {
@@ -66,10 +87,25 @@ const AddSupplierPopup = (props: Props) => {
   };
 
   const handleSubmitForm = handleSubmit((data) => {
-    console.log(data);
+    console.log('Submit', data);
     return new Promise((resolve) => {
       setTimeout(() => {
         props.onRequestClose();
+        props.onSupplierAdded(
+          addingMode
+            ? data
+            : {
+                name:
+                  SUPPLIERS.find((s) => s.value === data.supplierSelect)
+                    ?.label || '',
+                email:
+                  SUPPLIERS.find((s) => s.value === data.supplierSelect)
+                    ?.email || '',
+                phone:
+                  SUPPLIERS.find((s) => s.value === data.supplierSelect)
+                    ?.phone || '',
+              }
+        );
         resolve(true);
       }, 1000);
     });
@@ -84,17 +120,27 @@ const AddSupplierPopup = (props: Props) => {
       <form onSubmit={handleSubmitForm}>
         <div className={styles.inputContainer}>
           {!addingMode ? (
-            <Select
-              isCreatable
-              size="large"
-              isSearchable
-              isClearable
-              placeholder="Search a supplier"
-              onCreateOption={handleCreateNewOption}
-              formatCreateLabel={(inputValue) =>
-                `Create supplier "${inputValue}"`
-              }
-              options={SUPPLIERS}
+            <Controller
+              control={control}
+              name="supplierSelect"
+              render={({ field: { onChange, name, value, onBlur } }) => (
+                <Select
+                  isCreatable
+                  size="large"
+                  isSearchable
+                  isClearable
+                  placeholder="Search a supplier"
+                  onCreateOption={handleCreateNewOption}
+                  formatCreateLabel={(inputValue) =>
+                    `Create supplier "${inputValue}"`
+                  }
+                  options={SUPPLIERS}
+                  onChange={(val) => onChange(val && val.value)}
+                  value={SUPPLIERS.filter((c) => value === c.value)}
+                  name={name}
+                  onBlur={onBlur}
+                />
+              )}
             />
           ) : (
             <>
@@ -121,6 +167,12 @@ const AddSupplierPopup = (props: Props) => {
             </>
           )}
         </div>
+
+        <Checkbox
+          label="Send an automatic invitation to the supplier"
+          className={styles.autoCheckbox}
+          {...register('automaticInvitation')}
+        />
 
         <div className={styles.buttonsContainer}>
           <Button
