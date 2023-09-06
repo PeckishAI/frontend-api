@@ -7,6 +7,10 @@
   "cost": "Prix",
   "actions": "Actions",
 
+  "stock": "Stock",
+  "expectedSales": "Ventes estimées",
+  "price": "Prix",
+
   "placeholder.ingredientName": "Ex : Salade",
   "placeholder.ingredientQuantity": "Ex : 180",
 
