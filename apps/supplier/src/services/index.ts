@@ -1,5 +1,3 @@
-export * from './orders.service';
-
 import { config } from '../local_config/config';
 import axios from 'axios';
 
@@ -8,3 +6,6 @@ const Axios = axios.create({
 });
 
 export default Axios;
+
+export * from './orders.service';
+export * from './types';

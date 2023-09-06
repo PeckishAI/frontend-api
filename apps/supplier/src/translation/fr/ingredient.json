@@ -1,0 +1,23 @@
+{
+  "ingredientName": "Nom ingredient",
+  "theoreticalStock": "Stock théorique",
+  "actualStock": "Stock actuel",
+  "unit": "Unité",
+  "supplier": "Fournisseur",
+  "cost": "Prix",
+  "actions": "Actions",
+
+  "placeholder.ingredientName": "Ex : Salade",
+  "placeholder.ingredientQuantity": "Ex : 180",
+
+  "ingredient": "ingredient",
+  "addIngredient": "Ajouter un ingrédient",
+  "addIngredientTo": "Ajouter un ingrédient à",
+  "editIngredientsOf": "Modifier les ingrédients de",
+  "editRecipe": "Modifier la recette",
+  "deleteRecipe": "Supprimer la recette",
+  "warningDeleteRecipe": "Êtes-vous sure de vouloir supprimer la recette ?",
+  "warningDeleteIngredients": "Êtes-vous sure de vouloir supprimer les ingrédients sélectionnés ?",
+
+  "noIngredient": "Pas d'ingrédient"
+}

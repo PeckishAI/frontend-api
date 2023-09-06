@@ -131,6 +131,11 @@ const Integrations = () => {
           <Lottie type="loading" width="200px" />
         </div>
       )}
+      {/* <a
+        href="https://docs.google.com/forms/d/e/1FAIpQLSfeAmgiexP5rexbb8bSkFAz4LbH3WPUVIXl8JioAiS_d5Od1w/viewform?usp=sf_link"
+        target="blank">
+        Form
+      </a> */}
     </div>
   );
 };
