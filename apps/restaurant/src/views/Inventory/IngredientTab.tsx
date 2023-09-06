@@ -499,3 +499,4 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     );
   }
 );
+IngredientTab.displayName = 'IngredientTab';
