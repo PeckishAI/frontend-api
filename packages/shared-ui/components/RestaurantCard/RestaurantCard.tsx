@@ -1,12 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { Restaurant } from '../../../../apps/restaurant/src/store/useRestaurantStore';
+import Button from '../Button/Button';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
 import './style.scss';
 import Slider from 'react-slick';
 
 type Props = {
   restaurant: Restaurant;
-
+  buttonValue?: string;
   onClick: () => void;
 };
 
@@ -46,11 +47,12 @@ const RestaurantCard = (props: Props) => {
           ))}
         </Slider>
       </div>
-      <div className="buttons-container">
-        <button className="overview-btn" onClick={props.onClick}>
-          {t('overview')}
-        </button>
-      </div>
+      <Button
+        type="primary"
+        onClick={props.onClick}
+        className="cardBtn"
+        value={props.buttonValue ? props.buttonValue : 'Overview'}
+      />
     </div>
   );
 };
