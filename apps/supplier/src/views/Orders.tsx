@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { Table, Tabs, Dropdown } from 'shared-ui';
+import { Table, Tabs, Dropdown, Input } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { Tooltip } from 'react-tooltip';
-import { orderService } from '../_services';
+import { orderService } from '../services';
 
 // type Props = {};
 
@@ -30,13 +30,15 @@ const Orders = () => {
   const { t } = useTranslation('common');
 
   const [selectedTab, setSelectedTab] = useState(0);
-  const toggleTab = (tabIndex: number) => {
-    setSelectedTab(tabIndex);
-  };
-
   const [selectedOrderStatus, setSelectedOrderStatus] = useState<{
     [key: string]: string;
   }>({});
+  const [orderList, setOrderList] = useState<Order[]>();
+  const [searchValue, setSearchValue] = useState<string | null>(null);
+
+  const toggleTab = (tabIndex: number) => {
+    setSelectedTab(tabIndex);
+  };
 
   const sendNewOrderStatus = useCallback(
     (row: Order, value: string) => {
@@ -48,13 +50,16 @@ const Orders = () => {
     [setSelectedOrderStatus]
   );
 
-  const [orderList, setOrderList] = useState<Order[]>();
   useEffect(() => {
     orderService.getOrderList().then((res) => {
       console.log(res);
       setOrderList(res.data);
     });
   }, []);
+
+  const handleOnSearchValueChange = (value: string) => {
+    setSearchValue(value);
+  };
 
   const columns: ColumnDefinitionType<Order, keyof Order>[] = useMemo(
     () => [
@@ -99,7 +104,19 @@ const Orders = () => {
 
   return (
     <div className="orders">
-      <Tabs tabs={tabs} onClick={toggleTab} selectedIndex={selectedTab} />
+      <div className="tabs-and-tools">
+        <Tabs tabs={tabs} onClick={toggleTab} selectedIndex={selectedTab} />
+        <div className="tools">
+          <Input
+            type="text"
+            value={searchValue ?? ''}
+            placeholder={t('search')}
+            onChange={(value) => {
+              handleOnSearchValueChange(value);
+            }}
+          />
+        </div>
+      </div>
 
       {selectedTab === 0 && <Table data={orderList} columns={columns} />}
       <Tooltip className="tooltip" id="detail-tooltip" />
