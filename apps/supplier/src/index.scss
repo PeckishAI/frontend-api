@@ -1,0 +1,29 @@
+.tabs-and-tools {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+
+  .tools {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+}
+
+.orders {
+}
+
+.catalog {
+}
+
+@media screen and (max-width: 1050px) {
+  .tabs-and-tools {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    .tools {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  }
+}
