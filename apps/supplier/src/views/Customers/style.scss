@@ -27,7 +27,7 @@
         animation-duration: 0.2s;
         width: 250px;
         height: 150px;
-        background-color: var(--backgroundColor);
+        background-color: var(--secondaryColor);
         border-radius: 5px;
         box-shadow: 0 0 10px 0 #0000002f;
         display: flex;
@@ -40,20 +40,23 @@
         p {
           font-size: 0.9rem;
           text-align: center;
-          font-weight: 300;
+          font-weight: var(--medium);
           line-height: 1.4rem;
+          color: #303030;
         }
         .sharing-button {
           font-size: 0.9rem;
-          font-weight: var(--semiBold);
+          font-weight: var(--bold);
           text-transform: uppercase;
           color: var(--primaryColor);
-          padding: 5px;
+          padding: 5px 10px;
+          border-radius: 5px;
           cursor: pointer;
           transition: all 0.2s;
 
           i {
             margin: 0 10px;
+            font-weight: var(--bold);
           }
         }
 
