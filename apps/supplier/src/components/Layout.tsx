@@ -36,6 +36,13 @@ const Layout = () => {
           }}
         />
         <SidebarItem
+          name={t('customers')}
+          icon={<i className="fa-solid fa-share-nodes"></i>}
+          onClick={() => {
+            navigate('/customers');
+          }}
+        />
+        <SidebarItem
           name={t('map')}
           icon={<i className="fa-solid fa-map-location-dot"></i>}
           onClick={() => {

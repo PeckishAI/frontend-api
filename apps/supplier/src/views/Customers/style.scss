@@ -1,0 +1,118 @@
+.customers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  height: 100vh;
+
+  .tools {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    .share-catalog {
+      position: relative;
+      .overlay {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 1;
+      }
+      .share-catalog-box {
+        position: absolute;
+        right: 35px;
+        animation-name: shareTranslate;
+        animation-duration: 0.2s;
+        width: 250px;
+        height: 150px;
+        background-color: var(--backgroundColor);
+        border-radius: 5px;
+        box-shadow: 0 0 10px 0 #0000002f;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        padding: 10px;
+        z-index: 9;
+
+        p {
+          font-size: 0.9rem;
+          text-align: center;
+          font-weight: 300;
+          line-height: 1.4rem;
+        }
+        .sharing-button {
+          font-size: 0.9rem;
+          font-weight: var(--semiBold);
+          text-transform: uppercase;
+          color: var(--primaryColor);
+          padding: 5px;
+          cursor: pointer;
+          transition: all 0.2s;
+
+          i {
+            margin: 0 10px;
+          }
+        }
+
+        @keyframes shareTranslate {
+          from {
+            transform: translateY(20px);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
+      }
+    }
+  }
+
+  .restaurants-slider-cards {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    padding: 15px 0;
+    overflow: scroll;
+    position: relative;
+  }
+  #no-restaurant {
+    margin: 20px 0;
+    font-style: italic;
+    font-size: 1rem;
+    font-weight: var(--regular);
+  }
+
+  .metrics {
+    display: flex;
+    justify-content: space-around;
+    margin: 30px 0;
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      max-width: 150px;
+
+      .label {
+        font-size: 0.8rem;
+        font-weight: var(--bold);
+        text-transform: uppercase;
+        color: #aaa;
+      }
+      .value {
+        font-size: 0.8rem;
+        font-weight: var(--medium);
+        margin: 5px 0;
+        line-height: 1.2rem;
+        color: var(--primaryColor);
+      }
+    }
+  }
+  .table-container {
+    max-height: 480px;
+    overflow: scroll;
+    box-shadow: 0 0 10px 0px #f0f0f0;
+  }
+}

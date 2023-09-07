@@ -46,7 +46,7 @@ type Props = {
 
 export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
   (props, forwardedRef) => {
-    const { t } = useTranslation('common');
+    const { t } = useTranslation(['common', 'ingredient']);
 
     const [ingredientsList, setIngredientsList] = useState<Ingredient[]>([]);
     const [editingRowId, setEditingRowId] = useState<string | null>();
@@ -317,7 +317,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
       {
         key: 'name',
-        header: t('ingredientName'),
+        header: t('ingredient:ingredientName'),
         width: '15%',
         classname: 'column-bold',
         renderItem: ({ row }) =>
@@ -336,13 +336,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
       {
         key: 'theoreticalStock',
-        header: t('theoreticalStock'),
+        header: t('ingredient:theoreticalStock'),
         width: '15%',
         renderItem: () => '-',
       },
       {
         key: 'quantity',
-        header: t('actualStock'),
+        header: t('ingredient:actualStock'),
         width: '15%',
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
@@ -359,7 +359,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
       {
         key: 'unit',
-        header: t('unit'),
+        header: t('ingredient:unit'),
         width: '10%',
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
@@ -374,7 +374,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
       {
         key: 'supplier',
-        header: t('supplier'),
+        header: t('ingredient:supplier'),
         width: '15%',
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
@@ -389,7 +389,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
       {
         key: 'cost',
-        header: t('cost'),
+        header: t('ingredient:cost'),
         width: '10%',
         classname: 'column-bold',
         renderItem: ({ row }) =>
@@ -397,7 +397,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             <Input
               type="number"
               min={0}
-              placeholder={t('cost')}
+              placeholder={t('ingredient:cost')}
               onChange={(value) => handleValueChange('cost', value)}
               value={editedValues!.cost}
             />
@@ -409,7 +409,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
       {
         key: 'actions',
-        header: t('actions'),
+        header: t('ingredient:actions'),
         width: '10%',
         renderItem: ({ row }) => {
           return (

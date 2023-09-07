@@ -10,6 +10,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  &:hover {
+    background-color: var(--secondaryColor);
+  }
 
   i {
     font-size: 1.1rem;

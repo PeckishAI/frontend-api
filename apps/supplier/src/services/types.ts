@@ -8,3 +8,13 @@ export type Ingredient = {
   cost: number;
   actions: void;
 };
+
+export type IngredientForSupplier = {
+  id: string;
+  name: string;
+  stock: number;
+  expectedSales: string;
+  unit: string;
+  price: number;
+  actions?: void;
+};
