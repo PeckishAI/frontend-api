@@ -9,6 +9,9 @@
   height: 100%; /* Full height */
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
   backdrop-filter: blur(3px);
+  &.visible {
+    display: block;
+  }
 }
 
 /* Modal Content */
@@ -57,9 +60,6 @@
       min-width: 60px;
     }
   }
-}
-.visible {
-  display: block;
 }
 
 /* Add Animation */

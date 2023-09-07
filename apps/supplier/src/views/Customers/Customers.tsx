@@ -1,4 +1,4 @@
-import { Button, IconButton, Input, Loading, Lottie, Table } from 'shared-ui';
+import { IconButton, Input, Loading, SidePanel, Table } from 'shared-ui';
 import './style.scss';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { useState, useEffect } from 'react';
@@ -167,51 +167,38 @@ const Customers = (props: Props) => {
           ))}
         </div>
       )}
-      {clickedRestaurand && (
-        <div
-          className="detail-overlay"
-          onClick={() => setClickedRestaurand(undefined)}></div>
-      )}
-      <div className={`detail ${clickedRestaurand ? 'visible' : ''}`}>
-        <i
-          className="fa-solid fa-xmark"
-          data-tooltip-id="customer-tooltip"
-          data-tooltip-content={'Close'}
-          onClick={() => setClickedRestaurand(undefined)}></i>
-        {loadingCustomerDetail ? (
-          <div className="loadingDetail">
-            <Lottie type="loading" width="200px" />
-          </div>
-        ) : (
-          <>
-            <div className="metrics">
-              <div className="metric">
-                <span className="label">Name</span>
-                <span className="value">{clickedRestaurand?.name}</span>
-              </div>
-              <div className="metric">
-                <span className="label">Location</span>
-                <span className="value">
-                  {clickedRestaurand?.address},
-                  <br />
-                  {clickedRestaurand?.city},
-                  <br />
-                  {clickedRestaurand?.country}
-                </span>
-              </div>
-              <div className="metric">
-                <span className="label">Orders</span>
-                <span className="value">5</span>
-              </div>
-              <div className="metric">
-                <span className="label">Past orders</span>
-                <span className="value">12</span>
-              </div>
+      <SidePanel
+        revele={clickedRestaurand ? true : false}
+        togglePanel={() => setClickedRestaurand(undefined)}
+        loading={loadingCustomerDetail}>
+        <>
+          <div className="metrics">
+            <div className="metric">
+              <span className="label">Name</span>
+              <span className="value">{clickedRestaurand?.name}</span>
             </div>
-            <Table columns={columns} data={customerDetail} />
-          </>
-        )}
-      </div>
+            <div className="metric">
+              <span className="label">Location</span>
+              <span className="value">
+                {clickedRestaurand?.address},
+                <br />
+                {clickedRestaurand?.city},
+                <br />
+                {clickedRestaurand?.country}
+              </span>
+            </div>
+            <div className="metric">
+              <span className="label">Orders</span>
+              <span className="value">5</span>
+            </div>
+            <div className="metric">
+              <span className="label">Past orders</span>
+              <span className="value">12</span>
+            </div>
+          </div>
+          <Table columns={columns} data={customerDetail} />
+        </>
+      </SidePanel>
 
       <Toaster />
       <Tooltip className="tooltip" id="customer-tooltip" />
