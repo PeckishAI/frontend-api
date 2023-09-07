@@ -23,6 +23,7 @@ import { LabeledInput } from './components/form/LabeledInput';
 import { Checkbox } from './components/form/Checkbox';
 import PhoneNumberInput from './components/form/PhoneNumberInput/PhoneNumberInput';
 import Loading from './components/Loading/Loading';
+import SidePanel from './components/SidePanel/SidePanel';
 import './styles/common.css';
 
 export {
@@ -50,4 +51,5 @@ export {
   Checkbox,
   PhoneNumberInput,
   Loading,
+  SidePanel,
 };
