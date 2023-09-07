@@ -155,7 +155,7 @@ const Customers = (props: Props) => {
         </div>
       </div>
       {customerList.length === 0 ? (
-        <span id="no-restaurant">No restaurant founded.</span>
+        <span id="no-restaurant">No restaurant found.</span>
       ) : (
         <div className="restaurants-slider-cards">
           {filteredRestaurants.map((restaurant) => (
