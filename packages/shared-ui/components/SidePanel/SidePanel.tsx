@@ -1,11 +1,13 @@
 import './style.scss';
 import { Lottie } from '../..';
+import classNames from 'classnames';
 
 type Props = {
   revele: boolean;
   loading: boolean;
   children: React.ReactNode;
-  togglePanel: () => void;
+  onRequestClose: () => void;
+  className?: string;
 };
 
 const SidePanel = (props: Props) => {
@@ -14,14 +16,17 @@ const SidePanel = (props: Props) => {
       {props.revele && (
         <div
           className="sidePanel-overlay"
-          onClick={() => props.togglePanel()}></div>
+          onClick={() => props.onRequestClose()}></div>
       )}
-      <div className={`sidePanel ${props.revele ? 'visible' : ''}`}>
+      <div
+        className={classNames('sidePanel', props.className, {
+          visible: props.revele,
+        })}>
         <i
           className="fa-solid fa-xmark"
           data-tooltip-id="customer-tooltip"
           data-tooltip-content={'Close'}
-          onClick={() => props.togglePanel()}></i>
+          onClick={() => props.onRequestClose()}></i>
 
         {props.loading ? (
           <div className="loading-panel">

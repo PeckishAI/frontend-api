@@ -24,6 +24,7 @@ import { Checkbox } from './components/form/Checkbox';
 import PhoneNumberInput from './components/form/PhoneNumberInput/PhoneNumberInput';
 import Loading from './components/Loading/Loading';
 import SidePanel from './components/SidePanel/SidePanel';
+import { CollapsibleMenu } from './components/CollapsibleMenu/CollapsibleMenu';
 import './styles/common.css';
 
 export {
@@ -52,4 +53,5 @@ export {
   PhoneNumberInput,
   Loading,
   SidePanel,
+  CollapsibleMenu,
 };

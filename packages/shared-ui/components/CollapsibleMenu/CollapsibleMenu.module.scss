@@ -1,0 +1,33 @@
+.collapsibleMenu {
+  .header {
+    background-color: var(--secondaryColor);
+    height: 50px;
+    border-radius: 5px;
+    box-shadow: var(--default-shadow);
+    border: 1px solid rgba(167, 167, 167, 0.2);
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .chevron {
+      transition: 0.2s ease-in-out;
+    }
+  }
+
+  &.open {
+    .header {
+      .chevron {
+        transform: rotate(-180deg);
+      }
+    }
+  }
+
+  .content {
+    transition: 0.2s ease-in-out;
+    overflow: hidden;
+    position: relative;
+    top: 10px;
+  }
+}

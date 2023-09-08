@@ -39,6 +39,9 @@
   --input-large-height: 40px;
   --input-small-height: 30px;
   --input-text-size: 14px;
+
+  /* Shadows */
+  --default-shadow: 0px 0px 15px 2px rgba(75, 75, 75, 0.1);
 }
 * {
   font-family: 'Montserrat', sans-serif;
@@ -49,6 +52,7 @@
 }
 body {
   background-color: var(--backgroundColor);
+  color: var(--textPrimaryColor);
 }
 #root {
   display: flex;
