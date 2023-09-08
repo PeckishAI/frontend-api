@@ -98,7 +98,7 @@ const Layout = () => {
           }}
         />
         <SidebarItem
-          name={t('inventory')}
+          name={t('inventory.stock')}
           icon={<i className="fa-solid fa-cubes-stacked"></i>}
           onClick={() => {
             navigate('/inventory');

@@ -1,7 +1,11 @@
 {
   "myRestaurant": "My restaurant",
   "overview": "Overview",
-  "inventory": "Inventory",
+  "inventory": {
+    "stock": "inventory",
+    "suppliers": "Suppliers",
+    "orders": "Orders"
+  },
   "recipes": "Recipes",
   "onboarding": "Onboarding",
   "onboarding.msg": "Select a software that you want to integrate to Peckish !",

@@ -68,6 +68,7 @@ i18next
     interpolation: {
       escapeValue: false,
     },
+    keySeparator: '.',
   });
 
 export default i18next;

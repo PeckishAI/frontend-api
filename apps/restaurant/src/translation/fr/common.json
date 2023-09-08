@@ -1,7 +1,11 @@
 {
   "myRestaurant": "Mon restaurant",
   "overview": "Vue d'ensemble",
-  "inventory": "Inventaire",
+  "inventory": {
+    "stock": "Inventaire",
+    "suppliers": "Fournisseurs",
+    "orders": "Commandes"
+  },
   "recipes": "Recettes",
   "onboarding": "Intégrations",
   "onboarding.msg": "Séléctionnez un système que vous souhaitez intégrer à Peckish !",
