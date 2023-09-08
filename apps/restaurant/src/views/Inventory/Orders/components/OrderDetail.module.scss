@@ -1,0 +1,31 @@
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+
+  .infosContainer {
+    display: flex;
+    justify-content: space-around;
+    margin: 30px 0;
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      max-width: 150px;
+
+      .infoTitle {
+        font-size: 0.8rem;
+        font-weight: var(--bold);
+        text-transform: uppercase;
+        color: var(--textSecondaryColor);
+      }
+
+      .infoValue {
+        font-size: 0.8rem;
+        font-weight: var(--medium);
+        margin: 5px 0;
+        line-height: 1.2rem;
+        color: var(--primaryColor);
+      }
+    }
+  }
+}

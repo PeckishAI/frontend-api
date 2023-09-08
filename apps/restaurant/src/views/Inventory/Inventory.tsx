@@ -1,20 +1,47 @@
 import { useTranslation } from 'react-i18next';
 import { Tabs, Input, Lottie } from 'shared-ui';
-import { useRef, useState } from 'react';
-import { SupplierTab, SupplierTabRef } from './SupplierTab';
-import { IngredientTab, IngredientTabRef } from './IngredientTab';
+import { useEffect, useRef, useState } from 'react';
+import { SupplierTab, SupplierTabRef } from './Suppliers/SupplierTab';
+import { IngredientTab, IngredientTabRef } from './Ingredients/IngredientTab';
+import { useNavigate, useParams } from 'react-router-dom';
+import { OrderTab, OrderTabRef } from './Orders/OrderTab';
 
 const TABS = ['Stock', 'Suppliers', 'Orders'];
 
+type RouteParams = {
+  tab: 'stock' | 'suppliers' | 'orders';
+};
+
+const getTabIndex = (tab?: string) => {
+  if (tab === 'stock') return 0;
+  if (tab === 'suppliers') return 1;
+  if (tab === 'orders') return 2;
+  return 0;
+};
+
+const getTabName = (tabIndex: number) => {
+  if (tabIndex === 0) return 'stock';
+  if (tabIndex === 1) return 'suppliers';
+  if (tabIndex === 2) return 'orders';
+  return 'stock';
+};
+
 const Inventory = () => {
   const { t } = useTranslation('common');
+  const { tab } = useParams<RouteParams>();
+  const navigate = useNavigate();
 
   const supplierTabRef = useRef<SupplierTabRef>(null);
   const ingredientTabRef = useRef<IngredientTabRef>(null);
+  const orderTabRef = useRef<OrderTabRef>(null);
 
-  const [selectedTab, setSelectedTab] = useState(1);
+  const [selectedTab, setSelectedTab] = useState(0);
   const [searchValue, setSearchValue] = useState<string>('');
   const [loadingData, setLoadingData] = useState<boolean>(false);
+
+  useEffect(() => {
+    setSelectedTab(getTabIndex(tab));
+  }, [tab]);
 
   const renderSelectedTab = () => {
     if (selectedTab === 0) {
@@ -35,6 +62,15 @@ const Inventory = () => {
         />
       );
     }
+    if (selectedTab === 2) {
+      return (
+        <OrderTab
+          ref={orderTabRef}
+          // setLoadingState={setLoadingData}
+          // searchValue={searchValue}
+        />
+      );
+    }
     return null;
   };
 
@@ -43,7 +79,12 @@ const Inventory = () => {
       <div className="tabs-and-tools">
         <Tabs
           tabs={TABS}
-          onClick={setSelectedTab}
+          onClick={(tabIndex) => {
+            navigate({
+              pathname: `/inventory/${getTabName(tabIndex)}`,
+            });
+            setSelectedTab(tabIndex);
+          }}
           selectedIndex={selectedTab}
         />
         <div className="tools">
@@ -55,6 +96,7 @@ const Inventory = () => {
           />
           {selectedTab === 0 && ingredientTabRef.current?.renderOptions()}
           {selectedTab === 1 && supplierTabRef.current?.renderOptions()}
+          {selectedTab === 2 && orderTabRef.current?.renderOptions()}
         </div>
       </div>
 

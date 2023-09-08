@@ -14,8 +14,8 @@ import {
   DialogBox,
   UploadCsv,
 } from 'shared-ui';
-import { Ingredient, inventoryService } from '../../services';
-import { useRestaurantStore } from '../../store/useRestaurantStore';
+import { Ingredient, inventoryService } from '../../../services';
+import { useRestaurantStore } from '../../../store/useRestaurantStore';
 import Table, { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { Tooltip } from 'react-tooltip';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';

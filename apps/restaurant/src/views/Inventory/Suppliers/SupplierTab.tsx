@@ -1,7 +1,7 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, DialogBox } from 'shared-ui';
-import { LinkedSupplier } from '../../services/supplier.service';
+import { LinkedSupplier } from '../../../services/supplier.service';
 import styles from './SupplierTab.module.scss';
 import { SupplierCard, SupplierCardSkeleton } from './components/SupplierCard';
 import { toast } from 'react-hot-toast';
