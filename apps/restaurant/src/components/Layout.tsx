@@ -33,7 +33,7 @@ const Layout = () => {
     loadRestaurants();
   }, [loadRestaurants]);
 
-  const handleIconClick = () => {
+  const handleRefreshClick = () => {
     if (!selectedRestaurantUUID) return;
 
     restaurantService.reloadPOS(selectedRestaurantUUID).then((success) => {
@@ -147,12 +147,12 @@ const Layout = () => {
           title={navTitle}
           refreshIcon={
             isRefreshing ? (
-              <Lottie width="30px" type="validate" />
+              <Lottie type="loading" width="50px" />
             ) : (
               <i className="fa-solid fa-rotate icon"></i>
             )
           }
-          onRefresh={handleIconClick}
+          onRefresh={handleRefreshClick}
           onLogout={handleLogout}
         />
         <div className="content">

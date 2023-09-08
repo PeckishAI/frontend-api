@@ -32,7 +32,7 @@ const Layout = () => {
   //   loadRestaurants();
   // }, [loadRestaurants]);
 
-  const handleIconClick = () => {
+  const handleRefreshClick = () => {
     // if (!selectedRestaurantUUID) return;
   };
 
@@ -114,12 +114,12 @@ const Layout = () => {
           onLogout={handleLogout}
           refreshIcon={
             isRefreshing ? (
-              <Lottie width="30px" type="validate" />
+              <Lottie width="50px" type="loading" />
             ) : (
               <i className="fa-solid fa-rotate icon"></i>
             )
           }
-          onRefresh={handleIconClick}
+          onRefresh={handleRefreshClick}
         />
         <div className="content">
           <Outlet />
