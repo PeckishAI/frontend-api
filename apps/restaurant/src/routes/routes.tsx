@@ -7,6 +7,7 @@ import Onboarding from '../views/Onboarding/Onboarding';
 import Layout from '../components/Layout';
 import { ProtectedRoute } from './ProtectedRoute';
 import Integrations from '../views/Integrations/Integrations';
+import { OrderValidation } from '../views/OrderValidation/OrderValidation';
 
 export const router = createBrowserRouter([
   {
@@ -35,9 +36,19 @@ export const router = createBrowserRouter([
           },
           {
             path: '/inventory',
-            element: <Inventory />,
+            children: [
+              {
+                path: ':tab',
+                element: <Inventory />,
+              },
+              // Redirect to stock if no tab is selected
+              {
+                path: '*',
+                index: true,
+                element: <Navigate to={'/inventory/stock'} />,
+              },
+            ],
           },
-
           {
             path: '/recipes',
             element: <Recipes />,
@@ -45,6 +56,10 @@ export const router = createBrowserRouter([
           {
             path: '/integrations',
             element: <Integrations />,
+          },
+          {
+            path: '/orders/validation',
+            element: <OrderValidation />,
           },
           {
             path: '*',

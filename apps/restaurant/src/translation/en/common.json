@@ -10,6 +10,7 @@
   "onboarding": "Onboarding",
   "onboarding.msg": "Select a software that you want to integrate to Peckish !",
   "onboarding.search": "Search software",
+  "orders.validation": "Predicted order",
 
   "simulation": "Simulation",
   "integrations": "Integrations",
@@ -53,6 +54,7 @@
   "myRestaurants.emptyTitle": "You don't have any restaurant",
   "myrestaurants.emptyText": "First add a new integration to see your restaurants in Peckish",
 
+  "field.error.required": "This field is required.",
   "field.error.name": "Name field is required.",
   "field.error.userName": "User name field is required.",
   "field.error.password": "Password field is required.",
@@ -63,5 +65,9 @@
   "onboarding.recoverData": "Data recovery in progress...",
   "onboarding.wait": "This may take some time.",
   "onboarding.success": "Successful data recovery !",
-  "onboarding.error": "Data recovery failed."
+  "onboarding.error": "Data recovery failed.",
+
+  "order.validation.description": "Peckish have predicted this order for your next week. You can remove, add or update quantity of each elements.",
+  "order.validation.items_one": "{{count}} item",
+  "order.validation.items_other": "{{count}} items"
 }
