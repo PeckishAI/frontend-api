@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import styles from './CollapsibleMenu.module.scss';
 import classNames from 'classnames';
 import { FaChevronDown } from 'react-icons/fa';
@@ -6,6 +6,7 @@ import { FaChevronDown } from 'react-icons/fa';
 type Props = {
   children: ReactNode;
   header: ReactNode | string;
+  className?: string;
   defaultState?: boolean;
 };
 
@@ -17,14 +18,17 @@ export const CollapsibleMenu = (props: Props) => {
     setMenuOpen(!isMenuOpen);
   };
 
-  const getMaxHeight = () => {
-    if (!contentRef.current) return '0';
-    return isMenuOpen ? `${contentRef.current.scrollHeight}px` : '0';
-  };
+  useEffect(() => {
+    if (!contentRef.current) return;
+
+    contentRef.current.style.maxHeight = isMenuOpen
+      ? `${contentRef.current.scrollHeight}px`
+      : '0';
+  }, [isMenuOpen, props.children]);
 
   return (
     <div
-      className={classNames(styles.collapsibleMenu, {
+      className={classNames(styles.collapsibleMenu, props.className, {
         [styles.open]: isMenuOpen,
       })}>
       <div className={styles.header} onClick={toggleMenu}>
@@ -35,10 +39,7 @@ export const CollapsibleMenu = (props: Props) => {
           props.header
         )}
       </div>
-      <div
-        ref={contentRef}
-        className={styles.content}
-        style={{ maxHeight: getMaxHeight() }}>
+      <div ref={contentRef} className={styles.content}>
         {props.children}
       </div>
     </div>
