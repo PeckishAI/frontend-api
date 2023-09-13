@@ -22,15 +22,6 @@
   justify-content: center;
   gap: 30px;
   position: relative;
-  background-color: var(--backgroundColor);
-  margin: auto;
-  padding: 30px 20px;
-  border-radius: 5px;
-  width: 500px;
-  height: 300px;
-  box-shadow: 0 0 10px 0 #00000033;
-  animation-name: animatetop;
-  animation-duration: 0.4s;
 
   .text-error {
     height: 0;
@@ -41,46 +32,23 @@
     display: flex;
     gap: 30px;
   }
-  .retrieve-data-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    .loading-info {
-      margin-bottom: 10px;
-      font-weight: var(--light);
-      font-size: 0.9rem;
-    }
-    #bold {
-      font-weight: var(--semiBold);
-      font-size: 1.1rem;
-    }
-    .button {
-      margin-top: 30px;
-      min-width: 60px;
-    }
-  }
 }
-
-/* Add Animation */
-@-webkit-keyframes animatetop {
-  from {
-    top: -300px;
-    opacity: 0;
+.retrieve-data-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  .loading-info {
+    margin-bottom: 10px;
+    font-weight: var(--light);
+    font-size: 0.9rem;
   }
-  to {
-    top: 0;
-    opacity: 1;
+  #bold {
+    font-weight: var(--semiBold);
+    font-size: 1.1rem;
   }
-}
-
-@keyframes animatetop {
-  from {
-    top: -300px;
-    opacity: 0;
-  }
-  to {
-    top: 0;
-    opacity: 1;
+  .button {
+    margin-top: 30px;
+    min-width: 60px;
   }
 }
