@@ -35,19 +35,8 @@ export const router = createBrowserRouter([
             element: <Overview />,
           },
           {
-            path: '/inventory',
-            children: [
-              {
-                path: ':tab',
-                element: <Inventory />,
-              },
-              // Redirect to stock if no tab is selected
-              {
-                path: '*',
-                index: true,
-                element: <Navigate to={'/inventory/stock'} />,
-              },
-            ],
+            path: '/inventory/:tab',
+            element: <Inventory />,
           },
           {
             path: '/recipes',

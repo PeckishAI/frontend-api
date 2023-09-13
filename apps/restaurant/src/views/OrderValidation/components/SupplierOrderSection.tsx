@@ -122,7 +122,10 @@ export const SupplierOrderSection = (props: Props) => {
       </CollapsibleMenu>
 
       <DialogBox
-        msg={t('order.validation.deleteItemPopup')}
+        msg={t('order.validation.deleteItemPopup', {
+          name: props.data.items.find((i) => i.id === deleteIngredientUUID)
+            ?.name,
+        })}
         type="warning"
         onRequestClose={() => setDeleteIngredientUUID(null)}
         revele={!!deleteIngredientUUID}

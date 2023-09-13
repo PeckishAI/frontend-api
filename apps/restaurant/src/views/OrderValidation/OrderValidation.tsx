@@ -193,7 +193,7 @@ export const OrderValidation = () => {
           icon={<FaPlus />}
           onClick={() => setSelectIngredientPopupVisible(true)}
           type="primary"
-          value="Add ingredient"
+          value={t('order.validation.addIngredient')}
         />
       </div>
 

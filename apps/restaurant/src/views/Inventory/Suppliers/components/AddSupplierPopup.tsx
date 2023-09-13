@@ -11,6 +11,7 @@ import { useState, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTranslation } from 'react-i18next';
 
 const SupplierSchema = z.object({
   supplierSelect: z.string(),
@@ -58,6 +59,7 @@ type Props = {
 };
 
 const AddSupplierPopup = (props: Props) => {
+  const { t } = useTranslation('common');
   const [addingMode, setAddingMode] = useState(false);
 
   const {
@@ -115,8 +117,8 @@ const AddSupplierPopup = (props: Props) => {
     <Popup
       isVisible={props.isVisible}
       onRequestClose={props.onRequestClose}
-      title="Add a new supplier"
-      subtitle="Search your supplier here or create a new one if you don't find it">
+      title={t('suppliers.addSupplier.title')}
+      subtitle={t('suppliers.addSupplier.subtitle')}>
       <form onSubmit={handleSubmitForm}>
         <div className={styles.inputContainer}>
           {!addingMode ? (
@@ -129,10 +131,12 @@ const AddSupplierPopup = (props: Props) => {
                   size="large"
                   isSearchable
                   isClearable
-                  placeholder="Search a supplier"
+                  placeholder={t('suppliers.addSupplier.select.placeholder')}
                   onCreateOption={handleCreateNewOption}
                   formatCreateLabel={(inputValue) =>
-                    `Create supplier "${inputValue}"`
+                    t('suppliers.addSupplier.select.createSupplier', {
+                      name: inputValue,
+                    })
                   }
                   options={SUPPLIERS}
                   onChange={(val) => onChange(val && val.value)}
@@ -146,14 +150,14 @@ const AddSupplierPopup = (props: Props) => {
             <>
               <LabeledInput
                 lighter
-                placeholder="Name"
+                placeholder={t('name')}
                 type="text"
                 error={errors.name?.message}
                 {...register('name')}
               />
               <LabeledInput
                 lighter
-                placeholder="Email"
+                placeholder={t('email')}
                 type="text"
                 error={errors.email?.message}
                 {...register('email')}
@@ -169,7 +173,7 @@ const AddSupplierPopup = (props: Props) => {
         </div>
 
         <Checkbox
-          label="Send an automatic invitation to the supplier"
+          label={t('suppliers.addSupplier.automaticSendCheckbox')}
           className={styles.autoCheckbox}
           {...register('automaticInvitation')}
         />
@@ -177,12 +181,12 @@ const AddSupplierPopup = (props: Props) => {
         <div className={styles.buttonsContainer}>
           <Button
             type="secondary"
-            value="Cancel"
+            value={t('cancel')}
             onClick={props.onRequestClose}
           />
           <Button
             type="primary"
-            value="Validate"
+            value={t('validate')}
             actionType="submit"
             loading={isSubmitting}
           />

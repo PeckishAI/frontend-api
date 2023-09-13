@@ -101,7 +101,7 @@ const Layout = () => {
           name={t('inventory.stock')}
           icon={<i className="fa-solid fa-cubes-stacked"></i>}
           onClick={() => {
-            navigate('/inventory');
+            navigate('/inventory/stock');
           }}
         />
         <SidebarItem
@@ -127,7 +127,7 @@ const Layout = () => {
           }}
         />
         <div className="restaurant-dropdown">
-          <p className="label">{t('navbar.restaurants')} :</p>
+          <p className="label">{t('navbar.restaurantsDropdown')} :</p>
           <Select
             menuPlacement="top"
             isLoading={restaurantsLoading}

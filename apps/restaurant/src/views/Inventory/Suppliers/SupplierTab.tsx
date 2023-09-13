@@ -73,14 +73,14 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     const handleCopyInvitationLink = (invitationKey?: string) => {
       if (!invitationKey) {
-        toast.error('No invitation link found');
+        toast.error(t('suppliers.noLink'));
         return;
       }
 
       const link = `${GLOBAL_CONFIG.supplierUrl}/invitation/${invitationKey}`;
       navigator.clipboard.writeText(link);
 
-      toast.success('Invitation link copied to clipboard');
+      toast.success(t('suppliers.linkCopied'));
     };
 
     const handleDeleteSupplier = () => {
@@ -96,9 +96,9 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           }, 1000)
         ),
         {
-          loading: 'Deleting supplier...',
-          success: 'Supplier deleted',
-          error: 'Error deleting supplier',
+          loading: t('suppliers.removeSupplierToast.loading'),
+          success: t('suppliers.removeSupplierToast.success'),
+          error: t('suppliers.removeSupplierToast.error'),
         }
       );
     };
@@ -134,7 +134,9 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
       <>
         {linkedSuppliers.length > 0 && (
           <>
-            <h1 className={styles.sectionTitle}>Accepted invitations</h1>
+            <h1 className={styles.sectionTitle}>
+              {t('suppliers.acceptedInvitations')}
+            </h1>
             <div className={styles.cardContainer}>
               {linkedSuppliers.map((supplier) => (
                 <SupplierCard
@@ -152,7 +154,9 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
         {pendingSuppliers.length > 0 && (
           <>
-            <h1 className={styles.sectionTitle}>Pending invitations</h1>
+            <h1 className={styles.sectionTitle}>
+              {t('suppliers.pendingInvitations')}
+            </h1>
             <div className={styles.cardContainer}>
               {pendingSuppliers.map((supplier) => (
                 <SupplierCard
@@ -173,8 +177,10 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
         <DialogBox
           type="warning"
-          msg="Révoquer l'accès à l'inventaire"
-          subMsg="Voulez-vous supprimer l'accès de REKKI à votre inventaire ?"
+          msg={t('suppliers.removeSupplierPopup.title')}
+          subMsg={t('suppliers.removeSupplierPopup.subtitle', {
+            name: SUPPLIERS.find((s) => s.uuid === deletingSupplierUUID)?.name,
+          })}
           revele={showDeleteDialog}
           onRequestClose={() => {
             setShowDeleteDialog(false);
