@@ -1,15 +1,27 @@
 .LabeledInput {
   --input-color: var(--primaryColor);
+  --horizontal-padding: 16px;
 
   .input-container {
     position: relative;
+    width: 100%;
+    height: var(--input-large-height);
+    border-radius: 5px;
+    transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+    background-color: var(--backgroundColor);
+    overflow: hidden;
+
+    &:focus-within {
+      box-shadow: 0 0 0 2px var(--input-color);
+    }
 
     .icon {
-      width: 16px;
       position: absolute;
+      width: 16px;
+      left: 10px;
       top: 50%;
       transform: translateY(-50%);
-      left: 10px;
+      z-index: 10;
 
       * {
         display: block;
@@ -17,56 +29,78 @@
       }
     }
 
-    .icon + input {
-      padding-left: 35px;
-    }
-
-    .icon ~ label {
-      left: 35px;
-    }
-
-    input {
-      width: 100%;
-      height: var(--input-large-height);
-      border-radius: 5px;
-      border: none;
-      padding: 15px 16px 4px 16px;
-      font-size: var(--input-text-size);
-      line-height: 1;
-      outline: none;
-      box-shadow: none;
-      transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
-
-      &:focus {
-        box-shadow: 0 0 0 2px var(--input-color);
+    .icon + div input {
+      padding-left: 35px !important;
+      & ~ label {
+        left: 35px !important;
       }
     }
 
-    &.lighter input {
+    .content-wrapper {
+      display: flex;
+      align-items: center;
+      height: 100%;
+
+      .input-wrapper {
+        position: relative;
+        height: 100%;
+        flex: 1;
+
+        input {
+          width: 100%;
+          height: 100%;
+          padding: 15px var(--horizontal-padding) 4px var(--horizontal-padding);
+          font-size: var(--input-text-size);
+          line-height: 1;
+          background-color: transparent;
+          border: none;
+          outline: none;
+          box-shadow: none;
+
+          &::-webkit-outer-spin-button,
+          &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+
+          &[type='number'] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+          }
+        }
+
+        label {
+          position: absolute;
+          pointer-events: none;
+          transform: translate(0, 13px) scale(1);
+          transform-origin: top left;
+          transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+          color: var(--textSecondaryColor);
+          font-size: var(--input-text-size);
+          line-height: 1;
+          white-space: nowrap;
+          top: 0;
+          left: var(--horizontal-padding);
+        }
+
+        &:focus-within label {
+          transform: translate(0, 5px) scale(0.75);
+          color: var(--input-color);
+        }
+
+        input:not(:placeholder-shown) + label {
+          transform: translate(0, 5px) scale(0.75);
+        }
+      }
+
+      .suffix {
+        margin-right: var(--horizontal-padding);
+        color: var(--textSecondaryColor);
+      }
+    }
+
+    &.lighter {
       border: 1px solid var(--borderColor);
-    }
-
-    label {
-      position: absolute;
-      pointer-events: none;
-      transform: translate(0, 13px) scale(1);
-
-      transform-origin: top left;
-      transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
-      color: var(--textSecondaryColor);
-      font-size: var(--input-text-size);
-      line-height: 1;
-      white-space: nowrap;
-      left: 16px;
-    }
-
-    &:focus-within label {
-      transform: translate(0, 5px) scale(0.75);
-      color: var(--input-color);
-    }
-
-    input:not(:placeholder-shown) + label {
-      transform: translate(0, 5px) scale(0.75);
     }
 
     &.error {
