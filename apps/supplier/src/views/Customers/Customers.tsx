@@ -2,7 +2,7 @@ import { IconButton, Input, Loading, SidePanel, Table } from 'shared-ui';
 import './style.scss';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { useState, useEffect } from 'react';
-import { Ingredient } from '../../services';
+import { IngredientForCustomers } from '../../services';
 import { useTranslation } from 'react-i18next';
 import { Restaurant } from '../../../../restaurant/src/store/useRestaurantStore';
 import { Tooltip } from 'react-tooltip';
@@ -14,7 +14,10 @@ type Props = {};
 
 const Customers = (props: Props) => {
   const { t } = useTranslation(['common', 'ingredient']);
-  const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
+  const columns: ColumnDefinitionType<
+    IngredientForCustomers,
+    keyof IngredientForCustomers
+  >[] = [
     {
       key: 'name',
       header: t('ingredient:ingredientName'),
@@ -23,10 +26,9 @@ const Customers = (props: Props) => {
     },
 
     {
-      key: 'theoreticalStock',
-      header: t('ingredient:theoreticalStock'),
+      key: 'safetyStock',
+      header: t('ingredient:safetyStock'),
       width: '15%',
-      renderItem: () => '-',
     },
     {
       key: 'quantity',
@@ -49,6 +51,12 @@ const Customers = (props: Props) => {
       width: '10%',
       classname: 'column-bold',
     },
+    {
+      key: 'ordered',
+      header: 'Ordered',
+      width: '10%',
+      renderItem: ({ row }) => (row.ordered ? 'true' : 'false'),
+    },
   ];
 
   const [clickedRestaurand, setClickedRestaurand] = useState<
@@ -56,7 +64,9 @@ const Customers = (props: Props) => {
   >(undefined);
   const [searchInput, setSearchInput] = useState('');
   const [customerList, setCustomerList] = useState<Restaurant[]>([]);
-  const [customerDetail, setCustomerDetail] = useState<Ingredient[]>([]);
+  const [customerDetail, setCustomerDetail] = useState<
+    IngredientForCustomers[]
+  >([]);
   const [sharingLink, setSharingLink] = useState('');
   const [loadingCustomers, setLoadingCustomers] = useState(false);
   const [loadingCustomerDetail, setLoadingCustomerDetail] = useState(false);
@@ -103,6 +113,17 @@ const Customers = (props: Props) => {
         setLoadingCustomerDetail(false);
       });
   };
+
+  const handleRemove = (uuid: string) => {
+    const objWithIdIndex = customerList.findIndex((obj) => obj.uuid === uuid);
+
+    if (objWithIdIndex > -1) {
+      const updatedList = [...customerList];
+      updatedList.splice(objWithIdIndex, 1);
+      setCustomerList(updatedList);
+    }
+  };
+
   return (
     <div className="customers">
       <div className="tools">
@@ -127,10 +148,7 @@ const Customers = (props: Props) => {
             <>
               <div className="overlay" onClick={() => setSharingLink('')}></div>
               <div className="share-catalog-box">
-                <p>
-                  Share a link with a restaurant so they can consult your
-                  ingredients catalog!
-                </p>
+                <p>Invite a restaurant to collaborate with you.</p>
                 <span
                   className="sharing-button"
                   onClick={() => {
@@ -163,6 +181,7 @@ const Customers = (props: Props) => {
               key={restaurant.uuid}
               restaurant={restaurant}
               onClick={() => handleRestaurantDetailClick(restaurant)}
+              onRemove={() => handleRemove(restaurant.uuid)}
             />
           ))}
         </div>
@@ -188,7 +207,7 @@ const Customers = (props: Props) => {
               </span>
             </div>
             <div className="metric">
-              <span className="label">Orders</span>
+              <span className="label">Open orders</span>
               <span className="value">5</span>
             </div>
             <div className="metric">
