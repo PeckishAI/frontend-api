@@ -28,6 +28,7 @@ export const useRestaurantStore = create<RestaurantStore>()((set) => ({
   restaurantsLoading: false,
 
   setSelectedRestaurantUUID: (uuid: string) => {
+    localStorage.setItem('selectedRestaurantUUID', uuid);
     set({ selectedRestaurantUUID: uuid });
   },
   loadRestaurants: async () => {
@@ -42,9 +43,21 @@ export const useRestaurantStore = create<RestaurantStore>()((set) => ({
       user.user_uuid
     );
 
+    // Retrieve last selected restaurant from local storage
+    const storedSelectedRestaurantUUID = localStorage.getItem(
+      'selectedRestaurantUUID'
+    );
+    if (
+      storedSelectedRestaurantUUID &&
+      restaurants.some((r) => r.uuid === storedSelectedRestaurantUUID)
+    ) {
+      set({ selectedRestaurantUUID: storedSelectedRestaurantUUID });
+    } else {
+      set({ selectedRestaurantUUID: restaurants[0]?.uuid ?? undefined });
+    }
+
     set({
       restaurants,
-      selectedRestaurantUUID: restaurants[0]?.uuid ?? undefined,
       restaurantsLoading: false,
     });
   },
