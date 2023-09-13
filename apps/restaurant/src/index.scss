@@ -4,6 +4,12 @@
     display: flex;
     justify-content: center;
     gap: 15px;
+
+    .fa-solid {
+      font-size: 1rem;
+      color: var(--primaryColor);
+      cursor: pointer;
+    }
   }
   .tabs-and-tools {
     display: flex;

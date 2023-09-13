@@ -34,6 +34,7 @@
   --btnRadius: 10px;
   --transitionDuration: 0.4s;
   --navbarHeight: 80px;
+  --sidebarWidth: 210px;
 
   /* Input variables */
   --input-large-height: 40px;
@@ -54,24 +55,19 @@ body {
   background-color: var(--backgroundColor);
   color: var(--textPrimaryColor);
 }
-#root {
-  display: flex;
-}
 .company-name {
   font-family: 'MuseoModerno', cursive;
   font-weight: var(--extraBold);
   color: var(--primaryColor);
 }
 .main {
-  width: 100%;
+  flex: 1;
   height: 100vh;
-  overflow-y: auto;
-  scroll-behavior: smooth;
+  margin-left: var(--sidebarWidth);
 }
 
 .content {
   padding: 30px;
-  height: calc(100% - var(--navbarHeight));
   position: relative;
 }
 
