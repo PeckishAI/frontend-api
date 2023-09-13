@@ -1,6 +1,7 @@
 {
   "ingredientName": "Ingredient name",
   "theoreticalStock": "Theoretical stock",
+  "safetyStock": "Safety stock",
   "actualStock": "Actual stock",
   "unit": "Unit",
   "supplier": "Supplier",

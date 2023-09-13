@@ -24,7 +24,7 @@ type ConditionalProps<
   Option,
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>,
-  CreatableT extends boolean = false,
+  CreatableT extends boolean = false
 > = CreatableT extends true
   ? CreatableProps<Option, IsMulti, Group>
   : Props<Option, IsMulti, Group>;
@@ -33,7 +33,7 @@ const Select = <
   Option,
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>,
-  CreatableT extends boolean = false,
+  CreatableT extends boolean = false
 >(
   props: CustomProps<Option, IsMulti, Group, CreatableT> &
     ConditionalProps<Option, IsMulti, Group, CreatableT>
