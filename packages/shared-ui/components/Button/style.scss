@@ -10,9 +10,16 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  min-width: fit-content;
+
+  span {
+    white-space: nowrap;
+  }
 
   .icon {
     margin-left: 10px;
+    display: flex;
+    align-items: center;
   }
 
   .lottie-container {
