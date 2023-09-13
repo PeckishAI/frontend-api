@@ -1,7 +1,15 @@
-import axios from './index';
+import axios, { Ingredient } from './index';
 
-const getIngredientList = (restaurantUUID: string) => {
-  return axios.get('/restaurant/inventory/' + restaurantUUID);
+const getIngredientList = async (
+  restaurantUUID: string
+): Promise<Ingredient[]> => {
+  const res = await axios.get('/restaurant/inventory/' + restaurantUUID);
+
+  return Object.keys(res.data).map((key) => ({
+    id: key,
+    theoriticalStock: 0,
+    ...res.data[key],
+  }));
 };
 
 const addIngredient = (restaurantUUID: string, ingredient) => {

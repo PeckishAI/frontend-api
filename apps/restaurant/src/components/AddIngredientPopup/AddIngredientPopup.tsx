@@ -38,14 +38,11 @@ const AddIngredientPopup = (props: Props) => {
 
   useEffect(() => {
     if (!selectedRestaurantUUID) return;
-    inventoryService.getIngredientList(selectedRestaurantUUID).then((res) => {
-      const convertedData = Object.keys(res.data).map((key) => ({
-        id: key,
-        theoriticalStock: 0, // Tempoprary till API implementation
-        ...res.data[key],
-      }));
-      setIngredients(convertedData);
-    });
+    inventoryService
+      .getIngredientList(selectedRestaurantUUID)
+      .then((ingredients) => {
+        setIngredients(ingredients);
+      });
   }, []);
 
   const handleNameChange = (value: string) => {

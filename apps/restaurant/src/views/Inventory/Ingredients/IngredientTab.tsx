@@ -118,17 +118,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
       props.setLoadingState(true);
       try {
-        const response = await inventoryService.getIngredientList(
+        const ingredients = await inventoryService.getIngredientList(
           selectedRestaurantUUID
         );
-        const list = response.data; // Accès à la propriété data de la réponse
 
-        const convertedData = Object.keys(list).map((key) => ({
-          id: key,
-          theoriticalStock: 0, // Tempoprary till API implementation
-          ...list[key],
-        }));
-        setIngredientsList(convertedData);
+        setIngredientsList(ingredients);
       } catch (err) {
         if (err instanceof Error) {
           togglePopupError(err.message);
