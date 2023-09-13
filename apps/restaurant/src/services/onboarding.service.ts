@@ -6,6 +6,14 @@ const getPOSList = async () => {
   return res;
 };
 
+const login = (
+  user_uuid: string,
+  credentials: { username: string; password: string }
+) => {
+  return axios.post('/restaurant/integrate/' + user_uuid, credentials);
+};
+
 export const onboardingService = {
   getPOSList,
+  login,
 };

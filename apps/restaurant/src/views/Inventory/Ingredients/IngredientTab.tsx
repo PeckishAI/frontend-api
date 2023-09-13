@@ -457,7 +457,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           />
         )}
 
-        <Tooltip className="tooltip" id="inventory-tooltip" />
+        <Tooltip className="tooltip" id="inventory-tooltip" delayShow={500} />
         <DialogBox
           type="warning"
           msg={t('warning.delete')}
