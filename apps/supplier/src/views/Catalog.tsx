@@ -14,7 +14,7 @@ import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
-import { IngredientForSupplier } from '../services';
+import { IngredientForSupplier, catalogService } from '../services';
 // import { useRestaurantStore } from '../store/useRestaurantStore';
 
 const tabs = ['Stock', 'analyses', 'Orders'];
@@ -67,36 +67,27 @@ const Catalog = () => {
     setSelectedTab(tabIndex);
   };
 
-  // const reloadInventoryData = useCallback(async () => {
-  //   if (!selectedRestaurantUUID) return;
+  const reloadCatalog = async () => {
+    setLoadingdata(true);
+    try {
+      const response = await catalogService.getCatalog();
+      const list = response.data;
+      console.log(list);
 
-  //   setLoadingdata(true);
-  //   try {
-  //     const response = await inventoryService.getIngredientList(
-  //       selectedRestaurantUUID
-  //     );
-  //     const list = response.data; // Accès à la propriété data de la réponse
+      setIngredientsList(list);
+    } catch (err) {
+      if (err instanceof Error) {
+        // togglePopupError(err.message);
+      } else {
+        console.error('Unexpected error type:', err);
+      }
+    }
+    setLoadingdata(false);
+  };
 
-  //     const convertedData = Object.keys(list).map((key) => ({
-  //       id: key,
-  //       theoriticalStock: 0, // Tempoprary till API implementation
-  //       ...list[key],
-  //     }));
-  //     setIngredientsList(convertedData);
-  //   } catch (err) {
-  //     if (err instanceof Error) {
-  //       togglePopupError(err.message);
-  //     } else {
-  //       console.error('Unexpected error type:', err);
-  //     }
-  //   }
-
-  //   setLoadingdata(false);
-  // }, [selectedRestaurantUUID]);
-
-  // useEffect(() => {
-  //   reloadInventoryData();
-  // }, [reloadInventoryData]);
+  useEffect(() => {
+    reloadCatalog();
+  }, []);
 
   // Handle for actions in tab
   const handleEditClick = (row: IngredientForSupplier) => {
@@ -388,7 +379,7 @@ const Catalog = () => {
   ];
 
   return (
-    <div className="inventory">
+    <div className="catalog">
       <div className="tabs-and-tools">
         <Tabs tabs={tabs} onClick={toggleTab} selectedIndex={selectedTab} />
         <div className="tools">
