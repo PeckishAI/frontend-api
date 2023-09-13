@@ -4,6 +4,8 @@ import { Button, Table } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { OrderDetail } from './components/OrderDetail';
 import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
+import styles from './OrderTab.module.scss';
 
 type Order = {
   id: string;
@@ -86,7 +88,10 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
             return (
               <>
                 <i
-                  className="fa-solid fa-arrow-up-right-from-square"
+                  className={classNames(
+                    'fa-solid fa-arrow-up-right-from-square',
+                    styles.icon
+                  )}
                   data-tooltip-id="detail-tooltip"
                   data-tooltip-content={t('viewDetail')}
                   onClick={() => setOrderDetailVisible(true)}

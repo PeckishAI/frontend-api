@@ -1,0 +1,91 @@
+$bottomSectionHeight: 75px;
+
+.pageLayout {
+  padding-bottom: $bottomSectionHeight;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  .pageDescription {
+    margin-right: 20px;
+  }
+}
+
+.collapsibleMenu {
+  margin-bottom: 20px;
+
+  .collapsibleHeader {
+    display: flex;
+    gap: 15px;
+
+    .supplierName {
+      font-weight: 600;
+    }
+
+    .totalPrice {
+      color: var(--primaryColor);
+    }
+  }
+
+  .quantityInput {
+    width: 100px;
+    text-align: center;
+  }
+
+  .priceColumn {
+    font-weight: 600;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+
+    .actionButton {
+      font-size: 1rem;
+      color: var(--primaryColor);
+      cursor: pointer;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
+
+.bottomSection {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin-left: var(--sidebarWidth);
+  background-color: var(--backgroundColor);
+  box-shadow: var(--default-shadow);
+  height: $bottomSectionHeight;
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+
+  .totalOrderPriceContainer {
+    display: flex;
+    font-size: 1.2rem;
+    align-items: center;
+
+    .totalOrderPriceLabel {
+      color: var(--textSecondaryColor);
+      text-transform: uppercase;
+      margin-right: 10px;
+    }
+    .totalOrderPrice {
+      font-weight: 600;
+    }
+  }
+  .validateOrderButton {
+    font-size: 1rem;
+    // font-weight: 600;
+  }
+}
