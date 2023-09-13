@@ -18,7 +18,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
           ? { width: props.width }
           : props.type === 'number'
           ? { width: '70px' }
-          : { width: 'auto' }
+          : {}
       }
     />
   );
