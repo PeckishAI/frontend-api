@@ -1,12 +1,23 @@
 import SelectInput, { GroupBase, Props } from 'react-select';
 import CreatableSelect, { CreatableProps } from 'react-select/creatable';
+import SelectType from 'react-select/dist/declarations/src/Select';
 
 import styles from './Select.module.scss';
 import classNames from 'classnames';
+import { Ref } from 'react';
+import { ErrorMessage } from '../common';
+import { useTranslation } from 'react-i18next';
 
-type CustomProps<CreatableT> = {
+type CustomProps<
+  Option,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>,
+  CreatableT extends boolean = false,
+> = {
   size?: 'small' | 'large';
   isCreatable?: CreatableT;
+  innerRef?: Ref<SelectType<Option, IsMulti, Group>>;
+  error?: string;
 };
 
 type ConditionalProps<
@@ -24,9 +35,10 @@ const Select = <
   Group extends GroupBase<Option> = GroupBase<Option>,
   CreatableT extends boolean = false,
 >(
-  props: CustomProps<CreatableT> &
+  props: CustomProps<Option, IsMulti, Group, CreatableT> &
     ConditionalProps<Option, IsMulti, Group, CreatableT>
 ) => {
+  const { t } = useTranslation('error');
   const isSmall = !props.size || props.size === 'small';
   const selectHeight = isSmall
     ? 'var(--input-small-height)'
@@ -35,62 +47,71 @@ const Select = <
   const Component = props.isCreatable ? CreatableSelect : SelectInput;
 
   return (
-    <Component
-      {...props}
-      className={styles.selectContainer}
-      classNames={{
-        control: (state) =>
-          classNames(styles.control, {
-            [styles.controlFocused]: state.isFocused,
+    <div>
+      <Component
+        {...props}
+        ref={props.innerRef}
+        className={styles.selectContainer}
+        classNames={{
+          control: (state) =>
+            classNames(styles.control, {
+              [styles.controlFocused]: state.isFocused,
+            }),
+          valueContainer: () => styles.controlValueContainer,
+          placeholder: () => styles.valueText,
+          singleValue: (state) =>
+            classNames(styles.valueText, {
+              [styles.valueTextFilled]: state.hasValue,
+            }),
+          option: (state) =>
+            classNames(styles.option, {
+              [styles.optionSelected]: state.isSelected,
+            }),
+        }}
+        styles={{
+          control: (baseStyle) => ({
+            ...baseStyle,
+            height: selectHeight,
+            minHeight: selectHeight,
+            borderRadius: isSmall ? '10px' : '5px',
+            cursor: props.isSearchable ? 'text' : 'pointer',
           }),
-        valueContainer: () => styles.controlValueContainer,
-        placeholder: () => styles.valueText,
-        singleValue: (state) =>
-          classNames(styles.valueText, {
-            [styles.valueTextFilled]: state.hasValue,
+          singleValue: (baseStyle) => ({
+            ...baseStyle,
+            color: 'red',
           }),
-        option: (state) =>
-          classNames(styles.option, {
-            [styles.optionSelected]: state.isSelected,
+          valueContainer: (baseStyle) => ({
+            ...baseStyle,
+            height: selectHeight,
+            padding: isSmall ? '2px 8px' : '2px 13px',
           }),
-      }}
-      styles={{
-        control: (baseStyle) => ({
-          ...baseStyle,
-          height: selectHeight,
-          minHeight: selectHeight,
-          borderRadius: isSmall ? '10px' : '5px',
-          cursor: props.isSearchable ? 'text' : 'pointer',
-        }),
-        singleValue: (baseStyle) => ({
-          ...baseStyle,
-          color: 'red',
-        }),
-        valueContainer: (baseStyle) => ({
-          ...baseStyle,
-          height: selectHeight,
-          padding: isSmall ? '2px 8px' : '2px 13px',
-        }),
-        indicatorsContainer: (baseStyle) => ({
-          ...baseStyle,
-          height: selectHeight,
-        }),
-        dropdownIndicator: (baseStyle) => ({
-          ...baseStyle,
-          padding: isSmall ? '0 4px' : '0 8px',
-          width: isSmall ? '24px' : '36px',
-        }),
-        menu: (baseStyle) => ({
-          ...baseStyle,
-          borderRadius: isSmall ? '10px' : '5px',
-          overflow: 'hidden',
-        }),
-        option: (baseStyle) => ({
-          ...baseStyle,
-          padding: isSmall ? '8px 12px' : '8px 16px',
-        }),
-      }}
-    />
+          indicatorsContainer: (baseStyle) => ({
+            ...baseStyle,
+            height: selectHeight,
+          }),
+          dropdownIndicator: (baseStyle) => ({
+            ...baseStyle,
+            padding: isSmall ? '0 4px' : '0 8px',
+            width: isSmall ? '24px' : '36px',
+          }),
+          menu: (baseStyle) => ({
+            ...baseStyle,
+            borderRadius: isSmall ? '10px' : '5px',
+            overflow: 'hidden',
+          }),
+          option: (baseStyle) => ({
+            ...baseStyle,
+            padding: isSmall ? '8px 12px' : '8px 16px',
+          }),
+        }}
+      />
+      {props.error && (
+        <ErrorMessage
+          text={t(props.error as unknown as TemplateStringsArray)}
+        />
+      )}
+    </div>
   );
 };
+
 export default Select;
