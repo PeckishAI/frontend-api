@@ -18,3 +18,14 @@ export type IngredientForSupplier = {
   price: number;
   actions?: void;
 };
+
+export type IngredientForCustomers = {
+  id: string;
+  name: string;
+  safetyStock: number;
+  quantity: number;
+  unit: string;
+  supplier: string;
+  cost: number;
+  ordered?: boolean;
+};

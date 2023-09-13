@@ -26,7 +26,6 @@
         animation-name: shareTranslate;
         animation-duration: 0.2s;
         width: 250px;
-        height: 150px;
         background-color: var(--secondaryColor);
         border-radius: 5px;
         box-shadow: 0 0 10px 0 #0000002f;
@@ -43,6 +42,7 @@
           font-weight: var(--medium);
           line-height: 1.4rem;
           color: #303030;
+          margin: 10px 0;
         }
         .sharing-button {
           font-size: 0.9rem;
@@ -117,5 +117,9 @@
     max-height: 480px;
     overflow: scroll;
     box-shadow: 0 0 10px 0px #f0f0f0;
+
+    th {
+      font-size: 0.7rem;
+    }
   }
 }
