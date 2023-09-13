@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import './style.scss';
-import { Button, Input, Lottie } from 'shared-ui';
+import { Button, Input, Lottie, Popup } from 'shared-ui';
 import { useTranslation } from 'react-i18next';
+import { onboardingService } from '../../../../../apps/restaurant/src/services';
+import { useRestaurantStore } from '../../../../../apps/restaurant/src/store/useRestaurantStore';
 
 type POS = {
   name: string;
@@ -25,6 +27,9 @@ function oauth(auth_type: string | undefined, oauth_url: string | undefined) {
 
 const LoginModal = (props: Props) => {
   const { t } = useTranslation('common');
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
 
   const [userName, setUserName] = useState<string>('');
   const [userPassword, setUserPassword] = useState<string>('');
@@ -50,96 +55,112 @@ const LoginModal = (props: Props) => {
     setRetrieveDataStatus('success');
   }
   const handleLoginClick = () => {
-    if (FieldsValid()) {
+    if (FieldsValid() && selectedRestaurantUUID) {
+      console.log(selectedRestaurantUUID);
+
       setRetrieveDataStatus('loading');
-      setTimeout(simulationRequest, 5000);
+      onboardingService
+        .login(selectedRestaurantUUID, {
+          username: userName,
+          password: userPassword,
+        })
+        .then((res) => {
+          console.log(res);
+          setRetrieveDataStatus('success');
+        })
+        .catch((err) => {
+          console.log(err);
+          setRetrieveDataStatus('fail');
+        })
+        .finally(() => {});
     }
   };
   return (
-    <div className={'modal ' + (props.isVisible ? ' visible' : '')}>
-      <div className="modal-content">
-        {retrieveDataStatus === null ? (
-          <>
-            <h2>{props.pos?.name}</h2>
-            <Input
-              type="text"
-              width="300px"
-              value={userName}
-              placeholder="Username"
-              onChange={(value) => setUserName(value)}
+    <Popup
+      isVisible={props.isVisible}
+      onRequestClose={props.toggleModal}
+      title="New integration"
+      subtitle={`Please input your credentials for ${props.pos?.name}`}>
+      {retrieveDataStatus === null ? (
+        <div className="modal-content">
+          <Input
+            type="text"
+            width="300px"
+            value={userName}
+            placeholder="Username"
+            onChange={(value) => setUserName(value)}
+          />
+          <Input
+            type="password"
+            width="300px"
+            value={userPassword}
+            placeholder="Password"
+            onChange={(value) => setUserPassword(value)}
+          />
+          <span className="text-error">{errorField}</span>
+          <div className="button-container">
+            <Button
+              value={t('cancel')}
+              type="secondary"
+              onClick={props.toggleModal}
             />
-            <Input
-              type="password"
-              width="300px"
-              value={userPassword}
-              placeholder="Password"
-              onChange={(value) => setUserPassword(value)}
+            <Button
+              value={'' + props.pos?.button_display}
+              type="primary"
+              onClick={handleLoginClick}
             />
-            <span className="text-error">{errorField}</span>
-            <div className="button-container">
-              <Button
-                value={t('cancel')}
-                type="secondary"
-                onClick={props.toggleModal}
-              />
-              <Button
-                value={'' + props.pos?.button_display}
-                type="primary"
-                onClick={handleLoginClick}
-              />
-            </div>
-          </>
-        ) : (
-          <div className="retrieve-data-loading">
-            {retrieveDataStatus === 'loading' ? (
-              <>
-                <Lottie type="loading" width="150px" />
-                <span className="loading-info" id="bold">
-                  {t('onboarding.recoverData')}
-                </span>
-                <span className="loading-info">{t('onboarding.wait')}</span>
-              </>
-            ) : retrieveDataStatus === 'success' ? (
-              <>
-                <Lottie type="validate" width="100px" />
-                <span className="loading-info" id="bold">
-                  {t('onboarding.success')}
-                </span>
-                <Button
-                  value={t('ok')}
-                  type="secondary"
-                  onClick={() => {
-                    props.toggleModal();
-                    props.onIntegrated();
-                    setRetrieveDataStatus(null);
-                    setUserName('');
-                    setUserPassword('');
-                  }}
-                />
-              </>
-            ) : retrieveDataStatus === 'fail' ? (
-              <>
-                <Lottie type="error" width="100px" />
-                <span className="loading-info" id="bold">
-                  {t('onboarding.error')}
-                </span>
-                <Button
-                  value={t('ok')}
-                  type="secondary"
-                  onClick={() => {
-                    props.toggleModal();
-                    props.onIntegrated();
-                    setRetrieveDataStatus(null);
-                    setUserName('');
-                    setUserPassword('');
-                  }}
-                />
-              </>
-            ) : undefined}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      ) : (
+        <div className="retrieve-data-loading">
+          {retrieveDataStatus === 'loading' ? (
+            <>
+              <Lottie type="loading" width="150px" />
+              <span className="loading-info" id="bold">
+                {t('onboarding.recoverData')}
+              </span>
+              <span className="loading-info">{t('onboarding.wait')}</span>
+            </>
+          ) : retrieveDataStatus === 'success' ? (
+            <>
+              <Lottie type="validate" width="100px" />
+              <span className="loading-info" id="bold">
+                {t('onboarding.success')}
+              </span>
+              <Button
+                value={t('ok')}
+                type="secondary"
+                onClick={() => {
+                  props.toggleModal();
+                  props.onIntegrated();
+                  setRetrieveDataStatus(null);
+                  setUserName('');
+                  setUserPassword('');
+                }}
+              />
+            </>
+          ) : retrieveDataStatus === 'fail' ? (
+            <>
+              <Lottie type="error" width="100px" />
+              <span className="loading-info" id="bold">
+                {t('onboarding.error')}
+              </span>
+              <Button
+                value={t('ok')}
+                type="secondary"
+                onClick={() => {
+                  props.toggleModal();
+                  props.onIntegrated();
+                  setRetrieveDataStatus(null);
+                  setUserName('');
+                  setUserPassword('');
+                }}
+              />
+            </>
+          ) : undefined}
+        </div>
+      )}
+    </Popup>
   );
 };
 
