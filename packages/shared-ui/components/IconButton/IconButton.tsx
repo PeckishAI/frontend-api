@@ -15,19 +15,19 @@ type Props = {
 };
 
 const IconButton = (props: Props) => {
-  const tooltipeId = useId();
+  const tooltipId = useId();
   return (
     <div
       className={`IconButton ${props.className ?? ''}`}
-      data-tooltip-id={props.tooltipId ?? tooltipeId}
+      data-tooltip-id={props.tooltipId ?? tooltipId}
       data-tooltip-content={props.tooltipMsg}
       onClick={!props.loading ? props.onClick : undefined}>
       {
         <div
           style={{
             ...(props.loading ? { opacity: 0 } : undefined),
-            pointerEvents: 'none',
-          }}>
+          }}
+          className="icon-wrapper">
           {props.icon}
         </div>
       }
@@ -35,7 +35,7 @@ const IconButton = (props: Props) => {
       {!props.tooltipId && (
         <Tooltip
           className={`tooltip ${props.tooltipClassName ?? ''}`}
-          id={props.tooltipId ?? tooltipeId}
+          id={props.tooltipId ?? tooltipId}
         />
       )}
     </div>

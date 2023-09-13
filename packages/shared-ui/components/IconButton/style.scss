@@ -7,9 +7,7 @@
   color: var(--primaryColor);
   cursor: pointer;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
   &:hover {
     background-color: var(--secondaryColor);
   }
@@ -24,6 +22,15 @@
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
     margin-top: 2px;
+  }
+
+  .icon-wrapper {
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 .IconButton:hover {
