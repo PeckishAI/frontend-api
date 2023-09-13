@@ -2,6 +2,7 @@ import { SidePanel, Table } from 'shared-ui';
 import styles from './OrderDetail.module.scss';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type Ingredient = {
   name: string;
@@ -25,25 +26,26 @@ type Props = {
 };
 
 export const OrderDetail = (props: Props) => {
+  const { t } = useTranslation('common');
   useEffect(() => {
     console.log('Retrieve order :', props.orderUUID);
   }, [props.orderUUID]);
 
   const columns: ColumnDefinitionType<Ingredient>[] = [
     {
-      key: 'name',
+      key: t('name'),
       header: 'Name',
     },
     {
-      key: 'quantity',
+      key: t('quantity'),
       header: 'Quantity',
     },
     {
-      key: 'unit',
+      key: t('unit'),
       header: 'Unit',
     },
     {
-      key: 'price',
+      key: t('price'),
       header: 'Price',
     },
   ];
@@ -56,24 +58,25 @@ export const OrderDetail = (props: Props) => {
       className={styles.sidePanel}>
       <div className={styles.infosContainer}>
         <div className={styles.info}>
-          <p className={styles.infoTitle}>Supplier</p>
+          <p className={styles.infoTitle}>{t('orders.supplier')}</p>
           <p className={styles.infoValue}>Metro</p>
         </div>
         <div className={styles.info}>
-          <p className={styles.infoTitle}>Delivery date</p>
+          <p className={styles.infoTitle}>{t('orders.deliveryDate')}</p>
           <p className={styles.infoValue}>15/09/2023</p>
         </div>
         <div className={styles.info}>
-          <p className={styles.infoTitle}>Price</p>
+          <p className={styles.infoTitle}>{t('price')}</p>
           <p className={styles.infoValue}>280€</p>
         </div>
         <div className={styles.info}>
-          <p className={styles.infoTitle}>Status</p>
-          <p className={styles.infoValue}>Ordered</p>
+          <p className={styles.infoTitle}>{t('orders.status')}</p>
+          <p className={styles.infoValue}>
+            {t(`orders.statusStates.delivered`)}
+          </p>
         </div>
       </div>
 
-      {/* <p>Ordered Ingredients</p> */}
       <Table columns={columns} data={ingredientList} />
     </SidePanel>
   );

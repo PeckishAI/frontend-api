@@ -2,7 +2,7 @@
   "myRestaurant": "My restaurant",
   "overview": "Overview",
   "inventory": {
-    "stock": "inventory",
+    "stock": "Inventory",
     "suppliers": "Suppliers",
     "orders": "Orders"
   },
@@ -18,6 +18,10 @@
 
   "name": "Name",
   "quantity": "Quantity",
+  "price": "Price",
+  "actions": "Actions",
+  "availability": "Availability",
+  "unit": "Unit",
 
   "edit": "Edit",
   "delete": "Delete",
@@ -36,6 +40,20 @@
   "preview": "Preview",
   "next": "Next",
   "finish": "Finish",
+  "unknown": "unknown",
+
+  "orders.supplier": "Supplier",
+  "orders.orderDate": "Order date",
+  "orders.deliveryDate": "Delivery date",
+  "orders.status": "Status",
+  "orders.statusStates": {
+    "pending": "Pending",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "orders.detail": "Detail",
+  "orders.detail.tooltip": "View detail",
+  "orders.showPredictedOrder": "Show predicted order",
 
   "warning.delete": "Are you sure you want to delete it ?",
   "warning.edit": "Are you sure you want to edit it ?",
@@ -69,5 +87,12 @@
 
   "order.validation.description": "Peckish have predicted this order for your next week. You can remove, add or update quantity of each elements.",
   "order.validation.items_one": "{{count}} item",
-  "order.validation.items_other": "{{count}} items"
+  "order.validation.items_other": "{{count}} items",
+  "order.validation.submitOrder": "Submit order",
+  "order.validation.deleteItemPopup": "Are you sure to delete {{name}} from your order ?",
+  "order.validation.addIngredient": {
+    "title": "Select an ingredient",
+    "subtitle": "The selected ingredient will be added in the good supplier order",
+    "selectPlaceholder": "Select an ingredient"
+  }
 }

@@ -18,6 +18,10 @@
 
   "name": "Nom",
   "quantity": "Quantité",
+  "price": "Prix",
+  "actions": "Actions",
+  "availability": "Disponibilité",
+  "unit": "Unité",
 
   "edit": "Modifier",
   "delete": "Supprimer",
@@ -36,6 +40,20 @@
   "preview": "Prévisualiser",
   "next": "Suivant",
   "finish": "Terminé",
+  "unknown": "inconnu",
+
+  "orders.supplier": "Fournisseur",
+  "orders.orderDate": "Date de commande",
+  "orders.deliveryDate": "Date de livraison",
+  "orders.status": "Statut",
+  "orders.statusStates": {
+    "pending": "En attente",
+    "delivered": "Livrée",
+    "cancelled": "Annulée"
+  },
+  "orders.detail": "Détail",
+  "orders.detail.tooltip": "Voir le détail",
+  "orders.showPredictedOrder": "Voir la commande prédite",
 
   "warning.delete": "Êtes-vous sure de vouloir supprimer cela ?",
   "warning.edit": "Êtes-vous sure de vouloir modifier cela ?",
@@ -68,5 +86,12 @@
 
   "order.validation.description": "Peckish a prédit cette commande pour votre semaine prochaine. Vous pouvez supprimer, ajouter ou mettre à jour la quantité de chaque élément.",
   "order.validation.items_one": "{{count}} article",
-  "order.validation.items_other": "{{count}} articles"
+  "order.validation.items_other": "{{count}} articles",
+  "order.validation.submitOrder": "Envoyer la commande",
+  "order.validation.deleteItemPopup": "Êtes-vous sûr de supprimer {{name}} de votre commande ?",
+  "order.validation.addIngredient": {
+    "title": "Sélectionnez un ingrédient",
+    "subtitle": "L'ingrédient sélectionné sera ajouté dans la bonne commande fournisseur",
+    "selectPlaceholder": "Sélectionnez un ingrédient"
+  }
 }

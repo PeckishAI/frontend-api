@@ -6,6 +6,7 @@ import styles from './SelectIngredientPopup.module.scss';
 import { z } from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 
 const AddIngredientSchema = z.object({
   ingredientSelect: z
@@ -28,6 +29,7 @@ type Props = {
 };
 
 export const SelectIngredientPopup = (props: Props) => {
+  const { t } = useTranslation('common');
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
@@ -88,8 +90,8 @@ export const SelectIngredientPopup = (props: Props) => {
     <Popup
       isVisible={props.isVisible}
       onRequestClose={props.onRequestClose}
-      title="Select an ingredient"
-      subtitle="The selected ingredient will be added in the good supplier order">
+      title={t('order.validation.addIngredient.title')}
+      subtitle={t('order.validation.addIngredient.subtitle')}>
       <form onSubmit={handleFormSubmit}>
         <div className={styles.inputContainer}>
           <Controller
@@ -97,7 +99,9 @@ export const SelectIngredientPopup = (props: Props) => {
             name="ingredientSelect"
             render={({ field: { onChange, name, value, onBlur, ref } }) => (
               <Select
-                placeholder="Select an ingredient"
+                placeholder={t(
+                  'order.validation.addIngredient.selectPlaceholder'
+                )}
                 options={ingredientsOptions}
                 size="large"
                 isClearable
@@ -115,20 +119,20 @@ export const SelectIngredientPopup = (props: Props) => {
           />
           <LabeledInput
             lighter
-            placeholder="Quantity"
+            placeholder={t('quantity')}
             type="number"
             suffix={
               watch('ingredientSelect')
                 ? watch('ingredientSelect').unit
-                : 'unknown'
+                : t('unknown')
             }
             {...register('quantity')}
             error={errors.quantity?.message}
           />
         </div>
         <div className={styles.buttonsContainer}>
-          <Button type="secondary" value="Cancel" />
-          <Button type="primary" value="Add" actionType="submit" />
+          <Button type="secondary" value={t('cancel')} />
+          <Button type="primary" value={t('add')} actionType="submit" />
         </div>
       </form>
     </Popup>

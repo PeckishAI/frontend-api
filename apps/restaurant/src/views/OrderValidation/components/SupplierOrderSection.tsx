@@ -23,11 +23,11 @@ export const SupplierOrderSection = (props: Props) => {
 
   const columns: ColumnDefinitionType<OrderForecast['items'][number]>[] = [
     {
-      header: 'Name',
+      header: t('name'),
       key: 'name',
     },
     {
-      header: 'Quantity',
+      header: t('quantity'),
       key: 'quantity',
       renderItem: ({ row }) => {
         if (updatingItemId === row.id) {
@@ -46,18 +46,18 @@ export const SupplierOrderSection = (props: Props) => {
       },
     },
     {
-      header: 'Price',
+      header: t('price'),
       key: 'price',
       renderItem: ({ row }) => (
         <p className={styles.priceColumn}>{`${row.price} €`}</p>
       ),
     },
     {
-      header: 'Availability',
+      header: t('availability'),
       key: 'availability',
     },
     {
-      header: 'Actions',
+      header: t('actions'),
       key: 'id',
       renderItem: ({ row }) => (
         <div className={styles.actions}>
@@ -113,14 +113,16 @@ export const SupplierOrderSection = (props: Props) => {
             <p className={styles.totalPrice}>{`${props.data.items.reduce(
               (prev, curr) => prev + curr.price,
               0
-            )}€ (${props.data.items.length} items)`}</p>
+            )}€ (${t('order.validation.items', {
+              count: props.data.items.length,
+            })})`}</p>
           </div>
         }>
         <Table columns={columns} data={props.data.items} />
       </CollapsibleMenu>
 
       <DialogBox
-        msg="Are you sure to delete Onion from your order ?"
+        msg={t('order.validation.deleteItemPopup')}
         type="warning"
         onRequestClose={() => setDeleteIngredientUUID(null)}
         revele={!!deleteIngredientUUID}

@@ -1,12 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { Tabs, Input, Lottie } from 'shared-ui';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import { SupplierTab, SupplierTabRef } from './Suppliers/SupplierTab';
 import { IngredientTab, IngredientTabRef } from './Ingredients/IngredientTab';
 import { useNavigate, useParams } from 'react-router-dom';
 import { OrderTab, OrderTabRef } from './Orders/OrderTab';
-
-const TABS = ['Stock', 'Suppliers', 'Orders'];
 
 type RouteParams = {
   tab: 'stock' | 'suppliers' | 'orders';
@@ -31,6 +29,12 @@ const Inventory = () => {
   const { tab } = useParams<RouteParams>();
   const navigate = useNavigate();
 
+  const TABS = [
+    t('inventory.stock'),
+    t('inventory.suppliers'),
+    t('inventory.orders'),
+  ];
+
   const supplierTabRef = useRef<SupplierTabRef>(null);
   const ingredientTabRef = useRef<IngredientTabRef>(null);
   const orderTabRef = useRef<OrderTabRef>(null);
@@ -39,8 +43,12 @@ const Inventory = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [loadingData, setLoadingData] = useState<boolean>(false);
 
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
+
   useEffect(() => {
     setSelectedTab(getTabIndex(tab));
+    // To show the options
+    forceUpdate();
   }, [tab]);
 
   const renderSelectedTab = () => {

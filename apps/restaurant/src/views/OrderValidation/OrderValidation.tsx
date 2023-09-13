@@ -187,8 +187,7 @@ export const OrderValidation = () => {
     <div className={styles.pageLayout}>
       <div className={styles.pageHeader}>
         <p className={styles.pageDescription}>
-          Peckish have predicted this order for your next week. You can remove
-          or update quantity of each elements.
+          {t('order.validation.description')}
         </p>
         <Button
           icon={<FaPlus />}
@@ -223,7 +222,7 @@ export const OrderValidation = () => {
           </p>
         </div>
         <Button
-          value="Submit order"
+          value={t('order.validation.submitOrder')}
           type="primary"
           className={styles.validateOrderButton}
         />
