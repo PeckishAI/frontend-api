@@ -1,4 +1,3 @@
-import { log } from 'console';
 import axiosClient from '.';
 import { Restaurant } from '../store/useRestaurantStore';
 
@@ -42,10 +41,7 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
 
 const reloadPOS = async (restaurantId: string): Promise<boolean> => {
   return await axiosClient
-    .post(`/papapoule/refresh/${restaurantId}`, {
-      username: 'pascal',
-      password: '25122512',
-    })
+    .post(`/refresh/${restaurantId}`)
     .then(() => true)
     .catch(() => false);
 };
