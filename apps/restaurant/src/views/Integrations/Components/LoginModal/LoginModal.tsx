@@ -2,23 +2,15 @@ import { useState } from 'react';
 import './style.scss';
 import { Button, Input, Lottie, Popup } from 'shared-ui';
 import { useTranslation } from 'react-i18next';
-import { onboardingService } from '../../../../../apps/restaurant/src/services';
-import { useRestaurantStore } from '../../../../../apps/restaurant/src/store/useRestaurantStore';
-
-type POS = {
-  name: string;
-  display_name: string;
-  button_display?: string;
-  auth_type: string;
-  oauth_url: string;
-  logo_uri: string;
-};
+import axiosClient from '../../../../services';
+import { useUserStore } from 'user-management';
+import { POS, Integration } from '../../Integrations';
 
 type Props = {
   isVisible: boolean;
   pos?: POS;
   toggleModal: () => void;
-  onIntegrated: () => void;
+  onIntegrated: (integration?: Integration) => void;
 };
 
 function oauth(auth_type: string | undefined, oauth_url: string | undefined) {
@@ -27,9 +19,7 @@ function oauth(auth_type: string | undefined, oauth_url: string | undefined) {
 
 const LoginModal = (props: Props) => {
   const { t } = useTranslation('common');
-  const selectedRestaurantUUID = useRestaurantStore(
-    (state) => state.selectedRestaurantUUID
-  );
+  const userId = useUserStore((state) => state.user?.user_uuid);
 
   const [userName, setUserName] = useState<string>('');
   const [userPassword, setUserPassword] = useState<string>('');
@@ -37,6 +27,7 @@ const LoginModal = (props: Props) => {
   const [retrieveDataStatus, setRetrieveDataStatus] = useState<
     'loading' | 'success' | 'fail' | null
   >(null);
+  const [integrated, setIntegrated] = useState<Integration>();
 
   function FieldsValid() {
     if (!userName) {
@@ -55,17 +46,21 @@ const LoginModal = (props: Props) => {
     setRetrieveDataStatus('success');
   }
   const handleLoginClick = () => {
-    if (FieldsValid() && selectedRestaurantUUID) {
-      console.log(selectedRestaurantUUID);
-
+    if (FieldsValid() && userId) {
       setRetrieveDataStatus('loading');
-      onboardingService
-        .login(selectedRestaurantUUID, {
+      axiosClient
+        .post(props.pos?.oauth_url + '/integrate/' + userId, {
           username: userName,
           password: userPassword,
         })
         .then((res) => {
           console.log(res);
+
+          console.log(res.data[0], res.data.length);
+          setIntegrated({
+            name: res.data[0],
+            restaurantNumber: res.data.length,
+          });
           setRetrieveDataStatus('success');
         })
         .catch((err) => {
@@ -132,7 +127,7 @@ const LoginModal = (props: Props) => {
                 type="secondary"
                 onClick={() => {
                   props.toggleModal();
-                  props.onIntegrated();
+                  props.onIntegrated(integrated);
                   setRetrieveDataStatus(null);
                   setUserName('');
                   setUserPassword('');
