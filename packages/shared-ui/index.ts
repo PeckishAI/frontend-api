@@ -12,8 +12,6 @@ import Input from './components/form/Input/Input';
 import Button from './components/Button/Button';
 import IconButton from './components/IconButton/IconButton';
 import UploadCsv from './components/layout/UploadCsv/UploadCsv';
-import IntegrationCard from '../../apps/restaurant/src/components/IntegrationCard/IntegrationCard';
-import LoginModal from './components/layout/LoginModal/LoginModal';
 import RestaurantCard from './components/RestaurantCard/RestaurantCard';
 import ProfilePicture from './components/ProfilePicture/ProfilePicture';
 import EmptyPage from './components/layout/EmptyPage/EmptyPage';
@@ -41,8 +39,6 @@ export {
   Button,
   IconButton,
   UploadCsv,
-  IntegrationCard,
-  LoginModal,
   RestaurantCard,
   ProfilePicture,
   EmptyPage,
