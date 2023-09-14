@@ -1,6 +1,6 @@
 import { Lottie, Input, Button } from 'shared-ui';
-import IntegrationCard from './Components/IntegrationCard/IntegrationCard'
-import LoginModal from './Components/LoginModal/LoginModal
+import IntegrationCard from './Components/IntegrationCard/IntegrationCard';
+import LoginModal from './Components/LoginModal/LoginModal';
 import { useEffect, useState } from 'react';
 import { onboardingService } from '../../services';
 import { useTranslation } from 'react-i18next';
