@@ -41,21 +41,11 @@ const Customers = (props: Props) => {
       width: '10%',
     },
     {
-      key: 'supplier',
-      header: t('ingredient:supplier'),
-      width: '15%',
-    },
-    {
-      key: 'cost',
-      header: t('ingredient:cost'),
-      width: '10%',
-      classname: 'column-bold',
-    },
-    {
       key: 'ordered',
       header: 'Ordered',
       width: '10%',
-      renderItem: ({ row }) => (row.ordered ? 'true' : 'false'),
+      renderItem: ({ row }) =>
+        row.ordered === true ? 'true' : row.ordered === false ? 'false' : '-',
     },
   ];
 
@@ -188,7 +178,7 @@ const Customers = (props: Props) => {
       )}
       <SidePanel
         revele={clickedRestaurand ? true : false}
-        togglePanel={() => setClickedRestaurand(undefined)}
+        onRequestClose={() => setClickedRestaurand(undefined)}
         loading={loadingCustomerDetail}>
         <>
           <div className="metrics">

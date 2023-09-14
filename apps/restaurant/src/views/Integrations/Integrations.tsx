@@ -1,8 +1,11 @@
-import { IntegrationCard, LoginModal, Lottie, Input, Button } from 'shared-ui';
+import { Lottie, Input, Button } from 'shared-ui';
+import IntegrationCard from './Components/IntegrationCard/IntegrationCard'
+import LoginModal from './Components/LoginModal/LoginModal
 import { useEffect, useState } from 'react';
 import { onboardingService } from '../../services';
 import { useTranslation } from 'react-i18next';
 import './style.scss';
+import { useNavigate } from 'react-router-dom';
 
 export type POS = {
   name: string;
@@ -13,13 +16,16 @@ export type POS = {
   logo_uri: string;
 };
 
-type Integration = {
+export type Integration = {
   name: string;
   restaurantNumber: number;
 };
 
 const Integrations = () => {
   const { t } = useTranslation('common');
+
+  const navigate = useNavigate();
+
   const [loadingData, setLoadingdata] = useState(false);
   const [posList, setPOSList] = useState<POS[]>([]);
   const [loginModalVisible, setLoginModalVisible] = useState(false);
@@ -54,18 +60,14 @@ const Integrations = () => {
     setLoginModalVisible(!loginModalVisible);
   };
 
-  const handleOnIntegrated = () => {
-    setIntegrated((prevValues) => [
-      ...prevValues,
-      {
-        name: 'burger king',
-        restaurantNumber: 8,
-      },
-    ]);
+  const handleOnIntegrated = (integrated?: Integration) => {
+    if (integrated) {
+      setIntegrated((prevValues) => [...prevValues, integrated]);
+    }
   };
 
   const handleValidIntegrations = () => {
-    // setLoadingdata(true);
+    navigate('/myRestaurant');
   };
 
   // Loop through object and return cards
@@ -85,11 +87,14 @@ const Integrations = () => {
             <span style={{ color: 'var(--primaryColor)' }}>
               Congratulation ! You have integrated :{' '}
             </span>
-            {integrated?.map((system, i) => (
-              <span key={i}>
-                {system.name} : {system.restaurantNumber} restaurant(s){', '}
-              </span>
-            ))}
+            {integrated.length !== 0
+              ? integrated.map((system, i) => (
+                  <span key={i}>
+                    {system?.name} : {system?.restaurantNumber} restaurant(s)
+                    {', '}
+                  </span>
+                ))
+              : undefined}
           </p>
           <Button
             type="primary"
