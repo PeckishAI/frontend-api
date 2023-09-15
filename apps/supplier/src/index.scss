@@ -11,6 +11,11 @@
 }
 
 .orders {
+  .view-detail {
+    color: var(--primaryColor);
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
 }
 
 .catalog {
@@ -19,6 +24,11 @@
     display: flex;
     justify-content: center;
     gap: 15px;
+    i {
+      color: var(--primaryColor);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
   }
   .table-container {
     overflow: scroll;

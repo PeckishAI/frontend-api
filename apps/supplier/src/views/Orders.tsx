@@ -21,9 +21,9 @@ type Order = {
 const tabs = ['Tab 1', 'Tab 2', 'Tab 3'];
 
 const orderStatus: DropdownOptionsDefinitionType[] = [
-  { label: 'Predicted', value: 'predicted', color: '#5e72e4' },
-  { label: 'Ordered', value: 'ordered', color: '#fffb90' },
-  { label: 'Shipped', value: 'shipped', color: '#7ef5b7' },
+  { label: 'Predicted', value: 'predicted' },
+  { label: 'Ordered', value: 'ordered' },
+  { label: 'Shipped', value: 'shipped' },
 ];
 
 const Orders = () => {
@@ -91,7 +91,7 @@ const Orders = () => {
           return (
             <>
               <i
-                className="fa-solid fa-arrow-up-right-from-square"
+                className="fa-solid fa-arrow-up-right-from-square view-detail"
                 data-tooltip-id="detail-tooltip"
                 data-tooltip-content={t('viewDetail')}></i>
             </>
