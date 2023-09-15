@@ -30,23 +30,24 @@ export const OrderDetail = (props: Props) => {
   useEffect(() => {
     console.log('Retrieve order :', props.orderUUID);
   }, [props.orderUUID]);
+  console.log(ingredientList);
 
   const columns: ColumnDefinitionType<Ingredient>[] = [
     {
-      key: t('name'),
-      header: 'Name',
+      key: 'name',
+      header: t('name'),
     },
     {
-      key: t('quantity'),
-      header: 'Quantity',
+      key: 'quantity',
+      header: t('quantity'),
     },
     {
-      key: t('unit'),
-      header: 'Unit',
+      key: 'unit',
+      header: t('unit'),
     },
     {
-      key: t('price'),
-      header: 'Price',
+      key: 'price',
+      header: t('price'),
     },
   ];
 
