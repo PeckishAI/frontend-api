@@ -8,6 +8,7 @@ import { LinkedSupplier } from '../../../../services';
 import styles from './SupplierCard.module.scss';
 import dayjs from 'dayjs';
 import Skeleton from 'react-loading-skeleton';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   supplier: LinkedSupplier;
@@ -20,6 +21,7 @@ export const SupplierCard = ({
   onPressCopy,
   onPressDelete,
 }: Props) => {
+  const { t } = useTranslation('common');
   const renderMoreOptions = () => (
     <Menu
       menuButton={
@@ -32,7 +34,7 @@ export const SupplierCard = ({
       {!supplier.linked && (
         <MenuItem onClick={onPressCopy}>
           <FiCopy className={styles.menuIcon} />
-          Copy invitation link
+          {t('suppliers.copyLink')}
         </MenuItem>
       )}
       {/* <MenuItem disabled>
@@ -41,7 +43,7 @@ export const SupplierCard = ({
       </MenuItem> */}
       <MenuItem className={styles.menuDelete} onClick={onPressDelete}>
         <FaTrash className={styles.menuIcon} />
-        Remove
+        {t('suppliers.revokeAccess')}
       </MenuItem>
     </Menu>
   );

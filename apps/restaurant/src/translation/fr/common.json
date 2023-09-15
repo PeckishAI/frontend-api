@@ -8,8 +8,7 @@
   },
   "recipes": "Recettes",
   "onboarding": "Intégrations",
-  "onboarding.msg": "Séléctionnez un système que vous souhaitez intégrer à Peckish !",
-  "onboarding.search": "Rechercher un système",
+
   "orders.validation": "Commande prédite",
 
   "simulation": "Simulation",
@@ -41,6 +40,9 @@
   "next": "Suivant",
   "finish": "Terminé",
   "unknown": "inconnu",
+  "date": "Date",
+  "remove": "Supprimer",
+  "email": "Email",
 
   "orders.supplier": "Fournisseur",
   "orders.orderDate": "Date de commande",
@@ -65,8 +67,7 @@
   "error.trigger": "Une erreur est survenue",
   "error.tryLater": "Veuillez essayer plus tard",
 
-  "date": "Date",
-  "navbar.restaurants": "Restaurants",
+  "navbar.restaurantsDropdown": "Restaurants",
 
   "myRestaurants.emptyTitle": "Vous n'avez pas de restaurant",
   "myrestaurants.emptyText": "Veuillez ajouter une intégration afin de voir vos restaurants sur Peckish",
@@ -79,17 +80,45 @@
   "field.error.quantity": "Le champ quantité est requis.",
   "field.error.quantityNegative": "La quantité doit être suppérieure ou égale à 0.",
 
+  "onboarding.msg": "Séléctionnez un système que vous souhaitez intégrer à Peckish !",
+  "onboarding.search": "Rechercher un système",
   "onboarding.recoverData": "Récupération des données en cours...",
   "onboarding.wait": "Cette action peut prendre du temps.",
   "onboarding.success": "Récupération des données avec succès !",
   "onboarding.error": "Echec de la récupération des données.",
 
+  "suppliers.acceptedInvitations": "Invitations acceptées",
+  "suppliers.pendingInvitations": "Invitations en attente",
+  "suppliers.copyLink": "Copier le lien d'invitation",
+  "suppliers.noLink": "Aucun lien d'invitation trouvé",
+  "suppliers.linkCopied": "Lien d'invitation copié dans le presse-papiers",
+  "suppliers.revokeAccess": "Révoquer l'accès",
+  "suppliers.removeSupplierToast": {
+    "loading": "Suppression du fournisseur...",
+    "success": "Fournisseur supprimé",
+    "error": "Erreur lors de la suppression du fournisseur"
+  },
+  "suppliers.removeSupplierPopup": {
+    "title": "Révoquer l'accès à l'inventaire",
+    "subtitle": "Voulez-vous supprimer l'accès de {{name}} à votre inventaire ?"
+  },
+  "suppliers.addSupplier": {
+    "title": "Ajouter un nouveau fournisseur",
+    "subtitle": "Recherchez votre fournisseur ici ou créez-en un nouveau si vous ne le trouvez pas",
+    "select": {
+      "placeholder": "Sélectionnez un fournisseur",
+      "createSupplier": "Créer le fournisseur \"{{name}}\""
+    },
+    "automaticSendCheckbox": "Envoyer une invitation automatique au fournisseur"
+  },
+
   "order.validation.description": "Peckish a prédit cette commande pour votre semaine prochaine. Vous pouvez supprimer, ajouter ou mettre à jour la quantité de chaque élément.",
+  "order.validation.addIngredient": "Ajouter un ingrédient",
   "order.validation.items_one": "{{count}} article",
   "order.validation.items_other": "{{count}} articles",
   "order.validation.submitOrder": "Envoyer la commande",
   "order.validation.deleteItemPopup": "Êtes-vous sûr de supprimer {{name}} de votre commande ?",
-  "order.validation.addIngredient": {
+  "order.validation.addIngredientPopup": {
     "title": "Sélectionnez un ingrédient",
     "subtitle": "L'ingrédient sélectionné sera ajouté dans la bonne commande fournisseur",
     "selectPlaceholder": "Sélectionnez un ingrédient"

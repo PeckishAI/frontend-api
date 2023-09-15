@@ -41,7 +41,7 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
 
 const reloadPOS = async (restaurantId: string): Promise<boolean> => {
   return await axiosClient
-    .post(`/refresh/${restaurantId}`)
+    .post(`/restaurant/refresh/${restaurantId}`)
     .then(() => true)
     .catch(() => false);
 };

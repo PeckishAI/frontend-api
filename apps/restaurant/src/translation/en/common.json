@@ -8,10 +8,7 @@
   },
   "recipes": "Recipes",
   "onboarding": "Onboarding",
-  "onboarding.msg": "Select a software that you want to integrate to Peckish !",
-  "onboarding.search": "Search software",
   "orders.validation": "Predicted order",
-
   "simulation": "Simulation",
   "integrations": "Integrations",
   "support": "Support",
@@ -41,6 +38,9 @@
   "next": "Next",
   "finish": "Finish",
   "unknown": "unknown",
+  "date": "Date",
+  "remove": "Remove",
+  "email": "Email",
 
   "orders.supplier": "Supplier",
   "orders.orderDate": "Order date",
@@ -65,9 +65,7 @@
   "error.trigger": "An error has occurred",
   "error.tryLater": "Please try later",
 
-  "date": "Date",
-
-  "navbar.restaurants": "Restaurants",
+  "navbar.restaurantsDropdown": "Restaurants",
 
   "myRestaurants.emptyTitle": "You don't have any restaurant",
   "myrestaurants.emptyText": "First add a new integration to see your restaurants in Peckish",
@@ -80,17 +78,45 @@
   "field.error.quantity": "Quantity field is required.",
   "field.error.quantityNegative": "Quantity must be greater than or equal to 0.",
 
+  "onboarding.msg": "Select a software that you want to integrate to Peckish !",
+  "onboarding.search": "Search software",
   "onboarding.recoverData": "Data recovery in progress...",
   "onboarding.wait": "This may take some time.",
   "onboarding.success": "Successful data recovery !",
   "onboarding.error": "Data recovery failed.",
 
+  "suppliers.acceptedInvitations": "Accepted invitations",
+  "suppliers.pendingInvitations": "Pending invitations",
+  "suppliers.copyLink": "Copy invitation link",
+  "suppliers.noLink": "No invitation link found",
+  "suppliers.linkCopied": "Invitation link copied to clipboard",
+  "suppliers.revokeAccess": "Revoke access",
+  "suppliers.removeSupplierToast": {
+    "loading": "Deleting supplier...",
+    "success": "Supplier deleted",
+    "error": "Error deleting supplier"
+  },
+  "suppliers.removeSupplierPopup": {
+    "title": "Revoke access to inventory",
+    "subtitle": "Do you want to remove {{name}}'s access to your inventory?"
+  },
+  "suppliers.addSupplier": {
+    "title": "Add a new supplier",
+    "subtitle": "Search your supplier here or create a new one if you don't find it",
+    "select": {
+      "placeholder": "Select a supplier",
+      "createSupplier": "Create supplier \"{{name}}\""
+    },
+    "automaticSendCheckbox": "Send an automatic invitation to the supplier"
+  },
+
   "order.validation.description": "Peckish have predicted this order for your next week. You can remove, add or update quantity of each elements.",
+  "order.validation.addIngredient": "Add an ingredient",
   "order.validation.items_one": "{{count}} item",
   "order.validation.items_other": "{{count}} items",
   "order.validation.submitOrder": "Submit order",
   "order.validation.deleteItemPopup": "Are you sure to delete {{name}} from your order ?",
-  "order.validation.addIngredient": {
+  "order.validation.addIngredientPopup": {
     "title": "Select an ingredient",
     "subtitle": "The selected ingredient will be added in the good supplier order",
     "selectPlaceholder": "Select an ingredient"

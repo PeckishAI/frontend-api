@@ -90,8 +90,8 @@ export const SelectIngredientPopup = (props: Props) => {
     <Popup
       isVisible={props.isVisible}
       onRequestClose={props.onRequestClose}
-      title={t('order.validation.addIngredient.title')}
-      subtitle={t('order.validation.addIngredient.subtitle')}>
+      title={t('order.validation.addIngredientPopup.title')}
+      subtitle={t('order.validation.addIngredientPopup.subtitle')}>
       <form onSubmit={handleFormSubmit}>
         <div className={styles.inputContainer}>
           <Controller
@@ -100,7 +100,7 @@ export const SelectIngredientPopup = (props: Props) => {
             render={({ field: { onChange, name, value, onBlur, ref } }) => (
               <Select
                 placeholder={t(
-                  'order.validation.addIngredient.selectPlaceholder'
+                  'order.validation.addIngredientPopup.selectPlaceholder'
                 )}
                 options={ingredientsOptions}
                 size="large"

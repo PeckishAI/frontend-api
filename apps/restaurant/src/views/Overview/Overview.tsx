@@ -62,17 +62,7 @@ const Overview = () => {
     overviewService
       .getMetrics(selectedRestaurantUUID)
       .then((res) => {
-        // setMetrics(res);
-        setMetrics({
-          occupancy: {
-            value: 432,
-            mom: -2,
-          },
-          sales: {
-            value: 435 * 14.5,
-            mom: 1.5,
-          },
-        });
+        setMetrics(res);
       })
       .finally(() => {
         setLoadingMetrics(false);
