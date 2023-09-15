@@ -6,6 +6,7 @@ import { onboardingService } from '../../services';
 import { useTranslation } from 'react-i18next';
 import './style.scss';
 import { useNavigate } from 'react-router-dom';
+import { useRestaurantStore } from '../../store/useRestaurantStore';
 
 export type POS = {
   name: string;
@@ -32,6 +33,10 @@ const Integrations = () => {
   const [selectedPOS, setSelectedPOS] = useState<POS | undefined>();
   const [searchTerm, setSearchTerm] = useState('');
   const [integrated, setIntegrated] = useState<Integration[]>([]);
+
+  const reloadRestaurants = useRestaurantStore(
+    (state) => state.loadRestaurants
+  );
 
   // Fetch data from API Backend (Get POS)
   useEffect(() => {
@@ -67,6 +72,7 @@ const Integrations = () => {
   };
 
   const handleValidIntegrations = () => {
+    reloadRestaurants();
     navigate('/myRestaurant');
   };
 
