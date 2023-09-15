@@ -71,46 +71,48 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     useImperativeHandle(
       forwardedRef,
       () => ({
-        renderOptions: () => (
-          <>
-            <IconButton
-              icon={<i className="fa-solid fa-filter"></i>}
-              onClick={() => null}
-              tooltipMsg="Filter"
-              tooltipId="inventory-tooltip"
-            />
-            <IconButton
-              icon={<i className="fa-solid fa-download"></i>}
-              onClick={() => null}
-              tooltipMsg={t('export')}
-              tooltipId="inventory-tooltip"
-            />
-            <IconButton
-              icon={<i className="fa-solid fa-file-arrow-down"></i>}
-              onClick={() =>
-                fileInputRef.current && fileInputRef.current.click()
-              }
-              tooltipMsg={`${t('import')} CSV`}
-              tooltipId="inventory-tooltip"
-              loading={loadingButton}
-            />
-            <input
-              type="file"
-              accept=".csv"
-              onChange={handleFileUpload}
-              style={{ display: 'none' }} // hide input
-              ref={fileInputRef}
-            />
-            <Button
-              value={t('inventory.addIngredientBtn')}
-              type="primary"
-              className="add"
-              onClick={!addingRow ? handleAddNewIngredient : () => null}
-            />
-          </>
-        ),
+        renderOptions: () => {
+          return (
+            <>
+              <IconButton
+                icon={<i className="fa-solid fa-filter"></i>}
+                onClick={() => null}
+                tooltipMsg="Filter"
+                tooltipId="inventory-tooltip"
+              />
+              <IconButton
+                icon={<i className="fa-solid fa-download"></i>}
+                onClick={() => null}
+                tooltipMsg={t('export')}
+                tooltipId="inventory-tooltip"
+              />
+              <IconButton
+                icon={<i className="fa-solid fa-file-arrow-down"></i>}
+                onClick={() =>
+                  fileInputRef.current && fileInputRef.current.click()
+                }
+                tooltipMsg={`${t('import')} CSV`}
+                tooltipId="inventory-tooltip"
+                loading={loadingButton}
+              />
+              <input
+                type="file"
+                accept=".csv"
+                onChange={handleFileUpload}
+                style={{ display: 'none' }} // hide input
+                ref={fileInputRef}
+              />
+              <Button
+                value={t('inventory.addIngredientBtn')}
+                type="primary"
+                className="add"
+                onClick={!addingRow ? handleAddNewIngredient : undefined}
+              />
+            </>
+          );
+        },
       }),
-      []
+      [addingRow]
     );
 
     const reloadInventoryData = useCallback(async () => {
@@ -275,7 +277,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         actions: undefined,
       };
 
-      setIngredientsList([newIngredient, ...ingredientsList]);
+      setIngredientsList((list) => [newIngredient, ...list]);
       setAddingRow(true);
       setEditingRowId(newIngredient.id);
       setEditedValues(newIngredient);
