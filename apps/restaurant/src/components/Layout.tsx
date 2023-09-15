@@ -119,14 +119,13 @@ const Layout = () => {
             navigate('/integrations');
           }}
         />
-        {/* REMOVED FOR PROD */}
-        {/* <SidebarItem
+        <SidebarItem
           name={t('support')}
           icon={<i className="fa-solid fa-circle-question"></i>}
           onClick={() => {
             navigate('/support');
           }}
-        /> */}
+        />
         <div className="restaurant-dropdown">
           <p className="label">{t('navbar.restaurantsDropdown')} :</p>
           <Select

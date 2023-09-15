@@ -35,9 +35,9 @@ const Inventory = () => {
     t('inventory.orders'),
   ];
 
-  // const supplierTabRef = useRef<SupplierTabRef>(null); REMOVED FOR PROD
+  const supplierTabRef = useRef<SupplierTabRef>(null);
   const ingredientTabRef = useRef<IngredientTabRef>(null);
-  // const orderTabRef = useRef<OrderTabRef>(null); REMOVED FOR PROD
+  const orderTabRef = useRef<OrderTabRef>(null);
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [searchValue, setSearchValue] = useState<string>('');
@@ -61,25 +61,24 @@ const Inventory = () => {
         />
       );
     }
-    // REMOVED FOR PROD
-    // if (selectedTab === 1) {
-    //   return (
-    //     <SupplierTab
-    //       ref={supplierTabRef}
-    //       setLoadingState={setLoadingData}
-    //       searchValue={searchValue}
-    //     />
-    //   );
-    // }
-    // if (selectedTab === 2) {
-    //   return (
-    //     <OrderTab
-    //       ref={orderTabRef}
-    //       // setLoadingState={setLoadingData}
-    //       // searchValue={searchValue}
-    //     />
-    //   );
-    // }
+    if (selectedTab === 1) {
+      return (
+        <SupplierTab
+          ref={supplierTabRef}
+          setLoadingState={setLoadingData}
+          searchValue={searchValue}
+        />
+      );
+    }
+    if (selectedTab === 2) {
+      return (
+        <OrderTab
+          ref={orderTabRef}
+          // setLoadingState={setLoadingData}
+          // searchValue={searchValue}
+        />
+      );
+    }
     return null;
   };
 
@@ -104,9 +103,8 @@ const Inventory = () => {
             onChange={setSearchValue}
           />
           {selectedTab === 0 && ingredientTabRef.current?.renderOptions()}
-          {/* REMOVED FOR PROD */}
-          {/* {selectedTab === 1 && supplierTabRef.current?.renderOptions()}
-          {selectedTab === 2 && orderTabRef.current?.renderOptions()} */}
+          {selectedTab === 1 && supplierTabRef.current?.renderOptions()}
+          {selectedTab === 2 && orderTabRef.current?.renderOptions()}
         </div>
       </div>
 
