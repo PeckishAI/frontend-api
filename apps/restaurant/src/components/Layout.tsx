@@ -36,11 +36,11 @@ const Layout = () => {
   const handleRefreshClick = () => {
     if (!selectedRestaurantUUID) return;
 
+    setIsRefreshing(true);
     restaurantService.reloadPOS(selectedRestaurantUUID).then((success) => {
       if (success) {
-        setIsRefreshing(true);
-
         setTimeout(() => {
+          setIsRefreshing(false);
           navigate(0);
         }, 2500);
       }
@@ -145,13 +145,7 @@ const Layout = () => {
       <div className="main">
         <Navbar
           title={navTitle}
-          refreshIcon={
-            isRefreshing ? (
-              <Lottie type="loading" width="50px" />
-            ) : (
-              <i className="fa-solid fa-rotate icon"></i>
-            )
-          }
+          isRefreshing={isRefreshing}
           onRefresh={handleRefreshClick}
           onLogout={handleLogout}
         />
