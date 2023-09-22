@@ -54,9 +54,6 @@ const LoginModal = (props: Props) => {
           password: userPassword,
         })
         .then((res) => {
-          console.log(res);
-
-          console.log(res.data[0], res.data.length);
           setIntegrated({
             name: res.data[0],
             restaurantNumber: res.data.length,

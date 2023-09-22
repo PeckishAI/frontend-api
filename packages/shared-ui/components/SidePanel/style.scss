@@ -29,6 +29,7 @@
   background-color: var(--backgroundColor);
   box-shadow: 0 0 10px 0 rgb(203, 203, 203);
   border-radius: 5px;
+  z-index: 999;
   transition: all 0.2s ease-in-out;
 
   .loading-panel {
