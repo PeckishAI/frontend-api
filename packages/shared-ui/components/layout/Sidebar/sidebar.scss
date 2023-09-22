@@ -22,7 +22,7 @@
     visibility: visible;
   }
   .company-name {
-    height: var(--navbarHeight);
+    height: calc(var(--navbarHeight) + 20px);
     display: flex;
     justify-content: center;
     align-items: center;
