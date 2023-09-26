@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation } from 'react-router-dom';
 import { handleAuthentification } from '../utils';
-import { userSession } from 'user-management';
+import { userSession } from @peckishai/user-management;
 
 export const TitleRoute = () => {
   const { t } = useTranslation(['routes']);

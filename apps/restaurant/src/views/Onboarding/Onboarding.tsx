@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useUserStore } from 'user-management';
+import { useUserStore } from @peckishai/user-management;
 import { Navigate } from 'react-router-dom';
 import './Onboarding.scss';
 import Integrations from '../Integrations/Integrations';

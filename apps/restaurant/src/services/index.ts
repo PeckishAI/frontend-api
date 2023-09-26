@@ -1,4 +1,4 @@
-import { applyAxiosInterceptors } from 'user-management';
+import { applyAxiosInterceptors } from @peckishai/user-management;
 import axios from 'axios';
 import { GLOBAL_CONFIG } from 'shared-config';
 

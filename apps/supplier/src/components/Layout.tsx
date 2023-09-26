@@ -8,7 +8,7 @@ import {
   Navbar,
   Lottie,
 } from 'shared-ui';
-import { useUserStore } from 'user-management';
+import { useUserStore } from @peckishai/user-management;
 
 // type Props = {};
 

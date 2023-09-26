@@ -1,5 +1,5 @@
 import { GLOBAL_CONFIG } from 'shared-config';
-import { userSession } from 'user-management';
+import { userSession } from @peckishai/user-management;
 import { useFromStore } from './FromContext';
 
 export const handleAuthentification = (

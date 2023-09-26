@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Outlet, useSearchParams, useLocation } from 'react-router-dom';
 import { GLOBAL_CONFIG } from 'shared-config';
 import { Lottie } from 'shared-ui';
-import { useUserStore, userService, userSession } from 'user-management';
+import { useUserStore, userService, userSession } from @peckishai/user-management;
 
 // Route overlay that requires authentication
 export const ProtectedRoute = () => {

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { restaurantService } from '../services';
-import { User, useUserStore } from 'user-management';
+import { User, useUserStore } from @peckishai/user-management;
 
 export type Restaurant = {
   uuid: string;
