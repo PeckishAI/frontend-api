@@ -1,11 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import { User } from './types';
-import { GLOBAL_CONFIG } from 'shared-config';
 import { useUserStore } from './store';
-
-const axiosClient = axios.create({
-  baseURL: GLOBAL_CONFIG.apiUrl + '/auth',
-});
 
 type UserResponse = {
   client_type: 'supplier' | 'restaurant';
@@ -19,20 +14,40 @@ type UserResponse = {
   user_uuid: string;
 };
 
-const getMe = (token: string): Promise<User> => {
-  return axiosClient
-    .get<UserResponse>('/me', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((res) => {
-      return {
-        ...res.data,
-        uuid: res.data.user_uuid,
-        created_at: new Date(res.data.created_at),
-      };
+export const userService = {
+  config: null as { apiUrl: string; authentificationUrl?: string } | null,
+  axiosClient: null as AxiosInstance | null,
+
+  setConfig: function (config: {
+    apiUrl: string;
+    authentificationUrl: string;
+  }) {
+    this.config = config;
+    this.initialize(config.apiUrl);
+  },
+
+  initialize: function (apiUrl: string) {
+    this.axiosClient = axios.create({
+      baseURL: apiUrl + '/auth',
     });
+  },
+  getMe: function (token: string): Promise<User> {
+    if (!this.axiosClient) throw new Error('User service not initialized');
+
+    return this.axiosClient
+      .get<UserResponse>('/me', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        return {
+          ...res.data,
+          uuid: res.data.user_uuid,
+          created_at: new Date(res.data.created_at),
+        };
+      });
+  },
 };
 
 // Apply axios interceptors to handle authentification
@@ -69,8 +84,4 @@ export const applyAxiosInterceptors = (instance: AxiosInstance) => {
       return Promise.reject(error);
     }
   );
-};
-
-export const userService = {
-  getMe,
 };

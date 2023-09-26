@@ -11,8 +11,11 @@ import './translation/i18n';
 import './index.scss';
 import { Logout } from './pages/Logout.js';
 import { FromHandler } from './pages/FromHandler.js';
+import { userService } from '@peckishai/user-management';
 
 const GOOGLE_CLIENT_ID = GLOBAL_CONFIG.GOOGLE_CLIENT_ID;
+
+userService.setConfig(GLOBAL_CONFIG);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

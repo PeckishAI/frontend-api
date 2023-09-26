@@ -10,7 +10,7 @@ import {
   Select,
 } from 'shared-ui';
 import { useRestaurantStore } from '../store/useRestaurantStore';
-import { useUserStore } from 'user-management';
+import { useUserStore } from '@peckishai/user-management';
 import { restaurantService } from '../services';
 
 const Layout = () => {

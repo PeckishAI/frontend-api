@@ -1,14 +1,13 @@
 {
-  "name": "user-management",
-  "version": "0.0.0",
-  "private": true,
+  "name": "@peckishai/user-management",
+  "version": "1.0.5",
   "license": "MIT",
-  "files": [
-    "index.ts"
-  ],
   "main": "index.ts",
   "scripts": {
-    "depcheck": "depcheck"
+    "depcheck": "depcheck",
+    "publish:patch": "npm version patch && npm publish .",
+    "publish:minor": "npm version minor && npm publish .",
+    "publish:major": "npm version major && npm publish ."
   },
   "dependencies": {
     "axios": "^1.4.0",
@@ -16,5 +15,12 @@
     "react": "^18.2.0",
     "shared-config": "*",
     "zustand": "^4.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PeckishAI/frontend-api.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/PeckishAI"
   }
 }
