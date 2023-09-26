@@ -20,7 +20,7 @@ export const userService = {
 
   setConfig: function (config: {
     apiUrl: string;
-    authentificationUrl: string;
+    authentificationUrl?: string;
   }) {
     this.config = config;
     this.initialize(config.apiUrl);
