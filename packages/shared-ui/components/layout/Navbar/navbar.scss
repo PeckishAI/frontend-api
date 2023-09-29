@@ -4,7 +4,7 @@
   // background-color: var(--navbarColor);
   // box-shadow: 4px 1px 5px 0px #00000024;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   padding: 0 30px;
 
@@ -15,32 +15,7 @@
   .nav-actions {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100px;
-    .refresh {
-    }
-    .lottie-container {
-      width: 30px;
-    }
-    .icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      color: var(--primaryColor);
-      padding: 10px;
-      border-radius: 100%;
-      transition: all var(--transitionDuration);
-      cursor: pointer;
-    }
-    .icon:hover {
-      color: var(--onPrimaryColor);
-      background-color: var(--primaryColor);
-    }
-
-    .refresh:active {
-      transform: rotate(360deg);
-    }
+    gap: 10px;
   }
 }
 

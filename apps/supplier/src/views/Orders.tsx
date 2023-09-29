@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Table, Tabs, Dropdown, Input } from 'shared-ui';
+import { Table, Tabs, Dropdown, Input, OrderDetail } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { useMemo, useState, useEffect, useCallback } from 'react';
@@ -35,6 +35,7 @@ const Orders = () => {
   }>({});
   const [orderList, setOrderList] = useState<Order[]>();
   const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [showOrderDetail, setShowOrderDetail] = useState(false);
 
   const toggleTab = (tabIndex: number) => {
     setSelectedTab(tabIndex);
@@ -59,6 +60,10 @@ const Orders = () => {
 
   const handleOnSearchValueChange = (value: string) => {
     setSearchValue(value);
+  };
+
+  const handleViewDetail = () => {
+    setShowOrderDetail(true);
   };
 
   const columns: ColumnDefinitionType<Order, keyof Order>[] = useMemo(
@@ -93,7 +98,8 @@ const Orders = () => {
               <i
                 className="fa-solid fa-arrow-up-right-from-square view-detail"
                 data-tooltip-id="detail-tooltip"
-                data-tooltip-content={t('viewDetail')}></i>
+                data-tooltip-content={t('viewDetail')}
+                onClick={handleViewDetail}></i>
             </>
           );
         },
@@ -118,6 +124,11 @@ const Orders = () => {
         </div>
       </div>
 
+      <OrderDetail
+        isVisible={showOrderDetail}
+        onRequestClose={() => setShowOrderDetail(false)}
+        orderUUID="idk"
+      />
       {selectedTab === 0 && <Table data={orderList} columns={columns} />}
       <Tooltip className="tooltip" id="detail-tooltip" />
     </div>

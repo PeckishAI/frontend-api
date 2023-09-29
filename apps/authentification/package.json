@@ -25,7 +25,7 @@
     "react-router-dom": "^6.15.0",
     "shared-config": "*",
     "shared-ui": "*",
-    "user-management": "*",
+    "@peckishai/user-management": "*",
     "zod": "^3.21.4",
     "zustand": "^4.4.1"
   },

@@ -23,6 +23,7 @@ import PhoneNumberInput from './components/form/PhoneNumberInput/PhoneNumberInpu
 import Loading from './components/Loading/Loading';
 import SidePanel from './components/SidePanel/SidePanel';
 import { CollapsibleMenu } from './components/CollapsibleMenu/CollapsibleMenu';
+import { OrderDetail } from './components/OrderDetail/OrderDetail';
 import './styles/common.css';
 
 export {
@@ -50,4 +51,5 @@ export {
   Loading,
   SidePanel,
   CollapsibleMenu,
+  OrderDetail,
 };

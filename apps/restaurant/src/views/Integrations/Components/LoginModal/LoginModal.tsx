@@ -3,7 +3,7 @@ import './style.scss';
 import { Button, Input, Lottie, Popup } from 'shared-ui';
 import { useTranslation } from 'react-i18next';
 import axiosClient from '../../../../services';
-import { useUserStore } from 'user-management';
+import { useUserStore } from '@peckishai/user-management';
 import { POS, Integration } from '../../Integrations';
 
 type Props = {
@@ -54,9 +54,6 @@ const LoginModal = (props: Props) => {
           password: userPassword,
         })
         .then((res) => {
-          console.log(res);
-
-          console.log(res.data[0], res.data.length);
           setIntegrated({
             name: res.data[0],
             restaurantNumber: res.data.length,
