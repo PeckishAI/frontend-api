@@ -60,12 +60,31 @@ const uploadCsvFile = (restaurantUUID: string, file) => {
   );
 };
 
-const getPreviewUploadedCsv = (restaurantUUID: string, file, headerValues) => {
+export type ColumnsNameMapping = {
+  ingredient: string;
+  quantity: string;
+  unit: string;
+  cost: string;
+  supplier: string;
+};
+
+const getFormData = (file: File, headerValues: ColumnsNameMapping) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('ingredient', headerValues.ingredient);
   formData.append('quantity', headerValues.quantity);
   formData.append('unit', headerValues.unit);
+  formData.append('cost', headerValues.cost);
+  formData.append('supplier', headerValues.supplier);
+  return formData;
+};
+
+const getPreviewUploadedCsv = (
+  restaurantUUID: string,
+  file: File,
+  headerValues: ColumnsNameMapping
+) => {
+  const formData = getFormData(file, headerValues);
   return axios.post(
     '/restaurant/inventory/' + restaurantUUID + '/upload/preview',
     formData,
@@ -77,12 +96,13 @@ const getPreviewUploadedCsv = (restaurantUUID: string, file, headerValues) => {
   );
 };
 
-const validUploadedCsv = (restaurantUUID: string, file, headerValues) => {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('ingredient', headerValues.ingredient);
-  formData.append('quantity', headerValues.quantity);
-  formData.append('unit', headerValues.unit);
+const validUploadedCsv = (
+  restaurantUUID: string,
+  file: File,
+  headerValues: ColumnsNameMapping
+) => {
+  const formData = getFormData(file, headerValues);
+
   return axios.post(
     '/restaurant/inventory/' + restaurantUUID + '/upload',
     formData,

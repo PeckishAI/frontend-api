@@ -485,7 +485,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       <>
         <Table data={ingredientsList} columns={columns} />
 
-        {uploadPopup !== null && (
+        {uploadPopup !== null && csvFile && (
           <UploadCsv
             fileCsv={csvFile}
             extractedData={uploadPopup}
