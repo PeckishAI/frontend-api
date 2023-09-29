@@ -43,76 +43,86 @@ export type OrderTabRef = {
   renderOptions: () => React.ReactNode;
 };
 
-export const OrderTab = forwardRef<OrderTabRef>((_, forwardedRef) => {
-  const { t } = useTranslation('common');
-  const [isOrderDetailVisible, setOrderDetailVisible] = useState(false);
-  const navigate = useNavigate();
+type Props = {
+  forceOptionsUpdate: () => void;
+};
 
-  // Render options for the tab bar
-  useImperativeHandle(
-    forwardedRef,
-    () => ({
-      renderOptions: () => (
-        <Button
-          value={t('orders.showPredictedOrder')}
-          type="primary"
-          onClick={() => navigate('/orders/validation')}
-        />
-      ),
-    }),
-    []
-  );
+export const OrderTab = forwardRef<OrderTabRef, Props>(
+  (props, forwardedRef) => {
+    const { t } = useTranslation('common');
+    const [isOrderDetailVisible, setOrderDetailVisible] = useState(false);
+    const navigate = useNavigate();
 
-  const columns: ColumnDefinitionType<Order>[] = useMemo(
-    () => [
-      { key: 'supplier', header: t('orders.supplier') },
-      { key: 'orderDate', header: t('orders.orderDate') },
-      { key: 'deliveryDate', header: t('orders.deliveryDate') },
-      {
-        key: 'status',
-        header: t('orders.status'),
-        renderItem: ({ row }) => t(`orders.statusStates.${row.status}`),
+    // Render options for the tab bar
+    useImperativeHandle(
+      forwardedRef,
+      () => {
+        props.forceOptionsUpdate();
+
+        return {
+          renderOptions: () => (
+            <Button
+              value={t('orders.showPredictedOrder')}
+              type="primary"
+              onClick={() => navigate('/orders/validation')}
+            />
+          ),
+        };
       },
-      {
-        key: 'price',
-        header: t('price'),
-        renderItem: ({ row }) => `${row.price} €`,
-        classname: 'column-bold',
-      },
-      {
-        key: 'detail',
-        header: t('orders.detail'),
-        renderItem: () => {
-          return (
-            <>
-              <i
-                className={classNames(
-                  'fa-solid fa-arrow-up-right-from-square',
-                  styles.icon
-                )}
-                data-tooltip-id="detail-tooltip"
-                data-tooltip-content={t('orders.detail.tooltip')}
-                onClick={() => setOrderDetailVisible(true)}
-              />
-            </>
-          );
+      []
+    );
+
+    const columns: ColumnDefinitionType<Order>[] = useMemo(
+      () => [
+        { key: 'supplier', header: t('orders.supplier') },
+        { key: 'orderDate', header: t('orders.orderDate') },
+        { key: 'deliveryDate', header: t('orders.deliveryDate') },
+        {
+          key: 'status',
+          header: t('orders.status'),
+          renderItem: ({ row }) => t(`orders.statusStates.${row.status}`),
         },
-      },
-    ],
-    [t]
-  );
+        {
+          key: 'price',
+          header: t('price'),
+          renderItem: ({ row }) => `${row.price} €`,
+          classname: 'column-bold',
+        },
+        {
+          key: 'detail',
+          header: t('orders.detail'),
+          renderItem: () => {
+            return (
+              <>
+                <i
+                  className={classNames(
+                    'fa-solid fa-arrow-up-right-from-square',
+                    styles.icon
+                  )}
+                  data-tooltip-id="detail-tooltip"
+                  data-tooltip-content={t('orders.detail.tooltip')}
+                  onClick={() => setOrderDetailVisible(true)}
+                />
+              </>
+            );
+          },
+        },
+      ],
+      [t]
+    );
 
-  return (
-    <div className="orders">
-      <Table data={orderList} columns={columns} />
-      <OrderDetail
-        isVisible={isOrderDetailVisible}
-        onRequestClose={() => setOrderDetailVisible(false)}
-        orderUUID="55"
-      />
-      <Tooltip className="tooltip" id="detail-tooltip" />
-    </div>
-  );
-});
+    return (
+      <div className="orders">
+        <Table data={orderList} columns={columns} />
+        <OrderDetail
+          isVisible={isOrderDetailVisible}
+          onRequestClose={() => setOrderDetailVisible(false)}
+          orderUUID="55"
+        />
+        <Tooltip className="tooltip" id="detail-tooltip" />
+      </div>
+    );
+  }
+);
 
 OrderTab.displayName = 'OrderTab';

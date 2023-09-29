@@ -37,6 +37,7 @@ export type SupplierTabRef = {
 type Props = {
   searchValue: string;
   setLoadingState: (loading: boolean) => void;
+  forceOptionsUpdate: () => void;
 };
 
 export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
@@ -53,15 +54,19 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     // Render options for the tab bar
     useImperativeHandle(
       forwardedRef,
-      () => ({
-        renderOptions: () => (
-          <Button
-            value={t('inventory.addSupplierBtn')}
-            type="primary"
-            onClick={() => setShowAddPopup(true)}
-          />
-        ),
-      }),
+      () => {
+        props.forceOptionsUpdate();
+
+        return {
+          renderOptions: () => (
+            <Button
+              value={t('inventory.addSupplierBtn')}
+              type="primary"
+              onClick={() => setShowAddPopup(true)}
+            />
+          ),
+        };
+      },
       []
     );
 
