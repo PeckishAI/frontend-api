@@ -42,6 +42,7 @@ export type IngredientTabRef = {
 type Props = {
   searchValue: string;
   setLoadingState: (loading: boolean) => void;
+  forceOptionsUpdate: () => void;
 };
 
 export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
@@ -70,49 +71,54 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     useImperativeHandle(
       forwardedRef,
-      () => ({
-        renderOptions: () => {
-          return (
-            <>
-              <IconButton
-                icon={<i className="fa-solid fa-filter"></i>}
-                onClick={() => null}
-                tooltipMsg="Filter"
-                tooltipId="inventory-tooltip"
-              />
-              <IconButton
-                icon={<i className="fa-solid fa-file-export"></i>}
-                onClick={handleExportDataClick}
-                tooltipMsg={t('export')}
-                tooltipId="inventory-tooltip"
-              />
-              <IconButton
-                icon={<i className="fa-solid fa-file-arrow-down"></i>}
-                onClick={() =>
-                  fileInputRef.current && fileInputRef.current.click()
-                }
-                tooltipMsg={`${t('import')} CSV`}
-                tooltipId="inventory-tooltip"
-                loading={loadingButton}
-              />
-              <input
-                type="file"
-                accept=".csv"
-                onChange={handleFileUpload}
-                style={{ display: 'none' }} // hide input
-                ref={fileInputRef}
-              />
-              <Button
-                value={t('inventory.addIngredientBtn')}
-                type="primary"
-                className="add"
-                onClick={!addingRow ? handleAddNewIngredient : undefined}
-              />
-            </>
-          );
-        },
-      }),
-      [addingRow]
+      () => {
+        props.forceOptionsUpdate();
+        console.log('imperative handle');
+
+        return {
+          renderOptions: () => {
+            return (
+              <>
+                <IconButton
+                  icon={<i className="fa-solid fa-filter"></i>}
+                  onClick={() => null}
+                  tooltipMsg="Filter"
+                  tooltipId="inventory-tooltip"
+                />
+                <IconButton
+                  icon={<i className="fa-solid fa-file-export"></i>}
+                  onClick={handleExportDataClick}
+                  tooltipMsg={t('export')}
+                  tooltipId="inventory-tooltip"
+                />
+                <IconButton
+                  icon={<i className="fa-solid fa-file-arrow-down"></i>}
+                  onClick={() =>
+                    fileInputRef.current && fileInputRef.current.click()
+                  }
+                  tooltipMsg={`${t('import')} CSV`}
+                  tooltipId="inventory-tooltip"
+                  loading={loadingButton}
+                />
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleFileUpload}
+                  style={{ display: 'none' }} // hide input
+                  ref={fileInputRef}
+                />
+                <Button
+                  value={t('inventory.addIngredientBtn')}
+                  type="primary"
+                  className="add"
+                  onClick={!addingRow ? handleAddNewIngredient : undefined}
+                />
+              </>
+            );
+          },
+        };
+      },
+      [addingRow, loadingButton]
     );
 
     const reloadInventoryData = useCallback(async () => {
