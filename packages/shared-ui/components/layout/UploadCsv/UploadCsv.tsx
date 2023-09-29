@@ -1,6 +1,6 @@
 import './style.scss';
 import { useTranslation } from 'react-i18next';
-import { Button, Input, Popup, Select } from 'shared-ui';
+import { Button, Input, Popup } from 'shared-ui';
 import { useState } from 'react';
 import {
   ColumnsNameMapping,
@@ -10,7 +10,7 @@ import { useRestaurantStore } from '../../../../../apps/restaurant/src/store/use
 
 type Props = {
   fileCsv: File;
-  extractedData: any;
+  extractedData: ColumnsNameMapping;
   onCancelClick: () => void;
   onValidateClick: () => void;
 };
@@ -18,7 +18,7 @@ type Props = {
 const UploadCsv = (props: Props) => {
   const { t } = useTranslation('common');
 
-  const [headerValues, setHeaderValues] = useState<ColumnsNameMapping | null>({
+  const [headerValues, setHeaderValues] = useState<ColumnsNameMapping>({
     ingredient: props.extractedData.ingredient,
     quantity: props.extractedData.quantity,
     unit: props.extractedData.unit,
@@ -33,8 +33,6 @@ const UploadCsv = (props: Props) => {
   );
 
   const getColumnNames = (): ColumnsNameMapping | null => {
-    if (headerValues === null) return null;
-
     return (
       Object.keys(headerValues) as Array<keyof ColumnsNameMapping>
     ).reduce<ColumnsNameMapping>((previousValue, key) => {
@@ -43,7 +41,10 @@ const UploadCsv = (props: Props) => {
     }, headerValues);
   };
 
-  const handleValueChange = (field: keyof Headers, value: any) => {
+  const handleValueChange = (
+    field: keyof ColumnsNameMapping,
+    value: string
+  ) => {
     setHeaderValues((prevValues) => ({
       ...prevValues!,
       [field]: value,
@@ -54,7 +55,7 @@ const UploadCsv = (props: Props) => {
 
   const handlePreviewClick = () => {
     setPreview(!preview);
-    if (preview || !selectedRestaurantUUID || headerValues === null) return;
+    if (preview || !selectedRestaurantUUID) return;
 
     const columnsNames = getColumnNames() as ColumnsNameMapping;
 
@@ -76,7 +77,7 @@ const UploadCsv = (props: Props) => {
 
   const handleValidClick = () => {
     if (headerValues !== null && selectedRestaurantUUID !== undefined) {
-      const columnsNames = getColumnNames();
+      const columnsNames = getColumnNames() as ColumnsNameMapping;
 
       inventoryService
         .validUploadedCsv(selectedRestaurantUUID, props.fileCsv, columnsNames)
@@ -152,7 +153,7 @@ const UploadCsv = (props: Props) => {
           </div>
         </div>
         <div className="preview-btn-container">
-          <Button
+          {/* <Button
             type="secondary"
             value={t('preview')}
             onClick={handlePreviewClick}
@@ -163,16 +164,20 @@ const UploadCsv = (props: Props) => {
                 <i className="fa-solid fa-chevron-down"></i>
               )
             }
-          />
+          /> */}
 
-          {/* <div className="preview-btn" onClick={handlePreviewClick}>
+          <div className="preview-btn" onClick={handlePreviewClick}>
             <p>{t('preview')}</p>
-            <i className="fa-solid fa-magnifying-glass"></i>
-          </div> */}
+            {preview ? (
+              <i className="fa-solid fa-chevron-up"></i>
+            ) : (
+              <i className="fa-solid fa-magnifying-glass"></i>
+            )}
+          </div>
         </div>
         <div
           className="preview"
-          style={preview ? { height: '200px' } : { height: 0 }}>
+          style={preview ? { maxHeight: '200px' } : { maxHeight: 0 }}>
           <div className="table">
             <div className="row first-row">
               <span>{t('ingredient')}</span>
@@ -180,15 +185,15 @@ const UploadCsv = (props: Props) => {
               <span>{t('unit')}</span>
             </div>
             {previewData &&
-              previewData.map((data: any, index) => (
+              previewData.map((data: Record<string, string>, index) => (
                 <div className="row" key={`row-${index}`}>
                   <span key={`ingredient-${index}`}>
-                    {data[headerValues!.ingredient]}
+                    {data[headerValues.ingredient]}
                   </span>
                   <span key={`quantity-${index}`}>
-                    {data[headerValues!.quantity]}
+                    {data[headerValues.quantity]}
                   </span>
-                  <span key={`unit-${index}`}>{data[headerValues!.unit]}</span>
+                  <span key={`unit-${index}`}>{data[headerValues.unit]}</span>
                 </div>
               ))}
           </div>
