@@ -48,7 +48,7 @@ const Inventory = () => {
   useEffect(() => {
     setSelectedTab(getTabIndex(tab));
     // To show the options
-    forceUpdate();
+    // forceUpdate();
   }, [tab]);
 
   const renderSelectedTab = () => {
@@ -58,6 +58,7 @@ const Inventory = () => {
           ref={ingredientTabRef}
           setLoadingState={setLoadingData}
           searchValue={searchValue}
+          forceOptionsUpdate={forceUpdate}
         />
       );
     }
@@ -67,6 +68,7 @@ const Inventory = () => {
           ref={supplierTabRef}
           setLoadingState={setLoadingData}
           searchValue={searchValue}
+          forceOptionsUpdate={forceUpdate}
         />
       );
     }
@@ -74,6 +76,8 @@ const Inventory = () => {
       return (
         <OrderTab
           ref={orderTabRef}
+          forceOptionsUpdate={forceUpdate}
+
           // setLoadingState={setLoadingData}
           // searchValue={searchValue}
         />
