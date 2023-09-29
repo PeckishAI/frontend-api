@@ -1,42 +1,47 @@
 import './style.scss';
 import { useTranslation } from 'react-i18next';
-import { Button, Input } from 'shared-ui';
+import { Button, Input, Popup, Select } from 'shared-ui';
 import { useState } from 'react';
-import { inventoryService } from '../../../../../apps/restaurant/src/services';
+import {
+  ColumnsNameMapping,
+  inventoryService,
+} from '../../../../../apps/restaurant/src/services';
 import { useRestaurantStore } from '../../../../../apps/restaurant/src/store/useRestaurantStore';
 
 type Props = {
-  fileCsv: File | null;
+  fileCsv: File;
   extractedData: any;
   onCancelClick: () => void;
   onValidateClick: () => void;
 };
 
-type Headers = {
-  ingredient: string;
-  quantity: string;
-  unit: string;
-  supplier: string;
-  cost: string;
-};
-
 const UploadCsv = (props: Props) => {
   const { t } = useTranslation('common');
-  const headers: Headers = {
+
+  const [headerValues, setHeaderValues] = useState<ColumnsNameMapping | null>({
     ingredient: props.extractedData.ingredient,
     quantity: props.extractedData.quantity,
     unit: props.extractedData.unit,
     supplier: props.extractedData.supplier,
     cost: props.extractedData.cost,
-  };
-
-  const [headerValues, setHeaderValues] = useState<Headers | null>(headers);
+  });
   const [preview, setPreview] = useState(false);
   const [previewData, setPreviewData] = useState([]);
   const [error, setErrror] = useState(false);
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
+
+  const getColumnNames = (): ColumnsNameMapping | null => {
+    if (headerValues === null) return null;
+
+    return (
+      Object.keys(headerValues) as Array<keyof ColumnsNameMapping>
+    ).reduce<ColumnsNameMapping>((previousValue, key) => {
+      // const key = k as keyof typeof headerValues;
+      return { ...previousValue, [key]: headerValues[key] || 'N/A' };
+    }, headerValues);
+  };
 
   const handleValueChange = (field: keyof Headers, value: any) => {
     setHeaderValues((prevValues) => ({
@@ -48,23 +53,33 @@ const UploadCsv = (props: Props) => {
   };
 
   const handlePreviewClick = () => {
-    if (!preview) {
-      inventoryService
-        .getPreviewUploadedCsv(props.fileCsv, headerValues)
-        .then((res) => {
-          setPreviewData(res.data);
-        })
-        .catch((err) => {
-          console.log('error : ', err);
-        });
-    }
     setPreview(!preview);
+    if (preview || !selectedRestaurantUUID || headerValues === null) return;
+
+    const columnsNames = getColumnNames() as ColumnsNameMapping;
+
+    inventoryService
+      .getPreviewUploadedCsv(
+        selectedRestaurantUUID,
+        props.fileCsv,
+        columnsNames
+      )
+      .then((res) => {
+        console.log('preview : ', res.data);
+
+        setPreviewData(res.data);
+      })
+      .catch((err) => {
+        console.log('error : ', err);
+      });
   };
 
   const handleValidClick = () => {
     if (headerValues !== null && selectedRestaurantUUID !== undefined) {
+      const columnsNames = getColumnNames();
+
       inventoryService
-        .validUploadedCsv(selectedRestaurantUUID, props.fileCsv, headerValues)
+        .validUploadedCsv(selectedRestaurantUUID, props.fileCsv, columnsNames)
         .then(() => {
           setErrror(false);
           props.onValidateClick();
@@ -78,10 +93,12 @@ const UploadCsv = (props: Props) => {
   };
 
   return (
-    <div className="upload-popup">
-      <div className="overlay"></div>
-      <div className="popup">
-        <h2>Your information uploaded :</h2>
+    <Popup
+      isVisible={true}
+      title="Your information uploaded"
+      subtitle="We have extracted the following column names from your file. Please check if the mapping everything is correct."
+      onRequestClose={props.onCancelClick}>
+      <div className="upload-popup">
         <div className="headers">
           <div className="header">
             <span>Ingredient</span>
@@ -134,7 +151,7 @@ const UploadCsv = (props: Props) => {
             />
           </div>
         </div>
-        <div>
+        <div className="preview-btn-container">
           <Button
             type="secondary"
             value={t('preview')}
@@ -147,6 +164,11 @@ const UploadCsv = (props: Props) => {
               )
             }
           />
+
+          {/* <div className="preview-btn" onClick={handlePreviewClick}>
+            <p>{t('preview')}</p>
+            <i className="fa-solid fa-magnifying-glass"></i>
+          </div> */}
         </div>
         <div
           className="preview"
@@ -190,7 +212,7 @@ const UploadCsv = (props: Props) => {
           />
         </div>
       </div>
-    </div>
+    </Popup>
   );
 };
 
