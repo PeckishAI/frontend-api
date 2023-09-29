@@ -126,9 +126,9 @@ export const ForecastCard = (props: Props) => {
               />
             )}
             <IconButton
-              icon={<i className="fa-solid fa-download"></i>}
+              icon={<i className="fa-solid fa-file-export"></i>}
               onClick={handleExportDataClick}
-              tooltipMsg={t('export')}
+              tooltipMsg={t('common:export')}
               tooltipId="forecast-tooltip"
               className={styles.forecastIiconBtn}
             />

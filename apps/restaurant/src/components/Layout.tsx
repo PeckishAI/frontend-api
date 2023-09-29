@@ -10,7 +10,7 @@ import {
   Select,
 } from 'shared-ui';
 import { useRestaurantStore } from '../store/useRestaurantStore';
-import { useUserStore } from 'user-management';
+import { useUserStore } from '@peckishai/user-management';
 import { restaurantService } from '../services';
 
 const Layout = () => {
@@ -36,11 +36,11 @@ const Layout = () => {
   const handleRefreshClick = () => {
     if (!selectedRestaurantUUID) return;
 
+    setIsRefreshing(true);
     restaurantService.reloadPOS(selectedRestaurantUUID).then((success) => {
       if (success) {
-        setIsRefreshing(true);
-
         setTimeout(() => {
+          setIsRefreshing(false);
           navigate(0);
         }, 2500);
       }
@@ -146,13 +146,7 @@ const Layout = () => {
       <div className="main">
         <Navbar
           title={navTitle}
-          refreshIcon={
-            isRefreshing ? (
-              <Lottie type="loading" width="50px" />
-            ) : (
-              <i className="fa-solid fa-rotate icon"></i>
-            )
-          }
+          isRefreshing={isRefreshing}
           onRefresh={handleRefreshClick}
           onLogout={handleLogout}
         />

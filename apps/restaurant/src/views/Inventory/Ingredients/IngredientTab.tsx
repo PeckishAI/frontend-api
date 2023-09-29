@@ -81,8 +81,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 tooltipId="inventory-tooltip"
               />
               <IconButton
-                icon={<i className="fa-solid fa-download"></i>}
-                onClick={() => null}
+                icon={<i className="fa-solid fa-file-export"></i>}
+                onClick={handleExportDataClick}
                 tooltipMsg={t('export')}
                 tooltipId="inventory-tooltip"
               />
@@ -308,6 +308,38 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const handleUploadCsvValidate = () => {
       setUploadPopup(null);
       reloadInventoryData();
+    };
+
+    const handleExportDataClick = () => {
+      const rows = ingredientsList;
+      if (rows) {
+        const header =
+          'Ingredient name, Theoretical stock, Actual stock, Unit, Supplier, Cost\n';
+        const csvContent =
+          'data:text/csv;charset=utf-8,' +
+          header +
+          rows
+            .map((row) => {
+              const values = [];
+              values.push(row.name); // Convertir la date en format ISO string
+              values.push(row.theoreticalStock || '-');
+              values.push(row.quantity || '-');
+              values.push(row.unit || '-');
+              values.push(row.supplier || '-');
+              values.push(row.cost || '-');
+              return values.join(',');
+            })
+            .join('\n');
+
+        // Créer un lien d'ancrage pour le téléchargement
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'inventory.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
     };
 
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [

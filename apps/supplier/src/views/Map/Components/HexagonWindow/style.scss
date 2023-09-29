@@ -1,0 +1,45 @@
+.hexagon-window {
+  height: 500px;
+  width: 300px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 20px;
+  z-index: 999;
+  background-color: var(--backgroundColor);
+  box-shadow: 2px 0px 15px 0px rgba(0, 0, 0, 0.234);
+  border-radius: 10px;
+  padding: 20px;
+  animation-name: slide;
+  animation-duration: 0.5s;
+  cursor: default;
+  @keyframes slide {
+    from {
+      left: -100px;
+      opacity: 0;
+    }
+    to {
+      left: 20px;
+      opacity: 1;
+    }
+  }
+
+  .close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 1rem;
+    color: var(--onPrimaryColor);
+    padding: 4px 6px;
+    border-radius: 30px;
+    background-color: var(--primaryColor);
+    cursor: pointer;
+  }
+
+  .name {
+    font-size: 1.4rem;
+    font-weight: var(--semiBold);
+    color: var(--textPrimaryColor);
+    margin: 5px 0;
+  }
+}

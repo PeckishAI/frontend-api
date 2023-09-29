@@ -1,0 +1,51 @@
+.map {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px 0 rgba(55, 55, 55, 0.157);
+
+  .map-component {
+    cursor: default;
+    &:active {
+      cursor: move;
+    }
+  }
+
+  .marker-icon {
+    font-size: 1.4rem;
+    color: var(--primaryColor);
+  }
+  .popup-marker {
+    padding: 0;
+  }
+  .popup-marker-text {
+    font-size: 0.8rem;
+    font-weight: var(--bold);
+  }
+  .hexagons-container {
+    background-color: red;
+    border: 1px solid black;
+  }
+
+  .zoom-control {
+    position: absolute;
+    bottom: 40px;
+    right: 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    i {
+      padding: 9px 10px;
+      border-radius: 50px;
+      background-color: var(--primaryColor);
+      color: var(--backgroundColor);
+      box-shadow: 0 0 10px 0 rgba(20, 20, 20, 0.1);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    i:hover {
+      box-shadow: 0 0 10px 0 rgba(20, 20, 20, 0.2);
+    }
+  }
+}

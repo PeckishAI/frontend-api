@@ -1,8 +1,7 @@
 import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Table } from 'shared-ui';
+import { Button, Table, OrderDetail } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
-import { OrderDetail } from './components/OrderDetail';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import styles from './OrderTab.module.scss';
