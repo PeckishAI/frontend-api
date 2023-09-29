@@ -118,7 +118,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           },
         };
       },
-      [addingRow, loadingButton]
+      [addingRow, loadingButton, ingredientsList]
     );
 
     const reloadInventoryData = useCallback(async () => {
