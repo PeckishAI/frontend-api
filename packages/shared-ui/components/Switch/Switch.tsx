@@ -4,18 +4,16 @@ import './style.scss';
 type Props = {
   isActive: boolean;
   toggle: () => void;
+  width?: number;
 };
 
 const Switch = (props: Props) => {
   return (
-    <div className="switch">
-      <input type="checkbox" id="switch" />
-      <label
-        htmlFor="switch"
-        className={classNames('handler', props.isActive && 'active')}
-        onClick={props.toggle}>
-        <div className="btn"></div>
-      </label>
+    <div
+      className={classNames('switch', props.isActive && 'active')}
+      onClick={props.toggle}
+      style={props.width ? { width: props.width } : undefined}>
+      <div className="btn"></div>
     </div>
   );
 };
