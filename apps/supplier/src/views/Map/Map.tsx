@@ -1,4 +1,4 @@
-import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { LatLngExpression, Map as LeafletMap } from 'leaflet';
 import hexGrid from '@turf/hex-grid';
 import { BBox2d } from '@turf/helpers/dist/js/lib/geojson';
@@ -9,6 +9,8 @@ import Hexagon from './Components/Hexagon/Hexagon';
 import { useEffect, useRef, useState } from 'react';
 import { ResponseMapPlaceApi } from '../../services';
 import SearchBar from './Components/SearchBar/SearchBar';
+import ZoomControl from './Components/ZoomControl/ZoomControl';
+import ControlLayer from './Components/ControlLayer/ControlLayer';
 
 type RestaurantMap = {
   name: string;
@@ -38,24 +40,6 @@ const restaurantLocations: RestaurantMap[] = [
     pos: { lat: 52.367583, lng: 4.882814 },
   },
 ];
-function CustomZoomButtons() {
-  const map = useMap();
-
-  const handleZoomIn = () => {
-    map.zoomIn();
-  };
-
-  const handleZoomOut = () => {
-    map.zoomOut();
-  };
-
-  return (
-    <div className="zoom-control">
-      <i className="fa-solid fa-plus" onClick={handleZoomIn}></i>
-      <i className="fa-solid fa-minus" onClick={handleZoomOut}></i>
-    </div>
-  );
-}
 
 const Map = () => {
   const [clickedRestaurant, setClickRestaurant] = useState<
@@ -67,9 +51,10 @@ const Map = () => {
   const mapRef = useRef<LeafletMap | null>(null);
   const [mapIsReady, setMapIsReady] = useState(false);
   const [hexagons, setHexagons] = useState<LatLngExpression[][]>([]);
-  const [clickedHexagon, setClickedHexagon] = useState<
-    LatLngExpression[] | undefined
+  const [clickedHexagons, setClickedHexagon] = useState<
+    LatLngExpression[][] | undefined
   >(undefined);
+  const [hexagonEnable, setHexagonEnable] = useState(true);
 
   useEffect(() => {
     if (!mapRef.current || !mapIsReady) return;
@@ -85,9 +70,7 @@ const Map = () => {
         bounds!.getNorthEast().lat,
       ]; // [minX, minY, maxX, maxY]
 
-      const hexagon = hexGrid(bbox, 1, { units: 'kilometers' });
-      console.log('hexgon: ', hexagon);
-
+      const hexagon = hexGrid(bbox, 500, { units: 'meters' });
       const deuxiemeehexagonmgl: LatLngExpression[][] = hexagon.features.map(
         (feature) =>
           feature.geometry.coordinates[0].map(([lon, lat]) => [lat, lon])
@@ -104,8 +87,18 @@ const Map = () => {
       getMapCornersCoordinates();
     });
 
+    map.on('zoomend', () => {
+      if (hexagonEnable) {
+        mapRef.current!.setMaxZoom(15);
+        mapRef.current!.setMinZoom(13);
+      } else {
+        mapRef.current!.setMaxZoom(19);
+        mapRef.current!.setMinZoom(1);
+      }
+    });
+
     getMapCornersCoordinates();
-  }, [mapIsReady]);
+  }, [mapIsReady, hexagonEnable]);
 
   const handleMarkerClicked = (index: number) => {
     setClickRestaurant(restaurantLocations[index]);
@@ -120,9 +113,7 @@ const Map = () => {
     mapRef.current?.setView([place.location.lat, place.location.lng], 14);
   };
 
-  const handleOnHexagonClick = () => {
-    setClickRestaurant(restaurantLocations[0]);
-  };
+  const handleOnHexagonClick = () => {};
 
   return (
     <div className="map">
@@ -138,6 +129,8 @@ const Map = () => {
             : [52.370966, 4.898553]
         }
         zoom={14}
+        maxZoom={hexagonEnable ? 15 : undefined}
+        minZoom={hexagonEnable ? 13 : undefined}
         style={{ height: '80vh', width: '100%' }}
         scrollWheelZoom={true}
         zoomControl={false}
@@ -159,14 +152,19 @@ const Map = () => {
             </Popup>
           </Marker>
         ))}
-        <CustomZoomButtons />
-        {hexagons.map((hexagon, i) => (
-          <Hexagon
-            key={i}
-            hexagon={hexagon}
-            onHexagonClick={handleOnHexagonClick}
-          />
-        ))}
+        <ZoomControl />
+        {hexagonEnable &&
+          hexagons.map((hexagon, i) => (
+            <Hexagon
+              key={i}
+              hexagon={hexagon}
+              onHexagonClick={handleOnHexagonClick}
+            />
+          ))}
+        <ControlLayer
+          hexagonEnable={hexagonEnable}
+          onToogleHexagon={() => setHexagonEnable((state) => !state)}
+        />
       </MapContainer>
       <POIWindow onClose={handleOnWindowClose} restaurant={clickedRestaurant} />
       <SearchBar onSuggestedPlaceClick={handleClickedPlaceChange} />
