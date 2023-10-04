@@ -4,38 +4,6 @@
   top: 15px;
   right: 15px;
 
-  #menu {
-    display: none;
-  }
-  .burger {
-    cursor: pointer;
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: var(--backgroundColor);
-    border-radius: 5px;
-    padding: 3px;
-  }
-  .bar {
-    height: 3px;
-    width: 20px;
-    margin: 5px;
-    background-color: var(--primaryColor);
-    border-radius: 2px;
-    transition: all 0.2s;
-  }
-  input:checked + .burger .bar {
-    opacity: 0;
-  }
-  input:checked + .burger .leftBar {
-    opacity: 1;
-    transform: translateY(10px) rotate(45deg);
-  }
-  input:checked + .burger .rightBar {
-    opacity: 1;
-    transform: translateY(-6px) rotate(-45deg);
-  }
-
   .menu {
     width: 130px;
     background-color: var(--backgroundColor);
@@ -57,9 +25,9 @@
         width: 75px;
       }
     }
-  }
-  input:checked + .burger + .menu {
-    max-height: 200px;
-    max-width: 200px;
+    &.open {
+      max-height: 200px;
+      max-width: 200px;
+    }
   }
 }
