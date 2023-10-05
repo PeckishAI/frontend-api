@@ -18,7 +18,7 @@ const SearchBar = (props: Props) => {
     mapService
       .getAutocompletePlaces(value)
       .then((res) => {
-        let places: ResponseMapPlaceApi[] = [];
+        const places: ResponseMapPlaceApi[] = [];
         res.data.results.forEach((element) => {
           places.push({
             name: element.name,
