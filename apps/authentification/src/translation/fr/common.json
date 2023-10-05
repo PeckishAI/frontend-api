@@ -21,8 +21,8 @@
   "confirm-password": "Confirmation",
   "remember-me": "Se souvenir de moi",
   "sign-in": "Se connecter",
-  "sign-in-google": "Connexion avec Google",
+  "sign-in-google": "Connexion avec Google",  "sign-in-apple": "Continuer avec Apple",
   "sign-up": "Créer un compte",
-  "sign-up-google": "Créer un compte avec Google",
+  "sign-up-google": "Créer un compte avec Google",  "sign-up-apple": "Créer un compte avec Apple",
   "or-separator": "ou"
 }

@@ -14,7 +14,11 @@ import {
   DialogBox,
   UploadCsv,
 } from 'shared-ui';
-import { Ingredient, inventoryService } from '../../../services';
+import {
+  ColumnsNameMapping,
+  Ingredient,
+  inventoryService,
+} from '../../../services';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
 import Table, { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { Tooltip } from 'react-tooltip';
@@ -61,7 +65,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       string[] | undefined
     >(undefined);
     const [popupError, setPopupError] = useState('');
-    const [uploadPopup, setUploadPopup] = useState<any | null>(null);
+    const [uploadPopup, setUploadPopup] = useState<ColumnsNameMapping | null>(
+      null
+    );
     const [csvFile, setCsvFile] = useState<File | null>(null);
     const [loadingButton, setLoadingButton] = useState(false);
 
@@ -140,7 +146,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       }
 
       props.setLoadingState(false);
-    }, [selectedRestaurantUUID]);
+    }, [selectedRestaurantUUID, props.setLoadingState]);
 
     useEffect(() => {
       reloadInventoryData();
@@ -156,7 +162,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       if (!selectedRestaurantUUID) return;
 
       props.setLoadingState(true);
-      if (editingRowId !== null && !addingRow) {
+      if (editingRowId && !addingRow) {
         console.log('API request to edit ingredient');
         console.log(editingRowId);
         props.setLoadingState(false);
@@ -313,6 +319,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const handleUploadCsvValidate = () => {
       setUploadPopup(null);
+      setCsvFile(null);
       reloadInventoryData();
     };
 
@@ -491,6 +498,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             extractedData={uploadPopup}
             onCancelClick={() => {
               setUploadPopup(null);
+              setCsvFile(null);
               if (fileInputRef.current) fileInputRef.current.value = '';
             }}
             onValidateClick={handleUploadCsvValidate}

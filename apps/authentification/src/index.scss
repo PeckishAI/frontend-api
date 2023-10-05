@@ -99,6 +99,26 @@
       }
     }
 
+    .apple-button {
+      cursor: pointer;
+      height: var(--input-large-height);
+      background-color: black;
+      color: white;
+      border-radius: 5px;
+      border: none;
+      font-size: 0.9rem;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: 200ms ease-in-out;
+
+      &:hover {
+        color: rgb(194, 194, 194);
+      }
+    }
+
     .create-account {
       text-align: center;
       font-size: 0.9rem;

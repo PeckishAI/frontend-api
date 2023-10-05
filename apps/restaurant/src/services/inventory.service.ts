@@ -36,7 +36,7 @@ const updateIngredient = (ingredient) => {
   );
 };
 
-const getIngredientPreview = (ingredientId) => {
+const getIngredientPreview = (ingredientId: string) => {
   return axios.get<string[]>(
     '/restaurant/inventory/' + ingredientId + '/preview'
   );
