@@ -1,36 +1,30 @@
 import './style.scss';
 import { useTranslation } from 'react-i18next';
-import { Button, Input } from 'shared-ui';
+import { Button, Input, Popup } from 'shared-ui';
 import { useState } from 'react';
-import { inventoryService } from '../../../../../apps/restaurant/src/services';
+import {
+  ColumnsNameMapping,
+  inventoryService,
+} from '../../../../../apps/restaurant/src/services';
 import { useRestaurantStore } from '../../../../../apps/restaurant/src/store/useRestaurantStore';
 
 type Props = {
-  fileCsv: File | null;
-  extractedData: any;
+  fileCsv: File;
+  extractedData: ColumnsNameMapping;
   onCancelClick: () => void;
   onValidateClick: () => void;
 };
 
-type Headers = {
-  ingredient: string;
-  quantity: string;
-  unit: string;
-  supplier: string;
-  cost: string;
-};
-
 const UploadCsv = (props: Props) => {
   const { t } = useTranslation('common');
-  const headers: Headers = {
+
+  const [headerValues, setHeaderValues] = useState<ColumnsNameMapping>({
     ingredient: props.extractedData.ingredient,
     quantity: props.extractedData.quantity,
     unit: props.extractedData.unit,
     supplier: props.extractedData.supplier,
     cost: props.extractedData.cost,
-  };
-
-  const [headerValues, setHeaderValues] = useState<Headers | null>(headers);
+  });
   const [preview, setPreview] = useState(false);
   const [previewData, setPreviewData] = useState([]);
   const [error, setErrror] = useState(false);
@@ -38,7 +32,19 @@ const UploadCsv = (props: Props) => {
     (state) => state.selectedRestaurantUUID
   );
 
-  const handleValueChange = (field: keyof Headers, value: any) => {
+  const getColumnNames = (): ColumnsNameMapping | null => {
+    return (
+      Object.keys(headerValues) as Array<keyof ColumnsNameMapping>
+    ).reduce<ColumnsNameMapping>((previousValue, key) => {
+      // const key = k as keyof typeof headerValues;
+      return { ...previousValue, [key]: headerValues[key] || 'N/A' };
+    }, headerValues);
+  };
+
+  const handleValueChange = (
+    field: keyof ColumnsNameMapping,
+    value: string
+  ) => {
     setHeaderValues((prevValues) => ({
       ...prevValues!,
       [field]: value,
@@ -48,23 +54,33 @@ const UploadCsv = (props: Props) => {
   };
 
   const handlePreviewClick = () => {
-    if (!preview) {
-      inventoryService
-        .getPreviewUploadedCsv(props.fileCsv, headerValues)
-        .then((res) => {
-          setPreviewData(res.data);
-        })
-        .catch((err) => {
-          console.log('error : ', err);
-        });
-    }
     setPreview(!preview);
+    if (preview || !selectedRestaurantUUID) return;
+
+    const columnsNames = getColumnNames() as ColumnsNameMapping;
+
+    inventoryService
+      .getPreviewUploadedCsv(
+        selectedRestaurantUUID,
+        props.fileCsv,
+        columnsNames
+      )
+      .then((res) => {
+        console.log('preview : ', res.data);
+
+        setPreviewData(res.data);
+      })
+      .catch((err) => {
+        console.log('error : ', err);
+      });
   };
 
   const handleValidClick = () => {
     if (headerValues !== null && selectedRestaurantUUID !== undefined) {
+      const columnsNames = getColumnNames() as ColumnsNameMapping;
+
       inventoryService
-        .validUploadedCsv(selectedRestaurantUUID, props.fileCsv, headerValues)
+        .validUploadedCsv(selectedRestaurantUUID, props.fileCsv, columnsNames)
         .then(() => {
           setErrror(false);
           props.onValidateClick();
@@ -78,10 +94,12 @@ const UploadCsv = (props: Props) => {
   };
 
   return (
-    <div className="upload-popup">
-      <div className="overlay"></div>
-      <div className="popup">
-        <h2>Your information uploaded :</h2>
+    <Popup
+      isVisible={true}
+      title="Your information uploaded"
+      subtitle="We have extracted the following column names from your file. Please check if the mapping everything is correct."
+      onRequestClose={props.onCancelClick}>
+      <div className="upload-popup">
         <div className="headers">
           <div className="header">
             <span>Ingredient</span>
@@ -134,8 +152,8 @@ const UploadCsv = (props: Props) => {
             />
           </div>
         </div>
-        <div>
-          <Button
+        <div className="preview-btn-container">
+          {/* <Button
             type="secondary"
             value={t('preview')}
             onClick={handlePreviewClick}
@@ -146,11 +164,20 @@ const UploadCsv = (props: Props) => {
                 <i className="fa-solid fa-chevron-down"></i>
               )
             }
-          />
+          /> */}
+
+          <div className="preview-btn" onClick={handlePreviewClick}>
+            <p>{t('preview')}</p>
+            {preview ? (
+              <i className="fa-solid fa-chevron-up"></i>
+            ) : (
+              <i className="fa-solid fa-magnifying-glass"></i>
+            )}
+          </div>
         </div>
         <div
           className="preview"
-          style={preview ? { height: '200px' } : { height: 0 }}>
+          style={preview ? { maxHeight: '200px' } : { maxHeight: 0 }}>
           <div className="table">
             <div className="row first-row">
               <span>{t('ingredient')}</span>
@@ -158,15 +185,15 @@ const UploadCsv = (props: Props) => {
               <span>{t('unit')}</span>
             </div>
             {previewData &&
-              previewData.map((data: any, index) => (
+              previewData.map((data: Record<string, string>, index) => (
                 <div className="row" key={`row-${index}`}>
                   <span key={`ingredient-${index}`}>
-                    {data[headerValues!.ingredient]}
+                    {data[headerValues.ingredient]}
                   </span>
                   <span key={`quantity-${index}`}>
-                    {data[headerValues!.quantity]}
+                    {data[headerValues.quantity]}
                   </span>
-                  <span key={`unit-${index}`}>{data[headerValues!.unit]}</span>
+                  <span key={`unit-${index}`}>{data[headerValues.unit]}</span>
                 </div>
               ))}
           </div>
@@ -190,7 +217,7 @@ const UploadCsv = (props: Props) => {
           />
         </div>
       </div>
-    </div>
+    </Popup>
   );
 };
 

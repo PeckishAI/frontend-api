@@ -17,5 +17,9 @@
   "choose-usage.bad-args": "Le choix à échoué veuillez réessayer.",
 
   "google-auth.aborted": "L'authentification Google a été interrompue.",
-  "google-auth.failed": "L'authentification Google a échoué."
+  "google-auth.failed": "L'authentification Google a échoué.",
+
+  "apple-auth.aborted": "L'authentification Apple a été interrompue.",
+  "apple-auth.failed": "L'authentification Apple a échoué."
+
 }

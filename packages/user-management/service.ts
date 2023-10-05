@@ -30,6 +30,7 @@ export const userService = {
     this.axiosClient = axios.create({
       baseURL: apiUrl + '/auth',
     });
+    applyAxiosInterceptors(this.axiosClient);
   },
   getMe: function (token: string): Promise<User> {
     if (!this.axiosClient) throw new Error('User service not initialized');
@@ -39,6 +40,7 @@ export const userService = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        applyAccessToken: false,
       })
       .then((res) => {
         return {
@@ -54,6 +56,8 @@ export const userService = {
 export const applyAxiosInterceptors = (instance: AxiosInstance) => {
   // Request interceptor for API calls
   instance.interceptors.request.use(async (config) => {
+    if (config.applyAccessToken === false) return config;
+
     const accessToken = useUserStore.getState().accessToken;
     config.headers.Authorization = `Bearer ${accessToken}`;
     return config;
@@ -85,3 +89,9 @@ export const applyAxiosInterceptors = (instance: AxiosInstance) => {
     }
   );
 };
+
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    applyAccessToken?: boolean;
+  }
+}

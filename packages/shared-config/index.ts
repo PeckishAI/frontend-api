@@ -9,6 +9,7 @@ const devConfig = {
 
   GOOGLE_CLIENT_ID:
     '167544806451-lhqrqpn83tje89en5n73af3tiu3sm11o.apps.googleusercontent.com',
+  APPLE_CLIENT_ID: 'com.peckish.web.dev',
 };
 
 const stagingConfig = {
@@ -22,6 +23,7 @@ const stagingConfig = {
 
   GOOGLE_CLIENT_ID:
     '167544806451-lhqrqpn83tje89en5n73af3tiu3sm11o.apps.googleusercontent.com',
+  APPLE_CLIENT_ID: 'com.peckish.web.dev',
 };
 
 const prodConfig = {
@@ -35,6 +37,7 @@ const prodConfig = {
 
   GOOGLE_CLIENT_ID:
     '902125317537-r9ck7q1bi9m01f1ilopjlvi2itrupdut.apps.googleusercontent.com',
+  APPLE_CLIENT_ID: 'com.peckish.web',
 };
 
 export const GLOBAL_CONFIG =

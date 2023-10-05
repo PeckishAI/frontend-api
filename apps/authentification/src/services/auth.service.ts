@@ -75,10 +75,26 @@ const chooseUsage = async (
   return res.data;
 };
 
+const appleLogIn = async (
+  identityToken: string,
+  name: {
+    firstName: string;
+    lastName: string;
+  } | null
+): Promise<LogInResult> => {
+  const res = await apiClient.post<LogInResult>('/apple/sign-in', {
+    identity_token: identityToken,
+    name: name ? `${name.firstName} ${name.lastName}` : null,
+  });
+
+  return res.data;
+};
+
 export default {
   logIn,
   register,
   googleLogIn,
   googleRegister,
   chooseUsage,
+  appleLogIn,
 };

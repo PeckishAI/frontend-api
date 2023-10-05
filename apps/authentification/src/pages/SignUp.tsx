@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { MdAlternateEmail } from 'react-icons/md';
 import { FaLock, FaUser } from 'react-icons/fa';
-import { useGoogleLogin } from '@react-oauth/google';
-import { FcGoogle } from 'react-icons/fc';
 import { Button, LabeledInput, Checkbox } from 'shared-ui';
 import { useForm } from 'react-hook-form';
 import authService, { LogInResult } from '../services/auth.service';
@@ -11,6 +9,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
+import { GoogleButton } from '../components/GoogleButton';
+import { AppleButton } from '../components/AppleButton';
 
 const SignUpSchema = z
   .object({
@@ -84,18 +84,6 @@ export const SignUp = () => {
     );
   });
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: (res) => {
-      handleRegister(authService.googleRegister(res.access_token));
-    },
-    onNonOAuthError: () => {
-      setErrorMessage(t('error:google-auth.aborted'));
-    },
-    onError: () => {
-      setErrorMessage(t('error:google-auth.failed'));
-    },
-  });
-
   return (
     <main className="Auth">
       <div className="image-section">
@@ -109,13 +97,17 @@ export const SignUp = () => {
         {errorMessage && <p className="form-error">{errorMessage}</p>}
 
         <form className="inputs-container" onSubmit={onSubmit}>
-          <button
-            type="button"
-            onClick={() => googleLogin()}
-            className="google-button">
-            <FcGoogle size={20} />
-            {t('common:sign-up-google')}
-          </button>
+          <GoogleButton
+            type="sign-up"
+            handleRequest={handleRegister}
+            setErrorMessage={setErrorMessage}
+          />
+
+          <AppleButton
+            type="sign-up"
+            handleRequest={handleRegister}
+            setErrorMessage={setErrorMessage}
+          />
 
           <div className="or">
             <span>{t('common:or-separator')}</span>
