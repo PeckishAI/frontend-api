@@ -5,7 +5,7 @@ import { BBox2d } from '@turf/helpers/dist/js/lib/geojson';
 import 'leaflet/dist/leaflet.css'; // Importez les styles Leaflet
 import './style.scss';
 import POIWindow from './Components/POIWindow/POIWindow';
-import Hexagon from './Components/Hexagon/Hexagon';
+import Hexagon, { HexagonType } from './Components/Hexagon/Hexagon';
 import { useEffect, useRef, useState } from 'react';
 import { ResponseMapPlaceApi } from '../../services';
 import SearchBar from './Components/SearchBar/SearchBar';
@@ -20,24 +20,24 @@ type RestaurantMap = {
 
 const restaurantLocations: RestaurantMap[] = [
   {
-    name: 'Restaurant A',
-    location: '23 street A, City A, Cuntry A',
-    pos: { lat: 52.380427, lng: 4.888123 },
+    name: 'Cannibale Royale',
+    location: 'Handboogstraat 17a, 1012 XM Amsterdam',
+    pos: { lat: 52.368014, lng: 4.890343 },
   },
   {
-    name: 'Restaurant B',
-    location: '23 street B, City B, Cuntry B',
-    pos: { lat: 52.370327, lng: 4.894656 },
+    name: 'Poké Perfect',
+    location: 'Nieuwendijk 13HS, 1012 LZ Amsterdam',
+    pos: { lat: 52.378613, lng: 4.895055 },
   },
   {
-    name: 'Restaurant C',
-    location: '23 street C, City C, Cuntry C',
-    pos: { lat: 52.356783, lng: 4.890065 },
+    name: 'JOE & THE JUICE',
+    location: 'Van Baerlestraat 40, 1071 CH Amsterdam',
+    pos: { lat: 52.35841, lng: 4.878273 },
   },
   {
-    name: 'Restaurant D',
-    location: '23 street D, City D, Cuntry D',
-    pos: { lat: 52.367583, lng: 4.882814 },
+    name: 'The Butcher',
+    location: 'Albert Cuypstraat 129, 1072 CS Amsterdam',
+    pos: { lat: 52.355776, lng: 4.892097 },
   },
 ];
 
@@ -50,9 +50,9 @@ const Map = () => {
   >(undefined);
   const mapRef = useRef<LeafletMap | null>(null);
   const [mapIsReady, setMapIsReady] = useState(false);
-  const [hexagons, setHexagons] = useState<LatLngExpression[][]>([]);
+  const [hexagons, setHexagons] = useState<HexagonType[]>([]);
   const [clickedHexagons, setClickedHexagon] = useState<
-    LatLngExpression[][] | undefined
+    HexagonType[] | undefined
   >(undefined);
   const [hexagonEnable, setHexagonEnable] = useState(true);
 
@@ -70,13 +70,18 @@ const Map = () => {
         bounds!.getNorthEast().lat,
       ]; // [minX, minY, maxX, maxY]
 
-      const hexagon = hexGrid(bbox, 500, { units: 'meters' });
-      const deuxiemeehexagonmgl: LatLngExpression[][] = hexagon.features.map(
-        (feature) =>
-          feature.geometry.coordinates[0].map(([lon, lat]) => [lat, lon])
+      const hexagonGrid = hexGrid(bbox, 500, { units: 'meters' });
+      const hexagons: HexagonType[] = hexagonGrid.features.map(
+        (feature, i) => ({
+          id: i,
+          coordinates: feature.geometry.coordinates[0].map(([lon, lat]) => [
+            lat,
+            lon,
+          ]),
+        })
       );
 
-      setHexagons(deuxiemeehexagonmgl);
+      setHexagons(hexagons);
     };
 
     map.on('load', () => {
@@ -113,7 +118,19 @@ const Map = () => {
     mapRef.current?.setView([place.location.lat, place.location.lng], 14);
   };
 
-  const handleOnHexagonClick = () => {};
+  const handleOnHexagonClicked = (hexagon: HexagonType, selected: boolean) => {
+    const newList = [...(clickedHexagons ?? [])];
+
+    if (!selected) {
+      const selectedIndex = newList.findIndex((item) => item.id === hexagon.id);
+      if (selectedIndex !== -1) {
+        newList.splice(selectedIndex, 1);
+      }
+    } else {
+      newList.push(hexagon);
+    }
+    setClickedHexagon(newList);
+  };
 
   return (
     <div className="map">
@@ -141,6 +158,7 @@ const Map = () => {
         />
         {restaurantLocations.map((restaurant, i) => (
           <Marker
+            key={i}
             position={[restaurant.pos.lat, restaurant.pos.lng]}
             eventHandlers={{
               click: () => handleMarkerClicked(i),
@@ -158,7 +176,9 @@ const Map = () => {
             <Hexagon
               key={i}
               hexagon={hexagon}
-              onHexagonClick={handleOnHexagonClick}
+              onHexagonClicked={(selected) =>
+                handleOnHexagonClicked(hexagon, selected)
+              }
             />
           ))}
         <ControlLayer
