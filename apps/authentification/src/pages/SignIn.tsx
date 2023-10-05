@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { MdAlternateEmail } from 'react-icons/md';
 import { FaLock } from 'react-icons/fa';
-import { useGoogleLogin } from '@react-oauth/google';
-import { FcGoogle } from 'react-icons/fc';
 import { Button, LabeledInput, Checkbox } from 'shared-ui';
 import { useForm } from 'react-hook-form';
 import authService, { LogInResult } from '../services/auth.service';
@@ -12,6 +10,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { handleAuthentification } from '../utils';
+import { GoogleButton } from '../components/GoogleButton';
+import { AppleButton } from '../components/AppleButton';
 
 const SignInSchema = z.object({
   email: z
@@ -78,18 +78,6 @@ export const SignIn = () => {
     return handleLogin(authService.logIn(data.email, data.password));
   });
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: (res) => {
-      handleLogin(authService.googleLogIn(res.access_token));
-    },
-    onNonOAuthError: () => {
-      setErrorMessage(t('error:google-auth.aborted'));
-    },
-    onError: () => {
-      setErrorMessage(t('error:google-auth.failed'));
-    },
-  });
-
   return (
     <main className="Auth">
       <div className="image-section">
@@ -137,13 +125,17 @@ export const SignIn = () => {
             <span>{t('common:or-separator')}</span>
           </div>
 
-          <button
-            type="button"
-            onClick={() => googleLogin()}
-            className="google-button">
-            <FcGoogle size={20} />
-            {t('common:sign-in-google')}
-          </button>
+          <GoogleButton
+            type="sign-in"
+            handleRequest={handleLogin}
+            setErrorMessage={setErrorMessage}
+          />
+
+          <AppleButton
+            type="sign-in"
+            handleRequest={handleLogin}
+            setErrorMessage={setErrorMessage}
+          />
 
           <p className="create-account">
             {t('common:sign-in.create-account')}{' '}

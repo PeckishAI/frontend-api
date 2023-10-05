@@ -17,5 +17,9 @@
   "choose-usage.bad-args": "The choice failed, please try again.",
 
   "google-auth.aborted": "Google authentification aborted.",
-  "google-auth.failed": "Google authentification failed."
+  "google-auth.failed": "Google authentification failed.",
+
+  "apple-auth.aborted": "Apple authentification aborted.",
+  "apple-auth.failed": "Apple authentification failed."
+
 }
