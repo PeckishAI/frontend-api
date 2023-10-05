@@ -4,6 +4,13 @@
   top: 15px;
   right: 15px;
 
+  .map-burger {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--backgroundColor);
+  }
+
   .menu {
     width: 130px;
     background-color: var(--backgroundColor);
