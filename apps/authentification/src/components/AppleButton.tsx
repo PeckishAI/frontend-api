@@ -15,8 +15,8 @@ export const AppleButton = (props: Props) => {
 
   return (
     <AppleLogin
-      redirectURI="https://a21d-178-132-215-44.ngrok-free.app/sign-in"
-      // redirectURI={GLOBAL_CONFIG.authentificationUrl + '/sign-in'}
+      // redirectURI="https://a21d-178-132-215-44.ngrok-free.app/sign-in"
+      redirectURI={GLOBAL_CONFIG.authentificationUrl + '/sign-in'}
       clientId={GLOBAL_CONFIG.APPLE_CLIENT_ID}
       scope="email name"
       usePopup
