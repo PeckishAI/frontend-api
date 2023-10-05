@@ -46,11 +46,10 @@ export const router = createBrowserRouter([
             path: '/integrations',
             element: <Integrations />,
           },
-          // REMOVED FOR PROD
-          // {
-          //   path: '/orders/validation',
-          //   element: <OrderValidation />,
-          // },
+          {
+            path: '/orders/validation',
+            element: <OrderValidation />,
+          },
           {
             path: '*',
             element: <Navigate to={'/'} />,
