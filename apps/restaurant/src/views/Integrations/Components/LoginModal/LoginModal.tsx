@@ -34,7 +34,7 @@ const LoginModal = (props: Props) => {
     authorizeUrl: props.pos?.data?.oauth_url ?? '',
     clientId: props.pos?.data?.client_id ?? '',
     redirectUri: window.location.origin + '/oauth/callback',
-    // scope: 'delivery',
+    scope: props.pos?.data?.scope ?? '',
   });
 
   console.log('error', error, 'loading', loading, 'data', data);
