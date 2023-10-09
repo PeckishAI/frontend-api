@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import Calendar from 'dayjs/plugin/calendar';
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import { SkeletonTheme } from 'react-loading-skeleton';
@@ -17,10 +16,10 @@ dayjs.extend(Calendar);
 userService.setConfig(GLOBAL_CONFIG);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  <>
     <SkeletonTheme baseColor="#e2dcdc">
       <RouterProvider router={router} />
     </SkeletonTheme>
     <Toaster />
-  </React.StrictMode>
+  </>
 );
