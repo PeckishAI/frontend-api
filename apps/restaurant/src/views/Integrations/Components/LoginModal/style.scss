@@ -20,12 +20,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  gap: 20px;
   position: relative;
 
   .text-error {
     height: 0;
     transform: translateY(-10px);
+  }
+
+  .LabeledInput {
+    width: 100%;
   }
 
   .button-container {

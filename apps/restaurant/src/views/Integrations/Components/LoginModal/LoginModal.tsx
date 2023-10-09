@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './style.scss';
-import { Button, Input, Lottie, Popup } from 'shared-ui';
+import { Button, LabeledInput, Lottie, Popup } from 'shared-ui';
 import { useTranslation } from 'react-i18next';
 import axiosClient from '../../../../services';
 import { useUserStore } from '@peckishai/user-management';
 import { POS, Integration } from '../../Integrations';
+import { useOAuth2 } from '../../../../utils/oauth/useOAuth2';
 
 type Props = {
   isVisible: boolean;
@@ -13,9 +14,9 @@ type Props = {
   onIntegrated: (integration?: Integration) => void;
 };
 
-function oauth(auth_type: string | undefined, oauth_url: string | undefined) {
-  console.log(auth_type, oauth_url);
-}
+// function oauth(auth_type: string | undefined, oauth_url: string | undefined) {
+//   console.log(auth_type, oauth_url);
+// }
 
 const LoginModal = (props: Props) => {
   const { t } = useTranslation('common');
@@ -29,6 +30,15 @@ const LoginModal = (props: Props) => {
   >(null);
   const [integrated, setIntegrated] = useState<Integration>();
 
+  const { getAuth, error, loading, data } = useOAuth2({
+    authorizeUrl: props.pos?.data?.oauth_url ?? '',
+    clientId: props.pos?.data?.client_id ?? '',
+    redirectUri: 'http://localhost:5124/oauth/callback',
+    // scope: 'delivery',
+  });
+
+  console.log('error', error, 'loading', loading, 'data', data);
+
   function FieldsValid() {
     if (!userName) {
       setErrorField(t('field.error.userName'));
@@ -38,18 +48,40 @@ const LoginModal = (props: Props) => {
       setErrorField(t('field.error.password'));
       return false;
     }
-    setErrorField(t(''));
+    setErrorField('');
     return true;
   }
 
-  function simulationRequest() {
-    setRetrieveDataStatus('success');
-  }
+  useEffect(() => {
+    if (data && data.code) {
+      axiosClient
+        .post(props.pos?.url + '/integrate/' + userId, {
+          code: data.code,
+        })
+        .then((res) => {
+          console.log('res integrate oauth', res);
+
+          setRetrieveDataStatus('success');
+        });
+    }
+    if (error) {
+      console.log('error', error);
+      setRetrieveDataStatus('fail');
+    }
+  }, [data, error, props.pos]);
+
   const handleLoginClick = () => {
+    if (props.pos?.auth_type === 'oauth') {
+      setRetrieveDataStatus('loading');
+      getAuth();
+      // oauth(props.pos?.auth_type, props.pos?.data?.oauth_url);
+      return;
+    }
+
     if (FieldsValid() && userId) {
       setRetrieveDataStatus('loading');
       axiosClient
-        .post(props.pos?.oauth_url + '/integrate/' + userId, {
+        .post(props.pos?.url + '/integrate/' + userId, {
           username: userName,
           password: userPassword,
         })
@@ -67,29 +99,47 @@ const LoginModal = (props: Props) => {
         .finally(() => {});
     }
   };
+
   return (
     <Popup
       isVisible={props.isVisible}
       onRequestClose={props.toggleModal}
-      title="New integration"
-      subtitle={`Please input your credentials for ${props.pos?.name}`}>
+      title={t('onboarding.modal.title')}
+      subtitle={t(
+        props.pos?.auth_type === 'modal'
+          ? 'onboarding.modal.description.login'
+          : 'onboarding.modal.description.oauth',
+        { name: props.pos?.display_name }
+      )}>
       {retrieveDataStatus === null ? (
         <div className="modal-content">
-          <Input
-            type="text"
-            width="300px"
-            value={userName}
-            placeholder="Username"
-            onChange={(value) => setUserName(value)}
-          />
-          <Input
-            type="password"
-            width="300px"
-            value={userPassword}
-            placeholder="Password"
-            onChange={(value) => setUserPassword(value)}
-          />
-          <span className="text-error">{errorField}</span>
+          {props.pos?.auth_type !== 'oauth' ? (
+            <>
+              <LabeledInput
+                type="text"
+                // width="300px"
+                value={userName}
+                placeholder="Username"
+                onChange={(e) => setUserName(e.target.value)}
+                lighter
+              />
+              <LabeledInput
+                type="password"
+                // width="300px"
+                value={userPassword}
+                placeholder="Password"
+                onChange={(e) => setUserPassword(e.target.value)}
+                lighter
+              />
+            </>
+          ) : (
+            <p>
+              {t('onboarding.modal.description.oauth.message', {
+                name: props.pos.display_name,
+              })}
+            </p>
+          )}
+          {errorField && <span className="text-error">{errorField}</span>}
           <div className="button-container">
             <Button
               value={t('cancel')}
