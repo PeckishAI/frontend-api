@@ -33,7 +33,7 @@ const LoginModal = (props: Props) => {
   const { getAuth, error, loading, data } = useOAuth2({
     authorizeUrl: props.pos?.data?.oauth_url ?? '',
     clientId: props.pos?.data?.client_id ?? '',
-    redirectUri: 'http://localhost:5124/oauth/callback',
+    redirectUri: window.location.origin + '/oauth/callback',
     // scope: 'delivery',
   });
 
@@ -53,10 +53,17 @@ const LoginModal = (props: Props) => {
   }
 
   useEffect(() => {
+    if (error) {
+      console.log('error', error);
+      setRetrieveDataStatus('fail');
+      return;
+    }
+
     if (data && data.code) {
       axiosClient
         .post(props.pos?.url + '/integrate/' + userId, {
           code: data.code,
+          redirect_uri: window.location.origin + '/oauth/callback',
         })
         .then((res) => {
           console.log('res integrate oauth', res);
@@ -67,17 +74,12 @@ const LoginModal = (props: Props) => {
           setRetrieveDataStatus('fail');
         });
     }
-    if (error) {
-      console.log('error', error);
-      setRetrieveDataStatus('fail');
-    }
   }, [data, error, props.pos]);
 
   const handleLoginClick = () => {
     if (props.pos?.auth_type === 'oauth') {
       setRetrieveDataStatus('loading');
       getAuth();
-      // oauth(props.pos?.auth_type, props.pos?.data?.oauth_url);
       return;
     }
 
