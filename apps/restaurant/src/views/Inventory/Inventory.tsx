@@ -35,9 +35,9 @@ const Inventory = () => {
     t('inventory.orders'),
   ];
 
-  const supplierTabRef = useRef<SupplierTabRef>(null);
+  // const supplierTabRef = useRef<SupplierTabRef>(null); REMOVED FOR PROD
   const ingredientTabRef = useRef<IngredientTabRef>(null);
-  const orderTabRef = useRef<OrderTabRef>(null);
+  // const orderTabRef = useRef<OrderTabRef>(null); REMOVED FOR PROD
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [searchValue, setSearchValue] = useState<string>('');
@@ -62,26 +62,27 @@ const Inventory = () => {
         />
       );
     }
-    if (selectedTab === 1) {
-      return (
-        <SupplierTab
-          ref={supplierTabRef}
-          setLoadingState={setLoadingData}
-          searchValue={searchValue}
-          forceOptionsUpdate={forceUpdate}
-        />
-      );
-    }
-    if (selectedTab === 2) {
-      return (
-        <OrderTab
-          ref={orderTabRef}
-          // setLoadingState={setLoadingData}
-          // searchValue={searchValue}
-          forceOptionsUpdate={forceUpdate}
-        />
-      );
-    }
+    // REMOVED FOR PROD
+    // if (selectedTab === 1) {
+    //   return (
+    //     <SupplierTab
+    //       ref={supplierTabRef}
+    //       setLoadingState={setLoadingData}
+    //       searchValue={searchValue}
+    //       forceOptionsUpdate={forceUpdate}
+    //     />
+    //   );
+    // }
+    // if (selectedTab === 2) {
+    //   return (
+    //     <OrderTab
+    //       ref={orderTabRef}
+    //       // setLoadingState={setLoadingData}
+    //       // searchValue={searchValue}
+    //       forceOptionsUpdate={forceUpdate}
+    //     />
+    //   );
+    // }
     return null;
   };
 
@@ -106,8 +107,9 @@ const Inventory = () => {
             onChange={setSearchValue}
           />
           {selectedTab === 0 && ingredientTabRef.current?.renderOptions()}
-          {selectedTab === 1 && supplierTabRef.current?.renderOptions()}
-          {selectedTab === 2 && orderTabRef.current?.renderOptions()}
+          {/* REMOVED FOR PROD */}
+          {/* {selectedTab === 1 && supplierTabRef.current?.renderOptions()}
+          {selectedTab === 2 && orderTabRef.current?.renderOptions()} */}
         </div>
       </div>
 
