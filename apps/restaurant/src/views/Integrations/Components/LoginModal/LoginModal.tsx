@@ -62,6 +62,9 @@ const LoginModal = (props: Props) => {
           console.log('res integrate oauth', res);
 
           setRetrieveDataStatus('success');
+        })
+        .catch(() => {
+          setRetrieveDataStatus('fail');
         });
     }
     if (error) {

@@ -132,6 +132,8 @@ export const useOAuth2 = <Data = DefaultData>(options: Options) => {
       if (message.data.payload.state) delete message.data.payload.state;
 
       setData(message.data.payload as Data);
+      setLoading(false);
+
       cleanup(intervalRef, popupRef, handleMessageListener);
     }
     window.addEventListener('message', handleMessageListener);
