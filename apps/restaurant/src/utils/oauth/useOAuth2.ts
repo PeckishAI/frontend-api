@@ -120,6 +120,8 @@ export const useOAuth2 = <Data = DefaultData>(options: Options) => {
       if (message.data.error) {
         setLoading(false);
         setError(message.data.error || 'Unknown Error');
+
+        cleanup(intervalRef, popupRef, handleMessageListener);
         return;
       }
 
