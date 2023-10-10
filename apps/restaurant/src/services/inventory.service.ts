@@ -46,10 +46,23 @@ const deleteIngredient = (id: string) => {
   return axios.post('/restaurant/inventory/' + id + '/delete');
 };
 
-const uploadCsvFile = (restaurantUUID: string, file) => {
+export type ColumnsNameMapping = {
+  ingredient: string;
+  quantity: string;
+  unit: string;
+  cost: string;
+  supplier: string;
+};
+
+export type PreviewResponse = {
+  detected_columns: ColumnsNameMapping;
+  file_columns: string[];
+};
+
+const uploadCsvFile = (restaurantUUID: string, file: File) => {
   const formData = new FormData();
   formData.append('file', file);
-  return axios.post(
+  return axios.post<PreviewResponse>(
     '/restaurant/inventory/' + restaurantUUID + '/upload/smart_reader',
     formData,
     {
@@ -58,14 +71,6 @@ const uploadCsvFile = (restaurantUUID: string, file) => {
       },
     }
   );
-};
-
-export type ColumnsNameMapping = {
-  ingredient: string;
-  quantity: string;
-  unit: string;
-  cost: string;
-  supplier: string;
 };
 
 const getFormData = (file: File, headerValues: ColumnsNameMapping) => {
