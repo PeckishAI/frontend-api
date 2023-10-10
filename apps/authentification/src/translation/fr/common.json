@@ -6,7 +6,7 @@
   "sign-up.title": "Créer un compte",
   "sign-up.description": "Inscrivez-vous pour commencer à utiliser Peckish",
   "sign-up.already-register": "Vous avez déjà un compte ?",
-  "sign-up.tos-checkbox": "Accepter les conditions d'utilisation",
+  "sign-up.tos-checkbox": "Accepter les <tosLink>Conditions Générales d'Utilisation</tosLink> et la <privacyLink>Politique de Confidentialité</privacyLink>",
 
   "choose-usage.title": "Qui êtes vous ?",
   "choose-usage.description": "À quelles fins souhaitez-vous utiliser Peckish.",
@@ -21,8 +21,10 @@
   "confirm-password": "Confirmation",
   "remember-me": "Se souvenir de moi",
   "sign-in": "Se connecter",
-  "sign-in-google": "Connexion avec Google",  "sign-in-apple": "Continuer avec Apple",
+  "sign-in-google": "Connexion avec Google",
+  "sign-in-apple": "Continuer avec Apple",
   "sign-up": "Créer un compte",
-  "sign-up-google": "Créer un compte avec Google",  "sign-up-apple": "Créer un compte avec Apple",
+  "sign-up-google": "Créer un compte avec Google",
+  "sign-up-apple": "Créer un compte avec Apple",
   "or-separator": "ou"
 }

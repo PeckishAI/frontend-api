@@ -6,7 +6,7 @@
   "sign-up.title": "Sign Up!",
   "sign-up.description": "Register to start using Peckish",
   "sign-up.already-register": "Already have an account ?",
-  "sign-up.tos-checkbox": "Accept Terms of Use",
+  "sign-up.tos-checkbox": "Accept <tosLink>Terms and Conditions</tosLink> and <privacyLink>Privacy Policy</privacyLink>",
 
   "choose-usage.title": "Who are you ?",
   "choose-usage.description": "For what purposes you want to use Peckish.",
