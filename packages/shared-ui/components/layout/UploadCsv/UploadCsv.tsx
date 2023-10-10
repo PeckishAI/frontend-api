@@ -1,16 +1,17 @@
 import './style.scss';
 import { useTranslation } from 'react-i18next';
-import { Button, Input, Popup } from 'shared-ui';
+import { Button, Popup, Select } from 'shared-ui';
 import { useState } from 'react';
 import {
   ColumnsNameMapping,
+  PreviewResponse,
   inventoryService,
 } from '../../../../../apps/restaurant/src/services';
 import { useRestaurantStore } from '../../../../../apps/restaurant/src/store/useRestaurantStore';
 
 type Props = {
   fileCsv: File;
-  extractedData: ColumnsNameMapping;
+  extractedData: PreviewResponse;
   onCancelClick: () => void;
   onValidateClick: () => void;
 };
@@ -19,11 +20,11 @@ const UploadCsv = (props: Props) => {
   const { t } = useTranslation('common');
 
   const [headerValues, setHeaderValues] = useState<ColumnsNameMapping>({
-    ingredient: props.extractedData.ingredient,
-    quantity: props.extractedData.quantity,
-    unit: props.extractedData.unit,
-    supplier: props.extractedData.supplier,
-    cost: props.extractedData.cost,
+    ingredient: props.extractedData.detected_columns.ingredient ?? '-',
+    quantity: props.extractedData.detected_columns.quantity ?? '-',
+    unit: props.extractedData.detected_columns.unit ?? '-',
+    supplier: props.extractedData.detected_columns.supplier ?? '-',
+    cost: props.extractedData.detected_columns.cost ?? '-',
   });
   const [preview, setPreview] = useState(false);
   const [previewData, setPreviewData] = useState([]);
@@ -93,62 +94,97 @@ const UploadCsv = (props: Props) => {
     }
   };
 
+  console.log(
+    'props.extractedData.file_columns : ',
+    props.extractedData.file_columns
+  );
+
+  const options = props.extractedData.file_columns.map((column) => ({
+    value: column,
+    label: column,
+  }));
+
   return (
     <Popup
       isVisible={true}
-      title="Your information uploaded"
-      subtitle="We have extracted the following column names from your file. Please check if the mapping everything is correct."
+      title={t('inventory.uploadCSV.popup.title')}
+      subtitle={t('inventory.uploadCSV.popup.subtitle')}
       onRequestClose={props.onCancelClick}>
       <div className="upload-popup">
         <div className="headers">
           <div className="header">
             <span>Ingredient</span>
-            <Input
-              type="text"
+            <Select
+              isClearable
               placeholder={t('ingredient')}
-              value={headerValues!.ingredient}
-              width="120px"
-              onChange={(value) => handleValueChange('ingredient', value)}
+              options={options}
+              value={{
+                value: headerValues!.ingredient,
+                label: headerValues!.ingredient,
+              }}
+              onChange={(value) =>
+                handleValueChange('ingredient', value?.value ?? '-')
+              }
             />
           </div>
           <div className="header">
             <span>Quantity</span>
-            <Input
-              type="text"
+            <Select
+              isClearable
               placeholder={t('quantity')}
-              value={headerValues!.quantity}
-              width="120px"
-              onChange={(value) => handleValueChange('quantity', value)}
+              options={options}
+              value={{
+                value: headerValues!.quantity,
+                label: headerValues!.quantity,
+              }}
+              onChange={(value) =>
+                handleValueChange('quantity', value?.value ?? '-')
+              }
             />
           </div>
           <div className="header">
             <span>{t('unit')}</span>
-            <Input
-              type="text"
+            <Select
+              isClearable
               placeholder={t('unit')}
-              value={headerValues!.unit}
-              width="120px"
-              onChange={(value) => handleValueChange('unit', value)}
+              options={options}
+              value={{
+                value: headerValues!.unit,
+                label: headerValues!.unit,
+              }}
+              onChange={(value) =>
+                handleValueChange('unit', value?.value ?? '-')
+              }
             />
           </div>
           <div className="header">
             <span>{t('supplier')}</span>
-            <Input
-              type="text"
+            <Select
+              isClearable
               placeholder={t('supplier')}
-              value={headerValues!.supplier}
-              width="120px"
-              onChange={(value) => handleValueChange('supplier', value)}
+              options={options}
+              value={{
+                value: headerValues!.supplier,
+                label: headerValues!.supplier,
+              }}
+              onChange={(value) =>
+                handleValueChange('supplier', value?.value ?? '-')
+              }
             />
           </div>
           <div className="header">
             <span>{t('cost')}</span>
-            <Input
-              type="text"
+            <Select
+              isClearable
               placeholder={t('cost')}
-              value={headerValues!.cost}
-              width="120px"
-              onChange={(value) => handleValueChange('cost', value)}
+              options={options}
+              value={{
+                value: headerValues!.cost,
+                label: headerValues!.cost,
+              }}
+              onChange={(value) =>
+                handleValueChange('cost', value?.value ?? '-')
+              }
             />
           </div>
         </div>

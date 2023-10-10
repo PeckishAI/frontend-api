@@ -18,6 +18,7 @@ export type POS = {
   data?: {
     client_id: string;
     oauth_url: string;
+    scope: string;
   };
 };
 
@@ -119,7 +120,7 @@ const Integrations = () => {
         {filteredSoftwareList.map((pos) => {
           return (
             <IntegrationCard
-              key={pos.display_name}
+              key={pos.name}
               name={pos.display_name}
               image={pos.logo_uri}
               button_display={pos.button_display}

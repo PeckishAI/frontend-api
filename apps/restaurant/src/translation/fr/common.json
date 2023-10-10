@@ -63,6 +63,8 @@
 
   "inventory.addIngredientBtn": "Ajouter un ingrédient",
   "inventory.addSupplierBtn": "Ajouter un fournisseur",
+  "inventory.uploadCSV.popup.title": "Apperçu du fichier CSV",
+  "inventory.uploadCSV.popup.subtitle": "Nous avons extrait les noms de colonnes suivants de votre fichier. Veuillez vérifier si le mappage est correct.",
 
   "error.trigger": "Une erreur est survenue",
   "error.tryLater": "Veuillez essayer plus tard",

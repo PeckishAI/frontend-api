@@ -61,6 +61,8 @@
 
   "inventory.addIngredientBtn": "Add an ingredient",
   "inventory.addSupplierBtn": "Add a supplier",
+  "inventory.uploadCSV.popup.title": "File preview",
+  "inventory.uploadCSV.popup.subtitle": "We have extracted the following column names from your file. Please check if the mapping is correct.",
 
   "error.trigger": "An error has occurred",
   "error.tryLater": "Please try later",

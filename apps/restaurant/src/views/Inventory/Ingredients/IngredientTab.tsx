@@ -15,8 +15,8 @@ import {
   UploadCsv,
 } from 'shared-ui';
 import {
-  ColumnsNameMapping,
   Ingredient,
+  PreviewResponse,
   inventoryService,
 } from '../../../services';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
@@ -65,7 +65,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       string[] | undefined
     >(undefined);
     const [popupError, setPopupError] = useState('');
-    const [uploadPopup, setUploadPopup] = useState<ColumnsNameMapping | null>(
+    const [uploadPopup, setUploadPopup] = useState<PreviewResponse | null>(
       null
     );
     const [csvFile, setCsvFile] = useState<File | null>(null);
@@ -74,6 +74,67 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
+
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const handleFileUpload = useCallback(
+      async (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log('handleFileUpload');
+
+        if (!selectedRestaurantUUID) return;
+
+        const file = e.target.files?.[0];
+        e.target.value = '';
+
+        if (file) {
+          setLoadingButton(true);
+          inventoryService
+            .uploadCsvFile(selectedRestaurantUUID, file)
+            .then((res) => {
+              setUploadPopup(res.data);
+              setCsvFile(file);
+            })
+            .catch((err) => {
+              console.log(err);
+            })
+            .finally(() => {
+              setLoadingButton(false);
+            });
+        }
+      },
+      [selectedRestaurantUUID]
+    );
+
+    const handleExportDataClick = useCallback(() => {
+      const rows = ingredientsList;
+      if (rows) {
+        const header =
+          'Ingredient name, Theoretical stock, Actual stock, Unit, Supplier, Cost\n';
+        const csvContent =
+          'data:text/csv;charset=utf-8,' +
+          header +
+          rows
+            .map((row) => {
+              const values = [];
+              values.push(row.name); // Convertir la date en format ISO string
+              values.push(row.theoreticalStock || '-');
+              values.push(row.quantity || '-');
+              values.push(row.unit || '-');
+              values.push(row.supplier || '-');
+              values.push(row.cost || '-');
+              return values.join(',');
+            })
+            .join('\n');
+
+        // Créer un lien d'ancrage pour le téléchargement
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'inventory.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }, [ingredientsList]);
 
     useImperativeHandle(
       forwardedRef,
@@ -124,7 +185,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           },
         };
       },
-      [addingRow, loadingButton, ingredientsList]
+      [
+        addingRow,
+        loadingButton,
+        ingredientsList,
+        handleFileUpload,
+        handleExportDataClick,
+      ]
     );
 
     const reloadInventoryData = useCallback(async () => {
@@ -295,65 +362,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setEditedValues(newIngredient);
     };
 
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!selectedRestaurantUUID) return;
-
-      const file = e.target.files?.[0];
-      if (file) {
-        setLoadingButton(true);
-        inventoryService
-          .uploadCsvFile(selectedRestaurantUUID, file)
-          .then((res) => {
-            setUploadPopup(res.data);
-            setCsvFile(file);
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-          .finally(() => {
-            setLoadingButton(false);
-          });
-      }
-    };
-
     const handleUploadCsvValidate = () => {
       setUploadPopup(null);
       setCsvFile(null);
       reloadInventoryData();
     };
 
-    const handleExportDataClick = () => {
-      const rows = ingredientsList;
-      if (rows) {
-        const header =
-          'Ingredient name, Theoretical stock, Actual stock, Unit, Supplier, Cost\n';
-        const csvContent =
-          'data:text/csv;charset=utf-8,' +
-          header +
-          rows
-            .map((row) => {
-              const values = [];
-              values.push(row.name); // Convertir la date en format ISO string
-              values.push(row.theoreticalStock || '-');
-              values.push(row.quantity || '-');
-              values.push(row.unit || '-');
-              values.push(row.supplier || '-');
-              values.push(row.cost || '-');
-              return values.join(',');
-            })
-            .join('\n');
-
-        // Créer un lien d'ancrage pour le téléchargement
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement('a');
-        link.setAttribute('href', encodedUri);
-        link.setAttribute('download', 'inventory.csv');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    };
+    console.log(uploadPopup, csvFile);
 
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
       {
