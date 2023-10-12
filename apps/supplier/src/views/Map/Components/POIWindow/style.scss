@@ -12,6 +12,7 @@
   padding: 20px;
   animation-name: slide;
   animation-duration: 0.5s;
+  transition: all 0.3s;
   cursor: default;
   @keyframes slide {
     from {
@@ -24,30 +25,53 @@
     }
   }
 
-  .close {
+  .toggle {
     position: absolute;
-    right: 10px;
-    top: 10px;
-    font-size: 1rem;
-    color: var(--onPrimaryColor);
-    padding: 4px 6px;
-    border-radius: 30px;
-    background-color: var(--primaryColor);
+    right: 0;
+    top: 50%;
+    transform: translateX(10px) translateY(-50%);
+    background-color: var(--backgroundColor);
+    height: 30px;
+    width: 30px;
+    border-radius: 50px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
     cursor: pointer;
+    transition: all 0.3s;
+
+    i {
+      color: var(--primaryColor);
+      transform: rotate(-180deg);
+      transition: all 0.3s;
+    }
+  }
+  .children {
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
   }
 
-  .name {
-    font-size: 1.4rem;
-    font-weight: var(--semiBold);
-    color: var(--textPrimaryColor);
-    margin: 5px 0;
-  }
-  .location {
-    i {
-      margin-right: 7px;
+  &.reduced {
+    transform: translateY(-50%) translateX(-310px);
+    cursor: pointer;
+    .toggle {
+      i {
+        transform: rotate(0);
+      }
     }
-    color: var(--textSecondaryColor);
-    font-weight: var(--medium);
-    font-size: 0.8rem;
+  }
+  &.reduced:hover {
+    transform: translateY(-50%) translateX(-305px);
+  }
+
+  .empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
   }
 }
