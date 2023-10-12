@@ -11,6 +11,9 @@ import { ResponseMapPlaceApi } from '../../services';
 import SearchBar from './Components/SearchBar/SearchBar';
 import ZoomControl from './Components/ZoomControl/ZoomControl';
 import ControlLayer from './Components/ControlLayer/ControlLayer';
+import CustomerData from './Components/CustomerData/CustomerData';
+import HexagonData from './Components/HexagonData/HexagonData';
+import { mapUtils } from './utils';
 
 type RestaurantMap = {
   name: string;
@@ -45,16 +48,20 @@ const Map = () => {
   const [clickedRestaurant, setClickRestaurant] = useState<
     RestaurantMap | undefined
   >(undefined);
-  const [clickedPlace, setClickedPlace] = useState<
+  const [placeResearched, setResearchedPlace] = useState<
     ResponseMapPlaceApi | undefined
   >(undefined);
   const mapRef = useRef<LeafletMap | null>(null);
   const [mapIsReady, setMapIsReady] = useState(false);
   const [hexagons, setHexagons] = useState<HexagonType[]>([]);
-  const [clickedHexagons, setClickedHexagon] = useState<
-    HexagonType[] | undefined
-  >(undefined);
+  const [clickedHexagons, setClickedHexagon] = useState<HexagonType[]>([]);
   const [hexagonEnable, setHexagonEnable] = useState(true);
+  const [POIWindowState, setPOIWindowState] = useState<
+    'empty' | 'zone' | 'customer'
+  >('empty');
+  const [POIWindowIsReduce, setPOIWindowIsReduce] = useState(true);
+
+  const [debugPoints, setDebugPoints] = useState<LatLngExpression[]>([]);
 
   useEffect(() => {
     if (!mapRef.current || !mapIsReady) return;
@@ -63,11 +70,31 @@ const Map = () => {
     const getMapCornersCoordinates = () => {
       const bounds = mapRef.current?.getBounds();
 
+      const corners = {
+        northEast: bounds!.getNorthEast(),
+        southWest: bounds!.getSouthWest(),
+      };
+
+      const southWestCorner = mapUtils.getGridCornerPosition(
+        corners.southWest,
+        'southWest'
+      );
+
+      const northEastCorner = mapUtils.getGridCornerPosition(
+        corners.northEast,
+        'northEast'
+      );
+
+      setDebugPoints([
+        [southWestCorner.lat, southWestCorner.lng],
+        [northEastCorner.lat, northEastCorner.lng],
+      ]);
+
       const bbox: BBox2d = [
-        bounds!.getSouthWest().lng,
-        bounds!.getSouthWest().lat,
-        bounds!.getNorthEast().lng,
-        bounds!.getNorthEast().lat,
+        southWestCorner.lng,
+        southWestCorner.lat,
+        northEastCorner.lng,
+        northEastCorner.lat,
       ]; // [minX, minY, maxX, maxY]
 
       const hexagonGrid = hexGrid(bbox, 500, { units: 'meters' });
@@ -107,14 +134,12 @@ const Map = () => {
 
   const handleMarkerClicked = (index: number) => {
     setClickRestaurant(restaurantLocations[index]);
-  };
-
-  const handleOnWindowClose = () => {
-    setClickRestaurant(undefined);
+    setPOIWindowState('customer');
+    setPOIWindowIsReduce(false);
   };
 
   const handleClickedPlaceChange = (place: ResponseMapPlaceApi) => {
-    setClickedPlace(place);
+    setResearchedPlace(place);
     mapRef.current?.setView([place.location.lat, place.location.lng], 14);
   };
 
@@ -130,6 +155,22 @@ const Map = () => {
       newList.push(hexagon);
     }
     setClickedHexagon(newList);
+    if (clickedHexagons.length === 0 && newList.length !== 0) {
+      // means that's the first hexagons clicked
+      setPOIWindowIsReduce(false);
+    }
+    if (newList.length === 0) {
+      setPOIWindowState('empty');
+      setPOIWindowIsReduce(true);
+    } else {
+      setPOIWindowState('zone');
+    }
+  };
+
+  const handleToogleHexagonEnable = () => {
+    setHexagonEnable((state) => !state);
+    setClickedHexagon([]);
+    setPOIWindowState('empty');
   };
 
   return (
@@ -141,8 +182,8 @@ const Map = () => {
           setMapIsReady(true);
         }}
         center={
-          clickedPlace !== undefined
-            ? [clickedPlace.location.lat, clickedPlace.location.lng]
+          placeResearched !== undefined
+            ? [placeResearched.location.lat, placeResearched.location.lng]
             : [52.370966, 4.898553]
         }
         zoom={14}
@@ -170,6 +211,9 @@ const Map = () => {
             </Popup>
           </Marker>
         ))}
+        {debugPoints.map((point, i) => (
+          <Marker key={i} position={point} />
+        ))}
         <ZoomControl />
         {hexagonEnable &&
           hexagons.map((hexagon, i) => (
@@ -183,10 +227,20 @@ const Map = () => {
           ))}
         <ControlLayer
           hexagonEnable={hexagonEnable}
-          onToogleHexagon={() => setHexagonEnable((state) => !state)}
+          onToogleHexagon={handleToogleHexagonEnable}
         />
       </MapContainer>
-      <POIWindow onClose={handleOnWindowClose} restaurant={clickedRestaurant} />
+      <POIWindow
+        isEmpty={POIWindowState === 'empty'}
+        isReduce={POIWindowIsReduce}
+        toggle={() => setPOIWindowIsReduce((state) => !state)}>
+        {POIWindowState === 'customer' && (
+          <CustomerData restaurant={clickedRestaurant} />
+        )}
+        {POIWindowState === 'zone' && (
+          <HexagonData hexagonList={clickedHexagons} />
+        )}
+      </POIWindow>
       <SearchBar onSuggestedPlaceClick={handleClickedPlaceChange} />
     </div>
   );
