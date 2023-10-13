@@ -5,7 +5,9 @@ import classNames from 'classnames';
 
 type Props = {
   hexagonEnable: boolean;
-  onToogleHexagon: () => void;
+  toggleHexagon: () => void;
+  showRestaurants: boolean;
+  toggleShowRestaurants: () => void;
 };
 
 function ControlLayer(props: Props) {
@@ -17,13 +19,23 @@ function ControlLayer(props: Props) {
         toggle={() => setIsOpen(!isOpen)}
         className="map-burger"
       />
-      <div className={classNames('menu', isOpen && 'open')}>
+      <div
+        className={classNames('menu', isOpen && 'open')}
+        onClick={(e) => e.stopPropagation()}>
         <div className="options">
           <div className="option">
             <span>Hexagons</span>
             <Switch
               isActive={props.hexagonEnable}
-              toggle={props.onToogleHexagon}
+              toggle={props.toggleHexagon}
+              width={36}
+            />
+          </div>
+          <div className="option">
+            <span>Restaurants</span>
+            <Switch
+              isActive={props.showRestaurants}
+              toggle={props.toggleShowRestaurants}
               width={36}
             />
           </div>

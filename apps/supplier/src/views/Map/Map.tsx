@@ -56,6 +56,7 @@ const Map = () => {
   const [hexagons, setHexagons] = useState<HexagonType[]>([]);
   const [clickedHexagons, setClickedHexagon] = useState<HexagonType[]>([]);
   const [hexagonEnable, setHexagonEnable] = useState(true);
+  const [showRestaurants, setShowRestaurants] = useState(true);
   const [POIWindowState, setPOIWindowState] = useState<
     'empty' | 'zone' | 'customer'
   >('empty');
@@ -167,10 +168,14 @@ const Map = () => {
     }
   };
 
-  const handleToogleHexagonEnable = () => {
+  const handleToggleHexagonEnable = () => {
     setHexagonEnable((state) => !state);
     setClickedHexagon([]);
     setPOIWindowState('empty');
+  };
+
+  const handleToggleShowRestaurants = () => {
+    setShowRestaurants((state) => !state);
   };
 
   return (
@@ -197,20 +202,21 @@ const Map = () => {
           url="https://api.mapbox.com/styles/v1/peckishmap/clmoz2ujr01zr01qufplwc2pl/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoicGVja2lzaG1hcCIsImEiOiJjbG1veXhheXYwMTJrMnNuMnY1bDlldWQxIn0.U8tKZ1H0NJyM0BQCz9zS8w"
           maxZoom={19}
         />
-        {restaurantLocations.map((restaurant, i) => (
-          <Marker
-            key={i}
-            position={[restaurant.pos.lat, restaurant.pos.lng]}
-            eventHandlers={{
-              click: () => handleMarkerClicked(i),
-              mouseover: (event) => event.target.openPopup(),
-              mouseout: (event) => event.target.closePopup(),
-            }}>
-            <Popup className="popup-marker">
-              <span className="popup-marker-text">{restaurant.name}</span>
-            </Popup>
-          </Marker>
-        ))}
+        {showRestaurants &&
+          restaurantLocations.map((restaurant, i) => (
+            <Marker
+              key={i}
+              position={[restaurant.pos.lat, restaurant.pos.lng]}
+              eventHandlers={{
+                click: () => handleMarkerClicked(i),
+                mouseover: (event) => event.target.openPopup(),
+                mouseout: (event) => event.target.closePopup(),
+              }}>
+              <Popup className="popup-marker">
+                <span className="popup-marker-text">{restaurant.name}</span>
+              </Popup>
+            </Marker>
+          ))}
         {debugPoints.map((point, i) => (
           <Marker key={i} position={point} />
         ))}
@@ -227,7 +233,9 @@ const Map = () => {
           ))}
         <ControlLayer
           hexagonEnable={hexagonEnable}
-          onToogleHexagon={handleToogleHexagonEnable}
+          toggleHexagon={handleToggleHexagonEnable}
+          showRestaurants={showRestaurants}
+          toggleShowRestaurants={handleToggleShowRestaurants}
         />
       </MapContainer>
       <POIWindow
