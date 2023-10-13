@@ -31,6 +31,11 @@ const SearchBar = (props: Props) => {
       .catch((err) => {});
   };
 
+  const handleOnSuggestedPlaceClick = (place: ResponseMapPlaceApi) => {
+    setResearchPlace(place.name);
+    props.onSuggestedPlaceClick(place);
+  };
+
   return (
     <div className="search-bar">
       <i className="fa-solid fa-location-dot location-icon"></i>
@@ -43,7 +48,7 @@ const SearchBar = (props: Props) => {
       <div className="suggestion-dropdown">
         <ul>
           {autocompletePlaces.map((place, i) => (
-            <li key={i} onClick={() => props.onSuggestedPlaceClick(place)}>
+            <li key={i} onClick={() => handleOnSuggestedPlaceClick(place)}>
               <p className="name">{place.name}</p>
               <p className="location">{place.address}</p>
             </li>
