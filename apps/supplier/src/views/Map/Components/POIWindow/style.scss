@@ -64,7 +64,25 @@
     }
   }
   &.reduced:hover {
+    @keyframes openMe {
+      0% {
+        transform: translateX(-4px);
+      }
+      30% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-4px);
+      }
+    }
     transform: translateY(-50%) translateX(-305px);
+    .toggle {
+      i {
+        animation-name: openMe;
+        animation-duration: 1.2s;
+        animation-iteration-count: infinite;
+      }
+    }
   }
 
   .empty {
