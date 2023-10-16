@@ -5,7 +5,6 @@ import {
   Sidebar,
   SidebarItem,
   Navbar,
-  Lottie,
   SidebarSeparator,
   Select,
 } from 'shared-ui';
