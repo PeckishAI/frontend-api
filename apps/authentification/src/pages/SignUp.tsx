@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { GoogleButton } from '../components/GoogleButton';
 import { AppleButton } from '../components/AppleButton';
 
@@ -152,7 +152,27 @@ export const SignUp = () => {
           </div>
 
           <Checkbox
-            label={t('common:sign-up.tos-checkbox')}
+            label={
+              <Trans
+                i18nKey="sign-up.tos-checkbox"
+                components={{
+                  tosLink: (
+                    <a
+                      href="https://iampeckish.com/terms-conditions"
+                      target="_blank"
+                      rel="noreferrer"
+                    />
+                  ),
+                  privacyLink: (
+                    <a
+                      href="https://iampeckish.com/privacy-policy"
+                      target="_blank"
+                      rel="noreferrer"
+                    />
+                  ),
+                }}
+              />
+            }
             {...register('acceptTos')}
             error={errors.acceptTos?.message}
           />

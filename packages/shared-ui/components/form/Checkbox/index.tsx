@@ -5,9 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { ErrorMessage } from '../common';
 import classNames from 'classnames';
 
-type Props = Omit<React.HTMLProps<HTMLInputElement>, 'checked' | 'onCheck'> & {
+type Props = Omit<
+  React.HTMLProps<HTMLInputElement>,
+  'checked' | 'onCheck' | 'label'
+> & {
   checked?: boolean;
-  label?: string;
+  label?: string | React.ReactNode;
   error?: string;
   onCheck?: (value: boolean) => void;
 };
