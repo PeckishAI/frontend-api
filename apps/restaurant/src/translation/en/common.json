@@ -61,6 +61,8 @@
 
   "inventory.addIngredientBtn": "Add an ingredient",
   "inventory.addSupplierBtn": "Add a supplier",
+  "inventory.uploadCSV.popup.title": "File preview",
+  "inventory.uploadCSV.popup.subtitle": "We have extracted the following column names from your file. Please check if the mapping is correct.",
 
   "error.trigger": "An error has occurred",
   "error.tryLater": "Please try later",
@@ -79,7 +81,11 @@
   "field.error.quantityNegative": "Quantity must be greater than or equal to 0.",
 
   "onboarding.msg": "Select a software that you want to integrate to Peckish !",
-  "onboarding.search": "Search software",
+  "onboarding.modal.title": "New integration",
+  "onboarding.modal.description.oauth": "Integrate with {{name}}",
+  "onboarding.modal.description.oauth.message": "Click on the button below to connect Peckish with {{name}}",
+  "onboarding.modal.description.login": "Please input your credentials for {{name}}",
+  "onboarding.searchPlaceholder": "Search software",
   "onboarding.recoverData": "Data recovery in progress...",
   "onboarding.wait": "This may take some time.",
   "onboarding.success": "Successful data recovery !",

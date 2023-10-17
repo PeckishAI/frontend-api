@@ -13,8 +13,13 @@ export type POS = {
   display_name: string;
   button_display: string;
   auth_type: string;
-  oauth_url: string;
+  url: string;
   logo_uri: string;
+  data?: {
+    client_id: string;
+    oauth_url: string;
+    scope: string;
+  };
 };
 
 export type Integration = {
@@ -44,12 +49,13 @@ const Integrations = () => {
       try {
         setLoadingdata(true);
         const list = await onboardingService.getPOSList();
-        setLoadingdata(false);
         console.log(list.data);
 
         setPOSList(list.data);
       } catch (error) {
         console.error('Error fetching pos list:', error);
+      } finally {
+        setLoadingdata(false);
       }
     })();
   }, []);
@@ -82,7 +88,7 @@ const Integrations = () => {
       <p id="welcome">{t('onboarding.msg')}</p>
       <Input
         type="text"
-        placeholder={t('onboarding.search')}
+        placeholder={t('onboarding.searchPlaceholder')}
         value={searchTerm}
         onChange={(value) => setSearchTerm(value)}
         className="onboarding-search"
@@ -114,18 +120,18 @@ const Integrations = () => {
         {filteredSoftwareList.map((pos) => {
           return (
             <IntegrationCard
-              key={pos.display_name}
+              key={pos.name}
               name={pos.display_name}
               image={pos.logo_uri}
               button_display={pos.button_display}
               onClick={() => {
-                if (pos.auth_type === 'modal') {
-                  // Show login modal
-                  setLoginModalVisible(true);
-                  setSelectedPOS(pos);
-                } else {
-                  // Redirect to oauth_url
-                }
+                setLoginModalVisible(true);
+                setSelectedPOS(pos);
+                // if (pos.auth_type === 'modal') {
+                //   // Show login modal
+                // } else {
+                //   // Redirect to oauth_url
+                // }
               }}
             />
           );

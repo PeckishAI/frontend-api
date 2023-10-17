@@ -8,8 +8,13 @@ import Layout from '../components/Layout';
 import { ProtectedRoute } from './ProtectedRoute';
 import Integrations from '../views/Integrations/Integrations';
 import { OrderValidation } from '../views/OrderValidation/OrderValidation';
+import OAuthPopup from '../utils/oauth/OAuth2Popup';
 
 export const router = createBrowserRouter([
+  {
+    path: '/oauth/callback',
+    element: <OAuthPopup />,
+  },
   {
     path: '/',
     element: <ProtectedRoute />,
@@ -46,11 +51,10 @@ export const router = createBrowserRouter([
             path: '/integrations',
             element: <Integrations />,
           },
-          // REMOVED FOR PROD
-          // {
-          //   path: '/orders/validation',
-          //   element: <OrderValidation />,
-          // },
+          {
+            path: '/orders/validation',
+            element: <OrderValidation />,
+          },
           {
             path: '*',
             element: <Navigate to={'/'} />,
