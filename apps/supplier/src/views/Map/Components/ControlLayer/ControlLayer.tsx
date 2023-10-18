@@ -13,15 +13,13 @@ type Props = {
 function ControlLayer(props: Props) {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="control-layer" onClick={(e) => e.stopPropagation()}>
+    <div className="control-layer">
       <BurgerMenu
         isOpen={isOpen}
         toggle={() => setIsOpen(!isOpen)}
         className="map-burger"
       />
-      <div
-        className={classNames('menu', isOpen && 'open')}
-        onClick={(e) => e.stopPropagation()}>
+      <div className={classNames('menu', isOpen && 'open')}>
         <div className="options">
           <div className="option">
             <span>Hexagons</span>

@@ -231,13 +231,14 @@ const Map = () => {
               }
             />
           ))}
-        <ControlLayer
-          hexagonEnable={hexagonEnable}
-          toggleHexagon={handleToggleHexagonEnable}
-          showRestaurants={showRestaurants}
-          toggleShowRestaurants={handleToggleShowRestaurants}
-        />
       </MapContainer>
+      <SearchBar onSuggestedPlaceClick={handleClickedPlaceChange} />
+      <ControlLayer
+        hexagonEnable={hexagonEnable}
+        toggleHexagon={handleToggleHexagonEnable}
+        showRestaurants={showRestaurants}
+        toggleShowRestaurants={handleToggleShowRestaurants}
+      />
       <POIWindow
         isEmpty={POIWindowState === 'empty'}
         isReduce={POIWindowIsReduce}
@@ -249,7 +250,6 @@ const Map = () => {
           <HexagonData hexagonList={clickedHexagons} />
         )}
       </POIWindow>
-      <SearchBar onSuggestedPlaceClick={handleClickedPlaceChange} />
     </div>
   );
 };
