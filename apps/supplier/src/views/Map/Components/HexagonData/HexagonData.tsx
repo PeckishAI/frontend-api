@@ -1,8 +1,8 @@
-import './style.scss';
 import { HexagonType } from '../Hexagon/Hexagon';
 import { Chart } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { useState } from 'react';
+import './style.scss';
 
 type Props = {
   hexagonList: HexagonType[];
