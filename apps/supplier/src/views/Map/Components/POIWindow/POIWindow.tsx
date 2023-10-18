@@ -15,7 +15,8 @@ const POIWindow = (props: Props) => {
       </div>
       {props.isEmpty ? (
         <div className="empty">
-          <span style={{ color: 'var(--primaryColor)' }}>
+          <span
+            style={{ color: 'var(--primaryColor)', fontWeight: 'var(--bold)' }}>
             Nothing to inspect.
           </span>
           <p style={{ textAlign: 'center', marginTop: '10px' }}>
