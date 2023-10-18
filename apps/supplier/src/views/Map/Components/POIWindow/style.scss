@@ -1,6 +1,8 @@
 .poi-window {
+  --width: 350px;
+
   height: 500px;
-  width: 350px;
+  width: var(--width);
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -10,20 +12,8 @@
   box-shadow: 2px 0px 15px 0px rgba(0, 0, 0, 0.234);
   border-radius: 10px;
   padding: 15px;
-  animation-name: slide;
-  animation-duration: 0.5s;
   transition: all 0.3s;
   cursor: default;
-  @keyframes slide {
-    from {
-      left: -100px;
-      opacity: 0;
-    }
-    to {
-      left: 20px;
-      opacity: 1;
-    }
-  }
 
   .toggle {
     position: absolute;
@@ -55,7 +45,7 @@
   }
 
   &.reduced {
-    transform: translateY(-50%) translateX(-310px);
+    transform: translateY(-50%) translateX(calc(-1 * calc(var(--width) + 10px)));
     cursor: pointer;
     .toggle {
       i {
@@ -75,7 +65,7 @@
         transform: translateX(-4px);
       }
     }
-    transform: translateY(-50%) translateX(-305px);
+    transform: translateY(-50%) translateX(calc(-1 * calc(var(--width) + 5px)));
     .toggle {
       i {
         animation-name: openMe;
