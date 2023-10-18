@@ -368,8 +368,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       reloadInventoryData();
     };
 
-    console.log(uploadPopup, csvFile);
-
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
       {
         key: 'name',

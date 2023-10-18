@@ -18,7 +18,7 @@ const SearchBar = (props: Props) => {
     mapService
       .getAutocompletePlaces(value)
       .then((res) => {
-        let places: ResponseMapPlaceApi[] = [];
+        const places: ResponseMapPlaceApi[] = [];
         res.data.results.forEach((element) => {
           places.push({
             name: element.name,
@@ -29,6 +29,11 @@ const SearchBar = (props: Props) => {
         setAutocompletePLaces(places);
       })
       .catch((err) => {});
+  };
+
+  const handleOnSuggestedPlaceClick = (place: ResponseMapPlaceApi) => {
+    setResearchPlace(place.name);
+    props.onSuggestedPlaceClick(place);
   };
 
   return (
@@ -43,7 +48,7 @@ const SearchBar = (props: Props) => {
       <div className="suggestion-dropdown">
         <ul>
           {autocompletePlaces.map((place, i) => (
-            <li key={i} onClick={() => props.onSuggestedPlaceClick(place)}>
+            <li key={i} onClick={() => handleOnSuggestedPlaceClick(place)}>
               <p className="name">{place.name}</p>
               <p className="location">{place.address}</p>
             </li>

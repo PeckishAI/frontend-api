@@ -1,0 +1,78 @@
+.hexagon-data {
+  .name {
+    font-size: 1.4rem;
+    font-weight: var(--semiBold);
+    color: var(--textPrimaryColor);
+    margin: 5px 0;
+  }
+
+  .note {
+    font-size: 0.8rem;
+    font-weight: var(--regular);
+    color: var(--textPrimaryColor);
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    i {
+      margin: 0 5px;
+      color: var(--primaryColor);
+    }
+  }
+
+  .hex-tabs {
+    background-color: var(--secondaryColor);
+    border-radius: 10px;
+    padding: 4px;
+    height: 30px;
+    margin-top: 20px;
+    .wrapper {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      .selector {
+        position: absolute;
+        background-color: var(--backgroundColor);
+        width: 50%;
+        height: 100%;
+        border-radius: 8px;
+        transition: all 0.3s;
+        &.left {
+          transform: translateX(0);
+        }
+        &.right {
+          transform: translateX(100%);
+        }
+      }
+      .tab {
+        font-size: 0.8rem;
+        font-weight: var(--medium);
+        width: 50%;
+        text-align: center;
+        z-index: 1;
+        cursor: pointer;
+      }
+    }
+  }
+  .charts-container {
+    background-color: var(--secondaryColor);
+    border-radius: 5px;
+    margin-top: 8px;
+    .chart {
+      // margin-top: 20px;
+      margin-bottom: 12px;
+      padding: 5px;
+      // background-color: var(--secondaryColor);
+      border-radius: 10px;
+      .chart-title {
+        font-size: 0.7rem;
+        font-weight: var(--bold);
+        color: var(--textPrimaryColor);
+        text-transform: uppercase;
+        display: block;
+        text-align: center;
+      }
+    }
+  }
+}
