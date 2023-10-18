@@ -1,5 +1,5 @@
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import { LatLngExpression, Map as LeafletMap } from 'leaflet';
+import { LatLngExpression, Map as LeafletMap, Icon } from 'leaflet';
 import hexGrid from '@turf/hex-grid';
 import { BBox2d } from '@turf/helpers/dist/js/lib/geojson';
 import 'leaflet/dist/leaflet.css'; // Importez les styles Leaflet
@@ -14,6 +14,16 @@ import ControlLayer from './Components/ControlLayer/ControlLayer';
 import CustomerData from './Components/CustomerData/CustomerData';
 import HexagonData from './Components/HexagonData/HexagonData';
 import { mapUtils } from './utils';
+
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
+
+Icon.Default.mergeOptions({
+  iconRetinaUrl: iconRetina,
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+});
 
 type RestaurantMap = {
   name: string;
