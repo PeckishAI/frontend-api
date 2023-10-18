@@ -12,7 +12,6 @@
   }
 
   .menu {
-    width: 130px;
     background-color: var(--backgroundColor);
     border-radius: 5px;
     padding-top: 30px;
@@ -27,6 +26,11 @@
         display: flex;
         justify-content: space-between;
         margin: 10px 0;
+        span {
+          font-size: 0.8rem;
+          margin-right: 10px;
+          max-width: 100px;
+        }
       }
       .hexagon-size {
         width: 75px;
