@@ -7,10 +7,13 @@ import {
   Navbar,
   SidebarSeparator,
   Select,
+  IconButton,
 } from 'shared-ui';
 import { useRestaurantStore } from '../store/useRestaurantStore';
 import { useUserStore } from '@peckishai/user-management';
 import { restaurantService } from '../services';
+import { Tooltip } from 'react-tooltip';
+import { NotificationCenter } from './NotificationCenter/NotificationCenter';
 
 const Layout = () => {
   const { t } = useTranslation();
@@ -147,6 +150,25 @@ const Layout = () => {
           isRefreshing={isRefreshing}
           onRefresh={handleRefreshClick}
           onLogout={handleLogout}
+          options={
+            <>
+              <NotificationCenter />
+              <IconButton
+                icon={<i className="fa-solid fa-rotate"></i>}
+                onClick={handleRefreshClick}
+                tooltipMsg={t('refresh')}
+                tooltipId="nav-tooltip"
+                loading={isRefreshing}
+              />
+              <IconButton
+                icon={<i className="fa-solid fa-arrow-right-from-bracket"></i>}
+                onClick={handleLogout}
+                tooltipMsg={t('logout')}
+                tooltipId="nav-tooltip"
+              />
+              <Tooltip className="tooltip" id="nav-tooltip" />
+            </>
+          }
         />
         <div className="content">
           <Outlet />
