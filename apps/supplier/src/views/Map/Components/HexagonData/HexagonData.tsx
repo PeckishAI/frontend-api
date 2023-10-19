@@ -142,15 +142,6 @@ const HexagonData = (props: Props) => {
                   ],
                 }}
                 options={{
-                  scales: {
-                    y: {
-                      ticks: {
-                        callback: (value) => {
-                          return `${value} %`;
-                        },
-                      },
-                    },
-                  },
                   plugins: { legend: { display: false } },
                 }}
               />
