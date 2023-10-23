@@ -1,7 +1,9 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, DialogBox } from 'shared-ui';
-import { LinkedSupplier } from '../../../services/supplier.service';
+import supplierService, {
+  LinkedSupplier,
+} from '../../../services/supplier.service';
 import styles from './SupplierTab.module.scss';
 import { SupplierCard, SupplierCardSkeleton } from './components/SupplierCard';
 import { toast } from 'react-hot-toast';
@@ -9,6 +11,7 @@ import { GLOBAL_CONFIG } from 'shared-config';
 import Fuse from 'fuse.js';
 import AddSupplierPopup from './components/AddSupplierPopup';
 import Skeleton from 'react-loading-skeleton';
+import { useRestaurantStore } from '../../../store/useRestaurantStore';
 
 let SUPPLIERS: LinkedSupplier[] = [
   {
@@ -44,12 +47,19 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
   (props, forwardedRef) => {
     const { t } = useTranslation('common');
 
+    const [suppliers, setSuppliers] = useState<LinkedSupplier[]>([]);
+
     const [isLoading, setLoading] = useState(true);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [deletingSupplierUUID, setDeletingSupplierUUID] = useState<
       string | null
     >(null);
+
     const [showAddPopup, setShowAddPopup] = useState(false);
+
+    const restaurantUUID = useRestaurantStore(
+      (state) => state.selectedRestaurantUUID
+    );
 
     // Render options for the tab bar
     useImperativeHandle(
@@ -71,10 +81,17 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     );
 
     useEffect(() => {
+      if (!restaurantUUID) return;
+
+      supplierService.getRestaurantSuppliers(restaurantUUID).then((data) => {
+        setSuppliers(data);
+        // SUPPLIERS = res;
+      });
+
       setTimeout(() => {
         setLoading(false);
       }, 1000);
-    }, []);
+    }, [restaurantUUID]);
 
     const handleCopyInvitationLink = (invitationKey?: string) => {
       if (!invitationKey) {
@@ -93,9 +110,9 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
       toast.promise(
         new Promise((resolve) =>
           setTimeout(() => {
-            SUPPLIERS = SUPPLIERS.filter(
-              (s) => s.uuid !== deletingSupplierUUID
-            );
+            // suppliers = suppliers.filter(
+            //   (s) => s.uuid !== deletingSupplierUUID
+            // );
             setDeletingSupplierUUID(null);
             resolve(true);
           }, 1000)
@@ -108,17 +125,17 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
       );
     };
 
-    const suppliers = props.searchValue
-      ? new Fuse(SUPPLIERS, {
+    const suppliersFiltered = props.searchValue
+      ? new Fuse(suppliers, {
           keys: ['name', 'email', 'phone'],
           distance: 10,
         })
           .search(props.searchValue)
           .map((r) => r.item)
-      : SUPPLIERS;
+      : suppliers;
 
-    const linkedSuppliers = suppliers.filter((s) => s.linked);
-    const pendingSuppliers = suppliers.filter((s) => !s.linked);
+    const linkedSuppliers = suppliersFiltered.filter((s) => s.linked);
+    const pendingSuppliers = suppliersFiltered.filter((s) => !s.linked);
 
     if (isLoading) {
       return (
@@ -184,7 +201,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           type="warning"
           msg={t('suppliers.removeSupplierPopup.title')}
           subMsg={t('suppliers.removeSupplierPopup.subtitle', {
-            name: SUPPLIERS.find((s) => s.uuid === deletingSupplierUUID)?.name,
+            name: suppliers.find((s) => s.uuid === deletingSupplierUUID)?.name,
           })}
           revele={showDeleteDialog}
           onRequestClose={() => {
@@ -199,7 +216,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           onRequestClose={() => setShowAddPopup(false)}
           onSupplierAdded={(supplier) => {
             // TEMPORARY (until we have the backend)
-            SUPPLIERS.push({
+            suppliers.push({
               ...supplier,
               uuid: Math.random().toString(),
               linked: false,

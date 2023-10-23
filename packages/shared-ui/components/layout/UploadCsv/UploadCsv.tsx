@@ -219,6 +219,8 @@ const UploadCsv = (props: Props) => {
               <span>{t('ingredient')}</span>
               <span>{t('quantity')}</span>
               <span>{t('unit')}</span>
+              <span>{t('supplier')}</span>
+              <span>{t('cost')}</span>
             </div>
             {previewData &&
               previewData.map((data: Record<string, string>, index) => (
@@ -230,6 +232,8 @@ const UploadCsv = (props: Props) => {
                     {data[headerValues.quantity]}
                   </span>
                   <span key={`unit-${index}`}>{data[headerValues.unit]}</span>
+                  <span key={`supplier-${index}`}>{data[headerValues.supplier]}</span>
+                  <span key={`cost-${index}`}>{data[headerValues.cost]}</span>
                 </div>
               ))}
           </div>

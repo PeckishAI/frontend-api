@@ -1,5 +1,5 @@
 # build environment
-FROM node:current-alpine as react-build
+FROM node:20-alpine as react-build
 WORKDIR /build
 COPY . .
 

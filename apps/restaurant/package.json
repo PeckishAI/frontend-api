@@ -12,11 +12,13 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
+    "@peckishai/user-management": "*",
     "@szhsin/react-menu": "^4.0.3",
     "axios": "^1.4.0",
     "chart.js": "^4.3.3",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.9",
+    "framer-motion": "^10.16.4",
     "fuse.js": "^6.6.2",
     "i18next": "^23.4.4",
     "i18next-browser-languagedetector": "^7.1.0",
@@ -35,7 +37,6 @@
     "shared-config": "*",
     "shared-ui": "*",
     "slick-carousel": "^1.8.1",
-    "@peckishai/user-management": "*",
     "zod": "^3.22.2",
     "zustand": "^4.4.1"
   },

@@ -33,6 +33,7 @@
   "import": "Import",
   "export": "Export",
   "refresh": "Refresh",
+  "notifications": "Notifications",
   "logout": "Log out",
   "preview": "Preview",
   "next": "Next",
@@ -41,6 +42,7 @@
   "date": "Date",
   "remove": "Remove",
   "email": "Email",
+  "phone": "Phone",
 
   "orders.supplier": "Supplier",
   "orders.orderDate": "Order date",
@@ -126,5 +128,16 @@
     "title": "Select an ingredient",
     "subtitle": "The selected ingredient will be added in the good supplier order",
     "selectPlaceholder": "Select an ingredient"
-  }
+  },
+
+  "notification.import_inventory.title": "Add your ingredients",
+  "notification.import_inventory.description": "Import your ingredients to finish the onboarding process",
+  "notification.select_products.title": "Select products (1/3)",
+  "notification.select_products.description": "Inform Peckish about the products you use in your restaurant",
+  "notification.create_preparations.title": "Create preparations (2/3)",
+  "notification.create_preparations.description": "Create preparations that you use in your recipes",
+  "notification.create_recipes.title": "Create recipes (3/3)",
+  "notification.create_recipes.description": "Complete your recipes to have a complete tracking of your inventory",
+
+  "stepper.step": "Step {{step}}"
 }

@@ -12,6 +12,7 @@
   --cardColor: #272727;
   --navbarColor: #f6f1f1;
   --errorColor: #fc4343;
+  --successColor: #0bb86e;
 
   --textPrimaryColor: #242424;
   --textSecondaryColor: #7f7f7f;
@@ -82,4 +83,10 @@ body {
 .text-error {
   font-size: 0.8rem;
   color: red;
+}
+
+@media screen and (max-width: 800px) {
+  .main {
+    margin: 0;
+  }
 }

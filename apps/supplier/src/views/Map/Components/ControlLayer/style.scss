@@ -1,0 +1,44 @@
+.control-layer {
+  position: absolute;
+  z-index: 999;
+  top: 15px;
+  right: 15px;
+
+  .map-burger {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--backgroundColor);
+  }
+
+  .menu {
+    background-color: var(--backgroundColor);
+    border-radius: 5px;
+    padding-top: 30px;
+    max-height: 0;
+    max-width: 0;
+    overflow: hidden;
+    transition: all 0.3s;
+
+    .options {
+      padding: 16px 8px;
+      .option {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 0;
+        span {
+          font-size: 0.8rem;
+          margin-right: 10px;
+          max-width: 100px;
+        }
+      }
+      .hexagon-size {
+        width: 75px;
+      }
+    }
+    &.open {
+      max-height: 200px;
+      max-width: 200px;
+    }
+  }
+}

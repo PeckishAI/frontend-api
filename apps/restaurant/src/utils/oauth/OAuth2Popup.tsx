@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { OAUTH_RESPONSE, OAUTH_STATE_KEY } from './constants';
-import { Loading } from 'shared-ui';
+import { LoadingAbsolute } from 'shared-ui';
 
 const checkState = (receivedState: string) => {
   const state = sessionStorage.getItem(OAUTH_STATE_KEY);
@@ -44,7 +44,7 @@ const OAuthPopup = () => {
     }
   }, []);
 
-  return <Loading />;
+  return <LoadingAbsolute />;
 };
 
 export default OAuthPopup;

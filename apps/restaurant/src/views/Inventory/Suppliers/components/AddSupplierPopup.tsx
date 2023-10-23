@@ -12,6 +12,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
+import { Supplier } from '../../../../services';
+import supplierService from '../../../../services/supplier.service';
+import { useRestaurantStore } from '../../../../store/useRestaurantStore';
 
 const SupplierSchema = z.object({
   supplierSelect: z.string(),
@@ -20,8 +23,11 @@ const SupplierSchema = z.object({
 
 const AddSupplierSchema = z.object({
   name: z.string().min(1, { message: 'required' }),
-  email: z.string().min(1, { message: 'required' }).email('valid-email'),
-  phone: z.string().min(1, { message: 'required' }),
+  email: z.string().email('valid-email').optional().or(z.literal('')),
+  phone: z
+    .string()
+    .optional()
+    .or(z.null().transform(() => undefined)),
   automaticInvitation: z.boolean(),
 });
 
@@ -53,14 +59,19 @@ type Props = {
   onRequestClose: () => void;
   onSupplierAdded: (supplier: {
     name: string;
-    email: string;
-    phone: string;
+    email?: string;
+    phone?: string;
   }) => void;
 };
 
 const AddSupplierPopup = (props: Props) => {
   const { t } = useTranslation('common');
   const [addingMode, setAddingMode] = useState(false);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+
+  const restaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
 
   const {
     register,
@@ -77,6 +88,12 @@ const AddSupplierPopup = (props: Props) => {
   });
 
   useEffect(() => {
+    supplierService.getSuppliers().then((data) => {
+      setSuppliers(data);
+    });
+  }, []);
+
+  useEffect(() => {
     if (!props.isVisible) {
       reset();
       setAddingMode(false);
@@ -88,29 +105,46 @@ const AddSupplierPopup = (props: Props) => {
     setValue('name', value);
   };
 
-  const handleSubmitForm = handleSubmit((data) => {
+  const handleSubmitForm = handleSubmit(async (data) => {
     console.log('Submit', data);
-    return new Promise((resolve) => {
-      setTimeout(() => {
+    if (!restaurantUUID) return;
+
+    let uuid;
+    if (addingMode) {
+      uuid = await supplierService
+        .createSupplier({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+        })
+        .then((res) => res.supplier_uuid)
+        .catch(() => null);
+    } else {
+      uuid = data.supplierSelect;
+    }
+
+    if (!uuid) return;
+
+    return supplierService
+      .addSupplierToRestaurant(restaurantUUID, uuid)
+      .then(() => {
         props.onRequestClose();
         props.onSupplierAdded(
           addingMode
             ? data
             : {
                 name:
-                  SUPPLIERS.find((s) => s.value === data.supplierSelect)
-                    ?.label || '',
+                  suppliers.find((s) => s.uuid === data.supplierSelect)?.name ||
+                  '',
                 email:
-                  SUPPLIERS.find((s) => s.value === data.supplierSelect)
+                  suppliers.find((s) => s.uuid === data.supplierSelect)
                     ?.email || '',
                 phone:
-                  SUPPLIERS.find((s) => s.value === data.supplierSelect)
+                  suppliers.find((s) => s.uuid === data.supplierSelect)
                     ?.phone || '',
               }
         );
-        resolve(true);
-      }, 1000);
-    });
+      });
   });
 
   return (
@@ -138,9 +172,23 @@ const AddSupplierPopup = (props: Props) => {
                       name: inputValue,
                     })
                   }
-                  options={SUPPLIERS}
-                  onChange={(val) => onChange(val && val.value)}
-                  value={SUPPLIERS.filter((c) => value === c.value)}
+                  getNewOptionData={(inputValue) => {
+                    return {
+                      uuid: 'new',
+                      name: t('suppliers.addSupplier.select.createSupplier', {
+                        name: inputValue,
+                      }),
+                    };
+                  }}
+                  getOptionLabel={(option) => option.name}
+                  getOptionValue={(option) => option.uuid}
+                  options={suppliers}
+                  onChange={(val) => {
+                    console.log('okkk', val);
+
+                    onChange(val && val.uuid);
+                  }}
+                  value={suppliers.filter((c) => value === c.uuid)}
                   name={name}
                   onBlur={onBlur}
                 />
@@ -166,6 +214,7 @@ const AddSupplierPopup = (props: Props) => {
                 mode="form"
                 control={control}
                 name="phone"
+                placeholder={t('phone')}
                 error={errors.phone?.message}
               />
             </>

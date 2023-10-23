@@ -20,12 +20,15 @@ import Select from './components/form/Select/Select';
 import { LabeledInput } from './components/form/LabeledInput';
 import { Checkbox } from './components/form/Checkbox';
 import PhoneNumberInput from './components/form/PhoneNumberInput/PhoneNumberInput';
-import Loading from './components/Loading/Loading';
+import { Loading, LoadingAbsolute } from './components/Loading/Loading';
 import SidePanel from './components/SidePanel/SidePanel';
 import { CollapsibleMenu } from './components/CollapsibleMenu/CollapsibleMenu';
 import { OrderDetail } from './components/OrderDetail/OrderDetail';
+import Switch from './components/Switch/Switch';
+import BurgerMenu from './components/layout/BurgerMenu/BurgerMenu';
 import './styles/common.css';
 
+export * from './hooks/index';
 export {
   Sidebar,
   SidebarItem,
@@ -49,7 +52,10 @@ export {
   Checkbox,
   PhoneNumberInput,
   Loading,
+  LoadingAbsolute,
   SidePanel,
   CollapsibleMenu,
   OrderDetail,
+  Switch,
+  BurgerMenu,
 };

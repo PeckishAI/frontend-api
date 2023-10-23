@@ -1,45 +1,58 @@
-import { useId } from 'react';
+import { forwardRef, useId } from 'react';
 import './style.scss';
 import React from 'react';
 import { Tooltip } from 'react-tooltip';
 import Lottie from '../Lottie/Lottie';
 
-type Props = {
+type Props = Omit<React.HTMLProps<HTMLDivElement>, 'onClick' | 'className'> & {
   icon: React.ReactNode;
   tooltipMsg: string;
   tooltipId?: string;
-  onClick: () => void;
+  onClick?: () => void;
   loading?: boolean;
   className?: string;
   tooltipClassName?: string;
 };
 
-const IconButton = (props: Props) => {
-  const tooltipId = useId();
+const IconButton = forwardRef<HTMLDivElement, Props>((props, forwardedRef) => {
+  const {
+    onClick,
+    loading,
+    tooltipId,
+    tooltipMsg,
+    tooltipClassName,
+    icon,
+    ...restProps
+  } = props;
+  const tooltipIdGenerated = useId();
+
   return (
     <div
+      ref={forwardedRef}
+      {...restProps}
       className={`IconButton ${props.className ?? ''}`}
-      data-tooltip-id={props.tooltipId ?? tooltipId}
-      data-tooltip-content={props.tooltipMsg}
-      onClick={!props.loading ? props.onClick : undefined}>
+      data-tooltip-id={tooltipId ?? tooltipIdGenerated}
+      data-tooltip-content={tooltipMsg}
+      onClick={!loading ? onClick : undefined}>
       {
         <div
           style={{
-            ...(props.loading ? { opacity: 0 } : undefined),
+            ...(loading ? { opacity: 0 } : undefined),
           }}
           className="icon-wrapper">
-          {props.icon}
+          {icon}
         </div>
       }
-      {props.loading && <Lottie type="loading" width="150%" />}
-      {!props.tooltipId && (
+      {loading && <Lottie type="loading" width="150%" />}
+      {!tooltipId && (
         <Tooltip
-          className={`tooltip ${props.tooltipClassName ?? ''}`}
-          id={props.tooltipId ?? tooltipId}
+          className={`tooltip ${tooltipClassName ?? ''}`}
+          id={tooltipId ?? tooltipIdGenerated}
         />
       )}
     </div>
   );
-};
+});
+IconButton.displayName = 'IconButton';
 
 export default IconButton;

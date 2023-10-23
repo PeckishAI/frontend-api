@@ -9,6 +9,7 @@ import { ProtectedRoute } from './ProtectedRoute';
 import Integrations from '../views/Integrations/Integrations';
 import { OrderValidation } from '../views/OrderValidation/OrderValidation';
 import OAuthPopup from '../utils/oauth/OAuth2Popup';
+import { OnboardRestaurant } from '../views/Onboarding/OnboardRestaurant';
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +56,12 @@ export const router = createBrowserRouter([
             path: '/orders/validation',
             element: <OrderValidation />,
           },
+
+          {
+            path: '/onboarding/:step',
+            element: <OnboardRestaurant />,
+          },
+
           {
             path: '*',
             element: <Navigate to={'/'} />,

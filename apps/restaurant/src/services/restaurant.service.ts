@@ -19,7 +19,7 @@ type RestaurantResponse = {
 
 const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
   const res = await axiosClient.get<RestaurantResponse[]>(
-    `/restaurant/overview/${userId}`
+    `/overview/${userId}`
   );
 
   if (!res.data) {
@@ -41,7 +41,7 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
 
 const reloadPOS = async (restaurantId: string): Promise<boolean> => {
   return await axiosClient
-    .post(`/restaurant/refresh/${restaurantId}`)
+    .post(`/refresh/${restaurantId}`)
     .then(() => true)
     .catch(() => false);
 };

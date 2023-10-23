@@ -35,6 +35,7 @@
   "import": "Importer",
   "export": "Exporter",
   "refresh": "Recharger",
+  "notifications": "Notifications",
   "logout": "Déconnexion",
   "preview": "Prévisualiser",
   "next": "Suivant",
@@ -43,6 +44,7 @@
   "date": "Date",
   "remove": "Supprimer",
   "email": "Email",
+  "phone": "Téléphone",
 
   "orders.supplier": "Fournisseur",
   "orders.orderDate": "Date de commande",
@@ -128,5 +130,14 @@
     "title": "Sélectionnez un ingrédient",
     "subtitle": "L'ingrédient sélectionné sera ajouté dans la bonne commande fournisseur",
     "selectPlaceholder": "Sélectionnez un ingrédient"
-  }
+  },
+
+  "notification.import_inventory.title": "Ajoutez vos ingrédients",
+  "notification.import_inventory.description": "Importez vos ingrédients pour terminer le processus d'intégration",
+  "notification.select_products.title": "Sélectionnez les produits (1/3)",
+  "notification.select_products.description": "Informez Peckish des produits que vous utilisez dans votre restaurant",
+  "notification.create_preparations.title": "Créez des préparations (2/3)",
+  "notification.create_preparations.description": "Créez des préparations que vous utilisez dans vos recettes",
+  "notification.create_recipes.title": "Créez des recettes (3/3)",
+  "notification.create_recipes.description": "Complétez vos recettes pour avoir un suivi complet de votre inventaire"
 }

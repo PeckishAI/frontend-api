@@ -23,6 +23,7 @@ import { useRestaurantStore } from '../../../store/useRestaurantStore';
 import Table, { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { Tooltip } from 'react-tooltip';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
+import supplierService from '../../../services/supplier.service';
 
 const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -31,12 +32,6 @@ const units: DropdownOptionsDefinitionType[] = [
   { label: 'l', value: 'L' },
   { label: 'ml', value: 'ml' },
   { label: 'unit', value: 'unit' },
-];
-
-const suppliers: DropdownOptionsDefinitionType[] = [
-  { label: 'Supplier 1', value: 'supplier1' },
-  { label: 'Supplier 2', value: 'supplier2' },
-  { label: 'Supplier 3', value: 'supplier3' },
 ];
 
 export type IngredientTabRef = {
@@ -71,9 +66,27 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [csvFile, setCsvFile] = useState<File | null>(null);
     const [loadingButton, setLoadingButton] = useState(false);
 
+    const [suppliers, setSuppliers] = useState<DropdownOptionsDefinitionType[]>(
+      []
+    );
+
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
+
+    useEffect(() => {
+      if (!selectedRestaurantUUID) return;
+
+      supplierService
+        .getRestaurantSuppliers(selectedRestaurantUUID)
+        .then((res) => {
+          const suppliersList: DropdownOptionsDefinitionType[] = [];
+          res.forEach((supplier) => {
+            suppliersList.push({ label: supplier.name, value: supplier.name });
+          });
+          setSuppliers(suppliersList);
+        });
+    }, [selectedRestaurantUUID]);
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const handleFileUpload = useCallback(
@@ -367,8 +380,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setCsvFile(null);
       reloadInventoryData();
     };
-
-    console.log(uploadPopup, csvFile);
 
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
       {

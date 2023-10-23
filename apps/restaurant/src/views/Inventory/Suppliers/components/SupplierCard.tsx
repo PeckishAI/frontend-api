@@ -87,16 +87,13 @@ export const SupplierCardSkeleton = () => {
         </h3>
       </div>
       <p className={styles.cardLinkedAt}>
-        {/* {dayjs(supplier.linkedAt).calendar()} */}
         <Skeleton width={150} />
       </p>
       <div className={styles.cardContactContainer}>
         <a className={styles.cardContactText}>
-          {/* <FaPhone className={styles.cardContactIcon} /> */}
           <Skeleton width={175} />
         </a>
         <a className={styles.cardContactText}>
-          {/* <MdAlternateEmail className={styles.cardContactIcon} /> */}
           <Skeleton width={175} />
         </a>
       </div>

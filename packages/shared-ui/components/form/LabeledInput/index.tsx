@@ -17,10 +17,13 @@ type Props = React.DetailedHTMLProps<
 };
 
 export const LabeledInput = React.forwardRef<HTMLInputElement, Props>(
-  ({ icon, placeholder, value, error, lighter, suffix, ...props }, ref) => {
+  (
+    { icon, placeholder, value, error, lighter, suffix, className, ...props },
+    ref
+  ) => {
     const { t } = useTranslation('error');
     return (
-      <div className="LabeledInput">
+      <div className={classNames('LabeledInput', className)}>
         <div
           className={classNames('input-container', {
             error: error,

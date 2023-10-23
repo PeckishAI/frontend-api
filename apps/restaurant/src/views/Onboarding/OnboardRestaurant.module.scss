@@ -1,0 +1,121 @@
+// .bottomSection {
+//   position: fixed;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   margin-left: var(--sidebarWidth);
+//   background-color: var(--backgroundColor);
+//   box-shadow: var(--default-shadow);
+//   height: 60px;
+
+//   display: flex;
+//   align-items: center;
+
+// }
+
+.description {
+  margin-top: 30px;
+  font-size: 15px;
+}
+
+.searchInput {
+  margin: 20px 0;
+  max-width: 300px;
+}
+
+.recipeList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+
+  .emptyText {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 14px;
+    color: var(--textSecondaryColor);
+  }
+
+  .recipeCard {
+    position: relative;
+    flex: 1;
+    height: 40px;
+    background-color: var(--secondaryColor);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+
+    &.recipeCardSelected {
+      background-color: #dce1ff;
+      z-index: 1;
+
+      .recipeName {
+        margin: 0 25px;
+      }
+    }
+
+    .checkContainer {
+      background-color: var(--primaryColor);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      position: absolute;
+      left: 10px;
+
+      animation: appear 0.2s ease-in-out;
+
+      @keyframes appear {
+        from {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .checkIcon {
+        font-size: 8px;
+        color: white;
+      }
+    }
+
+    .recipeName {
+      user-select: none;
+      flex: 1;
+      text-align: center;
+      margin: 0 5px;
+    }
+  }
+}
+
+.buttonsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+  width: 100%;
+  padding-right: 20px;
+  margin-top: 20px;
+
+  .continueLater {
+    font-size: 14px;
+    color: var(--textSecondaryColor);
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.7;
+      // text-decoration: underline;
+    }
+  }
+}
