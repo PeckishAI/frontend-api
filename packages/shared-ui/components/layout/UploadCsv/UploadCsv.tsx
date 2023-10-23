@@ -219,6 +219,8 @@ const UploadCsv = (props: Props) => {
               <span>{t('ingredient')}</span>
               <span>{t('quantity')}</span>
               <span>{t('unit')}</span>
+              <span>{t('supplier')}</span>
+              <span>{t('cost')}</span>
             </div>
             {previewData &&
               previewData.map((data: Record<string, string>, index) => (
