@@ -156,22 +156,16 @@ const Customers = (props: Props) => {
   const [customerDetail, setCustomerDetail] = useState<
     IngredientForCustomers[]
   >([
-    {
-      id: '1',
-      name: 'Potatoes',
-      quantity: 34,
-      safetyStock: 12,
-      unit: 'kg',
-      ordered: true,
-    },
-    {
-      id: '1',
-      name: 'Onions',
-      quantity: 49,
-      safetyStock: 29,
-      unit: 'unit',
-      ordered: false,
-    },
+    { id: '1', name: 'Potatoes', quantity: 34, safetyStock: 12, unit: 'kg', ordered: true },
+  { id: '2', name: 'Carrots', quantity: 25, safetyStock: 10, unit: 'unit', ordered: false },
+  { id: '3', name: 'Apples', quantity: 50, safetyStock: 20, unit: 'kg', ordered: true },
+  { id: '4', name: 'Bananas', quantity: 40, safetyStock: 15, unit: 'unit', ordered: false },
+  { id: '5', name: 'Oranges', quantity: 30, safetyStock: 12, unit: 'kg', ordered: true },
+  { id: '6', name: 'Chicken', quantity: 15, safetyStock: 5, unit: 'kg', ordered: true },
+  { id: '7', name: 'Beef', quantity: 20, safetyStock: 8, unit: 'kg', ordered: false },
+  { id: '8', name: 'Pasta', quantity: 100, safetyStock: 40, unit: 'g', ordered: true },
+  { id: '9', name: 'Rice', quantity: 75, safetyStock: 30, unit: 'kg', ordered: false },
+  { id: '10', name: 'Salmon', quantity: 18, safetyStock: 6, unit: 'l', ordered: true },
   ]);
   const [sharingLink, setSharingLink] = useState('');
   const [loadingCustomers, setLoadingCustomers] = useState(false);
