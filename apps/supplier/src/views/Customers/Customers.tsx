@@ -1,4 +1,10 @@
-import { IconButton, Input, Loading, SidePanel, Table } from 'shared-ui';
+import {
+  IconButton,
+  Input,
+  LoadingAbsolute,
+  SidePanel,
+  Table,
+} from 'shared-ui';
 import './style.scss';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { useState, useEffect } from 'react';
@@ -211,7 +217,7 @@ const Customers = (props: Props) => {
 
       <Toaster />
       <Tooltip className="tooltip" id="customer-tooltip" />
-      {loadingCustomers && <Loading />}
+      {loadingCustomers && <LoadingAbsolute />}
     </div>
   );
 };

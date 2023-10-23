@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { User } from './types';
 import { useUserStore } from './store';
+import { toast } from 'react-hot-toast';
 
 type UserResponse = {
   client_type: 'supplier' | 'restaurant';
@@ -82,8 +83,12 @@ export const applyAxiosInterceptors = (instance: AxiosInstance) => {
         // axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
         // return Axios(error.config);
 
-        // For the moment, we just logout the user
+        // For the moment, we just logout the user directly
         useUserStore.getState().logout();
+      }
+
+      if (toast) {
+        toast.error('An error occured, please try again later');
       }
       return Promise.reject(error);
     }

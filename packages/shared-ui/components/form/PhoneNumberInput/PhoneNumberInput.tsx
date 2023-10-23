@@ -13,6 +13,7 @@ type Extend = NonNullable<unknown>;
 type PhoneNumberInputProps<FV extends FieldValues> = {
   mode?: 'input' | 'form';
   error?: string;
+  placeholder?: string;
 } & (FV extends undefined ? Props<Extend> : FormProps<Extend, FV>);
 
 const PhoneNumberInput = <FV extends FieldValues>(
