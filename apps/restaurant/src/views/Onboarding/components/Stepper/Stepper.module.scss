@@ -1,0 +1,105 @@
+.stepper {
+  display: flex;
+  position: relative;
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    flex: 1;
+
+    .stepCircle {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background-color: var(--borderColor);
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+
+      // box-sizing: content-box;
+      outline-color: white;
+      border-color: white;
+      transition:
+        outline-color 0.5s ease-in-out,
+        background-color 0.5s ease-in-out;
+
+      .checkMark {
+        color: white;
+        width: 12px;
+        // background-color: white;
+      }
+    }
+
+    .stepTextContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 15px;
+
+      .stepNumber {
+        font-size: 13px;
+        text-transform: uppercase;
+        // font-weight: 600;
+        color: var(--textSecondaryColor);
+      }
+
+      .stepTitle {
+        margin-top: 4px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--textPrimaryColor);
+      }
+    }
+
+    .connexionLineContainer {
+      top: 10px;
+      left: calc(50% + 25px);
+      right: calc(-50% + 25px);
+      position: absolute;
+
+      background-color: var(--borderColor);
+      height: 5px;
+      border-radius: 5px;
+
+      .connexionLineInner {
+        background-color: var(--primaryColor);
+
+        height: 100%;
+        width: 0%;
+        border-radius: 5px;
+        transition: all 0.5s ease-in-out;
+      }
+    }
+
+    &.stepInProgress {
+      .stepCircle {
+        transition-delay: 250ms;
+
+        border: 3px solid white;
+        outline: 2px solid var(--primaryColor);
+        background-color: var(--primaryColor);
+      }
+
+      .connexionLineInner {
+        transition-delay: 0.5s;
+        width: 50%;
+      }
+    }
+
+    &.stepFilled {
+      .stepCircle {
+        background-color: var(--successColor);
+      }
+
+      .connexionLineInner {
+        background-color: var(--successColor);
+        width: 100%;
+      }
+    }
+  }
+}
