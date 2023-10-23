@@ -93,6 +93,8 @@
   "onboarding.success": "Successful data recovery !",
   "onboarding.error": "Data recovery failed.",
 
+  "suppliers.emptyPage.title": "You don’t have any linked suppliers yet",
+  "suppliers.emptyPage.description": "You can add a supplier to be able to order products from them automatically.",
   "suppliers.acceptedInvitations": "Accepted invitations",
   "suppliers.pendingInvitations": "Pending invitations",
   "suppliers.copyLink": "Copy invitation link",
