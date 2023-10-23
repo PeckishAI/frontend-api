@@ -72,28 +72,28 @@ const Layout = () => {
     <>
       <Sidebar>
         <SidebarItem
-          name={t('orders')}
+          name={t('sidebarItem.orders')}
           icon={<i className="fa-solid fa-list-ul"></i>}
           onClick={() => {
             navigate('/orders');
           }}
         />
         <SidebarItem
-          name={t('catalog')}
+          name={t('sidebarItem.catalog')}
           icon={<i className="fa-solid fa-shop"></i>}
           onClick={() => {
             navigate('/catalog');
           }}
         />
         <SidebarItem
-          name={t('customers')}
+          name={t('sidebarItem.customers')}
           icon={<i className="fa-solid fa-share-nodes"></i>}
           onClick={() => {
             navigate('/customers');
           }}
         />
         <SidebarItem
-          name={t('map')}
+          name={t('sidebarItem.map')}
           icon={<i className="fa-solid fa-map-location-dot"></i>}
           onClick={() => {
             navigate('/map');
@@ -101,7 +101,7 @@ const Layout = () => {
         />
         <SidebarSeparator sectionName="Resources" />
         <SidebarItem
-          name={t('support')}
+          name={t('sidebarItem.support')}
           icon={<i className="fa-regular fa-handshake"></i>}
           onClick={() => {
             navigate('/support');

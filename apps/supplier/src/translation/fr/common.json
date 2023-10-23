@@ -1,9 +1,11 @@
 {
-  "orders": "Commandes",
-  "catalog": "Catalogue",
-  "customers": "Clients",
-  "map": "Carte",
-  "support": "Support",
+  "sidebarItem": {
+    "orders": "Commandes",
+    "catalog": "Catalogue",
+    "customers": "Clients",
+    "map": "Carte",
+    "support": "Support"
+  },
 
   "orderId": "#",
   "orderDate": "Date de commande",
@@ -31,11 +33,15 @@
   "next": "Suivant",
   "finish": "Terminé",
 
-  "predicted": "Prévue",
-  "onGoing": "Commandé",
-  "preparing": "En préparation",
-  "shipped": "Expédiée",
-  "viewDetail": "Voir détail",
+  "orders.supplier": "Fournisseur",
+  "orders.orderDate": "Date de commande",
+  "orders.deliveryDate": "Date de livraison",
+  "orders.status": "Statut",
+  "orders.statusStates": {
+    "pending": "En attente",
+    "delivered": "Livrée",
+    "cancelled": "Annulée"
+  },
 
   "warning.delete": "Êtes-vous sure de vouloir supprimer cela ?",
   "warning.edit": "Êtes-vous sure de vouloir modifier cela ?",

@@ -1,9 +1,11 @@
 {
-  "orders": "Orders",
-  "catalog": "Catalog",
-  "customers": "Customers",
-  "map": "Map",
-  "support": "Support",
+  "sidebarItem": {
+    "orders": "Orders",
+    "catalog": "Catalog",
+    "customers": "Customers",
+    "map": "Map",
+    "support": "Support"
+  },
 
   "orderId": "#",
   "orderDate": "Order date",
@@ -31,11 +33,15 @@
   "next": "Next",
   "finish": "Finish",
 
-  "predicted": "Predicted",
-  "onGoing": "On going",
-  "preparing": "Preparing",
-  "shipped": "Shipped",
-  "viewDetail": "View detail",
+  "orders.supplier": "Supplier",
+  "orders.orderDate": "Order date",
+  "orders.deliveryDate": "Delivery date",
+  "orders.status": "Status",
+  "orders.statusStates": {
+    "pending": "Pending",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
 
   "warning.delete": "Are you sure you want to delete it ?",
   "warning.edit": "Are you sure you want to edit it ?",
