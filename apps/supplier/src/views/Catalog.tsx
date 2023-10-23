@@ -28,12 +28,6 @@ const units: DropdownOptionsDefinitionType[] = [
   { label: 'unit', value: 'unit' },
 ];
 
-const suppliers: DropdownOptionsDefinitionType[] = [
-  { label: 'Supplier 1', value: 'supplier1' },
-  { label: 'Supplier 2', value: 'supplier2' },
-  { label: 'Supplier 3', value: 'supplier3' },
-];
-
 const ingredientsForSupplier = [
   {
     id: '1',

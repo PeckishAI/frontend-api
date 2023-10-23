@@ -12,12 +12,18 @@ type Ingredient = {
 };
 
 // Generate 5 ingredients
-const ingredientList: Ingredient[] = Array.from({ length: 10 }, (_, index) => ({
-  name: `Ingredient ${index + 1}`,
-  quantity: 1,
-  unit: 'kg',
-  price: 100,
-}));
+const ingredientList: Ingredient[] = [
+  { name: "Tomatoes", quantity: 3, unit: "kg", price: 2.99 },
+  { name: "Chicken", quantity: 600, unit: "g", price: 5.49 },
+  { name: "Onions", quantity: 30, unit: "unit", price: 1.29 },
+  { name: "Bell Peppers", quantity: 250, unit: "g", price: 2.99 },
+  { name: "Rice", quantity: 8, unit: "kg", price: 1.99 },
+  { name: "Carrots", quantity: 400, unit: "g", price: 1.49 },
+  { name: "Potatoes", quantity: 700, unit: "g", price: 2.79 },
+  { name: "Green Beans", quantity: 300, unit: "g", price: 2.49 },
+  { name: "Canned Tuna", quantity: 150, unit: "g", price: 2.29 },
+  { name: "Lentils", quantity: 250, unit: "g", price: 1.79 },
+]
 
 type Props = {
   isVisible: boolean;
