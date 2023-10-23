@@ -44,6 +44,7 @@
   "date": "Date",
   "remove": "Supprimer",
   "email": "Email",
+  "phone": "Téléphone",
 
   "orders.supplier": "Fournisseur",
   "orders.orderDate": "Date de commande",

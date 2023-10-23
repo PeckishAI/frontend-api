@@ -42,6 +42,7 @@
   "date": "Date",
   "remove": "Remove",
   "email": "Email",
+  "phone": "Phone",
 
   "orders.supplier": "Supplier",
   "orders.orderDate": "Order date",
@@ -136,5 +137,7 @@
   "notification.create_preparations.title": "Create preparations (2/3)",
   "notification.create_preparations.description": "Create preparations that you use in your recipes",
   "notification.create_recipes.title": "Create recipes (3/3)",
-  "notification.create_recipes.description": "Complete your recipes to have a complete tracking of your inventory"
+  "notification.create_recipes.description": "Complete your recipes to have a complete tracking of your inventory",
+
+  "stepper.step": "Step {{step}}"
 }

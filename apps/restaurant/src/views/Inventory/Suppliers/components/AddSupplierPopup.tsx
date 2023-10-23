@@ -20,8 +20,11 @@ const SupplierSchema = z.object({
 
 const AddSupplierSchema = z.object({
   name: z.string().min(1, { message: 'required' }),
-  email: z.string().min(1, { message: 'required' }).email('valid-email'),
-  phone: z.string().min(1, { message: 'required' }),
+  email: z.string().email('valid-email').optional().or(z.literal('')),
+  phone: z
+    .string()
+    .optional()
+    .or(z.null().transform(() => undefined)),
   automaticInvitation: z.boolean(),
 });
 
@@ -53,8 +56,8 @@ type Props = {
   onRequestClose: () => void;
   onSupplierAdded: (supplier: {
     name: string;
-    email: string;
-    phone: string;
+    email?: string;
+    phone?: string;
   }) => void;
 };
 
@@ -166,6 +169,7 @@ const AddSupplierPopup = (props: Props) => {
                 mode="form"
                 control={control}
                 name="phone"
+                placeholder={t('phone')}
                 error={errors.phone?.message}
               />
             </>
