@@ -89,9 +89,17 @@ const addSupplierToRestaurant = async (
   });
 };
 
+const revokeSupplierAccess = async (
+  restaurantUUID: string,
+  supplierUUID: string
+): Promise<void> => {
+  await axiosClient.delete(`/suppliers/${restaurantUUID}/${supplierUUID}`);
+};
+
 export default {
   getRestaurantSuppliers,
   getSuppliers,
   createSupplier,
   addSupplierToRestaurant,
+  revokeSupplierAccess,
 };

@@ -42,6 +42,7 @@ i18next.on('languageChanged', function (lng: 'fr' | 'en') {
 
 const languageDetector = new LanguageDetector(null, {
   order: ['localStorage', 'querystring', 'navigator'],
+  lookupQuerystring: 'lng',
   caches: [], // don't cache auto
   convertDetectedLanguage: (lng) => lng.split('-')[0],
 });
