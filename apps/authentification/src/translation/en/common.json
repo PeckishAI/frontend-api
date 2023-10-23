@@ -1,6 +1,6 @@
 {
   "sign-in.title": "Welcome back!",
-  "sign-in.description": "Enter your mail and password to log in to Peckish",
+  "sign-in.description": "Enter your email and password to log in to Peckish",
   "sign-in.create-account": "Don't have an account ?",
 
   "sign-up.title": "Sign Up!",
@@ -21,7 +21,7 @@
   "confirm-password": "Confirm password",
   "remember-me": "Remember me",
   "sign-in": "Sign In",
-  "sign-in-google": "Sign Up with Google",
+  "sign-in-google": "Sign In with Google",
   "sign-in-apple": "Continue with Apple",
   "sign-up": "Create an account",
   "sign-up-google": "Sign Up with Google",
