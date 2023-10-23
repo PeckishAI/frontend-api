@@ -95,6 +95,8 @@
   "onboarding.success": "Récupération des données avec succès !",
   "onboarding.error": "Echec de la récupération des données.",
 
+  "suppliers.emptyPage.title": "Vous n'avez pas de fournisseur relié à votre restaurant",
+  "suppliers.emptyPage.description": "Connectez-vous à vos fournisseurs afin de passer des commandes automatiquement",
   "suppliers.acceptedInvitations": "Invitations acceptées",
   "suppliers.pendingInvitations": "Invitations en attente",
   "suppliers.copyLink": "Copier le lien d'invitation",

@@ -33,27 +33,6 @@ const AddSupplierSchema = z.object({
 
 type SupplierForm = z.infer<typeof SupplierSchema & typeof AddSupplierSchema>;
 
-const SUPPLIERS = [
-  {
-    label: 'Metro',
-    value: 'metro',
-    phone: '+31 7 52 15 45',
-    email: 'metro@metro.com',
-  },
-  {
-    label: 'Rekki',
-    value: 'rekki',
-    phone: '+31 7 52 15 45',
-    email: 'supply@rekki.com',
-  },
-  {
-    label: 'REKKI FRANCE',
-    value: 'rekki-fr',
-    phone: '+31 7 52 15 45',
-    email: 'supply@rekki.fr',
-  },
-];
-
 type Props = {
   isVisible: boolean;
   onRequestClose: () => void;

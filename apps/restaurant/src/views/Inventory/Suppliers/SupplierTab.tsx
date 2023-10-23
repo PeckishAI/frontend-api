@@ -1,6 +1,6 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, DialogBox } from 'shared-ui';
+import { Button, DialogBox, EmptyPage } from 'shared-ui';
 import supplierService, {
   LinkedSupplier,
 } from '../../../services/supplier.service';
@@ -12,26 +12,6 @@ import Fuse from 'fuse.js';
 import AddSupplierPopup from './components/AddSupplierPopup';
 import Skeleton from 'react-loading-skeleton';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
-
-let SUPPLIERS: LinkedSupplier[] = [
-  {
-    uuid: '1',
-    name: 'Rekki',
-    email: 'supply@rekki.com',
-    phone: '020 3887 2992',
-    linked: true,
-    linkedAt: new Date(),
-  },
-  {
-    uuid: '2',
-    name: 'Metro',
-    email: 'supply@metro.com',
-    phone: '031 8481 7015',
-    linked: false,
-    invitationKey: 'ef51ca554fadc5a1baa952d3e4',
-    linkedAt: new Date(),
-  },
-];
 
 export type SupplierTabRef = {
   renderOptions: () => React.ReactNode;
@@ -154,6 +134,14 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     return (
       <>
+        {suppliers.length === 0 && (
+          <EmptyPage
+            className={styles.emptyPage}
+            title={t('suppliers.emptyPage.title')}
+            description={t('suppliers.emptyPage.description')}
+          />
+        )}
+
         {linkedSuppliers.length > 0 && (
           <>
             <h1 className={styles.sectionTitle}>
