@@ -23,7 +23,7 @@ const getRestaurantSuppliers = async (
   restaurantUUID: string
 ): Promise<LinkedSupplier[]> => {
   const { data } = await axiosClient.get<RestaurantSuppliersResponse>(
-    `/api/restaurants/${restaurantUUID}/suppliers`
+    `/suppliers/${restaurantUUID}`
   );
   return data;
 };

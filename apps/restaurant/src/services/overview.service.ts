@@ -28,7 +28,7 @@ const getMetrics = async (
   restaurantUUID: string
 ): Promise<RestaurantMetric> => {
   const res = await axiosClient.get<MetricsResponse>(
-    `/restaurant/overview/${restaurantUUID}/metrics`
+    `/overview/${restaurantUUID}/metrics`
   );
 
   return {
@@ -59,7 +59,7 @@ export type Forecast = {
 
 const getForecast = async (restaurantUUID: string): Promise<Forecast> => {
   const res = await axiosClient.get<ForecastResponse>(
-    `/restaurant/overview/${restaurantUUID}/forecast`
+    `/overview/${restaurantUUID}/forecast`
   );
   console.log(res.data);
 

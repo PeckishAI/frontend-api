@@ -3,7 +3,7 @@ import axios, { Ingredient } from './index';
 const getIngredientList = async (
   restaurantUUID: string
 ): Promise<Ingredient[]> => {
-  const res = await axios.get('/restaurant/inventory/' + restaurantUUID);
+  const res = await axios.get('/inventory/' + restaurantUUID);
 
   return Object.keys(res.data).map((key) => ({
     id: key,
@@ -13,7 +13,7 @@ const getIngredientList = async (
 };
 
 const addIngredient = (restaurantUUID: string, ingredient) => {
-  return axios.post('/restaurant/inventory/' + restaurantUUID, ingredient);
+  return axios.post('/inventory/' + restaurantUUID, ingredient);
 };
 
 const updateIngredient = (ingredient) => {
@@ -31,19 +31,17 @@ const updateIngredient = (ingredient) => {
       return obj;
     }, {});
   return axios.post(
-    '/restaurant/inventory/' + ingredient.id + '/update',
+    '/inventory/' + ingredient.id + '/update',
     ingredientFormated
   );
 };
 
 const getIngredientPreview = (ingredientId: string) => {
-  return axios.get<string[]>(
-    '/restaurant/inventory/' + ingredientId + '/preview'
-  );
+  return axios.get<string[]>('/inventory/' + ingredientId + '/preview');
 };
 
 const deleteIngredient = (id: string) => {
-  return axios.post('/restaurant/inventory/' + id + '/delete');
+  return axios.post('/inventory/' + id + '/delete');
 };
 
 export type ColumnsNameMapping = {
@@ -63,7 +61,7 @@ const uploadCsvFile = (restaurantUUID: string, file: File) => {
   const formData = new FormData();
   formData.append('file', file);
   return axios.post<PreviewResponse>(
-    '/restaurant/inventory/' + restaurantUUID + '/upload/smart_reader',
+    '/inventory/' + restaurantUUID + '/upload/smart_reader',
     formData,
     {
       headers: {
@@ -91,7 +89,7 @@ const getPreviewUploadedCsv = (
 ) => {
   const formData = getFormData(file, headerValues);
   return axios.post(
-    '/restaurant/inventory/' + restaurantUUID + '/upload/preview',
+    '/inventory/' + restaurantUUID + '/upload/preview',
     formData,
     {
       headers: {
@@ -108,15 +106,11 @@ const validUploadedCsv = (
 ) => {
   const formData = getFormData(file, headerValues);
 
-  return axios.post(
-    '/restaurant/inventory/' + restaurantUUID + '/upload',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
-  );
+  return axios.post('/inventory/' + restaurantUUID + '/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 };
 
 export const inventoryService = {

@@ -1,6 +1,6 @@
 import axiosClient from '.';
 
-const BASE_URL = 'restaurant/profile';
+const BASE_URL = '/profile';
 
 export type NotificationType =
   | 'IMPORT_INVENTORY'

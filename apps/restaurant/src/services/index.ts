@@ -3,7 +3,7 @@ import axios from 'axios';
 import { GLOBAL_CONFIG } from 'shared-config';
 
 const axiosClient = axios.create({
-  baseURL: GLOBAL_CONFIG.apiUrl,
+  baseURL: GLOBAL_CONFIG.apiUrl + '/restaurant',
 });
 
 // Apply axios interceptors to handle authentification
