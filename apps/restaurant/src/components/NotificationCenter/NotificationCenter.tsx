@@ -32,7 +32,9 @@ const notificationTypeMapping: {
   SELECT_PRODUCTS: {
     title: 'notification.select_products.title',
     description: 'notification.select_products.description',
-    action: () => {},
+    action: (navigate) => {
+      navigate('/onboarding/select-products');
+    },
   },
   CREATE_PREPARATIONS: {
     title: 'notification.create_preparations.title',
