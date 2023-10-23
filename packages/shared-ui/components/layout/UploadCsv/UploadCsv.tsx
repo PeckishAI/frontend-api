@@ -230,6 +230,8 @@ const UploadCsv = (props: Props) => {
                     {data[headerValues.quantity]}
                   </span>
                   <span key={`unit-${index}`}>{data[headerValues.unit]}</span>
+                  <span key={`supplier-${index}`}>{data[headerValues.supplier]}</span>
+                  <span key={`cost-${index}`}>{data[headerValues.cost]}</span>
                 </div>
               ))}
           </div>

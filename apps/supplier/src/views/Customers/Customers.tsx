@@ -55,14 +55,124 @@ const Customers = (props: Props) => {
     },
   ];
 
+  const restaurants = [
+    {
+      uuid: '1',
+      name: 'Chez Pierre',
+      address: '123 Main Street',
+      city: 'Paris',
+      country: 'France',
+      created_at: new Date('2022-05-10'),
+      currency: 'EUR',
+    },
+    {
+      uuid: '2',
+      name: 'La Trattoria',
+      address: '456 Elm Avenue',
+      city: 'Rome',
+      country: 'Italy',
+      created_at: new Date('2022-04-22'),
+      currency: 'EUR',
+    },
+    {
+      uuid: '3',
+      name: "Sam's Diner",
+      address: '789 Oak Road',
+      city: 'New York',
+      country: 'USA',
+      created_at: new Date('2022-03-15'),
+      currency: 'USD',
+    },
+    {
+      uuid: '4',
+      name: 'El Toro',
+      address: '101 Pine Lane',
+      city: 'Barcelona',
+      country: 'Spain',
+      created_at: new Date('2022-06-28'),
+      currency: 'EUR',
+    },
+    {
+      uuid: '5',
+      name: 'Sushi Palace',
+      address: '234 Cedar Street',
+      city: 'Tokyo',
+      country: 'Japan',
+      created_at: new Date('2022-07-05'),
+      currency: 'JPY',
+    },
+    {
+      uuid: '6',
+      name: 'Café de Paris',
+      address: '567 Maple Drive',
+      city: 'Monaco',
+      country: 'Monaco',
+      created_at: new Date('2022-04-18'),
+      currency: 'EUR',
+    },
+    {
+      uuid: '7',
+      name: 'The Great Curry House',
+      address: '890 Birch Lane',
+      city: 'London',
+      country: 'UK',
+      created_at: new Date('2022-08-14'),
+      currency: 'GBP',
+    },
+    {
+      uuid: '8',
+      name: 'Osteria da Luigi',
+      address: '111 Redwood Street',
+      city: 'Florence',
+      country: 'Italy',
+      created_at: new Date('2022-09-02'),
+      currency: 'EUR',
+    },
+    {
+      uuid: '9',
+      name: 'Ristorante Buona Tavola',
+      address: '654 Spruce Avenue',
+      city: 'Milan',
+      country: 'Italy',
+      created_at: new Date('2022-10-20'),
+      currency: 'EUR',
+    },
+    {
+      uuid: '10',
+      name: 'Peking Garden',
+      address: '222 Juniper Road',
+      city: 'Beijing',
+      country: 'China',
+      created_at: new Date('2022-11-08'),
+      currency: 'CNY',
+    },
+  ];
+
   const [clickedRestaurand, setClickedRestaurand] = useState<
     Restaurant | undefined
   >(undefined);
   const [searchInput, setSearchInput] = useState('');
-  const [customerList, setCustomerList] = useState<Restaurant[]>([]);
+  const [customerList, setCustomerList] = useState<Restaurant[]>(restaurants);
   const [customerDetail, setCustomerDetail] = useState<
     IngredientForCustomers[]
-  >([]);
+  >([
+    {
+      id: '1',
+      name: 'Potatoes',
+      quantity: 34,
+      safetyStock: 12,
+      unit: 'kg',
+      ordered: true,
+    },
+    {
+      id: '1',
+      name: 'Onions',
+      quantity: 49,
+      safetyStock: 29,
+      unit: 'unit',
+      ordered: false,
+    },
+  ]);
   const [sharingLink, setSharingLink] = useState('');
   const [loadingCustomers, setLoadingCustomers] = useState(false);
   const [loadingCustomerDetail, setLoadingCustomerDetail] = useState(false);
@@ -73,7 +183,7 @@ const Customers = (props: Props) => {
       .getCustomers()
       .then((res) => {
         console.log('customers list :', res.data);
-        setCustomerList(res.data);
+        // setCustomerList(res.data); temp disabled for hardcoded data
       })
       .catch((err) => {
         console.log(err);
@@ -100,7 +210,7 @@ const Customers = (props: Props) => {
       .getCustomerDetail(restaurant.uuid)
       .then((res) => {
         console.log('restaurant detail :', res.data);
-        setCustomerDetail(res.data);
+        // setCustomerDetail(res.data); temp disabled for hardcoded data
       })
       .catch((err) => {
         console.log(err);

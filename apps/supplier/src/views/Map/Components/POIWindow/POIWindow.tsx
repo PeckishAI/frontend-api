@@ -1,28 +1,31 @@
 import './style.scss';
 
-type RestaurantMap = {
-  name: string;
-  location: string;
-  pos: { lat: number; lng: number };
-};
-
 type Props = {
-  restaurant?: RestaurantMap;
-  onClose: () => void;
+  children: React.ReactNode;
+  isEmpty: boolean;
+  isReduce: boolean;
+  toggle: () => void;
 };
 
 const POIWindow = (props: Props) => {
-  if (props.restaurant === undefined) {
-    return;
-  }
   return (
-    <div className="poi-window">
-      <i className="fa-solid fa-xmark close" onClick={props.onClose}></i>
-      <p className="name">{props.restaurant.name}</p>
-      <p className="location">
-        <i className="fa-solid fa-location-dot"></i>
-        {props.restaurant.location}
-      </p>
+    <div className={`poi-window${props.isReduce ? ' reduced' : ''}`}>
+      <div className="toggle" onClick={props.toggle}>
+        <i className="fa-solid fa-chevron-right"></i>
+      </div>
+      {props.isEmpty ? (
+        <div className="empty">
+          <span
+            style={{ color: 'var(--primaryColor)', fontWeight: 'var(--bold)' }}>
+            Nothing to inspect.
+          </span>
+          <p style={{ textAlign: 'center', marginTop: '10px' }}>
+            Click items on the map to see information about.
+          </p>
+        </div>
+      ) : (
+        <div className="children">{props.children}</div>
+      )}
     </div>
   );
 };

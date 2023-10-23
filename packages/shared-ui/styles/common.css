@@ -84,3 +84,9 @@ body {
   font-size: 0.8rem;
   color: red;
 }
+
+@media screen and (max-width: 800px) {
+  .main {
+    margin: 0;
+  }
+}

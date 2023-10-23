@@ -34,13 +34,176 @@ const suppliers: DropdownOptionsDefinitionType[] = [
   { label: 'Supplier 3', value: 'supplier3' },
 ];
 
+const ingredientsForSupplier = [
+  {
+    id: '1',
+    name: 'Tomatoes',
+    stock: 500,
+    expectedSales: '300',
+    unit: 'kg',
+    price: 2.5,
+  },
+  {
+    id: '2',
+    name: 'Onions',
+    stock: 300,
+    expectedSales: '200',
+    unit: 'kg',
+    price: 1.2,
+  },
+  {
+    id: '3',
+    name: 'Carrots',
+    stock: 400,
+    expectedSales: '250',
+    unit: 'kg',
+    price: 1.8,
+  },
+  {
+    id: '4',
+    name: 'Potatoes',
+    stock: 600,
+    expectedSales: '350',
+    unit: 'kg',
+    price: 2.0,
+  },
+  {
+    id: '5',
+    name: 'Bell Peppers',
+    stock: 250,
+    expectedSales: '150',
+    unit: 'kg',
+    price: 2.8,
+  },
+  {
+    id: '6',
+    name: 'Lettuce',
+    stock: 150,
+    expectedSales: '100',
+    unit: 'kg',
+    price: 1.5,
+  },
+  {
+    id: '7',
+    name: 'Cucumbers',
+    stock: 200,
+    expectedSales: '120',
+    unit: 'kg',
+    price: 2.2,
+  },
+  {
+    id: '8',
+    name: 'Cheese',
+    stock: 100,
+    expectedSales: '80',
+    unit: 'kg',
+    price: 5.0,
+  },
+  {
+    id: '9',
+    name: 'Chicken',
+    stock: 350,
+    expectedSales: '200',
+    unit: 'kg',
+    price: 7.5,
+  },
+  {
+    id: '10',
+    name: 'Beef',
+    stock: 400,
+    expectedSales: '250',
+    unit: 'kg',
+    price: 9.0,
+  },
+  {
+    id: '11',
+    name: 'Pork',
+    stock: 300,
+    expectedSales: '180',
+    unit: 'kg',
+    price: 6.5,
+  },
+  {
+    id: '12',
+    name: 'Salmon',
+    stock: 200,
+    expectedSales: '150',
+    unit: 'kg',
+    price: 12.0,
+  },
+  {
+    id: '13',
+    name: 'Shrimp',
+    stock: 250,
+    expectedSales: '180',
+    unit: 'kg',
+    price: 15.0,
+  },
+  {
+    id: '14',
+    name: 'Pasta',
+    stock: 300,
+    expectedSales: '200',
+    unit: 'kg',
+    price: 1.5,
+  },
+  {
+    id: '15',
+    name: 'Rice',
+    stock: 350,
+    expectedSales: '250',
+    unit: 'kg',
+    price: 2.0,
+  },
+  {
+    id: '16',
+    name: 'Bread',
+    stock: 200,
+    expectedSales: '150',
+    unit: 'kg',
+    price: 2.2,
+  },
+  {
+    id: '17',
+    name: 'Butter',
+    stock: 150,
+    expectedSales: '100',
+    unit: 'kg',
+    price: 3.0,
+  },
+  {
+    id: '18',
+    name: 'Milk',
+    stock: 250,
+    expectedSales: '200',
+    unit: 'kg',
+    price: 1.0,
+  },
+  {
+    id: '19',
+    name: 'Eggs',
+    stock: 200,
+    expectedSales: '150',
+    unit: 'dozen',
+    price: 2.5,
+  },
+  {
+    id: '20',
+    name: 'Yogurt',
+    stock: 150,
+    expectedSales: '100',
+    unit: 'kg',
+    price: 2.2,
+  },
+];
+
 const Catalog = () => {
   const { t } = useTranslation(['common', 'ingredient']);
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [ingredientsList, setIngredientsList] = useState<
     IngredientForSupplier[]
-  >([]);
+  >(ingredientsForSupplier);
   const [editingRowId, setEditingRowId] = useState<string | null>();
   const [deletingRowId, setDeletingRowId] = useState<string | null>();
   const [addingRow, setAddingRow] = useState(false);
@@ -74,7 +237,7 @@ const Catalog = () => {
       const list = response.data;
       console.log(list);
 
-      setIngredientsList(list);
+      // setIngredientsList(list); temp disabled for hardoced data
     } catch (err) {
       if (err instanceof Error) {
         // togglePopupError(err.message);

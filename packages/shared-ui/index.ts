@@ -24,6 +24,8 @@ import { Loading, LoadingAbsolute } from './components/Loading/Loading';
 import SidePanel from './components/SidePanel/SidePanel';
 import { CollapsibleMenu } from './components/CollapsibleMenu/CollapsibleMenu';
 import { OrderDetail } from './components/OrderDetail/OrderDetail';
+import Switch from './components/Switch/Switch';
+import BurgerMenu from './components/layout/BurgerMenu/BurgerMenu';
 import './styles/common.css';
 
 export * from './hooks/index';
@@ -54,4 +56,6 @@ export {
   SidePanel,
   CollapsibleMenu,
   OrderDetail,
+  Switch,
+  BurgerMenu,
 };
