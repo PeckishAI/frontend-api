@@ -13,14 +13,14 @@ type RouteParams = {
 const getTabIndex = (tab?: string) => {
   if (tab === 'stock') return 0;
   if (tab === 'suppliers') return 1;
-  // if (tab === 'orders') return 2;
+  if (tab === 'orders') return 2;
   return 0;
 };
 
 const getTabName = (tabIndex: number) => {
   if (tabIndex === 0) return 'stock';
   if (tabIndex === 1) return 'suppliers';
-  // if (tabIndex === 2) return 'orders';
+  if (tabIndex === 2) return 'orders';
   return 'stock';
 };
 
@@ -32,7 +32,7 @@ const Inventory = () => {
   const TABS = [
     t('inventory.stock'),
     t('inventory.suppliers'),
-    // t('inventory.orders'),
+    t('inventory.orders'),
   ];
 
   const supplierTabRef = useRef<SupplierTabRef>(null);
@@ -72,16 +72,16 @@ const Inventory = () => {
         />
       );
     }
-    // if (selectedTab === 2) {
-    //   return (
-    //     <OrderTab
-    //       ref={orderTabRef}
-    //       // setLoadingState={setLoadingData}
-    //       // searchValue={searchValue}
-    //       forceOptionsUpdate={forceUpdate}
-    //     />
-    //   );
-    // }
+    if (selectedTab === 2) {
+      return (
+        <OrderTab
+          ref={orderTabRef}
+          // setLoadingState={setLoadingData}
+          // searchValue={searchValue}
+          forceOptionsUpdate={forceUpdate}
+        />
+      );
+    }
     return null;
   };
 
@@ -107,7 +107,7 @@ const Inventory = () => {
           />
           {selectedTab === 0 && ingredientTabRef.current?.renderOptions()}
           {selectedTab === 1 && supplierTabRef.current?.renderOptions()}
-          {/* {selectedTab === 2 && orderTabRef.current?.renderOptions()} */}
+          {selectedTab === 2 && orderTabRef.current?.renderOptions()}
         </div>
       </div>
 

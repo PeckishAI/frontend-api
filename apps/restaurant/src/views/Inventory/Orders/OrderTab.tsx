@@ -18,25 +18,25 @@ type Order = {
 };
 
 const orderList: Order[] = [
-  {
-    id: '1',
-    orderDate: '2021-10-01',
-    deliveryDate: '2021-10-01',
-    supplier: 'Metro',
-    status: 'pending',
-    detail: 'detail',
-    price: 100,
-  },
-  // Generate 5 orders
-  ...Array.from({ length: 5 }, (_, index) => ({
-    id: `${index + 2}`,
-    orderDate: '2021-10-01',
-    deliveryDate: '2021-10-01',
-    supplier: 'REKKI',
-    status: 'delivered' as const,
-    detail: 'detail',
-    price: 100,
-  })),
+  // {
+  //   id: '1',
+  //   orderDate: '2021-10-01',
+  //   deliveryDate: '2021-10-01',
+  //   supplier: 'Metro',
+  //   status: 'pending',
+  //   detail: 'detail',
+  //   price: 100,
+  // },
+  // // Generate 5 orders
+  // ...Array.from({ length: 5 }, (_, index) => ({
+  //   id: `${index + 2}`,
+  //   orderDate: '2021-10-01',
+  //   deliveryDate: '2021-10-01',
+  //   supplier: 'REKKI',
+  //   status: 'delivered' as const,
+  //   detail: 'detail',
+  //   price: 100,
+  // })),
 ];
 
 export type OrderTabRef = {

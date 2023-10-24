@@ -22,66 +22,66 @@ export type OrderForecast = {
 };
 
 const ORDER_FORECAST: OrderForecast[] = [
-  {
-    id: '1',
-    supplierName: 'Metro',
-    items: [
-      {
-        id: '1',
-        name: 'Tomato',
-        quantity: 10,
-        unit: 'kg',
-        price: 10,
-        availability: 'YES',
-      },
-      {
-        id: '2',
-        name: 'Potato',
-        quantity: 10,
-        unit: 'kg',
-        price: 10,
-        availability: 'YES',
-      },
-      {
-        id: '3',
-        name: 'Onion',
-        quantity: 10,
-        unit: 'kg',
-        price: 10,
-        availability: 'YES',
-      },
-    ],
-  },
-  {
-    id: '2',
-    supplierName: 'Metro',
-    items: [
-      {
-        id: '1',
-        name: 'Tomato',
-        quantity: 10,
-        unit: 'kg',
-        price: 10,
-        availability: 'NO',
-      },
-      {
-        id: '2',
-        name: 'Potato',
-        quantity: 10,
-        unit: 'kg',
-        price: 10,
-        availability: 'NO',
-      },
-      {
-        id: '3',
-        name: 'Onion',
-        quantity: 10,
-        unit: 'kg',
-        price: 10,
-        availability: 'NO',
-      },
-    ],
-  },
+  // {
+  //   id: '1',
+  //   supplierName: 'Metro',
+  //   items: [
+  //     {
+  //       id: '1',
+  //       name: 'Tomato',
+  //       quantity: 10,
+  //       unit: 'kg',
+  //       price: 10,
+  //       availability: 'YES',
+  //     },
+  //     {
+  //       id: '2',
+  //       name: 'Potato',
+  //       quantity: 10,
+  //       unit: 'kg',
+  //       price: 10,
+  //       availability: 'YES',
+  //     },
+  //     {
+  //       id: '3',
+  //       name: 'Onion',
+  //       quantity: 10,
+  //       unit: 'kg',
+  //       price: 10,
+  //       availability: 'YES',
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: '2',
+  //   supplierName: 'Metro',
+  //   items: [
+  //     {
+  //       id: '1',
+  //       name: 'Tomato',
+  //       quantity: 10,
+  //       unit: 'kg',
+  //       price: 10,
+  //       availability: 'NO',
+  //     },
+  //     {
+  //       id: '2',
+  //       name: 'Potato',
+  //       quantity: 10,
+  //       unit: 'kg',
+  //       price: 10,
+  //       availability: 'NO',
+  //     },
+  //     {
+  //       id: '3',
+  //       name: 'Onion',
+  //       quantity: 10,
+  //       unit: 'kg',
+  //       price: 10,
+  //       availability: 'NO',
+  //     },
+  //   ],
+  // },
 ];
 
 export const OrderValidation = () => {
