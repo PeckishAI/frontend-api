@@ -81,7 +81,10 @@ export const NotificationCenter = () => {
           <IconButton
             icon={
               <i
-                className={classNames('fa-solid fa-bell', styles.bellBubble)}
+                className={classNames(
+                  'fa-solid fa-bell',
+                  !!unreadedNumber && styles.bellBubble
+                )}
               />
             }
             tooltipMsg={t('notifications')}
