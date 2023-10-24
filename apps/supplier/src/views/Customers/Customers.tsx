@@ -51,7 +51,7 @@ const Customers = (props: Props) => {
       header: 'Ordered',
       width: '10%',
       renderItem: ({ row }) =>
-        row.ordered === true ? 'true' : row.ordered === false ? 'false' : '-',
+        row.ordered === true ? 'true' : row.ordered === false ? 'false' : row.ordered === 'N/A' ? 'N/A' : '-',
     },
   ];
 
@@ -157,15 +157,15 @@ const Customers = (props: Props) => {
     IngredientForCustomers[]
   >([
     { id: '1', name: 'Potatoes', quantity: 34, safetyStock: 12, unit: 'kg', ordered: true },
-  { id: '2', name: 'Carrots', quantity: 25, safetyStock: 10, unit: 'unit', ordered: false },
+  { id: '2', name: 'Carrots', quantity: 25, safetyStock: 10, unit: 'unit', ordered: true },
   { id: '3', name: 'Apples', quantity: 50, safetyStock: 20, unit: 'kg', ordered: true },
   { id: '4', name: 'Bananas', quantity: 40, safetyStock: 15, unit: 'unit', ordered: false },
-  { id: '5', name: 'Oranges', quantity: 30, safetyStock: 12, unit: 'kg', ordered: true },
-  { id: '6', name: 'Chicken', quantity: 15, safetyStock: 5, unit: 'kg', ordered: true },
-  { id: '7', name: 'Beef', quantity: 20, safetyStock: 8, unit: 'kg', ordered: false },
-  { id: '8', name: 'Pasta', quantity: 100, safetyStock: 40, unit: 'g', ordered: true },
-  { id: '9', name: 'Rice', quantity: 75, safetyStock: 30, unit: 'kg', ordered: false },
-  { id: '10', name: 'Salmon', quantity: 18, safetyStock: 6, unit: 'l', ordered: true },
+  { id: '5', name: 'Oranges', quantity: 30, safetyStock: 12, unit: 'kg', ordered: false },
+  { id: '6', name: 'Chicken', quantity: 15, safetyStock: 5, unit: 'kg', ordered: false },
+  { id: '7', name: 'Beef', quantity: 20, safetyStock: 8, unit: 'kg', ordered: 'N/A' },
+  { id: '8', name: 'Pasta', quantity: 100, safetyStock: 40, unit: 'g', ordered: 'N/A' },
+  { id: '9', name: 'Rice', quantity: 75, safetyStock: 30, unit: 'kg', ordered: 'N/A' },
+  { id: '10', name: 'Salmon', quantity: 18, safetyStock: 6, unit: 'l', ordered: 'N/A' },
   ]);
   const [sharingLink, setSharingLink] = useState('');
   const [loadingCustomers, setLoadingCustomers] = useState(false);
@@ -308,7 +308,7 @@ const Customers = (props: Props) => {
             </div>
             <div className="metric">
               <span className="label">Open orders</span>
-              <span className="value">5</span>
+              <span className="value">False</span>
             </div>
             <div className="metric">
               <span className="label">Past orders</span>

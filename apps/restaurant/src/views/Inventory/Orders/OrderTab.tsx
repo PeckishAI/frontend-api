@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import styles from './OrderTab.module.scss';
 import { Tooltip } from 'react-tooltip';
+import { Ingredient } from '../../../services';
 
 type Order = {
   id: string;
@@ -38,6 +39,20 @@ const orderList: Order[] = [
     price: 100,
   })),
 ];
+
+// @ts-ignore
+const ingredientList: Ingredient[] = [
+  { name: "Tomatoes", quantity: 3, unit: "kg", cost: 2.99},
+  { name: "Chicken", quantity: 600, unit: "g", cost: 5.49},
+  { name: "Onions", quantity: 30, unit: "unit", cost: 1.29},
+  { name: "Bell Peppers", quantity: 250, unit: "g", cost: 2.99},
+  { name: "Rice", quantity: 8, unit: "kg", cost: 1.99},
+  { name: "Carrots", quantity: 400, unit: "g", cost: 1.49},
+  { name: "Potatoes", quantity: 700, unit: "g", cost: 2.79},
+  { name: "Green Beans", quantity: 300, unit: "g", cost: 2.49},
+  { name: "Canned Tuna", quantity: 150, unit: "g", cost: 2.29},
+  { name: "Lentils", quantity: 250, unit: "g", cost: 1.79},
+]
 
 export type OrderTabRef = {
   renderOptions: () => React.ReactNode;
@@ -115,10 +130,30 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
       <div className="orders">
         <Table data={orderList} columns={columns} />
         <OrderDetail
-          isVisible={isOrderDetailVisible}
-          onRequestClose={() => setOrderDetailVisible(false)}
-          orderUUID="55"
-        />
+        isVisible={isOrderDetailVisible}
+        onRequestClose={() => setOrderDetailVisible(false)}
+        orderUUID="55"
+        upperBanner={[{title: t('orders.supplier'), value: 'Metro'}, {title: t('orders.deliveryDate'), value: '15/09/2023'}, {title: t('price'), value: '280€'}, {title: t('orders.status'), value: t(`orders.statusStates.delivered`)}]}
+        tableHeaders={[
+          {
+            key: 'name',
+            header: t('name'),
+          },
+          {
+            key: 'quantity',
+            header: t('quantity'),
+          },
+          {
+            key: 'unit',
+            header: t('unit'),
+          },
+          {
+            key: 'cost',
+            header: t('price'),
+          },
+        ]}
+        tableData={ingredientList}
+      />
         <Tooltip className="tooltip" id="detail-tooltip" />
       </div>
     );
