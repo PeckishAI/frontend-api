@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import Orders from '../views/Orders';
+import Orders from '../views/Orders/Orders';
 import Catalog from '../views/Catalog';
 import Map from '../views/Map/Map';
 import Layout from '../components/Layout';

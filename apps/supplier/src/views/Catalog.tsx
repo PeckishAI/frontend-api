@@ -17,7 +17,7 @@ import { Tooltip } from 'react-tooltip';
 import { IngredientForSupplier, catalogService } from '../services';
 // import { useRestaurantStore } from '../store/useRestaurantStore';
 
-const tabs = ['Stock', 'analyses', 'Orders'];
+const tabs = ['Stock'];
 
 const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -26,12 +26,6 @@ const units: DropdownOptionsDefinitionType[] = [
   { label: 'l', value: 'L' },
   { label: 'ml', value: 'ml' },
   { label: 'unit', value: 'unit' },
-];
-
-const suppliers: DropdownOptionsDefinitionType[] = [
-  { label: 'Supplier 1', value: 'supplier1' },
-  { label: 'Supplier 2', value: 'supplier2' },
-  { label: 'Supplier 3', value: 'supplier3' },
 ];
 
 const ingredientsForSupplier = [

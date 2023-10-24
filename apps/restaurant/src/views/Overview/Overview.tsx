@@ -43,6 +43,7 @@ export const metricFormat: {
 
 const Overview = () => {
   const { t } = useTranslation(['overview', 'common']);
+
   const [loadingMetrics, setLoadingMetrics] = useState(false);
   const [metrics, setMetrics] = useState<RestaurantMetric>();
 

@@ -4,10 +4,16 @@ import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { Tooltip } from 'react-tooltip';
-import { orderService } from '../services';
+import { orderService } from '../../services';
 
 // type Props = {};
-
+type Ingredient = {
+  name: string;
+  quantity: number;
+  unit: string;
+  price: number;
+  availability: boolean | 'N/A';
+};
 type Order = {
   id: string;
   orderDate: string;
@@ -23,7 +29,7 @@ const orders = [
     orderDate: '2023-09-01',
     deliveryDate: '2023-09-10',
     customer: 'Poké Perfect',
-    status: 'Processing',
+    status: 'Delivered',
     detail: 'Order details for Customer 1',
     price: 100.0,
   },
@@ -59,7 +65,7 @@ const orders = [
     orderDate: '2023-09-05',
     deliveryDate: '2023-09-14',
     customer: 'Poké Perfect',
-    status: 'Shipped',
+    status: 'Predicted',
     detail: 'Order details for Customer 5',
     price: 90.0,
   },
@@ -68,7 +74,7 @@ const orders = [
     orderDate: '2023-09-06',
     deliveryDate: '2023-09-15',
     customer: 'Burger King',
-    status: 'Delivered',
+    status: 'Predicted',
     detail: 'Order details for Customer 6',
     price: 35.5,
   },
@@ -104,7 +110,7 @@ const orders = [
     orderDate: '2023-09-10',
     deliveryDate: '2023-09-19',
     customer: 'Poké Perfect',
-    status: 'Processing',
+    status: 'Predicted',
     detail: 'Order details for Customer 10',
     price: 150.25,
   },
@@ -155,14 +161,28 @@ const orders = [
   },
 ];
 
-const tabs = ['Tab 1', 'Tab 2', 'Tab 3'];
+const ingredientList: Ingredient[] = [
+  { name: "Tomatoes", quantity: 3, unit: "kg", price: 2.99, availability: true},
+  { name: "Chicken", quantity: 600, unit: "g", price: 5.49, availability: true },
+  { name: "Onions", quantity: 30, unit: "unit", price: 1.29, availability: true },
+  { name: "Bell Peppers", quantity: 250, unit: "g", price: 2.99, availability: true },
+  { name: "Rice", quantity: 8, unit: "kg", price: 1.99, availability: true },
+  { name: "Carrots", quantity: 400, unit: "g", price: 1.49, availability: false },
+  { name: "Potatoes", quantity: 700, unit: "g", price: 2.79, availability: false },
+  { name: "Green Beans", quantity: 300, unit: "g", price: 2.49, availability: false},
+  { name: "Canned Tuna", quantity: 150, unit: "g", price: 2.29, availability: false},
+  { name: "Lentils", quantity: 250, unit: "g", price: 1.79, availability: false},
+]
 
-const orderStatus: DropdownOptionsDefinitionType[] = [
-  { label: 'Predicted', value: 'predicted' },
-  { label: 'Ordered', value: 'ordered' },
-  { label: 'Shipped', value: 'shipped' },
-];
+const tabs = ['Orders'];
 
+const availabilityOptions: DropdownOptionsDefinitionType[] = [{
+  label: 'Yes',
+  value: 'true',
+},{
+  label: 'No',
+  value: 'false',
+}]
 const Orders = () => {
   const { t } = useTranslation('common');
 
@@ -173,6 +193,11 @@ const Orders = () => {
   const [orderList, setOrderList] = useState<Order[]>(orders);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const [showOrderDetail, setShowOrderDetail] = useState(false);
+  const [availabilities, setAvailabilities] = useState<('true' | 'false')[]>(
+    ingredientList.map((i) => String(i.availability) as 'true' | 'false')
+  );
+
+  
 
   const toggleTab = (tabIndex: number) => {
     setSelectedTab(tabIndex);
@@ -190,7 +215,7 @@ const Orders = () => {
 
   useEffect(() => {
     orderService.getOrderList().then((res) => {
-      console.log(res);
+      // console.log(res);
       // setOrderList(res.data);  temp disabled for hardcoded data
     });
   }, []);
@@ -203,6 +228,13 @@ const Orders = () => {
     setShowOrderDetail(true);
   };
 
+  const handleAvailabilitiesChange = (index: number, val: string)=>{
+    console.log("aval change : ", index, val);
+    const newAvailabilities = [...availabilities];
+    newAvailabilities[index] = val as "true" | "false";
+    setAvailabilities(newAvailabilities);
+  }
+
   const columns: ColumnDefinitionType<Order, keyof Order>[] = useMemo(
     () => [
       { key: 'id', header: t('orderId') },
@@ -212,13 +244,6 @@ const Orders = () => {
       {
         key: 'status',
         header: t('status'),
-        renderItem: ({ row }) => (
-          <Dropdown
-            options={orderStatus}
-            selectedOption={selectedOrderStatus[row.id]}
-            onOptionChange={(value) => sendNewOrderStatus(row, value)}
-          />
-        ),
       },
       {
         key: 'price',
@@ -265,6 +290,33 @@ const Orders = () => {
         isVisible={showOrderDetail}
         onRequestClose={() => setShowOrderDetail(false)}
         orderUUID="idk"
+        upperBanner={[{title: t('orders.deliveryDate'), value: '15/09/2023'}, {title: t('price'), value: '100€'}, {title: t('orders.status'), value: t(`orders.statusStates.delivered`)}]}
+        tableHeaders={[
+          {
+            key: 'name',
+            header: t('name'),
+          },
+          {
+            key: 'quantity',
+            header: t('quantity'),
+          },
+          {
+            key: 'unit',
+            header: t('unit'),
+          },
+          {
+            key: 'price',
+            header: t('price'),
+          },
+          {
+            key: 'availability',
+            header: t('availability'),
+            renderItem: (row) =>(
+              <Dropdown options={availabilityOptions} selectedOption={availabilities[row.index]} onOptionChange={(val)=>handleAvailabilitiesChange(row.index, val)}/>
+            )
+          },
+        ]}
+        tableData={ingredientList}
       />
       {selectedTab === 0 && <Table data={orderList} columns={columns} />}
       <Tooltip className="tooltip" id="detail-tooltip" />

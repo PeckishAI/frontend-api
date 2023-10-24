@@ -25,5 +25,5 @@ export type IngredientForCustomers = {
   safetyStock: number;
   quantity: number;
   unit: string;
-  ordered?: boolean;
+  ordered?: boolean | 'N/A';
 };

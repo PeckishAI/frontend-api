@@ -86,16 +86,21 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     };
 
     const handleDeleteSupplier = () => {
+      if (!restaurantUUID || !deletingSupplierUUID) return;
       setShowDeleteDialog(false);
       toast.promise(
-        new Promise((resolve) =>
-          setTimeout(() => {
-            // suppliers = suppliers.filter(
-            //   (s) => s.uuid !== deletingSupplierUUID
-            // );
-            setDeletingSupplierUUID(null);
-            resolve(true);
-          }, 1000)
+        new Promise((resolve, reject) =>
+          supplierService
+            .revokeSupplierAccess(restaurantUUID, deletingSupplierUUID!)
+            .then(() => {
+              setSuppliers((suppliers) =>
+                suppliers.filter((s) => s.uuid !== deletingSupplierUUID)
+              );
+
+              setDeletingSupplierUUID(null);
+              resolve(true);
+            })
+            .catch(() => reject())
         ),
         {
           loading: t('suppliers.removeSupplierToast.loading'),
@@ -203,13 +208,15 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           isVisible={showAddPopup}
           onRequestClose={() => setShowAddPopup(false)}
           onSupplierAdded={(supplier) => {
-            // TEMPORARY (until we have the backend)
-            suppliers.push({
-              ...supplier,
-              uuid: Math.random().toString(),
-              linked: false,
-              linkedAt: new Date(),
-            });
+            setSuppliers((suppliers) => [
+              ...suppliers,
+              {
+                ...supplier,
+                uuid: Math.random().toString(),
+                linked: false,
+                linkedAt: new Date(),
+              },
+            ]);
           }}
         />
       </>

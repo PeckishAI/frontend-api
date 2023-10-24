@@ -95,6 +95,7 @@ const HexagonData = (props: Props) => {
               <span className="chart-title">Market Share</span>
               <Chart
                 type="line"
+                height={140}
                 data={{
                   labels: getLastMonthsName(5),
                   datasets: [
@@ -130,6 +131,7 @@ const HexagonData = (props: Props) => {
               <span className="chart-title">Top ingredients</span>
               <Chart
                 type="bar"
+                height={140}
                 data={{
                   labels: ['Banana', 'Tomato', 'Asparagus', 'Carrot'],
                   datasets: [
@@ -142,15 +144,6 @@ const HexagonData = (props: Props) => {
                   ],
                 }}
                 options={{
-                  scales: {
-                    y: {
-                      ticks: {
-                        callback: (value) => {
-                          return `${value}`;
-                        },
-                      },
-                    },
-                  },
                   plugins: { legend: { display: false } },
                 }}
               />

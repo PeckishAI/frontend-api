@@ -15,18 +15,20 @@
     "@turf/turf": "^6.5.0",
     "axios": "^1.4.0",
     "chart.js": "^4.3.3",
-    "i18next": "^23.4.1",
+    "i18next": "^23.4.4",
     "leaflet": "^1.9.4",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
-    "react-i18next": "^13.0.3",
+    "react-i18next": "^13.1.2",
     "react-leaflet": "^4.2.1",
     "react-lottie": "^1.2.3",
     "react-router-dom": "^6.14.2",
     "react-tooltip": "^5.20.0",
-    "shared-ui": "*"
+    "shared-ui": "*",
+    "shared-config": "*",
+    "shared-translation": "*"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.4",
