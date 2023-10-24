@@ -62,15 +62,6 @@
     "automaticSendCheckbox": "Envoyer une invitation automatique au fournisseur"
   },
 
-  "orders.supplier": "Fournisseur",
-  "orders.orderDate": "Date de commande",
-  "orders.deliveryDate": "Date de livraison",
-  "orders.status": "Statut",
-  "orders.statusStates": {
-    "pending": "En attente",
-    "delivered": "Livrée",
-    "cancelled": "Annulée"
-  },
   "orders.detail": "Détail",
   "orders.detail.tooltip": "Voir le détail",
   "orders.showPredictedOrder": "Voir la commande prédite",

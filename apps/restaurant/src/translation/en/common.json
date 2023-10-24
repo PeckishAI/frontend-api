@@ -62,15 +62,6 @@
     "automaticSendCheckbox": "Send an automatic invitation to the supplier"
   },
 
-  "orders.supplier": "Supplier",
-  "orders.orderDate": "Order date",
-  "orders.deliveryDate": "Delivery date",
-  "orders.status": "Status",
-  "orders.statusStates": {
-    "pending": "Pending",
-    "delivered": "Delivered",
-    "cancelled": "Cancelled"
-  },
   "orders.detail": "Detail",
   "orders.detail.tooltip": "View detail",
   "orders.showPredictedOrder": "Show predicted order",
