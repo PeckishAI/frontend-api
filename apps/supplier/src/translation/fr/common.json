@@ -1,9 +1,11 @@
 {
-  "orders": "Commandes",
-  "catalog": "Catalogue",
-  "customers": "Clients",
-  "map": "Carte",
-  "support": "Support",
+  "sidebarItem": {
+    "orders": "Commandes",
+    "catalog": "Catalogue",
+    "customers": "Clients",
+    "map": "Carte",
+    "support": "Support"
+  },
 
   "orderId": "#",
   "orderDate": "Date de commande",

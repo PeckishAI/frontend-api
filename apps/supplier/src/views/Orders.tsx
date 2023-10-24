@@ -59,7 +59,7 @@ const orders = [
     orderDate: '2023-09-05',
     deliveryDate: '2023-09-14',
     customer: 'Poké Perfect',
-    status: 'Shipped',
+    status: 'Predicted',
     detail: 'Order details for Customer 5',
     price: 90.0,
   },
@@ -68,7 +68,7 @@ const orders = [
     orderDate: '2023-09-06',
     deliveryDate: '2023-09-15',
     customer: 'Burger King',
-    status: 'Delivered',
+    status: 'Predicted',
     detail: 'Order details for Customer 6',
     price: 35.5,
   },
@@ -104,7 +104,7 @@ const orders = [
     orderDate: '2023-09-10',
     deliveryDate: '2023-09-19',
     customer: 'Poké Perfect',
-    status: 'Processing',
+    status: 'Predicted',
     detail: 'Order details for Customer 10',
     price: 150.25,
   },
@@ -155,7 +155,7 @@ const orders = [
   },
 ];
 
-const tabs = ['Tab 1', 'Tab 2', 'Tab 3'];
+const tabs = ['Orders'];
 
 const orderStatus: DropdownOptionsDefinitionType[] = [
   { label: 'Predicted', value: 'predicted' },
@@ -212,13 +212,6 @@ const Orders = () => {
       {
         key: 'status',
         header: t('status'),
-        renderItem: ({ row }) => (
-          <Dropdown
-            options={orderStatus}
-            selectedOption={selectedOrderStatus[row.id]}
-            onOptionChange={(value) => sendNewOrderStatus(row, value)}
-          />
-        ),
       },
       {
         key: 'price',

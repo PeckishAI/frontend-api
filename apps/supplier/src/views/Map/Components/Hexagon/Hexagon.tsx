@@ -51,7 +51,7 @@ const Hexagon = (props: Props) => {
     return () => {
       if (polygon) polygon.off('click');
     };
-  }, [handleHexagonClick]);
+  }, [handleHexagonClick]);  
 
   return (
     <div className="hexagon">
