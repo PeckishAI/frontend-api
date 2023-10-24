@@ -122,7 +122,7 @@ export const SignIn = () => {
           />
 
           <div className="or">
-            <span>{t('common:or-separator')}</span>
+            <span>{t('common:or')}</span>
           </div>
 
           <GoogleButton
