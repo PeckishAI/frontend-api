@@ -162,27 +162,84 @@ const orders = [
 ];
 
 const ingredientList: Ingredient[] = [
-  { name: "Tomatoes", quantity: 3, unit: "kg", price: 2.99, availability: true},
-  { name: "Chicken", quantity: 600, unit: "g", price: 5.49, availability: true },
-  { name: "Onions", quantity: 30, unit: "unit", price: 1.29, availability: true },
-  { name: "Bell Peppers", quantity: 250, unit: "g", price: 2.99, availability: true },
-  { name: "Rice", quantity: 8, unit: "kg", price: 1.99, availability: true },
-  { name: "Carrots", quantity: 400, unit: "g", price: 1.49, availability: false },
-  { name: "Potatoes", quantity: 700, unit: "g", price: 2.79, availability: false },
-  { name: "Green Beans", quantity: 300, unit: "g", price: 2.49, availability: false},
-  { name: "Canned Tuna", quantity: 150, unit: "g", price: 2.29, availability: false},
-  { name: "Lentils", quantity: 250, unit: "g", price: 1.79, availability: false},
-]
+  {
+    name: 'Tomatoes',
+    quantity: 3,
+    unit: 'kg',
+    price: 2.99,
+    availability: true,
+  },
+  {
+    name: 'Chicken',
+    quantity: 600,
+    unit: 'g',
+    price: 5.49,
+    availability: true,
+  },
+  {
+    name: 'Onions',
+    quantity: 30,
+    unit: 'unit',
+    price: 1.29,
+    availability: true,
+  },
+  {
+    name: 'Bell Peppers',
+    quantity: 250,
+    unit: 'g',
+    price: 2.99,
+    availability: true,
+  },
+  { name: 'Rice', quantity: 8, unit: 'kg', price: 1.99, availability: true },
+  {
+    name: 'Carrots',
+    quantity: 400,
+    unit: 'g',
+    price: 1.49,
+    availability: false,
+  },
+  {
+    name: 'Potatoes',
+    quantity: 700,
+    unit: 'g',
+    price: 2.79,
+    availability: false,
+  },
+  {
+    name: 'Green Beans',
+    quantity: 300,
+    unit: 'g',
+    price: 2.49,
+    availability: false,
+  },
+  {
+    name: 'Canned Tuna',
+    quantity: 150,
+    unit: 'g',
+    price: 2.29,
+    availability: false,
+  },
+  {
+    name: 'Lentils',
+    quantity: 250,
+    unit: 'g',
+    price: 1.79,
+    availability: false,
+  },
+];
 
 const tabs = ['Orders'];
 
-const availabilityOptions: DropdownOptionsDefinitionType[] = [{
-  label: 'Yes',
-  value: 'true',
-},{
-  label: 'No',
-  value: 'false',
-}]
+const availabilityOptions: DropdownOptionsDefinitionType[] = [
+  {
+    label: 'Yes',
+    value: 'true',
+  },
+  {
+    label: 'No',
+    value: 'false',
+  },
+];
 const Orders = () => {
   const { t } = useTranslation('common');
 
@@ -196,8 +253,6 @@ const Orders = () => {
   const [availabilities, setAvailabilities] = useState<('true' | 'false')[]>(
     ingredientList.map((i) => String(i.availability) as 'true' | 'false')
   );
-
-  
 
   const toggleTab = (tabIndex: number) => {
     setSelectedTab(tabIndex);
@@ -228,12 +283,12 @@ const Orders = () => {
     setShowOrderDetail(true);
   };
 
-  const handleAvailabilitiesChange = (index: number, val: string)=>{
-    console.log("aval change : ", index, val);
+  const handleAvailabilitiesChange = (index: number, val: string) => {
+    console.log('aval change : ', index, val);
     const newAvailabilities = [...availabilities];
-    newAvailabilities[index] = val as "true" | "false";
+    newAvailabilities[index] = val as 'true' | 'false';
     setAvailabilities(newAvailabilities);
-  }
+  };
 
   const columns: ColumnDefinitionType<Order, keyof Order>[] = useMemo(
     () => [
@@ -290,7 +345,14 @@ const Orders = () => {
         isVisible={showOrderDetail}
         onRequestClose={() => setShowOrderDetail(false)}
         orderUUID="idk"
-        upperBanner={[{title: t('orders.deliveryDate'), value: '15/09/2023'}, {title: t('price'), value: '100€'}, {title: t('orders.status'), value: t(`orders.statusStates.delivered`)}]}
+        upperBanner={[
+          { title: t('orders.deliveryDate'), value: '15/09/2023' },
+          { title: t('price'), value: '100€' },
+          {
+            title: t('orders.status'),
+            value: t(`orders.statusStates.delivered`),
+          },
+        ]}
         tableHeaders={[
           {
             key: 'name',
@@ -311,9 +373,15 @@ const Orders = () => {
           {
             key: 'availability',
             header: t('availability'),
-            renderItem: (row) =>(
-              <Dropdown options={availabilityOptions} selectedOption={availabilities[row.index]} onOptionChange={(val)=>handleAvailabilitiesChange(row.index, val)}/>
-            )
+            renderItem: (row) => (
+              <Dropdown
+                options={availabilityOptions}
+                selectedOption={availabilities[row.index]}
+                onOptionChange={(val) =>
+                  handleAvailabilitiesChange(row.index, val)
+                }
+              />
+            ),
           },
         ]}
         tableData={ingredientList}
