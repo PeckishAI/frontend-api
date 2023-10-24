@@ -1,0 +1,9 @@
+{
+  "field.error.required": "This field is required.",
+  "field.error.name": "Name field is required.",
+  "field.error.userName": "User name field is required.",
+  "field.error.password": "Password field is required.",
+  "field.error.doesntExist": "Select existing ingredient.",
+  "field.error.quantity": "Quantity field is required.",
+  "field.error.quantityNegative": "Quantity must be greater than or equal to 0."
+}

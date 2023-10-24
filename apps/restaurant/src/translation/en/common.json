@@ -12,53 +12,8 @@
   "simulation": "Simulation",
   "integrations": "Integrations",
   "support": "Support",
+  "navbar.restaurantsDropdown": "Restaurants",
 
-  "name": "Name",
-  "quantity": "Quantity",
-  "price": "Price",
-  "actions": "Actions",
-  "availability": "Availability",
-  "unit": "Unit",
-
-  "edit": "Edit",
-  "delete": "Delete",
-  "validate": "Validate",
-  "ok": "Ok",
-  "confirm": "Confirm",
-  "cancel": "Cancel",
-  "add": "Add",
-  "search": "Search",
-  "upload": "Upload",
-  "download": "Download",
-  "import": "Import",
-  "export": "Export",
-  "refresh": "Refresh",
-  "notifications": "Notifications",
-  "logout": "Log out",
-  "preview": "Preview",
-  "next": "Next",
-  "finish": "Finish",
-  "unknown": "unknown",
-  "date": "Date",
-  "remove": "Remove",
-  "email": "Email",
-  "phone": "Phone",
-
-  "orders.supplier": "Supplier",
-  "orders.orderDate": "Order date",
-  "orders.deliveryDate": "Delivery date",
-  "orders.status": "Status",
-  "orders.statusStates": {
-    "pending": "Pending",
-    "delivered": "Delivered",
-    "cancelled": "Cancelled"
-  },
-  "orders.detail": "Detail",
-  "orders.detail.tooltip": "View detail",
-  "orders.showPredictedOrder": "Show predicted order",
-
-  "warning.delete": "Are you sure you want to delete it ?",
-  "warning.edit": "Are you sure you want to edit it ?",
   "warning.impactedRecipes": "These recipes will be affected by this action :",
 
   "inventory.addIngredientBtn": "Add an ingredient",
@@ -66,21 +21,8 @@
   "inventory.uploadCSV.popup.title": "File preview",
   "inventory.uploadCSV.popup.subtitle": "We have extracted the following column names from your file. Please check if the mapping is correct.",
 
-  "error.trigger": "An error has occurred",
-  "error.tryLater": "Please try later",
-
-  "navbar.restaurantsDropdown": "Restaurants",
-
   "myRestaurants.emptyTitle": "You don't have any restaurant",
   "myrestaurants.emptyText": "First add a new integration to see your restaurants in Peckish",
-
-  "field.error.required": "This field is required.",
-  "field.error.name": "Name field is required.",
-  "field.error.userName": "User name field is required.",
-  "field.error.password": "Password field is required.",
-  "field.error.doesntExist": "Select existing ingredient.",
-  "field.error.quantity": "Quantity field is required.",
-  "field.error.quantityNegative": "Quantity must be greater than or equal to 0.",
 
   "onboarding.msg": "Select a software that you want to integrate to Peckish !",
   "onboarding.modal.title": "New integration",
@@ -119,6 +61,19 @@
     },
     "automaticSendCheckbox": "Send an automatic invitation to the supplier"
   },
+
+  "orders.supplier": "Supplier",
+  "orders.orderDate": "Order date",
+  "orders.deliveryDate": "Delivery date",
+  "orders.status": "Status",
+  "orders.statusStates": {
+    "pending": "Pending",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "orders.detail": "Detail",
+  "orders.detail.tooltip": "View detail",
+  "orders.showPredictedOrder": "Show predicted order",
 
   "order.validation.description": "Peckish have predicted this order for your next week. You can remove, add or update quantity of each elements.",
   "order.validation.addIngredient": "Add an ingredient",

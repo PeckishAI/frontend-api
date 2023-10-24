@@ -7,47 +7,5 @@
 
   "orderId": "#",
   "orderDate": "Date de commande",
-  "deliveryDate": "Date de livraison",
-  "customer": "Client",
-  "status": "Statut",
-  "price": "Prix",
-  "detail": "Détail",
-
-  "edit": "Modifier",
-  "delete": "Supprimer",
-  "validate": "Valider",
-  "ok": "Ok",
-  "confirm": "Confirmer",
-  "cancel": "Annuler",
-  "add": "Ajouter",
-  "search": "Rechercher",
-  "upload": "Charger",
-  "download": "Télécharger",
-  "import": "Importer",
-  "export": "Exporter",
-  "refresh": "Recharger",
-  "logout": "Déconnexion",
-  "preview": "Prévisualiser",
-  "next": "Suivant",
-  "finish": "Terminé",
-
-  "predicted": "Prévue",
-  "onGoing": "Commandé",
-  "preparing": "En préparation",
-  "shipped": "Expédiée",
-  "viewDetail": "Voir détail",
-
-  "warning.delete": "Êtes-vous sure de vouloir supprimer cela ?",
-  "warning.edit": "Êtes-vous sure de vouloir modifier cela ?",
-  "warning.impactedRecipes": "Ces recettes seront impactées par cette action :",
-
-  "error.trigger": "Une erreur est survenue",
-  "error.tryLater": "Veuillez essayer plus tard",
-
-  "field.error.name": "Le champ nom est requis.",
-  "field.error.userName": "Le champ nom d'utilisateur est requis.",
-  "field.error.password": "Le champ mot de passe est requis.",
-  "field.error.doesntExist": "Sélectionner un ingrédient existant.",
-  "field.error.quantity": "Le champ quantité est requis.",
-  "field.error.quantityNegative": "La quantité doit être suppérieure ou égale à 0."
+  "deliveryDate": "Date de livraison"
 }

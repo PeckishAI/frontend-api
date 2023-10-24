@@ -15,16 +15,11 @@
   "choose-usage.restaurant.name": "Restaurant",
   "choose-usage.restaurant.description": "Enhanced stock management",
 
-  "name": "Name",
-  "email": "E-mail",
-  "password": "Password",
-  "confirm-password": "Confirm password",
   "remember-me": "Remember me",
   "sign-in": "Sign In",
   "sign-in-google": "Sign Up with Google",
   "sign-in-apple": "Continue with Apple",
   "sign-up": "Create an account",
   "sign-up-google": "Sign Up with Google",
-  "sign-up-apple": "Sign Up with Apple",
-  "or-separator": "or"
+  "sign-up-apple": "Sign Up with Apple"
 }
