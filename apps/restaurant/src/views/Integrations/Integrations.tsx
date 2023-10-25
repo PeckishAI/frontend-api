@@ -1,4 +1,4 @@
-import { Lottie, Input, Button } from 'shared-ui';
+import { Lottie, Input, Button, useTitle } from 'shared-ui';
 import IntegrationCard from './Components/IntegrationCard/IntegrationCard';
 import LoginModal from './Components/LoginModal/LoginModal';
 import { useEffect, useState } from 'react';
@@ -29,6 +29,7 @@ export type Integration = {
 
 const Integrations = () => {
   const { t } = useTranslation('common');
+  useTitle(t('pages.onboarding'));
 
   const navigate = useNavigate();
 

@@ -1,17 +1,19 @@
 {
-  "myRestaurant": "My restaurant",
-  "overview": "Overview",
-  "inventory": {
-    "stock": "Inventory",
-    "suppliers": "Suppliers",
-    "orders": "Orders"
+  "pages": {
+    "myRestaurants": "My restaurants",
+    "overview": "Overview",
+    "inventory": {
+      "stock": "Inventory",
+      "suppliers": "Suppliers",
+      "orders": "Orders"
+    },
+    "recipes": "Recipes",
+    "onboarding": "Onboarding",
+    "orders.validation": "Predicted order",
+    "simulation": "Simulation",
+    "integrations": "Integrations",
+    "support": "Support"
   },
-  "recipes": "Recipes",
-  "onboarding": "Onboarding",
-  "orders.validation": "Predicted order",
-  "simulation": "Simulation",
-  "integrations": "Integrations",
-  "support": "Support",
   "navbar.restaurantsDropdown": "Restaurants",
 
   "warning.impactedRecipes": "These recipes will be affected by this action :",

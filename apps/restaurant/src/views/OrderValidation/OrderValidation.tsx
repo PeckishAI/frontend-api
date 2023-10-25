@@ -1,4 +1,4 @@
-import { Button } from 'shared-ui';
+import { Button, useTitle } from 'shared-ui';
 import styles from './OrderValidation.module.scss';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
@@ -86,6 +86,8 @@ const ORDER_FORECAST: OrderForecast[] = [
 
 export const OrderValidation = () => {
   const { t } = useTranslation('common');
+  useTitle(t('pages.orders.validation'));
+
   const [orderForecast, setOrderForecast] =
     useState<OrderForecast[]>(ORDER_FORECAST);
   const [isSelectIngredientPopupVisible, setSelectIngredientPopupVisible] =

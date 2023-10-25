@@ -5,10 +5,13 @@ import { useEffect, useState } from 'react';
 import { recipesService, Recipe } from '../services';
 import EditIngredientPopup from '../components/EditIngredientPopup/EditIngredientPopup';
 import { useRestaurantStore } from '../store/useRestaurantStore';
+import { useTitle } from 'shared-ui';
+import { useTranslation } from 'react-i18next';
 
-type Props = {};
+const Recipes = () => {
+  const { t } = useTranslation();
+  useTitle(t('pages.recipes'));
 
-const Recipes = (props: Props) => {
   const [recipesList, setRecipesList] = useState<Recipe[]>([]);
   const [loadingData, setLoadingData] = useState(false);
   const [reveleAddIngredientPopup, setReveleAddIngredientPopup] =

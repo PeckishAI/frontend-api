@@ -6,6 +6,7 @@ import Integrations from '../Integrations/Integrations';
 
 const Onboarding = () => {
   const { t } = useTranslation('common');
+
   const { user } = useUserStore();
 
   if (user && user.onboarded) {
@@ -14,7 +15,7 @@ const Onboarding = () => {
 
   return (
     <div className="onboarding">
-      <h1 className="title">{t('onboarding')}</h1>
+      <h1 className="title">{t('pages.onboarding')}</h1>
       <Integrations />
     </div>
   );

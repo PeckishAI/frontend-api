@@ -1,17 +1,19 @@
 {
-  "myRestaurant": "Mon restaurant",
-  "overview": "Vue d'ensemble",
-  "inventory": {
-    "stock": "Inventaire",
-    "suppliers": "Fournisseurs",
-    "orders": "Commandes"
+  "pages": {
+    "myRestaurants": "Mes restaurants",
+    "overview": "Vue d'ensemble",
+    "inventory": {
+      "stock": "Inventaire",
+      "suppliers": "Fournisseurs",
+      "orders": "Commandes"
+    },
+    "recipes": "Recettes",
+    "onboarding": "Intégrations",
+    "orders.validation": "Commande prédite",
+    "simulation": "Simulation",
+    "integrations": "Intégrations",
+    "support": "Support"
   },
-  "recipes": "Recettes",
-  "onboarding": "Intégrations",
-  "orders.validation": "Commande prédite",
-  "simulation": "Simulation",
-  "integrations": "Intégrations",
-  "support": "Support",
   "navbar.restaurantsDropdown": "Restaurants",
 
   "warning.impactedRecipes": "Ces recettes seront impactées par cette action :",
