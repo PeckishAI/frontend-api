@@ -150,8 +150,10 @@ const Map = () => {
   };
 
   const handleClickedPlaceChange = (place: ResponseMapPlaceApi) => {
-    setResearchedPlace(place);
-    mapRef.current?.setView([place.location.lat, place.location.lng], 14);
+    if (place.location) {
+      setResearchedPlace(place);
+      mapRef.current?.setView([place.location.lat, place.location.lng], 14);
+    }
   };
 
   const handleOnHexagonClicked = (hexagon: HexagonType, selected: boolean) => {

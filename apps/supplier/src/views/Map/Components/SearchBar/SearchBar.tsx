@@ -24,11 +24,10 @@ const SearchBar = (props: Props) => {
         .getAutocompletePlaces(researchPlace)
         .then((res) => {
           const places: ResponseMapPlaceApi[] = [];
-          res.data.results.forEach((element) => {
+          res.data.predictions.forEach((element) => {
             places.push({
-              name: element.name,
-              address: element.formatted_address,
-              location: element.geometry.location,
+              name: element.description,
+              placeId: element.place_id,
             });
           });
           setAutocompletePLaces(places);
@@ -44,8 +43,16 @@ const SearchBar = (props: Props) => {
   // };
 
   const handleOnSuggestedPlaceClick = (place: ResponseMapPlaceApi) => {
-    setResearchPlace(place.name);
-    props.onSuggestedPlaceClick(place);
+    const newPlace = { ...place };
+    mapService
+      .getPlaceLocation(place.placeId)
+      .then((res) => {
+        newPlace.location = res.data.result.geometry.location;
+        newPlace.address = res.data.result.formatted_address;
+        props.onSuggestedPlaceClick(newPlace);
+      })
+      .catch((err) => {});
+    setResearchPlace(newPlace.name);
   };
 
   return (
