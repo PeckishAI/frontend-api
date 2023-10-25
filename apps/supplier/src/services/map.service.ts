@@ -1,4 +1,4 @@
-import axios from './index';
+import Axios from './index';
 
 export type ResponseMapPlaceApi = {
   name: string;
@@ -7,7 +7,7 @@ export type ResponseMapPlaceApi = {
 };
 
 const getAutocompletePlaces = (location: string) => {
-  return axios.get('http://127.0.0.1:8080/api/place/autocomplete/' + location);
+  return Axios.get('/place/autocomplete/' + location);
 };
 
 export const mapService = { getAutocompletePlaces };

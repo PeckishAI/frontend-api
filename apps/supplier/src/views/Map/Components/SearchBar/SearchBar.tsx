@@ -15,7 +15,6 @@ const SearchBar = (props: Props) => {
 
   useDebounceEffect(
     () => {
-      console.log('amp api request');
       if (!researchPlace) {
         setAutocompletePLaces([]);
         return;

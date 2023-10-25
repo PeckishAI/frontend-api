@@ -1,8 +1,8 @@
-import { config } from '../local_config/config';
+import { GLOBAL_CONFIG } from 'shared-config';
 import axios from 'axios';
 
 const Axios = axios.create({
-  baseURL: config.API_URL,
+  baseURL: GLOBAL_CONFIG.apiUrl + '/supplier',
 });
 
 export default Axios;
