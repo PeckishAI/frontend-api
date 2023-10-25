@@ -1,4 +1,4 @@
-import { Input } from 'shared-ui';
+import { Input, useDebounce, useDebounceEffect } from 'shared-ui';
 import './style.scss';
 import { useState } from 'react';
 import { mapService, ResponseMapPlaceApi } from '../../../../services';
@@ -13,23 +13,36 @@ const SearchBar = (props: Props) => {
     ResponseMapPlaceApi[]
   >([]);
 
-  const handleResearchPlaceChange = (value: string) => {
-    setResearchPlace(value);
-    mapService
-      .getAutocompletePlaces(value)
-      .then((res) => {
-        const places: ResponseMapPlaceApi[] = [];
-        res.data.results.forEach((element) => {
-          places.push({
-            name: element.name,
-            address: element.formatted_address,
-            location: element.geometry.location,
+  useDebounceEffect(
+    () => {
+      console.log('amp api request');
+      if (!researchPlace) {
+        setAutocompletePLaces([]);
+        return;
+      }
+
+      mapService
+        .getAutocompletePlaces(researchPlace)
+        .then((res) => {
+          const places: ResponseMapPlaceApi[] = [];
+          res.data.results.forEach((element) => {
+            places.push({
+              name: element.name,
+              address: element.formatted_address,
+              location: element.geometry.location,
+            });
           });
-        });
-        setAutocompletePLaces(places);
-      })
-      .catch((err) => {});
-  };
+          setAutocompletePLaces(places);
+        })
+        .catch((err) => {});
+    },
+    250,
+    [researchPlace]
+  );
+
+  // const handleResearchPlaceChange = (value: string) => {
+
+  // };
 
   const handleOnSuggestedPlaceClick = (place: ResponseMapPlaceApi) => {
     setResearchPlace(place.name);
@@ -42,7 +55,7 @@ const SearchBar = (props: Props) => {
       <Input
         placeholder="Enter restaurant name or city place"
         value={researchPlace}
-        onChange={handleResearchPlaceChange}
+        onChange={(value) => setResearchPlace(value)}
         className="map-input"
       />
       <div className="suggestion-dropdown">
