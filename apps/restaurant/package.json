@@ -35,8 +35,8 @@
     "react-slick": "^0.29.0",
     "react-tooltip": "^5.21.1",
     "shared-config": "*",
-    "shared-ui": "*",
     "shared-translation": "*",
+    "shared-ui": "*",
     "slick-carousel": "^1.8.1",
     "zod": "^3.22.2",
     "zustand": "^4.4.1"

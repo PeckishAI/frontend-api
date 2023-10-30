@@ -2,28 +2,17 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
-  useRef,
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Dropdown,
-  IconButton,
-  Input,
-  DialogBox,
-  UploadCsv,
-} from 'shared-ui';
-import {
-  Ingredient,
-  PreviewResponse,
-  inventoryService,
-} from '../../../services';
+import { Button, Dropdown, IconButton, Input, DialogBox } from 'shared-ui';
+import { Ingredient, inventoryService } from '../../../services';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
 import Table, { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { Tooltip } from 'react-tooltip';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import supplierService from '../../../services/supplier.service';
+import ImportIngredients from '../Components/ImportIngredients/ImportIngredients';
 
 const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -53,6 +42,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
     const [addingRow, setAddingRow] = useState(false);
     const [editedValues, setEditedValues] = useState<Ingredient | null>(null);
+    const [importIngredientsPopup, setImportIngredientsPopup] = useState(false);
     const [popupDelete, setPopupDelete] = useState<string[] | undefined>(
       undefined
     );
@@ -60,11 +50,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       string[] | undefined
     >(undefined);
     const [popupError, setPopupError] = useState('');
-    const [uploadPopup, setUploadPopup] = useState<PreviewResponse | null>(
-      null
-    );
-    const [csvFile, setCsvFile] = useState<File | null>(null);
-    const [loadingButton, setLoadingButton] = useState(false);
 
     const [suppliers, setSuppliers] = useState<DropdownOptionsDefinitionType[]>(
       []
@@ -87,35 +72,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           setSuppliers(suppliersList);
         });
     }, [selectedRestaurantUUID]);
-
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const handleFileUpload = useCallback(
-      async (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log('handleFileUpload');
-
-        if (!selectedRestaurantUUID) return;
-
-        const file = e.target.files?.[0];
-        e.target.value = '';
-
-        if (file) {
-          setLoadingButton(true);
-          inventoryService
-            .uploadCsvFile(selectedRestaurantUUID, file)
-            .then((res) => {
-              setUploadPopup(res.data);
-              setCsvFile(file);
-            })
-            .catch((err) => {
-              console.log(err);
-            })
-            .finally(() => {
-              setLoadingButton(false);
-            });
-        }
-      },
-      [selectedRestaurantUUID]
-    );
 
     const handleExportDataClick = useCallback(() => {
       const rows = ingredientsList;
@@ -173,19 +129,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 />
                 <IconButton
                   icon={<i className="fa-solid fa-file-arrow-down"></i>}
-                  onClick={() =>
-                    fileInputRef.current && fileInputRef.current.click()
-                  }
-                  tooltipMsg={`${t('import')} CSV`}
+                  onClick={() => setImportIngredientsPopup(true)}
+                  tooltipMsg={t('inventory.importData')}
                   tooltipId="inventory-tooltip"
-                  loading={loadingButton}
-                />
-                <input
-                  type="file"
-                  accept=".csv"
-                  onChange={handleFileUpload}
-                  style={{ display: 'none' }} // hide input
-                  ref={fileInputRef}
                 />
                 <Button
                   value={t('inventory.addIngredientBtn')}
@@ -198,13 +144,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           },
         };
       },
-      [
-        addingRow,
-        loadingButton,
-        ingredientsList,
-        handleFileUpload,
-        handleExportDataClick,
-      ]
+      [addingRow, ingredientsList, handleExportDataClick]
     );
 
     const reloadInventoryData = useCallback(async () => {
@@ -232,7 +172,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       reloadInventoryData();
     }, [reloadInventoryData]);
 
-    // Handle for actions in tab
+    // Handle for actions in table
     const handleEditClick = (row: Ingredient) => {
       setEditingRowId(row.id);
       setEditedValues({ ...row });
@@ -375,12 +315,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setEditedValues(newIngredient);
     };
 
-    const handleUploadCsvValidate = () => {
-      setUploadPopup(null);
-      setCsvFile(null);
-      reloadInventoryData();
-    };
-
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
       {
         key: 'name',
@@ -518,18 +452,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       <>
         <Table data={ingredientsList} columns={columns} />
 
-        {uploadPopup !== null && csvFile && (
-          <UploadCsv
-            fileCsv={csvFile}
-            extractedData={uploadPopup}
-            onCancelClick={() => {
-              setUploadPopup(null);
-              setCsvFile(null);
-              if (fileInputRef.current) fileInputRef.current.value = '';
-            }}
-            onValidateClick={handleUploadCsvValidate}
-          />
-        )}
+        <ImportIngredients
+          openUploader={importIngredientsPopup}
+          onCloseUploader={() => setImportIngredientsPopup(false)}
+          onIngredientsImported={() => reloadInventoryData()}
+        />
 
         <Tooltip className="tooltip" id="inventory-tooltip" delayShow={500} />
         <DialogBox
