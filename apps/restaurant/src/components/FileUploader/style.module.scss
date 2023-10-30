@@ -1,0 +1,48 @@
+.fileUploader {
+  padding: 15px;
+  border: 2px dashed var(--secondaryColorAccentued);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s;
+  cursor: pointer;
+  &:hover {
+    border: 2px dashed var(--primaryColor);
+  }
+
+  .iconType {
+    font-size: 2rem;
+    color: var(--primaryColor);
+    flex: 1;
+  }
+
+  .select {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 3;
+    .addIcon {
+      font-size: 1.5rem;
+      color: var(--secondaryColorAccentued);
+      transition: all 0.2s;
+    }
+    &:hover .addIcon {
+      color: var(--primaryColor);
+      transform: rotate(90deg);
+    }
+    .title {
+      font-size: 0.8rem;
+      color: var(--textPrimaryColor);
+      display: block;
+    }
+  }
+  .fileType {
+    font-size: 0.7rem;
+    color: var(--textSecondaryColor);
+    margin-top: 5px;
+    display: block;
+    flex: 1;
+    text-align: right;
+  }
+}
