@@ -94,7 +94,7 @@ const ImportIngredients = (props: Props) => {
 
       {previewFilePopup !== null && uploadedFile && (
         <UploadValidation
-          fileCsv={uploadedFile}
+          file={uploadedFile}
           data={previewFilePopup}
           headers={[
             {

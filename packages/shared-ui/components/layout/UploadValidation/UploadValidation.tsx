@@ -13,7 +13,7 @@ type Props<T> = {
     fileColumns: string[];
     detectedColumns: T;
   };
-  fileCsv: File;
+  file: File;
   onCancelClick: () => void;
   onValidateClick: () => void;
 
