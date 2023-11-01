@@ -46,5 +46,15 @@
   "warning.delete": "Êtes-vous sure de vouloir supprimer cela ?",
   "warning.edit": "Êtes-vous sure de vouloir modifier cela ?",
   "error.trigger": "Une erreur est survenue",
-  "error.tryLater": "Veuillez essayer plus tard"
+  "error.tryLater": "Veuillez essayer plus tard",
+  
+  "orders.supplier": "Fournisseur",
+  "orders.orderDate": "Date de commande",
+  "orders.deliveryDate": "Date de livraison",
+  "orders.status": "Statut",
+  "orders.statusStates": {
+    "pending": "En attente",
+    "delivered": "Livrée",
+    "cancelled": "Annulée"
+  }
 }

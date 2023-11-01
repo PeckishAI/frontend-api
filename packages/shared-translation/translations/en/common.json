@@ -46,5 +46,15 @@
   "warning.delete": "Are you sure you want to delete it ?",
   "warning.edit": "Are you sure you want to edit it ?",
   "error.trigger": "An error has occurred",
-  "error.tryLater": "Please try later"
+  "error.tryLater": "Please try later",
+  
+  "orders.supplier": "Supplier",
+  "orders.orderDate": "Order date",
+  "orders.deliveryDate": "Delivery date",
+  "orders.status": "Status",
+  "orders.statusStates": {
+    "pending": "Pending",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  }
 }
