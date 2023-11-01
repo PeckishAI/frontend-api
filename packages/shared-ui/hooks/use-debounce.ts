@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
  */
 export const useDebounce = <T>(value: T, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
-  console.log('debouncedValue', debouncedValue);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -58,8 +57,6 @@ export const useDebounceMemo = <T>(
   const [debouncedValue, setDebouncedValue] = useState<T>(callback());
 
   useEffect(() => {
-    console.log('useDebounceMemo');
-
     const handler = setTimeout(() => {
       setDebouncedValue(callback());
     }, delay);

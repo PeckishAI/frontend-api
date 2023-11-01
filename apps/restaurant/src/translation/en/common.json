@@ -9,6 +9,7 @@
     },
     "recipes": "Recipes",
     "onboarding": "Onboarding",
+    "onboarding_selectProducts": "Select products",
     "orders.validation": "Predicted order",
     "simulation": "Simulation",
     "integrations": "Integrations",
