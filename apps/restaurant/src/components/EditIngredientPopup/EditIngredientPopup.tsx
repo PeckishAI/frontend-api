@@ -37,15 +37,9 @@ const EditIngredientPopup = (props: Props) => {
   }, [props.recipe]);
 
   const handleCheckbox = (ingredient: IngredientForRecipe) => {
-    if (
-      selectedIngredients.find(
-        (item) => item.ingredient_uuid === ingredient.ingredient_uuid
-      )
-    ) {
+    if (selectedIngredients.find((item) => item.uuid === ingredient.uuid)) {
       setSelectedIngredients(
-        selectedIngredients.filter(
-          (item) => item.ingredient_uuid !== ingredient.ingredient_uuid
-        )
+        selectedIngredients.filter((item) => item.uuid !== ingredient.uuid)
       );
     } else {
       setSelectedIngredients([...selectedIngredients, ingredient]);
@@ -63,9 +57,7 @@ const EditIngredientPopup = (props: Props) => {
   const handleDeleteSelectedIngredients = async () => {
     const updatedIngredients = ingredients.filter(
       (ingredient) =>
-        !selectedIngredients.find(
-          (item) => item.ingredient_uuid === ingredient.ingredient_uuid
-        )
+        !selectedIngredients.find((item) => item.uuid === ingredient.uuid)
     );
     setIngredients(updatedIngredients);
 
@@ -73,7 +65,7 @@ const EditIngredientPopup = (props: Props) => {
       for (const ingredient of selectedIngredients) {
         await recipesService.deleteIngredient(
           props.recipe?.id,
-          ingredient.ingredient_uuid
+          ingredient.uuid
         );
       }
       setSelectedIngredients([]);
@@ -156,7 +148,7 @@ const EditIngredientPopup = (props: Props) => {
     keyof IngredientForRecipe
   >[] = [
     {
-      key: 'ingredient_uuid',
+      key: 'uuid',
       header: '',
       classname: 'delete',
       width: '5%',
@@ -166,8 +158,7 @@ const EditIngredientPopup = (props: Props) => {
           onChange={() => handleCheckbox(row)}
           checked={
             selectedIngredients.find(
-              (item) =>
-                item.ingredient_uuid === ingredients[index].ingredient_uuid
+              (item) => item.uuid === ingredients[index].uuid
             )
               ? true
               : false
@@ -176,7 +167,7 @@ const EditIngredientPopup = (props: Props) => {
       ),
     },
     {
-      key: 'ingredient_name',
+      key: 'name',
       header: t('name'),
       width: '50%',
       classname: 'column-bold',

@@ -9,7 +9,7 @@ import { SelectIngredientPopup } from './components/SelectIngredientPopup';
 import { Ingredient } from '../../services';
 import { useOrders } from '../../utils/orders-mock';
 import { formatCurrency } from '../../utils/helpers';
-import { useRestaurantStore } from '../../store/useRestaurantStore';
+import { useRestaurantCurrency } from '../../store/useRestaurantStore';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
@@ -27,12 +27,7 @@ export const OrderValidation = () => {
     removePredictedOrder,
     addOrder,
   } = useOrders();
-  const restaurantCurrency = useRestaurantStore((state) => {
-    return (
-      state.restaurants.find((r) => r.uuid === state.selectedRestaurantUUID)
-        ?.currency || 'EUR'
-    );
-  });
+  const { currencyISO } = useRestaurantCurrency();
 
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [validationLoading, setValidationLoading] = useState(false);
@@ -137,7 +132,7 @@ export const OrderValidation = () => {
                     }, 0)
                   );
                 }, 0),
-              restaurantCurrency
+              currencyISO
             )}
           </p>
         </div>

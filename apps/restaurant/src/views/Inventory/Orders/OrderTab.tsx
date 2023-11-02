@@ -8,7 +8,7 @@ import styles from './OrderTab.module.scss';
 import { Tooltip } from 'react-tooltip';
 import { Order, useOrders } from '../../../utils/orders-mock';
 import { formatCurrency } from '../../../utils/helpers';
-import { useRestaurantStore } from '../../../store/useRestaurantStore';
+import { useRestaurantCurrency } from '../../../store/useRestaurantStore';
 import dayjs from 'dayjs';
 
 export type OrderTabRef = {
@@ -32,12 +32,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
     });
 
     const selectedOrder = orders.find((order) => order.uuid === orderDetail);
-    const restaurantCurrency = useRestaurantStore((state) => {
-      return (
-        state.restaurants.find((r) => r.uuid === state.selectedRestaurantUUID)
-          ?.currency || 'EUR'
-      );
-    });
+    const { currencyISO } = useRestaurantCurrency();
 
     // Render options for the tab bar
     useImperativeHandle(
@@ -71,8 +66,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
         {
           key: 'price',
           header: t('price'),
-          renderItem: ({ row }) =>
-            formatCurrency(row.price, restaurantCurrency),
+          renderItem: ({ row }) => formatCurrency(row.price, currencyISO),
           classname: 'column-bold',
         },
         {
@@ -95,7 +89,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
           },
         },
       ],
-      [t, restaurantCurrency]
+      [t, currencyISO]
     );
 
     return (
@@ -117,10 +111,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
                   },
                   {
                     title: t('price'),
-                    value: formatCurrency(
-                      selectedOrder.price,
-                      restaurantCurrency
-                    ),
+                    value: formatCurrency(selectedOrder.price, currencyISO),
                   },
                   {
                     title: t('orders.status'),
@@ -143,8 +134,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
             {
               key: 'cost',
               header: t('price'),
-              renderItem: ({ row }) =>
-                formatCurrency(row.cost, restaurantCurrency),
+              renderItem: ({ row }) => formatCurrency(row.cost, currencyISO),
               classname: 'column-bold',
             },
           ]}

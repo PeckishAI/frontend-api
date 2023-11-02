@@ -5,6 +5,7 @@ import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { useTranslation } from 'react-i18next';
 import RecipeCategory from './Components/RecipeCategory/RecipeCategory';
 import { Tooltip } from 'react-tooltip';
+import EditRecipePanel from './Components/EditRecipePanel';
 
 export type RecipeCat = {
   label: string;
@@ -52,6 +53,7 @@ const Recipes = () => {
     [category: string]: Recipe[];
   }>({});
   const [loadingData, setLoadingData] = useState(false);
+  const [editRecipe, setEditRecipe] = useState<Recipe | null>(null);
 
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
@@ -101,6 +103,9 @@ const Recipes = () => {
           category={recipeCategories.find((c) => c.value === category)}
           recipes={recipesByCategory[category]}
           reloadRecipesRequest={() => reloadRecipes()}
+          onClickRecipe={(recipe) => {
+            setEditRecipe(recipe);
+          }}
         />
       ))}
       {loadingData && (
@@ -109,6 +114,12 @@ const Recipes = () => {
         </div>
       )}
       <Tooltip className="tooltip" id="recipeCard-tooltip" />
+
+      <EditRecipePanel
+        isOpen={editRecipe !== null}
+        onClose={() => setEditRecipe(null)}
+        recipe={editRecipe}
+      />
     </div>
   );
 };

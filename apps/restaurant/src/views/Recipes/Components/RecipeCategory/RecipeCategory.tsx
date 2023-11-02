@@ -9,6 +9,7 @@ type Props = {
   category?: RecipeCat;
   recipes?: Recipe[];
   reloadRecipesRequest: () => void;
+  onClickRecipe: (recipe: Recipe) => void;
 };
 
 const RecipeCategory = (props: Props) => {
@@ -48,7 +49,11 @@ const RecipeCategory = (props: Props) => {
       <div className={style.recipes}>
         {recipesToDisplay.length !== 0 &&
           recipesToDisplay.map((recipe, i) => (
-            <RecipeCard key={i} recipe={recipe} onClick={() => null} />
+            <RecipeCard
+              key={i}
+              recipe={recipe}
+              onClick={() => props.onClickRecipe(recipe)}
+            />
           ))}
       </div>
     </div>
