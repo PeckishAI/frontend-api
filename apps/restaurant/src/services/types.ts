@@ -8,21 +8,3 @@ export type Ingredient = {
   cost: number;
   actions: void;
 };
-
-export type Recipe = {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  cost: number;
-  margin: number;
-  currency: string;
-  ingredients: IngredientForRecipe[];
-  isOnboarded: boolean;
-};
-export type IngredientForRecipe = {
-  ingredient_uuid: string;
-  ingredient_name: string;
-  quantity: number;
-  unit: string;
-};
