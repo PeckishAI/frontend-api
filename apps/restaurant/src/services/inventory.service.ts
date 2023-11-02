@@ -53,14 +53,18 @@ export type ColumnsNameMapping = {
 };
 
 export type PreviewResponse = {
-  detected_columns: ColumnsNameMapping;
-  file_columns: string[];
+  detectedColumns: ColumnsNameMapping;
+  fileColumns: string[];
 };
 
-const uploadCsvFile = (restaurantUUID: string, file: File) => {
+const uploadCsvFile = async (
+  restaurantUUID: string,
+  file: File
+): Promise<PreviewResponse> => {
   const formData = new FormData();
   formData.append('file', file);
-  return axios.post<PreviewResponse>(
+
+  const res = await axios.post(
     '/inventory/' + restaurantUUID + '/upload/smart_reader',
     formData,
     {
@@ -69,6 +73,11 @@ const uploadCsvFile = (restaurantUUID: string, file: File) => {
       },
     }
   );
+
+  return {
+    fileColumns: res.data.file_columns,
+    detectedColumns: res.data.detected_columns,
+  };
 };
 
 const getFormData = (file: File, headerValues: ColumnsNameMapping) => {
@@ -82,13 +91,13 @@ const getFormData = (file: File, headerValues: ColumnsNameMapping) => {
   return formData;
 };
 
-const getPreviewUploadedCsv = (
+const getPreviewUploadedCsv = async (
   restaurantUUID: string,
   file: File,
   headerValues: ColumnsNameMapping
 ) => {
   const formData = getFormData(file, headerValues);
-  return axios.post(
+  const res = await axios.post(
     '/inventory/' + restaurantUUID + '/upload/preview',
     formData,
     {
@@ -97,6 +106,7 @@ const getPreviewUploadedCsv = (
       },
     }
   );
+  return res.data as ColumnsNameMapping[];
 };
 
 const validUploadedCsv = (

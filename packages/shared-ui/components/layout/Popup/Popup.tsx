@@ -7,6 +7,7 @@ type Props = {
   children: React.ReactNode;
   title?: string;
   subtitle?: string;
+  maxWidth?: number;
 };
 
 const Popup = (props: Props) => {
@@ -19,6 +20,7 @@ const Popup = (props: Props) => {
       <div className={styles.centeringContainer}>
         <div
           className={styles.modalContent}
+          style={{ maxWidth: props.maxWidth && props.maxWidth }}
           onClick={(e) => e.stopPropagation()}>
           {props.title && <h3 className={styles.modalTitle}>{props.title}</h3>}
           {props.subtitle && (
