@@ -19,32 +19,32 @@ const Recipes = () => {
 
   const recipeCategories: RecipeCat[] = [
     {
-      label: 'Drinks', // add translation
+      label: t('recipesCategories.drinks'),
       value: 'drinks',
       icon: <i className="fa-solid fa-martini-glass"></i>,
     },
     {
-      label: 'Starters', // add translation
+      label: t('recipesCategories.starters'),
       value: 'starters',
       icon: <i className="fa-solid fa-bowl-food"></i>,
     },
     {
-      label: 'Main Courses', // add translation
+      label: t('recipesCategories.mainCourses'),
       value: 'main_course',
       icon: <i className="fa-solid fa-bell-concierge"></i>,
     },
     {
-      label: 'Desserts', // add translation
+      label: t('recipesCategories.desserts'),
       value: 'desserts',
       icon: <i className="fa-solid fa-ice-cream"></i>,
     },
     {
-      label: 'Snacks', // add translation
+      label: t('recipesCategories.snacks'),
       value: 'snacks',
       icon: <i className="fa-solid fa-cookie-bite"></i>,
     },
     {
-      label: 'Others', // add translation
+      label: t('recipesCategories.others'),
       value: 'others',
       icon: <i className="fa-solid fa-bone"></i>,
     },

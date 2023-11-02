@@ -27,7 +27,7 @@
   "inventory.selectSupplier": "Select a supplier",
   "inventory.selectUnit": "Select a unit",
 
-  "recipes.categories": {
+  "recipesCategories": {
     "drinks": "Drinks",
     "starters": "Starters",
     "mainCourses": "Main courses",
