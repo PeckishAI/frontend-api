@@ -42,17 +42,6 @@
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
-.recipes {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 10px;
-  margin: 0 auto;
-
-  /* temporary */
-  overflow-y: auto;
-  min-height: 75vh; // to make loading lottie in middle of the page
-}
-
 .loading-container {
   position: absolute;
   top: 0;
