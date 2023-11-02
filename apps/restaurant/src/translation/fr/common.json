@@ -69,17 +69,24 @@
   "orders.detail.tooltip": "Voir le détail",
   "orders.showPredictedOrder": "Voir la commande prédite",
 
+  "order.validation.empty": {
+    "title": "Pas de commande prédite",
+    "description": "Peckish n'a pas encore prédis de commande pour votre semaine prochaine. Vous pouvez tout de même ajouter des ingrédients manuellement."
+  },
   "order.validation.description": "Peckish a prédit cette commande pour votre semaine prochaine. Vous pouvez supprimer, ajouter ou mettre à jour la quantité de chaque élément.",
   "order.validation.addIngredient": "Ajouter un ingrédient",
   "order.validation.items_one": "{{count}} article",
   "order.validation.items_other": "{{count}} articles",
-  "order.validation.submitOrder": "Envoyer la commande",
+  "order.validation.submitOrder_one": "Envoyer la commande",
+  "order.validation.submitOrder_other": "Envoyer les commandes",
   "order.validation.deleteItemPopup": "Êtes-vous sûr de supprimer {{name}} de votre commande ?",
   "order.validation.addIngredientPopup": {
     "title": "Sélectionnez un ingrédient",
     "subtitle": "L'ingrédient sélectionné sera ajouté dans la bonne commande fournisseur",
-    "selectPlaceholder": "Sélectionnez un ingrédient"
+    "selectPlaceholder": "Sélectionnez un ingrédient",
+    "selectSupplierPlaceholder": "Sélectionnez un fournisseur"
   },
+  "order.validation.submit.success": "Commande envoyée avec succès",
 
   "notification.import_inventory.title": "Ajoutez vos ingrédients",
   "notification.import_inventory.description": "Importez vos ingrédients pour terminer le processus d'intégration",

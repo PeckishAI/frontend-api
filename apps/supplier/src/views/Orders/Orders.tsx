@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Table, Tabs, Dropdown, Input, OrderDetail } from 'shared-ui';
+import { Table, Tabs, Input, OrderDetail } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { useMemo, useState, useEffect, useCallback } from 'react';
@@ -23,6 +23,7 @@ type Order = {
   detail: string;
   price: number;
 };
+
 const orders = [
   {
     id: '1',

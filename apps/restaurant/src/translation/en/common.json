@@ -69,17 +69,26 @@
   "orders.detail.tooltip": "View detail",
   "orders.showPredictedOrder": "Show predicted order",
 
+  "order.validation.empty": {
+    "title": "Predicted order not available",
+    "description": "No order forecast available for the moment. But you can add ingredients manually to your order."
+  },
   "order.validation.description": "Peckish have predicted this order for your next week. You can remove, add or update quantity of each elements.",
   "order.validation.addIngredient": "Add an ingredient",
   "order.validation.items_one": "{{count}} item",
   "order.validation.items_other": "{{count}} items",
-  "order.validation.submitOrder": "Submit order",
+  "order.validation.selectedOrders_one": "{{count}} order selected",
+  "order.validation.selectedOrders_other": "{{count}} orders selected",
+  "order.validation.submitOrder_one": "Submit order",
+  "order.validation.submitOrder_other": "Submit orders",
   "order.validation.deleteItemPopup": "Are you sure to delete {{name}} from your order ?",
   "order.validation.addIngredientPopup": {
     "title": "Select an ingredient",
     "subtitle": "The selected ingredient will be added in the good supplier order",
-    "selectPlaceholder": "Select an ingredient"
+    "selectPlaceholder": "Select an ingredient",
+    "selectSupplierPlaceholder": "Select a supplier"
   },
+  "order.validation.submit.success": "Order Successfully submitted",
 
   "notification.import_inventory.title": "Add your ingredients",
   "notification.import_inventory.description": "Import your ingredients to finish the onboarding process",

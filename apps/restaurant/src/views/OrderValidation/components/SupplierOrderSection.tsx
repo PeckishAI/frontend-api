@@ -1,14 +1,18 @@
 import { useState } from 'react';
-import { CollapsibleMenu, DialogBox, Input, Table } from 'shared-ui';
+import { Checkbox, CollapsibleMenu, DialogBox, Input, Table } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
-import { OrderForecast } from '../OrderValidation';
 import { useTranslation } from 'react-i18next';
 import styles from '../OrderValidation.module.scss';
 import { FaCheck, FaTimes, FaTrash } from 'react-icons/fa';
 import { FaPenToSquare } from 'react-icons/fa6';
+import { PredictedOrder } from '../../../utils/orders-mock';
+import { useRestaurantStore } from '../../../store/useRestaurantStore';
+import { formatCurrency } from '../../../utils/helpers';
 
 type Props = {
-  data: OrderForecast;
+  data: PredictedOrder;
+  isSelected: boolean;
+  toggleSelect: () => void;
   onUpdateIngredient: (uuid: string, quantity: number) => void;
   onDeleteIngredient: (uuid: string) => void;
 };
@@ -20,8 +24,14 @@ export const SupplierOrderSection = (props: Props) => {
   const [deleteIngredientUUID, setDeleteIngredientUUID] = useState<
     string | null
   >(null);
+  const restaurantCurrency = useRestaurantStore((state) => {
+    return (
+      state.restaurants.find((r) => r.uuid === state.selectedRestaurantUUID)
+        ?.currency || 'EUR'
+    );
+  });
 
-  const columns: ColumnDefinitionType<OrderForecast['items'][number]>[] = [
+  const columns: ColumnDefinitionType<PredictedOrder['products'][number]>[] = [
     {
       header: t('name'),
       key: 'name',
@@ -47,9 +57,11 @@ export const SupplierOrderSection = (props: Props) => {
     },
     {
       header: t('price'),
-      key: 'price',
+      key: 'cost',
       renderItem: ({ row }) => (
-        <p className={styles.priceColumn}>{`${row.price} €`}</p>
+        <p className={styles.priceColumn}>
+          {formatCurrency(row.cost, restaurantCurrency)}
+        </p>
       ),
     },
     {
@@ -109,21 +121,29 @@ export const SupplierOrderSection = (props: Props) => {
         className={styles.collapsibleMenu}
         header={
           <div className={styles.collapsibleHeader}>
-            <p className={styles.supplierName}>{props.data.supplierName}</p>
-            <p className={styles.totalPrice}>{`${props.data.items.reduce(
-              (prev, curr) => prev + curr.price,
-              0
-            )}€ (${t('order.validation.items', {
-              count: props.data.items.length,
+            <p className={styles.supplierName}>{props.data.supplier}</p>
+            <p className={styles.totalPrice}>{`${formatCurrency(
+              props.data.products.reduce((prev, curr) => prev + curr.cost, 0),
+              restaurantCurrency
+            )} (${t('order.validation.items', {
+              count: props.data.products.length,
             })})`}</p>
+
+            <Checkbox
+              className={styles.checkbox}
+              checked={props.isSelected}
+              onCheck={() => {
+                props.toggleSelect();
+              }}
+            />
           </div>
         }>
-        <Table columns={columns} data={props.data.items} />
+        <Table columns={columns} data={props.data.products} />
       </CollapsibleMenu>
 
       <DialogBox
         msg={t('order.validation.deleteItemPopup', {
-          name: props.data.items.find((i) => i.id === deleteIngredientUUID)
+          name: props.data.products.find((i) => i.id === deleteIngredientUUID)
             ?.name,
         })}
         type="warning"

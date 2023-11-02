@@ -1,4 +1,4 @@
-import { Button, useTitle } from 'shared-ui';
+import { Button, EmptyPage, useTitle } from 'shared-ui';
 import styles from './OrderValidation.module.scss';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
@@ -7,182 +7,77 @@ import { useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { SelectIngredientPopup } from './components/SelectIngredientPopup';
 import { Ingredient } from '../../services';
-
-export type OrderForecast = {
-  id: string;
-  supplierName: string;
-  items: {
-    id: string;
-    name: string;
-    quantity: number;
-    unit: string;
-    price: number;
-    availability: string;
-  }[];
-};
-
-const ORDER_FORECAST: OrderForecast[] = [
-  {
-    id: '1',
-    supplierName: 'Metro',
-    items: [
-      {
-        id: '1',
-        name: 'Tomato',
-        quantity: 10,
-        unit: 'kg',
-        price: 10,
-        availability: 'YES',
-      },
-      {
-        id: '2',
-        name: 'Potato',
-        quantity: 10,
-        unit: 'kg',
-        price: 10,
-        availability: 'YES',
-      },
-      {
-        id: '3',
-        name: 'Onion',
-        quantity: 10,
-        unit: 'kg',
-        price: 10,
-        availability: 'YES',
-      },
-    ],
-  },
-  {
-    id: '2',
-    supplierName: 'Metro',
-    items: [
-      {
-        id: '1',
-        name: 'Tomato',
-        quantity: 10,
-        unit: 'kg',
-        price: 10,
-        availability: 'NO',
-      },
-      {
-        id: '2',
-        name: 'Potato',
-        quantity: 10,
-        unit: 'kg',
-        price: 10,
-        availability: 'NO',
-      },
-      {
-        id: '3',
-        name: 'Onion',
-        quantity: 10,
-        unit: 'kg',
-        price: 10,
-        availability: 'NO',
-      },
-    ],
-  },
-];
+import { useOrders } from '../../utils/orders-mock';
+import { formatCurrency } from '../../utils/helpers';
+import { useRestaurantStore } from '../../store/useRestaurantStore';
+import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 export const OrderValidation = () => {
   const { t } = useTranslation('common');
   useTitle(t('pages.orders.validation'));
+  const navigate = useNavigate();
 
-  const [orderForecast, setOrderForecast] =
-    useState<OrderForecast[]>(ORDER_FORECAST);
+  const {
+    predictedOrders: orderForecast,
+    updateIngredient,
+    addIngredient,
+    removeIngredient,
+    removePredictedOrder,
+    addOrder,
+  } = useOrders();
+  const restaurantCurrency = useRestaurantStore((state) => {
+    return (
+      state.restaurants.find((r) => r.uuid === state.selectedRestaurantUUID)
+        ?.currency || 'EUR'
+    );
+  });
+
+  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const [validationLoading, setValidationLoading] = useState(false);
   const [isSelectIngredientPopupVisible, setSelectIngredientPopupVisible] =
     useState(false);
 
-  const handleUpdateIngredient =
-    (orderUUID: string) => (ingredientUUID: string, quantity: number) => {
-      setOrderForecast(
-        orderForecast.map((supplierOrder) => {
-          if (supplierOrder.id !== orderUUID) return supplierOrder;
-          return {
-            ...supplierOrder,
-            items: supplierOrder.items.map((item) => ({
-              ...item,
-              quantity: item.id === ingredientUUID ? quantity : item.quantity,
-            })),
-          };
-        }) as OrderForecast[]
-      );
-    };
+  const handleUpdateIngredient = (ingredientUUID: string, quantity: number) => {
+    updateIngredient(ingredientUUID, quantity);
+  };
 
-  const handleDeleteIngredient =
-    (orderUUID: string) => (ingredientUUID: string) => {
-      if (
-        orderForecast.filter(
-          (supplierOrder) => supplierOrder.id === orderUUID
-        )[0].items.length === 1
-      ) {
-        setOrderForecast(
-          orderForecast.filter(
-            (supplierOrder) => supplierOrder.id !== orderUUID
-          )
-        );
-        return;
-      }
-
-      setOrderForecast(
-        orderForecast.map((supplierOrder) => {
-          if (supplierOrder.id !== orderUUID) return supplierOrder;
-          return {
-            ...supplierOrder,
-            items: supplierOrder.items.filter(
-              (item) => item.id !== ingredientUUID
-            ),
-          };
-        }) as OrderForecast[]
-      );
-    };
+  const handleDeleteIngredient = (ingredientUUID: string) => {
+    removeIngredient(ingredientUUID);
+  };
 
   const handleAddIngredient = (ingredient: Ingredient, quantity: number) => {
-    const supplierOrder = orderForecast.find(
-      (order) => order.supplierName === ingredient.supplier
-    );
-
-    if (supplierOrder) {
-      setOrderForecast(
-        orderForecast.map((order) => {
-          if (order.supplierName !== ingredient.supplier) return order;
-          return {
-            ...order,
-            items: [
-              ...order.items,
-              {
-                id: ingredient.id,
-                name: ingredient.name,
-                quantity,
-                unit: ingredient.unit,
-                price: ingredient.cost * quantity,
-                availability: 'Unknown',
-              },
-            ],
-          };
-        })
-      );
-    } else {
-      setOrderForecast([
-        ...orderForecast,
-        {
-          id: ingredient.id,
-          supplierName: ingredient.supplier,
-          items: [
-            {
-              id: ingredient.id,
-              name: ingredient.name,
-              quantity,
-              unit: ingredient.unit,
-              price: ingredient.cost * quantity,
-              availability: 'Unknown',
-            },
-          ],
-        },
-      ]);
-    }
-
+    addIngredient(ingredient, quantity);
     setSelectIngredientPopupVisible(false);
+  };
+
+  const sendOrders = () => {
+    console.log('ok');
+
+    setValidationLoading(true);
+    setTimeout(() => {
+      setValidationLoading(false);
+      selectedOrders.forEach((uuid) => {
+        const order = orderForecast!.find((order) => order.uuid === uuid);
+        if (!order) return;
+
+        addOrder({
+          ...order,
+          status: 'pending',
+          deliveryDate: 'Unknown',
+          orderDate: dayjs().format('DD/MM/YYYY'),
+          price: order.products.reduce((acc, item) => {
+            return acc + item.cost;
+          }, 0),
+        });
+        removePredictedOrder(uuid);
+
+        // setSelectedOrders(selectedOrders.filter((u) => u !== uuid));
+      });
+      navigate('/inventory/orders');
+      toast.success(t('order.validation.submit.success'));
+    }, 1000);
   };
 
   return (
@@ -199,35 +94,72 @@ export const OrderValidation = () => {
         />
       </div>
 
-      {orderForecast.map((order) => (
-        <SupplierOrderSection
-          key={order.id}
-          data={order}
-          onUpdateIngredient={handleUpdateIngredient(order.id)}
-          onDeleteIngredient={handleDeleteIngredient(order.id)}
-        />
-      ))}
+      {!orderForecast ||
+        (!orderForecast.length && (
+          <EmptyPage
+            className={styles.emptyPage}
+            title={t('order.validation.empty.title')}
+            description={t('order.validation.empty.description')}
+          />
+        ))}
+
+      {orderForecast &&
+        orderForecast.map((order) => (
+          <SupplierOrderSection
+            key={order.uuid}
+            data={order}
+            isSelected={selectedOrders.includes(order.uuid)}
+            toggleSelect={() => {
+              if (selectedOrders.includes(order.uuid)) {
+                setSelectedOrders(
+                  selectedOrders.filter((uuid) => uuid !== order.uuid)
+                );
+              } else {
+                setSelectedOrders([...selectedOrders, order.uuid]);
+              }
+            }}
+            onUpdateIngredient={handleUpdateIngredient}
+            onDeleteIngredient={handleDeleteIngredient}
+          />
+        ))}
 
       <div className={styles.bottomSection}>
         <div className={styles.totalOrderPriceContainer}>
           <p className={styles.totalOrderPriceLabel}>Total :</p>
           <p className={styles.totalOrderPrice}>
-            {orderForecast.reduce((acc, order) => {
-              return (
-                acc +
-                order.items.reduce((acc, item) => {
-                  return acc + item.price;
-                }, 0)
-              );
-            }, 0)}
-            €
+            {formatCurrency(
+              orderForecast &&
+                orderForecast.reduce((acc, order) => {
+                  return (
+                    acc +
+                    order.products.reduce((acc, item) => {
+                      return acc + item.cost;
+                    }, 0)
+                  );
+                }, 0),
+              restaurantCurrency
+            )}
           </p>
         </div>
-        <Button
-          value={t('order.validation.submitOrder')}
-          type="primary"
-          className={styles.validateOrderButton}
-        />
+
+        <div className={styles.validateOrderContainer}>
+          <Button
+            value={t('order.validation.submitOrder', {
+              count: selectedOrders.length,
+            })}
+            type="primary"
+            disabled={!selectedOrders.length}
+            className={styles.validateOrderButton}
+            loading={validationLoading}
+            onClick={sendOrders}
+          />
+
+          <p className={styles.selectedCount}>
+            {t('order.validation.selectedOrders', {
+              count: selectedOrders.length,
+            })}
+          </p>
+        </div>
       </div>
 
       <Tooltip id="order-tooltip" className="tooltip" />
