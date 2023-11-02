@@ -50,7 +50,7 @@
     "others": "Others"
   },
 
-  "recipes.categories": {
+  "recipesCategories": {
     "drinks": "Drinks",
     "starters": "Starters",
     "mainCourses": "Main courses",
