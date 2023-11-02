@@ -37,7 +37,7 @@
     "others": "Autres"
   },
 
-  "recipes.categories": {
+  "recipesCategories": {
     "drinks": "Boissons",
     "starters": "Entrées",
     "mainCourses": "Plats princiaux",
