@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { restaurantService } from '../services';
 import { User, useUserStore } from '@peckishai/user-management';
+import i18n from '../translation/i18n';
 
 export type Restaurant = {
   uuid: string;
@@ -65,3 +66,24 @@ export const useRestaurantStore = create<RestaurantStore>()((set) => ({
     set((state) => ({ restaurants: [...state.restaurants, restaurant] }));
   },
 }));
+
+export const useRestaurantCurrency = () => {
+  const currencyISO = useRestaurantStore((state) => {
+    return (
+      state.restaurants.find((r) => r.uuid === state.selectedRestaurantUUID)
+        ?.currency || 'EUR'
+    );
+  });
+
+  const getSymbol = (currency: string) => {
+    const symbol = new Intl.NumberFormat(i18n.language, {
+      style: 'currency',
+      currency,
+    })
+      .formatToParts(0)
+      .find((x) => x.type === 'currency');
+    return symbol && symbol.value;
+  };
+
+  return { currencyISO, currencySymbol: getSymbol(currencyISO) };
+};
