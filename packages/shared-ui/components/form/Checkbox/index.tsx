@@ -16,10 +16,16 @@ type Props = Omit<
 };
 
 export const Checkbox = React.forwardRef<HTMLInputElement, Props>(
-  ({ label, checked, onCheck, error, className, ...props }: Props, ref) => {
+  (
+    { label, checked, onCheck, error, className, style, ...props }: Props,
+    ref
+  ) => {
     const { t } = useTranslation('error');
     return (
-      <div className={classNames('Checkbox', className)}>
+      <div
+        className={classNames('Checkbox', className)}
+        style={style}
+        onClick={(e) => e.stopPropagation()}>
         <label>
           <input
             {...props}

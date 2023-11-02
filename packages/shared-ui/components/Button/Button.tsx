@@ -1,5 +1,6 @@
 import './style.scss';
 import Lottie from '../Lottie/Lottie';
+import classNames from 'classnames';
 
 type Props = {
   value: string;
@@ -9,14 +10,16 @@ type Props = {
   loading?: boolean;
   onClick?: () => void;
   icon?: React.ReactNode;
+  disabled?: boolean;
 };
 
 const Button = (props: Props) => {
   return (
     <button
       type={props.actionType ?? 'button'}
-      className={`button ${props.type} ${props.className ?? ''}`}
-      onClick={!props.loading ? props.onClick : undefined}>
+      className={classNames('button', props.type, props.className)}
+      onClick={!props.loading ? props.onClick : undefined}
+      disabled={props.disabled}>
       <span style={props.loading ? { opacity: 0 } : undefined}>
         {props.value}
       </span>
