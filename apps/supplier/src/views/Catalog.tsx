@@ -7,7 +7,7 @@ import {
   Input,
   Button,
   Lottie,
-  UploadCsv,
+  UploadValidation,
   IconButton,
 } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
@@ -585,7 +585,7 @@ const Catalog = () => {
       {selectedTab === 0 && <Table data={ingredientsList} columns={columns} />}
 
       {uploadPopup !== null && (
-        <UploadCsv
+        <UploadValidation
           fileCsv={csvFile}
           extractedData={uploadPopup}
           onCancelClick={() => {

@@ -1,9 +1,10 @@
 import './style.scss';
 import { Lottie } from '../..';
 import classNames from 'classnames';
+import { useEffect } from 'react';
 
 type Props = {
-  revele: boolean;
+  isOpen: boolean;
   loading: boolean;
   children: React.ReactNode;
   onRequestClose: () => void;
@@ -11,16 +12,24 @@ type Props = {
 };
 
 const SidePanel = (props: Props) => {
+  // Block scrolling when side panel is open
+  useEffect(() => {
+    if (props.isOpen) document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [props.isOpen]);
+
   return (
     <>
-      {props.revele && (
+      {props.isOpen && (
         <div
           className="sidePanel-overlay"
           onClick={() => props.onRequestClose()}></div>
       )}
       <div
         className={classNames('sidePanel', props.className, {
-          visible: props.revele,
+          visible: props.isOpen,
         })}>
         <i
           className="fa-solid fa-xmark"

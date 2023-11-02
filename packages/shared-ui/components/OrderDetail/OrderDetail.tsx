@@ -17,7 +17,7 @@ export const OrderDetail = <T extends object>(props: Props<T>) => {
   return (
     <SidePanel
       loading={false}
-      revele={props.isVisible}
+      isOpen={props.isVisible}
       onRequestClose={props.onRequestClose}
       className={styles.sidePanel}>
       <div className={styles.infosContainer}>

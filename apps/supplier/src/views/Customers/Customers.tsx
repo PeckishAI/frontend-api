@@ -363,7 +363,7 @@ const Customers = (props: Props) => {
         </div>
       )}
       <SidePanel
-        revele={clickedRestaurand ? true : false}
+        isOpen={clickedRestaurand ? true : false}
         onRequestClose={() => setClickedRestaurand(undefined)}
         loading={loadingCustomerDetail}>
         <>

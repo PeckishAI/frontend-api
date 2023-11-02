@@ -6,7 +6,10 @@ import styles from '../OrderValidation.module.scss';
 import { FaCheck, FaTimes, FaTrash } from 'react-icons/fa';
 import { FaPenToSquare } from 'react-icons/fa6';
 import { PredictedOrder } from '../../../utils/orders-mock';
-import { useRestaurantStore } from '../../../store/useRestaurantStore';
+import {
+  useRestaurantCurrency,
+  useRestaurantStore,
+} from '../../../store/useRestaurantStore';
 import { formatCurrency } from '../../../utils/helpers';
 
 type Props = {
@@ -24,12 +27,7 @@ export const SupplierOrderSection = (props: Props) => {
   const [deleteIngredientUUID, setDeleteIngredientUUID] = useState<
     string | null
   >(null);
-  const restaurantCurrency = useRestaurantStore((state) => {
-    return (
-      state.restaurants.find((r) => r.uuid === state.selectedRestaurantUUID)
-        ?.currency || 'EUR'
-    );
-  });
+  const { currencyISO } = useRestaurantCurrency();
 
   const columns: ColumnDefinitionType<PredictedOrder['products'][number]>[] = [
     {
@@ -60,7 +58,7 @@ export const SupplierOrderSection = (props: Props) => {
       key: 'cost',
       renderItem: ({ row }) => (
         <p className={styles.priceColumn}>
-          {formatCurrency(row.cost, restaurantCurrency)}
+          {formatCurrency(row.cost, currencyISO)}
         </p>
       ),
     },
@@ -124,7 +122,7 @@ export const SupplierOrderSection = (props: Props) => {
             <p className={styles.supplierName}>{props.data.supplier}</p>
             <p className={styles.totalPrice}>{`${formatCurrency(
               props.data.products.reduce((prev, curr) => prev + curr.cost, 0),
-              restaurantCurrency
+              currencyISO
             )} (${t('order.validation.items', {
               count: props.data.products.length,
             })})`}</p>
