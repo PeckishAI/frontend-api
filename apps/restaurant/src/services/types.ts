@@ -12,9 +12,13 @@ export type Ingredient = {
 export type Recipe = {
   id: string;
   name: string;
+  category: string;
   price: number;
+  cost: number;
+  margin: number;
   currency: string;
   ingredients: IngredientForRecipe[];
+  isOnboarded: boolean;
 };
 export type IngredientForRecipe = {
   ingredient_uuid: string;
