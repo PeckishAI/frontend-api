@@ -50,6 +50,15 @@
     "others": "Others"
   },
 
+  "recipes.categories": {
+    "drinks": "Drinks",
+    "starters": "Starters",
+    "mainCourses": "Main courses",
+    "desserts": "Desserts",
+    "snacks": "Snacks",
+    "others": "Others"
+  },
+
   "myRestaurants.emptyTitle": "You don't have any restaurant",
   "myrestaurants.emptyText": "First add a new integration to see your restaurants in Peckish",
 
