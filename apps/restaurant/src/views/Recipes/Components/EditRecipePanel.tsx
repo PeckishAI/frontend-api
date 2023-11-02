@@ -10,6 +10,7 @@ import { MdDelete } from 'react-icons/md';
 import { useEffect } from 'react';
 import { useRestaurantCurrency } from '../../../store/useRestaurantStore';
 import { formatCurrency } from '../../../utils/helpers';
+import classNames from 'classnames';
 
 const RecipeSchema = z.object({
   name: z.string().nonempty('required'),
@@ -74,6 +75,19 @@ const EditRecipePanel = (props: Props) => {
     }
   }, [props.isOpen, props.recipe]);
 
+  // Batch cost
+  const totalCost = watch('ingredients').reduce((acc, ing) => {
+    const ingredient = ingredients.find((i) => i.id === ing.selectedUUID);
+    if (ingredient) {
+      acc += ingredient.cost * (ing.quantity ?? 0);
+    }
+    return acc;
+  }, 0);
+
+  // Benefit per batch
+  const benefits =
+    watch('pricePerPortion') * watch('portionsPerBatch') - totalCost;
+
   return (
     <SidePanel
       className={styles.sidePanel}
@@ -102,6 +116,7 @@ const EditRecipePanel = (props: Props) => {
           <LabeledInput
             type="number"
             placeholder="Price (per portion)"
+            icon={<i className="fa-solid fa-tag" />}
             {...register('pricePerPortion')}
             lighter
             suffix={currencySymbol}
@@ -117,15 +132,50 @@ const EditRecipePanel = (props: Props) => {
           />
         </div>
 
-        <p
+        <div
           style={{
-            marginTop: '5px',
-            fontSize: '.9rem',
+            marginTop: '10px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}>
-          Ingredients :
-        </p>
+          <p
+            style={{
+              fontSize: '.9rem',
+            }}>
+            Ingredients :
+          </p>
 
-        {/* <p>Cost : 5€ -- Benefits: 10€ </p> */}
+          <div className={styles.metrics}>
+            <p className={styles.metricText}>
+              <i
+                className={classNames(
+                  'fa-solid',
+                  'fa-hand-holding-dollar',
+                  styles.cost
+                )}
+              />
+              Cost:{' '}
+              <span className={styles.metricPrice}>
+                {formatCurrency(totalCost, currencyISO)}
+              </span>
+            </p>
+
+            <p className={styles.metricText}>
+              <i
+                className={classNames(
+                  'fa-solid',
+                  'fa-arrow-up-right-dots',
+                  styles.margin
+                )}
+              />
+              Benefits:{' '}
+              <span className={styles.metricPrice}>
+                {formatCurrency(benefits, currencyISO)}
+              </span>
+            </p>
+          </div>
+        </div>
 
         {ingredientFields.map(({ id }, i) => {
           const rowField = watch(`ingredients.${i}`);

@@ -1,5 +1,5 @@
 import './style.scss';
-import { Lottie } from '../..';
+import { Lottie } from '../../index';
 import classNames from 'classnames';
 import { useEffect } from 'react';
 
@@ -32,7 +32,7 @@ const SidePanel = (props: Props) => {
           visible: props.isOpen,
         })}>
         <i
-          className="fa-solid fa-xmark"
+          className="fa-solid fa-xmark close-icon"
           data-tooltip-id="customer-tooltip"
           data-tooltip-content={'Close'}
           onClick={() => props.onRequestClose()}></i>
