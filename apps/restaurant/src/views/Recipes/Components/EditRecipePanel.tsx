@@ -49,6 +49,12 @@ const EditRecipePanel = (props: Props) => {
     handleSubmit,
     formState: { errors },
   } = useForm<EditRecipeForm>({
+    defaultValues: {
+      name: '',
+      pricePerPortion: 0,
+      portionsPerBatch: 1,
+      ingredients: [],
+    },
     resolver: zodResolver(RecipeSchema),
   });
 
@@ -74,6 +80,8 @@ const EditRecipePanel = (props: Props) => {
       });
     }
   }, [props.isOpen, props.recipe]);
+
+  console.log(watch('ingredients'));
 
   // Batch cost
   const totalCost = watch('ingredients').reduce((acc, ing) => {
