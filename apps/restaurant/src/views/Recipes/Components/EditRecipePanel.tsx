@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { useRestaurantCurrency } from '../../../store/useRestaurantStore';
 import { formatCurrency } from '../../../utils/helpers';
 import classNames from 'classnames';
+import { Trans, useTranslation } from 'react-i18next';
 
 const RecipeSchema = z.object({
   name: z.string().nonempty('required'),
@@ -38,6 +39,7 @@ type Props = {
 };
 
 const EditRecipePanel = (props: Props) => {
+  const { t } = useTranslation(['common']);
   const { ingredients, loading: loadingIngredients } = useIngredients();
   const { currencyISO, currencySymbol } = useRestaurantCurrency();
 
@@ -81,8 +83,6 @@ const EditRecipePanel = (props: Props) => {
     }
   }, [props.isOpen, props.recipe]);
 
-  console.log(watch('ingredients'));
-
   // Batch cost
   const totalCost = watch('ingredients').reduce((acc, ing) => {
     const ingredient = ingredients.find((i) => i.id === ing.selectedUUID);
@@ -103,8 +103,13 @@ const EditRecipePanel = (props: Props) => {
       onRequestClose={props.onClose}
       loading={false}>
       <h1 className={styles.title}>
-        Edit "<span className={styles.titleRecipeName}>{watch('name')}</span>"
-        recipe
+        <Trans
+          i18nKey="recipes.editPanel.title"
+          values={{ name: watch('name') }}
+          components={{
+            highlight: <span className={styles.titleRecipeName} />,
+          }}
+        />
       </h1>
 
       <form
@@ -113,7 +118,7 @@ const EditRecipePanel = (props: Props) => {
           console.log(data);
         })}>
         <LabeledInput
-          placeholder="Recipe name"
+          placeholder={t('recipes.editPanel.fields.name')}
           autoComplete="off"
           {...register('name')}
           lighter
@@ -123,7 +128,7 @@ const EditRecipePanel = (props: Props) => {
         <div className={styles.rowInputs}>
           <LabeledInput
             type="number"
-            placeholder="Price (per portion)"
+            placeholder={t('recipes.editPanel.fields.pricePerPortion')}
             icon={<i className="fa-solid fa-tag" />}
             {...register('pricePerPortion')}
             lighter
@@ -133,26 +138,15 @@ const EditRecipePanel = (props: Props) => {
 
           <LabeledInput
             type="number"
-            placeholder="Portions per batch"
+            placeholder={t('recipes.editPanel.fields.portionsPerBatch')}
             {...register('portionsPerBatch')}
             lighter
             error={errors.portionsPerBatch?.message}
           />
         </div>
 
-        <div
-          style={{
-            marginTop: '10px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <p
-            style={{
-              fontSize: '.9rem',
-            }}>
-            Ingredients :
-          </p>
+        <div className={styles.tableTitle}>
+          <p>{t('recipes.editPanel.table.title')}</p>
 
           <div className={styles.metrics}>
             <p className={styles.metricText}>
@@ -163,7 +157,7 @@ const EditRecipePanel = (props: Props) => {
                   styles.cost
                 )}
               />
-              Cost:{' '}
+              {t('cost')}:
               <span className={styles.metricPrice}>
                 {formatCurrency(totalCost, currencyISO)}
               </span>
@@ -177,7 +171,7 @@ const EditRecipePanel = (props: Props) => {
                   styles.margin
                 )}
               />
-              Benefits:{' '}
+              {t('margin')}:
               <span className={styles.metricPrice}>
                 {formatCurrency(benefits, currencyISO)}
               </span>
@@ -199,7 +193,7 @@ const EditRecipePanel = (props: Props) => {
                 render={({ field: { onChange, name, onBlur, ref } }) => (
                   <Select
                     size="large"
-                    placeholder="Ingredient name"
+                    placeholder={t('recipes.editPanel.table.ingredientSelect')}
                     options={ingredients}
                     getOptionLabel={(option) => option.name}
                     getOptionValue={(option) => option.id}
@@ -216,7 +210,7 @@ const EditRecipePanel = (props: Props) => {
                 )}
               />
               <LabeledInput
-                placeholder="Quantity"
+                placeholder={t('quantity')}
                 type="number"
                 step="0.01"
                 lighter
@@ -233,7 +227,7 @@ const EditRecipePanel = (props: Props) => {
               <IconButton
                 className={styles.deleteBtn}
                 icon={<MdDelete />}
-                tooltipMsg="Supprimer"
+                tooltipMsg={t('delete')}
                 onClick={() => {
                   removeIngredient(i);
                 }}
@@ -251,17 +245,17 @@ const EditRecipePanel = (props: Props) => {
             });
           }}>
           <FaPlus />
-          <p>Ajouter un ingredient/préparation</p>
+          <p>{t('recipes.editPanel.table.addIngredient')}</p>
         </div>
 
         <div className={styles.buttonsContainer}>
           <Button
             type="secondary"
-            value="Cancel"
+            value={t('cancel')}
             actionType="button"
             onClick={props.onClose}
           />
-          <Button type="primary" value="Submit" actionType="submit" />
+          <Button type="primary" value={t('validate')} actionType="submit" />
         </div>
       </form>
     </SidePanel>

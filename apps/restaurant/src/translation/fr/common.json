@@ -89,6 +89,20 @@
   },
   "order.validation.submit.success": "Commande envoyée avec succès",
 
+  "recipes.editPanel": {
+    "title": "Modifier la recette <highlight>{{name}}<highlight>",
+    "fields": {
+      "name": "Nom de la recette",
+      "pricePerPortion": "Prix par portion",
+      "portionsPerBatch": "Portions par lot"
+    },
+    "table": {
+      "title": "Ingrédients :",
+      "ingredientSelect": "Sélectionnez un ingrédient",
+      "addIngredient": "Ajouter un ingrédient/préparation"
+    }
+  },
+
   "notification.import_inventory.title": "Ajoutez vos ingrédients",
   "notification.import_inventory.description": "Importez vos ingrédients pour terminer le processus d'intégration",
   "notification.select_products.title": "Sélectionnez les produits (1/3)",

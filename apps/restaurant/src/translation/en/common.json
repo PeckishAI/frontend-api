@@ -91,6 +91,20 @@
   },
   "order.validation.submit.success": "Order Successfully submitted",
 
+  "recipes.editPanel": {
+    "title": "Edit <highlight>{{name}}<highlight> recipe",
+    "fields": {
+      "name": "Recipe name",
+      "pricePerPortion": "Price (per portion)",
+      "portionsPerBatch": "Portions per batch"
+    },
+    "table": {
+      "title": "Ingredients :",
+      "ingredientSelect": "Select an ingredient",
+      "addIngredient": "Add an ingredient/preparation"
+    }
+  },
+
   "notification.import_inventory.title": "Add your ingredients",
   "notification.import_inventory.description": "Import your ingredients to finish the onboarding process",
   "notification.select_products.title": "Select products (1/3)",
