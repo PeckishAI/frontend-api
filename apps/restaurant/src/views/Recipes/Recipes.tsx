@@ -1,15 +1,20 @@
+import style from './style.module.scss';
 import { Lottie, useTitle } from 'shared-ui';
 import React, { useEffect, useState } from 'react';
-import { recipesService, Recipe } from '../../services';
+import {
+  recipesService,
+  Recipe,
+  RecipeCategory as RecipeCategoryType,
+} from '../../services';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { useTranslation } from 'react-i18next';
 import RecipeCategory from './Components/RecipeCategory/RecipeCategory';
 import { Tooltip } from 'react-tooltip';
-import EditRecipePanel from './Components/EditRecipePanel';
+import RecipeDetail from './Components/RecipeDetail/RecipeDetail';
 
 export type RecipeCat = {
   label: string;
-  value: string;
+  value: RecipeCategoryType;
   icon: React.ReactElement;
 };
 
@@ -30,7 +35,7 @@ const Recipes = () => {
     },
     {
       label: t('recipesCategories.mainCourses'),
-      value: 'main_course',
+      value: 'mainCourses',
       icon: <i className="fa-solid fa-bell-concierge"></i>,
     },
     {
@@ -49,15 +54,16 @@ const Recipes = () => {
       icon: <i className="fa-solid fa-bone"></i>,
     },
   ];
-  const [recipesByCategory, setRecipesByCategory] = useState<{
-    [category: string]: Recipe[];
-  }>({});
-  const [loadingData, setLoadingData] = useState(false);
-  const [editRecipe, setEditRecipe] = useState<Recipe | null>(null);
 
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
+
+  const [loadingData, setLoadingData] = useState(false);
+  const [recipesByCategory, setRecipesByCategory] = useState<{
+    [category: string]: Recipe[];
+  }>({});
+  const [recipeDetail, setRecipeDetail] = useState<Recipe | null>(null);
 
   function reloadRecipes() {
     if (!selectedRestaurantUUID) return;
@@ -95,6 +101,10 @@ const Recipes = () => {
     reloadRecipes();
   }, [selectedRestaurantUUID]);
 
+  const handleRecipeClick = (recipe: Recipe) => {
+    setRecipeDetail(recipe);
+  };
+
   return (
     <div className="recipes">
       {Object.keys(recipesByCategory).map((category, i) => (
@@ -102,10 +112,8 @@ const Recipes = () => {
           key={i}
           category={recipeCategories.find((c) => c.value === category)}
           recipes={recipesByCategory[category]}
+          onClickRecipe={handleRecipeClick}
           reloadRecipesRequest={() => reloadRecipes()}
-          onClickRecipe={(recipe) => {
-            setEditRecipe(recipe);
-          }}
         />
       ))}
       {loadingData && (
@@ -113,13 +121,14 @@ const Recipes = () => {
           <Lottie type="loading" width="200px" />
         </div>
       )}
-      <Tooltip className="tooltip" id="recipeCard-tooltip" />
 
-      <EditRecipePanel
-        isOpen={editRecipe !== null}
-        onClose={() => setEditRecipe(null)}
-        recipe={editRecipe}
+      <RecipeDetail
+        recipe={recipeDetail}
+        isOpen={recipeDetail !== null}
+        onRequestClose={() => setRecipeDetail(null)}
       />
+
+      <Tooltip className="tooltip" id="recipeCard-tooltip" />
     </div>
   );
 };
