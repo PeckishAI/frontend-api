@@ -1,9 +1,17 @@
 import axios from './index';
 
+export type RecipeCategory =
+  | 'drinks'
+  | 'starters'
+  | 'mainCourses'
+  | 'desserts'
+  | 'snacks'
+  | 'others';
+
 export type Recipe = {
   id: string;
   name: string;
-  category: string;
+  category: RecipeCategory;
   price: number;
   cost: number;
   margin: number;
@@ -16,6 +24,7 @@ export type IngredientForRecipe = {
   name: string;
   quantity: number;
   unit: string;
+  cost: number | null;
 };
 
 const getRecipes = async (restaurantUUID: string): Promise<Recipe[]> => {
