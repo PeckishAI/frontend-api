@@ -1,4 +1,4 @@
-import { Lottie, useTitle } from 'shared-ui';
+import { LoadingAbsolute, useTitle } from 'shared-ui';
 import React, { useEffect, useState } from 'react';
 import {
   recipesService,
@@ -115,7 +115,8 @@ const Recipes = () => {
 
       {loadingData && (
         <div className="loading-container">
-          <Lottie type="loading" width="200px" />
+          <LoadingAbsolute />
+          {/* <Lottie type="loading" width="200px" /> */}
         </div>
       )}
 
