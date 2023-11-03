@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 
 type Props = {
   isOpen: boolean;
-  loading: boolean;
+  loading?: boolean;
   children: React.ReactNode;
   onRequestClose: () => void;
   className?: string;

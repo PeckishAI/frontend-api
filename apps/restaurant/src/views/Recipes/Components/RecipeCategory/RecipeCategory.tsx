@@ -8,6 +8,7 @@ import { IconButton } from 'shared-ui';
 type Props = {
   category?: RecipeCat;
   recipes?: Recipe[];
+  onClickRecipe: (recipe: Recipe) => void;
   reloadRecipesRequest: () => void;
   onClickRecipe: (recipe: Recipe) => void;
 };

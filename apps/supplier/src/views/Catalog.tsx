@@ -9,6 +9,7 @@ import {
   Lottie,
   UploadValidation,
   IconButton,
+  DialogBox,
 } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
@@ -584,9 +585,9 @@ const Catalog = () => {
 
       {selectedTab === 0 && <Table data={ingredientsList} columns={columns} />}
 
-      {uploadPopup !== null && (
+      {/* {uploadPopup !== null && (
         <UploadValidation
-          fileCsv={csvFile}
+          file={csvFile}
           extractedData={uploadPopup}
           onCancelClick={() => {
             setUploadPopup(null);
@@ -594,7 +595,7 @@ const Catalog = () => {
           }}
           onValidateClick={handleUploadCsvValidate}
         />
-      )}
+      )} */}
 
       <Tooltip className="tooltip" id="inventory-tooltip" />
       <Popup
@@ -610,7 +611,7 @@ const Catalog = () => {
         revele={popupDelete === undefined ? false : true}
         togglePopup={() => togglePopupDelete(undefined)}
       />
-      <Popup
+      <DialogBox
         type="warning"
         msg={t('common:warning.edit')}
         subMsg={
@@ -621,16 +622,16 @@ const Catalog = () => {
         list={popupPreviewEdit?.length !== 0 ? popupPreviewEdit : undefined}
         onConfirm={handleConfirmPopupPreviewEdit}
         revele={popupPreviewEdit === undefined ? false : true}
-        togglePopup={() => togglePopupPreviewEdit(undefined)}
+        onRequestClose={() => togglePopupPreviewEdit(undefined)}
       />
-      <Popup
+      <DialogBox
         type="error"
         msg={
           t('common:error.trigger') + '. ' + t('common:error.tryLater') + '.'
         }
         subMsg={popupError}
         revele={popupError === '' ? false : true}
-        togglePopup={() => togglePopupError('')}
+        onRequestClose={() => togglePopupError('')}
       />
       {loadingData && (
         <div className="loading-container">

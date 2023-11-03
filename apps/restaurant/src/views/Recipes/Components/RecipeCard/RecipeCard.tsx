@@ -15,11 +15,13 @@ const RecipeCard = (props: Props) => {
 
   return (
     <div className="recipe-card" onClick={props.onClick}>
-      <PiWarningCircleBold
-        className="not-onboarded"
-        data-tooltip-content="Not onboarded"
-        data-tooltip-id="recipeCard-tooltip"
-      />
+      {!props.recipe.isOnboarded && (
+        <PiWarningCircleBold
+          className="not-onboarded"
+          data-tooltip-content="Not onboarded"
+          data-tooltip-id="recipeCard-tooltip"
+        />
+      )}
       <p className="name">{props.recipe.name}</p>
       <p className="ingredient-nb">
         {props.recipe.ingredients.length} ingredients

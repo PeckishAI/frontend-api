@@ -100,8 +100,7 @@ const EditRecipePanel = (props: Props) => {
     <SidePanel
       className={styles.sidePanel}
       isOpen={props.isOpen}
-      onRequestClose={props.onClose}
-      loading={false}>
+      onRequestClose={props.onClose}>
       <h1 className={styles.title}>
         <Trans
           i18nKey="recipes.editPanel.title"
