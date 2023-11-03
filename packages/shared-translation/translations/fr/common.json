@@ -6,6 +6,9 @@
 
   "quantity": "Quantité",
   "price": "Prix",
+  "cost": "Coût",
+  "margin": "Marge",
+  "category": "Catégorie",
   "actions": "Actions",
   "availability": "Disponibilité",
   "unit": "Unité",
@@ -47,7 +50,7 @@
   "warning.edit": "Êtes-vous sure de vouloir modifier cela ?",
   "error.trigger": "Une erreur est survenue",
   "error.tryLater": "Veuillez essayer plus tard",
-  
+
   "orders.supplier": "Fournisseur",
   "orders.orderDate": "Date de commande",
   "orders.deliveryDate": "Date de livraison",

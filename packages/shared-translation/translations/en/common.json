@@ -6,6 +6,9 @@
 
   "quantity": "Quantity",
   "price": "Price",
+  "cost": "Cost",
+  "margin": "Margin",
+  "category": "Category",
   "actions": "Actions",
   "availability": "Availability",
   "unit": "Unit",
@@ -47,7 +50,7 @@
   "warning.edit": "Are you sure you want to edit it ?",
   "error.trigger": "An error has occurred",
   "error.tryLater": "Please try later",
-  
+
   "orders.supplier": "Supplier",
   "orders.orderDate": "Order date",
   "orders.deliveryDate": "Delivery date",
