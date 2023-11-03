@@ -1,7 +1,7 @@
 import { IconButton, SidePanel, Table } from 'shared-ui';
 import style from './style.module.scss';
 import { Recipe } from '../../../../services';
-import EditRecipePanel from '../EditRecipePanel';
+import EditRecipePanel from '../EditRecipePanel/EditRecipePanel';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatCurrency } from '../../../../utils/helpers';

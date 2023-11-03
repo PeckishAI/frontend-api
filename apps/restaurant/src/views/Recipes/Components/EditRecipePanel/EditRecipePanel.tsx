@@ -3,13 +3,13 @@ import styles from './EditRecipePanel.module.scss';
 import { Button, IconButton, LabeledInput, Select, SidePanel } from 'shared-ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { Recipe } from '../../../services';
-import { useIngredients } from '../../../services/hooks';
+import { Recipe } from '../../../../services';
+import { useIngredients } from '../../../../services/hooks';
 import { FaPlus } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { useEffect } from 'react';
-import { useRestaurantCurrency } from '../../../store/useRestaurantStore';
-import { formatCurrency } from '../../../utils/helpers';
+import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
+import { formatCurrency } from '../../../../utils/helpers';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
 
