@@ -10,7 +10,6 @@ type Props = {
   recipes?: Recipe[];
   onClickRecipe: (recipe: Recipe) => void;
   reloadRecipesRequest: () => void;
-  onClickRecipe: (recipe: Recipe) => void;
 };
 
 const RecipeCategory = (props: Props) => {
