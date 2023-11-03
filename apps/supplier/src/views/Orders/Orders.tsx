@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Table, Tabs, Input, OrderDetail } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
-import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
+import Dropdown, {
+  DropdownOptionsDefinitionType,
+} from 'shared-ui/components/Dropdown/Dropdown';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { orderService } from '../../services';
@@ -345,7 +347,6 @@ const Orders = () => {
       <OrderDetail
         isVisible={showOrderDetail}
         onRequestClose={() => setShowOrderDetail(false)}
-        orderUUID="idk"
         upperBanner={[
           { title: t('orders.deliveryDate'), value: '15/09/2023' },
           { title: t('price'), value: '100€' },
