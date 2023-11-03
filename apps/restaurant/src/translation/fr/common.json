@@ -24,6 +24,8 @@
   "inventory.importData": "Importer des données",
   "inventory.uploadCSV.popup.title": "Apperçu du fichier CSV",
   "inventory.uploadCSV.popup.subtitle": "Nous avons extrait les noms de colonnes suivants de votre fichier. Veuillez vérifier si le mappage est correct.",
+  "inventory.selectSupplier": "Sélectionnez un fournisseur",
+  "inventory.selectUnit": "Sélectionnez une unité",
 
   "myRestaurants.emptyTitle": "Vous n'avez pas de restaurant",
   "myrestaurants.emptyText": "Veuillez ajouter une intégration afin de voir vos restaurants sur Peckish",

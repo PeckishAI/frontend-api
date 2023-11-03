@@ -365,6 +365,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
             <Dropdown
+              placeholder={t('inventory.selectUnit')}
               options={units}
               selectedOption={editedValues!.unit}
               onOptionChange={(value) => handleValueChange('unit', value)}
@@ -380,6 +381,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
             <Dropdown
+              placeholder={t('inventory.selectSupplier')}
               options={suppliers}
               selectedOption={editedValues!.supplier}
               onOptionChange={(value) => handleValueChange('supplier', value)}
