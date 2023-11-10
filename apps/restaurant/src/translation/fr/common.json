@@ -1,88 +1,43 @@
 {
-  "myRestaurant": "Mon restaurant",
-  "overview": "Vue d'ensemble",
-  "inventory": {
-    "stock": "Inventaire",
-    "suppliers": "Fournisseurs",
-    "orders": "Commandes"
+  "pages": {
+    "myRestaurants": "Mes restaurants",
+    "overview": "Vue d'ensemble",
+    "inventory": {
+      "stock": "Inventaire",
+      "suppliers": "Fournisseurs",
+      "orders": "Commandes"
+    },
+    "recipes": "Recettes",
+    "onboarding": "Intégrations",
+    "onboarding_selectProducts": "Séléctionnez les produits",
+    "orders.validation": "Commande prédite",
+    "simulation": "Simulation",
+    "integrations": "Intégrations",
+    "support": "Support"
   },
-  "recipes": "Recettes",
-  "onboarding": "Intégrations",
+  "navbar.restaurantsDropdown": "Restaurants",
 
-  "orders.validation": "Commande prédite",
-
-  "simulation": "Simulation",
-  "integrations": "Intégrations",
-  "support": "Support",
-
-  "name": "Nom",
-  "quantity": "Quantité",
-  "price": "Prix",
-  "actions": "Actions",
-  "availability": "Disponibilité",
-  "unit": "Unité",
-
-  "edit": "Modifier",
-  "delete": "Supprimer",
-  "validate": "Valider",
-  "ok": "Ok",
-  "confirm": "Confirmer",
-  "cancel": "Annuler",
-  "add": "Ajouter",
-  "search": "Rechercher",
-  "upload": "Charger",
-  "download": "Télécharger",
-  "import": "Importer",
-  "export": "Exporter",
-  "refresh": "Recharger",
-  "notifications": "Notifications",
-  "logout": "Déconnexion",
-  "preview": "Prévisualiser",
-  "next": "Suivant",
-  "finish": "Terminé",
-  "unknown": "inconnu",
-  "date": "Date",
-  "remove": "Supprimer",
-  "email": "Email",
-  "phone": "Téléphone",
-
-  "orders.supplier": "Fournisseur",
-  "orders.orderDate": "Date de commande",
-  "orders.deliveryDate": "Date de livraison",
-  "orders.status": "Statut",
-  "orders.statusStates": {
-    "pending": "En attente",
-    "delivered": "Livrée",
-    "cancelled": "Annulée"
-  },
-  "orders.detail": "Détail",
-  "orders.detail.tooltip": "Voir le détail",
-  "orders.showPredictedOrder": "Voir la commande prédite",
-
-  "warning.delete": "Êtes-vous sure de vouloir supprimer cela ?",
-  "warning.edit": "Êtes-vous sure de vouloir modifier cela ?",
   "warning.impactedRecipes": "Ces recettes seront impactées par cette action :",
 
   "inventory.addIngredientBtn": "Ajouter un ingrédient",
   "inventory.addSupplierBtn": "Ajouter un fournisseur",
+  "inventory.importData": "Importer des données",
   "inventory.uploadCSV.popup.title": "Apperçu du fichier CSV",
   "inventory.uploadCSV.popup.subtitle": "Nous avons extrait les noms de colonnes suivants de votre fichier. Veuillez vérifier si le mappage est correct.",
+  "inventory.selectSupplier": "Sélectionnez un fournisseur",
+  "inventory.selectUnit": "Sélectionnez une unité",
 
-  "error.trigger": "Une erreur est survenue",
-  "error.tryLater": "Veuillez essayer plus tard",
-
-  "navbar.restaurantsDropdown": "Restaurants",
+  "recipesCategories": {
+    "drinks": "Boissons",
+    "starters": "Entrées",
+    "mainCourses": "Plats princiaux",
+    "desserts": "Desserts",
+    "snacks": "Snacks",
+    "others": "Autres"
+  },
 
   "myRestaurants.emptyTitle": "Vous n'avez pas de restaurant",
   "myrestaurants.emptyText": "Veuillez ajouter une intégration afin de voir vos restaurants sur Peckish",
-
-  "field.error.required": "Le champ est requis.",
-  "field.error.name": "Le champ nom est requis.",
-  "field.error.userName": "Le champ nom d'utilisateur est requis.",
-  "field.error.password": "Le champ mot de passe est requis.",
-  "field.error.doesntExist": "Sélectionner un ingrédient existant.",
-  "field.error.quantity": "Le champ quantité est requis.",
-  "field.error.quantityNegative": "La quantité doit être suppérieure ou égale à 0.",
 
   "onboarding.msg": "Séléctionnez un système que vous souhaitez intégrer à Peckish !",
   "onboarding.modal.title": "Nouvelle intégration",
@@ -122,16 +77,41 @@
     "automaticSendCheckbox": "Envoyer une invitation automatique au fournisseur"
   },
 
+  "orders.detail": "Détail",
+  "orders.detail.tooltip": "Voir le détail",
+  "orders.showPredictedOrder": "Voir la commande prédite",
+
+  "order.validation.empty": {
+    "title": "Pas de commande prédite",
+    "description": "Peckish n'a pas encore prédis de commande pour votre semaine prochaine. Vous pouvez tout de même ajouter des ingrédients manuellement."
+  },
   "order.validation.description": "Peckish a prédit cette commande pour votre semaine prochaine. Vous pouvez supprimer, ajouter ou mettre à jour la quantité de chaque élément.",
   "order.validation.addIngredient": "Ajouter un ingrédient",
   "order.validation.items_one": "{{count}} article",
   "order.validation.items_other": "{{count}} articles",
-  "order.validation.submitOrder": "Envoyer la commande",
+  "order.validation.submitOrder_one": "Envoyer la commande",
+  "order.validation.submitOrder_other": "Envoyer les commandes",
   "order.validation.deleteItemPopup": "Êtes-vous sûr de supprimer {{name}} de votre commande ?",
   "order.validation.addIngredientPopup": {
     "title": "Sélectionnez un ingrédient",
     "subtitle": "L'ingrédient sélectionné sera ajouté dans la bonne commande fournisseur",
-    "selectPlaceholder": "Sélectionnez un ingrédient"
+    "selectPlaceholder": "Sélectionnez un ingrédient",
+    "selectSupplierPlaceholder": "Sélectionnez un fournisseur"
+  },
+  "order.validation.submit.success": "Commande envoyée avec succès",
+
+  "recipes.editPanel": {
+    "title": "Modifier la recette <highlight>{{name}}<highlight>",
+    "fields": {
+      "name": "Nom de la recette",
+      "pricePerPortion": "Prix par portion",
+      "portionsPerBatch": "Portions par lot"
+    },
+    "table": {
+      "title": "Ingrédients :",
+      "ingredientSelect": "Sélectionnez un ingrédient",
+      "addIngredient": "Ajouter un ingrédient/préparation"
+    }
   },
 
   "notification.import_inventory.title": "Ajoutez vos ingrédients",
@@ -141,5 +121,7 @@
   "notification.create_preparations.title": "Créez des préparations (2/3)",
   "notification.create_preparations.description": "Créez des préparations que vous utilisez dans vos recettes",
   "notification.create_recipes.title": "Créez des recettes (3/3)",
-  "notification.create_recipes.description": "Complétez vos recettes pour avoir un suivi complet de votre inventaire"
+  "notification.create_recipes.description": "Complétez vos recettes pour avoir un suivi complet de votre inventaire",
+
+  "stepper.step": "Étape {{step}}"
 }

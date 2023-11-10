@@ -1,0 +1,28 @@
+.recipeCategory {
+  .category {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+
+    .iconWrap i {
+      font-size: 1.5rem;
+      margin-right: 10px;
+      color: var(--primaryColor);
+    }
+    .name {
+      font-size: 1.5rem;
+      font-weight: var(--bold);
+      color: var(--textPrimaryColor);
+      margin-right: 10px;
+    }
+    .number {
+      margin-right: 5px;
+    }
+  }
+  .recipes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    padding: 10px 0;
+  }
+}

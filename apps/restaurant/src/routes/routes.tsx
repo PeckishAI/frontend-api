@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MyRestaurant from '../views/MyRestaurant';
 import Overview from '../views/Overview/Overview';
 import Inventory from '../views/Inventory/Inventory';
-import Recipes from '../views/Recipes';
+import Recipes from '../views/Recipes/Recipes';
 import Onboarding from '../views/Onboarding/Onboarding';
 import Layout from '../components/Layout';
 import { ProtectedRoute } from './ProtectedRoute';

@@ -6,38 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import styles from './OrderTab.module.scss';
 import { Tooltip } from 'react-tooltip';
-
-type Order = {
-  id: string;
-  orderDate: string;
-  deliveryDate: string;
-  supplier: string;
-  status: 'pending' | 'delivered' | 'cancelled';
-  detail: string;
-  price: number;
-};
-
-const orderList: Order[] = [
-  // {
-  //   id: '1',
-  //   orderDate: '2021-10-01',
-  //   deliveryDate: '2021-10-01',
-  //   supplier: 'Metro',
-  //   status: 'pending',
-  //   detail: 'detail',
-  //   price: 100,
-  // },
-  // // Generate 5 orders
-  // ...Array.from({ length: 5 }, (_, index) => ({
-  //   id: `${index + 2}`,
-  //   orderDate: '2021-10-01',
-  //   deliveryDate: '2021-10-01',
-  //   supplier: 'REKKI',
-  //   status: 'delivered' as const,
-  //   detail: 'detail',
-  //   price: 100,
-  // })),
-];
+import { Order, useOrders } from '../../../utils/orders-mock';
+import { formatCurrency } from '../../../utils/helpers';
+import { useRestaurantCurrency } from '../../../store/useRestaurantStore';
+import dayjs from 'dayjs';
 
 export type OrderTabRef = {
   renderOptions: () => React.ReactNode;
@@ -50,8 +22,17 @@ type Props = {
 export const OrderTab = forwardRef<OrderTabRef, Props>(
   (props, forwardedRef) => {
     const { t } = useTranslation('common');
-    const [isOrderDetailVisible, setOrderDetailVisible] = useState(false);
+    const [orderDetail, setOrderDetail] = useState<string>();
     const navigate = useNavigate();
+
+    const orders = useOrders((state) => state.orders).sort((a, b) => {
+      const aDate = dayjs(a.orderDate, 'DD/MM/YYYY');
+      const bDate = dayjs(b.orderDate, 'DD/MM/YYYY');
+      return bDate.unix() - aDate.unix();
+    });
+
+    const selectedOrder = orders.find((order) => order.uuid === orderDetail);
+    const { currencyISO } = useRestaurantCurrency();
 
     // Render options for the tab bar
     useImperativeHandle(
@@ -85,13 +66,13 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
         {
           key: 'price',
           header: t('price'),
-          renderItem: ({ row }) => `${row.price} €`,
+          renderItem: ({ row }) => formatCurrency(row.price, currencyISO),
           classname: 'column-bold',
         },
         {
-          key: 'detail',
+          key: 'uuid',
           header: t('orders.detail'),
-          renderItem: () => {
+          renderItem: ({ row }) => {
             return (
               <>
                 <i
@@ -101,23 +82,63 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
                   )}
                   data-tooltip-id="detail-tooltip"
                   data-tooltip-content={t('orders.detail.tooltip')}
-                  onClick={() => setOrderDetailVisible(true)}
+                  onClick={() => setOrderDetail(row.uuid)}
                 />
               </>
             );
           },
         },
       ],
-      [t]
+      [t, currencyISO]
     );
 
     return (
       <div className="orders">
-        <Table data={orderList} columns={columns} />
+        <Table data={orders} columns={columns} />
         <OrderDetail
-          isVisible={isOrderDetailVisible}
-          onRequestClose={() => setOrderDetailVisible(false)}
-          orderUUID="55"
+          isVisible={orderDetail !== undefined}
+          onRequestClose={() => setOrderDetail(undefined)}
+          upperBanner={
+            selectedOrder
+              ? [
+                  {
+                    title: t('orders.supplier'),
+                    value: selectedOrder.supplier,
+                  },
+                  {
+                    title: t('orders.deliveryDate'),
+                    value: selectedOrder.deliveryDate,
+                  },
+                  {
+                    title: t('price'),
+                    value: formatCurrency(selectedOrder.price, currencyISO),
+                  },
+                  {
+                    title: t('orders.status'),
+                    value: t(`orders.statusStates.${selectedOrder.status}`),
+                  },
+                ]
+              : []
+          }
+          tableHeaders={[
+            {
+              key: 'name',
+              header: t('name'),
+            },
+            {
+              key: 'quantity',
+              header: t('quantity'),
+              renderItem: ({ row }) => `${row.quantity} ${row.unit}`,
+            },
+
+            {
+              key: 'cost',
+              header: t('price'),
+              renderItem: ({ row }) => formatCurrency(row.cost, currencyISO),
+              classname: 'column-bold',
+            },
+          ]}
+          tableData={selectedOrder?.products || []}
         />
         <Tooltip className="tooltip" id="detail-tooltip" />
       </div>

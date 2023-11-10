@@ -42,7 +42,7 @@ const CustomerCard = (props: Props) => {
       </p>
       <div className="data">
         <span className="label">
-          Open orders: <span className="value">5</span>
+          Open orders: <span className="value">Yes</span>
         </span>
         <span className="label">
           Past orders: <span className="value">12</span>

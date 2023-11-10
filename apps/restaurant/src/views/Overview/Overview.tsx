@@ -13,7 +13,7 @@ import overviewService, {
 } from '../../services/overview.service';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { useTranslation } from 'react-i18next';
-import { EmptyPage } from 'shared-ui';
+import { EmptyPage, useTitle } from 'shared-ui';
 import { TFunction } from 'i18next';
 
 const metricIcon: { [K in keyof RestaurantMetric]: React.ReactNode } = {
@@ -43,6 +43,8 @@ export const metricFormat: {
 
 const Overview = () => {
   const { t } = useTranslation(['overview', 'common']);
+  useTitle(t('common:pages.overview'));
+
   const [loadingMetrics, setLoadingMetrics] = useState(false);
   const [metrics, setMetrics] = useState<RestaurantMetric>();
 

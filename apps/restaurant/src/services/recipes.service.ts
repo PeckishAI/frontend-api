@@ -1,11 +1,45 @@
 import axios from './index';
 
-const getRecipes = async (restaurantUUID: string) => {
+export type RecipeCategory =
+  | 'drinks'
+  | 'starters'
+  | 'mainCourses'
+  | 'desserts'
+  | 'snacks'
+  | 'others';
+
+export type Recipe = {
+  id: string;
+  name: string;
+  category: RecipeCategory;
+  price: number;
+  cost: number;
+  margin: number;
+  currency: string;
+  ingredients: IngredientForRecipe[];
+  isOnboarded: boolean;
+};
+export type IngredientForRecipe = {
+  uuid: string;
+  name: string;
+  quantity: number;
+  unit: string;
+  cost: number | null;
+};
+
+const getRecipes = async (restaurantUUID: string): Promise<Recipe[]> => {
   const res = await axios.get('/recipe/' + restaurantUUID);
-  const convertedData = Object.keys(res.data).map((key) => ({
-    id: key,
+  const convertedData: Recipe[] = Object.keys(res.data).map((key) => ({
     ...res.data[key],
+    uuid: key,
+    ingredients: res.data[key]['ingredients'].map((ingredient: any) => ({
+      uuid: ingredient['ingredient_uuid'],
+      name: ingredient['ingredient_name'],
+      quantity: ingredient['quantity'],
+      unit: ingredient['unit'],
+    })),
   }));
+
   return convertedData;
 };
 

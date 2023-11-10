@@ -1,84 +1,34 @@
 import { SidePanel, Table } from 'shared-ui';
 import styles from './OrderDetail.module.scss';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
-import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 
-type Ingredient = {
-  name: string;
-  quantity: number;
-  unit: string;
-  price: number;
-};
-
-// Generate 5 ingredients
-const ingredientList: Ingredient[] = Array.from({ length: 10 }, (_, index) => ({
-  name: `Ingredient ${index + 1}`,
-  quantity: 1,
-  unit: 'kg',
-  price: 100,
-}));
-
-type Props = {
+type Props<T> = {
   isVisible: boolean;
   onRequestClose: () => void;
-  orderUUID: string;
+  upperBanner: {
+    title: string;
+    value: string | number;
+  }[];
+  tableHeaders: ColumnDefinitionType<T>[];
+  tableData: T[];
 };
 
-export const OrderDetail = (props: Props) => {
-  const { t } = useTranslation('common');
-  useEffect(() => {
-    console.log('Retrieve order :', props.orderUUID);
-  }, [props.orderUUID]);
-  console.log(ingredientList);
-
-  const columns: ColumnDefinitionType<Ingredient>[] = [
-    {
-      key: 'name',
-      header: t('name'),
-    },
-    {
-      key: 'quantity',
-      header: t('quantity'),
-    },
-    {
-      key: 'unit',
-      header: t('unit'),
-    },
-    {
-      key: 'price',
-      header: t('price'),
-    },
-  ];
-
+export const OrderDetail = <T extends object>(props: Props<T>) => {
   return (
     <SidePanel
       loading={false}
-      revele={props.isVisible}
+      isOpen={props.isVisible}
       onRequestClose={props.onRequestClose}
       className={styles.sidePanel}>
       <div className={styles.infosContainer}>
-        <div className={styles.info}>
-          <p className={styles.infoTitle}>{t('orders.supplier')}</p>
-          <p className={styles.infoValue}>Metro</p>
-        </div>
-        <div className={styles.info}>
-          <p className={styles.infoTitle}>{t('orders.deliveryDate')}</p>
-          <p className={styles.infoValue}>15/09/2023</p>
-        </div>
-        <div className={styles.info}>
-          <p className={styles.infoTitle}>{t('price')}</p>
-          <p className={styles.infoValue}>280€</p>
-        </div>
-        <div className={styles.info}>
-          <p className={styles.infoTitle}>{t('orders.status')}</p>
-          <p className={styles.infoValue}>
-            {t(`orders.statusStates.delivered`)}
-          </p>
-        </div>
+        {props.upperBanner.map((info) => (
+          <div key={info.value} className={styles.info}>
+            <p className={styles.infoTitle}>{info.title}</p>
+            <p className={styles.infoValue}>{info.value}</p>
+          </div>
+        ))}
       </div>
-
-      <Table columns={columns} data={ingredientList} />
+      <Table columns={props.tableHeaders} data={props.tableData} />
     </SidePanel>
   );
 };

@@ -11,7 +11,7 @@ import DialogBox from './components/layout/DialogBox/DialogBox';
 import Input from './components/form/Input/Input';
 import Button from './components/Button/Button';
 import IconButton from './components/IconButton/IconButton';
-import UploadCsv from './components/layout/UploadCsv/UploadCsv';
+import UploadValidation from './components/layout/UploadValidation/UploadValidation';
 import RestaurantCard from './components/RestaurantCard/RestaurantCard';
 import ProfilePicture from './components/ProfilePicture/ProfilePicture';
 import EmptyPage from './components/layout/EmptyPage/EmptyPage';
@@ -42,7 +42,7 @@ export {
   Input,
   Button,
   IconButton,
-  UploadCsv,
+  UploadValidation,
   RestaurantCard,
   ProfilePicture,
   EmptyPage,

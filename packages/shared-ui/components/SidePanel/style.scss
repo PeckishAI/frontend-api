@@ -7,6 +7,7 @@
   background-color: #0000000f;
   animation-name: overlayFadeIn;
   animation-duration: 0.2s;
+  z-index: 998;
 
   @keyframes overlayFadeIn {
     from {
@@ -40,7 +41,7 @@
     justify-content: center;
   }
 
-  i {
+  .close-icon {
     color: var(--primaryColor);
     font-size: 1.2rem;
     position: absolute;

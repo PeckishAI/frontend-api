@@ -1,0 +1,9 @@
+{
+  "field.error.required": "Le champ est requis.",
+  "field.error.name": "Le champ nom est requis.",
+  "field.error.userName": "Le champ nom d'utilisateur est requis.",
+  "field.error.password": "Le champ mot de passe est requis.",
+  "field.error.doesntExist": "Sélectionner un ingrédient existant.",
+  "field.error.quantity": "Le champ quantité est requis.",
+  "field.error.quantityNegative": "La quantité doit être suppérieure ou égale à 0."
+}

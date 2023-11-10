@@ -1,0 +1,75 @@
+.recipe-card {
+  position: relative;
+  width: 100%;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px 3px var(--secondaryColor);
+  border: 1px solid var(--secondaryColor);
+  cursor: pointer;
+  animation-name: onLoad;
+  animation-duration: 0.5s;
+  @keyframes onLoad {
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  &:hover {
+    background-color: var(--secondaryColor);
+  }
+
+  .not-onboarded {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: rgb(233, 95, 95);
+    font-size: 1.2rem;
+  }
+
+  .name {
+    font-size: 1.1rem;
+    font-weight: var(--semiBold);
+    color: var(--textPrimaryColor);
+  }
+  .ingredient-nb {
+    color: var(--textSecondaryColor);
+    font-size: 0.8rem;
+    margin-bottom: 15px;
+  }
+
+  .metrics {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    .metric {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      i {
+        font-size: 1rem;
+      }
+      .price {
+        color: var(--primaryColor);
+      }
+      .cost {
+        color: rgb(241, 79, 79);
+      }
+      .margin {
+        color: rgb(57, 205, 57);
+      }
+      p {
+        font-size: 0.8rem;
+        color: var(--textSecondaryColor);
+        font-weight: var(--bold);
+      }
+    }
+  }
+}

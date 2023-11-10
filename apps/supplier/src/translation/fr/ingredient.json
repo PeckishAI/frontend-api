@@ -3,14 +3,8 @@
   "theoreticalStock": "Stock théorique",
   "safetyStock": "Stock nécessaire",
   "actualStock": "Stock actuel",
-  "unit": "Unité",
-  "supplier": "Fournisseur",
-  "cost": "Prix",
-  "actions": "Actions",
 
-  "stock": "Stock",
   "expectedSales": "Ventes estimées",
-  "price": "Prix",
 
   "placeholder.ingredientName": "Ex : Salade",
   "placeholder.ingredientQuantity": "Ex : 180",

@@ -7,8 +7,9 @@ import {
   Input,
   Button,
   Lottie,
-  UploadCsv,
+  UploadValidation,
   IconButton,
+  DialogBox,
 } from 'shared-ui';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
@@ -17,7 +18,7 @@ import { Tooltip } from 'react-tooltip';
 import { IngredientForSupplier, catalogService } from '../services';
 // import { useRestaurantStore } from '../store/useRestaurantStore';
 
-const tabs = ['Stock', 'analyses', 'Orders'];
+const tabs = ['Stock'];
 
 const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -26,12 +27,6 @@ const units: DropdownOptionsDefinitionType[] = [
   { label: 'l', value: 'L' },
   { label: 'ml', value: 'ml' },
   { label: 'unit', value: 'unit' },
-];
-
-const suppliers: DropdownOptionsDefinitionType[] = [
-  { label: 'Supplier 1', value: 'supplier1' },
-  { label: 'Supplier 2', value: 'supplier2' },
-  { label: 'Supplier 3', value: 'supplier3' },
 ];
 
 const ingredientsForSupplier = [
@@ -590,9 +585,9 @@ const Catalog = () => {
 
       {selectedTab === 0 && <Table data={ingredientsList} columns={columns} />}
 
-      {uploadPopup !== null && (
-        <UploadCsv
-          fileCsv={csvFile}
+      {/* {uploadPopup !== null && (
+        <UploadValidation
+          file={csvFile}
           extractedData={uploadPopup}
           onCancelClick={() => {
             setUploadPopup(null);
@@ -600,7 +595,7 @@ const Catalog = () => {
           }}
           onValidateClick={handleUploadCsvValidate}
         />
-      )}
+      )} */}
 
       <Tooltip className="tooltip" id="inventory-tooltip" />
       <Popup
@@ -616,7 +611,7 @@ const Catalog = () => {
         revele={popupDelete === undefined ? false : true}
         togglePopup={() => togglePopupDelete(undefined)}
       />
-      <Popup
+      <DialogBox
         type="warning"
         msg={t('common:warning.edit')}
         subMsg={
@@ -627,16 +622,16 @@ const Catalog = () => {
         list={popupPreviewEdit?.length !== 0 ? popupPreviewEdit : undefined}
         onConfirm={handleConfirmPopupPreviewEdit}
         revele={popupPreviewEdit === undefined ? false : true}
-        togglePopup={() => togglePopupPreviewEdit(undefined)}
+        onRequestClose={() => togglePopupPreviewEdit(undefined)}
       />
-      <Popup
+      <DialogBox
         type="error"
         msg={
           t('common:error.trigger') + '. ' + t('common:error.tryLater') + '.'
         }
         subMsg={popupError}
         revele={popupError === '' ? false : true}
-        togglePopup={() => togglePopupError('')}
+        onRequestClose={() => togglePopupError('')}
       />
       {loadingData && (
         <div className="loading-container">
