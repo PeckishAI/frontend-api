@@ -3,12 +3,15 @@ import styles from './EditRecipePanel.module.scss';
 import { Button, IconButton, LabeledInput, Select, SidePanel } from 'shared-ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { Recipe } from '../../../../services';
+import { Recipe, recipesService } from '../../../../services';
 import { useIngredients } from '../../../../services/hooks';
 import { FaPlus } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { useEffect } from 'react';
-import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
+import {
+  useRestaurantCurrency,
+  useRestaurantStore,
+} from '../../../../store/useRestaurantStore';
 import { formatCurrency } from '../../../../utils/helpers';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
@@ -35,11 +38,15 @@ type EditRecipeForm = z.infer<typeof RecipeSchema>;
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  onSaved: (newRecipe: Recipe) => void;
   recipe: Recipe | null;
 };
 
 const EditRecipePanel = (props: Props) => {
   const { t } = useTranslation(['common']);
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  )!;
   const { ingredients, loading: loadingIngredients } = useIngredients();
   const { currencyISO, currencySymbol } = useRestaurantCurrency();
 
@@ -49,7 +56,7 @@ const EditRecipePanel = (props: Props) => {
     watch,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty, isSubmitting },
   } = useForm<EditRecipeForm>({
     defaultValues: {
       name: '',
@@ -73,7 +80,7 @@ const EditRecipePanel = (props: Props) => {
     if (props.isOpen) {
       reset({
         name: props.recipe?.name,
-        pricePerPortion: props.recipe?.price,
+        pricePerPortion: props.recipe?.portion_price,
         portionsPerBatch: 1,
         ingredients: props.recipe?.ingredients.map((ing) => ({
           selectedUUID: ing.uuid,
@@ -93,8 +100,43 @@ const EditRecipePanel = (props: Props) => {
   }, 0);
 
   // Benefit per batch
-  const benefits =
+  const priceMargin =
     watch('pricePerPortion') * watch('portionsPerBatch') - totalCost;
+
+  // handle form submission
+  const handleEditSubmit = handleSubmit((data) => {
+    console.log(data);
+    return recipesService
+      .updateRecipe(selectedRestaurantUUID, props.recipe!.uuid, {
+        ...data,
+        ingredients: data.ingredients.map((ing) => ({
+          ingredient_uuid: ing.selectedUUID,
+          quantity: ing.quantity ?? 0,
+        })),
+      })
+      .then(() => {
+        // set the new recipe
+        props.onSaved({
+          ...props.recipe!,
+          name: data.name,
+          portion_price: data.pricePerPortion,
+          portion_count: data.portionsPerBatch,
+          cost: totalCost,
+          margin: priceMargin,
+          ingredients: data.ingredients.map((ing) => {
+            const ingredient = ingredients.find(
+              (i) => i.id === ing.selectedUUID
+            )!;
+
+            return {
+              ...ingredient,
+              uuid: ing.selectedUUID,
+              quantity: ing.quantity ?? 0,
+            };
+          }),
+        });
+      });
+  });
 
   return (
     <SidePanel
@@ -111,11 +153,7 @@ const EditRecipePanel = (props: Props) => {
         />
       </h1>
 
-      <form
-        className={styles.inputContainer}
-        onSubmit={handleSubmit((data) => {
-          console.log(data);
-        })}>
+      <form className={styles.inputContainer} onSubmit={handleEditSubmit}>
         <LabeledInput
           placeholder={t('recipes.editPanel.fields.name')}
           autoComplete="off"
@@ -172,7 +210,7 @@ const EditRecipePanel = (props: Props) => {
               />
               {t('margin')}:
               <span className={styles.metricPrice}>
-                {formatCurrency(benefits, currencyISO)}
+                {formatCurrency(priceMargin, currencyISO)}
               </span>
             </p>
           </div>
@@ -254,7 +292,13 @@ const EditRecipePanel = (props: Props) => {
             actionType="button"
             onClick={props.onClose}
           />
-          <Button type="primary" value={t('validate')} actionType="submit" />
+          <Button
+            type="primary"
+            value={t('validate')}
+            actionType="submit"
+            loading={isSubmitting}
+            disabled={!isDirty}
+          />
         </div>
       </form>
     </SidePanel>

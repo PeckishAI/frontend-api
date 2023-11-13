@@ -34,7 +34,7 @@ const RecipeCard = (props: Props) => {
             className="fa-solid fa-tag price"
             data-tooltip-content={t('price')}
             data-tooltip-id="recipeCard-tooltip"></i>
-          <p>{formatCurrency(props.recipe.price, currency)}</p>
+          <p>{formatCurrency(props.recipe.portion_price, currency)}</p>
         </div>
 
         <div className="metric">

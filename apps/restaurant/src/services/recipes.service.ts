@@ -9,33 +9,34 @@ export type RecipeCategory =
   | 'others';
 
 export type Recipe = {
-  id: string;
+  uuid: string;
   name: string;
   category: RecipeCategory;
-  price: number;
+  portion_price: number;
+  portion_count: number;
   cost: number;
   margin: number;
   currency: string;
-  ingredients: IngredientForRecipe[];
+  ingredients: {
+    uuid: string;
+    name: string;
+    quantity: number;
+    unit: string;
+    cost: number | null;
+  }[];
   isOnboarded: boolean;
-};
-export type IngredientForRecipe = {
-  uuid: string;
-  name: string;
-  quantity: number;
-  unit: string;
-  cost: number | null;
 };
 
 const getRecipes = async (restaurantUUID: string): Promise<Recipe[]> => {
   const res = await axios.get('/recipe/' + restaurantUUID);
-  const convertedData: Recipe[] = Object.keys(res.data).map((key) => ({
+  const convertedData: Recipe[] = Object.keys(res.data).map<Recipe>((key) => ({
     ...res.data[key],
     uuid: key,
     ingredients: res.data[key]['ingredients'].map((ingredient: any) => ({
       uuid: ingredient['ingredient_uuid'],
       name: ingredient['ingredient_name'],
       quantity: ingredient['quantity'],
+      cost: ingredient['cost'],
       unit: ingredient['unit'],
     })),
   }));
@@ -43,42 +44,36 @@ const getRecipes = async (restaurantUUID: string): Promise<Recipe[]> => {
   return convertedData;
 };
 
-const updateRecipe = (restaurantUUID: string, ingredients, recipeId) => {
-  const ingredientsWithRestaurantUUID = ingredients.map((ingredient) => ({
-    ...ingredient,
-    restaurant_uuid: restaurantUUID,
-    ingredient_uuid: ingredient.ingredient_uuid,
-  }));
-  return axios.post(
-    '/recipe/' + recipeId + '/update',
-    ingredientsWithRestaurantUUID
-  );
+type UpdateRecipe = {
+  name: string;
+  pricePerPortion: number;
+  portionsPerBatch: number;
+  ingredients: {
+    ingredient_uuid: string;
+    quantity: number;
+  }[];
 };
 
-const deleteRecipe = (recipeId) => {
+const updateRecipe = (
+  restaurantUUID: string,
+  recipeUUID: string,
+  data: UpdateRecipe
+) => {
+  return axios.post('/recipe/' + recipeUUID + '/update', {
+    restaurant_uuid: restaurantUUID,
+    recipe_name: data.name,
+    portion_price: data.pricePerPortion,
+    portion_count: data.portionsPerBatch,
+    ingredients: data.ingredients,
+  });
+};
+
+const deleteRecipe = (recipeId: string) => {
   return axios.post('/recipe/' + recipeId + '/delete');
-};
-
-const addIngredient = (restaurantUUID: string, recipeId, ingredient) => {
-  const ingredientWithRestaurantUUID = {
-    ...ingredient,
-    restaurant_uuid: restaurantUUID,
-    ingredient_uuid: ingredient.ingredient_uuid,
-  };
-  return axios.post(
-    '/recipe/' + recipeId + '/add',
-    ingredientWithRestaurantUUID
-  );
-};
-
-const deleteIngredient = (recipeId, ingredientUuid) => {
-  return axios.post('/recipe/' + recipeId + '/' + ingredientUuid + '/delete');
 };
 
 export const recipesService = {
   getRecipes,
   updateRecipe,
   deleteRecipe,
-  addIngredient,
-  deleteIngredient,
 };
