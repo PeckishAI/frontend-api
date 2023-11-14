@@ -10,6 +10,7 @@ type Props = {
   recipe: Recipe | null;
   isOpen: boolean;
   onRequestClose: () => void;
+  onRecipeChanged: (recipe: Recipe) => void;
 };
 
 const RecipeDetail = (props: Props) => {
@@ -45,7 +46,7 @@ const RecipeDetail = (props: Props) => {
               <i className={`fa-solid fa-tag ${style.price}`}></i>
               {t('price')} :{' '}
               <span className={style.value}>
-                {formatCurrency(props.recipe?.price, currency)}
+                {formatCurrency(props.recipe?.portion_price, currency)}
               </span>
             </p>
             <p className={style.metric}>
@@ -76,8 +77,11 @@ const RecipeDetail = (props: Props) => {
               },
               {
                 key: 'cost',
-                header: t('cost'),
-                renderItem: ({ row }) => row.cost ?? '-',
+                header: t('totalCost'),
+                renderItem: ({ row }) =>
+                  row.cost
+                    ? formatCurrency(row.cost * row.quantity, currency)
+                    : '-',
               },
             ]}
           />
@@ -86,6 +90,10 @@ const RecipeDetail = (props: Props) => {
       <EditRecipePanel
         isOpen={editRecipe !== null}
         onClose={() => setEditRecipe(null)}
+        onSaved={(recipe) => {
+          setEditRecipe(null);
+          props.onRecipeChanged(recipe);
+        }}
         recipe={editRecipe}
       />
     </>

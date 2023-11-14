@@ -7,6 +7,7 @@
   "quantity": "Quantity",
   "price": "Price",
   "cost": "Cost",
+  "totalCost": "Total cost",
   "margin": "Margin",
   "category": "Category",
   "actions": "Actions",

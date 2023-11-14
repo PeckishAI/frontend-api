@@ -1,4 +1,3 @@
-import style from './style.module.scss';
 import { Lottie, useTitle } from 'shared-ui';
 import React, { useEffect, useState } from 'react';
 import {
@@ -79,7 +78,6 @@ const Recipes = () => {
             if (!acc[category]) {
               acc[category] = [];
             }
-
             acc[category].push(recipe);
 
             return acc;
@@ -126,6 +124,24 @@ const Recipes = () => {
         recipe={recipeDetail}
         isOpen={recipeDetail !== null}
         onRequestClose={() => setRecipeDetail(null)}
+        onRecipeChanged={(recipe) => {
+          // find and update the recipe in the recipesByCategory
+          const category = recipe.category;
+          const categoryRecipes = recipesByCategory[category];
+          const recipeIndex = categoryRecipes.findIndex(
+            (r) => r.uuid === recipe.uuid
+          );
+
+          setRecipesByCategory({
+            ...recipesByCategory,
+            [category]: [
+              ...categoryRecipes.slice(0, recipeIndex),
+              recipe,
+              ...categoryRecipes.slice(recipeIndex + 1),
+            ],
+          });
+          setRecipeDetail(recipe);
+        }}
       />
 
       <Tooltip className="tooltip" id="recipeCard-tooltip" />
