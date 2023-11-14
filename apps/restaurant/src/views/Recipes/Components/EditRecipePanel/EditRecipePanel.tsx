@@ -165,6 +165,7 @@ const EditRecipePanel = (props: Props) => {
         <div className={styles.rowInputs}>
           <LabeledInput
             type="number"
+            step="0.01"
             placeholder={t('recipes.editPanel.fields.pricePerPortion')}
             icon={<i className="fa-solid fa-tag" />}
             {...register('pricePerPortion')}
