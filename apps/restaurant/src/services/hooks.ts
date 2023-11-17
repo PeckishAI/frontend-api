@@ -15,9 +15,8 @@ export const useIngredients = () => {
     (state) => state.selectedRestaurantUUID
   );
 
-  useEffect(() => {
+  const reloadInventory = () => {
     if (!restaurantUUID) return;
-
     setIsLoading(true);
     inventoryService
       .getIngredientList(restaurantUUID)
@@ -29,7 +28,8 @@ export const useIngredients = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [restaurantUUID]);
+  };
+  useEffect(reloadInventory, [restaurantUUID]);
 
-  return { ingredients, loading, error };
+  return { ingredients, loading, error, reload: reloadInventory };
 };

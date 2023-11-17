@@ -1,10 +1,10 @@
 export type Ingredient = {
   id: string;
   name: string;
-  theoreticalStock: number;
+  safetyStock: number;
   quantity: number;
   unit: string;
   supplier: string;
-  cost: number;
-  actions: void;
+  unitCost: number;
+  actions?: void;
 };

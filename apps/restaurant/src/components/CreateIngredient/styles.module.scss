@@ -1,0 +1,23 @@
+.createIngredientPopup {
+  max-width: 450px;
+  .inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+
+    .multiple {
+      display: flex;
+      gap: 10px;
+      & > * {
+        flex: 1;
+      }
+    }
+  }
+  .buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+}

@@ -1,13 +1,27 @@
 import axios, { Ingredient } from './index';
 
+export type Invoice = {
+  items: {
+    uuid: string;
+    detectedName?: string;
+    mappedName?: string;
+    quantity?: number;
+    totalPrice?: number;
+    unitPrice?: number;
+  }[];
+  supplier?: string;
+  amount?: number;
+};
+
 const getIngredientList = async (
   restaurantUUID: string
 ): Promise<Ingredient[]> => {
   const res = await axios.get('/inventory/' + restaurantUUID);
 
-  return Object.keys(res.data).map((key) => ({
+  return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
-    theoriticalStock: 0,
+    safetyStock: 0,
+    unitCost: res.data[key]['cost'],
     ...res.data[key],
   }));
 };
@@ -52,7 +66,7 @@ export type ColumnsNameMapping = {
   supplier: string;
 };
 
-export type PreviewResponse = {
+export type PreviewCsvResponse = {
   detectedColumns: ColumnsNameMapping;
   fileColumns: string[];
 };
@@ -60,7 +74,7 @@ export type PreviewResponse = {
 const uploadCsvFile = async (
   restaurantUUID: string,
   file: File
-): Promise<PreviewResponse> => {
+): Promise<PreviewCsvResponse> => {
   const formData = new FormData();
   formData.append('file', file);
 
@@ -123,6 +137,41 @@ const validUploadedCsv = (
   });
 };
 
+const uploadImgFile = async (
+  restaurantUUID: string,
+  file: File
+): Promise<Invoice> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('restaurant_uuid', restaurantUUID);
+
+  console.log('file::: ', file);
+
+  const res = await axios.post(
+    'https://invoices-api-k2w3p2ptza-ew.a.run.app/api/v1/extract',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+  console.log('invoice res : ', res);
+
+  return {
+    amount: res.data.total_amount,
+    supplier: res.data.supplier,
+    items: res.data.items.map((item) => ({
+      uuid: item.uuid,
+      detectedName: item.base,
+      mappedName: item.name,
+      quantity: item.quantity,
+      totalPrice: item.total_price,
+      unitPrice: item.unit_price,
+    })),
+  };
+};
+
 export const inventoryService = {
   getIngredientList,
   addIngredient,
@@ -132,4 +181,5 @@ export const inventoryService = {
   uploadCsvFile,
   getPreviewUploadedCsv,
   validUploadedCsv,
+  uploadImgFile,
 };
