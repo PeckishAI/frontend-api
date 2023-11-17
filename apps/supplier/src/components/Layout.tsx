@@ -74,38 +74,28 @@ const Layout = () => {
         <SidebarItem
           name={t('sidebarItem.orders')}
           icon={<i className="fa-solid fa-list-ul"></i>}
-          onClick={() => {
-            navigate('/orders');
-          }}
+          to="/orders"
         />
         <SidebarItem
           name={t('sidebarItem.catalog')}
           icon={<i className="fa-solid fa-shop"></i>}
-          onClick={() => {
-            navigate('/catalog');
-          }}
+          to="/catalog"
         />
         <SidebarItem
           name={t('sidebarItem.customers')}
           icon={<i className="fa-solid fa-share-nodes"></i>}
-          onClick={() => {
-            navigate('/customers');
-          }}
+          to="/customers"
         />
         <SidebarItem
           name={t('sidebarItem.map')}
           icon={<i className="fa-solid fa-map-location-dot"></i>}
-          onClick={() => {
-            navigate('/map');
-          }}
+          to="/map"
         />
         <SidebarSeparator sectionName="Resources" />
         <SidebarItem
           name={t('sidebarItem.support')}
           icon={<i className="fa-regular fa-handshake"></i>}
-          onClick={() => {
-            navigate('/support');
-          }}
+          to="/support"
         />
       </Sidebar>
       <div className="main">
