@@ -13,8 +13,9 @@ import { Tooltip } from 'react-tooltip';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import supplierService from '../../../services/supplier.service';
 import ImportIngredients from '../Components/ImportIngredients/ImportIngredients';
+import Fuse from 'fuse.js';
 
-const units: DropdownOptionsDefinitionType[] = [
+export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
   { label: 'g', value: 'g' },
   { label: 'tbsp', value: 'tbsp' },
@@ -73,11 +74,19 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         });
     }, [selectedRestaurantUUID]);
 
+    const ingredientsFiltered = props.searchValue
+      ? new Fuse(ingredientsList, {
+          keys: ['name', 'supplier'],
+        })
+          .search(props.searchValue)
+          .map((r) => r.item)
+      : ingredientsList;
+
     const handleExportDataClick = useCallback(() => {
       const rows = ingredientsList;
       if (rows) {
         const header =
-          'Ingredient name, Theoretical stock, Actual stock, Unit, Supplier, Cost\n';
+          'Ingredient name, Safety stock, Actual stock, Unit, Supplier, Cost per unit\n';
         const csvContent =
           'data:text/csv;charset=utf-8,' +
           header +
@@ -85,11 +94,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             .map((row) => {
               const values = [];
               values.push(row.name); // Convertir la date en format ISO string
-              values.push(row.theoreticalStock || '-');
+              values.push(row.safetyStock || '-');
               values.push(row.quantity || '-');
               values.push(row.unit || '-');
               values.push(row.supplier || '-');
-              values.push(row.cost || '-');
+              values.push(row.unitCost || '-');
               return values.join(',');
             })
             .join('\n');
@@ -301,11 +310,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const newIngredient: Ingredient = {
         id: '',
         name: '',
-        theoreticalStock: 0,
+        safetyStock: 0,
         quantity: 0,
         unit: '',
         supplier: '',
-        cost: 0,
+        unitCost: 0,
         actions: undefined,
       };
 
@@ -336,10 +345,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
 
       {
-        key: 'theoreticalStock',
-        header: t('ingredient:theoreticalStock'),
+        key: 'safetyStock',
+        header: t('ingredient:safetyStock'),
         width: '15%',
-        renderItem: () => '-',
+        renderItem: () => '-', // temp till real value provided by backend
       },
       {
         key: 'quantity',
@@ -391,8 +400,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           ),
       },
       {
-        key: 'cost',
-        header: t('ingredient:cost'),
+        key: 'unitCost',
+        header: t('ingredient:unitCost'),
         width: '10%',
         classname: 'column-bold',
         renderItem: ({ row }) =>
@@ -400,12 +409,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             <Input
               type="number"
               min={0}
-              placeholder={t('ingredient:cost')}
-              onChange={(value) => handleValueChange('cost', value)}
-              value={editedValues!.cost}
+              placeholder={t('ingredient:unitCost')}
+              onChange={(value) => handleValueChange('unitCost', value)}
+              value={editedValues!.unitCost}
             />
-          ) : row.cost ? (
-            `${row.cost} €`
+          ) : row.unitCost ? (
+            `${row.unitCost} €`
           ) : (
             '-'
           ),
@@ -452,7 +461,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     return (
       <>
-        <Table data={ingredientsList} columns={columns} />
+        <Table data={ingredientsFiltered} columns={columns} />
 
         <ImportIngredients
           openUploader={importIngredientsPopup}
