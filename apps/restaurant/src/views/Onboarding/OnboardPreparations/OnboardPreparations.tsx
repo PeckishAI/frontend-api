@@ -7,6 +7,7 @@ import { FaPlus } from 'react-icons/fa';
 import RecipeFormPanel from '../../Recipes/Components/RecipeFormPanel/RecipeFormPanel';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
 import RecipeDetail from '../../Recipes/Components/RecipeDetail/RecipeDetail';
+import StepButtons from '../components/StepButtons/StepButtons';
 
 export const OnboardPreparations = () => {
   const [addPreparationModalIsOpen, setAddPreparationModalIsOpen] =
@@ -102,6 +103,13 @@ export const OnboardPreparations = () => {
         onSubmitted={(preparation) => {
           setAddPreparationModalIsOpen(false);
           addPreparation(preparation);
+        }}
+      />
+
+      <StepButtons
+        onContinueLater={() => {}}
+        onValidate={() => {
+          console.log('validate');
         }}
       />
     </div>
