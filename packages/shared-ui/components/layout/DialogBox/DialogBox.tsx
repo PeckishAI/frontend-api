@@ -1,20 +1,25 @@
 import { useTranslation } from 'react-i18next';
 import LottieFile from '../../Lottie/Lottie';
 import './style.scss';
+import { useState } from 'react';
+import Button from '../../Button/Button';
 
 type Props = {
   type: 'warning' | 'info' | 'error';
   msg: string;
   subMsg?: string;
   list?: string[];
-  revele: boolean;
+  isOpen: boolean;
   onRequestClose: () => void;
-  onConfirm?: () => void;
+  onConfirm?: () => void | Promise<void>;
 };
 
 const DialogBox = (props: Props) => {
   const { t } = useTranslation('common');
-  if (!props.revele) {
+
+  const [isSubmitLoading, setSubmitLoading] = useState(false);
+
+  if (!props.isOpen) {
     return null;
   }
   return (
@@ -41,12 +46,25 @@ const DialogBox = (props: Props) => {
           )}
           {props.type === 'warning' && (
             <>
-              <button onClick={props.onRequestClose} className="cancel">
-                {t('cancel')}
-              </button>
-              <button onClick={props.onConfirm} className="confirm">
-                {t('confirm')}
-              </button>
+              <Button
+                type="secondary"
+                value={t('cancel')}
+                onClick={props.onRequestClose}
+              />
+              <Button
+                value={t('confirm')}
+                type="primary"
+                loading={isSubmitLoading}
+                onClick={() => {
+                  const result = props.onConfirm && props.onConfirm();
+                  if (result && result instanceof Promise) {
+                    setSubmitLoading(true);
+                    result.finally(() => {
+                      setSubmitLoading(false);
+                    });
+                  }
+                }}
+              />
             </>
           )}
         </div>
