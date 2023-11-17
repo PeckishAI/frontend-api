@@ -21,6 +21,7 @@
   "warning.impactedRecipes": "These recipes will be affected by this action :",
 
   "inventory.addIngredientBtn": "Add an ingredient",
+  "inventory.selectIngredient": "Select an ingredient",
   "inventory.addSupplierBtn": "Add a supplier",
   "inventory.importData": "Import data",
   "inventory.uploadCSV.popup.title": "File preview",
