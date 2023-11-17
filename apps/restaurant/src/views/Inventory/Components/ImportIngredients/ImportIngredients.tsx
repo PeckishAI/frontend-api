@@ -1,10 +1,17 @@
-import { Loading, Popup, UploadValidation } from 'shared-ui';
+import { Loading, Popup } from 'shared-ui';
 import style from './style.module.scss';
 import FileUploader from '../../../../components/FileUploader/FileUploader';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PreviewResponse, inventoryService } from '../../../../services';
+import {
+  Invoice,
+  PreviewCsvResponse,
+  inventoryService,
+} from '../../../../services';
 import { useRestaurantStore } from '../../../../store/useRestaurantStore';
+import UploadCsvValidation from '../UploadCsvValidation/UploadCsvValidation';
+import UploadImgValidation from '../UploadImgValidation/UploadImgValidation';
+// import axios from 'axios';
 
 type Props = {
   openUploader: boolean;
@@ -22,13 +29,17 @@ const ImportIngredients = (props: Props) => {
   //   const [importDataPopup, setImportDataPopup] = useState(false);
   const [analyzingFile, setAnalyzingFile] = useState(false); // test with if(uploadedFile) set loading
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [previewFilePopup, setPreviewFilePopup] =
-    useState<PreviewResponse | null>(null);
+  const [previewCsvFilePopup, setPreviewCsvFilePopup] =
+    useState<PreviewCsvResponse | null>(null);
+  const [previewInvoice, setPreviewInvoice] = useState<Invoice | null>(null);
   const [fileType, setFileType] = useState<'csv' | 'img'>();
 
+  // let source = axios.CancelToken.source();
+
   const handleUploadCsv = useCallback(
-    async (file: File) => {
+    (file: File) => {
       console.log('handleUploadCsv');
+      setFileType('csv');
 
       if (file) {
         setAnalyzingFile(true);
@@ -36,7 +47,7 @@ const ImportIngredients = (props: Props) => {
           .uploadCsvFile(selectedRestaurantUUID, file)
           .then((data) => {
             props.onCloseUploader();
-            setPreviewFilePopup(data);
+            setPreviewCsvFilePopup(data);
             setUploadedFile(file);
           })
           .catch((err) => {
@@ -50,13 +61,35 @@ const ImportIngredients = (props: Props) => {
     [selectedRestaurantUUID]
   );
 
-  const handleUploadImg = (file: File) => {
-    if (file) console.log('IngredientTab : img file detected');
-  };
+  const handleUploadImg = useCallback(
+    async (file: File) => {
+      setFileType('img');
+      if (file) {
+        setAnalyzingFile(true);
+        inventoryService
+          .uploadImgFile(selectedRestaurantUUID, file)
+          .then((data) => {
+            props.onCloseUploader();
+            setPreviewInvoice(data);
+            setUploadedFile(file);
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+          .finally(() => {
+            setAnalyzingFile(false);
+          });
+      }
+    },
+    [selectedRestaurantUUID]
+  );
 
-  const handleUploadCsvValidate = () => {
-    setPreviewFilePopup(null);
+  const handleCloseUploader = () => {
+    setAnalyzingFile(false);
     setUploadedFile(null);
+    setPreviewInvoice(null);
+    setPreviewCsvFilePopup(null);
+    props.onCloseUploader();
   };
 
   return (
@@ -66,7 +99,7 @@ const ImportIngredients = (props: Props) => {
         subtitle="We are able to decrypt an invoice picture to pick up ingredients, or simply read csv file."
         maxWidth={500}
         isVisible={props.openUploader}
-        onRequestClose={() => props.onCloseUploader()}>
+        onRequestClose={handleCloseUploader}>
         {analyzingFile ? (
           <Loading size="medium" />
         ) : (
@@ -92,44 +125,34 @@ const ImportIngredients = (props: Props) => {
         )}
       </Popup>
 
-      {previewFilePopup !== null && uploadedFile && (
-        <UploadValidation
+      {previewCsvFilePopup !== null && fileType === 'csv' && uploadedFile && (
+        <UploadCsvValidation
           file={uploadedFile}
-          data={previewFilePopup}
-          headers={[
-            {
-              name: 'Ingredient',
-              selector: 'ingredient',
-            },
-            {
-              name: 'Quantity',
-              selector: 'quantity',
-            },
-            {
-              name: 'Cost',
-              selector: 'cost',
-            },
-            {
-              name: 'Unit',
-              selector: 'unit',
-            },
-            {
-              name: 'Supplier',
-              selector: 'supplier',
-            },
-          ]}
-          getPreview={(columns) =>
-            inventoryService.getPreviewUploadedCsv(
-              selectedRestaurantUUID!,
-              uploadedFile,
-              columns
-            )
-          }
+          data={previewCsvFilePopup}
+          uploadSuccess={() => {
+            setPreviewCsvFilePopup(null);
+            setUploadedFile(null);
+            props.onIngredientsImported();
+          }}
           onCancelClick={() => {
-            setPreviewFilePopup(null);
+            setPreviewCsvFilePopup(null);
             setUploadedFile(null);
           }}
-          onValidateClick={handleUploadCsvValidate}
+        />
+      )}
+
+      {previewInvoice !== null && fileType === 'img' && uploadedFile && (
+        <UploadImgValidation
+          data={previewInvoice}
+          onCancelClick={() => {
+            setPreviewInvoice(null);
+            setUploadedFile(null);
+          }}
+          onValideClick={() => {
+            setPreviewInvoice(null);
+            setUploadedFile(null);
+            props.onIngredientsImported();
+          }}
         />
       )}
     </div>
