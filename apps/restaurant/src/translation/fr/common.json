@@ -100,10 +100,22 @@
   },
   "order.validation.submit.success": "Commande envoyée avec succès",
 
+  "recipes.addPanel.recipe.title": "Ajouter une nouvelle recette",
+  "recipes.addPanel.preparation.title": "Ajouter une nouvelle préparation",
   "recipes.editPanel": {
-    "title": "Modifier la recette <highlight>{{name}}<highlight>",
+    "recipe": {
+      "title": "Modifier la recette <highlight>{{name}}<highlight>",
+      "fields": {
+        "name": "Nom de la recette"
+      }
+    },
+    "preparation": {
+      "title": "Modifier la préparation <highlight>{{name}}<highlight>",
+      "fields": {
+        "name": "Nom de la préparation"
+      }
+    },
     "fields": {
-      "name": "Nom de la recette",
       "pricePerPortion": "Prix par portion",
       "portionsPerBatch": "Portions par lot"
     },
@@ -112,6 +124,12 @@
       "ingredientSelect": "Sélectionnez un ingrédient",
       "addIngredient": "Ajouter un ingrédient/préparation"
     }
+  },
+  "recipes.delete": {
+    "preparation": "Êtes-vous sûr de vouloir supprimer cette préparation ?",
+    "recipe": "Êtes-vous sûr de vouloir supprimer cette recette ?",
+    "product": "Êtes-vous sûr de vouloir supprimer ce produit ?",
+    "subtitle": "Cette action est irréversible"
   },
 
   "notification.import_inventory.title": "Ajoutez vos ingrédients",

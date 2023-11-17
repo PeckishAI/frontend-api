@@ -102,10 +102,22 @@
   },
   "order.validation.submit.success": "Order Successfully submitted",
 
+  "recipes.addPanel.recipe.title": "Add a new recipe",
+  "recipes.addPanel.preparation.title": "Add a new recipe",
   "recipes.editPanel": {
-    "title": "Edit <highlight>{{name}}<highlight> recipe",
+    "recipe": {
+      "title": "Edit <highlight>{{name}}<highlight> recipe",
+      "fields": {
+        "name": "Recipe name"
+      }
+    },
+    "preparation": {
+      "title": "Edit <highlight>{{name}}<highlight> preparation",
+      "fields": {
+        "name": "Preparation name"
+      }
+    },
     "fields": {
-      "name": "Recipe name",
       "pricePerPortion": "Price (per portion)",
       "portionsPerBatch": "Portions per batch"
     },
@@ -114,6 +126,12 @@
       "ingredientSelect": "Select an ingredient",
       "addIngredient": "Add an ingredient/preparation"
     }
+  },
+  "recipes.delete": {
+    "preparation": "Are you sure to delete this preparation ?",
+    "recipe": "Are you sure to delete this recipe ?",
+    "product": "Are you sure to delete this product ?",
+    "subtitle": "This action is irreversible"
   },
 
   "notification.import_inventory.title": "Add your ingredients",

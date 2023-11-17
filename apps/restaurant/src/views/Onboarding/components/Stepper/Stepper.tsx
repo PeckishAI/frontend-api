@@ -6,13 +6,14 @@ import { useTranslation } from 'react-i18next';
 type Props = {
   currentStep: number;
   steps: string[];
+  className?: string;
 };
 
 const Stepper = (props: Props) => {
   const { t } = useTranslation();
 
   return (
-    <div className={styles.stepper}>
+    <div className={classNames(styles.stepper, props.className)}>
       {props.steps.map((step, i) => {
         return (
           <div

@@ -1,0 +1,17 @@
+.description {
+  margin-top: 30px;
+  font-size: 15px;
+}
+
+.cardGrid {
+  margin-top: 25px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.addButtonWrapper {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+}
