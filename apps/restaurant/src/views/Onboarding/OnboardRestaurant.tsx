@@ -28,7 +28,6 @@ const getTabName = (tabIndex: number) => {
 
 export const OnboardRestaurant = () => {
   const { t } = useTranslation();
-  useTitle(t('pages.onboarding_selectProducts'));
   const navigate = useNavigate();
 
   const { step } = useParams<RouteParams>();
@@ -39,6 +38,12 @@ export const OnboardRestaurant = () => {
     setCurrentStep(getTabIndex(step));
   }, [step]);
 
+  const onGoNextStep = () => {
+    navigate({
+      pathname: `/onboarding/${getTabName(currentStep + 1)}`,
+    });
+  };
+
   return (
     <div>
       <Stepper
@@ -48,16 +53,9 @@ export const OnboardRestaurant = () => {
       />
 
       {currentStep === 0 ? (
-        <OnboardProducts
-          goNextStep={() => {
-            // setCurrentStep(currentStep + 1);
-            navigate({
-              pathname: `/onboarding/${getTabName(currentStep + 1)}`,
-            });
-          }}
-        />
+        <OnboardProducts goNextStep={onGoNextStep} />
       ) : currentStep === 1 ? (
-        <OnboardPreparations />
+        <OnboardPreparations goNextStep={onGoNextStep} />
       ) : null}
 
       {/* <div className={styles.bottomSection}>

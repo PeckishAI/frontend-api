@@ -9,6 +9,7 @@ import { FaCheck, FaSearch } from 'react-icons/fa';
 import classNames from 'classnames';
 import StepButtons from '../components/StepButtons/StepButtons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 type IRecipe = ProductPrediction & { selected: boolean };
 
@@ -25,6 +26,8 @@ type Props = {
 };
 
 const OnboardProducts = (props: Props) => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
 
   const [search, setSearch] = useState('');
@@ -131,18 +134,12 @@ const OnboardProducts = (props: Props) => {
   return (
     <>
       <p className={styles.description}>
-        Pour commencer veuillez sélectionner dans vos recettes celles qui sont
-        considérées comme des produits non transformés. Par exemple, le Coca
-        Cola est un produit vendu tel quel, il n'est pas composé d'autres
-        d'ingrédients.
-        <br />
-        <br />
-        Nous avons pré-sélectionné pour vous les produits les plus courants.
+        {t('onboarding.restaurant.products.description')}
       </p>
 
       <LabeledInput
         className={styles.searchInput}
-        placeholder="Rechercher une recette"
+        placeholder={t('onboarding.restaurant.products.search-recipe')}
         lighter
         icon={<FaSearch />}
         value={search}
@@ -162,7 +159,7 @@ const OnboardProducts = (props: Props) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}>
-                Aucune recette ne correspond à votre recherche
+                {t('onboarding.restaurant.products.no-recipe-found')}
               </motion.p>
             )}
 

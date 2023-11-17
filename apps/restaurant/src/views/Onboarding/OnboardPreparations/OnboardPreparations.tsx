@@ -1,15 +1,25 @@
 import { useEffect, useState } from 'react';
 import { Recipe, recipesService } from '../../../services';
-import RecipeCard from '../../Recipes/Components/RecipeCard/RecipeCard';
+import RecipeCard from '../../../components/RecipeCard/RecipeCard';
 import styles from './OnboardPreparations.module.scss';
-import { Button, LoadingAbsolute } from 'shared-ui';
-import { FaPlus } from 'react-icons/fa';
-import RecipeFormPanel from '../../Recipes/Components/RecipeFormPanel/RecipeFormPanel';
+import { LoadingAbsolute, useTitle } from 'shared-ui';
+import RecipeFormPanel from '../../../components/RecipeFormPanel/RecipeFormPanel';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
-import RecipeDetail from '../../Recipes/Components/RecipeDetail/RecipeDetail';
+import RecipeDetail from '../../../components/RecipeDetail/RecipeDetail';
 import StepButtons from '../components/StepButtons/StepButtons';
+import classNames from 'classnames';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
-export const OnboardPreparations = () => {
+type Props = {
+  goNextStep: () => void;
+};
+
+export const OnboardPreparations = (props: Props) => {
+  const { t } = useTranslation();
+  useTitle(t('pages.onboarding_createPreparations'));
+  const navigate = useNavigate();
+
   const [addPreparationModalIsOpen, setAddPreparationModalIsOpen] =
     useState(false);
   const [preparationDetail, setPreparationDetail] = useState<Recipe | null>(
@@ -62,9 +72,7 @@ export const OnboardPreparations = () => {
   return (
     <div>
       <p className={styles.description}>
-        Si vous utilisez des préparations communes à plusieurs recettes, vous
-        pouvez les créer ici. Elles pourront ensuite être utilisées dans vos
-        recettes afin de simplifier leur création.
+        {t('onboarding.restaurant.preparations.description')}
       </p>
 
       {loading && <LoadingAbsolute />}
@@ -78,13 +86,19 @@ export const OnboardPreparations = () => {
           />
         ))}
 
-        <div className={styles.addButtonWrapper}>
-          <Button
-            value="Ajouter une préparation"
-            type="primary"
-            icon={<FaPlus />}
-            onClick={() => setAddPreparationModalIsOpen(true)}
+        <div
+          className={styles.addPreparationCard}
+          onClick={() => setAddPreparationModalIsOpen(true)}>
+          <i
+            className={classNames(
+              'fa-solid',
+              'fa-plus',
+              styles.addPreparationCardPlus
+            )}
           />
+          <p className={styles.addPreparationCardText}>
+            {t('onboarding.restaurant.preparations.add-preparation')}
+          </p>
         </div>
       </div>
 
@@ -107,9 +121,9 @@ export const OnboardPreparations = () => {
       />
 
       <StepButtons
-        onContinueLater={() => {}}
+        onContinueLater={() => navigate('/')}
         onValidate={() => {
-          console.log('validate');
+          props.goNextStep();
         }}
       />
     </div>
