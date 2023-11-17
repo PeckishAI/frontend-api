@@ -2,11 +2,9 @@ import './style.scss';
 import { useTranslation } from 'react-i18next';
 import { Button, Popup, Select } from 'shared-ui';
 import { useState } from 'react';
-import {
-  ColumnsNameMapping,
-  inventoryService,
-} from '../../../../../apps/restaurant/src/services';
+import { ColumnsNameMapping } from '../../../../../apps/restaurant/src/services';
 import { useRestaurantStore } from '../../../../../apps/restaurant/src/store/useRestaurantStore';
+import { toast } from 'react-hot-toast';
 
 type Props<T> = {
   data: {
@@ -15,8 +13,8 @@ type Props<T> = {
   };
   file: File;
   onCancelClick: () => void;
-  onValidateClick: () => void;
-
+  onUpload: (mappedColumns: T) => Promise<any>;
+  uploadSuccess: () => void;
   getPreview: (mappedColumns: T) => Promise<T[]>;
   headers: {
     name: string;
@@ -89,16 +87,17 @@ const UploadValidation = <
     if (headerValues !== null && selectedRestaurantUUID !== undefined) {
       const columnsNames = getColumnNames() as T;
 
-      inventoryService
-        .validUploadedCsv(selectedRestaurantUUID, props.fileCsv, columnsNames)
+      props
+        .onUpload(columnsNames)
         .then(() => {
           setErrror(false);
-          props.onValidateClick();
-          console.log('no error');
+          toast.success('ajout avec succes');
+          props.uploadSuccess();
         })
         .catch((err) => {
           console.log('error : ', err);
           setErrror(true);
+          toast.error('erreur produit');
         });
     }
   };
@@ -173,6 +172,7 @@ const UploadValidation = <
               ))}
           </div>
         </div>
+
         {error && (
           <span className="text-error">
             {t('error.trigger')}. {t('error.tryLater')}
