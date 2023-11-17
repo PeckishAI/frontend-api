@@ -92,6 +92,16 @@ const OnboardProducts = (props: Props) => {
     }, 500);
   };
 
+  const saveProducts = (completed: boolean) => {
+    const productUUIDs = recipes
+      .filter((recipe) => recipe.selected)
+      .map((recipe) => recipe.uuid);
+    setLoading(true);
+    return onboardingService
+      .saveProducts(selectedRestaurantUUID, productUUIDs, completed)
+      .finally(() => setLoading(false));
+  };
+
   const filteredRecipes = useDebounceMemo(
     () => {
       if (search.length <= 1) return recipes;
@@ -120,6 +130,16 @@ const OnboardProducts = (props: Props) => {
 
   return (
     <>
+      <p className={styles.description}>
+        Pour commencer veuillez sélectionner dans vos recettes celles qui sont
+        considérées comme des produits non transformés. Par exemple, le Coca
+        Cola est un produit vendu tel quel, il n'est pas composé d'autres
+        d'ingrédients.
+        <br />
+        <br />
+        Nous avons pré-sélectionné pour vous les produits les plus courants.
+      </p>
+
       <LabeledInput
         className={styles.searchInput}
         placeholder="Rechercher une recette"
@@ -160,27 +180,14 @@ const OnboardProducts = (props: Props) => {
 
       <StepButtons
         onContinueLater={() => {
-          const productUUIDs = recipes
-            .filter((recipe) => recipe.selected)
-            .map((recipe) => recipe.uuid);
-          onboardingService
-            .saveProducts(selectedRestaurantUUID, productUUIDs, false)
-            .then(() => {
-              navigate('/');
-            });
+          saveProducts(false).then(() => {
+            navigate('/');
+          });
         }}
         onValidate={() => {
-          onboardingService
-            .saveProducts(
-              selectedRestaurantUUID,
-              recipes
-                .filter((recipe) => recipe.selected)
-                .map((recipe) => recipe.uuid),
-              true
-            )
-            .then(() => {
-              props.goNextStep();
-            });
+          saveProducts(true).then(() => {
+            props.goNextStep();
+          });
         }}
       />
     </>
