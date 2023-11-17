@@ -9,7 +9,7 @@ import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { useTranslation } from 'react-i18next';
 import RecipeCategory from './Components/RecipeCategory/RecipeCategory';
 import { Tooltip } from 'react-tooltip';
-import RecipeDetail from './Components/RecipeDetail/RecipeDetail';
+import RecipeDetail from '../../components/RecipeDetail/RecipeDetail';
 import { TFunction } from 'i18next';
 
 export type RecipeCat = {

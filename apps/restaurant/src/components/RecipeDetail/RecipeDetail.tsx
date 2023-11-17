@@ -1,11 +1,11 @@
 import { DialogBox, IconButton, SidePanel, Table } from 'shared-ui';
-import style from './style.module.scss';
-import { Recipe, recipesService } from '../../../../services';
+import styles from './style.module.scss';
+import { Recipe, recipesService } from '../../services';
 import RecipeFormPanel from '../RecipeFormPanel/RecipeFormPanel';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatCurrency } from '../../../../utils/helpers';
-import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
+import { formatCurrency } from '../../utils/helpers';
+import { useRestaurantCurrency } from '../../store/useRestaurantStore';
 
 type Props = {
   recipe: Recipe | null;
@@ -27,9 +27,9 @@ const RecipeDetail = (props: Props) => {
       <SidePanel
         isOpen={props.recipe !== null}
         onRequestClose={() => props.onRequestClose()}>
-        <div className={style.recipeDetail}>
-          <h2 className={style.name}>{props.recipe?.name}</h2>
-          <div className={style.optionsButtons}>
+        <div className={styles.recipeDetail}>
+          <h2 className={styles.name}>{props.recipe?.name}</h2>
+          <div className={styles.optionsButtons}>
             <IconButton
               icon={<i className="fa-solid fa-pen-to-square"></i>}
               tooltipMsg={t('edit')}
@@ -41,36 +41,43 @@ const RecipeDetail = (props: Props) => {
               onClick={() => setDeleteRecipe(props.recipe)}
             />
           </div>
-          <p className={style.category}>
+          <p className={styles.category}>
             {t('category')} :{' '}
-            <span className={style.value}>
+            <span className={styles.value}>
               {t(`recipesCategories.${props.recipe?.category ?? 'others'}`)}
             </span>
           </p>
-          <div className={style.metrics}>
-            <p className={style.metric}>
-              <i className={`fa-solid fa-tag ${style.price}`}></i>
-              {t('price')} :{' '}
-              <span className={style.value}>
-                {formatCurrency(props.recipe?.portion_price, currencyISO)}
-              </span>
-            </p>
-            <p className={style.metric}>
+
+          <div className={styles.metrics}>
+            {props.recipe?.type !== 'preparation' && (
+              <p className={styles.metric}>
+                <i className={`fa-solid fa-tag ${styles.price}`}></i>
+                {t('price')} :{' '}
+                <span className={styles.value}>
+                  {formatCurrency(props.recipe?.portion_price, currencyISO)}
+                </span>
+              </p>
+            )}
+
+            <p className={styles.metric}>
               <i
-                className={`fa-solid fa-hand-holding-dollar ${style.cost}`}></i>
+                className={`fa-solid fa-hand-holding-dollar ${styles.cost}`}></i>
               {t('cost')} :{' '}
-              <span className={style.value}>
+              <span className={styles.value}>
                 {formatCurrency(props.recipe?.cost, currencyISO)}
               </span>
             </p>
-            <p className={style.metric}>
-              <i
-                className={`fa-solid fa-arrow-up-right-dots ${style.margin}`}></i>
-              {t('margin')} :{' '}
-              <span className={style.value}>
-                {formatCurrency(props.recipe?.margin, currencyISO)}
-              </span>
-            </p>
+
+            {props.recipe?.type !== 'preparation' && (
+              <p className={styles.metric}>
+                <i
+                  className={`fa-solid fa-arrow-up-right-dots ${styles.margin}`}></i>
+                {t('margin')} :{' '}
+                <span className={styles.value}>
+                  {formatCurrency(props.recipe?.margin, currencyISO)}
+                </span>
+              </p>
+            )}
           </div>
           <Table
             data={props.recipe?.ingredients}
@@ -91,6 +98,11 @@ const RecipeDetail = (props: Props) => {
               },
             ]}
           />
+          {props.recipe?.ingredients.length === 0 && (
+            <p className={styles.noIngredients}>
+              {t('recipes.card.no-ingredients')}
+            </p>
+          )}
         </div>
       </SidePanel>
 
@@ -107,7 +119,6 @@ const RecipeDetail = (props: Props) => {
           })
         }
       />
-
       <RecipeFormPanel
         type={props.recipe?.type}
         action="edit"

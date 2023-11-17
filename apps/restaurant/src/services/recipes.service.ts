@@ -14,10 +14,10 @@ export type Recipe = {
   uuid: string;
   name: string;
   category: RecipeCategory;
-  portion_price: number;
+  portion_price?: number;
   portion_count: number;
   cost: number;
-  margin: number;
+  margin?: number;
   type: RecipeType;
   ingredients: {
     uuid: string;
@@ -57,7 +57,7 @@ const getRecipes = async (
 type FormRecipe = {
   name: string;
   category: RecipeCategory;
-  pricePerPortion: number;
+  pricePerPortion?: number;
   portionsPerBatch: number;
   ingredients: {
     ingredient_uuid: string;
@@ -80,12 +80,12 @@ const updateRecipe = (
   });
 };
 
-const createRecipe = (
+const createRecipe = async (
   restaurantUUID: string,
   type: RecipeType,
   data: FormRecipe
 ) => {
-  return axios.post('/recipes/' + restaurantUUID, {
+  const res = await axios.post('/recipes/' + restaurantUUID, {
     type,
     restaurant_uuid: restaurantUUID,
     recipe_name: data.name,
@@ -94,6 +94,8 @@ const createRecipe = (
     portion_count: data.portionsPerBatch,
     ingredients: data.ingredients,
   });
+
+  return res.data.recipe_uuid as string;
 };
 
 const deleteRecipe = (recipeId: string) => {

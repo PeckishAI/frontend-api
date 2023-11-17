@@ -8,38 +8,51 @@ import {
   RecipeCategory,
   RecipeType,
   recipesService,
-} from '../../../../services';
-import { useIngredients } from '../../../../services/hooks';
+} from '../../services';
+import { useIngredients } from '../../services/hooks';
 import { FaPlus } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { ReactElement, useEffect } from 'react';
 import {
   useRestaurantCurrency,
   useRestaurantStore,
-} from '../../../../store/useRestaurantStore';
-import { formatCurrency } from '../../../../utils/helpers';
+} from '../../store/useRestaurantStore';
+import { formatCurrency } from '../../utils/helpers';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
 import { components, OptionProps } from 'react-select';
-import { getRecipeCategories } from '../../Recipes';
+import { getRecipeCategories } from '../../views/Recipes/Recipes';
 
-const RecipeSchema = z.object({
-  name: z.string().trim().nonempty('required'),
-  category: z.custom<RecipeCategory>().refine((val) => !!val, 'required'),
-  pricePerPortion: z.coerce.number().positive('positive-number'),
-  portionsPerBatch: z.coerce.number().positive('positive-number'),
-  ingredients: z.array(
-    z.object({
-      selectedUUID: z.string().nonempty('required'),
-      // Allow null for quantity to initialize empty field, but make it required in the form submission
-      quantity: z.coerce
-        .number()
-        .positive('positive-number')
-        .nullable()
-        .refine((val) => val !== null, 'required'),
-    })
-  ),
-});
+const RecipeSchema = z
+  .object({
+    name: z.string().trim().nonempty('required'),
+    type: z.enum(['recipe', 'preparation', 'product']),
+    category: z.custom<RecipeCategory>().refine((val) => !!val, 'required'),
+    pricePerPortion: z.coerce
+      .number()
+      .positive('positive-number')
+      .or(z.undefined()),
+    portionsPerBatch: z.coerce.number().positive('positive-number'),
+    ingredients: z.array(
+      z.object({
+        selectedUUID: z.string().nonempty('required'),
+        // Allow null for quantity to initialize empty field, but make it required in the form submission
+        quantity: z.coerce
+          .number()
+          .positive('positive-number')
+          .nullable()
+          .refine((val) => val !== null, 'required'),
+      })
+    ),
+  })
+  .refine((val) => {
+    console.log('ici', val);
+
+    if (val.type !== 'preparation') {
+      return val.pricePerPortion !== undefined;
+    }
+    return true;
+  }, 'required');
 
 type EditRecipeForm = z.infer<typeof RecipeSchema>;
 
@@ -73,6 +86,7 @@ const RecipeFormPanel = (props: Props) => {
     defaultValues: {
       ingredients: [],
     },
+    context: { type: recipeType },
     resolver: zodResolver(RecipeSchema),
   });
 
@@ -89,9 +103,14 @@ const RecipeFormPanel = (props: Props) => {
     if (props.isOpen) {
       if (props.action === 'create') {
         reset();
+        reset({
+          type: recipeType,
+          ingredients: [],
+        });
       } else {
         reset({
           name: props.recipe?.name,
+          type: recipeType,
           category: props.recipe?.category,
           pricePerPortion: props.recipe?.portion_price,
           portionsPerBatch: props.recipe?.portion_count,
@@ -115,7 +134,7 @@ const RecipeFormPanel = (props: Props) => {
 
   // Benefit per batch
   const priceMargin =
-    watch('pricePerPortion') * watch('portionsPerBatch') - totalCost;
+    (watch('pricePerPortion') ?? 0) * watch('portionsPerBatch') - totalCost;
 
   // handle form submission
   const handleFormSubmit = handleSubmit((data) => {
@@ -142,11 +161,14 @@ const RecipeFormPanel = (props: Props) => {
             requestData
           );
 
-    return service.then(() => {
+    return service.then((res) => {
       // set the new recipe
       props.onSubmitted({
         ...props.recipe,
-        uuid: props.recipe?.uuid ?? '',
+        uuid:
+          props.recipe?.uuid ?? props.action === 'create'
+            ? (res as string)
+            : '',
         type: recipeType,
         isOnboarded: props.recipe?.isOnboarded ?? true,
         name: data.name,
@@ -177,6 +199,8 @@ const RecipeFormPanel = (props: Props) => {
     value: cat.value,
   }));
 
+  console.log(errors);
+
   return (
     <SidePanel
       className={styles.sidePanel}
@@ -184,7 +208,7 @@ const RecipeFormPanel = (props: Props) => {
       onRequestClose={props.onRequestClose}>
       <h1 className={styles.title}>
         {props.action === 'create' ? (
-          props.type === 'preparation' ? (
+          recipeType === 'preparation' ? (
             t('recipes.addPanel.preparation.title')
           ) : (
             t('recipes.addPanel.recipe.title')
@@ -192,7 +216,7 @@ const RecipeFormPanel = (props: Props) => {
         ) : (
           <Trans
             i18nKey={
-              props.type === 'preparation'
+              recipeType === 'preparation'
                 ? 'recipes.editPanel.preparation.title'
                 : 'recipes.editPanel.recipe.title'
             }
@@ -208,7 +232,7 @@ const RecipeFormPanel = (props: Props) => {
         <LabeledInput
           placeholder={t(
             `recipes.editPanel.${
-              props.type as 'recipe' | 'preparation'
+              recipeType as 'recipe' | 'preparation'
             }.fields.name`
           )}
           autoComplete="off"
@@ -241,16 +265,18 @@ const RecipeFormPanel = (props: Props) => {
         />
 
         <div className={styles.rowInputs}>
-          <LabeledInput
-            type="number"
-            step="0.01"
-            placeholder={t('recipes.editPanel.fields.pricePerPortion')}
-            icon={<i className="fa-solid fa-tag" />}
-            {...register('pricePerPortion')}
-            lighter
-            suffix={currencySymbol}
-            error={errors.pricePerPortion?.message}
-          />
+          {recipeType !== 'preparation' && (
+            <LabeledInput
+              type="number"
+              step="0.01"
+              placeholder={t('recipes.editPanel.fields.pricePerPortion')}
+              icon={<i className="fa-solid fa-tag" />}
+              {...register('pricePerPortion')}
+              lighter
+              suffix={currencySymbol}
+              error={errors.pricePerPortion?.message}
+            />
+          )}
 
           <LabeledInput
             type="number"
@@ -279,19 +305,21 @@ const RecipeFormPanel = (props: Props) => {
               </span>
             </p>
 
-            <p className={styles.metricText}>
-              <i
-                className={classNames(
-                  'fa-solid',
-                  'fa-arrow-up-right-dots',
-                  styles.margin
-                )}
-              />
-              {t('margin')}:
-              <span className={styles.metricPrice}>
-                {formatCurrency(priceMargin, currencyISO)}
-              </span>
-            </p>
+            {recipeType !== 'preparation' && (
+              <p className={styles.metricText}>
+                <i
+                  className={classNames(
+                    'fa-solid',
+                    'fa-arrow-up-right-dots',
+                    styles.margin
+                  )}
+                />
+                {t('margin')}:
+                <span className={styles.metricPrice}>
+                  {formatCurrency(priceMargin, currencyISO)}
+                </span>
+              </p>
+            )}
           </div>
         </div>
 
