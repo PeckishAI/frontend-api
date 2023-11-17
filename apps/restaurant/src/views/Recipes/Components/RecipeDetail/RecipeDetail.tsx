@@ -1,26 +1,26 @@
-import { IconButton, SidePanel, Table } from 'shared-ui';
+import { DialogBox, IconButton, SidePanel, Table } from 'shared-ui';
 import style from './style.module.scss';
-import { Recipe } from '../../../../services';
-import EditRecipePanel from '../EditRecipePanel/EditRecipePanel';
+import { Recipe, recipesService } from '../../../../services';
+import RecipeFormPanel from '../RecipeFormPanel/RecipeFormPanel';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatCurrency } from '../../../../utils/helpers';
+import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
 
 type Props = {
   recipe: Recipe | null;
   isOpen: boolean;
   onRequestClose: () => void;
-  onRecipeChanged: (recipe: Recipe) => void;
+  onRecipeChanged: (recipe: Recipe, action: 'deleted' | 'updated') => void;
 };
 
 const RecipeDetail = (props: Props) => {
   const { t } = useTranslation();
 
   const [editRecipe, setEditRecipe] = useState<Recipe | null>(null);
+  const [deleteRecipe, setDeleteRecipe] = useState<Recipe | null>(null);
 
-  const currency = props.recipe?.currency;
-
-  if (!props.recipe) return;
+  const { currencyISO } = useRestaurantCurrency();
 
   return (
     <>
@@ -29,16 +29,22 @@ const RecipeDetail = (props: Props) => {
         onRequestClose={() => props.onRequestClose()}>
         <div className={style.recipeDetail}>
           <h2 className={style.name}>{props.recipe?.name}</h2>
-          <IconButton
-            icon={<i className="fa-solid fa-pen-to-square"></i>}
-            tooltipMsg={t('edit')}
-            onClick={() => setEditRecipe(props.recipe)}
-            className={style.edit}
-          />
+          <div className={style.optionsButtons}>
+            <IconButton
+              icon={<i className="fa-solid fa-pen-to-square"></i>}
+              tooltipMsg={t('edit')}
+              onClick={() => setEditRecipe(props.recipe)}
+            />
+            <IconButton
+              icon={<i className="fa-solid fa-trash"></i>}
+              tooltipMsg={t('delete')}
+              onClick={() => setDeleteRecipe(props.recipe)}
+            />
+          </div>
           <p className={style.category}>
             {t('category')} :{' '}
             <span className={style.value}>
-              {t(`recipesCategories.${props.recipe.category}`)}
+              {t(`recipesCategories.${props.recipe?.category ?? 'others'}`)}
             </span>
           </p>
           <div className={style.metrics}>
@@ -46,7 +52,7 @@ const RecipeDetail = (props: Props) => {
               <i className={`fa-solid fa-tag ${style.price}`}></i>
               {t('price')} :{' '}
               <span className={style.value}>
-                {formatCurrency(props.recipe?.portion_price, currency)}
+                {formatCurrency(props.recipe?.portion_price, currencyISO)}
               </span>
             </p>
             <p className={style.metric}>
@@ -54,7 +60,7 @@ const RecipeDetail = (props: Props) => {
                 className={`fa-solid fa-hand-holding-dollar ${style.cost}`}></i>
               {t('cost')} :{' '}
               <span className={style.value}>
-                {formatCurrency(props.recipe?.cost, currency)}
+                {formatCurrency(props.recipe?.cost, currencyISO)}
               </span>
             </p>
             <p className={style.metric}>
@@ -62,7 +68,7 @@ const RecipeDetail = (props: Props) => {
                 className={`fa-solid fa-arrow-up-right-dots ${style.margin}`}></i>
               {t('margin')} :{' '}
               <span className={style.value}>
-                {formatCurrency(props.recipe?.margin, currency)}
+                {formatCurrency(props.recipe?.margin, currencyISO)}
               </span>
             </p>
           </div>
@@ -80,19 +86,36 @@ const RecipeDetail = (props: Props) => {
                 header: t('totalCost'),
                 renderItem: ({ row }) =>
                   row.cost
-                    ? formatCurrency(row.cost * row.quantity, currency)
+                    ? formatCurrency(row.cost * row.quantity, currencyISO)
                     : '-',
               },
             ]}
           />
         </div>
       </SidePanel>
-      <EditRecipePanel
+
+      <DialogBox
+        msg={t(`recipes.delete.${deleteRecipe?.type ?? 'recipe'}`)}
+        subMsg={t('recipes.delete.subtitle')}
+        type="warning"
+        isOpen={deleteRecipe !== null}
+        onRequestClose={() => setDeleteRecipe(null)}
+        onConfirm={() =>
+          recipesService.deleteRecipe(deleteRecipe?.uuid ?? '').then(() => {
+            props.onRecipeChanged(deleteRecipe!, 'deleted');
+            setDeleteRecipe(null);
+          })
+        }
+      />
+
+      <RecipeFormPanel
+        type={props.recipe?.type}
+        action="edit"
         isOpen={editRecipe !== null}
-        onClose={() => setEditRecipe(null)}
-        onSaved={(recipe) => {
+        onRequestClose={() => setEditRecipe(null)}
+        onSubmitted={(recipe) => {
+          props.onRecipeChanged(recipe, 'updated');
           setEditRecipe(null);
-          props.onRecipeChanged(recipe);
         }}
         recipe={editRecipe}
       />

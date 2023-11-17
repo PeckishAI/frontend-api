@@ -4,10 +4,13 @@
     color: var(--primaryColor);
     font-weight: var(--semiBold);
   }
-  .edit {
+
+  .optionsButtons {
     position: absolute;
     top: 0;
     right: 0;
+    display: flex;
+    gap: 5px;
   }
 
   .category {

@@ -28,6 +28,8 @@ const RecipeCategory = (props: Props) => {
     setRecipesToDisplay(recipesToDisplay);
   }, [folded, props.recipes]);
 
+  if (props.recipes?.length === 0) return null;
+
   return (
     <div className={style.recipeCategory}>
       <div className={style.category}>
