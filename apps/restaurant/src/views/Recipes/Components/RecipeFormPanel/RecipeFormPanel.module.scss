@@ -48,6 +48,21 @@
   }
 }
 
+.categoryOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  i {
+    color: var(--primaryColor);
+  }
+  &.categoryOptionSelected {
+    i {
+      color: var(--white);
+    }
+  }
+}
+
 .inputContainer {
   display: flex;
   flex-direction: column;

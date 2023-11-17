@@ -1,13 +1,18 @@
 import { z } from 'zod';
-import styles from './EditRecipePanel.module.scss';
+import styles from './RecipeFormPanel.module.scss';
 import { Button, IconButton, LabeledInput, Select, SidePanel } from 'shared-ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { Recipe, recipesService } from '../../../../services';
+import {
+  Recipe,
+  RecipeCategory,
+  RecipeType,
+  recipesService,
+} from '../../../../services';
 import { useIngredients } from '../../../../services/hooks';
 import { FaPlus } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
-import { useEffect } from 'react';
+import { ReactElement, useEffect } from 'react';
 import {
   useRestaurantCurrency,
   useRestaurantStore,
@@ -15,9 +20,12 @@ import {
 import { formatCurrency } from '../../../../utils/helpers';
 import classNames from 'classnames';
 import { Trans, useTranslation } from 'react-i18next';
+import { components, OptionProps } from 'react-select';
+import { getRecipeCategories } from '../../Recipes';
 
 const RecipeSchema = z.object({
-  name: z.string().nonempty('required'),
+  name: z.string().trim().nonempty('required'),
+  category: z.custom<RecipeCategory>().refine((val) => !!val, 'required'),
   pricePerPortion: z.coerce.number().positive('positive-number'),
   portionsPerBatch: z.coerce.number().positive('positive-number'),
   ingredients: z.array(
@@ -37,12 +45,16 @@ type EditRecipeForm = z.infer<typeof RecipeSchema>;
 
 type Props = {
   isOpen: boolean;
-  onClose: () => void;
-  onSaved: (newRecipe: Recipe) => void;
-  recipe: Recipe | null;
+  onRequestClose: () => void;
+  onSubmitted: (newRecipe: Recipe) => void;
+  recipe?: Recipe | null;
+  type?: RecipeType;
+  action: 'create' | 'edit';
 };
 
-const EditRecipePanel = (props: Props) => {
+const RecipeFormPanel = (props: Props) => {
+  const recipeType = props.recipe?.type ?? props.type ?? 'recipe';
+
   const { t } = useTranslation(['common']);
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
@@ -59,9 +71,6 @@ const EditRecipePanel = (props: Props) => {
     formState: { errors, isDirty, isSubmitting },
   } = useForm<EditRecipeForm>({
     defaultValues: {
-      name: '',
-      pricePerPortion: 0,
-      portionsPerBatch: 1,
       ingredients: [],
     },
     resolver: zodResolver(RecipeSchema),
@@ -78,15 +87,20 @@ const EditRecipePanel = (props: Props) => {
 
   useEffect(() => {
     if (props.isOpen) {
-      reset({
-        name: props.recipe?.name,
-        pricePerPortion: props.recipe?.portion_price,
-        portionsPerBatch: 1,
-        ingredients: props.recipe?.ingredients.map((ing) => ({
-          selectedUUID: ing.uuid,
-          quantity: ing.quantity,
-        })),
-      });
+      if (props.action === 'create') {
+        reset();
+      } else {
+        reset({
+          name: props.recipe?.name,
+          category: props.recipe?.category,
+          pricePerPortion: props.recipe?.portion_price,
+          portionsPerBatch: props.recipe?.portion_count,
+          ingredients: (props.recipe?.ingredients ?? []).map((ing) => ({
+            selectedUUID: ing.uuid,
+            quantity: ing.quantity,
+          })),
+        });
+      }
     }
   }, [props.isOpen, props.recipe]);
 
@@ -104,62 +118,126 @@ const EditRecipePanel = (props: Props) => {
     watch('pricePerPortion') * watch('portionsPerBatch') - totalCost;
 
   // handle form submission
-  const handleEditSubmit = handleSubmit((data) => {
+  const handleFormSubmit = handleSubmit((data) => {
     console.log(data);
-    return recipesService
-      .updateRecipe(selectedRestaurantUUID, props.recipe!.uuid, {
-        ...data,
-        ingredients: data.ingredients.map((ing) => ({
-          ingredient_uuid: ing.selectedUUID,
-          quantity: ing.quantity ?? 0,
-        })),
-      })
-      .then(() => {
-        // set the new recipe
-        props.onSaved({
-          ...props.recipe!,
-          name: data.name,
-          portion_price: data.pricePerPortion,
-          portion_count: data.portionsPerBatch,
-          cost: totalCost,
-          margin: priceMargin,
-          ingredients: data.ingredients.map((ing) => {
-            const ingredient = ingredients.find(
-              (i) => i.id === ing.selectedUUID
-            )!;
+    const requestData = {
+      ...data,
+      ingredients: data.ingredients.map((ing) => ({
+        ingredient_uuid: ing.selectedUUID,
+        quantity: ing.quantity ?? 0,
+      })),
+    };
 
-            return {
-              ...ingredient,
-              uuid: ing.selectedUUID,
-              quantity: ing.quantity ?? 0,
-            };
-          }),
-        });
+    // Use the correct service depending on the action
+    const service =
+      props.action === 'create'
+        ? recipesService.createRecipe(
+            selectedRestaurantUUID,
+            recipeType,
+            requestData
+          )
+        : recipesService.updateRecipe(
+            selectedRestaurantUUID,
+            props.recipe!.uuid,
+            requestData
+          );
+
+    return service.then(() => {
+      // set the new recipe
+      props.onSubmitted({
+        ...props.recipe,
+        uuid: props.recipe?.uuid ?? '',
+        type: recipeType,
+        isOnboarded: props.recipe?.isOnboarded ?? true,
+        name: data.name,
+        category: data.category,
+        portion_price: data.pricePerPortion,
+        portion_count: data.portionsPerBatch,
+        cost: totalCost,
+        margin: priceMargin,
+        ingredients: data.ingredients.map((ing) => {
+          const ingredient = ingredients.find(
+            (i) => i.id === ing.selectedUUID
+          )!;
+
+          return {
+            ...ingredient,
+            uuid: ing.selectedUUID,
+            quantity: ing.quantity ?? 0,
+          };
+        }),
       });
+    });
   });
+
+  // Categories options
+  const categories = getRecipeCategories(t).map((cat) => ({
+    icon: cat.icon,
+    label: cat.label,
+    value: cat.value,
+  }));
 
   return (
     <SidePanel
       className={styles.sidePanel}
       isOpen={props.isOpen}
-      onRequestClose={props.onClose}>
+      onRequestClose={props.onRequestClose}>
       <h1 className={styles.title}>
-        <Trans
-          i18nKey="recipes.editPanel.title"
-          values={{ name: watch('name') }}
-          components={{
-            highlight: <span className={styles.titleRecipeName} />,
-          }}
-        />
+        {props.action === 'create' ? (
+          props.type === 'preparation' ? (
+            t('recipes.addPanel.preparation.title')
+          ) : (
+            t('recipes.addPanel.recipe.title')
+          )
+        ) : (
+          <Trans
+            i18nKey={
+              props.type === 'preparation'
+                ? 'recipes.editPanel.preparation.title'
+                : 'recipes.editPanel.recipe.title'
+            }
+            values={{ name: watch('name') }}
+            components={{
+              highlight: <span className={styles.titleRecipeName} />,
+            }}
+          />
+        )}
       </h1>
 
-      <form className={styles.inputContainer} onSubmit={handleEditSubmit}>
+      <form className={styles.inputContainer} onSubmit={handleFormSubmit}>
         <LabeledInput
-          placeholder={t('recipes.editPanel.fields.name')}
+          placeholder={t(
+            `recipes.editPanel.${
+              props.type as 'recipe' | 'preparation'
+            }.fields.name`
+          )}
           autoComplete="off"
           {...register('name')}
           lighter
           error={errors.name?.message}
+        />
+
+        <Controller
+          control={control}
+          name="category"
+          render={({ field: { onChange, name, onBlur, ref, value } }) => (
+            <Select
+              size="large"
+              isSearchable={false}
+              isMulti={false}
+              placeholder={t('category')}
+              components={{ Option: CategoryOption }}
+              options={categories}
+              innerRef={ref}
+              name={name}
+              onChange={(val) => {
+                onChange(val?.value ?? null);
+              }}
+              onBlur={onBlur}
+              value={categories.find((cat) => cat.value === value) ?? null}
+              error={errors.category?.message}
+            />
+          )}
         />
 
         <div className={styles.rowInputs}>
@@ -291,7 +369,7 @@ const EditRecipePanel = (props: Props) => {
             type="secondary"
             value={t('cancel')}
             actionType="button"
-            onClick={props.onClose}
+            onClick={props.onRequestClose}
           />
           <Button
             type="primary"
@@ -306,4 +384,24 @@ const EditRecipePanel = (props: Props) => {
   );
 };
 
-export default EditRecipePanel;
+export default RecipeFormPanel;
+
+const Option = components.Option;
+const CategoryOption = (
+  props: OptionProps<{
+    icon: ReactElement;
+    label: string;
+    value: RecipeCategory;
+  }>
+) => (
+  <Option {...props}>
+    <div
+      className={classNames(
+        styles.categoryOption,
+        props.isSelected && styles.categoryOptionSelected
+      )}>
+      {props.data.icon}
+      {props.data.label}
+    </div>
+  </Option>
+);
