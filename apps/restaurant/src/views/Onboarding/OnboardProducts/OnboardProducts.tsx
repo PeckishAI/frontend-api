@@ -9,6 +9,7 @@ import { FaCheck, FaSearch } from 'react-icons/fa';
 import classNames from 'classnames';
 import StepButtons from '../components/StepButtons/StepButtons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 type IRecipe = ProductPrediction & { selected: boolean };
 
@@ -25,6 +26,8 @@ type Props = {
 };
 
 const OnboardProducts = (props: Props) => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
 
   const [search, setSearch] = useState('');
@@ -92,6 +95,16 @@ const OnboardProducts = (props: Props) => {
     }, 500);
   };
 
+  const saveProducts = (completed: boolean) => {
+    const productUUIDs = recipes
+      .filter((recipe) => recipe.selected)
+      .map((recipe) => recipe.uuid);
+    setLoading(true);
+    return onboardingService
+      .saveProducts(selectedRestaurantUUID, productUUIDs, completed)
+      .finally(() => setLoading(false));
+  };
+
   const filteredRecipes = useDebounceMemo(
     () => {
       if (search.length <= 1) return recipes;
@@ -120,9 +133,13 @@ const OnboardProducts = (props: Props) => {
 
   return (
     <>
+      <p className={styles.description}>
+        {t('onboarding.restaurant.products.description')}
+      </p>
+
       <LabeledInput
         className={styles.searchInput}
-        placeholder="Rechercher une recette"
+        placeholder={t('onboarding.restaurant.products.search-recipe')}
         lighter
         icon={<FaSearch />}
         value={search}
@@ -142,7 +159,7 @@ const OnboardProducts = (props: Props) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}>
-                Aucune recette ne correspond à votre recherche
+                {t('onboarding.restaurant.products.no-recipe-found')}
               </motion.p>
             )}
 
@@ -160,27 +177,14 @@ const OnboardProducts = (props: Props) => {
 
       <StepButtons
         onContinueLater={() => {
-          const productUUIDs = recipes
-            .filter((recipe) => recipe.selected)
-            .map((recipe) => recipe.uuid);
-          onboardingService
-            .saveProducts(selectedRestaurantUUID, productUUIDs, false)
-            .then(() => {
-              navigate('/');
-            });
+          saveProducts(false).then(() => {
+            navigate('/');
+          });
         }}
         onValidate={() => {
-          onboardingService
-            .saveProducts(
-              selectedRestaurantUUID,
-              recipes
-                .filter((recipe) => recipe.selected)
-                .map((recipe) => recipe.uuid),
-              true
-            )
-            .then(() => {
-              props.goNextStep();
-            });
+          saveProducts(true).then(() => {
+            props.goNextStep();
+          });
         }}
       />
     </>

@@ -10,6 +10,7 @@
     "recipes": "Recettes",
     "onboarding": "Intégrations",
     "onboarding_selectProducts": "Séléctionnez les produits",
+    "onboarding_createPreparations": "Créez vos préparations",
     "orders.validation": "Commande prédite",
     "simulation": "Simulation",
     "integrations": "Intégrations",
@@ -100,10 +101,25 @@
   },
   "order.validation.submit.success": "Commande envoyée avec succès",
 
+  "recipes.card.ingredients_one": "{{count}} ingredient",
+  "recipes.card.ingredients_other": "{{count}} ingredients",
+  "recipes.card.no-ingredients": "Aucun ingrédients ou préparations",
+  "recipes.addPanel.recipe.title": "Ajouter une nouvelle recette",
+  "recipes.addPanel.preparation.title": "Ajouter une nouvelle préparation",
   "recipes.editPanel": {
-    "title": "Modifier la recette <highlight>{{name}}<highlight>",
+    "recipe": {
+      "title": "Modifier la recette <highlight>{{name}}<highlight>",
+      "fields": {
+        "name": "Nom de la recette"
+      }
+    },
+    "preparation": {
+      "title": "Modifier la préparation <highlight>{{name}}<highlight>",
+      "fields": {
+        "name": "Nom de la préparation"
+      }
+    },
     "fields": {
-      "name": "Nom de la recette",
       "pricePerPortion": "Prix par portion",
       "portionsPerBatch": "Portions par lot"
     },
@@ -112,6 +128,12 @@
       "ingredientSelect": "Sélectionnez un ingrédient",
       "addIngredient": "Ajouter un ingrédient/préparation"
     }
+  },
+  "recipes.delete": {
+    "preparation": "Êtes-vous sûr de vouloir supprimer cette préparation ?",
+    "recipe": "Êtes-vous sûr de vouloir supprimer cette recette ?",
+    "product": "Êtes-vous sûr de vouloir supprimer ce produit ?",
+    "subtitle": "Cette action est irréversible"
   },
 
   "notification.import_inventory.title": "Ajoutez vos ingrédients",
@@ -123,5 +145,16 @@
   "notification.create_recipes.title": "Créez des recettes (3/3)",
   "notification.create_recipes.description": "Complétez vos recettes pour avoir un suivi complet de votre inventaire",
 
-  "stepper.step": "Étape {{step}}"
+  "stepper.step": "Étape {{step}}",
+  "onboarding.restaurant": {
+    "products": {
+      "description": "Pour commencer veuillez sélectionner dans vos recettes celles qui sont considérées comme des produits non transformés. Par exemple, le Coca Cola est un produit vendu tel quel, il n'est pas composé d'autres d'ingrédients. \n\nNous avons pré-sélectionné pour vous les produits les plus courants.",
+      "search-recipe": "Rechercher une recette",
+      "no-recipe-found": "Aucune recette ne correspond à votre recherche"
+    },
+    "preparations": {
+      "description": "Si vous utilisez des préparations communes à plusieurs recettes, vous pouvez les créer ici. Elles pourront ensuite être utilisées dans vos recettes afin de simplifier leur création.",
+      "add-preparation": "Ajouter une préparation"
+    }
+  }
 }

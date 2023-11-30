@@ -113,9 +113,7 @@ const Layout = () => {
               key={item.name}
               name={item.name}
               icon={item.icon}
-              onClick={() => {
-                navigate(item.navigateTo);
-              }}
+              to={item.navigateTo}
             />
           )
         )}

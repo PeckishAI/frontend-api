@@ -1,18 +1,19 @@
 import './sidebarItem.scss';
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 type Props = {
   name: string;
   icon: React.ReactNode;
-  onClick: () => void;
+  to: string;
 };
 
 const SidebarItem = (props: Props) => {
   return (
-    <div className="sidebar-item" onClick={props.onClick}>
+    <NavLink className="sidebar-item" to={props.to}>
       <div className="icon-container">{props.icon}</div>
       <span>{props.name}</span>
-    </div>
+    </NavLink>
   );
 };
 

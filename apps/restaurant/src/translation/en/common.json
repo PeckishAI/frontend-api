@@ -10,6 +10,7 @@
     "recipes": "Recipes",
     "onboarding": "Onboarding",
     "onboarding_selectProducts": "Select products",
+    "onboarding_createPreparations": "Create preparations",
     "orders.validation": "Predicted order",
     "simulation": "Simulation",
     "integrations": "Integrations",
@@ -102,10 +103,25 @@
   },
   "order.validation.submit.success": "Order Successfully submitted",
 
+  "recipes.card.ingredients_one": "{{count}} ingredient",
+  "recipes.card.ingredients_other": "{{count}} ingredients",
+  "recipes.card.no-ingredients": "No ingredients or preparations",
+  "recipes.addPanel.recipe.title": "Add a new recipe",
+  "recipes.addPanel.preparation.title": "Add a new recipe",
   "recipes.editPanel": {
-    "title": "Edit <highlight>{{name}}<highlight> recipe",
+    "recipe": {
+      "title": "Edit <highlight>{{name}}<highlight> recipe",
+      "fields": {
+        "name": "Recipe name"
+      }
+    },
+    "preparation": {
+      "title": "Edit <highlight>{{name}}<highlight> preparation",
+      "fields": {
+        "name": "Preparation name"
+      }
+    },
     "fields": {
-      "name": "Recipe name",
       "pricePerPortion": "Price (per portion)",
       "portionsPerBatch": "Portions per batch"
     },
@@ -114,6 +130,12 @@
       "ingredientSelect": "Select an ingredient",
       "addIngredient": "Add an ingredient/preparation"
     }
+  },
+  "recipes.delete": {
+    "preparation": "Are you sure to delete this preparation ?",
+    "recipe": "Are you sure to delete this recipe ?",
+    "product": "Are you sure to delete this product ?",
+    "subtitle": "This action is irreversible"
   },
 
   "notification.import_inventory.title": "Add your ingredients",
@@ -125,5 +147,16 @@
   "notification.create_recipes.title": "Create recipes (3/3)",
   "notification.create_recipes.description": "Complete your recipes to have a complete tracking of your inventory",
 
-  "stepper.step": "Step {{step}}"
+  "stepper.step": "Step {{step}}",
+  "onboarding.restaurant": {
+    "products": {
+      "description": "To start, please select in your recipes those that are considered as unprocessed products. For example, Coca Cola is a product sold as is, it is not composed of other ingredients. \n\nWe have pre-selected for you the most common products.",
+      "search-recipe": "Search a recipe",
+      "no-recipe-found": "Any recipe matches your search"
+    },
+    "preparations": {
+      "description": "If you use preparations common to several recipes, you can create them here. They can then be used in your recipes to simplify their creation.",
+      "add-preparation": "Add a preparation"
+    }
+  }
 }

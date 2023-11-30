@@ -73,26 +73,4 @@
     gap: 20px;
     margin-top: 30px;
   }
-  button {
-    padding: 6px 15px;
-    border: 1px solid var(--primaryColor);
-    border-radius: 10px;
-    background-color: var(--backgroundColor);
-    color: var(--onBackgroundColor);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  button:hover {
-    background-color: var(--secondaryColor);
-    border: 1px solid transparent;
-  }
-  .confirm {
-    background-color: var(--primaryColor);
-    color: var(--backgroundColor);
-    border: 1px solid transparent;
-  }
-  .confirm:hover {
-    color: var(--onBackgroundColor);
-    border: 1px solid rgb(255, 93, 93);
-  }
 }

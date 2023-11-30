@@ -146,7 +146,7 @@ export const SupplierOrderSection = (props: Props) => {
         })}
         type="warning"
         onRequestClose={() => setDeleteIngredientUUID(null)}
-        revele={!!deleteIngredientUUID}
+        isOpen={!!deleteIngredientUUID}
         onConfirm={() => {
           if (!deleteIngredientUUID) return;
           props.onDeleteIngredient(deleteIngredientUUID);

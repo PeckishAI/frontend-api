@@ -1,13 +1,21 @@
 {
   "private": true,
+  "name": "peckish-frontend",
   "scripts": {
     "build": "dotenv -- turbo run build",
     "dev": "dotenv -- turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "depcheck": "depcheck && turbo run depcheck"
+    "depcheck": "depcheck && turbo run depcheck",
+    "postinstall": "manypkg check | manypkg fix"
   },
-  "devDependencies": {
+  "packageManager": "yarn@1.22.17",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "@manypkg/cli": "latest",
     "@types/node": "^20.4.7",
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@typescript-eslint/parser": "^6.2.0",
@@ -22,10 +30,5 @@
     "prettier": "^3.0.0",
     "tsconfig": "*",
     "turbo": "^1.10.12"
-  },
-  "packageManager": "yarn@1.22.17",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+  }
 }

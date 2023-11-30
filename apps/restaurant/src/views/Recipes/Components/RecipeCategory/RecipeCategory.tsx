@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Recipe } from '../../../../services';
-import RecipeCard from '../RecipeCard/RecipeCard';
+import RecipeCard from '../../../../components/RecipeCard/RecipeCard';
 import style from './style.module.scss';
 import { RecipeCat } from '../../Recipes';
 import { IconButton } from 'shared-ui';
@@ -27,6 +27,8 @@ const RecipeCategory = (props: Props) => {
 
     setRecipesToDisplay(recipesToDisplay);
   }, [folded, props.recipes]);
+
+  if (props.recipes?.length === 0) return null;
 
   return (
     <div className={style.recipeCategory}>

@@ -4,10 +4,13 @@
     color: var(--primaryColor);
     font-weight: var(--semiBold);
   }
-  .edit {
+
+  .optionsButtons {
     position: absolute;
     top: 0;
     right: 0;
+    display: flex;
+    gap: 5px;
   }
 
   .category {
@@ -44,5 +47,12 @@
     .margin {
       color: rgb(57, 205, 57);
     }
+  }
+
+  .noIngredients {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: text;
   }
 }

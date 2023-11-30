@@ -20,9 +20,7 @@ const Button = (props: Props) => {
       className={classNames('button', props.type, props.className)}
       onClick={!props.loading ? props.onClick : undefined}
       disabled={props.disabled}>
-      <span style={props.loading ? { opacity: 0 } : undefined}>
-        {props.value}
-      </span>
+      <p style={props.loading ? { opacity: 0 } : undefined}>{props.value}</p>
       {props.icon && <div className="icon">{props.icon}</div>}
       {props.loading && (
         <Lottie
