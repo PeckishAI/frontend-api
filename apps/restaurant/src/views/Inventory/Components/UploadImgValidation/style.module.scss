@@ -28,6 +28,17 @@
         font-size: 0.9rem;
         margin: 10px 0;
         font-weight: var(--medium);
+
+        .quantities {
+          margin: 0 20px;
+          i {
+            color: var(--primaryColor);
+            margin: 0 5px;
+          }
+          .newQuantity {
+            color: green;
+          }
+        }
       }
       .inputs {
         display: flex;

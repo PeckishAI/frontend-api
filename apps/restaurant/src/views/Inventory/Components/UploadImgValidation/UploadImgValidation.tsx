@@ -3,7 +3,7 @@ import styles from './style.module.scss';
 import { useTranslation } from 'react-i18next';
 import { Ingredient, Invoice, inventoryService } from '../../../../services';
 import { useIngredients } from '../../../../services/hooks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
 import CreateIngredient from '../../../../components/CreateIngredient/CreateIngredient';
 
@@ -22,27 +22,31 @@ type InvoiceIngredient = {
 };
 
 const UploadImgValidation = (props: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common', 'ingredient']);
 
   const { ingredients, loading: ingredientsLoading, reload } = useIngredients();
 
   // Form values
   const [ingredientsValues, setIngredientsValues] = useState<
     InvoiceIngredient[]
-  >(
-    props.data.items.map<InvoiceIngredient>((ing) => ({
-      ingredient: ingredients.find((i) => i.id === ing.uuid),
-      quantity: ing.quantity,
-      totalCost: ing.totalPrice,
-      unitCost: ing.unitPrice
-        ? ing.unitPrice
-        : +((ing.totalPrice ?? 0) / (ing.quantity ?? 0)).toFixed(2),
-    }))
-  );
+  >([]);
   const [createIngredient, setCreateIngredient] = useState<Ingredient | null>(
     null
   );
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setIngredientsValues(
+      props.data.ingredients.map<InvoiceIngredient>((ing) => ({
+        ingredient: ingredients.find((i) => i.id === ing.uuid),
+        quantity: ing.quantity,
+        totalCost: ing.totalPrice,
+        unitCost: ing.unitPrice
+          ? ing.unitPrice
+          : +((ing.totalPrice ?? 0) / (ing.quantity ?? 0)).toFixed(2),
+      }))
+    );
+  }, [ingredients]);
 
   const handleIngredientsValuesChange = <T extends keyof InvoiceIngredient>(
     index: number,
@@ -55,7 +59,6 @@ const UploadImgValidation = (props: Props) => {
   };
 
   const handleCreateNewOption = (val: string) => {
-    console.log('created ingredient :', val);
     setCreateIngredient((prevIngredient) => ({
       ...prevIngredient!,
       name: val,
@@ -66,16 +69,18 @@ const UploadImgValidation = (props: Props) => {
     let requestSucces = 0;
     ingredientsValues.forEach((ing) => {
       if (ing.ingredient?.id) {
+        const ingToUpdate: Ingredient = ing.ingredient;
+        ingToUpdate.quantity += ing.quantity ?? 0;
+        ingToUpdate.unitCost = ing.unitCost ?? 0;
         inventoryService
-          .updateIngredient(ing)
+          .updateIngredient(ingToUpdate)
           .then(() => {
-            console.log('add ingredient ', ing.ingredient?.id);
             requestSucces++;
           })
           .catch((err) => console.log(err))
           .finally(() => {
             if (requestSucces === ingredientsValues.length)
-              // means all request perfomed successfully
+              // means all requests perfomed successfully
               props.onValideClick();
           });
       } else {
@@ -86,6 +91,10 @@ const UploadImgValidation = (props: Props) => {
   };
 
   const { currencySymbol } = useRestaurantCurrency();
+
+  console.log('mapped ing uuid : ', props.data.ingredients[0].uuid);
+  console.log(ingredients.find((i) => i.id === props.data.ingredients[0].uuid));
+  console.log(ingredientsValues[0]);
 
   return (
     <div>
@@ -99,93 +108,113 @@ const UploadImgValidation = (props: Props) => {
             Supplier : <span>{props.data.supplier}</span>
           </p>
           <div className={styles.items}>
-            {props.data.items.map((item, index) => (
-              <div key={index} className={styles.row}>
-                <p className={styles.name}>{item.detectedName}</p>
-                <div className={styles.inputs}>
-                  <div className={styles.select}>
-                    <Select
-                      size="large"
-                      menuPosition="fixed"
-                      placeholder={t('inventory.selectIngredient')}
-                      options={ingredients}
-                      isLoading={ingredientsLoading}
-                      getOptionLabel={(opt) => opt.name}
-                      getOptionValue={(opt) => opt.id}
-                      value={ingredientsValues[index].ingredient}
-                      isSearchable
-                      isCreatable
-                      isClearable
-                      onCreateOption={handleCreateNewOption}
-                      // formatCreateLabel={(inputValue) => 'create ingredient'}
-                      getNewOptionData={(inputValue) => {
-                        return {
-                          id: 'new',
-                          name: `Create '${inputValue}'`,
-                          quantity: 0,
-                          supplier: '',
-                          unit: '',
-                          safetyStock: 0,
-                          unitCost: 0,
-                        };
-                      }}
-                      maxMenuHeight={110}
-                      onChange={(value) => {
+            {ingredientsValues.length > 0 &&
+              props.data.ingredients.map((ing, index) => (
+                <div key={index} className={styles.row}>
+                  <p className={styles.name}>
+                    {ing.detectedName}
+                    {ingredientsValues[index] &&
+                      ingredientsValues[index].ingredient && (
+                        <span className={styles.quantities}>
+                          ({t('ingredient:actualStock')} :{' '}
+                          {ingredientsValues[index].ingredient?.quantity}
+                          {ingredientsValues[index].ingredient?.unit}
+                          <i className="fa-solid fa-arrow-right"></i>
+                          <span className={styles.newQuantity}>
+                            {(
+                              ingredientsValues[index].ingredient?.quantity +
+                              ingredientsValues[index].quantity
+                            ).toFixed(2)}
+                            {ingredientsValues[index].ingredient?.unit}
+                          </span>
+                          )
+                        </span>
+                      )}
+                  </p>
+                  <div className={styles.inputs}>
+                    <div className={styles.select}>
+                      <Select
+                        size="large"
+                        menuPosition="fixed"
+                        placeholder={t('inventory.selectIngredient')}
+                        options={ingredients}
+                        isLoading={ingredientsLoading}
+                        getOptionLabel={(opt) => opt.name}
+                        getOptionValue={(opt) => opt.id}
+                        value={ingredientsValues[index].ingredient}
+                        isSearchable
+                        isCreatable
+                        isClearable
+                        onCreateOption={handleCreateNewOption}
+                        // formatCreateLabel={(inputValue) => 'create ingredient'}
+                        getNewOptionData={(inputValue) => {
+                          return {
+                            id: 'new',
+                            name: `Create '${inputValue}'`,
+                            quantity: 0,
+                            supplier: '',
+                            unit: '',
+                            safetyStock: 0,
+                            unitCost: 0,
+                          };
+                        }}
+                        maxMenuHeight={110}
+                        onChange={(value) => {
+                          handleIngredientsValuesChange(
+                            index,
+                            'ingredient',
+                            value
+                          );
+                        }}
+                      />
+                    </div>
+                    <LabeledInput
+                      placeholder="Quantity"
+                      type="number"
+                      lighter
+                      suffix={ingredientsValues[index].ingredient?.unit}
+                      value={ingredientsValues[index].quantity?.toString()}
+                      onChange={(val) =>
                         handleIngredientsValuesChange(
                           index,
-                          'ingredient',
-                          value
-                        );
-                      }}
+                          'quantity',
+                          +val.target.value
+                        )
+                      }
+                    />
+                    <LabeledInput
+                      placeholder="Unit cost"
+                      type="number"
+                      step="0.01"
+                      lighter
+                      suffix={currencySymbol}
+                      value={ingredientsValues[index].unitCost?.toString()}
+                      onChange={(val) =>
+                        handleIngredientsValuesChange(
+                          index,
+                          'unitCost',
+                          +val.target.value
+                        )
+                      }
+                    />
+                    <LabeledInput
+                      placeholder="Total cost"
+                      type="number"
+                      step="0.01"
+                      lighter
+                      suffix={currencySymbol}
+                      value={ingredientsValues[index].totalCost?.toString()}
+                      onChange={(val) =>
+                        handleIngredientsValuesChange(
+                          index,
+                          'totalCost',
+                          +val.target.value
+                        )
+                      }
                     />
                   </div>
-                  <LabeledInput
-                    placeholder="Quantity"
-                    type="number"
-                    lighter
-                    suffix={ingredientsValues[index].ingredient?.unit}
-                    value={ingredientsValues[index].quantity?.toString()}
-                    onChange={(val) =>
-                      handleIngredientsValuesChange(
-                        index,
-                        'quantity',
-                        +val.target.value
-                      )
-                    }
-                  />
-                  <LabeledInput
-                    placeholder="Unit cost"
-                    type="number"
-                    step="0.01"
-                    lighter
-                    suffix={currencySymbol}
-                    value={ingredientsValues[index].unitCost?.toString()}
-                    onChange={(val) =>
-                      handleIngredientsValuesChange(
-                        index,
-                        'unitCost',
-                        +val.target.value
-                      )
-                    }
-                  />
-                  <LabeledInput
-                    placeholder="Total cost"
-                    type="number"
-                    step="0.01"
-                    lighter
-                    suffix={currencySymbol}
-                    value={ingredientsValues[index].totalCost?.toString()}
-                    onChange={(val) =>
-                      handleIngredientsValuesChange(
-                        index,
-                        'totalCost',
-                        +val.target.value
-                      )
-                    }
-                  />
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
           {error && <span className="text-error">{error}</span>}
 
