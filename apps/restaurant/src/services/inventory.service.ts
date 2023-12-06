@@ -1,7 +1,7 @@
 import axios, { Ingredient } from './index';
 
 export type Invoice = {
-  items: {
+  ingredients: {
     uuid: string;
     detectedName?: string;
     mappedName?: string;
@@ -44,6 +44,8 @@ const updateIngredient = (ingredient) => {
       obj[key] = ingredient[key];
       return obj;
     }, {});
+  console.log('formated ingredient : ', ingredientFormated);
+
   return axios.post(
     '/inventory/' + ingredient.id + '/update',
     ingredientFormated
@@ -145,8 +147,6 @@ const uploadImgFile = async (
   formData.append('file', file);
   formData.append('restaurant_uuid', restaurantUUID);
 
-  console.log('file::: ', file);
-
   const res = await axios.post(
     'https://invoices-api-k2w3p2ptza-ew.a.run.app/api/v1/extract',
     formData,
@@ -161,13 +161,13 @@ const uploadImgFile = async (
   return {
     amount: res.data.total_amount,
     supplier: res.data.supplier,
-    items: res.data.items.map((item) => ({
-      uuid: item.uuid,
-      detectedName: item.base,
-      mappedName: item.name,
-      quantity: item.quantity,
-      totalPrice: item.total_price,
-      unitPrice: item.unit_price,
+    ingredients: res.data.ingredients.map((ingredient) => ({
+      uuid: ingredient.mapping_uuid,
+      detectedName: ingredient.ingredient_name,
+      mappedName: ingredient.name,
+      quantity: ingredient.quantity,
+      totalPrice: ingredient.total_price,
+      unitPrice: ingredient.unit_price,
     })),
   };
 };
