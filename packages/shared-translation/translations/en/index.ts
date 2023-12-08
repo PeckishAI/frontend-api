@@ -1,9 +1,13 @@
 import common from './common.json';
 import error from './error.json';
 import language from '../language';
+import validation from './validation.json';
+import onboarding from './onboarding.json';
 
 export default {
   common,
   error,
   language,
+  validation,
+  onboarding,
 };
