@@ -14,7 +14,8 @@
     "orders.validation": "Predicted order",
     "simulation": "Simulation",
     "integrations": "Integrations",
-    "support": "Support"
+    "support": "Support",
+    "documents": "Documents"
   },
   "navbar.restaurantsDropdown": "Restaurants",
 
@@ -168,5 +169,11 @@
       "description": "If you use preparations common to several recipes, you can create them here. They can then be used in your recipes to simplify their creation.",
       "add-preparation": "Add a preparation"
     }
+  },
+  "document": {
+    "givenName": "Given name",
+    "detectedName": "Detected name",
+    "save": "Save",
+    "upload": "Upload"
   }
 }

@@ -1,15 +1,20 @@
 import axios, { Ingredient } from './index';
 
 export type Invoice = {
-  ingredients: {
-    uuid: string;
-    detectedName?: string;
-    mappedName?: string;
-    quantity?: number;
-    totalPrice?: number;
-    unitPrice?: number;
-  }[];
+  document_uuid?: string;
+  created_at?: string;
+  date?: string;
   supplier?: string;
+  ingredients: {
+    ingredient_name?: string;
+    mapping_name?: string;
+    mapping_uuid?: string;
+    quantity?: number;
+    unit?: string;
+    total_price?: number;
+  }[];
+  restaurant_uuid?: string;
+  path?: string;
   amount?: number;
 };
 
@@ -160,16 +165,21 @@ const uploadImgFile = async (
 
   return {
     amount: res.data.total_amount,
-    supplier: res.data.supplier,
+    supplier: res.data.supplier_name,
     ingredients: res.data.ingredients.map((ingredient) => ({
       uuid: ingredient.mapping_uuid,
       detectedName: ingredient.ingredient_name,
-      mappedName: ingredient.name,
+      mappedName: ingredient.mapping_name,
       quantity: ingredient.quantity,
       totalPrice: ingredient.total_price,
+      unit: ingredient.unit,
       unitPrice: ingredient.unit_price,
     })),
   };
+};
+
+const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
+  return axios.post('/invoices/' + restaurantUUID, invoiceData);
 };
 
 export const inventoryService = {
@@ -182,4 +192,5 @@ export const inventoryService = {
   getPreviewUploadedCsv,
   validUploadedCsv,
   uploadImgFile,
+  submitInvoice,
 };
