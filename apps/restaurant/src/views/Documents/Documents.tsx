@@ -6,6 +6,7 @@ import { documentService, Document } from '../../services';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import DocumentDetail from '../../components/DocumentDetail/DocumentDetail';
 import ImportIngredients from '../Inventory/Components/ImportIngredients/ImportIngredients';
+import styles from './Documents.module.scss';
 
 const Documents = () => {
   const { t } = useTranslation();
@@ -72,12 +73,22 @@ const Documents = () => {
 
   return (
     <div className="documents">
-      <Button
-        type="primary"
-        value={t('document.upload')}
-        className="button-fixed-bottom"
-        onClick={handleUploadClick} // Attach click handler
-      />
+      <div className={styles.buttonContainer}>
+        <Button
+          type="primary"
+          value={t('document.upload')}
+          className={styles.buttonTop}
+          onClick={handleUploadClick} // Attach click handler
+        />
+        <Button
+          type="primary"
+          value={t('document.generate')}
+          className={styles.buttonTop}
+          onClick={() => {
+            /* handle download here */
+          }}
+        />
+      </div>
       <div className="cards-container">
         {document.map((doc) => {
           return (

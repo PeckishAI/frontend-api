@@ -172,6 +172,7 @@
     "givenName": "Nom donné",
     "detectedName": "Nom détecté",
     "save": "Sauvegarder",
-    "upload": "Importer"
+    "upload": "Importer",
+    "generate": "Générer une commande"
   }
 }

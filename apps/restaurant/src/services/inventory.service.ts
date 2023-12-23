@@ -179,7 +179,7 @@ const uploadImgFile = async (
 };
 
 const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
-  return axios.post('/invoices/' + restaurantUUID, invoiceData);
+  return axios.post('/documents/' + restaurantUUID, invoiceData);
 };
 
 export const inventoryService = {
