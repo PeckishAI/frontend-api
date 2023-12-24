@@ -69,7 +69,7 @@ const ImportIngredients = (props: Props) => {
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64String = reader.result as string;
-          console.log('Base64 Image:', base64String); // Debug: Log the base64 string
+          console.log('Base64 Image:', base64String);
           setBase64Image(base64String);
         };
         reader.readAsDataURL(file);

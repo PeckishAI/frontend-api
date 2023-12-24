@@ -48,7 +48,7 @@ const UploadImgValidation = (props: Props) => {
           : +((ing.totalPrice ?? 0) / (ing.quantity ?? 0)).toFixed(2),
       }))
     );
-  }, [ingredients]);
+  }, [ingredients, props.data.ingredients]);
 
   const handleIngredientsValuesChange = <T extends keyof InvoiceIngredient>(
     index: number,
