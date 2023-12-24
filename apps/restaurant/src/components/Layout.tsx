@@ -85,6 +85,11 @@ const Layout = () => {
       navigateTo: '/recipes',
     },
     {
+      name: t('pages.documents'),
+      icon: <i className="fa-solid fa-file"></i>,
+      navigateTo: '/documents',
+    },
+    {
       separatorName: t('services'),
     },
     {

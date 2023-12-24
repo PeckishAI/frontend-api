@@ -10,6 +10,7 @@ import Integrations from '../views/Integrations/Integrations';
 import { OrderValidation } from '../views/OrderValidation/OrderValidation';
 import OAuthPopup from '../utils/oauth/OAuth2Popup';
 import { OnboardRestaurant } from '../views/Onboarding/OnboardRestaurant';
+import Documents from '../views/Documents/Documents';
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
           {
             path: '/integrations',
             element: <Integrations />,
+          },
+          {
+            path: '/documents',
+            element: <Documents />,
           },
           {
             path: '/orders/validation',

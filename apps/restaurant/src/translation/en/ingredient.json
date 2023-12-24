@@ -1,10 +1,12 @@
 {
   "ingredientName": "Ingredient name",
   "theoreticalStock": "Theoretical stock",
+  "safetyStock": "Safety stock",
   "actualStock": "Actual stock",
   "unit": "Unit",
   "supplier": "Supplier",
   "cost": "Cost",
+  "unitCost": "Cost per unit",
   "actions": "Actions",
 
   "placeholder.ingredientName": "Ex : Salad",

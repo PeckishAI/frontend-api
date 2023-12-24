@@ -1,14 +1,14 @@
 import { Loading, Popup } from 'shared-ui';
 import style from './style.module.scss';
-import FileUploader from '../../../../components/FileUploader/FileUploader';
+import FileUploader from '../../../../../components/FileUploader/FileUploader';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Invoice,
   PreviewCsvResponse,
   inventoryService,
-} from '../../../../services';
-import { useRestaurantStore } from '../../../../store/useRestaurantStore';
+} from '../../../../../services';
+import { useRestaurantStore } from '../../../../../store/useRestaurantStore';
 import UploadCsvValidation from '../UploadCsvValidation/UploadCsvValidation';
 import UploadImgValidation from '../UploadImgValidation/UploadImgValidation';
 // import axios from 'axios';
@@ -33,6 +33,7 @@ const ImportIngredients = (props: Props) => {
     useState<PreviewCsvResponse | null>(null);
   const [previewInvoice, setPreviewInvoice] = useState<Invoice | null>(null);
   const [fileType, setFileType] = useState<'csv' | 'img'>();
+  const [base64Image, setBase64Image] = useState<string | null>(null);
 
   // let source = axios.CancelToken.source();
 
@@ -65,6 +66,13 @@ const ImportIngredients = (props: Props) => {
       setFileType('img');
       if (file) {
         setAnalyzingFile(true);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64String = reader.result as string;
+          console.log('Base64 Image:', base64String);
+          setBase64Image(base64String);
+        };
+        reader.readAsDataURL(file);
         inventoryService
           .uploadImgFile(selectedRestaurantUUID, file)
           .then((data) => {
@@ -123,7 +131,6 @@ const ImportIngredients = (props: Props) => {
           </div>
         )}
       </Popup>
-
       {previewCsvFilePopup !== null && fileType === 'csv' && uploadedFile && (
         <UploadCsvValidation
           file={uploadedFile}
@@ -139,17 +146,20 @@ const ImportIngredients = (props: Props) => {
           }}
         />
       )}
-
       {previewInvoice !== null && fileType === 'img' && uploadedFile && (
         <UploadImgValidation
           data={previewInvoice}
+          base64Image={base64Image}
+          selectedRestaurantUUID={selectedRestaurantUUID}
           onCancelClick={() => {
             setPreviewInvoice(null);
             setUploadedFile(null);
+            setBase64Image(null);
           }}
           onValideClick={() => {
             setPreviewInvoice(null);
             setUploadedFile(null);
+            setBase64Image(null);
             props.onIngredientsImported();
           }}
         />

@@ -14,19 +14,30 @@
     "orders.validation": "Predicted order",
     "simulation": "Simulation",
     "integrations": "Integrations",
-    "support": "Support"
+    "support": "Support",
+    "documents": "Documents"
   },
   "navbar.restaurantsDropdown": "Restaurants",
 
   "warning.impactedRecipes": "These recipes will be affected by this action :",
 
   "inventory.addIngredientBtn": "Add an ingredient",
+  "inventory.selectIngredient": "Select an ingredient",
   "inventory.addSupplierBtn": "Add a supplier",
   "inventory.importData": "Import data",
   "inventory.uploadCSV.popup.title": "File preview",
   "inventory.uploadCSV.popup.subtitle": "We have extracted the following column names from your file. Please check if the mapping is correct.",
   "inventory.selectSupplier": "Select a supplier",
   "inventory.selectUnit": "Select a unit",
+
+  "recipesCategories": {
+    "drinks": "Drinks",
+    "starters": "Starters",
+    "mainCourses": "Main courses",
+    "desserts": "Desserts",
+    "snacks": "Snacks",
+    "others": "Others"
+  },
 
   "recipesCategories": {
     "drinks": "Drinks",
@@ -158,5 +169,12 @@
       "description": "If you use preparations common to several recipes, you can create them here. They can then be used in your recipes to simplify their creation.",
       "add-preparation": "Add a preparation"
     }
+  },
+  "document": {
+    "givenName": "Given name",
+    "detectedName": "Detected name",
+    "save": "Save",
+    "upload": "Upload",
+    "generate": "Order Generation"
   }
 }

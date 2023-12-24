@@ -1,0 +1,85 @@
+.documentDetail {
+  position: relative;
+  .name {
+    color: var(--primaryColor);
+    font-weight: var(--semiBold);
+  }
+
+  .category {
+    margin: 2px 0;
+    font-size: 0.9rem;
+    font-weight: var(--regular);
+    .value {
+      font-weight: var(--bold);
+      color: var(--textSecondaryColor);
+    }
+  }
+
+  .metrics {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+    .metric {
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      .value {
+        font-weight: var(--semiBold);
+        color: var(--textSecondaryColor);
+      }
+    }
+
+    .price {
+      color: var(--primaryColor);
+    }
+    .cost {
+      color: rgb(241, 79, 79);
+    }
+    .margin {
+      color: rgb(57, 205, 57);
+    }
+  }
+
+  .noIngredients {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: text;
+  }
+}
+
+.documentContainer {
+  position: relative;
+  width: 100%;
+  height: 30%;
+  text-align: center;
+  .documentImage {
+    max-width: 100%;
+    height: 300px;
+  }
+}
+
+.optionsButtons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 5px;
+}
+
+.detectedNameInput,
+.mappedNameInput {
+  width: 150px; // Adjust the width as needed
+}
+
+.quantity,
+.price {
+  width: 75px;
+}
+
+.headerDataContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
