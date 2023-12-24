@@ -33,12 +33,12 @@ const ImportIngredients = (props: Props) => {
     useState<PreviewCsvResponse | null>(null);
   const [previewInvoice, setPreviewInvoice] = useState<Invoice | null>(null);
   const [fileType, setFileType] = useState<'csv' | 'img'>();
+  const [base64Image, setBase64Image] = useState<string | null>(null);
 
   // let source = axios.CancelToken.source();
 
   const handleUploadCsv = useCallback(
     (file: File) => {
-      console.log('handleUploadCsv');
       setFileType('csv');
 
       if (file) {
@@ -66,6 +66,13 @@ const ImportIngredients = (props: Props) => {
       setFileType('img');
       if (file) {
         setAnalyzingFile(true);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64String = reader.result as string;
+          console.log('Base64 Image:', base64String); // Debug: Log the base64 string
+          setBase64Image(base64String);
+        };
+        reader.readAsDataURL(file);
         inventoryService
           .uploadImgFile(selectedRestaurantUUID, file)
           .then((data) => {
@@ -124,7 +131,6 @@ const ImportIngredients = (props: Props) => {
           </div>
         )}
       </Popup>
-
       {previewCsvFilePopup !== null && fileType === 'csv' && uploadedFile && (
         <UploadCsvValidation
           file={uploadedFile}
@@ -140,17 +146,20 @@ const ImportIngredients = (props: Props) => {
           }}
         />
       )}
-
       {previewInvoice !== null && fileType === 'img' && uploadedFile && (
         <UploadImgValidation
           data={previewInvoice}
+          base64Image={base64Image}
+          selectedRestaurantUUID={selectedRestaurantUUID}
           onCancelClick={() => {
             setPreviewInvoice(null);
             setUploadedFile(null);
+            setBase64Image(null);
           }}
           onValideClick={() => {
             setPreviewInvoice(null);
             setUploadedFile(null);
+            setBase64Image(null);
             props.onIngredientsImported();
           }}
         />

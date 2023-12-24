@@ -9,6 +9,8 @@ import CreateIngredient from '../../../../components/CreateIngredient/CreateIngr
 
 type Props = {
   data: Invoice;
+  base64Image: string | null;
+  selectedRestaurantUUID: string;
   onCancelClick: () => void;
   onValideClick: () => void;
 };
@@ -88,13 +90,15 @@ const UploadImgValidation = (props: Props) => {
         return;
       }
     });
+    if (props.base64Image) {
+      inventoryService.submitInvoice(props.selectedRestaurantUUID, {
+        ...props.data,
+        base64Image: props.base64Image,
+      });
+    }
   };
 
   const { currencySymbol } = useRestaurantCurrency();
-
-  console.log('mapped ing uuid : ', props.data.ingredients[0].uuid);
-  console.log(ingredients.find((i) => i.id === props.data.ingredients[0].uuid));
-  console.log(ingredientsValues[0]);
 
   return (
     <div>

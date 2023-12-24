@@ -19,7 +19,6 @@ export type Document = {
 
 const getDocument = async (restaurantUUID: string): Promise<Document[]> => {
   const res = await axios.get('/documents/' + restaurantUUID);
-  console.log(res);
 
   // Check if res.data is an object
   if (typeof res.data !== 'object' || res.data === null) {
@@ -30,7 +29,6 @@ const getDocument = async (restaurantUUID: string): Promise<Document[]> => {
   const convertedData: Document[] = Object.keys(res.data).map<Document>(
     (key) => {
       const documentData = res.data[key];
-      console.log('documentData', documentData);
 
       // Map over ingredients directly
       return {
@@ -49,7 +47,6 @@ const getDocument = async (restaurantUUID: string): Promise<Document[]> => {
     }
   );
 
-  console.log('Converted Data:', convertedData);
   return convertedData;
 };
 

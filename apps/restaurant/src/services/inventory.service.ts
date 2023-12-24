@@ -49,7 +49,6 @@ const updateIngredient = (ingredient) => {
       obj[key] = ingredient[key];
       return obj;
     }, {});
-  console.log('formated ingredient : ', ingredientFormated);
 
   return axios.post(
     '/inventory/' + ingredient.id + '/update',
@@ -161,7 +160,6 @@ const uploadImgFile = async (
       },
     }
   );
-  console.log('invoice res : ', res);
 
   return {
     amount: res.data.total_amount,
@@ -178,8 +176,16 @@ const uploadImgFile = async (
   };
 };
 
-const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
-  return axios.post('/documents/' + restaurantUUID, invoiceData);
+const submitInvoice = (
+  restaurantUUID: string,
+  invoiceData: Invoice & { base64Image?: string }
+) => {
+  const payload = {
+    ...invoiceData,
+    image: invoiceData.base64Image,
+  };
+
+  return axios.post('/documents/' + restaurantUUID, payload);
 };
 
 export const inventoryService = {

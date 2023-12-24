@@ -38,7 +38,6 @@ const ImportIngredients = (props: Props) => {
 
   const handleUploadCsv = useCallback(
     (file: File) => {
-      console.log('handleUploadCsv');
       setFileType('csv');
 
       if (file) {

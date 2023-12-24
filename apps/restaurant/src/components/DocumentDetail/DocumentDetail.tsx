@@ -60,8 +60,6 @@ const DocumentDetail = (props: Props) => {
   };
 
   const handleIngredientChange = (index, field, value) => {
-    console.log('Value:', value);
-
     if (!editableDocument || !editableDocument.ingredients) {
       console.error('Editable document or ingredients are undefined');
       return;
@@ -78,13 +76,12 @@ const DocumentDetail = (props: Props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (editableDocument) {
-      console.log(editableDocument);
       try {
         // Prepare the data for updating
         const updatedData = {
           date: editableDocument.date,
           supplier_name: editableDocument.supplier_name,
-          path: editableDocument.path,
+          path: editableDocument.path, // Assuming this is your base64 image data
           ingredients: editableDocument.ingredients.map((ing) => ({
             ingredient_name: ing.detectedName,
             mapping_name: ing.mappedName,
@@ -104,7 +101,6 @@ const DocumentDetail = (props: Props) => {
           updatedData
         );
 
-        console.log('Document updated successfully');
         setIsEditMode(false);
         setEditableDocument(null);
 
@@ -248,8 +244,6 @@ const DocumentDetail = (props: Props) => {
       ),
     },
   ];
-
-  console.log(props.document?.ingredients);
 
   return (
     <>

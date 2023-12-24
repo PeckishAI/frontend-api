@@ -118,7 +118,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       forwardedRef,
       () => {
         props.forceOptionsUpdate();
-        console.log('imperative handle');
 
         return {
           renderOptions: () => {
@@ -192,8 +191,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
       props.setLoadingState(true);
       if (editingRowId && !addingRow) {
-        console.log('API request to edit ingredient');
-        console.log(editingRowId);
         props.setLoadingState(false);
         inventoryService
           .getIngredientPreview(editingRowId)
@@ -215,7 +212,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             props.setLoadingState(false);
           });
       } else {
-        console.log('API request to Add new ingredient');
         inventoryService
           .addIngredient(selectedRestaurantUUID, editedValues)
           .catch((err) => {
@@ -244,7 +240,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       inventoryService
         .getIngredientPreview(row.id)
         .then((res) => {
-          console.log('preview with id :', row.id, res.data);
           togglePopupDelete(res.data);
 
           // let recipeList: string = '';

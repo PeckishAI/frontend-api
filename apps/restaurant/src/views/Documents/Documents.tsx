@@ -45,7 +45,6 @@ const Documents = () => {
   };
 
   const handleDocumentClick = (clickedDocument: Document) => {
-    console.log('clicked');
     setDocumentDetail(clickedDocument);
   };
 
