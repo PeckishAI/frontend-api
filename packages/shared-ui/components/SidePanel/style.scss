@@ -1,3 +1,7 @@
+sidePanel-scrollable {
+  overflow-y: auto; // Enables scrolling inside the side panel
+}
+
 .sidePanel-overlay {
   position: fixed;
   top: 0;

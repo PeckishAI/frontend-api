@@ -14,7 +14,8 @@
     "orders.validation": "Commande prédite",
     "simulation": "Simulation",
     "integrations": "Intégrations",
-    "support": "Support"
+    "support": "Support",
+    "documents": "Documents"
   },
   "navbar.restaurantsDropdown": "Restaurants",
 
@@ -166,5 +167,11 @@
       "description": "Si vous utilisez des préparations communes à plusieurs recettes, vous pouvez les créer ici. Elles pourront ensuite être utilisées dans vos recettes afin de simplifier leur création.",
       "add-preparation": "Ajouter une préparation"
     }
+  },
+  "document": {
+    "givenName": "Nom donné",
+    "detectedName": "Nom détecté",
+    "save": "Sauvegarder",
+    "upload": "Importer"
   }
 }

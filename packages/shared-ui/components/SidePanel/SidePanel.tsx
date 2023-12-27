@@ -9,16 +9,21 @@ type Props = {
   children: React.ReactNode;
   onRequestClose: () => void;
   className?: string;
+  scrollable?: boolean;
 };
 
 const SidePanel = (props: Props) => {
   // Block scrolling when side panel is open
   useEffect(() => {
-    if (props.isOpen) document.body.style.overflow = 'hidden';
+    if (props.isOpen && !props.scrollable) {
+      document.body.style.overflow = 'hidden';
+    }
     return () => {
-      document.body.style.overflow = 'unset';
+      if (!props.scrollable) {
+        document.body.style.overflow = 'unset';
+      }
     };
-  }, [props.isOpen]);
+  }, [props.isOpen, props.scrollable]);
 
   return (
     <>
@@ -30,6 +35,7 @@ const SidePanel = (props: Props) => {
       <div
         className={classNames('sidePanel', props.className, {
           visible: props.isOpen,
+          'sidePanel-scrollable': props.scrollable,
         })}>
         <i
           className="fa-solid fa-xmark close-icon"

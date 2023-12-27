@@ -73,3 +73,15 @@
     margin-top: 20px;
   }
 }
+
+.headerDocumentData {
+  display: flex;
+  span {
+    margin-right: 25px;
+  }
+}
+
+.imgPreview {
+  max-width: 300px;
+  max-height: 300px;
+}

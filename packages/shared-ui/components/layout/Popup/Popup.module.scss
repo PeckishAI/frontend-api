@@ -69,3 +69,9 @@
     transform: scale(1);
   }
 }
+
+// Popup.module.scss
+
+.scrollableContent {
+  overflow-y: auto; // Enable vertical scrolling
+}

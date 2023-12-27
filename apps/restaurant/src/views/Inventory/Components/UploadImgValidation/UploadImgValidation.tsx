@@ -6,6 +6,7 @@ import { useIngredients } from '../../../../services/hooks';
 import { useEffect, useState } from 'react';
 import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
 import CreateIngredient from '../../../../components/CreateIngredient/CreateIngredient';
+import { useRestaurantStore } from '../../../../store/useRestaurantStore';
 
 type Props = {
   data: Invoice;
@@ -13,16 +14,22 @@ type Props = {
   onValideClick: () => void;
 };
 
-// type InvoiceIngredient = Omit<Invoice['items'][number], 'uuid' | 'mappedName'>;
 type InvoiceIngredient = {
-  ingredient?: Ingredient | null;
+  mappingUUID?: string;
+  mappingName?: string;
+  detectedName?: string;
   quantity?: number;
-  totalCost?: number;
-  unitCost?: number;
+  totalPrice?: number;
+  unit?: string;
+  unitPrice?: number;
 };
 
 const UploadImgValidation = (props: Props) => {
   const { t } = useTranslation(['common', 'ingredient']);
+
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
 
   const { ingredients, loading: ingredientsLoading, reload } = useIngredients();
 
@@ -33,20 +40,21 @@ const UploadImgValidation = (props: Props) => {
   const [createIngredient, setCreateIngredient] = useState<Ingredient | null>(
     null
   );
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
 
   useEffect(() => {
     setIngredientsValues(
-      props.data.ingredients.map<InvoiceIngredient>((ing) => ({
-        ingredient: ingredients.find((i) => i.id === ing.uuid),
+      props.data.ingredients.map((ing) => ({
+        mappingUUID: ing.mappedUUID,
+        mappingName: ing.mappedName,
+        detectedName: ing.detectedName,
         quantity: ing.quantity,
-        totalCost: ing.totalPrice,
-        unitCost: ing.unitPrice
-          ? ing.unitPrice
-          : +((ing.totalPrice ?? 0) / (ing.quantity ?? 0)).toFixed(2),
+        totalPrice: ing.totalPrice,
+        unitPrice: ing.unitPrice,
+        unit: ing.unit,
       }))
     );
-  }, [ingredients]);
+  }, [props.data.ingredients]);
 
   const handleIngredientsValuesChange = <T extends keyof InvoiceIngredient>(
     index: number,
@@ -65,36 +73,40 @@ const UploadImgValidation = (props: Props) => {
     }));
   };
 
-  const handleValidClick = () => {
-    let requestSucces = 0;
-    ingredientsValues.forEach((ing) => {
-      if (ing.ingredient?.id) {
-        const ingToUpdate: Ingredient = ing.ingredient;
-        ingToUpdate.quantity += ing.quantity ?? 0;
-        ingToUpdate.unitCost = ing.unitCost ?? 0;
-        inventoryService
-          .updateIngredient(ingToUpdate)
-          .then(() => {
-            requestSucces++;
-          })
-          .catch((err) => console.log(err))
-          .finally(() => {
-            if (requestSucces === ingredientsValues.length)
-              // means all requests perfomed successfully
-              props.onValideClick();
-          });
-      } else {
-        setError('Some ingredient not mapped.');
-        return;
-      }
-    });
+  const handleValidClick = async () => {
+    console.log(props.data.image);
+    const finalFormData: Invoice = {
+      documentUUID: props.data.documentUUID,
+      created_at: props.data.created_at,
+      date: props.data.date,
+      supplier: props.data.supplier,
+      image: props.data.image,
+      ingredients: ingredientsValues.map((ingVal) => ({
+        ingredient_name: ingVal.detectedName,
+        mapping_name: ingVal.mappingName,
+        mapping_uuid: ingVal.mappingUUID,
+        quantity: ingVal.quantity,
+        unit: ingVal.unit,
+        total_price: ingVal.totalPrice,
+      })),
+      path: props.data.path,
+      amount: props.data.amount,
+    };
+
+    try {
+      await inventoryService.submitInvoice(
+        selectedRestaurantUUID,
+        finalFormData
+      );
+      console.log('Invoice submitted successfully');
+      props.onValideClick(); // Call the onValideClick prop to handle success
+    } catch (error) {
+      console.error('Failed to submit invoice:', error);
+      // Handle error (e.g., show error message to the user)
+    }
   };
 
   const { currencySymbol } = useRestaurantCurrency();
-
-  console.log('mapped ing uuid : ', props.data.ingredients[0].uuid);
-  console.log(ingredients.find((i) => i.id === props.data.ingredients[0].uuid));
-  console.log(ingredientsValues[0]);
 
   return (
     <div>
@@ -102,34 +114,55 @@ const UploadImgValidation = (props: Props) => {
         isVisible={true}
         title={t('inventory.uploadCSV.popup.title')}
         subtitle={t('inventory.uploadCSV.popup.subtitle')}
-        onRequestClose={props.onCancelClick}>
+        onRequestClose={props.onCancelClick}
+        scrollable={true}>
         <div className={styles.uploadIlmgValidation}>
-          <p className={styles.fixedValue}>
-            Supplier : <span>{props.data.supplier}</span>
-          </p>
+          <img
+            src={props.data.image}
+            alt="invoice"
+            className={styles.imgPreview}
+          />
+          <div className={styles.headerDocumentData}>
+            <p className={styles.fixedValue}>
+              <b>Document ID:</b> <span>{props.data.date}</span>
+            </p>
+            <p className={styles.fixedValue}>
+              <b>Date:</b> <span>{props.data.date}</span>
+            </p>
+            <p className={styles.fixedValue}>
+              <b>Supplier :</b> <span>{props.data.supplier}</span>
+            </p>
+            <p className={styles.fixedValue}>
+              <b>Amount:</b>{' '}
+              <span>
+                {currencySymbol}
+                {props.data.amount}
+              </span>
+            </p>
+          </div>
           <div className={styles.items}>
             {ingredientsValues.length > 0 &&
               props.data.ingredients.map((ing, index) => (
                 <div key={index} className={styles.row}>
                   <p className={styles.name}>
                     {ing.detectedName}
-                    {ingredientsValues[index] &&
-                      ingredientsValues[index].ingredient && (
-                        <span className={styles.quantities}>
-                          ({t('ingredient:actualStock')} :{' '}
-                          {ingredientsValues[index].ingredient?.quantity}
-                          {ingredientsValues[index].ingredient?.unit}
-                          <i className="fa-solid fa-arrow-right"></i>
-                          <span className={styles.newQuantity}>
-                            {(
-                              ingredientsValues[index].ingredient?.quantity +
-                              ingredientsValues[index].quantity
-                            ).toFixed(2)}
-                            {ingredientsValues[index].ingredient?.unit}
-                          </span>
-                          )
+                    {ingredientsValues[index] && (
+                      <span className={styles.quantities}>
+                        ({t('ingredient:actualStock')} :{' '}
+                        {/* Use the actual stock value directly */}
+                        {ingredientsValues[index].quantity}
+                        {ing.unit}
+                        <i className="fa-solid fa-arrow-right"></i>
+                        <span className={styles.newQuantity}>
+                          {/* Calculate new quantity here */}
+                          {(
+                            ingredientsValues[index].quantity + ing.quantity
+                          ).toFixed(2)}
+                          {ing.unit}
                         </span>
-                      )}
+                        )
+                      </span>
+                    )}
                   </p>
                   <div className={styles.inputs}>
                     <div className={styles.select}>
@@ -141,29 +174,35 @@ const UploadImgValidation = (props: Props) => {
                         isLoading={ingredientsLoading}
                         getOptionLabel={(opt) => opt.name}
                         getOptionValue={(opt) => opt.id}
-                        value={ingredientsValues[index].ingredient}
+                        value={ingredients.find(
+                          (ing) =>
+                            ing.id === ingredientsValues[index].mappingUUID
+                        )}
                         isSearchable
                         isCreatable
                         isClearable
                         onCreateOption={handleCreateNewOption}
                         // formatCreateLabel={(inputValue) => 'create ingredient'}
-                        getNewOptionData={(inputValue) => {
-                          return {
-                            id: 'new',
-                            name: `Create '${inputValue}'`,
-                            quantity: 0,
-                            supplier: '',
-                            unit: '',
-                            safetyStock: 0,
-                            unitCost: 0,
-                          };
-                        }}
+                        getNewOptionData={(inputValue) => ({
+                          id: 'new',
+                          name: `Create '${inputValue}'`,
+                          quantity: 0,
+                          supplier: '',
+                          unit: '',
+                          safetyStock: 0,
+                          unitCost: 0,
+                        })}
                         maxMenuHeight={110}
-                        onChange={(value) => {
+                        onChange={(selectedOption) => {
                           handleIngredientsValuesChange(
                             index,
-                            'ingredient',
-                            value
+                            'mappingUUID',
+                            selectedOption ? selectedOption.id : undefined
+                          );
+                          handleIngredientsValuesChange(
+                            index,
+                            'mappingName',
+                            selectedOption ? selectedOption.name : ''
                           );
                         }}
                       />
@@ -172,7 +211,7 @@ const UploadImgValidation = (props: Props) => {
                       placeholder="Quantity"
                       type="number"
                       lighter
-                      suffix={ingredientsValues[index].ingredient?.unit}
+                      suffix={ingredientsValues[index].unit}
                       value={ingredientsValues[index].quantity?.toString()}
                       onChange={(val) =>
                         handleIngredientsValuesChange(
@@ -188,11 +227,11 @@ const UploadImgValidation = (props: Props) => {
                       step="0.01"
                       lighter
                       suffix={currencySymbol}
-                      value={ingredientsValues[index].unitCost?.toString()}
+                      value={ingredientsValues[index].unitPrice?.toString()}
                       onChange={(val) =>
                         handleIngredientsValuesChange(
                           index,
-                          'unitCost',
+                          'unitPrice',
                           +val.target.value
                         )
                       }
@@ -203,11 +242,11 @@ const UploadImgValidation = (props: Props) => {
                       step="0.01"
                       lighter
                       suffix={currencySymbol}
-                      value={ingredientsValues[index].totalCost?.toString()}
+                      value={ingredientsValues[index].totalPrice?.toString()}
                       onChange={(val) =>
                         handleIngredientsValuesChange(
                           index,
-                          'totalCost',
+                          'totalPrice',
                           +val.target.value
                         )
                       }

@@ -1,16 +1,98 @@
 import axios, { Ingredient } from './index';
 
 export type Invoice = {
+  documentUUID?: string;
+  created_at?: string;
+  date?: string;
+  supplier?: string;
+  image?: string;
   ingredients: {
-    uuid: string;
     detectedName?: string;
     mappedName?: string;
+    mappedUUID?: string;
     quantity?: number;
-    totalPrice?: number;
     unitPrice?: number;
+    unit?: string;
+    totalPrice?: number;
   }[];
-  supplier?: string;
+  restaurantUUID?: string;
+  path?: string;
   amount?: number;
+};
+
+const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
+  const res = await axios.get('/documents/' + restaurantUUID);
+
+  // Check if res.data is an object
+  if (typeof res.data !== 'object' || res.data === null) {
+    console.error('res.data is not an object:', res.data);
+    return [];
+  }
+
+  const convertedData: Invoice[] = Object.keys(res.data).map<Invoice>((key) => {
+    const documentData = res.data[key];
+
+    // Map over ingredients directly
+    return {
+      ...documentData,
+      uuid: key,
+      ingredients: documentData.ingredients.map((ingredient: any) => ({
+        mappedUUID: ingredient['mapping_uuid'],
+        detectedName: ingredient['ingredient_name'],
+        mappedName: ingredient['mapping_name'],
+        quantity: ingredient['quantity'],
+        unit: ingredient['unit'],
+        totalPrice: ingredient['total_price'],
+        unitPrice: ingredient['unitPrice'],
+      })),
+    };
+  });
+
+  console.log('Converted Data:', convertedData);
+  return convertedData;
+};
+
+type FormDocument = {
+  date: string;
+  supplier: string;
+  path: string;
+  ingredients: {
+    detectedName: string;
+    mappedName: string;
+    mappedUUID: string;
+    unitPrice: number;
+    quantity: number;
+    unit: string;
+    totalPrice: number;
+  }[];
+};
+
+const convertToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
+const updateDocument = (
+  restaurantUUID: string,
+  documentUUID: string,
+  data: FormDocument
+) => {
+  return axios.post('/documents/' + documentUUID + '/update', {
+    restaurant_uuid: restaurantUUID,
+    date: data.date,
+    supplier: data.supplier,
+    ingredients: data.ingredients,
+  });
+};
+
+const deleteDocument = (documentId: string) => {
+  return axios.post('/documents/' + documentId + '/delete');
 };
 
 const getIngredientList = async (
@@ -147,6 +229,8 @@ const uploadImgFile = async (
   formData.append('file', file);
   formData.append('restaurant_uuid', restaurantUUID);
 
+  const base64 = await convertToBase64(file);
+
   const res = await axios.post(
     'https://invoices-api-k2w3p2ptza-ew.a.run.app/api/v1/extract',
     formData,
@@ -159,17 +243,23 @@ const uploadImgFile = async (
   console.log('invoice res : ', res);
 
   return {
-    amount: res.data.total_amount,
+    amount: res.data.amount,
     supplier: res.data.supplier,
+    image: base64,
     ingredients: res.data.ingredients.map((ingredient) => ({
-      uuid: ingredient.mapping_uuid,
-      detectedName: ingredient.ingredient_name,
-      mappedName: ingredient.name,
+      mappedUUID: ingredient.mappedUUID,
+      detectedName: ingredient.detectedName,
+      mappedName: ingredient.mappedName,
       quantity: ingredient.quantity,
-      totalPrice: ingredient.total_price,
-      unitPrice: ingredient.unit_price,
+      totalPrice: ingredient.totalPrice,
+      unit: ingredient.unit,
+      unitPrice: ingredient.unitPrice,
     })),
   };
+};
+
+const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
+  return axios.post('/invoices/' + restaurantUUID, invoiceData);
 };
 
 export const inventoryService = {
@@ -182,4 +272,8 @@ export const inventoryService = {
   getPreviewUploadedCsv,
   validUploadedCsv,
   uploadImgFile,
+  submitInvoice,
+  getDocument,
+  updateDocument,
+  deleteDocument,
 };
