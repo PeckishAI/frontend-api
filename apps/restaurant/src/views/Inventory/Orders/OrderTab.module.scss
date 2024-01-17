@@ -3,3 +3,29 @@
   color: var(--primaryColor);
   cursor: pointer;
 }
+
+.orderButtonSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  button {
+    margin-right: 1rem;
+  }
+}
+
+.quantitySection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.submitButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.filterContainer {
+  display: flex;
+  align-items: center;
+}

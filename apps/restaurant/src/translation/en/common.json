@@ -12,6 +12,7 @@
     "onboarding_selectProducts": "Select products",
     "onboarding_createPreparations": "Create preparations",
     "orders.validation": "Predicted order",
+    "orders.place": "Place order",
     "simulation": "Simulation",
     "integrations": "Integrations",
     "support": "Support",
@@ -21,6 +22,7 @@
 
   "warning.impactedRecipes": "These recipes will be affected by this action :",
 
+  "ingredientName": "Ingredient name",
   "inventory.addIngredientBtn": "Add an ingredient",
   "inventory.selectIngredient": "Select an ingredient",
   "inventory.addSupplierBtn": "Add a supplier",
@@ -92,6 +94,9 @@
   "orders.detail": "Detail",
   "orders.detail.tooltip": "View detail",
   "orders.showPredictedOrder": "Show predicted order",
+  "orders.placeOrder": "Place order",
+  "orders.increaseQuantity": "+",
+  "orders.decreaseQuantity": "-",
 
   "order.validation.empty": {
     "title": "Predicted order not available",

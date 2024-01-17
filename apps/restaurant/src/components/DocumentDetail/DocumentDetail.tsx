@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { formatCurrency } from '../../utils/helpers';
 import { useRestaurantCurrency } from '../../store/useRestaurantStore';
 import { useForm, Controller } from 'react-hook-form';
-import { useIngredients } from '../../services/hooks'; // Adjust the path as necessary
+import { useIngredients } from '../../services/hooks';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 
 type Props = {
