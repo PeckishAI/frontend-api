@@ -5,7 +5,7 @@ import Inventory from '../views/Inventory/Inventory';
 import Recipes from '../views/Recipes/Recipes';
 import Onboarding from '../views/Onboarding/Onboarding';
 import Layout from '../components/Layout';
-import { ProtectedRoute } from './ProtectedRoute';
+import { ProtectedRoute } from '@peckishai/user-management/ProtectedRoute';
 import Integrations from '../views/Integrations/Integrations';
 import { OrderValidation } from '../views/OrderValidation/OrderValidation';
 import OAuthPopup from '../utils/oauth/OAuth2Popup';
@@ -19,7 +19,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <ProtectedRoute />,
+    element: <ProtectedRoute clientType="restaurant" />,
     children: [
       // {
       //   index: true,

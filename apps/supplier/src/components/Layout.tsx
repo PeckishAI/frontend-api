@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
-import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import {
   Sidebar,
   SidebarItem,
@@ -17,7 +17,6 @@ const Layout = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [navTitle, setNavTitle] = useState('');
   const { pathname } = useLocation();
-  const navigate = useNavigate();
 
   const { logout, user } = useUserStore();
   // const {
@@ -90,6 +89,11 @@ const Layout = () => {
           name={t('sidebarItem.map')}
           icon={<i className="fa-solid fa-map-location-dot"></i>}
           to="/map"
+        />
+        <SidebarItem
+          name={t('sidebarItem.integrations')}
+          icon={<i className="fa-solid fa-puzzle-piece"></i>}
+          to="/integrations"
         />
         <SidebarSeparator sectionName="Resources" />
         <SidebarItem

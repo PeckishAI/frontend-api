@@ -77,6 +77,8 @@ const LoginModal = (props: Props) => {
   }, [data, error, props.pos]);
 
   const handleLoginClick = () => {
+    console.log('pos info : ', props.pos);
+
     if (props.pos?.auth_type === 'oauth') {
       setRetrieveDataStatus('loading');
       getAuth();
