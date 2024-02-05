@@ -145,7 +145,7 @@ const IngredientsTable = (props: Props) => {
     },
     {
       key: 'ingredientQuantity',
-      header: t('ingredient:placeholder.ingredientQuantity'),
+      header: t('ingredient:quantity'),
       width: '15%',
       renderItem: ({ row }) => {
         const item = props.cartItems.find(
