@@ -5,6 +5,7 @@
   "actualStock": "Actual stock",
   "unit": "Unit",
   "supplier": "Supplier",
+  "quantity": "Quantity",
   "cost": "Cost",
   "unitCost": "Cost per unit",
   "actions": "Actions",
