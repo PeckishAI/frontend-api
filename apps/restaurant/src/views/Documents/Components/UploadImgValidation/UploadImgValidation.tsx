@@ -131,11 +131,13 @@ const UploadImgValidation = (props: Props) => {
         onRequestClose={props.onCancelClick}
         scrollable={true}>
         <div className={styles.uploadIlmgValidation}>
-          <img
-            src={props.invoice.image}
-            alt="invoice"
-            className={styles.imgPreview}
-          />
+          <div className={styles.invoiceContainer}>
+            <img
+              src={props.invoice.image}
+              alt="invoice"
+              className={styles.imgPreview}
+            />
+          </div>
           <div className={styles.headerDocumentData}>
             <div className={styles.data}>
               <p className={styles.label}>Date:</p>

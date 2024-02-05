@@ -1,0 +1,41 @@
+.shoppingView {
+  // display: flex;
+
+  .tools {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 20px;
+    .filters {
+      display: flex;
+      gap: 30px;
+
+      .selectWrapper {
+        width: 200px;
+      }
+    }
+
+    .basketRecap {
+      position: relative;
+      height: 100%;
+      .itemsNbContainer {
+        position: absolute;
+        top: -6px;
+        right: -8px;
+        width: 18px;
+        height: 18px;
+        border-radius: 10px;
+        background-color: var(--secondaryColor);
+        box-shadow: 0px 0px 8px -2px var(--primaryColor);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .itemsNb {
+          font-size: 0.8rem;
+          color: var(--textPrimaryColor);
+        }
+      }
+    }
+  }
+}

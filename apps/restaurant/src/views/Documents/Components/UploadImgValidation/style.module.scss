@@ -1,4 +1,13 @@
 .uploadIlmgValidation {
+  .invoiceContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    .imgPreview {
+      max-width: 300px;
+      max-height: 300px;
+    }
+  }
   .items {
     position: relative;
     overflow: auto;
@@ -97,9 +106,4 @@
       font-weight: 600;
     }
   }
-}
-
-.imgPreview {
-  max-width: 300px;
-  max-height: 300px;
 }

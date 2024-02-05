@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { useTitle, Button } from 'shared-ui';
 import DocumentCard from './Components/DocumentCard/DocumentCard';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Invoice, inventoryService } from '../../services';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import DocumentDetail from '../../components/DocumentDetail/DocumentDetail';
-import ImportIngredients from '../Inventory/Components/ImportIngredients/ImportIngredients';
 import styles from './style.module.scss';
+import ImportIngredients from './Components/ImportIngredients/ImportIngredients';
 
 const Documents = () => {
   const { t } = useTranslation();
@@ -58,9 +58,11 @@ const Documents = () => {
     setDocumentDetail(updatedDocument);
   };
 
-  const handleDocumentDeleted = (deletedDocument: Invoice) => {
-    setDocument(
-      document.filter((d) => d.documentUUID !== deletedDocument.documentUUID)
+  const handleDeleteDocument = (documentToDelete: Invoice) => {
+    setDocument((prevDoc) =>
+      prevDoc.filter(
+        (doc) => doc.documentUUID !== documentToDelete.documentUUID
+      )
     );
     setDocumentDetail(null);
   };
@@ -74,18 +76,16 @@ const Documents = () => {
   // Edit invoices
 
   return (
-    <div className="documents">
-      <div className={styles.buttonContainer}>
+    <div className={styles.documents}>
+      <p className={styles.explaination}>
+        Import and save your invoices so you can place orders more quickly from
+        your saved documents.
+      </p>
+      <div className={styles.tools}>
         <Button
           type="primary"
           value={t('document.upload')}
           className={styles.uploadButton}
-          onClick={handleUploadClick} // Attach click handler
-        />
-        <Button
-          type="primary"
-          value={t('document.upload')}
-          className={styles.orderButton}
           onClick={handleUploadClick} // Attach click handler
         />
       </div>
@@ -118,12 +118,13 @@ const Documents = () => {
             handleDocumentUpdated(document);
           }
         }}
+        onDeleteDocument={() => handleDeleteDocument(documentDetail)}
       />
       <ImportIngredients
         openUploader={showImportPopup}
         onCloseUploader={() => setShowImportPopup(false)}
         onIngredientsImported={() => {
-          /* handle imported ingredients here */
+          // handle imported ingredients here
         }}
       />
     </div>

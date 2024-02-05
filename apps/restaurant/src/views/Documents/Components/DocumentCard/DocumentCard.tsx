@@ -26,8 +26,7 @@ const DocumentCard = (props: Props) => {
         </div>
         <div className="right-side">
           <p>
-            {currencyISO}
-            {props.amount}
+            {props.amount} {currencyISO}
           </p>
         </div>
       </div>

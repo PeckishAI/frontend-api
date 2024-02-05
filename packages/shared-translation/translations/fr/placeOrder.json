@@ -1,0 +1,21 @@
+{
+  "placeOrder": {
+    "title": "Commander",
+    "message": "Ajoutez des ingrédients avec une quantité dans le panier et passez une commande."
+  },
+  "orderGeneration": "génération commande",
+  "orderGeneration.message": "Cela permettra de pré-remplir pour vous, sur la base de vos factures sauvegardées, les ingrédients dont vous avez probablement besoin.",
+
+  "filterBySupplier": "Filtrer par fournisseur",
+  "filterByIngredient": "Filter par ingrédient",
+
+  "basket": "Panier",
+  "addToBasket": "Ajouter au panier",
+  "shoppingBasket": "Panier d'achats",
+  "basketIsEmpty": "Le panier est vide.",
+  "total": "Total",
+  "orderProcessing": "Traitement de la commande...",
+  "orderSubmited": "La commande a été soumise avec succès.",
+
+  "basket.removeItem.message": "Voulez-vous retirer cet ingrédient ?"
+}

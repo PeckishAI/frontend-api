@@ -172,7 +172,8 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
               <Button
                 value={t('orders.placeOrder')}
                 type="primary"
-                onClick={() => setPopupVisible(true)}
+                // onClick={() => setPopupVisible(true)}
+                onClick={() => navigate('/orders/place-order')}
                 className={styles.orderButton}
               />
               <Button

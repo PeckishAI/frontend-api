@@ -1,4 +1,13 @@
-import { IconButton, SidePanel, Input, Select, Table, Button } from 'shared-ui';
+import {
+  IconButton,
+  SidePanel,
+  Input,
+  Select,
+  Table,
+  Button,
+  LabeledInput,
+  DialogBox,
+} from 'shared-ui';
 import styles from './style.module.scss';
 import { Ingredient, Invoice, inventoryService } from '../../services';
 import { useState } from 'react';
@@ -8,12 +17,14 @@ import { useRestaurantCurrency } from '../../store/useRestaurantStore';
 import { useForm, Controller } from 'react-hook-form';
 import { useIngredients } from '../../services/hooks';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
+import toast from 'react-hot-toast';
 
 type Props = {
   document: Invoice | null;
   isOpen: boolean;
   onRequestClose: () => void;
   onDocumentChanged: (document: Invoice, action: 'deleted' | 'updated') => void;
+  onDeleteDocument: () => void;
 };
 
 type IngredientDetails = {
@@ -27,10 +38,11 @@ type IngredientDetails = {
 };
 
 const DocumentDetail = (props: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common', 'ingredient']);
+  const { currencyISO } = useRestaurantCurrency();
 
-  //const [editDocument, setEditDocument] = useState<Invoice | null>(null);
   const [deleteDocument, setDeleteDocument] = useState<Invoice | null>(null);
+  const [confirmDeletePopup, setConfirmDeletePopup] = useState(false);
   const [editableDocument, setEditableDocument] = useState<Invoice | null>(
     null
   );
@@ -146,8 +158,6 @@ const DocumentDetail = (props: Props) => {
       }
     }
   };
-
-  const { currencyISO } = useRestaurantCurrency();
 
   const handleMappedNameChange = (index, selectedOption) => {
     if (!editableDocument || !editableDocument.ingredients) {
@@ -291,83 +301,56 @@ const DocumentDetail = (props: Props) => {
         {isEditMode ? (
           <div className={styles.documentDetail}>
             <form onSubmit={handleSubmit} className={styles.editForm}>
-              <div className={styles.headerDataContainer}>
-                <Input
+              <div className={styles.headerData}>
+                <LabeledInput
                   type="text"
-                  min={0}
-                  placeholder={t('name')}
-                  className={styles.name}
+                  placeholder={t('ingredient:supplier')}
+                  className={styles.input}
                   onChange={(e) => handleInputChange(e, 'supplier')}
                   value={editableDocument?.supplier || ''}
                 />
-
-                <h2 className={styles.name}> - {currencyISO}</h2>
-                <Input
+                <LabeledInput
                   type="number"
                   min={0}
-                  placeholder={t('name')}
-                  className={styles.editInput}
+                  suffix={currencyISO}
+                  className={styles.input}
+                  placeholder={t('price')}
                   onChange={(e) => handleInputChange(e, 'amount')}
                   value={editableDocument?.amount || 0}
                 />
               </div>
-              <div className={styles.optionsButtons}>
-                <IconButton
-                  icon={<i className="fa-solid fa-trash"></i>}
-                  tooltipMsg={t('delete')}
-                  onClick={() => setDeleteDocument(props.document)}
-                />
-              </div>
-              <div className={styles.documentContainer}>
-                <img
-                  className={styles.documentImage}
-                  src={props.document?.path}
-                  alt={props.document?.path}
-                />
-              </div>
-              {/* {editableDocument?.ingredients.map((ingredient, index) => (
-                <div key={index} className={styles.ingredientEditRow}>
-                  <input
-                    type="text"
-                    value={ingredient.detectedName}
-                    onChange={(e) =>
-                      handleIngredientChange(
-                        index,
-                        'detectedName',
-                        e.target.value
-                      )
-                    }
-                    className={styles.editInput}
-                  />
-                  <input
-                    type="number"
-                    value={ingredient.quantity}
-                    onChange={(e) =>
-                      handleIngredientChange(index, 'quantity', e.target.value)
-                    }
-                    className={styles.editInput}
-                  />
-                </div>
-              ))} */}
               <Table
                 data={editableDocument?.ingredients}
                 columns={isEditMode ? editColumns : viewColumns}
               />
-              <br></br>
-              <Button
-                type="primary"
-                actionType="submit"
-                value={t('document.save')}
-                className="button-fixed-bottom"
-              />
+              <div className={styles.buttonsContaier}>
+                <Button
+                  type="secondary"
+                  actionType="button"
+                  value={t('cancel')}
+                  onClick={toggleEditMode}
+                />
+                <Button
+                  type="primary"
+                  actionType="submit"
+                  value={t('document.save')}
+                />
+              </div>
             </form>
           </div>
         ) : (
           <div className={styles.documentDetail}>
-            <h2 className={styles.name}>
-              {props.document?.supplier} - {currencyISO}
-              {props.document?.amount}
-            </h2>
+            <p className={styles.name}>
+              {t('ingredient:supplier')}:
+              <span className={styles.value}> {props.document?.supplier}</span>
+            </p>
+            <p className={styles.name}>
+              {t('price')}:
+              <span className={styles.value}>
+                {' '}
+                {formatCurrency(props.document?.amount, currencyISO)}
+              </span>
+            </p>
             <div className={styles.optionsButtons}>
               <IconButton
                 icon={<i className="fa-solid fa-pen-to-square"></i>}
@@ -377,7 +360,7 @@ const DocumentDetail = (props: Props) => {
               <IconButton
                 icon={<i className="fa-solid fa-trash"></i>}
                 tooltipMsg={t('delete')}
-                onClick={() => setDeleteDocument(props.document)}
+                onClick={() => setConfirmDeletePopup(true)}
               />
             </div>
 
@@ -414,6 +397,17 @@ const DocumentDetail = (props: Props) => {
                 {t('recipes.card.no-ingredients')}
               </p>
             )}
+            <DialogBox
+              type="warning"
+              msg="Delete document"
+              subMsg="Do you want to delete this docuement ?"
+              isOpen={confirmDeletePopup}
+              onRequestClose={() => setConfirmDeletePopup(false)}
+              onConfirm={() => {
+                props.onDeleteDocument();
+                setConfirmDeletePopup(false);
+              }}
+            />
           </div>
         )}
       </SidePanel>

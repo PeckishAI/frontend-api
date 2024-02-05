@@ -3,13 +3,8 @@ import style from './style.module.scss';
 import FileUploader from '../../../../components/FileUploader/FileUploader';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Invoice,
-  PreviewCsvResponse,
-  inventoryService,
-} from '../../../../services';
+import { Invoice, inventoryService } from '../../../../services';
 import { useRestaurantStore } from '../../../../store/useRestaurantStore';
-import UploadCsvValidation from '../UploadCsvValidation/UploadCsvValidation';
 import UploadImgValidation from '../UploadImgValidation/UploadImgValidation';
 // import axios from 'axios';
 
@@ -29,37 +24,9 @@ const ImportIngredients = (props: Props) => {
   //   const [importDataPopup, setImportDataPopup] = useState(false);
   const [analyzingFile, setAnalyzingFile] = useState(false); // test with if(uploadedFile) set loading
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [previewCsvFilePopup, setPreviewCsvFilePopup] =
-    useState<PreviewCsvResponse | null>(null);
+
   const [previewInvoice, setPreviewInvoice] = useState<Invoice | null>(null);
   const [fileType, setFileType] = useState<'csv' | 'img'>();
-
-  // let source = axios.CancelToken.source();
-
-  const handleUploadCsv = useCallback(
-    (file: File) => {
-      console.log('handleUploadCsv');
-      setFileType('csv');
-
-      if (file) {
-        setAnalyzingFile(true);
-        inventoryService
-          .uploadCsvFile(selectedRestaurantUUID, file)
-          .then((data) => {
-            props.onCloseUploader();
-            setPreviewCsvFilePopup(data);
-            setUploadedFile(file);
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-          .finally(() => {
-            setAnalyzingFile(false);
-          });
-      }
-    },
-    [selectedRestaurantUUID]
-  );
 
   const handleUploadImg = useCallback(
     async (file: File) => {
@@ -132,7 +99,6 @@ const ImportIngredients = (props: Props) => {
     setAnalyzingFile(false);
     setUploadedFile(null);
     setPreviewInvoice(null);
-    setPreviewCsvFilePopup(null);
     props.onCloseUploader();
   };
 
@@ -140,7 +106,7 @@ const ImportIngredients = (props: Props) => {
     <div>
       <Popup
         title={t('inventory.importData')}
-        subtitle="We are able to decrypt an invoice picture to pick up ingredients, or simply read csv file."
+        subtitle="We are able to decrypt an invoice picture to pick up ingredients from it."
         maxWidth={500}
         isVisible={props.openUploader}
         onRequestClose={handleCloseUploader}>
@@ -148,15 +114,6 @@ const ImportIngredients = (props: Props) => {
           <Loading size="medium" />
         ) : (
           <div className={style.importData}>
-            <p className={style.description}>
-              Import your inventory as a table file with information such as
-              quantities, supplier and costs
-            </p>
-            <FileUploader
-              type="csv"
-              title="Select your csv file"
-              onFileUploaded={handleUploadCsv}
-            />
             <p className={style.description}>
               Import your invoices of ingredients as a picture
             </p>
@@ -169,66 +126,8 @@ const ImportIngredients = (props: Props) => {
         )}
       </Popup>
 
-      {previewCsvFilePopup !== null && fileType === 'csv' && uploadedFile && (
-        <UploadCsvValidation
-          file={uploadedFile}
-          data={previewCsvFilePopup}
-          uploadSuccess={() => {
-            setPreviewCsvFilePopup(null);
-            setUploadedFile(null);
-            props.onIngredientsImported();
-          }}
-          onCancelClick={() => {
-            setPreviewCsvFilePopup(null);
-            setUploadedFile(null);
-          }}
-        />
-      )}
-
       {previewInvoice !== null && fileType === 'img' && uploadedFile && (
         <UploadImgValidation
-          // invoice={{
-          //   ingredients: [
-          //     {
-          //       mappedUUID: '1e1cb360-1e8e-439f-a1eb-0ff0e8b82af9',
-          //       detectedName: 'detectedName',
-          //       mappedName: 'mappedName',
-          //       quantity: 2,
-          //       totalPrice: 10,
-          //       unit: 'Kg',
-          //       unitPrice: 3,
-          //     },
-          //     {
-          //       mappedUUID: '1e1cb360-1e8e-439f-a1eb-0ff0e8b82af9',
-          //       detectedName: 'detectedName',
-          //       mappedName: 'mappedName',
-          //       quantity: 2,
-          //       totalPrice: 10,
-          //       unit: 'Kg',
-          //       unitPrice: 3,
-          //     },
-          //     {
-          //       detectedName: 'detectedName',
-          //       mappedName: 'mappedName',
-          //       quantity: 2,
-          //       totalPrice: 10,
-          //       unit: 'Kg',
-          //       unitPrice: 3,
-          //     },
-          //     {
-          //       detectedName: 'detectedName',
-          //       mappedName: 'mappedName',
-          //       quantity: 2,
-          //       totalPrice: 10,
-          //       unit: 'Kg',
-          //       unitPrice: 3,
-          //     },
-          //   ],
-          //   amount: 30,
-          //   date: '03/02/2024',
-          //   documentUUID: '1',
-          //   supplier: 'Supplier ecrit mais un long nom',
-          // }}
           invoice={previewInvoice}
           onCancelClick={() => {
             setPreviewInvoice(null);

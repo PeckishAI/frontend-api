@@ -1,24 +1,4 @@
-import axios, { Ingredient } from './index';
-
-export type Invoice = {
-  documentUUID?: string;
-  created_at?: string;
-  date?: string;
-  supplier?: string;
-  image?: string;
-  ingredients: {
-    detectedName?: string;
-    mappedName?: string;
-    mappedUUID?: string;
-    quantity?: number;
-    unitPrice?: number;
-    unit?: string;
-    totalPrice?: number;
-  }[];
-  restaurantUUID?: string;
-  path?: string;
-  amount?: number;
-};
+import axios, { Ingredient, Invoice, InvoiceIngredient } from './index';
 
 const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
   const res = await axios.get('/documents/' + restaurantUUID);
@@ -35,7 +15,7 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
     // Map over ingredients directly
     return {
       ...documentData,
-      uuid: key,
+      documentUUID: key,
       ingredients: documentData.ingredients.map((ingredient: any) => ({
         mappedUUID: ingredient['mapping_uuid'],
         detectedName: ingredient['ingredient_name'],
@@ -56,15 +36,7 @@ type FormDocument = {
   date: string;
   supplier: string;
   path: string;
-  ingredients: {
-    detectedName: string;
-    mappedName: string;
-    mappedUUID: string;
-    unitPrice: number;
-    quantity: number;
-    unit: string;
-    totalPrice: number;
-  }[];
+  ingredients: InvoiceIngredient[];
 };
 
 const convertToBase64 = (file: File): Promise<string> => {
@@ -224,7 +196,7 @@ const validUploadedCsv = (
 const uploadImgFile = async (
   restaurantUUID: string,
   file: File
-): Promise<Invoice> => {
+): Promise<Invoice | null> => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('restaurant_uuid', restaurantUUID);
@@ -240,26 +212,26 @@ const uploadImgFile = async (
       },
     }
   );
-  console.log('invoice res : ', res);
+  console.log('invoice res.data : ', res.data);
+  console.log('typeof res.data : ', typeof res.data);
+  // Check if res.data is xan object
+  if (typeof res.data !== 'object' || res.data === null) {
+    console.error('res.data is not an object:', res.data);
+    return null;
+  }
 
   return {
     amount: res.data.amount,
     supplier: res.data.supplier,
     image: base64,
-    ingredients: res.data.ingredients.map((ingredient) => ({
-      mappedUUID: ingredient.mappedUUID,
-      detectedName: ingredient.detectedName,
-      mappedName: ingredient.mappedName,
-      quantity: ingredient.quantity,
-      totalPrice: ingredient.totalPrice,
-      unit: ingredient.unit,
-      unitPrice: ingredient.unitPrice,
-    })),
+    ingredients: res.data.ingredients,
   };
 };
 
 const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
-  return axios.post('/invoices/' + restaurantUUID, invoiceData);
+  console.log('inboiceData: ', invoiceData);
+
+  return axios.post('/documents/' + restaurantUUID, invoiceData);
 };
 
 export const inventoryService = {

@@ -11,6 +11,7 @@ import { OrderValidation } from '../views/OrderValidation/OrderValidation';
 import OAuthPopup from '../utils/oauth/OAuth2Popup';
 import { OnboardRestaurant } from '../views/Onboarding/OnboardRestaurant';
 import Documents from '../views/Documents/Documents';
+import PlaceOrder from '../views/PlaceOrder/PlaceOrder';
 
 export const router = createBrowserRouter([
   {
@@ -60,6 +61,10 @@ export const router = createBrowserRouter([
           {
             path: '/orders/validation',
             element: <OrderValidation />,
+          },
+          {
+            path: '/orders/place-order',
+            element: <PlaceOrder />,
           },
 
           {

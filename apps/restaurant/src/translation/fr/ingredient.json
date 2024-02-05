@@ -21,5 +21,6 @@
   "warningDeleteRecipe": "Êtes-vous sure de vouloir supprimer la recette ?",
   "warningDeleteIngredients": "Êtes-vous sure de vouloir supprimer les ingrédients sélectionnés ?",
 
-  "noIngredient": "Pas d'ingrédient"
+  "noIngredient": "Pas d'ingrédient",
+  "loadingIngredients": "Chargement des ingrédients..."
 }
