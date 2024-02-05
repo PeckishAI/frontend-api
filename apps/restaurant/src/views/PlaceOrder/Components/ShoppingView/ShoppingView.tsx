@@ -132,7 +132,6 @@ const ShoppingView = (props: Props) => {
         .finally(() => {
           if (orderSuccess === orders.length)
             toast.success(t('placeOrder:orderSubmited'));
-          else toast.error('error');
         });
     });
     setCartItems([]);
