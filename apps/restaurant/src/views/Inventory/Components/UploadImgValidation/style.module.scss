@@ -2,7 +2,7 @@
   .items {
     position: relative;
     overflow: auto;
-    max-height: 300px;
+    max-height: 350px;
     margin: 10px auto;
     border: 1px solid rgba(0, 0, 0, 0.147);
     border-radius: 5px;
@@ -65,11 +65,41 @@
       }
     }
   }
-
-  .buttons {
-    display: flex;
-    gap: 20px;
-    justify-content: flex-end;
+  .finalActions {
     margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: flex-end;
+    }
   }
+}
+
+.headerDocumentData {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 10px 0;
+  .data {
+    display: flex;
+    font-size: 0.9rem;
+    gap: 5px;
+    .label {
+      font-weight: 600;
+      color: var(--primaryColor);
+    }
+    .value {
+      color: var(--textSecondaryColor);
+      font-weight: 600;
+    }
+  }
+}
+
+.imgPreview {
+  max-width: 300px;
+  max-height: 300px;
 }

@@ -308,7 +308,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         safetyStock: 0,
         quantity: 0,
         unit: '',
-        supplier: '',
+        supplier: suppliers[0].value,
         unitCost: 0,
         actions: undefined,
       };
@@ -343,7 +343,19 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         key: 'safetyStock',
         header: t('ingredient:safetyStock'),
         width: '15%',
-        renderItem: () => '-', // temp till real value provided by backend
+        // renderItem: () => '-', // temp till real value provided by backend
+        renderItem: ({ row }) =>
+          editingRowId === row.id ? (
+            <Input
+              type="number"
+              min={0}
+              placeholder={t('quantity')}
+              onChange={(value) => handleValueChange('safetyStock', value)}
+              value={editedValues!.safetyStock}
+            />
+          ) : (
+            row.safetyStock
+          ),
       },
       {
         key: 'quantity',

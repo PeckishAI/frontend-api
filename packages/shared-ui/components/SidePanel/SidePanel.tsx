@@ -9,7 +9,7 @@ type Props = {
   children: React.ReactNode;
   onRequestClose: () => void;
   className?: string;
-  scrollable?: boolean; // New prop to control scrollability
+  scrollable?: boolean;
 };
 
 const SidePanel = (props: Props) => {
@@ -35,7 +35,7 @@ const SidePanel = (props: Props) => {
       <div
         className={classNames('sidePanel', props.className, {
           visible: props.isOpen,
-          'sidePanel-scrollable': props.scrollable, // Use a class to handle scrollable styling
+          'sidePanel-scrollable': props.scrollable,
         })}>
         <i
           className="fa-solid fa-xmark close-icon"

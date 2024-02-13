@@ -1,0 +1,12 @@
+{
+  "onboarding.msg": "Séléctionnez un système que vous souhaitez intégrer à Peckish !",
+  "onboarding.modal.title": "Nouvelle intégration",
+  "onboarding.modal.description.oauth": "Intégrer {{name}}",
+  "onboarding.modal.description.oauth.message": "Cliquez sur le bouton ci-dessous pour vous connecter à votre compte {{name}}",
+  "onboarding.modal.description.login": "Veuillez fournir vos identifiants {{name}}",
+  "onboarding.searchPlaceholder": "Rechercher un système",
+  "onboarding.recoverData": "Récupération des données en cours...",
+  "onboarding.wait": "Cette action peut prendre du temps.",
+  "onboarding.success": "Récupération des données avec succès !",
+  "onboarding.error": "Echec de la récupération des données."
+}

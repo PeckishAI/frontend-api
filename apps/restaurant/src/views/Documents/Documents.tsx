@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { useTitle, Button } from 'shared-ui';
 import DocumentCard from './Components/DocumentCard/DocumentCard';
-import React, { useEffect, useState } from 'react';
-import { documentService, Document } from '../../services';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Invoice, inventoryService } from '../../services';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import DocumentDetail from '../../components/DocumentDetail/DocumentDetail';
-import ImportIngredients from '../Inventory/Components/ImportIngredients/ImportIngredients';
-import styles from './Documents.module.scss';
+import styles from './style.module.scss';
+import ImportIngredients from './Components/ImportIngredients/ImportIngredients';
 
 const Documents = () => {
   const { t } = useTranslation();
@@ -16,14 +16,14 @@ const Documents = () => {
     (state) => state.selectedRestaurantUUID
   );
   const [loadingData, setLoadingData] = useState(false);
-  const [document, setDocument] = useState<Document[]>([]);
-  const [documentDetail, setDocumentDetail] = useState<Document | null>(null);
-  const [showImportPopup, setShowImportPopup] = useState(false); // State to control ImportIngredients visibility
+  const [document, setDocument] = useState<Invoice[]>([]);
+  const [documentDetail, setDocumentDetail] = useState<Invoice | null>(null);
+  const [showImportPopup, setShowImportPopup] = useState(false);
 
   function reloadDocuments() {
     if (!selectedRestaurantUUID) return;
     setLoadingData(true);
-    documentService
+    inventoryService
       .getDocument(selectedRestaurantUUID)
       .then((res) => {
         setDocument(res);
@@ -44,21 +44,26 @@ const Documents = () => {
     setShowImportPopup(true); // Toggle visibility of the ImportIngredients component
   };
 
-  const handleDocumentClick = (clickedDocument: Document) => {
+  const handleDocumentClick = (clickedDocument: Invoice) => {
+    console.log('clicked');
     setDocumentDetail(clickedDocument);
   };
 
-  const handleDocumentUpdated = (updatedDocument: Document) => {
+  const handleDocumentUpdated = (updatedDocument: Invoice) => {
     setDocument(
       document.map((d) =>
-        d.uuid === updatedDocument.uuid ? updatedDocument : d
+        d.documentUUID === updatedDocument.documentUUID ? updatedDocument : d
       )
     );
     setDocumentDetail(updatedDocument);
   };
 
-  const handleDocumentDeleted = (deletedDocument: Document) => {
-    setDocument(document.filter((d) => d.uuid !== deletedDocument.uuid));
+  const handleDeleteDocument = (documentToDelete: Invoice) => {
+    setDocument((prevDoc) =>
+      prevDoc.filter(
+        (doc) => doc.documentUUID !== documentToDelete.documentUUID
+      )
+    );
     setDocumentDetail(null);
   };
 
@@ -71,30 +76,26 @@ const Documents = () => {
   // Edit invoices
 
   return (
-    <div className="documents">
-      <div className={styles.buttonContainer}>
+    <div className={styles.documents}>
+      <p className={styles.explaination}>
+        Import and save your invoices so you can place orders more quickly from
+        your saved documents.
+      </p>
+      <div className={styles.tools}>
         <Button
           type="primary"
           value={t('document.upload')}
-          className={styles.buttonTop}
+          className={styles.uploadButton}
           onClick={handleUploadClick} // Attach click handler
         />
-        <Button
-          type="primary"
-          value={t('document.generate')}
-          className={styles.buttonTop}
-          onClick={() => {
-            /* handle download here */
-          }}
-        />
       </div>
-      <div className="cards-container">
-        {document.map((doc) => {
+      <div className={styles.cardsContainer}>
+        {document.map((doc, index) => {
           return (
             <DocumentCard
-              key={doc.uuid}
-              uuid={doc.uuid}
-              supplier_name={doc.supplier_name}
+              key={index}
+              uuid={doc.documentUUID}
+              supplier={doc.supplier}
               date={doc.date}
               image={doc.path}
               path={doc.path}
@@ -117,12 +118,13 @@ const Documents = () => {
             handleDocumentUpdated(document);
           }
         }}
+        onDeleteDocument={() => handleDeleteDocument(documentDetail)}
       />
       <ImportIngredients
         openUploader={showImportPopup}
         onCloseUploader={() => setShowImportPopup(false)}
         onIngredientsImported={() => {
-          /* handle imported ingredients here */
+          // handle imported ingredients here
         }}
       />
     </div>

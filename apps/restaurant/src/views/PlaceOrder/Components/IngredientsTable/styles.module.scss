@@ -1,0 +1,26 @@
+.ingredientsContainer {
+  margin-right: 20px;
+
+  .tabContainer {
+    // height: 70vh;
+    // overflow-y: scroll;
+
+    .searchIng {
+      // margin-bottom: 10px;
+      width: 200px;
+    }
+    .quantitySection {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .addToCard {
+        font-size: 1.2rem;
+      }
+      i {
+        color: var(--primaryColor);
+        margin: 0 5px;
+        cursor: pointer;
+      }
+    }
+  }
+}

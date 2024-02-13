@@ -2,8 +2,8 @@ import './style.scss';
 import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
 
 type Props = {
-  uuid: string;
-  supplier_name?: string;
+  uuid?: string;
+  supplier?: string;
   date?: string;
   image?: string;
   path?: string;
@@ -21,13 +21,12 @@ const DocumentCard = (props: Props) => {
       </div>
       <div className="name-login">
         <div className="left-side">
-          <h2>{props.supplier_name}</h2>
+          <h2>{props.supplier}</h2>
           <p>{props.date}</p>
         </div>
         <div className="right-side">
           <p>
-            {currencyISO}
-            {props.amount}
+            {props.amount} {currencyISO}
           </p>
         </div>
       </div>

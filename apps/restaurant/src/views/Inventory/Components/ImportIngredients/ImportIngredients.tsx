@@ -74,6 +74,50 @@ const ImportIngredients = (props: Props) => {
           })
           .catch((err) => {
             console.log(err);
+            setPreviewInvoice({
+              ingredients: [
+                {
+                  mappedUUID: '1e1cb360-1e8e-439f-a1eb-0ff0e8b82af9',
+                  detectedName: 'detectedName',
+                  mappedName: 'mappedName',
+                  quantity: 2,
+                  totalPrice: 10,
+                  unit: 'Kg',
+                  unitPrice: 3,
+                },
+                {
+                  mappedUUID: '1e1cb360-1e8e-439f-a1eb-0ff0e8b82af9',
+                  detectedName: 'detectedName',
+                  mappedName: 'mappedName',
+                  quantity: 2,
+                  totalPrice: 10,
+                  unit: 'Kg',
+                  unitPrice: 3,
+                },
+                {
+                  detectedName: 'detectedName',
+                  mappedName: 'mappedName',
+                  quantity: 2,
+                  totalPrice: 10,
+                  unit: 'Kg',
+                  unitPrice: 3,
+                },
+                {
+                  detectedName: 'detectedName',
+                  mappedName: 'mappedName',
+                  quantity: 2,
+                  totalPrice: 10,
+                  unit: 'Kg',
+                  unitPrice: 3,
+                },
+              ],
+              amount: 30,
+              date: '03/02/2024',
+              documentUUID: '1',
+              supplier: 'This is a fake invoice generated',
+            });
+            props.onCloseUploader();
+            setUploadedFile(file);
           })
           .finally(() => {
             setAnalyzingFile(false);
@@ -142,7 +186,49 @@ const ImportIngredients = (props: Props) => {
 
       {previewInvoice !== null && fileType === 'img' && uploadedFile && (
         <UploadImgValidation
-          data={previewInvoice}
+          // invoice={{
+          //   ingredients: [
+          //     {
+          //       mappedUUID: '1e1cb360-1e8e-439f-a1eb-0ff0e8b82af9',
+          //       detectedName: 'detectedName',
+          //       mappedName: 'mappedName',
+          //       quantity: 2,
+          //       totalPrice: 10,
+          //       unit: 'Kg',
+          //       unitPrice: 3,
+          //     },
+          //     {
+          //       mappedUUID: '1e1cb360-1e8e-439f-a1eb-0ff0e8b82af9',
+          //       detectedName: 'detectedName',
+          //       mappedName: 'mappedName',
+          //       quantity: 2,
+          //       totalPrice: 10,
+          //       unit: 'Kg',
+          //       unitPrice: 3,
+          //     },
+          //     {
+          //       detectedName: 'detectedName',
+          //       mappedName: 'mappedName',
+          //       quantity: 2,
+          //       totalPrice: 10,
+          //       unit: 'Kg',
+          //       unitPrice: 3,
+          //     },
+          //     {
+          //       detectedName: 'detectedName',
+          //       mappedName: 'mappedName',
+          //       quantity: 2,
+          //       totalPrice: 10,
+          //       unit: 'Kg',
+          //       unitPrice: 3,
+          //     },
+          //   ],
+          //   amount: 30,
+          //   date: '03/02/2024',
+          //   documentUUID: '1',
+          //   supplier: 'Supplier ecrit mais un long nom',
+          // }}
+          invoice={previewInvoice}
           onCancelClick={() => {
             setPreviewInvoice(null);
             setUploadedFile(null);

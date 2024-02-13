@@ -19,7 +19,7 @@ type Props = {
 // }
 
 const LoginModal = (props: Props) => {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['common', 'validation', 'onboarding']);
   const userId = useUserStore((state) => state.user?.user_uuid);
 
   const [userName, setUserName] = useState<string>('');
@@ -41,11 +41,11 @@ const LoginModal = (props: Props) => {
 
   function FieldsValid() {
     if (!userName) {
-      setErrorField(t('field.error.userName'));
+      setErrorField(t('validation:field.error.userName'));
       return false;
     }
     if (!userPassword) {
-      setErrorField(t('field.error.password'));
+      setErrorField(t('validation:field.error.password'));
       return false;
     }
     setErrorField('');
@@ -109,11 +109,11 @@ const LoginModal = (props: Props) => {
     <Popup
       isVisible={props.isVisible}
       onRequestClose={props.toggleModal}
-      title={t('onboarding.modal.title')}
+      title={t('onboarding:onboarding.modal.title')}
       subtitle={t(
         props.pos?.auth_type === 'modal'
-          ? 'onboarding.modal.description.login'
-          : 'onboarding.modal.description.oauth',
+          ? 'onboarding:onboarding.modal.description.login'
+          : 'onboarding:onboarding.modal.description.oauth',
         { name: props.pos?.display_name }
       )}>
       {retrieveDataStatus === null ? (
@@ -139,7 +139,7 @@ const LoginModal = (props: Props) => {
             </>
           ) : (
             <p>
-              {t('onboarding.modal.description.oauth.message', {
+              {t('onboarding:onboarding.modal.description.oauth.message', {
                 name: props.pos.display_name,
               })}
             </p>
@@ -164,15 +164,17 @@ const LoginModal = (props: Props) => {
             <>
               <Lottie type="loading" width="150px" />
               <span className="loading-info" id="bold">
-                {t('onboarding.recoverData')}
+                {t('onboarding:onboarding.recoverData')}
               </span>
-              <span className="loading-info">{t('onboarding.wait')}</span>
+              <span className="loading-info">
+                {t('onboarding:onboarding.wait')}
+              </span>
             </>
           ) : retrieveDataStatus === 'success' ? (
             <>
               <Lottie type="validate" width="100px" />
               <span className="loading-info" id="bold">
-                {t('onboarding.success')}
+                {t('onboarding:onboarding.success')}
               </span>
               <Button
                 value={t('ok')}
@@ -190,7 +192,7 @@ const LoginModal = (props: Props) => {
             <>
               <Lottie type="error" width="100px" />
               <span className="loading-info" id="bold">
-                {t('onboarding.error')}
+                {t('onboarding:onboarding.error')}
               </span>
               <Button
                 value={t('ok')}

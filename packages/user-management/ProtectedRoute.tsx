@@ -2,14 +2,16 @@ import { useEffect } from 'react';
 import { Outlet, useSearchParams, useLocation } from 'react-router-dom';
 import { GLOBAL_CONFIG } from 'shared-config';
 import { Lottie } from 'shared-ui';
-import {
-  useUserStore,
-  userService,
-  userSession,
-} from '@peckishai/user-management';
+import { useUserStore } from './store';
+import { userSession } from './session';
+import { userService } from './service';
+import { User } from './types';
+type Props = {
+  clientType: User['client_type'];
+};
 
 // Route overlay that requires authentication
-export const ProtectedRoute = () => {
+export const ProtectedRoute = (props: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { storeAccessToken, setUser, logout, user } = useUserStore();
   const location = useLocation();
@@ -34,6 +36,11 @@ export const ProtectedRoute = () => {
     userService
       .getMe(token)
       .then((user) => {
+        if (user.client_type != props.clientType) {
+          logout();
+          return;
+        }
+
         userSession.save(token, rememberMe);
         storeAccessToken(token);
         setUser(user);

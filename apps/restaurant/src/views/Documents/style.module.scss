@@ -1,0 +1,18 @@
+.documents {
+  .explaination {
+    font-weight: 500;
+  }
+
+  .tools {
+    margin: 15px 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .cardsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+}

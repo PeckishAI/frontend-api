@@ -12,6 +12,7 @@
     "onboarding_selectProducts": "Select products",
     "onboarding_createPreparations": "Create preparations",
     "orders.validation": "Predicted order",
+    "orders.place": "Place order",
     "simulation": "Simulation",
     "integrations": "Integrations",
     "support": "Support",
@@ -21,6 +22,7 @@
 
   "warning.impactedRecipes": "These recipes will be affected by this action :",
 
+  "ingredientName": "Ingredient name",
   "inventory.addIngredientBtn": "Add an ingredient",
   "inventory.selectIngredient": "Select an ingredient",
   "inventory.addSupplierBtn": "Add a supplier",
@@ -39,28 +41,8 @@
     "others": "Others"
   },
 
-  "recipesCategories": {
-    "drinks": "Drinks",
-    "starters": "Starters",
-    "mainCourses": "Main courses",
-    "desserts": "Desserts",
-    "snacks": "Snacks",
-    "others": "Others"
-  },
-
-  "myRestaurants.emptyTitle": "You don't have any restaurant",
+  "myRestaurants.emptyTitle": "You don't have any restaurants",
   "myrestaurants.emptyText": "First add a new integration to see your restaurants in Peckish",
-
-  "onboarding.msg": "Select a software that you want to integrate to Peckish !",
-  "onboarding.modal.title": "New integration",
-  "onboarding.modal.description.oauth": "Integrate with {{name}}",
-  "onboarding.modal.description.oauth.message": "Click on the button below to connect Peckish with {{name}}",
-  "onboarding.modal.description.login": "Please input your credentials for {{name}}",
-  "onboarding.searchPlaceholder": "Search software",
-  "onboarding.recoverData": "Data recovery in progress...",
-  "onboarding.wait": "This may take some time.",
-  "onboarding.success": "Successful data recovery !",
-  "onboarding.error": "Data recovery failed.",
 
   "suppliers.emptyPage.title": "You don’t have any linked suppliers yet",
   "suppliers.emptyPage.description": "You can add a supplier to be able to order products from them automatically.",
@@ -92,6 +74,9 @@
   "orders.detail": "Detail",
   "orders.detail.tooltip": "View detail",
   "orders.showPredictedOrder": "Show predicted order",
+  "orders.placeOrder": "Place order",
+  "orders.increaseQuantity": "+",
+  "orders.decreaseQuantity": "-",
 
   "order.validation.empty": {
     "title": "Predicted order not available",
@@ -174,7 +159,6 @@
     "givenName": "Given name",
     "detectedName": "Detected name",
     "save": "Save",
-    "upload": "Upload",
-    "generate": "Order Generation"
+    "upload": "Upload"
   }
 }

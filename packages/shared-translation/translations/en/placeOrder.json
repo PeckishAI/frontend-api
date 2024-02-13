@@ -1,0 +1,21 @@
+{
+  "placeOrder": {
+    "title": "Place order",
+    "message": "Add ingredients with a quantity to the basket and place an order."
+  },
+  "orderGeneration": "Order generation",
+  "orderGeneration.message": "This will pre-fill for you, based on your saved invoices, ingredients you probably need.",
+
+  "filterBySupplier": "Filter by supplier",
+  "filterByIngredient": "Filter by ingredient",
+
+  "basket": "Basket",
+  "addToBasket": "Add to basket",
+  "shoppingBasket": "Shopping basket",
+  "basketIsEmpty": "Basket is empty.",
+  "total": "Total",
+  "orderProcessing": "Order processing...",
+  "orderSubmited": "Order successfully submitted.",
+
+  "basket.removeItem.message": "Do you want to remove this ingredient ?"
+}

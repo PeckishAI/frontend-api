@@ -28,7 +28,7 @@ export type Integration = {
 };
 
 const Integrations = () => {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['common', 'onboarding']);
   useTitle(t('pages.onboarding'));
 
   const navigate = useNavigate();
@@ -86,10 +86,10 @@ const Integrations = () => {
   // Loop through object and return cards
   return (
     <div className="integrations">
-      <p id="welcome">{t('onboarding.msg')}</p>
+      <p id="welcome">{t('onboarding:onboarding.msg')}</p>
       <Input
         type="text"
-        placeholder={t('onboarding.searchPlaceholder')}
+        placeholder={t('onboarding:onboarding.searchPlaceholder')}
         value={searchTerm}
         onChange={(value) => setSearchTerm(value)}
         className="onboarding-search"

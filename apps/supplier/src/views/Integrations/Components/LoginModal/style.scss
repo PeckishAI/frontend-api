@@ -1,0 +1,58 @@
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  backdrop-filter: blur(3px);
+  &.visible {
+    display: block;
+  }
+}
+
+/* Modal Content */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+
+  .text-error {
+    height: 0;
+    transform: translateY(-10px);
+  }
+
+  .LabeledInput {
+    width: 100%;
+  }
+
+  .button-container {
+    display: flex;
+    gap: 30px;
+  }
+}
+.retrieve-data-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  .loading-info {
+    margin-bottom: 10px;
+    font-weight: var(--light);
+    font-size: 0.9rem;
+  }
+  #bold {
+    font-weight: var(--semiBold);
+    font-size: 1.1rem;
+  }
+  .button {
+    margin-top: 30px;
+    min-width: 60px;
+  }
+}

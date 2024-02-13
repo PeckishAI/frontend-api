@@ -1,0 +1,12 @@
+{
+  "onboarding.msg": "Select a software that you want to integrate to Peckish !",
+  "onboarding.modal.title": "New integration",
+  "onboarding.modal.description.oauth": "Integrate with {{name}}",
+  "onboarding.modal.description.oauth.message": "Click on the button below to connect Peckish with {{name}}",
+  "onboarding.modal.description.login": "Please input your credentials for {{name}}",
+  "onboarding.searchPlaceholder": "Search software",
+  "onboarding.recoverData": "Data recovery in progress...",
+  "onboarding.wait": "This may take some time.",
+  "onboarding.success": "Successful data recovery !",
+  "onboarding.error": "Data recovery failed."
+}

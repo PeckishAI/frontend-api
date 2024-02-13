@@ -1,32 +1,33 @@
-import { Button, LabeledInput, Popup, Select } from 'shared-ui';
+import { Button, Checkbox, LabeledInput, Popup, Select } from 'shared-ui';
 import styles from './style.module.scss';
 import { useTranslation } from 'react-i18next';
-import { Ingredient, Invoice, inventoryService } from '../../../../services';
+import {
+  Ingredient,
+  Invoice,
+  InvoiceIngredient,
+  inventoryService,
+} from '../../../../services';
 import { useIngredients } from '../../../../services/hooks';
 import { useEffect, useState } from 'react';
 import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
 import CreateIngredient from '../../../../components/CreateIngredient/CreateIngredient';
 import { useRestaurantStore } from '../../../../store/useRestaurantStore';
+import { formatCurrency } from '../../../../utils/helpers';
+import toast from 'react-hot-toast';
 
 type Props = {
-  data: Invoice;
+  invoice: Invoice;
   onCancelClick: () => void;
   onValideClick: () => void;
 };
 
-// type InvoiceIngredient = Omit<Invoice['items'][number], 'uuid' | 'mappedName'>;
-type InvoiceIngredient = {
-  mappingUUID?: string;
-  mappingName?: string;
-  detectedName?: string;
-  quantity?: number;
-  totalCost?: number;
-  unit?: string;
-  unitCost?: number;
-};
-
 const UploadImgValidation = (props: Props) => {
   const { t } = useTranslation(['common', 'ingredient']);
+  const { currencyISO, currencySymbol } = useRestaurantCurrency();
+
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
 
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
@@ -42,20 +43,25 @@ const UploadImgValidation = (props: Props) => {
     null
   );
   const [error, setError] = useState<string | null>(null);
+  const [mustUpdateInventory, setMustUpdateInventory] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setIngredientsValues(
-      props.data.ingredients.map((ing) => ({
-        mappingUUID: ing.uuid,
-        mappingName: ing.mappedName,
-        detectedName: ing.detectedName,
+      props.invoice.ingredients.map<InvoiceIngredient>((ing) => ({
+        inventoryIngredientRef: ingredients.find(
+          (i) => i.id === ing.mappedUUID
+        ),
         quantity: ing.quantity,
-        totalCost: ing.totalPrice,
-        unitCost: ing.unitPrice,
-        unit: ing.unit,
+        totalPrice: ing.totalPrice,
+        unitPrice: ing.unitPrice
+          ? ing.unitPrice
+          : +((ing.totalPrice ?? 0) / (ing.quantity ?? 0)).toFixed(2),
       }))
     );
-  }, [props.data.ingredients]);
+  }, [ingredients]);
+  // setIngredientsValues(props.invoice.ingredients);
+  // }, [props.invoice.ingredients]);
 
   const handleIngredientsValuesChange = <T extends keyof InvoiceIngredient>(
     index: number,
@@ -74,43 +80,51 @@ const UploadImgValidation = (props: Props) => {
     }));
   };
 
-  const handleValidClick = async () => {
-    const finalFormData: Invoice = {
-      document_uuid: props.data.document_uuid,
-      created_at: props.data.created_at,
-      date: props.data.date,
-      supplier: props.data.supplier,
-      ingredients: ingredientsValues.map((ingVal) => ({
-        ingredient_name: ingVal.detectedName,
-        mapping_name: ingVal.mappingName,
-        mapping_uuid: ingVal.mappingUUID,
-        quantity: ingVal.quantity,
-        unit: ingVal.unit,
-        total_price: ingVal.totalCost,
-      })),
-      restaurant_uuid: selectedRestaurantUUID,
-      path: props.data.path,
-      amount: props.data.amount,
-    };
+  const handleValidClick = () => {
+    if (!selectedRestaurantUUID) return;
+    setLoading(true);
 
-    try {
-      await inventoryService.submitInvoice(
-        selectedRestaurantUUID,
-        finalFormData
-      );
-      console.log('Invoice submitted successfully');
-      props.onValideClick(); // Call the onValideClick prop to handle success
-    } catch (error) {
-      console.error('Failed to submit invoice:', error);
-      // Handle error (e.g., show error message to the user)
+    // In case checkbox to update inventory is checked
+    if (mustUpdateInventory) {
+      let requestSucces = 0;
+      ingredientsValues.forEach((ing) => {
+        if (ing.mappedUUID) {
+          const ingToUpdate: InvoiceIngredient = ing;
+          ingToUpdate.quantity =
+            (ingToUpdate.quantity ?? 0) + (ing.quantity ?? 0);
+          ingToUpdate.unitPrice = ing.unitPrice ?? 0;
+          inventoryService
+            .updateIngredient(ingToUpdate)
+            .then(() => {
+              requestSucces++;
+            })
+            .catch((err) => console.log(err))
+            .finally(() => {
+              if (requestSucces !== ingredientsValues.length)
+                // means not all requests perfomed successfully
+                return;
+            });
+        } else {
+          setError('Some ingredient not mapped.');
+          return;
+        }
+      });
     }
+
+    inventoryService
+      .submitInvoice(selectedRestaurantUUID, props.invoice)
+      .then(() => {
+        console.log('Invoice submitted successfully');
+        props.onValideClick();
+        toast.success(t('order.validation.submit.success'));
+      })
+      .catch((err) => {
+        console.error('Failed to submit invoice:', err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
-
-  const { currencySymbol } = useRestaurantCurrency();
-
-  console.log('mapped ing uuid : ', props.data.ingredients[0].uuid);
-  console.log(ingredients.find((i) => i.id === props.data.ingredients[0].uuid));
-  console.log(ingredientsValues[0]);
 
   return (
     <div>
@@ -118,39 +132,61 @@ const UploadImgValidation = (props: Props) => {
         isVisible={true}
         title={t('inventory.uploadCSV.popup.title')}
         subtitle={t('inventory.uploadCSV.popup.subtitle')}
-        onRequestClose={props.onCancelClick}>
+        onRequestClose={props.onCancelClick}
+        scrollable={true}>
         <div className={styles.uploadIlmgValidation}>
-          <p className={styles.fixedValue}>
-            Document ID: <span>{props.data.date}</span>
-          </p>
-          <p className={styles.fixedValue}>
-            Date: <span>{props.data.date}</span>
-          </p>
-          <p className={styles.fixedValue}>
-            Supplier : <span>{props.data.supplier}</span>
-          </p>
-          <p className={styles.fixedValue}>
-            Amount: <span>{props.data.amount}</span>
-          </p>
+          <img
+            src={props.invoice.image}
+            alt="invoice"
+            className={styles.imgPreview}
+          />
+          <div className={styles.headerDocumentData}>
+            <div className={styles.data}>
+              <p className={styles.label}>Date:</p>
+              <p className={styles.value}>{props.invoice.date}</p>
+            </div>
+            <div className={styles.data}>
+              <p className={styles.label}>Supplier:</p>
+              <p className={styles.value}>{props.invoice.supplier}</p>
+            </div>
+            <div className={styles.data}>
+              <p className={styles.label}>Amount:</p>
+              <p className={styles.value}>
+                {formatCurrency(props.invoice.amount, currencyISO)}
+              </p>
+            </div>
+          </div>
           <div className={styles.items}>
             {ingredientsValues.length > 0 &&
-              props.data.ingredients.map((ing, index) => (
+              props.invoice.ingredients.map((ing, index) => (
                 <div key={index} className={styles.row}>
                   <p className={styles.name}>
                     {ing.detectedName}
-                    {ingredientsValues[index] && (
-                      <span className={styles.quantities}>
-                        ({t('ingredient:actualStock')} :{' '}
-                        {/* Use the actual stock value directly */}
-                        {ingredientsValues[index].quantity}
-                        {ing.unit}
-                        <i className="fa-solid fa-arrow-right"></i>
-                        <span className={styles.newQuantity}>
-                          {/* Calculate new quantity here */}
-                          {(
-                            ingredientsValues[index].quantity + ing.quantity
-                          ).toFixed(2)}
-                          {ing.unit}
+                    {ingredientsValues[index] &&
+                      ingredientsValues[index].inventoryIngredientRef &&
+                      mustUpdateInventory && (
+                        <span className={styles.quantities}>
+                          ({t('ingredient:actualStock')} :{' '}
+                          {
+                            ingredientsValues[index].inventoryIngredientRef
+                              ?.quantity
+                          }{' '}
+                          {
+                            ingredientsValues[index].inventoryIngredientRef
+                              ?.unit
+                          }
+                          <i className="fa-solid fa-arrow-right"></i>
+                          <span className={styles.newQuantity}>
+                            {(
+                              ingredientsValues[index].inventoryIngredientRef
+                                ?.quantity + ingredientsValues[index].quantity
+                            ).toFixed(2)}{' '}
+                            {
+                              ingredientsValues[index].inventoryIngredientRef
+                                ?.unit
+                            }
+                          </span>
+                          )
                         </span>
                         )
                       </span>
@@ -166,14 +202,12 @@ const UploadImgValidation = (props: Props) => {
                         isLoading={ingredientsLoading}
                         getOptionLabel={(opt) => opt.name}
                         getOptionValue={(opt) => opt.id}
-                        value={ingredients.find(
-                          (ing) =>
-                            ing.id === ingredientsValues[index].mappingUUID
-                        )}
+                        value={ingredientsValues[index].inventoryIngredientRef}
                         isSearchable
                         isCreatable
                         isClearable
                         onCreateOption={handleCreateNewOption}
+                        // formatCreateLabel={(inputValue) => 'create ingredient'}
                         getNewOptionData={(inputValue) => ({
                           id: 'new',
                           name: `Create '${inputValue}'`,
@@ -187,13 +221,8 @@ const UploadImgValidation = (props: Props) => {
                         onChange={(selectedOption) => {
                           handleIngredientsValuesChange(
                             index,
-                            'mappingUUID',
-                            selectedOption ? selectedOption.id : null
-                          );
-                          handleIngredientsValuesChange(
-                            index,
-                            'mappingName',
-                            selectedOption ? selectedOption.name : ''
+                            'inventoryIngredientRef',
+                            value
                           );
                         }}
                       />
@@ -202,7 +231,9 @@ const UploadImgValidation = (props: Props) => {
                       placeholder="Quantity"
                       type="number"
                       lighter
-                      suffix={ingredientsValues[index].ingredient?.unit}
+                      suffix={
+                        ingredientsValues[index].inventoryIngredientRef?.unit
+                      }
                       value={ingredientsValues[index].quantity?.toString()}
                       onChange={(val) =>
                         handleIngredientsValuesChange(
@@ -218,11 +249,11 @@ const UploadImgValidation = (props: Props) => {
                       step="0.01"
                       lighter
                       suffix={currencySymbol}
-                      value={ingredientsValues[index].unitCost?.toString()}
+                      value={ingredientsValues[index].unitPrice?.toString()}
                       onChange={(val) =>
                         handleIngredientsValuesChange(
                           index,
-                          'unitCost',
+                          'unitPrice',
                           +val.target.value
                         )
                       }
@@ -233,11 +264,11 @@ const UploadImgValidation = (props: Props) => {
                       step="0.01"
                       lighter
                       suffix={currencySymbol}
-                      value={ingredientsValues[index].totalCost?.toString()}
+                      value={ingredientsValues[index].totalPrice?.toString()}
                       onChange={(val) =>
                         handleIngredientsValuesChange(
                           index,
-                          'totalCost',
+                          'totalPrice',
                           +val.target.value
                         )
                       }
@@ -247,18 +278,27 @@ const UploadImgValidation = (props: Props) => {
               ))}
           </div>
           {error && <span className="text-error">{error}</span>}
-
-          <div className={styles.buttons}>
-            <Button
-              value={t('cancel')}
-              type="secondary"
-              onClick={props.onCancelClick}
-            />
-            <Button
-              value={t('validate')}
-              type="primary"
-              onClick={handleValidClick}
-            />
+          <div className={styles.finalActions}>
+            <div className={styles.updateInventory}>
+              <Checkbox
+                label="Update inventory stock with these ingredient quantity values"
+                checked={mustUpdateInventory}
+                onCheck={setMustUpdateInventory}
+              />
+            </div>
+            <div className={styles.buttons}>
+              <Button
+                value={t('cancel')}
+                type="secondary"
+                onClick={props.onCancelClick}
+              />
+              <Button
+                value={t('validate')}
+                type="primary"
+                onClick={handleValidClick}
+                loading={loading}
+              />
+            </div>
           </div>
         </div>
       </Popup>
@@ -270,7 +310,7 @@ const UploadImgValidation = (props: Props) => {
           reload();
         }}
         preFilledName={createIngredient?.name}
-        preFilledSupplier={props.data.supplier}
+        preFilledSupplier={props.invoice.supplier}
       />
     </div>
   );

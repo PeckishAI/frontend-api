@@ -1,0 +1,109 @@
+.uploadIlmgValidation {
+  .invoiceContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    .imgPreview {
+      max-width: 300px;
+      max-height: 300px;
+    }
+  }
+  .items {
+    position: relative;
+    overflow: auto;
+    max-height: 350px;
+    margin: 10px auto;
+    border: 1px solid rgba(0, 0, 0, 0.147);
+    border-radius: 5px;
+
+    .fixedValue {
+      // color: var(--textSecondaryColor);
+      font-size: 0.9rem;
+      font-weight: var(--medium);
+      margin-bottom: 10px;
+      span {
+        color: var(--primaryColor);
+      }
+    }
+    .row {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      margin-bottom: 20px;
+      max-width: 800px;
+      padding: 10px;
+
+      .name {
+        font-size: 0.9rem;
+        margin: 10px 0;
+        font-weight: var(--medium);
+
+        .quantities {
+          margin: 0 20px;
+          i {
+            color: var(--primaryColor);
+            margin: 0 5px;
+          }
+          .newQuantity {
+            color: green;
+          }
+        }
+      }
+      .inputs {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+
+        & > * {
+          flex: 1;
+        }
+
+        .select {
+          flex: 2;
+        }
+      }
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        height: 1px;
+        background-color: rgba(0, 0, 0, 0.108);
+        width: 90%;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+  }
+  .finalActions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: flex-end;
+    }
+  }
+}
+
+.headerDocumentData {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 10px 0;
+  .data {
+    display: flex;
+    font-size: 0.9rem;
+    gap: 5px;
+    .label {
+      font-weight: 600;
+      color: var(--primaryColor);
+    }
+    .value {
+      color: var(--textSecondaryColor);
+      font-weight: 600;
+    }
+  }
+}

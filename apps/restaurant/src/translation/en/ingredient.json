@@ -5,6 +5,7 @@
   "actualStock": "Actual stock",
   "unit": "Unit",
   "supplier": "Supplier",
+  "quantity": "Quantity",
   "cost": "Cost",
   "unitCost": "Cost per unit",
   "actions": "Actions",
@@ -21,5 +22,6 @@
   "warningDeleteRecipe": "Are you sure you want to delete the recipe ?",
   "warningDeleteIngredients": "Are you sure you want to delete selected ingredients ?",
 
-  "noIngredient": "No ingredient"
+  "noIngredient": "No ingredient",
+  "loadingIngredients": "Loading ingredients..."
 }
