@@ -54,9 +54,9 @@ const Layout = () => {
 
   const title = useNavTitle();
 
-  if (user && !user.onboarded) {
-    return <Navigate to="/onboarding" />;
-  }
+  // if (user && !user.onboarded) {
+  //   return <Navigate to="/onboarding" />;
+  // }
 
   const restaurantsOptions = restaurants.map((restaurant) => ({
     label: restaurant.name,

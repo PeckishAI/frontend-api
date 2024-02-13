@@ -74,30 +74,49 @@ const getIngredientList = async (
 
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
-    safetyStock: 0,
+    safetyStock: res.data[key]['safety_stock'],
     unitCost: res.data[key]['cost'],
     ...res.data[key],
   }));
 };
 
 const addIngredient = (restaurantUUID: string, ingredient) => {
-  return axios.post('/inventory/' + restaurantUUID, ingredient);
+  const FormatedIngredient = {
+    id: ingredient.id,
+    name: ingredient.name,
+    safety_stock: ingredient.safetyStock,
+    quantity: ingredient.quantity,
+    unit: ingredient.unit,
+    supplier: ingredient.supplier,
+    cost: ingredient.unitCost,
+  };
+
+  return axios.post('/inventory/' + restaurantUUID, FormatedIngredient);
 };
 
 const updateIngredient = (ingredient) => {
-  const ingredientFormated = Object.keys(ingredient)
-    .filter(
-      (key) =>
-        key !== 'id' &&
-        key !== 'theoriticalStock' &&
-        ingredient[key] !== null &&
-        ingredient[key] !== undefined &&
-        ingredient[key] !== ''
-    )
-    .reduce((obj, key) => {
-      obj[key] = ingredient[key];
-      return obj;
-    }, {});
+  // const ingredientFormated = Object.keys(ingredient)
+  //   .filter(
+  //     (key) =>
+  //       key !== 'id' &&
+  //       key !== 'theoriticalStock' &&
+  //       ingredient[key] !== null &&
+  //       ingredient[key] !== undefined &&
+  //       ingredient[key] !== ''
+  //   )
+  //   .reduce((obj, key) => {
+  //     obj[key] = ingredient[key];
+  //     return obj;
+  //   }, {});
+  const ingredientFormated = {
+    id: ingredient.id,
+    name: ingredient.name,
+    safety_stock: ingredient.safetyStock,
+    quantity: ingredient.quantity,
+    unit: ingredient.unit,
+    supplier: ingredient.supplier,
+    cost: ingredient.unitCost,
+  };
   console.log('formated ingredient : ', ingredientFormated);
 
   return axios.post(

@@ -41,7 +41,7 @@
     "others": "Others"
   },
 
-  "myRestaurants.emptyTitle": "You don't have any restaurant",
+  "myRestaurants.emptyTitle": "You don't have any restaurants",
   "myrestaurants.emptyText": "First add a new integration to see your restaurants in Peckish",
 
   "suppliers.emptyPage.title": "You don’t have any linked suppliers yet",
