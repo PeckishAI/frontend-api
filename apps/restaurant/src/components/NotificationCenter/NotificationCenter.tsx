@@ -33,18 +33,22 @@ const notificationTypeMapping: {
     title: 'notification.select_products.title',
     description: 'notification.select_products.description',
     action: (navigate) => {
-      navigate('/onboarding/select-products');
+      navigate('/onboarding/products');
     },
   },
   CREATE_PREPARATIONS: {
     title: 'notification.create_preparations.title',
     description: 'notification.create_preparations.description',
-    action: () => {},
+    action: (navigate) => {
+      navigate('/onboarding/preparations');
+    },
   },
   CREATE_RECIPES: {
     title: 'notification.create_recipes.title',
     description: 'notification.create_recipes.description',
-    action: () => {},
+    action: (navigate) => {
+      navigate('/onboarding/recipes');
+    },
   },
 };
 

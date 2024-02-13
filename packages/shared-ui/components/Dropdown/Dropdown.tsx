@@ -13,7 +13,7 @@ type Props = {
   selectedOption?: string;
   onOptionChange: (value: DropdownOptionsDefinitionType['value']) => void;
   className?: string;
-  disableOption?: string;
+  placeholder?: string;
 };
 
 const Dropdown = (props: Props) => {
@@ -30,9 +30,9 @@ const Dropdown = (props: Props) => {
           props.onOptionChange(event.target.value);
         }}
         style={{ backgroundColor: selectedOption?.color }}>
-        {props.disableOption && (
-          <option disabled selected>
-            {props.disableOption}
+        {props.placeholder && (
+          <option selected disabled>
+            {props.placeholder}
           </option>
         )}
         {props.options.map((option) => (

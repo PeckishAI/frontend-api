@@ -17,12 +17,9 @@
 @keyframes fadeBackground {
   from {
     background-color: rgba(0, 0, 0, 0);
-    // Check if browser don't lag
-    backdrop-filter: blur(0px);
   }
   to {
     background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(3px);
   }
 }
 

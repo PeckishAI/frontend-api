@@ -6,6 +6,10 @@
 
   "quantity": "Quantity",
   "price": "Price",
+  "cost": "Cost",
+  "totalCost": "Total cost",
+  "margin": "Margin",
+  "category": "Category",
   "actions": "Actions",
   "availability": "Availability",
   "unit": "Unit",
@@ -17,6 +21,7 @@
   "preparing": "Preparing",
   "shipped": "Shipped",
   "viewDetail": "View detail",
+  "services": "Services",
 
   "edit": "Edit",
   "delete": "Delete",
@@ -45,5 +50,15 @@
   "warning.delete": "Are you sure you want to delete it ?",
   "warning.edit": "Are you sure you want to edit it ?",
   "error.trigger": "An error has occurred",
-  "error.tryLater": "Please try later"
+  "error.tryLater": "Please try later",
+
+  "orders.supplier": "Supplier",
+  "orders.orderDate": "Order date",
+  "orders.deliveryDate": "Delivery date",
+  "orders.status": "Status",
+  "orders.statusStates": {
+    "pending": "Pending",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  }
 }

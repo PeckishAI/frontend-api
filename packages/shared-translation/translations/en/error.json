@@ -1,0 +1,4 @@
+{
+  "required": "This field is required",
+  "positive-number": "This field must be a positive number"
+}

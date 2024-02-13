@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './OnboardProducts.module.scss';
-import { AnimatePresence, motion, useAnimation } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { LabeledInput, Loading, useDebounceMemo } from 'shared-ui';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
-import { Recipe, recipesService } from '../../../services';
+import { ProductPrediction, onboardingService } from '../../../services';
 import Fuse from 'fuse.js';
 import { FaCheck, FaSearch } from 'react-icons/fa';
 import classNames from 'classnames';
+import StepButtons from '../components/StepButtons/StepButtons';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-type IRecipe = Recipe & { selected: boolean };
-
-const spring = {
-  type: 'spring',
-  stiffness: 200,
-  damping: 30,
-};
+type IRecipe = ProductPrediction & { selected: boolean };
 
 const sortBySelected = (recipes: IRecipe[]) => {
   recipes.sort((a, b) => {
@@ -24,30 +21,47 @@ const sortBySelected = (recipes: IRecipe[]) => {
   });
 };
 
-const OnboardProducts = () => {
+type Props = {
+  goNextStep: () => void;
+};
+
+const OnboardProducts = (props: Props) => {
+  const { t } = useTranslation();
+
+  const navigate = useNavigate();
+
   const [search, setSearch] = useState('');
   const [recipes, setRecipes] = useState<IRecipe[]>([]);
   const [loading, setLoading] = useState(true);
 
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
-  );
+  )!;
 
   useEffect(() => {
     if (!selectedRestaurantUUID) return;
     setLoading(true);
 
-    recipesService
-      .getRecipes(selectedRestaurantUUID)
+    onboardingService
+      .getProductsPrediction(selectedRestaurantUUID)
       .then((res) => {
+        const recipes = res.map((recipe) => {
+          return {
+            ...recipe,
+            selected: recipe.is_product,
+          };
+        });
+
         //  order alphabetically
-        res.sort((a, b) => {
+        recipes.sort((a, b) => {
           if (a.name < b.name) return -1;
           if (a.name < b.name) return 1;
           return 0;
         });
 
-        setRecipes(res);
+        sortBySelected(recipes);
+
+        setRecipes(recipes);
       })
       .finally(() => {
         setLoading(false);
@@ -55,43 +69,63 @@ const OnboardProducts = () => {
   }, [selectedRestaurantUUID]);
 
   const handleSelectProduct = (recipe: IRecipe) => {
-    console.log('handleSelectProduct, recipe: ', recipe);
-
     const newRecipes = [...recipes];
-    newRecipes.find((ing) => ing.id === recipe.id)!.selected = !recipe.selected;
-
-    // sortBySelected(newRecipes);
-    newRecipes.sort((a, b) => {
-      if (a.selected && !b.selected) return -1;
-      if (!a.selected && b.selected) return 1;
-      return 0;
-    });
-
+    newRecipes.find((ing) => ing.uuid === recipe.uuid)!.selected =
+      !recipe.selected;
     setRecipes(newRecipes);
+
+    // Wait 500ms before reordering
+    setTimeout(() => {
+      const sortedRecipes = [...newRecipes];
+      sortBySelected(sortedRecipes);
+      setRecipes(sortedRecipes);
+
+      // Trick to fix scroll position
+      const scrollY = window.scrollY;
+      const resetInterval = (deep?: number) => {
+        if (deep && deep > 50) return;
+        setTimeout(() => {
+          window.scrollTo(0, scrollY);
+
+          resetInterval((deep ?? 0) + 1);
+        }, 0);
+      };
+
+      resetInterval();
+    }, 500);
   };
 
-  // const filteredRecipes = useDebounceMemo(
-  //   () => {
-  //     if (search.length <= 1) return recipes;
+  const saveProducts = (completed: boolean) => {
+    const productUUIDs = recipes
+      .filter((recipe) => recipe.selected)
+      .map((recipe) => recipe.uuid);
+    setLoading(true);
+    return onboardingService
+      .saveProducts(selectedRestaurantUUID, productUUIDs, completed)
+      .finally(() => setLoading(false));
+  };
 
-  //     const options: Fuse.IFuseOptions<IRecipe> = {
-  //       threshold: 0.2,
-  //       keys: ['name'],
-  //     };
+  const filteredRecipes = useDebounceMemo(
+    () => {
+      if (search.length <= 1) return recipes;
+      console.log('kk');
 
-  //     const fuse = new Fuse(recipes, options);
-  //     const result = fuse.search(search);
-  //     const filteredRecipes = result.map((recipe) => recipe.item);
+      const options: Fuse.IFuseOptions<IRecipe> = {
+        threshold: 0.2,
+        keys: ['name'],
+      };
 
-  //     sortBySelected(filteredRecipes);
+      const fuse = new Fuse(recipes, options);
+      const result = fuse.search(search);
+      const filteredRecipes = result.map((recipe) => recipe.item);
 
-  //     return filteredRecipes;
-  //   },
-  //   150,
-  //   [search, recipes]
-  // );
+      sortBySelected(filteredRecipes);
 
-  console.log('rerender OnboardProducts');
+      return filteredRecipes;
+    },
+    150,
+    [search, recipes]
+  );
 
   if (loading) {
     return <Loading size="large" />;
@@ -99,9 +133,13 @@ const OnboardProducts = () => {
 
   return (
     <>
+      <p className={styles.description}>
+        {t('onboarding.restaurant.products.description')}
+      </p>
+
       <LabeledInput
         className={styles.searchInput}
-        placeholder="Rechercher une recette"
+        placeholder={t('onboarding.restaurant.products.search-recipe')}
         lighter
         icon={<FaSearch />}
         value={search}
@@ -112,21 +150,23 @@ const OnboardProducts = () => {
 
       <div className={styles.recipeList}>
         <AnimatePresence>
-          {/* {recipes.length > 0 && recipes.length === 0 && (
-            <motion.p
-              className={styles.emptyText}
-              layout
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}>
-              Aucune recette ne correspond à votre recherche
-            </motion.p>
-          )} */}
+          {search.length > 0 &&
+            recipes.length > 0 &&
+            filteredRecipes.length === 0 && (
+              <motion.p
+                className={styles.emptyText}
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}>
+                {t('onboarding.restaurant.products.no-recipe-found')}
+              </motion.p>
+            )}
 
-          {recipes.map((recipe) => {
+          {filteredRecipes.map((recipe) => {
             return (
               <RecipeCard
-                key={recipe.id}
+                key={recipe.uuid}
                 onClick={handleSelectProduct}
                 recipe={recipe}
               />
@@ -134,6 +174,19 @@ const OnboardProducts = () => {
           })}
         </AnimatePresence>
       </div>
+
+      <StepButtons
+        onContinueLater={() => {
+          saveProducts(false).then(() => {
+            navigate('/');
+          });
+        }}
+        onValidate={() => {
+          saveProducts(true).then(() => {
+            props.goNextStep();
+          });
+        }}
+      />
     </>
   );
 };
@@ -144,10 +197,9 @@ type RecipeCardProps = {
 };
 
 const RecipeCard = (props: RecipeCardProps) => {
-  useAnimation();
   return (
     <motion.div
-      // key={props.recipe.id}
+      key={props.recipe.uuid}
       className={classNames(
         styles.recipeCard,
         props.recipe.selected && styles.recipeCardSelected

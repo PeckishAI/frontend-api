@@ -1,25 +1,52 @@
 {
-  "myRestaurant": "Mon restaurant",
-  "overview": "Vue d'ensemble",
-  "inventory": {
-    "stock": "Inventaire",
-    "suppliers": "Fournisseurs",
-    "orders": "Commandes"
+  "pages": {
+    "myRestaurants": "Mes restaurants",
+    "overview": "Vue d'ensemble",
+    "inventory": {
+      "stock": "Inventaire",
+      "suppliers": "Fournisseurs",
+      "orders": "Commandes"
+    },
+    "recipes": "Recettes",
+    "onboarding": "Intégrations",
+    "onboarding_selectProducts": "Séléctionnez les produits",
+    "onboarding_createPreparations": "Créez vos préparations",
+    "orders.validation": "Commande prédite",
+    "simulation": "Simulation",
+    "integrations": "Intégrations",
+    "support": "Support",
+    "documents": "Documents"
   },
-  "recipes": "Recettes",
-  "onboarding": "Intégrations",
-  "orders.validation": "Commande prédite",
-  "simulation": "Simulation",
-  "integrations": "Intégrations",
-  "support": "Support",
   "navbar.restaurantsDropdown": "Restaurants",
 
   "warning.impactedRecipes": "Ces recettes seront impactées par cette action :",
 
   "inventory.addIngredientBtn": "Ajouter un ingrédient",
+  "inventory.selectIngredient": "Selectionner un ingrédient",
   "inventory.addSupplierBtn": "Ajouter un fournisseur",
+  "inventory.importData": "Importer des données",
   "inventory.uploadCSV.popup.title": "Apperçu du fichier CSV",
   "inventory.uploadCSV.popup.subtitle": "Nous avons extrait les noms de colonnes suivants de votre fichier. Veuillez vérifier si le mappage est correct.",
+  "inventory.selectSupplier": "Sélectionnez un fournisseur",
+  "inventory.selectUnit": "Sélectionnez une unité",
+
+  "recipesCategories": {
+    "drinks": "Boissons",
+    "starters": "Entrées",
+    "mainCourses": "Plats princiaux",
+    "desserts": "Desserts",
+    "snacks": "Snacks",
+    "others": "Autres"
+  },
+
+  "recipesCategories": {
+    "drinks": "Boissons",
+    "starters": "Entrées",
+    "mainCourses": "Plats princiaux",
+    "desserts": "Desserts",
+    "snacks": "Snacks",
+    "others": "Autres"
+  },
 
   "myRestaurants.emptyTitle": "Vous n'avez pas de restaurant",
   "myrestaurants.emptyText": "Veuillez ajouter une intégration afin de voir vos restaurants sur Peckish",
@@ -62,29 +89,62 @@
     "automaticSendCheckbox": "Envoyer une invitation automatique au fournisseur"
   },
 
-  "orders.supplier": "Fournisseur",
-  "orders.orderDate": "Date de commande",
-  "orders.deliveryDate": "Date de livraison",
-  "orders.status": "Statut",
-  "orders.statusStates": {
-    "pending": "En attente",
-    "delivered": "Livrée",
-    "cancelled": "Annulée"
-  },
   "orders.detail": "Détail",
   "orders.detail.tooltip": "Voir le détail",
   "orders.showPredictedOrder": "Voir la commande prédite",
 
+  "order.validation.empty": {
+    "title": "Pas de commande prédite",
+    "description": "Peckish n'a pas encore prédis de commande pour votre semaine prochaine. Vous pouvez tout de même ajouter des ingrédients manuellement."
+  },
   "order.validation.description": "Peckish a prédit cette commande pour votre semaine prochaine. Vous pouvez supprimer, ajouter ou mettre à jour la quantité de chaque élément.",
   "order.validation.addIngredient": "Ajouter un ingrédient",
   "order.validation.items_one": "{{count}} article",
   "order.validation.items_other": "{{count}} articles",
-  "order.validation.submitOrder": "Envoyer la commande",
+  "order.validation.submitOrder_one": "Envoyer la commande",
+  "order.validation.submitOrder_other": "Envoyer les commandes",
   "order.validation.deleteItemPopup": "Êtes-vous sûr de supprimer {{name}} de votre commande ?",
   "order.validation.addIngredientPopup": {
     "title": "Sélectionnez un ingrédient",
     "subtitle": "L'ingrédient sélectionné sera ajouté dans la bonne commande fournisseur",
-    "selectPlaceholder": "Sélectionnez un ingrédient"
+    "selectPlaceholder": "Sélectionnez un ingrédient",
+    "selectSupplierPlaceholder": "Sélectionnez un fournisseur"
+  },
+  "order.validation.submit.success": "Commande envoyée avec succès",
+
+  "recipes.card.ingredients_one": "{{count}} ingredient",
+  "recipes.card.ingredients_other": "{{count}} ingredients",
+  "recipes.card.no-ingredients": "Aucun ingrédients ou préparations",
+  "recipes.addPanel.recipe.title": "Ajouter une nouvelle recette",
+  "recipes.addPanel.preparation.title": "Ajouter une nouvelle préparation",
+  "recipes.editPanel": {
+    "recipe": {
+      "title": "Modifier la recette <highlight>{{name}}<highlight>",
+      "fields": {
+        "name": "Nom de la recette"
+      }
+    },
+    "preparation": {
+      "title": "Modifier la préparation <highlight>{{name}}<highlight>",
+      "fields": {
+        "name": "Nom de la préparation"
+      }
+    },
+    "fields": {
+      "pricePerPortion": "Prix par portion",
+      "portionsPerBatch": "Portions par lot"
+    },
+    "table": {
+      "title": "Ingrédients :",
+      "ingredientSelect": "Sélectionnez un ingrédient",
+      "addIngredient": "Ajouter un ingrédient/préparation"
+    }
+  },
+  "recipes.delete": {
+    "preparation": "Êtes-vous sûr de vouloir supprimer cette préparation ?",
+    "recipe": "Êtes-vous sûr de vouloir supprimer cette recette ?",
+    "product": "Êtes-vous sûr de vouloir supprimer ce produit ?",
+    "subtitle": "Cette action est irréversible"
   },
 
   "notification.import_inventory.title": "Ajoutez vos ingrédients",
@@ -96,5 +156,23 @@
   "notification.create_recipes.title": "Créez des recettes (3/3)",
   "notification.create_recipes.description": "Complétez vos recettes pour avoir un suivi complet de votre inventaire",
 
-  "stepper.step": "Étape {{step}}"
+  "stepper.step": "Étape {{step}}",
+  "onboarding.restaurant": {
+    "products": {
+      "description": "Pour commencer veuillez sélectionner dans vos recettes celles qui sont considérées comme des produits non transformés. Par exemple, le Coca Cola est un produit vendu tel quel, il n'est pas composé d'autres d'ingrédients. \n\nNous avons pré-sélectionné pour vous les produits les plus courants.",
+      "search-recipe": "Rechercher une recette",
+      "no-recipe-found": "Aucune recette ne correspond à votre recherche"
+    },
+    "preparations": {
+      "description": "Si vous utilisez des préparations communes à plusieurs recettes, vous pouvez les créer ici. Elles pourront ensuite être utilisées dans vos recettes afin de simplifier leur création.",
+      "add-preparation": "Ajouter une préparation"
+    }
+  },
+  "document": {
+    "givenName": "Nom donné",
+    "detectedName": "Nom détecté",
+    "save": "Sauvegarder",
+    "upload": "Importer",
+    "generate": "Générer une commande"
+  }
 }

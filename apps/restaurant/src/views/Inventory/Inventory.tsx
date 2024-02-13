@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Tabs, Input, Lottie } from 'shared-ui';
+import { Tabs, Input, Lottie, useTitle } from 'shared-ui';
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { SupplierTab, SupplierTabRef } from './Suppliers/SupplierTab';
 import { IngredientTab, IngredientTabRef } from './Ingredients/IngredientTab';
@@ -26,13 +26,15 @@ const getTabName = (tabIndex: number) => {
 
 const Inventory = () => {
   const { t } = useTranslation('common');
+  useTitle(t('pages.inventory.stock'));
+
   const { tab } = useParams<RouteParams>();
   const navigate = useNavigate();
 
   const TABS = [
-    t('inventory.stock'),
-    t('inventory.suppliers'),
-    t('inventory.orders'),
+    t('pages.inventory.stock'),
+    t('pages.inventory.suppliers'),
+    // t('pages.inventory.orders'),
   ];
 
   const supplierTabRef = useRef<SupplierTabRef>(null);
@@ -72,16 +74,16 @@ const Inventory = () => {
         />
       );
     }
-    if (selectedTab === 2) {
-      return (
-        <OrderTab
-          ref={orderTabRef}
-          // setLoadingState={setLoadingData}
-          // searchValue={searchValue}
-          forceOptionsUpdate={forceUpdate}
-        />
-      );
-    }
+    // if (selectedTab === 2) {
+    //   return (
+    //     <OrderTab
+    //       ref={orderTabRef}
+    //       // setLoadingState={setLoadingData}
+    //       // searchValue={searchValue}
+    //       forceOptionsUpdate={forceUpdate}
+    //     />
+    //   );
+    // }
     return null;
   };
 

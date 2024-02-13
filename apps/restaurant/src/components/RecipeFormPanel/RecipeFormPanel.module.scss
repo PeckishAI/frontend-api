@@ -1,0 +1,110 @@
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.title {
+  margin-top: 15px;
+  margin-bottom: 25px;
+  font-size: 1.5rem;
+  font-weight: 600;
+
+  .titleRecipeName {
+    color: var(--primaryColor);
+  }
+}
+
+.tableTitle {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & > p {
+    font-size: 0.9rem;
+  }
+}
+
+.metrics {
+  display: flex;
+  // justify-content: space-between;
+  gap: 35px;
+  .metricText {
+    font-size: 0.9rem;
+    .metricPrice {
+      margin-left: 5px;
+      font-weight: 500;
+    }
+    i {
+      margin-right: 10px;
+    }
+    .cost {
+      color: rgb(241, 79, 79);
+    }
+    .margin {
+      color: rgb(57, 205, 57);
+    }
+  }
+}
+
+.categoryOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  i {
+    color: var(--primaryColor);
+  }
+  &.categoryOptionSelected {
+    i {
+      color: var(--white);
+    }
+  }
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.rowInputs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+
+  & > div:not(.deleteBtn) {
+    // width: 100%;
+    flex: 1;
+  }
+}
+
+.ingredientCost {
+  font-size: 0.8rem;
+  color: var(--textSecondaryColor);
+  min-width: 70px;
+  text-align: center;
+}
+
+.addIngredientButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  height: var(--input-large-height);
+
+  color: var(--primaryColor);
+  font-size: 0.9rem;
+}
+
+.buttonsContainer {
+  // position: absolute;
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+}

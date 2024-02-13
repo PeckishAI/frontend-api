@@ -2,30 +2,20 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
-  useRef,
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Dropdown,
-  IconButton,
-  Input,
-  DialogBox,
-  UploadCsv,
-} from 'shared-ui';
-import {
-  Ingredient,
-  PreviewResponse,
-  inventoryService,
-} from '../../../services';
+import { Button, Dropdown, IconButton, Input, DialogBox } from 'shared-ui';
+import { Ingredient, inventoryService } from '../../../services';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
 import Table, { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { Tooltip } from 'react-tooltip';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import supplierService from '../../../services/supplier.service';
+import ImportIngredients from '../Components/ImportIngredients/ImportIngredients';
+import Fuse from 'fuse.js';
 
-const units: DropdownOptionsDefinitionType[] = [
+export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
   { label: 'g', value: 'g' },
   { label: 'tbsp', value: 'tbsp' },
@@ -53,6 +43,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
     const [addingRow, setAddingRow] = useState(false);
     const [editedValues, setEditedValues] = useState<Ingredient | null>(null);
+    const [importIngredientsPopup, setImportIngredientsPopup] = useState(false);
     const [popupDelete, setPopupDelete] = useState<string[] | undefined>(
       undefined
     );
@@ -60,11 +51,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       string[] | undefined
     >(undefined);
     const [popupError, setPopupError] = useState('');
-    const [uploadPopup, setUploadPopup] = useState<PreviewResponse | null>(
-      null
-    );
-    const [csvFile, setCsvFile] = useState<File | null>(null);
-    const [loadingButton, setLoadingButton] = useState(false);
 
     const [suppliers, setSuppliers] = useState<DropdownOptionsDefinitionType[]>(
       []
@@ -88,40 +74,19 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         });
     }, [selectedRestaurantUUID]);
 
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const handleFileUpload = useCallback(
-      async (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log('handleFileUpload');
-
-        if (!selectedRestaurantUUID) return;
-
-        const file = e.target.files?.[0];
-        e.target.value = '';
-
-        if (file) {
-          setLoadingButton(true);
-          inventoryService
-            .uploadCsvFile(selectedRestaurantUUID, file)
-            .then((res) => {
-              setUploadPopup(res.data);
-              setCsvFile(file);
-            })
-            .catch((err) => {
-              console.log(err);
-            })
-            .finally(() => {
-              setLoadingButton(false);
-            });
-        }
-      },
-      [selectedRestaurantUUID]
-    );
+    const ingredientsFiltered = props.searchValue
+      ? new Fuse(ingredientsList, {
+          keys: ['name', 'supplier'],
+        })
+          .search(props.searchValue)
+          .map((r) => r.item)
+      : ingredientsList;
 
     const handleExportDataClick = useCallback(() => {
       const rows = ingredientsList;
       if (rows) {
         const header =
-          'Ingredient name, Theoretical stock, Actual stock, Unit, Supplier, Cost\n';
+          'Ingredient name, Safety stock, Actual stock, Unit, Supplier, Cost per unit\n';
         const csvContent =
           'data:text/csv;charset=utf-8,' +
           header +
@@ -129,11 +94,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             .map((row) => {
               const values = [];
               values.push(row.name); // Convertir la date en format ISO string
-              values.push(row.theoreticalStock || '-');
+              values.push(row.safetyStock || '-');
               values.push(row.quantity || '-');
               values.push(row.unit || '-');
               values.push(row.supplier || '-');
-              values.push(row.cost || '-');
+              values.push(row.unitCost || '-');
               return values.join(',');
             })
             .join('\n');
@@ -153,7 +118,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       forwardedRef,
       () => {
         props.forceOptionsUpdate();
-        console.log('imperative handle');
 
         return {
           renderOptions: () => {
@@ -173,19 +137,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 />
                 <IconButton
                   icon={<i className="fa-solid fa-file-arrow-down"></i>}
-                  onClick={() =>
-                    fileInputRef.current && fileInputRef.current.click()
-                  }
-                  tooltipMsg={`${t('import')} CSV`}
+                  onClick={() => setImportIngredientsPopup(true)}
+                  tooltipMsg={t('inventory.importData')}
                   tooltipId="inventory-tooltip"
-                  loading={loadingButton}
-                />
-                <input
-                  type="file"
-                  accept=".csv"
-                  onChange={handleFileUpload}
-                  style={{ display: 'none' }} // hide input
-                  ref={fileInputRef}
                 />
                 <Button
                   value={t('inventory.addIngredientBtn')}
@@ -198,13 +152,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           },
         };
       },
-      [
-        addingRow,
-        loadingButton,
-        ingredientsList,
-        handleFileUpload,
-        handleExportDataClick,
-      ]
+      [addingRow, ingredientsList, handleExportDataClick]
     );
 
     const reloadInventoryData = useCallback(async () => {
@@ -232,7 +180,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       reloadInventoryData();
     }, [reloadInventoryData]);
 
-    // Handle for actions in tab
+    // Handle for actions in table
     const handleEditClick = (row: Ingredient) => {
       setEditingRowId(row.id);
       setEditedValues({ ...row });
@@ -243,8 +191,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
       props.setLoadingState(true);
       if (editingRowId && !addingRow) {
-        console.log('API request to edit ingredient');
-        console.log(editingRowId);
         props.setLoadingState(false);
         inventoryService
           .getIngredientPreview(editingRowId)
@@ -266,7 +212,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             props.setLoadingState(false);
           });
       } else {
-        console.log('API request to Add new ingredient');
         inventoryService
           .addIngredient(selectedRestaurantUUID, editedValues)
           .catch((err) => {
@@ -295,7 +240,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       inventoryService
         .getIngredientPreview(row.id)
         .then((res) => {
-          console.log('preview with id :', row.id, res.data);
           togglePopupDelete(res.data);
 
           // let recipeList: string = '';
@@ -361,11 +305,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const newIngredient: Ingredient = {
         id: '',
         name: '',
-        theoreticalStock: 0,
+        safetyStock: 0,
         quantity: 0,
         unit: '',
         supplier: '',
-        cost: 0,
+        unitCost: 0,
         actions: undefined,
       };
 
@@ -373,12 +317,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setAddingRow(true);
       setEditingRowId(newIngredient.id);
       setEditedValues(newIngredient);
-    };
-
-    const handleUploadCsvValidate = () => {
-      setUploadPopup(null);
-      setCsvFile(null);
-      reloadInventoryData();
     };
 
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
@@ -402,10 +340,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
 
       {
-        key: 'theoreticalStock',
-        header: t('ingredient:theoreticalStock'),
+        key: 'safetyStock',
+        header: t('ingredient:safetyStock'),
         width: '15%',
-        renderItem: () => '-',
+        renderItem: () => '-', // temp till real value provided by backend
       },
       {
         key: 'quantity',
@@ -431,6 +369,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
             <Dropdown
+              placeholder={t('inventory.selectUnit')}
               options={units}
               selectedOption={editedValues!.unit}
               onOptionChange={(value) => handleValueChange('unit', value)}
@@ -446,6 +385,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
             <Dropdown
+              placeholder={t('inventory.selectSupplier')}
               options={suppliers}
               selectedOption={editedValues!.supplier}
               onOptionChange={(value) => handleValueChange('supplier', value)}
@@ -455,8 +395,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           ),
       },
       {
-        key: 'cost',
-        header: t('ingredient:cost'),
+        key: 'unitCost',
+        header: t('ingredient:unitCost'),
         width: '10%',
         classname: 'column-bold',
         renderItem: ({ row }) =>
@@ -464,12 +404,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             <Input
               type="number"
               min={0}
-              placeholder={t('ingredient:cost')}
-              onChange={(value) => handleValueChange('cost', value)}
-              value={editedValues!.cost}
+              placeholder={t('ingredient:unitCost')}
+              onChange={(value) => handleValueChange('unitCost', value)}
+              value={editedValues!.unitCost}
             />
-          ) : row.cost ? (
-            `${row.cost} €`
+          ) : row.unitCost ? (
+            `${row.unitCost} €`
           ) : (
             '-'
           ),
@@ -516,20 +456,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     return (
       <>
-        <Table data={ingredientsList} columns={columns} />
+        <Table data={ingredientsFiltered} columns={columns} />
 
-        {uploadPopup !== null && csvFile && (
-          <UploadCsv
-            fileCsv={csvFile}
-            extractedData={uploadPopup}
-            onCancelClick={() => {
-              setUploadPopup(null);
-              setCsvFile(null);
-              if (fileInputRef.current) fileInputRef.current.value = '';
-            }}
-            onValidateClick={handleUploadCsvValidate}
-          />
-        )}
+        <ImportIngredients
+          openUploader={importIngredientsPopup}
+          onCloseUploader={() => setImportIngredientsPopup(false)}
+          onIngredientsImported={() => reloadInventoryData()}
+        />
 
         <Tooltip className="tooltip" id="inventory-tooltip" delayShow={500} />
         <DialogBox
@@ -540,7 +473,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           }
           list={popupDelete?.length !== 0 ? popupDelete : undefined}
           onConfirm={handleConfirmPopupDelete}
-          revele={popupDelete === undefined ? false : true}
+          isOpen={popupDelete === undefined ? false : true}
           onRequestClose={() => togglePopupDelete(undefined)}
         />
         <DialogBox
@@ -553,14 +486,14 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           }
           list={popupPreviewEdit?.length !== 0 ? popupPreviewEdit : undefined}
           onConfirm={handleConfirmPopupPreviewEdit}
-          revele={popupPreviewEdit === undefined ? false : true}
+          isOpen={popupPreviewEdit === undefined ? false : true}
           onRequestClose={() => togglePopupPreviewEdit(undefined)}
         />
         <DialogBox
           type="error"
           msg={t('error.trigger') + '. ' + t('error.tryLater') + '.'}
           subMsg={popupError}
-          revele={popupError === '' ? false : true}
+          isOpen={popupError === '' ? false : true}
           onRequestClose={() => togglePopupError('')}
         />
       </>

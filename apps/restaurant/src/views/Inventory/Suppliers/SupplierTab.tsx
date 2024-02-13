@@ -196,7 +196,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           subMsg={t('suppliers.removeSupplierPopup.subtitle', {
             name: suppliers.find((s) => s.uuid === deletingSupplierUUID)?.name,
           })}
-          revele={showDeleteDialog}
+          isOpen={showDeleteDialog}
           onRequestClose={() => {
             setShowDeleteDialog(false);
             setDeletingSupplierUUID(null);

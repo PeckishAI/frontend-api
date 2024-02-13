@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import Calendar from 'dayjs/plugin/calendar';
+import CustomParseFormat from 'dayjs/plugin/customParseFormat';
 import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import { SkeletonTheme } from 'react-loading-skeleton';
@@ -12,6 +13,7 @@ import { userService } from '@peckishai/user-management';
 import { GLOBAL_CONFIG } from 'shared-config';
 
 dayjs.extend(Calendar);
+dayjs.extend(CustomParseFormat);
 
 userService.setConfig(GLOBAL_CONFIG);
 

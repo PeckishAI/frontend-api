@@ -1,95 +1,74 @@
 .recipe-card {
-  display: flex;
-  flex-direction: column;
-  padding: 5px;
+  position: relative;
+  width: 100%;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px 3px var(--secondaryColor);
+  border: 1px solid var(--secondaryColor);
+  cursor: pointer;
+  animation-name: onLoad;
+  animation-duration: 0.5s;
+  @keyframes onLoad {
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
 
-  .banner {
-    display: grid;
-    grid-template-columns: 3fr 1fr 1fr;
+  &:hover {
+    background-color: var(--secondaryColor);
+  }
+
+  .not-onboarded {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: rgb(233, 95, 95);
+    font-size: 1.2rem;
+  }
+
+  .name {
+    font-size: 1.1rem;
+    font-weight: var(--semiBold);
+    color: var(--textPrimaryColor);
+  }
+  .ingredient-nb {
+    color: var(--textSecondaryColor);
+    font-size: 0.8rem;
+    margin-bottom: 15px;
+  }
+
+  .metrics {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 15px;
-    background-color: var(--secondaryColor);
-    padding: 10px;
-    border-radius: 5px;
-    height: 60px;
-    transition: all 0.2s;
-    span {
-      font-size: 0.85rem;
-      cursor: default;
-    }
-
-    img {
-      max-height: 100%;
-      max-width: 100%;
-      border-radius: 5px;
-    }
-
-    #name {
-      font-weight: var(--bold);
-      color: var(--primaryColor);
-    }
-    #cost {
-      font-weight: var(--regular);
-      white-space: nowrap;
-    }
-    i {
-      cursor: pointer;
-      color: var(--primaryColor);
-      text-align: right;
-    }
-  }
-  .banner:hover {
-    background-color: var(--secondaryColorAccentued);
-  }
-
-  .unfolding {
-    max-height: 400px !important;
-  }
-  .ingredients-container {
-    max-height: 0;
-    height: fit-content;
-    overflow: hidden;
-    transform: translateY(-3px);
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    transition: max-height 0.5s;
-    background-color: var(--secondaryColor);
-
-    .ingredients {
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    .metric {
       display: flex;
-      flex-direction: column;
-      padding: 10px;
-
-      #no-ingredients {
+      align-items: center;
+      gap: 10px;
+      i {
+        font-size: 1rem;
+      }
+      .price {
+        color: var(--primaryColor);
+      }
+      .cost {
+        color: rgb(241, 79, 79);
+      }
+      .margin {
+        color: rgb(57, 205, 57);
+      }
+      p {
         font-size: 0.8rem;
-        text-align: center;
-      }
-
-      .list {
-        span {
-          font-size: 0.85rem;
-          cursor: default;
-        }
-        .item {
-          display: grid;
-          grid-template-columns: 2fr 1fr 1fr;
-          margin: 10px 0;
-        }
-        .header {
-          border-bottom: 1px solid var(--secondaryColorAccentued);
-          padding-bottom: 5px;
-          margin: 0;
-        }
-      }
-      .butttons-container {
-        display: flex;
-        align-items: center;
-        justify-content: space-evenly;
-        border-top: 1px solid var(--secondaryColorAccentued);
-        margin-top: 10px;
-      }
-      .button {
-        margin-top: 10px;
+        color: var(--textSecondaryColor);
+        font-weight: var(--bold);
       }
     }
   }

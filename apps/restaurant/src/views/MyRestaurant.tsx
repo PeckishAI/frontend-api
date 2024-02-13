@@ -1,4 +1,4 @@
-import { EmptyPage, RestaurantCard } from 'shared-ui';
+import { EmptyPage, RestaurantCard, useTitle } from 'shared-ui';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRestaurantStore } from '../store/useRestaurantStore';
@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 
 const MyRestaurant = () => {
   const { t } = useTranslation();
+  useTitle(t('pages.myRestaurants'));
+
   const navigate = useNavigate();
   const { restaurants, loadRestaurants, setSelectedRestaurantUUID } =
     useRestaurantStore();

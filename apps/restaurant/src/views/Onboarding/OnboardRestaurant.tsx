@@ -1,89 +1,65 @@
 import { useEffect, useState } from 'react';
 import styles from './OnboardRestaurant.module.scss';
 import Stepper from './components/Stepper/Stepper';
-import {
-  Button,
-  Input,
-  LabeledInput,
-  useDebounce,
-  useDebounceEffect,
-  useDebounceMemo,
-} from 'shared-ui';
-import {
-  Ingredient,
-  Recipe,
-  inventoryService,
-  recipesService,
-} from '../../services';
-import { useRestaurantStore } from '../../store/useRestaurantStore';
-import { useNavigate } from 'react-router-dom';
-import classNames from 'classnames';
-import { FaCheck, FaSearch } from 'react-icons/fa';
-import Fuse from 'fuse.js';
+import { useTitle } from 'shared-ui';
+
 import OnboardProducts from './OnboardProducts/OnboardProducts';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
+import { OnboardPreparations } from './OnboardPreparations/OnboardPreparations';
 
-type Props = {};
+type RouteParams = {
+  step: 'stock' | 'suppliers' | 'orders';
+};
 
-export const OnboardRestaurant = (props: Props) => {
+const getTabIndex = (tab?: string) => {
+  if (tab === 'products') return 0;
+  if (tab === 'preparations') return 1;
+  if (tab === 'recipes') return 2;
+  return 0;
+};
+
+const getTabName = (tabIndex: number) => {
+  if (tabIndex === 0) return 'products';
+  if (tabIndex === 1) return 'preparations';
+  if (tabIndex === 2) return 'recipes';
+  return 'products';
+};
+
+export const OnboardRestaurant = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const { step } = useParams<RouteParams>();
 
   const [currentStep, setCurrentStep] = useState(0);
 
-  console.log('Rerender OnboardRestaurant');
+  useEffect(() => {
+    setCurrentStep(getTabIndex(step));
+  }, [step]);
+
+  const onGoNextStep = () => {
+    navigate({
+      pathname: `/onboarding/${getTabName(currentStep + 1)}`,
+    });
+  };
 
   return (
     <div>
       <Stepper
         steps={['Select products', 'Create preparations', 'Create recipes']}
         currentStep={currentStep}
+        className={styles.stepper}
       />
-      {/* <div style={{ display: 'flex', marginTop: 50, marginBottom: 25 }}>
-    <button
-      onClick={() => {
-        setCurrentStep(currentStep - 1);
-      }}>
-      Back
-    </button>
 
-    <p>Step :{currentStep}</p>
-
-    <button
-      onClick={() => {
-        setCurrentStep(currentStep + 1);
-      }}>
-      Next
-    </button>
-  </div> */}
-
-      {/* <p className={styles.description}>
-        Pour commencer veuillez sélectionner dans vos recettes celles qui sont
-        considérées comme des produits non transformés. Par exemple, le Coca
-        Cola est un produit vendu tel quel, il n'est pas composé d'autres
-        d'ingrédients.
-      </p> */}
-      {/* Nous avons pré-sélectionné pour vous les produits les plus courants. */}
-
-      <OnboardProducts />
+      {currentStep === 0 ? (
+        <OnboardProducts goNextStep={onGoNextStep} />
+      ) : currentStep === 1 ? (
+        <OnboardPreparations goNextStep={onGoNextStep} />
+      ) : null}
 
       {/* <div className={styles.bottomSection}>
         <Button type="primary" value="aa" />
-      </div> */}
-      {/* <div className={styles.buttonsContainer}>
-        <a
-          className={styles.continueLater}
-          onClick={() => {
-            navigate('/');
-          }}>
-          Continuer plus tard
-        </a>
-
-        <Button
-          type="primary"
-          value="Valider la sélection"
-          onClick={() => {
-            setCurrentStep(currentStep + 1);
-          }}
-        />
       </div> */}
     </div>
   );

@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MyRestaurant from '../views/MyRestaurant';
 import Overview from '../views/Overview/Overview';
 import Inventory from '../views/Inventory/Inventory';
-import Recipes from '../views/Recipes';
+import Recipes from '../views/Recipes/Recipes';
 import Onboarding from '../views/Onboarding/Onboarding';
 import Layout from '../components/Layout';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -10,6 +10,7 @@ import Integrations from '../views/Integrations/Integrations';
 import { OrderValidation } from '../views/OrderValidation/OrderValidation';
 import OAuthPopup from '../utils/oauth/OAuth2Popup';
 import { OnboardRestaurant } from '../views/Onboarding/OnboardRestaurant';
+import Documents from '../views/Documents/Documents';
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
           {
             path: '/integrations',
             element: <Integrations />,
+          },
+          {
+            path: '/documents',
+            element: <Documents />,
           },
           {
             path: '/orders/validation',
