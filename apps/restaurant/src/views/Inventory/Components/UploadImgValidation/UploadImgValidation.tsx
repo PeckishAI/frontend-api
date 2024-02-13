@@ -29,10 +29,6 @@ const UploadImgValidation = (props: Props) => {
     (state) => state.selectedRestaurantUUID
   );
 
-  const selectedRestaurantUUID = useRestaurantStore(
-    (state) => state.selectedRestaurantUUID
-  );
-
   const { ingredients, loading: ingredientsLoading, reload } = useIngredients();
 
   // Form values
@@ -188,9 +184,7 @@ const UploadImgValidation = (props: Props) => {
                           </span>
                           )
                         </span>
-                        )
-                      </span>
-                    )}
+                      )}
                   </p>
                   <div className={styles.inputs}>
                     <div className={styles.select}>
@@ -218,7 +212,7 @@ const UploadImgValidation = (props: Props) => {
                           unitCost: 0,
                         })}
                         maxMenuHeight={110}
-                        onChange={(selectedOption) => {
+                        onChange={(value) => {
                           handleIngredientsValuesChange(
                             index,
                             'inventoryIngredientRef',
