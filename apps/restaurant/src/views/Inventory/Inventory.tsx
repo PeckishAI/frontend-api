@@ -34,7 +34,7 @@ const Inventory = () => {
   const TABS = [
     t('pages.inventory.stock'),
     t('pages.inventory.suppliers'),
-    // t('pages.inventory.orders'),
+    t('pages.inventory.orders'),
   ];
 
   const supplierTabRef = useRef<SupplierTabRef>(null);
@@ -74,16 +74,16 @@ const Inventory = () => {
         />
       );
     }
-    // if (selectedTab === 2) {
-    //   return (
-    //     <OrderTab
-    //       ref={orderTabRef}
-    //       // setLoadingState={setLoadingData}
-    //       // searchValue={searchValue}
-    //       forceOptionsUpdate={forceUpdate}
-    //     />
-    //   );
-    // }
+    if (selectedTab === 2) {
+      return (
+        <OrderTab
+          ref={orderTabRef}
+          // setLoadingState={setLoadingData}
+          // searchValue={searchValue}
+          forceOptionsUpdate={forceUpdate}
+        />
+      );
+    }
     return null;
   };
 
