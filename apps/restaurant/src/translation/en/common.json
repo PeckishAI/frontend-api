@@ -48,8 +48,11 @@
   "suppliers.emptyPage.description": "You can add a supplier to be able to order products from them automatically.",
   "suppliers.acceptedInvitations": "Accepted invitations",
   "suppliers.pendingInvitations": "Pending invitations",
+  "suppliers.title": "Your tied or pending suppliers",
   "suppliers.copyLink": "Copy invitation link",
   "suppliers.noLink": "No invitation link found",
+  "suppliers.linked": "You are linked to this supplier",
+  "suppliers.waitLink": "The invitation is pending, or copy the link to send a new one",
   "suppliers.linkCopied": "Invitation link copied to clipboard",
   "suppliers.revokeAccess": "Revoke access",
   "suppliers.removeSupplierToast": {

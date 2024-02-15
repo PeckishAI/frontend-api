@@ -12,6 +12,7 @@ import Fuse from 'fuse.js';
 import AddSupplierPopup from './components/AddSupplierPopup';
 import Skeleton from 'react-loading-skeleton';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
+import { Tooltip } from 'react-tooltip';
 
 export type SupplierTabRef = {
   renderOptions: () => React.ReactNode;
@@ -119,8 +120,8 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           .map((r) => r.item)
       : suppliers;
 
-    const linkedSuppliers = suppliersFiltered.filter((s) => s.linked);
-    const pendingSuppliers = suppliersFiltered.filter((s) => !s.linked);
+    // const linkedSuppliers = suppliersFiltered.filter((s) => s.linked);
+    // const pendingSuppliers = suppliersFiltered.filter((s) => !s.linked);
 
     if (isLoading) {
       return (
@@ -147,7 +148,26 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           />
         )}
 
-        {linkedSuppliers.length > 0 && (
+        <>
+          <h1 className={styles.sectionTitle}>{t('suppliers.title')}</h1>
+          <div className={styles.cardContainer}>
+            {suppliersFiltered.map((supplier) => (
+              <SupplierCard
+                key={supplier.uuid}
+                supplier={supplier}
+                onPressDelete={() => {
+                  setShowDeleteDialog(true);
+                  setDeletingSupplierUUID(supplier.uuid);
+                }}
+                onPressCopy={() =>
+                  handleCopyInvitationLink(supplier.invitationKey)
+                }
+              />
+            ))}
+          </div>
+        </>
+
+        {/* {linkedSuppliers.length > 0 && (
           <>
             <h1 className={styles.sectionTitle}>
               {t('suppliers.acceptedInvitations')}
@@ -188,7 +208,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
               ))}
             </div>
           </>
-        )}
+        )} */}
 
         <DialogBox
           type="warning"
@@ -219,6 +239,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
             ]);
           }}
         />
+        <Tooltip className="tooltip" id="suppliers-tooltip" delayShow={500} />
       </>
     );
   }
