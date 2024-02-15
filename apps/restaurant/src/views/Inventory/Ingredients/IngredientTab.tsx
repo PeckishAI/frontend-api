@@ -7,13 +7,17 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import { Button, Dropdown, IconButton, Input, DialogBox } from 'shared-ui';
 import { Ingredient, inventoryService } from '../../../services';
-import { useRestaurantStore } from '../../../store/useRestaurantStore';
+import {
+  useRestaurantCurrency,
+  useRestaurantStore,
+} from '../../../store/useRestaurantStore';
 import Table, { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { Tooltip } from 'react-tooltip';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import supplierService from '../../../services/supplier.service';
 import ImportIngredients from '../Components/ImportIngredients/ImportIngredients';
 import Fuse from 'fuse.js';
+import { formatCurrency } from '../../../utils/helpers';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -37,6 +41,7 @@ type Props = {
 export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
   (props, forwardedRef) => {
     const { t } = useTranslation(['common', 'ingredient']);
+    const { currencyISO } = useRestaurantCurrency();
 
     const [ingredientsList, setIngredientsList] = useState<Ingredient[]>([]);
     const [editingRowId, setEditingRowId] = useState<string | null>();
@@ -421,7 +426,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               value={editedValues!.unitCost}
             />
           ) : row.unitCost ? (
-            `${row.unitCost} €`
+            formatCurrency(row.unitCost, currencyISO)
           ) : (
             '-'
           ),
