@@ -9,6 +9,7 @@ import styles from './SupplierCard.module.scss';
 import dayjs from 'dayjs';
 import Skeleton from 'react-loading-skeleton';
 import { useTranslation } from 'react-i18next';
+import classNames from 'classnames';
 
 type Props = {
   supplier: LinkedSupplier;
@@ -74,6 +75,17 @@ export const SupplierCard = ({
           </a>
         )}
       </div>
+      {supplier.linked ? (
+        <i
+          className={classNames('fa-solid fa-link', styles.linked)}
+          data-tooltip-content={t('suppliers.linked')}
+          data-tooltip-id="suppliers-tooltip"></i>
+      ) : (
+        <i
+          className={classNames('fa-solid fa-hourglass-half', styles.unlinked)}
+          data-tooltip-content={t('suppliers.waitLink')}
+          data-tooltip-id="suppliers-tooltip"></i>
+      )}
     </div>
   );
 };
