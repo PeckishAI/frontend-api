@@ -64,7 +64,7 @@ const Basket = (props: Props) => {
 
   return (
     <div className={styles.basket}>
-      <div>
+      <>
         <h2 className={styles.title}>
           <i className="fa-solid fa-cart-shopping"></i>
           {t('placeOrder:shoppingBasket')}
@@ -130,7 +130,7 @@ const Basket = (props: Props) => {
             </div>
           ))}
         </div>
-      </div>
+      </>
       <div>
         <div className={styles.total}>
           <p>{t('placeOrder:total')} :</p>
