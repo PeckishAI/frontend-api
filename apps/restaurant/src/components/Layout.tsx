@@ -84,8 +84,7 @@ const Layout = () => {
       name: t('pages.recipes'),
       icon: <i className="fa-solid fa-burger"></i>,
       navigateTo: '/recipes',
-      // disable: user && !user.onboarded,
-      disable: true,
+      disable: user && !user.onboarded,
     },
     {
       name: t('pages.documents'),
