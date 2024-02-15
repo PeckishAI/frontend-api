@@ -73,6 +73,7 @@ const Layout = () => {
       name: t('pages.overview'),
       icon: <i className="fa-solid fa-chart-line"></i>,
       navigateTo: '/overview',
+      disable: user && !user.onboarded,
     },
     {
       name: t('pages.inventory.stock'),
@@ -83,6 +84,8 @@ const Layout = () => {
       name: t('pages.recipes'),
       icon: <i className="fa-solid fa-burger"></i>,
       navigateTo: '/recipes',
+      // disable: user && !user.onboarded,
+      disable: true,
     },
     {
       name: t('pages.documents'),
@@ -96,11 +99,6 @@ const Layout = () => {
       name: t('pages.integrations'),
       icon: <i className="fa-solid fa-puzzle-piece"></i>,
       navigateTo: '/integrations',
-    },
-    {
-      name: t('pages.support'),
-      icon: <i className="fa-solid fa-circle-question"></i>,
-      navigateTo: '/support',
     },
   ];
 
@@ -119,6 +117,7 @@ const Layout = () => {
               name={item.name}
               icon={item.icon}
               to={item.navigateTo}
+              disable={item.disable}
             />
           )
         )}
