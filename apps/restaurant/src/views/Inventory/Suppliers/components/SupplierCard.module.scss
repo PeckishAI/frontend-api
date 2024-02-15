@@ -3,6 +3,7 @@
   // box-shadow: ;
   background-color: var(--secondaryColor);
   border-radius: 5px;
+  position: relative;
 
   .cardHeader {
     display: flex;
@@ -51,6 +52,19 @@
     &:hover {
       color: var(--primaryColor);
     }
+  }
+
+  .linked,
+  .unlinked {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+  }
+  .linked {
+    color: rgb(20, 185, 20);
+  }
+  .unlinked {
+    color: var(--errorColor);
   }
 }
 

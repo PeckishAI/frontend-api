@@ -47,9 +47,12 @@
   "suppliers.emptyPage.title": "Vous n'avez pas de fournisseur relié à votre restaurant",
   "suppliers.emptyPage.description": "Connectez-vous à vos fournisseurs afin de passer des commandes automatiquement",
   "suppliers.acceptedInvitations": "Invitations acceptées",
-  "suppliers.pendingInvitations": "Invitations en attente",
+  "suppliers.pendingInvitations": "Invitations en attentes",
+  "suppliers.title": "Vos fournisseurs liés ou en attente de l'être",
   "suppliers.copyLink": "Copier le lien d'invitation",
   "suppliers.noLink": "Aucun lien d'invitation trouvé",
+  "suppliers.linked": "Vous êtes lié à ce fournisseur",
+  "suppliers.waitLink": "L'invitation est en attente, ou copier le lien pour en envoyer une nouvelle",
   "suppliers.linkCopied": "Lien d'invitation copié dans le presse-papiers",
   "suppliers.revokeAccess": "Révoquer l'accès",
   "suppliers.removeSupplierToast": {

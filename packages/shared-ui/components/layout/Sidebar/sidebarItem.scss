@@ -11,6 +11,11 @@
   font-size: 0.9rem;
   gap: 10px;
 
+  &.sidebar-item-disable {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   span {
     white-space: nowrap;
   }

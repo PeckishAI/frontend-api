@@ -7,7 +7,6 @@ import Slider from 'react-slick';
 
 type Props = {
   restaurant: Restaurant;
-  buttonValue?: string;
   onClick: () => void;
 };
 
@@ -20,11 +19,11 @@ const sliderSettings = {
 };
 
 const RestaurantCard = (props: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common']);
   return (
     <div className="RestaurantCard">
       <h2>{props.restaurant.name}</h2>
-      <p>
+      <p className="info">
         {props.restaurant.address}, {props.restaurant.city},{' '}
         {props.restaurant.country}
       </p>
@@ -51,7 +50,7 @@ const RestaurantCard = (props: Props) => {
         type="primary"
         onClick={props.onClick}
         className="cardBtn"
-        value={props.buttonValue ? props.buttonValue : 'Overview'}
+        value={t('pages.overview')}
       />
     </div>
   );
