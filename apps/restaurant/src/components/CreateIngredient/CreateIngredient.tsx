@@ -1,7 +1,7 @@
 import { Button, LabeledInput, Loading, Popup, Select } from 'shared-ui';
 import styles from './styles.module.scss';
 import { useEffect, useState } from 'react';
-import { Supplier, inventoryService } from '../../services';
+import { Ingredient, Supplier, inventoryService } from '../../services';
 
 import {
   useRestaurantCurrency,
@@ -24,7 +24,8 @@ type Props = {
 
 const defaultValue = {
   name: '',
-  quantity: 0,
+  actualStock: 0,
+  parLevel: 0,
   unit: '',
   supplier: '',
   unitCost: 0,
@@ -32,9 +33,10 @@ const defaultValue = {
 
 const ingredientSchemas = z.object({
   name: z.string().nonempty('required'),
-  quantity: z.number().positive('positive-number'),
-  unitCost: z.number().positive('positive-number'),
+  actualStock: z.number().positive('positive-number'),
+  parLevel: z.number().positive('positive-number'),
   unit: z.string().nonempty('required'),
+  unitCost: z.number().positive('positive-number'),
   supplier: z.string().nonempty('required'),
 });
 
@@ -83,7 +85,7 @@ const CreateIngredient = (props: Props) => {
     if (formValidation.success) {
       setLoading(true);
       inventoryService
-        .addIngredient(selectedRestaurantUUID, ingredient)
+        .addIngredient(selectedRestaurantUUID, ingredient as Ingredient)
         .then(() => {
           reload();
           toast.success('ingredient added');
@@ -164,15 +166,26 @@ const CreateIngredient = (props: Props) => {
             />
             <div className={styles.multiple}>
               <LabeledInput
-                placeholder="Quantity"
+                placeholder="Actual stock"
                 type="number"
                 suffix={ingredient.unit}
-                value={ingredient?.quantity.toString()}
+                value={ingredient?.actualStock.toString()}
                 lighter
                 onChange={(val) =>
-                  handleIngredientChange('quantity', +val.target.value)
+                  handleIngredientChange('actualStock', +val.target.value)
                 }
-                error={errors?.quantity}
+                error={errors?.actualStock}
+              />
+              <LabeledInput
+                placeholder="Par level"
+                type="number"
+                suffix={ingredient.unit}
+                value={ingredient?.parLevel.toString()}
+                lighter
+                onChange={(val) =>
+                  handleIngredientChange('parLevel', +val.target.value)
+                }
+                error={errors?.parLevel}
               />
               <Select
                 size="large"

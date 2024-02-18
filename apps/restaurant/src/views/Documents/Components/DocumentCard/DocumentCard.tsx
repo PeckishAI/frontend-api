@@ -1,5 +1,6 @@
 import './style.scss';
 import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
+import { formatCurrency } from '../../../../utils/helpers';
 
 type Props = {
   uuid?: string;
@@ -25,9 +26,7 @@ const DocumentCard = (props: Props) => {
           <p>{props.date}</p>
         </div>
         <div className="right-side">
-          <p>
-            {props.amount} {currencyISO}
-          </p>
+          <p>{formatCurrency(props.amount, currencyISO)}</p>
         </div>
       </div>
     </div>

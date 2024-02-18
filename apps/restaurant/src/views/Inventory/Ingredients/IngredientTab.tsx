@@ -91,7 +91,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const rows = ingredientsList;
       if (rows) {
         const header =
-          'Ingredient name, Safety stock, Actual stock, Unit, Supplier, Cost per unit\n';
+          'Ingredient name, Par level, Actual stock, Theoritical stock, Unit, Supplier, Cost per unit\n';
         const csvContent =
           'data:text/csv;charset=utf-8,' +
           header +
@@ -99,8 +99,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             .map((row) => {
               const values = [];
               values.push(row.name); // Convertir la date en format ISO string
-              values.push(row.safetyStock || '-');
-              values.push(row.quantity || '-');
+              values.push(row.parLevel || '-');
+              values.push(row.actualStock || '-');
+              values.push(row.theoriticalStock || '-');
               values.push(row.unit || '-');
               values.push(row.supplier || '-');
               values.push(row.unitCost || '-');
@@ -315,8 +316,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const newIngredient: Ingredient = {
         id: '',
         name: '',
-        safetyStock: 0,
-        quantity: 0,
+        parLevel: 0,
+        actualStock: 0,
         unit: '',
         supplier: suppliers[0].value,
         unitCost: 0,
@@ -350,25 +351,25 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
 
       {
-        key: 'safetyStock',
-        header: t('ingredient:safetyStock'),
-        width: '15%',
+        key: 'parLevel',
+        header: t('ingredient:parLvel'),
+        width: '10%',
         // renderItem: () => '-', // temp till real value provided by backend
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
             <Input
               type="number"
               min={0}
-              placeholder={t('quantity')}
-              onChange={(value) => handleValueChange('safetyStock', value)}
-              value={editedValues!.safetyStock}
+              placeholder={t('ingredient:parLvel')}
+              onChange={(value) => handleValueChange('parLevel', value)}
+              value={editedValues!.parLevel}
             />
           ) : (
-            row.safetyStock
+            row.parLevel
           ),
       },
       {
-        key: 'quantity',
+        key: 'actualStock',
         header: t('ingredient:actualStock'),
         width: '15%',
         renderItem: ({ row }) =>
@@ -376,13 +377,18 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             <Input
               type="number"
               min={0}
-              placeholder={t('quantity')}
-              onChange={(value) => handleValueChange('quantity', value)}
-              value={editedValues!.quantity}
+              placeholder={t('ingredient:actualStock')}
+              onChange={(value) => handleValueChange('actualStock', value)}
+              value={editedValues!.actualStock}
             />
           ) : (
-            row.quantity
+            row.actualStock
           ),
+      },
+      {
+        key: 'theoriticalStock',
+        header: t('ingredient:theoreticalStock'),
+        width: '15%',
       },
       {
         key: 'unit',

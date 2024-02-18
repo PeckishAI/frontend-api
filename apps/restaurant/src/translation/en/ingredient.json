@@ -2,6 +2,7 @@
   "ingredientName": "Ingredient name",
   "theoreticalStock": "Theoretical stock",
   "safetyStock": "Safety stock",
+  "parLvel": "Par level",
   "actualStock": "Actual stock",
   "unit": "Unit",
   "supplier": "Supplier",

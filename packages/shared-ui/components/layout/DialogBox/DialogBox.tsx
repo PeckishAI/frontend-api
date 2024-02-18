@@ -40,9 +40,11 @@ const DialogBox = (props: Props) => {
         )}
         <div className="button-container">
           {['error', 'info'].includes(props.type) && (
-            <button onClick={props.onRequestClose} className="cancel">
-              {t('ok')}
-            </button>
+            <Button
+              type="primary"
+              value={t('ok')}
+              onClick={props.onRequestClose}
+            />
           )}
           {props.type === 'warning' && (
             <>
