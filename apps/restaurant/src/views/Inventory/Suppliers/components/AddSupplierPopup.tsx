@@ -4,22 +4,15 @@ import {
   LabeledInput,
   PhoneNumberInput,
   Popup,
-  Select,
 } from 'shared-ui';
 import styles from './AddSupplierPopup.module.scss';
-import { useState, useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
-import { Supplier } from '../../../../services';
 import supplierService from '../../../../services/supplier.service';
 import { useRestaurantStore } from '../../../../store/useRestaurantStore';
-
-const SupplierSchema = z.object({
-  supplierSelect: z.string(),
-  automaticInvitation: z.boolean(),
-});
 
 const AddSupplierSchema = z.object({
   name: z.string().min(1, { message: 'required' }),
@@ -31,7 +24,7 @@ const AddSupplierSchema = z.object({
   automaticInvitation: z.boolean(),
 });
 
-type SupplierForm = z.infer<typeof SupplierSchema & typeof AddSupplierSchema>;
+type SupplierForm = z.infer<typeof AddSupplierSchema>;
 
 type Props = {
   isVisible: boolean;
@@ -45,8 +38,6 @@ type Props = {
 
 const AddSupplierPopup = (props: Props) => {
   const { t } = useTranslation('common');
-  const [addingMode, setAddingMode] = useState(false);
-  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
 
   const restaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
@@ -57,50 +48,32 @@ const AddSupplierPopup = (props: Props) => {
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-    setValue,
     reset,
   } = useForm<SupplierForm>({
-    resolver: zodResolver(addingMode ? AddSupplierSchema : SupplierSchema),
+    resolver: zodResolver(AddSupplierSchema),
     defaultValues: {
       automaticInvitation: true,
     },
   });
 
   useEffect(() => {
-    supplierService.getSuppliers().then((data) => {
-      setSuppliers(data);
-    });
-  }, []);
-
-  useEffect(() => {
     if (!props.isVisible) {
       reset();
-      setAddingMode(false);
     }
   }, [props.isVisible, reset]);
-
-  const handleCreateNewOption = (value: string) => {
-    setAddingMode(true);
-    setValue('name', value);
-  };
 
   const handleSubmitForm = handleSubmit(async (data) => {
     console.log('Submit', data);
     if (!restaurantUUID) return;
 
-    let uuid;
-    if (addingMode) {
-      uuid = await supplierService
-        .createSupplier({
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-        })
-        .then((res) => res.supplier_uuid)
-        .catch(() => null);
-    } else {
-      uuid = data.supplierSelect;
-    }
+    const uuid = await supplierService
+      .createSupplier({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+      })
+      .then((res) => res.supplier_uuid)
+      .catch(() => null);
 
     if (!uuid) return;
 
@@ -108,21 +81,7 @@ const AddSupplierPopup = (props: Props) => {
       .addSupplierToRestaurant(restaurantUUID, uuid)
       .then(() => {
         props.onRequestClose();
-        props.onSupplierAdded(
-          addingMode
-            ? data
-            : {
-                name:
-                  suppliers.find((s) => s.uuid === data.supplierSelect)?.name ||
-                  '',
-                email:
-                  suppliers.find((s) => s.uuid === data.supplierSelect)
-                    ?.email || '',
-                phone:
-                  suppliers.find((s) => s.uuid === data.supplierSelect)
-                    ?.phone || '',
-              }
-        );
+        props.onSupplierAdded(data);
       });
   });
 
@@ -134,70 +93,29 @@ const AddSupplierPopup = (props: Props) => {
       subtitle={t('suppliers.addSupplier.subtitle')}>
       <form onSubmit={handleSubmitForm}>
         <div className={styles.inputContainer}>
-          {!addingMode ? (
-            <Controller
-              control={control}
-              name="supplierSelect"
-              render={({ field: { onChange, name, value, onBlur } }) => (
-                <Select
-                  isCreatable
-                  size="large"
-                  isSearchable
-                  isClearable
-                  placeholder={t('suppliers.addSupplier.select.placeholder')}
-                  onCreateOption={handleCreateNewOption}
-                  formatCreateLabel={(inputValue) =>
-                    t('suppliers.addSupplier.select.createSupplier', {
-                      name: inputValue,
-                    })
-                  }
-                  getNewOptionData={(inputValue) => {
-                    return {
-                      uuid: 'new',
-                      name: t('suppliers.addSupplier.select.createSupplier', {
-                        name: inputValue,
-                      }),
-                    };
-                  }}
-                  getOptionLabel={(option) => option.name}
-                  getOptionValue={(option) => option.uuid}
-                  options={suppliers}
-                  onChange={(val) => {
-                    console.log('okkk', val);
-
-                    onChange(val && val.uuid);
-                  }}
-                  value={suppliers.filter((c) => value === c.uuid)}
-                  name={name}
-                  onBlur={onBlur}
-                />
-              )}
+          <>
+            <LabeledInput
+              lighter
+              placeholder={t('name')}
+              type="text"
+              error={errors.name?.message}
+              {...register('name')}
             />
-          ) : (
-            <>
-              <LabeledInput
-                lighter
-                placeholder={t('name')}
-                type="text"
-                error={errors.name?.message}
-                {...register('name')}
-              />
-              <LabeledInput
-                lighter
-                placeholder={t('email')}
-                type="text"
-                error={errors.email?.message}
-                {...register('email')}
-              />
-              <PhoneNumberInput
-                mode="form"
-                control={control}
-                name="phone"
-                placeholder={t('phone')}
-                error={errors.phone?.message}
-              />
-            </>
-          )}
+            <LabeledInput
+              lighter
+              placeholder={t('email')}
+              type="text"
+              error={errors.email?.message}
+              {...register('email')}
+            />
+            <PhoneNumberInput
+              mode="form"
+              control={control}
+              name="phone"
+              placeholder={t('phone')}
+              error={errors.phone?.message}
+            />
+          </>
         </div>
 
         <Checkbox
