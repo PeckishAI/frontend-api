@@ -7,10 +7,11 @@ export type PredictOrderResponse = {
   quantity: number;
 };
 
-export type Order = {
+export type SupplierOrder = {
   supplier_uuid: string;
   price: number;
   ingredients: IngredientOption[];
+  note?: string | null;
 };
 
 const getOrders = async (restaurantUUID: string) => {
@@ -44,12 +45,15 @@ const getOrderGeneration = async (
   return order;
 };
 
-const placeOrder = (restaurantUUID: string, order: Order) => {
-  return axios.post('order/' + restaurantUUID, order);
+const placeSupplierOrder = (
+  restaurantUUID: string,
+  supplierOrder: SupplierOrder
+) => {
+  return axios.post('order/' + restaurantUUID, supplierOrder);
 };
 
 export const ordersService = {
   getOrders,
   getOrderGeneration,
-  placeOrder,
+  placeSupplierOrder,
 };
