@@ -1,8 +1,9 @@
 export type Ingredient = {
   id: string;
   name: string;
-  safetyStock: number;
-  quantity: number;
+  actualStock: number;
+  theoriticalStock?: number;
+  parLevel: number;
   unit: string;
   supplier: string;
   unitCost: number;

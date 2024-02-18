@@ -14,6 +14,8 @@ import CreateIngredient from '../../../../components/CreateIngredient/CreateIngr
 import { useRestaurantStore } from '../../../../store/useRestaurantStore';
 import { formatCurrency } from '../../../../utils/helpers';
 import toast from 'react-hot-toast';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 
 type Props = {
   invoice: Invoice;
@@ -40,6 +42,7 @@ const UploadImgValidation = (props: Props) => {
   );
   const [error, setError] = useState<string | null>(null);
   const [mustUpdateInventory, setMustUpdateInventory] = useState(false);
+  const [mustUpdateUCInventory, setMustUpdateUCInventory] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -80,15 +83,33 @@ const UploadImgValidation = (props: Props) => {
     if (!selectedRestaurantUUID) return;
     setLoading(true);
 
-    // In case checkbox to update inventory is checked
-    if (mustUpdateInventory) {
+    // In case one of checkboxes to update inventory is checked
+    if (mustUpdateInventory || mustUpdateUCInventory) {
       let requestSucces = 0;
       ingredientsValues.forEach((ing) => {
-        if (ing.mappedUUID) {
-          const ingToUpdate: InvoiceIngredient = ing;
-          ingToUpdate.quantity =
-            (ingToUpdate.quantity ?? 0) + (ing.quantity ?? 0);
-          ingToUpdate.unitPrice = ing.unitPrice ?? 0;
+        const ingToUpdate: Ingredient = {
+          id: ing.inventoryIngredientRef?.id ?? '',
+          name: ing.inventoryIngredientRef?.name ?? '',
+          parLevel: ing.inventoryIngredientRef?.parLevel ?? 0,
+          supplier: ing.inventoryIngredientRef?.supplier ?? '',
+          unit: ing.inventoryIngredientRef?.unit ?? '',
+          unitCost: ing.inventoryIngredientRef?.unitCost ?? 0,
+          actualStock: ing.inventoryIngredientRef?.actualStock ?? 0,
+        };
+        if (mustUpdateInventory) {
+          ingToUpdate.actualStock =
+            (ing.inventoryIngredientRef?.actualStock ?? 0) +
+            (ing.quantity ?? 0);
+        }
+        if (mustUpdateUCInventory) {
+          ingToUpdate.unitCost =
+            ing.unitPrice ?? ing.inventoryIngredientRef?.unitCost ?? 0;
+        }
+        if (ing.inventoryIngredientRef?.id) {
+          ingToUpdate;
+          console.log('mapped ing: ', ing);
+          console.log('update: ', ingToUpdate);
+
           inventoryService
             .updateIngredient(ingToUpdate)
             .then(() => {
@@ -106,6 +127,7 @@ const UploadImgValidation = (props: Props) => {
         }
       });
     }
+    setLoading(false);
 
     inventoryService
       .submitInvoice(selectedRestaurantUUID, props.invoice)
@@ -131,53 +153,58 @@ const UploadImgValidation = (props: Props) => {
         onRequestClose={props.onCancelClick}
         scrollable={true}>
         <div className={styles.uploadIlmgValidation}>
-          <div className={styles.invoiceContainer}>
-            <img
-              src={props.invoice.image}
-              alt="invoice"
-              className={styles.imgPreview}
-            />
-          </div>
           <div className={styles.headerDocumentData}>
-            <div className={styles.data}>
-              <p className={styles.label}>Date:</p>
-              <p className={styles.value}>{props.invoice.date}</p>
+            <div className={styles.imgPreviewContainer}>
+              <Zoom zoomMargin={45}>
+                <img
+                  src={props.invoice.image}
+                  alt="invoice"
+                  className={styles.imgPreview}
+                />
+              </Zoom>
             </div>
-            <div className={styles.data}>
-              <p className={styles.label}>Supplier:</p>
-              <p className={styles.value}>{props.invoice.supplier}</p>
-            </div>
-            <div className={styles.data}>
-              <p className={styles.label}>Amount:</p>
-              <p className={styles.value}>
-                {formatCurrency(props.invoice.amount, currencyISO)}
-              </p>
+            <div className={styles.dataWrap}>
+              <div className={styles.data}>
+                <p className={styles.label}>Date:</p>
+                <p className={styles.value}>{props.invoice.date}</p>
+              </div>
+              <div className={styles.data}>
+                <p className={styles.label}>Supplier:</p>
+                <p className={styles.value}>{props.invoice.supplier}</p>
+              </div>
+              <div className={styles.data}>
+                <p className={styles.label}>Amount:</p>
+                <p className={styles.value}>
+                  {formatCurrency(props.invoice.amount, currencyISO)}
+                </p>
+              </div>
             </div>
           </div>
           <div className={styles.items}>
             {ingredientsValues.length > 0 &&
               props.invoice.ingredients.map((ing, index) => (
                 <div key={index} className={styles.row}>
-                  <p className={styles.name}>
-                    {ing.detectedName}
+                  <div className={styles.staticInfo}>
+                    <p className={styles.name}>{ing.detectedName}</p>
                     {ingredientsValues[index] &&
                       ingredientsValues[index].inventoryIngredientRef &&
                       mustUpdateInventory && (
-                        <span className={styles.quantities}>
+                        <span className={styles.actualVal}>
                           ({t('ingredient:actualStock')} :{' '}
                           {
                             ingredientsValues[index].inventoryIngredientRef
-                              ?.quantity
+                              ?.actualStock
                           }{' '}
                           {
                             ingredientsValues[index].inventoryIngredientRef
                               ?.unit
                           }
                           <i className="fa-solid fa-arrow-right"></i>
-                          <span className={styles.newQuantity}>
+                          <span className={styles.newVal}>
                             {(
                               ingredientsValues[index].inventoryIngredientRef
-                                ?.quantity + ingredientsValues[index].quantity
+                                ?.actualStock +
+                              ingredientsValues[index].quantity
                             ).toFixed(2)}{' '}
                             {
                               ingredientsValues[index].inventoryIngredientRef
@@ -187,7 +214,27 @@ const UploadImgValidation = (props: Props) => {
                           )
                         </span>
                       )}
-                  </p>
+                    {ingredientsValues[index] &&
+                      ingredientsValues[index].inventoryIngredientRef &&
+                      mustUpdateUCInventory && (
+                        <span className={styles.actualVal}>
+                          ({t('ingredient:unitCost')} :{' '}
+                          {formatCurrency(
+                            ingredientsValues[index].inventoryIngredientRef
+                              ?.unitCost,
+                            currencyISO
+                          )}
+                          <i className="fa-solid fa-arrow-right"></i>
+                          <span className={styles.newVal}>
+                            {formatCurrency(
+                              ingredientsValues[index].unitPrice,
+                              currencyISO
+                            )}
+                          </span>
+                          )
+                        </span>
+                      )}
+                  </div>
                   <div className={styles.inputs}>
                     <div className={styles.select}>
                       <Select
@@ -207,10 +254,10 @@ const UploadImgValidation = (props: Props) => {
                         getNewOptionData={(inputValue) => ({
                           id: 'new',
                           name: `Create '${inputValue}'`,
-                          quantity: 0,
+                          actualStock: 0,
                           supplier: '',
                           unit: '',
-                          safetyStock: 0,
+                          parLevel: 0,
                           unitCost: 0,
                         })}
                         maxMenuHeight={110}
@@ -280,6 +327,11 @@ const UploadImgValidation = (props: Props) => {
                 label="Update inventory stock with these ingredient quantity values"
                 checked={mustUpdateInventory}
                 onCheck={setMustUpdateInventory}
+              />
+              <Checkbox
+                label="Update inventory unit cost with these ingredient unit cost values"
+                checked={mustUpdateUCInventory}
+                onCheck={setMustUpdateUCInventory}
               />
             </div>
             <div className={styles.buttons}>

@@ -74,18 +74,20 @@ const getIngredientList = async (
 
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
-    safetyStock: res.data[key]['safety_stock'],
+    parLevel: res.data[key]['par_level'],
+    actualStock: res.data[key]['actual_stock'],
+    theoriticalStock: res.data[key]['theoritical_stock'],
     unitCost: res.data[key]['cost'],
     ...res.data[key],
   }));
 };
 
-const addIngredient = (restaurantUUID: string, ingredient) => {
+const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
   const FormatedIngredient = {
     id: ingredient.id,
     name: ingredient.name,
-    safety_stock: ingredient.safetyStock,
-    quantity: ingredient.quantity,
+    par_level: ingredient.parLevel,
+    actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
     supplier: ingredient.supplier,
     cost: ingredient.unitCost,
@@ -94,7 +96,7 @@ const addIngredient = (restaurantUUID: string, ingredient) => {
   return axios.post('/inventory/' + restaurantUUID, FormatedIngredient);
 };
 
-const updateIngredient = (ingredient) => {
+const updateIngredient = (ingredient: Ingredient) => {
   // const ingredientFormated = Object.keys(ingredient)
   //   .filter(
   //     (key) =>
@@ -111,8 +113,8 @@ const updateIngredient = (ingredient) => {
   const ingredientFormated = {
     id: ingredient.id,
     name: ingredient.name,
-    safety_stock: ingredient.safetyStock,
-    quantity: ingredient.quantity,
+    par_level: ingredient.parLevel,
+    actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
     supplier: ingredient.supplier,
     cost: ingredient.unitCost,
