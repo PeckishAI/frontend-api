@@ -13,17 +13,18 @@
     box-shadow: 0px 0px 15px -2px #5e72e48c;
     transform: scale(1.01);
   }
-  .name-login {
+  .document-info {
+    display: flex;
     align-items: baseline;
     justify-content: space-between;
-    .left-side {
+    .name-date {
       display: flex;
       flex-direction: column;
       float: left;
       align-items: baseline;
       justify-content: space-between;
     }
-    .right-side {
+    .amount {
       display: flex;
       float: right;
       margin-top: 3%;

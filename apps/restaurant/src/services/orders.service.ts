@@ -49,7 +49,7 @@ const placeSupplierOrder = (
   restaurantUUID: string,
   supplierOrder: SupplierOrder
 ) => {
-  return axios.post('order/' + restaurantUUID, supplierOrder);
+  return axios.post('orders/' + restaurantUUID, supplierOrder);
 };
 
 export const ordersService = {

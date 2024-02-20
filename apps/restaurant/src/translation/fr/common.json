@@ -41,6 +41,12 @@
     "others": "Autres"
   },
 
+  "integrationCategories": {
+    "pos": "POS",
+    "delivery": "Livraison",
+    "others": "Autres"
+  },
+
   "myRestaurants.emptyTitle": "Vous n'avez pas de restaurant",
   "myrestaurants.emptyText": "Veuillez ajouter une intégration afin de voir vos restaurants sur Peckish",
 

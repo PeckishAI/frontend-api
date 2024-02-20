@@ -147,25 +147,26 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
             description={t('suppliers.emptyPage.description')}
           />
         )}
-
-        <>
-          <h1 className={styles.sectionTitle}>{t('suppliers.title')}</h1>
-          <div className={styles.cardContainer}>
-            {suppliersFiltered.map((supplier) => (
-              <SupplierCard
-                key={supplier.uuid}
-                supplier={supplier}
-                onPressDelete={() => {
-                  setShowDeleteDialog(true);
-                  setDeletingSupplierUUID(supplier.uuid);
-                }}
-                onPressCopy={() =>
-                  handleCopyInvitationLink(supplier.invitationKey)
-                }
-              />
-            ))}
-          </div>
-        </>
+        {suppliersFiltered.length > 0 && (
+          <>
+            <h1 className={styles.sectionTitle}>{t('suppliers.title')}</h1>
+            <div className={styles.cardContainer}>
+              {suppliersFiltered.map((supplier) => (
+                <SupplierCard
+                  key={supplier.uuid}
+                  supplier={supplier}
+                  onPressDelete={() => {
+                    setShowDeleteDialog(true);
+                    setDeletingSupplierUUID(supplier.uuid);
+                  }}
+                  onPressCopy={() =>
+                    handleCopyInvitationLink(supplier.invitationKey)
+                  }
+                />
+              ))}
+            </div>
+          </>
+        )}
 
         {/* {linkedSuppliers.length > 0 && (
           <>
