@@ -7,12 +7,14 @@ import { useTranslation } from 'react-i18next';
 import './style.scss';
 import { useNavigate } from 'react-router-dom';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
+import { TFunction } from 'i18next';
 
 export type POS = {
   name: string;
   display_name: string;
   button_display: string;
   auth_type: string;
+  type: 'POS' | 'DELIVERY' | 'OTHER';
   url: string;
   logo_uri: string;
   data?: {
@@ -20,6 +22,13 @@ export type POS = {
     oauth_url: string;
     scope: string;
   };
+};
+
+type IntegrationCat = {
+  label: string;
+  value: 'POS' | 'DELIVERY' | 'OTHER';
+  icon: React.ReactElement;
+  integrations: POS[];
 };
 
 export type Integration = {
@@ -67,6 +76,31 @@ const Integrations = () => {
           software.display_name.toLowerCase().includes(searchTerm.toLowerCase())
         )
       : [];
+  const pos = filteredSoftwareList.filter((soft) => soft.type === 'POS');
+  const deliveries = filteredSoftwareList.filter(
+    (soft) => soft.type === 'DELIVERY'
+  );
+  const others = filteredSoftwareList.filter((soft) => soft.type === 'OTHER');
+  const inegrationsByCat: IntegrationCat[] = [
+    {
+      label: t('integrationCategories.pos'),
+      value: 'POS',
+      icon: <i className="fa-solid fa-comments-dollar"></i>,
+      integrations: pos,
+    },
+    {
+      label: t('integrationCategories.delivery'),
+      value: 'DELIVERY',
+      icon: <i className="fa-solid fa-truck"></i>,
+      integrations: deliveries,
+    },
+    {
+      label: t('integrationCategories.others'),
+      value: 'OTHER',
+      icon: <i className="fa-solid fa-puzzle-piece"></i>,
+      integrations: others,
+    },
+  ];
 
   const toggleModal = () => {
     setLoginModalVisible(!loginModalVisible);
@@ -117,27 +151,36 @@ const Integrations = () => {
           />
         </>
       ) : undefined}
-      <div className="cards-container">
-        {filteredSoftwareList.map((pos) => {
-          return (
-            <IntegrationCard
-              key={pos.name}
-              name={pos.display_name}
-              image={pos.logo_uri}
-              button_display={pos.button_display}
-              onClick={() => {
-                setLoginModalVisible(true);
-                setSelectedPOS(pos);
-                // if (pos.auth_type === 'modal') {
-                //   // Show login modal
-                // } else {
-                //   // Redirect to oauth_url
-                // }
-              }}
-            />
-          );
-        })}
-      </div>
+      {inegrationsByCat.map(
+        (category) =>
+          category.integrations.length > 0 && (
+            <div>
+              <div className="category">
+                {category.icon}
+                <p className="name">{category.label}</p>
+              </div>
+              <div className="cards-container">
+                {category.integrations.map((pos) => (
+                  <IntegrationCard
+                    key={pos.name}
+                    name={pos.display_name}
+                    image={pos.logo_uri}
+                    button_display={pos.button_display}
+                    onClick={() => {
+                      setLoginModalVisible(true);
+                      setSelectedPOS(pos);
+                      // if (pos.auth_type === 'modal') {
+                      //   // Show login modal
+                      // } else {
+                      //   // Redirect to oauth_url
+                      // }
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )
+      )}
       <LoginModal
         pos={selectedPOS}
         isVisible={loginModalVisible}
