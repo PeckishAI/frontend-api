@@ -6,34 +6,25 @@ import {
   SidebarItem,
   SidebarSeparator,
   Navbar,
-  Lottie,
+  IconButton,
 } from 'shared-ui';
 import { useUserStore } from '@peckishai/user-management';
+import { Tooltip } from 'react-tooltip';
+import { useSupplierStore } from '../store/useSupplierStore';
 
 // type Props = {};
 
 const Layout = () => {
   const { t } = useTranslation();
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [navTitle, setNavTitle] = useState('');
   const { pathname } = useLocation();
 
-  const { logout, user } = useUserStore();
-  // const {
-  //   selectedRestaurantUUID,
-  //   setSelectedRestaurantUUID,
-  //   restaurants,
-  //   loadRestaurants,
-  //   restaurantsLoading,
-  // } = useRestaurantStore();
+  const { logout } = useUserStore();
+  const { loadSupplier } = useSupplierStore();
 
-  // useEffect(() => {
-  //   loadRestaurants();
-  // }, [loadRestaurants]);
-
-  const handleRefreshClick = () => {
-    // if (!selectedRestaurantUUID) return;
-  };
+  useEffect(() => {
+    loadSupplier();
+  }, [loadSupplier]);
 
   const handleLogout = () => {
     logout();
@@ -59,14 +50,6 @@ const Layout = () => {
     setNavTitle(title !== '' ? title : path);
   }, [t, pathname]);
 
-  // if (user && !user.onboarded) {
-  //   return <Navigate to="/onboarding" />;
-  // }
-
-  // const restaurantsOptions = restaurants.map((restaurant) => ({
-  //   label: restaurant.name,
-  //   value: restaurant.uuid,
-  // }));
   return (
     <>
       <Sidebar>
@@ -106,14 +89,17 @@ const Layout = () => {
         <Navbar
           title={navTitle}
           onLogout={handleLogout}
-          refreshIcon={
-            isRefreshing ? (
-              <Lottie width="50px" type="loading" />
-            ) : (
-              <i className="fa-solid fa-rotate icon"></i>
-            )
+          options={
+            <>
+              <IconButton
+                icon={<i className="fa-solid fa-arrow-right-from-bracket"></i>}
+                onClick={handleLogout}
+                tooltipMsg={t('logout')}
+                tooltipId="nav-tooltip"
+              />
+              <Tooltip className="tooltip" id="nav-tooltip" />
+            </>
           }
-          onRefresh={handleRefreshClick}
         />
         <div className="content">
           <Outlet />
