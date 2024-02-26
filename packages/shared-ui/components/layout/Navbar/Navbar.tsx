@@ -3,8 +3,8 @@ import React from 'react';
 
 type Props = {
   title: string;
-  isRefreshing: boolean;
-  onRefresh: () => void;
+  isRefreshing?: boolean;
+  onRefresh?: () => void;
   onLogout: () => void;
   options?: React.ReactNode;
 };
