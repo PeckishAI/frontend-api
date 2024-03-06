@@ -58,7 +58,7 @@
   "suppliers.copyLink": "Copier le lien d'invitation",
   "suppliers.noLink": "Aucun lien d'invitation trouvé",
   "suppliers.linked": "Vous êtes lié à ce fournisseur",
-  "suppliers.waitLink": "L'invitation est en attente, ou copier le lien pour en envoyer une nouvelle",
+  "suppliers.waitLink": "L'invitation est en attente, ou copiez le lien pour en envoyer une nouvelle",
   "suppliers.linkCopied": "Lien d'invitation copié dans le presse-papiers",
   "suppliers.revokeAccess": "Révoquer l'accès",
   "suppliers.removeSupplierToast": {
