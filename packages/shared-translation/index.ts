@@ -41,6 +41,8 @@ dayjs.updateLocale('fr', {
 
 i18next.on('languageChanged', function (lng: Languages) {
   // Update dayjs locale when i18next language change
+  if (!dayjsLocales[lng]) return;
+
   dayjsLocales[lng]().then(() => {
     dayjs.locale(lng);
   });
