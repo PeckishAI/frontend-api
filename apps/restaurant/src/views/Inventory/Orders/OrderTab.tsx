@@ -37,13 +37,14 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
     const [orderDetail, setOrderDetail] = useState<string>();
     const navigate = useNavigate();
 
-    const orders = useOrders((state) => state.orders).sort((a, b) => {
-      const aDate = dayjs(a.orderDate, 'DD/MM/YYYY');
-      const bDate = dayjs(b.orderDate, 'DD/MM/YYYY');
-      return bDate.unix() - aDate.unix();
-    });
+    // const orders = useOrders((state) => state.orders).sort((a, b) => {
+    //   const aDate = dayjs(a.orderDate, 'DD/MM/YYYY');
+    //   const bDate = dayjs(b.orderDate, 'DD/MM/YYYY');
+    //   return bDate.unix() - aDate.unix();
+    // });
+    const [orderList, setOrderList] = useState<Order[]>([]);
 
-    const selectedOrder = orders.find((order) => order.uuid === orderDetail);
+    const selectedOrder = orderList.find((order) => order.uuid === orderDetail);
     const { currencyISO } = useRestaurantCurrency();
 
     // Render options for the tab bar
@@ -114,7 +115,12 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
 
     return (
       <div className="orders">
-        <Table data={orders} columns={columns} />
+        {orderList.length === 0 ? (
+          <p className={styles.noOrder}>There is no order.</p>
+        ) : (
+          <Table data={orderList} columns={columns} />
+        )}
+
         <OrderDetail
           isVisible={orderDetail !== undefined}
           onRequestClose={() => setOrderDetail(undefined)}
