@@ -85,10 +85,17 @@ const UploadImgValidation = (props: Props) => {
       let requestSucces = 0;
       ingredientsValues.forEach((ing) => {
         if (ing.mappedUUID) {
-          const ingToUpdate: InvoiceIngredient = ing;
-          ingToUpdate.quantity =
-            (ingToUpdate.quantity ?? 0) + (ing.quantity ?? 0);
-          ingToUpdate.unitPrice = ing.unitPrice ?? 0;
+          const ingToUpdate: Ingredient = {
+            id: ing.inventoryIngredientRef?.id ?? '',
+            name: ing.mappedName ?? '',
+            parLevel: ing.inventoryIngredientRef?.parLevel ?? 0,
+            supplier: ing.inventoryIngredientRef?.supplier ?? '',
+            unit: ing.inventoryIngredientRef?.unit ?? '',
+            unitCost: ing.unitPrice ?? 0,
+            actualStock:
+              (ing.inventoryIngredientRef?.actualStock ?? 0) +
+              (ing.quantity ?? 0),
+          };
           inventoryService
             .updateIngredient(ingToUpdate)
             .then(() => {
@@ -165,7 +172,7 @@ const UploadImgValidation = (props: Props) => {
                           ({t('ingredient:actualStock')} :{' '}
                           {
                             ingredientsValues[index].inventoryIngredientRef
-                              ?.quantity
+                              ?.actualStock
                           }{' '}
                           {
                             ingredientsValues[index].inventoryIngredientRef
@@ -175,7 +182,8 @@ const UploadImgValidation = (props: Props) => {
                           <span className={styles.newQuantity}>
                             {(
                               ingredientsValues[index].inventoryIngredientRef
-                                ?.quantity + ingredientsValues[index].quantity
+                                ?.actualStock +
+                              ingredientsValues[index].quantity
                             ).toFixed(2)}{' '}
                             {
                               ingredientsValues[index].inventoryIngredientRef
@@ -205,10 +213,10 @@ const UploadImgValidation = (props: Props) => {
                         getNewOptionData={(inputValue) => ({
                           id: 'new',
                           name: `Create '${inputValue}'`,
-                          quantity: 0,
+                          actualStock: 0,
                           supplier: '',
                           unit: '',
-                          safetyStock: 0,
+                          parLevel: 0,
                           unitCost: 0,
                         })}
                         maxMenuHeight={110}

@@ -82,6 +82,26 @@
         }
       }
     }
+    .supplierNote {
+      font-size: 0.8rem;
+      color: var(--textSecondaryColor);
+      font-style: italic;
+      margin-top: 4px;
+      cursor: pointer;
+      i {
+        transition: all 0.2s;
+      }
+      &:hover {
+        color: var(--primaryColor);
+      }
+
+      .note {
+        margin-top: 5px;
+        resize: none;
+        width: 100%;
+        min-height: 100px;
+      }
+    }
   }
 
   .total {

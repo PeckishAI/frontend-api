@@ -10,7 +10,10 @@ import { useRestaurantStore } from '../../../../store/useRestaurantStore';
 import supplierService from '../../../../services/supplier.service';
 import { useTranslation } from 'react-i18next';
 import { useIngredients } from '../../../../services/hooks';
-import { Order, ordersService } from '../../../../services/orders.service';
+import {
+  SupplierOrder,
+  ordersService,
+} from '../../../../services/orders.service';
 import toast from 'react-hot-toast';
 
 type Props = {
@@ -25,6 +28,11 @@ export type GeneratedOrder = {
   }[];
 };
 
+export type SupplierNote = {
+  supplierName: string;
+  note: string;
+};
+
 const ShoppingView = (props: Props) => {
   const { t } = useTranslation(['placeOrder']);
   const { ingredients } = useIngredients();
@@ -37,6 +45,7 @@ const ShoppingView = (props: Props) => {
   );
   const [searchTerm, setSearchTerm] = useState('');
   const [cartItems, setCartItems] = useState<IngredientOption[]>([]);
+  const [supplierNotes, setSupplierNotes] = useState<SupplierNote[]>([]);
   const [basketIsOpen, setBasketIsOpen] = useState(false);
 
   useEffect(() => {
@@ -111,11 +120,14 @@ const ShoppingView = (props: Props) => {
     const ingredientsBySupplier = groupIngredientsBySupplier(cartItems);
 
     // Create order per supplier
-    const orders: Order[] = Object.entries(ingredientsBySupplier).map(
-      ([supplier_uuid, ingredients]) => ({
-        supplier_uuid,
+    const orders: SupplierOrder[] = Object.entries(ingredientsBySupplier).map(
+      ([supplierName, ingredients]) => ({
+        supplier_uuid:
+          suppliers.find((s) => s.name === supplierName)?.uuid ?? supplierName,
         price: calculateOrderAmount(ingredients), // Calculer le montant total de la commande
         ingredients,
+        note: supplierNotes.find((note) => note.supplierName === supplierName)
+          ?.note,
       })
     );
 
@@ -123,18 +135,19 @@ const ShoppingView = (props: Props) => {
     let orderSuccess = 0;
     orders.forEach((order) => {
       ordersService
-        .placeOrder(selectedRestaurantUUID, order)
-        .then((res) => {
+        .placeSupplierOrder(selectedRestaurantUUID, order)
+        .then(() => {
           orderSuccess++;
           console.log('Commande envoyée:', order);
         })
-        .catch((err) => {})
+        .catch(() => {})
         .finally(() => {
           if (orderSuccess === orders.length)
             toast.success(t('placeOrder:orderSubmited'));
         });
     });
     setCartItems([]);
+    setSupplierNotes([]);
     setBasketIsOpen(false);
   };
 
@@ -210,6 +223,7 @@ const ShoppingView = (props: Props) => {
         <Basket
           cartItems={cartItems}
           setCartItems={setCartItems}
+          setSupplierNotes={setSupplierNotes}
           onOrderSubmited={handleOrderSubmited}
         />
       </SidePanel>
