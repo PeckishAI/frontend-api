@@ -16,6 +16,8 @@
 
   "ingredient": "ingredient",
   "addIngredient": "Add ingredient",
+  "selectedIngredients.delete_one": "Delete {{count}} ingredient",
+  "selectedIngredients.delete_other": "Delete {{count}} ingredients",
   "addIngredientTo": "Add ingredient to",
   "editIngredientsOf": "Edit ingredients of",
   "editRecipe": "Edit recipe",
