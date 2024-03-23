@@ -30,6 +30,8 @@
   "confirm": "Confirm",
   "cancel": "Cancel",
   "add": "Add",
+  "select": "Select",
+  "selectAll": "Select all",
   "search": "Search",
   "upload": "Upload",
   "download": "Download",
@@ -48,6 +50,8 @@
   "phone": "Phone",
 
   "warning.delete": "Are you sure you want to delete it ?",
+  "warning.deleteSelection.msg": "Are you sure you want to remove all {{count}} ingredients ?",
+  "warning.deleteSelection.subMsg": "Selected ingredients present in recipes will also be deleted.",
   "warning.edit": "Are you sure you want to edit it ?",
   "error.trigger": "An error has occurred",
   "error.tryLater": "Please try later",

@@ -16,6 +16,8 @@
 
   "ingredient": "ingredient",
   "addIngredient": "Ajouter un ingrédient",
+  "selectedIngredients.delete_one": "Supprimer {{count}} ingredient",
+  "selectedIngredients.delete_other": "Supprimer {{count}} ingredients",
   "addIngredientTo": "Ajouter un ingrédient à",
   "editIngredientsOf": "Modifier les ingrédients de",
   "editRecipe": "Modifier la recette",

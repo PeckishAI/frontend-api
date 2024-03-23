@@ -5,7 +5,14 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Dropdown, IconButton, Input, DialogBox } from 'shared-ui';
+import {
+  Button,
+  Dropdown,
+  IconButton,
+  Input,
+  DialogBox,
+  Checkbox,
+} from 'shared-ui';
 import { Ingredient, inventoryService } from '../../../services';
 import {
   useRestaurantCurrency,
@@ -48,10 +55,14 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
     const [addingRow, setAddingRow] = useState(false);
     const [editedValues, setEditedValues] = useState<Ingredient | null>(null);
+    const [selectedIngredients, setSelectedIngredients] = useState<
+      Ingredient[]
+    >([]);
     const [importIngredientsPopup, setImportIngredientsPopup] = useState(false);
     const [popupDelete, setPopupDelete] = useState<string[] | undefined>(
       undefined
     );
+    const [popupDeleteSelection, setPopupDeleteSelection] = useState(0);
     const [popupPreviewEdit, setPopupPreviewEdit] = useState<
       string[] | undefined
     >(undefined);
@@ -130,36 +141,80 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           renderOptions: () => {
             return (
               <>
-                <IconButton
-                  icon={<i className="fa-solid fa-filter"></i>}
-                  onClick={() => null}
-                  tooltipMsg="Filter"
-                  tooltipId="inventory-tooltip"
-                />
-                <IconButton
-                  icon={<i className="fa-solid fa-file-export"></i>}
-                  onClick={handleExportDataClick}
-                  tooltipMsg={t('export')}
-                  tooltipId="inventory-tooltip"
-                />
-                <IconButton
-                  icon={<i className="fa-solid fa-file-arrow-down"></i>}
-                  onClick={() => setImportIngredientsPopup(true)}
-                  tooltipMsg={t('inventory.importData')}
-                  tooltipId="inventory-tooltip"
-                />
-                <Button
-                  value={t('inventory.addIngredientBtn')}
-                  type="primary"
-                  className="add"
-                  onClick={!addingRow ? handleAddNewIngredient : undefined}
-                />
+                {selectedIngredients.length === 0 ? (
+                  <>
+                    <IconButton
+                      icon={<i className="fa-solid fa-filter"></i>}
+                      onClick={() => null}
+                      tooltipMsg="Filter"
+                      tooltipId="inventory-tooltip"
+                    />
+                    <IconButton
+                      icon={<i className="fa-solid fa-list-check"></i>}
+                      onClick={handleSelectAll}
+                      tooltipMsg={t('selectAll')}
+                      tooltipId="inventory-tooltip"
+                    />
+                    <IconButton
+                      icon={<i className="fa-solid fa-file-export"></i>}
+                      onClick={handleExportDataClick}
+                      tooltipMsg={t('export')}
+                      tooltipId="inventory-tooltip"
+                    />
+                    <IconButton
+                      icon={<i className="fa-solid fa-file-arrow-down"></i>}
+                      onClick={() => setImportIngredientsPopup(true)}
+                      tooltipMsg={t('inventory.importData')}
+                      tooltipId="inventory-tooltip"
+                    />
+                    <Button
+                      value={t('inventory.addIngredientBtn')}
+                      type="primary"
+                      className="add"
+                      onClick={!addingRow ? handleAddNewIngredient : undefined}
+                    />
+                  </>
+                ) : (
+                  <>
+                    {/* <IconButton
+                      icon={<i className="fa-solid fa-xmark"></i>}
+                      onClick={undefined}
+                      tooltipMsg={t('cancel')}
+                      tooltipId="inventory-tooltip"
+                    />
+                    <IconButton
+                      icon={<i className="fa-solid fa-list-check"></i>}
+                      onClick={undefined}
+                      tooltipMsg={t('selectAll')}
+                      tooltipId="inventory-tooltip"
+                    /> */}
+                    <Button
+                      value={t('cancel')}
+                      type="secondary"
+                      onClick={handleCancelSelection}
+                    />
+                    <Button
+                      value={t('common:selectAll')}
+                      type="secondary"
+                      onClick={handleSelectAll}
+                    />
+                    <Button
+                      value={t('ingredient:selectedIngredients.delete', {
+                        count: selectedIngredients.length,
+                      })}
+                      type="primary"
+                      onClick={() =>
+                        setPopupDeleteSelection(selectedIngredients.length)
+                      }
+                    />
+                  </>
+                )}
               </>
             );
           },
         };
       },
-      [addingRow, ingredientsList, handleExportDataClick]
+      [addingRow, ingredientsList, selectedIngredients, handleExportDataClick]
     );
 
     const reloadInventoryData = useCallback(async () => {
@@ -187,6 +242,28 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       reloadInventoryData();
     }, [reloadInventoryData]);
 
+    // Handle for selecting actions in table
+    const handleSelectIngredient = (row: Ingredient) => {
+      setSelectedIngredients((prev) => {
+        const isExistingIndex = prev.findIndex((i) => i.id === row.id);
+        if (isExistingIndex !== -1) {
+          const updatedSelection = [...prev];
+          updatedSelection.splice(isExistingIndex, 1);
+          return updatedSelection;
+        } else {
+          return [...prev, row];
+        }
+      });
+    };
+
+    const handleSelectAll = () => {
+      setSelectedIngredients(ingredientsList);
+    };
+
+    const handleCancelSelection = () => {
+      setSelectedIngredients([]);
+    };
+
     // Handle for actions in table
     const handleEditClick = (row: Ingredient) => {
       setEditingRowId(row.id);
@@ -194,7 +271,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     };
 
     const handleSaveEdit = () => {
-      if (!selectedRestaurantUUID) return;
+      if (!selectedRestaurantUUID || !editedValues) return;
 
       props.setLoadingState(true);
       if (editingRowId && !addingRow) {
@@ -291,11 +368,31 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       togglePopupDelete(undefined);
     };
 
+    const handleConfirmPopupDeleteSelection = () => {
+      let successCount = 0;
+      selectedIngredients.forEach(async (ingredient) => {
+        await inventoryService
+          .deleteIngredient(ingredient.id)
+          .catch((err) => {
+            togglePopupError(err.message);
+          })
+          .then(() => {
+            successCount++;
+            setPopupDeleteSelection(0);
+          });
+        if (successCount === selectedIngredients.length) {
+          handleCancelSelection();
+          reloadInventoryData();
+        }
+      });
+    };
+
     const togglePopupPreviewEdit = (msg: string[] | undefined) => {
       setPopupPreviewEdit(msg);
     };
 
     const handleConfirmPopupPreviewEdit = () => {
+      if (!editedValues) return;
       inventoryService
         .updateIngredient(editedValues)
         .catch((err) => {
@@ -318,8 +415,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         name: '',
         parLevel: 0,
         actualStock: 0,
-        unit: '',
-        supplier: suppliers[0].value,
+        unit: units[0].value,
+        supplier: suppliers.length ? suppliers[0].value : '',
         unitCost: 0,
         actions: undefined,
       };
@@ -331,6 +428,19 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     };
 
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
+      {
+        key: 'id',
+        header: '',
+        width: '20px',
+        renderItem: ({ row }) => (
+          <Checkbox
+            checked={
+              selectedIngredients.find((i) => i.id === row.id) ? true : false
+            }
+            onCheck={() => handleSelectIngredient(row)}
+          />
+        ),
+      },
       {
         key: 'name',
         header: t('ingredient:ingredientName'),
@@ -503,6 +613,16 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           onConfirm={handleConfirmPopupDelete}
           isOpen={popupDelete === undefined ? false : true}
           onRequestClose={() => togglePopupDelete(undefined)}
+        />
+        <DialogBox
+          type="warning"
+          msg={t('warning.deleteSelection.msg', {
+            count: popupDeleteSelection,
+          })}
+          subMsg={t('warning.deleteSelection.subMsg')}
+          onConfirm={handleConfirmPopupDeleteSelection}
+          isOpen={popupDeleteSelection > 0}
+          onRequestClose={() => setPopupDeleteSelection(0)}
         />
         <DialogBox
           type="warning"
