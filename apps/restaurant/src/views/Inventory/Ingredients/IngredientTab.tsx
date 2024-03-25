@@ -150,12 +150,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       tooltipId="inventory-tooltip"
                     />
                     <IconButton
-                      icon={<i className="fa-solid fa-list-check"></i>}
-                      onClick={handleSelectAll}
-                      tooltipMsg={t('selectAll')}
-                      tooltipId="inventory-tooltip"
-                    />
-                    <IconButton
                       icon={<i className="fa-solid fa-file-export"></i>}
                       onClick={handleExportDataClick}
                       tooltipMsg={t('export')}
@@ -176,27 +170,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                   </>
                 ) : (
                   <>
-                    {/* <IconButton
-                      icon={<i className="fa-solid fa-xmark"></i>}
-                      onClick={undefined}
-                      tooltipMsg={t('cancel')}
-                      tooltipId="inventory-tooltip"
-                    />
-                    <IconButton
-                      icon={<i className="fa-solid fa-list-check"></i>}
-                      onClick={undefined}
-                      tooltipMsg={t('selectAll')}
-                      tooltipId="inventory-tooltip"
-                    /> */}
                     <Button
                       value={t('cancel')}
                       type="secondary"
                       onClick={handleCancelSelection}
-                    />
-                    <Button
-                      value={t('common:selectAll')}
-                      type="secondary"
-                      onClick={handleSelectAll}
                     />
                     <Button
                       value={t('ingredient:selectedIngredients.delete', {
@@ -257,7 +234,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     };
 
     const handleSelectAll = () => {
-      setSelectedIngredients(ingredientsList);
+      if (selectedIngredients.length === ingredientsList.length)
+        setSelectedIngredients([]);
+      else setSelectedIngredients(ingredientsList);
     };
 
     const handleCancelSelection = () => {
@@ -430,7 +409,16 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
       {
         key: 'id',
-        header: '',
+        header: () => (
+          <Checkbox
+            onCheck={handleSelectAll}
+            checked={
+              ingredientsList.length === 0
+                ? false
+                : selectedIngredients.length === ingredientsList.length
+            }
+          />
+        ),
         width: '20px',
         renderItem: ({ row }) => (
           <Checkbox

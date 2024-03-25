@@ -10,7 +10,11 @@ const TableHeader = <T, K extends keyof T>(props: Props<T, K>) => {
     <thead>
       <tr>
         {props.columns.map((colums, index) => (
-          <th key={`headCell-${index}`}>{colums.header}</th>
+          <th key={`headCell-${index}`}>
+            {typeof colums.header === 'function'
+              ? colums.header()
+              : colums.header}
+          </th>
         ))}
       </tr>
     </thead>
