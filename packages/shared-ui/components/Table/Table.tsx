@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 export type ColumnDefinitionType<T, K extends keyof T = keyof T> = {
   key: K;
-  header: string;
+  header: string | (() => React.ReactNode);
   // renderItem?: (params: { row: T; value: T[K] }) => React.ReactNode | string;
   renderItem?: (params: {
     row: T;
