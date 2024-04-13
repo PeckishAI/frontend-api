@@ -17,5 +17,7 @@
   "orderProcessing": "Traitement de la commande...",
   "orderSubmited": "La commande a été soumise avec succès.",
 
-  "basket.removeItem.message": "Voulez-vous retirer cet ingrédient ?"
+  "basket.removeItem.message": "Voulez-vous retirer cet ingrédient ?",
+
+  "addedNote": "Note ajoutée"
 }

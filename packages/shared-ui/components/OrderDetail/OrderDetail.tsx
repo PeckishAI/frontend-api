@@ -1,6 +1,7 @@
 import { SidePanel, Table } from 'shared-ui';
 import styles from './OrderDetail.module.scss';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
+import { useTranslation } from 'react-i18next';
 
 type Props<T> = {
   isVisible: boolean;
@@ -11,9 +12,11 @@ type Props<T> = {
   }[];
   tableHeaders: ColumnDefinitionType<T>[];
   tableData: T[];
+  note?: string;
 };
 
 export const OrderDetail = <T extends object>(props: Props<T>) => {
+  const { t } = useTranslation(['placeOrder']);
   return (
     <SidePanel
       loading={false}
@@ -28,6 +31,12 @@ export const OrderDetail = <T extends object>(props: Props<T>) => {
           </div>
         ))}
       </div>
+      {props.note && (
+        <p className={styles.note}>
+          <span className={styles.label}>{t('addedNote')}: </span>
+          {props.note}
+        </p>
+      )}
       <Table columns={props.tableHeaders} data={props.tableData} />
     </SidePanel>
   );

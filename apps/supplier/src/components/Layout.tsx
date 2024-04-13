@@ -11,6 +11,7 @@ import {
 import { useUserStore } from '@peckishai/user-management';
 import { Tooltip } from 'react-tooltip';
 import { useSupplierStore } from '../store/useSupplierStore';
+import { Toaster } from 'react-hot-toast';
 
 // type Props = {};
 
@@ -103,6 +104,7 @@ const Layout = () => {
         />
         <div className="content">
           <Outlet />
+          <Toaster />
         </div>
       </div>
     </>

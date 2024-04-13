@@ -30,6 +30,8 @@
   "confirm": "Confirmer",
   "cancel": "Annuler",
   "add": "Ajouter",
+  "select": "Sélectionner",
+  "selectAll": "Tout sélectionner",
   "search": "Rechercher",
   "upload": "Charger",
   "download": "Télécharger",
@@ -48,6 +50,8 @@
   "phone": "Téléphone",
 
   "warning.delete": "Êtes-vous sure de vouloir supprimer cela ?",
+  "warning.deleteSelection.msg": "Êtes-vous sure de vouloir supprimer les {{count}} ingrédients sélectionnés ?",
+  "warning.deleteSelection.subMsg": "Les ingrédients sélectionnés présents dans les recettes seront également supprimés.",
   "warning.edit": "Êtes-vous sure de vouloir modifier cela ?",
   "error.trigger": "Une erreur est survenue",
   "error.tryLater": "Veuillez essayer plus tard",
