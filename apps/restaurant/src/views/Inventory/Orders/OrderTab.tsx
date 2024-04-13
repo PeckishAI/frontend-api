@@ -10,7 +10,6 @@ import { Tooltip } from 'react-tooltip';
 import { Order, useOrders } from '../../../utils/orders-mock';
 import { formatCurrency } from '../../../utils/helpers';
 import { useRestaurantCurrency } from '../../../store/useRestaurantStore';
-import dayjs from 'dayjs';
 
 export type OrderTabRef = {
   renderOptions: () => React.ReactNode;

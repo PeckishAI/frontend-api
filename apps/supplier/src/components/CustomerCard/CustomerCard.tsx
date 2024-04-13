@@ -1,11 +1,11 @@
-import { Restaurant } from '../../../../restaurant/src/store/useRestaurantStore';
-import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
+import { Menu, MenuItem } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 import './style.scss';
+import { Customer } from '../../views/Customers/Customers';
 
 type Props = {
-  restaurant: Restaurant;
+  customer: Customer;
   onClick: () => void;
   onRemove: () => void;
 };
@@ -29,16 +29,17 @@ const CustomerCard = (props: Props) => {
           onClick={(e) => {
             props.onRemove();
           }}
-          style={{ color: 'red' }}>
+          style={{ color: 'red' }}
+          disabled>
           Remove
         </MenuItem>
-        <MenuItem>Edit</MenuItem>
+        <MenuItem disabled>Edit</MenuItem>
       </Menu>
 
-      <span className="name">{props.restaurant.name}</span>
+      <span className="name">{props.customer.name}</span>
       <p className="location">
-        {props.restaurant.address}, {props.restaurant.city},{' '}
-        {props.restaurant.country}
+        {props.customer.address}, {props.customer.city},{' '}
+        {props.customer.country}
       </p>
       <div className="data">
         <span className="label">
