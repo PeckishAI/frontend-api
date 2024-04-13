@@ -27,7 +27,7 @@
   "inventory.selectIngredient": "Selectionner un ingrédient",
   "inventory.addSupplierBtn": "Ajouter un fournisseur",
   "inventory.importData": "Importer des données",
-  "inventory.uploadCSV.popup.title": "Apperçu du fichier CSV",
+  "inventory.uploadCSV.popup.title": "Aperçu du fichier CSV",
   "inventory.uploadCSV.popup.subtitle": "Nous avons extrait les noms de colonnes suivants de votre fichier. Veuillez vérifier si le mappage est correct.",
   "inventory.selectSupplier": "Sélectionnez un fournisseur",
   "inventory.selectUnit": "Sélectionnez une unité",

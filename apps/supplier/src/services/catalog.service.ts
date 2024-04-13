@@ -1,7 +1,9 @@
-import axios from './index';
+import axios, { Ingredient } from './index';
 
-const getCatalog = () => {
-  return axios.get('http://127.0.0.1:8080/api/catalog');
+const getCatalog = async (supplierUUID: string): Promise<Ingredient[]> => {
+  const { data } = await axios.get('/catalog/' + supplierUUID);
+  if (data[0] === undefined) return [];
+  return data;
 };
 
 export const catalogService = { getCatalog };

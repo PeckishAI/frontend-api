@@ -28,4 +28,17 @@
       }
     }
   }
+  .note {
+    margin: 10px 0;
+    font-size: 0.8rem;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--textPrimaryColor);
+    line-height: 1.2rem;
+    .label {
+      font-weight: 600;
+      color: var(--textSecondaryColor);
+      margin-right: 2px;
+    }
+  }
 }
