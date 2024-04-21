@@ -12,8 +12,9 @@ import {
   Input,
   DialogBox,
   Checkbox,
+  Select,
 } from 'shared-ui';
-import { Ingredient, inventoryService } from '../../../services';
+import { Ingredient, Tag, inventoryService } from '../../../services';
 import {
   useRestaurantCurrency,
   useRestaurantStore,
@@ -25,6 +26,12 @@ import supplierService from '../../../services/supplier.service';
 import ImportIngredients from '../Components/ImportIngredients/ImportIngredients';
 import Fuse from 'fuse.js';
 import { formatCurrency } from '../../../utils/helpers';
+import { tagService } from '../../../services/tag.service';
+import toast from 'react-hot-toast';
+import Filters, {
+  FiltersType,
+  defaultFilters,
+} from '../Components/Filters/Filters';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -51,6 +58,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const { currencyISO } = useRestaurantCurrency();
 
     const [ingredientsList, setIngredientsList] = useState<Ingredient[]>([]);
+    const [filteredIngredients, setFilteredIngredients] = useState<
+      Ingredient[]
+    >([]);
+    const [filters, setFilters] = useState<FiltersType>(defaultFilters);
+    const [tagList, setTagList] = useState<Tag[]>([]);
+    const [loadingTag, setLoadingTag] = useState(false);
     const [editingRowId, setEditingRowId] = useState<string | null>();
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
     const [addingRow, setAddingRow] = useState(false);
@@ -90,13 +103,36 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         });
     }, [selectedRestaurantUUID]);
 
-    const ingredientsFiltered = props.searchValue
-      ? new Fuse(ingredientsList, {
-          keys: ['name', 'supplier'],
-        })
-          .search(props.searchValue)
-          .map((r) => r.item)
-      : ingredientsList;
+    useEffect(() => {
+      const applyFilters = () => {
+        let filteredList = [...ingredientsList];
+
+        if (props.searchValue) {
+          filteredList = new Fuse(filteredList, {
+            keys: ['name', 'supplier'],
+          })
+            .search(props.searchValue)
+            .map((r) => r.item);
+        }
+
+        if (filters.selectedSupplier) {
+          filteredList = filteredList.filter(
+            (ingredient) =>
+              ingredient.supplier === filters.selectedSupplier!.uuid
+          );
+        }
+
+        if (filters.selectedTag) {
+          filteredList = filteredList.filter(
+            (ingredient) => ingredient.tagUUID === filters.selectedTag!.uuid
+          );
+        }
+
+        setFilteredIngredients(filteredList);
+      };
+
+      applyFilters();
+    }, [props.searchValue, filters]);
 
     const handleExportDataClick = useCallback(() => {
       const rows = ingredientsList;
@@ -143,11 +179,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               <>
                 {selectedIngredients.length === 0 ? (
                   <>
-                    <IconButton
-                      icon={<i className="fa-solid fa-filter"></i>}
-                      onClick={() => null}
-                      tooltipMsg="Filter"
-                      tooltipId="inventory-tooltip"
+                    <Filters
+                      suppliers={suppliers.map((s) => ({
+                        name: s.label,
+                        uuid: s.value,
+                      }))}
+                      tags={tagList}
+                      onApplyFilters={(newFilters) => setFilters(newFilters)}
                     />
                     <IconButton
                       icon={<i className="fa-solid fa-file-export"></i>}
@@ -204,6 +242,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         );
 
         setIngredientsList(ingredients);
+        setFilteredIngredients(ingredients);
       } catch (err) {
         if (err instanceof Error) {
           togglePopupError(err.message);
@@ -215,9 +254,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       props.setLoadingState(false);
     }, [selectedRestaurantUUID, props.setLoadingState]);
 
+    const reloadTagList = useCallback(async () => {
+      if (!selectedRestaurantUUID) return;
+      return tagService.getAll(selectedRestaurantUUID).then((tags) => {
+        setTagList(tags);
+      });
+    }, [selectedRestaurantUUID]);
+
     useEffect(() => {
       reloadInventoryData();
-    }, [reloadInventoryData]);
+      reloadTagList();
+    }, [reloadInventoryData, reloadTagList]);
 
     // Handle for selecting actions in table
     const handleSelectIngredient = (row: Ingredient) => {
@@ -261,14 +308,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           .getIngredientPreview(editingRowId)
           .then((res) => {
             togglePopupPreviewEdit(res.data);
-            // let recipeList: string = '';
-            // res.data.forEach((element) => {
-            //   recipeList += element;
-            //   recipeList += ', ';
-            // });
-            // togglePopupPreviewEdit(
-            //   recipeList.substring(0, recipeList.length - 2)
-            // );
           })
           .catch((err) => {
             console.log(err);
@@ -308,13 +347,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         .then((res) => {
           console.log('preview with id :', row.id, res.data);
           togglePopupDelete(res.data);
-
-          // let recipeList: string = '';
-          // res.data.forEach((element) => {
-          //   recipeList += element;
-          //   recipeList += ', ';
-          // });
-          // togglePopupDelete(recipeList.substring(0, recipeList.length - 2));
         })
         .catch((err) => {
           console.log(err);
@@ -330,6 +362,24 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         ...prevValues!,
         [field]: value,
       }));
+    };
+
+    const handleCreateTag = (name: string) => {
+      if (!selectedRestaurantUUID) return;
+      const isExisting = tagList.findIndex((tag) => tag.name === name);
+      if (isExisting !== -1) {
+        toast.error('Tag already exists.');
+        return;
+      }
+
+      setLoadingTag(true);
+      tagService
+        .create(name, selectedRestaurantUUID)
+        .then(() => {
+          reloadTagList();
+          toast.success(name + ' TAG created');
+        })
+        .finally(() => setLoadingTag(false));
     };
 
     // Handle for Popups
@@ -392,6 +442,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const newIngredient: Ingredient = {
         id: '',
         name: '',
+        tagUUID: null,
         parLevel: 0,
         actualStock: 0,
         unit: units[0].value,
@@ -447,7 +498,38 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             row.name
           ),
       },
-
+      {
+        key: 'tagUUID',
+        header: t('ingredient:tag'),
+        width: '15%',
+        minWidth: '150px',
+        renderItem: ({ row }) =>
+          editingRowId === row.id ? (
+            <Select
+              placeholder={t('ingredient:addTag')}
+              options={tagList}
+              size="small"
+              isClearable
+              isCreatable
+              menuPosition="fixed"
+              maxMenuHeight={200}
+              isLoading={loadingTag}
+              onCreateOption={handleCreateTag}
+              getNewOptionData={(inputVal) => ({
+                uuid: '',
+                name: `Create '${inputVal}'`,
+              })}
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.uuid}
+              onChange={
+                (value) => handleValueChange('tagUUID', value?.uuid ?? '') // transform '' to null value in tagService
+              }
+              value={tagList.find((tag) => editedValues?.tagUUID === tag.uuid)}
+            />
+          ) : (
+            tagList.find((tag) => tag.uuid === row.tagUUID)?.name ?? '-'
+          ),
+      },
       {
         key: 'parLevel',
         header: t('ingredient:parLvel'),
@@ -483,11 +565,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             row.actualStock
           ),
       },
-      {
-        key: 'theoriticalStock',
-        header: t('ingredient:theoreticalStock'),
-        width: '15%',
-      },
+      // {
+      //   key: 'theoriticalStock',
+      //   header: t('ingredient:theoreticalStock'),
+      //   width: '15%',
+      // },
       {
         key: 'unit',
         header: t('ingredient:unit'),
@@ -582,7 +664,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     return (
       <>
-        <Table data={ingredientsFiltered} columns={columns} />
+        <Table data={filteredIngredients} columns={columns} />
 
         <ImportIngredients
           openUploader={importIngredientsPopup}

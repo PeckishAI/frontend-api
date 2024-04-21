@@ -15,6 +15,7 @@ export type ColumnDefinitionType<T, K extends keyof T = keyof T> = {
   }) => React.ReactNode | string;
   classname?: string;
   width?: string;
+  minWidth?: string;
 };
 
 type Props<T, K extends keyof T> = {

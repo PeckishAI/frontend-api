@@ -1,5 +1,6 @@
 {
   "ingredientName": "Ingredient name",
+  "tag": "Tag",
   "theoreticalStock": "Theoretical stock",
   "safetyStock": "Safety stock",
   "parLvel": "Par level",
@@ -16,6 +17,7 @@
 
   "ingredient": "ingredient",
   "addIngredient": "Add ingredient",
+  "addTag": "Add TAG",
   "selectedIngredients.delete_one": "Delete {{count}} ingredient",
   "selectedIngredients.delete_other": "Delete {{count}} ingredients",
   "addIngredientTo": "Add ingredient to",

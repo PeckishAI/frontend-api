@@ -15,7 +15,7 @@ const TableRows = <T, K extends keyof T>(props: Props<T, K>) => {
               <td
                 key={`cell-${index2}`}
                 className={column.classname}
-                style={{ width: column.width }}>
+                style={{ width: column.width, minWidth: column.minWidth }}>
                 {column.renderItem === undefined ? (
                   <>{row[column.key]}</>
                 ) : (
