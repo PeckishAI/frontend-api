@@ -5,8 +5,12 @@
   .name {
     color: var(--textSecondaryColor);
     font-weight: var(--semiBold);
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin: 5px 0;
+    width: 85%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     .value {
       color: var(--primaryColor);
     }
@@ -67,6 +71,9 @@
     max-height: 300px;
   }
 }
+.table {
+  overflow: visible;
+}
 
 .optionsButtons {
   position: absolute;
@@ -94,6 +101,15 @@
     width: 200px;
     border: 1px solid var(--borderColor);
     border-radius: 5px;
+  }
+}
+.addIngredient {
+  text-align: center;
+  color: var(--primaryColor);
+  cursor: pointer;
+  margin: 20px 0;
+  i {
+    margin: 0 5px;
   }
 }
 

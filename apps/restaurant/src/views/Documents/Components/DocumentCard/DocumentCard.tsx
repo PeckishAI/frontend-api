@@ -21,13 +21,9 @@ const DocumentCard = (props: Props) => {
         <img className="logo-integrations" src={props.image}></img>
       </div>
       <div className="document-info">
-        <div className="name-date">
-          <h2>{props.supplier}</h2>
-          <p>{props.date}</p>
-        </div>
-        <div className="amount">
-          <p>{formatCurrency(props.amount, currencyISO)}</p>
-        </div>
+        <p className="supplier">{props.supplier}</p>
+        <p className="date">{props.date}</p>
+        <p className="price">{formatCurrency(props.amount, currencyISO)}</p>
       </div>
     </div>
   );
