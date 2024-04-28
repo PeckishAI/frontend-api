@@ -132,7 +132,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       };
 
       applyFilters();
-    }, [props.searchValue, filters]);
+    }, [props.searchValue, filters, ingredientsList]);
 
     const handleExportDataClick = useCallback(() => {
       const rows = ingredientsList;

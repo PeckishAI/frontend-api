@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import styles from './styles.module.scss';
 import { Button, IconButton, Select } from 'shared-ui';
 import { Supplier, Tag } from '../../../../services';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   suppliers: Supplier[];
@@ -19,6 +20,7 @@ export const defaultFilters: FiltersType = {
 };
 
 const Filters = ({ suppliers, tags, onApplyFilters }: Props) => {
+  const { t } = useTranslation(['common', 'ingredient']);
   const [isVisible, setIsVisible] = useState(false);
   const popupRef = useRef(null);
   const triggerRef = useRef(null);
@@ -76,14 +78,14 @@ const Filters = ({ suppliers, tags, onApplyFilters }: Props) => {
       <IconButton
         icon={<i className="fa-solid fa-filter"></i>}
         onClick={handleClick}
-        tooltipMsg="Filter"
+        tooltipMsg={t('filter')}
         tooltipId="inventory-tooltip"
         ref={triggerRef}
       />
 
       {isVisible && (
         <div ref={popupRef} className={styles.filters}>
-          <p className={styles.title}>Filter by :</p>
+          <p className={styles.title}>{t('filterBy')} :</p>
           <Select
             placeholder={'Tag'}
             options={tags}
@@ -97,7 +99,7 @@ const Filters = ({ suppliers, tags, onApplyFilters }: Props) => {
             value={filters?.selectedTag}
           />
           <Select
-            placeholder={'Supplier'}
+            placeholder={t('ingredient:supplier')}
             options={suppliers}
             size="small"
             isClearable
@@ -110,13 +112,13 @@ const Filters = ({ suppliers, tags, onApplyFilters }: Props) => {
           />
           <div className={styles.buttons}>
             <Button
-              value="Reset"
+              value={t('reset')}
               className={styles.btn}
               type="secondary"
               onClick={handleResetFilters}
             />
             <Button
-              value="Apply"
+              value={t('apply')}
               className={styles.btn}
               type="primary"
               disabled={!filters?.selectedSupplier && !filters?.selectedTag}
