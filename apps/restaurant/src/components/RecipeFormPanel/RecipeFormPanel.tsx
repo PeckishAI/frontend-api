@@ -127,7 +127,7 @@ const RecipeFormPanel = (props: Props) => {
   const totalCost = watch('ingredients').reduce((acc, ing) => {
     const ingredient = ingredients.find((i) => i.id === ing.selectedUUID);
     if (ingredient) {
-      acc += ingredient.cost * (ing.quantity ?? 0);
+      acc += ingredient.unitCost * (ing.quantity ?? 0);
     }
     return acc;
   }, 0);
@@ -268,7 +268,7 @@ const RecipeFormPanel = (props: Props) => {
           {recipeType !== 'preparation' && (
             <LabeledInput
               type="number"
-              step="0.01"
+              step=".00000001"
               placeholder={t('recipes.editPanel.fields.pricePerPortion')}
               icon={<i className="fa-solid fa-tag" />}
               {...register('pricePerPortion')}
@@ -280,6 +280,7 @@ const RecipeFormPanel = (props: Props) => {
 
           <LabeledInput
             type="number"
+            step=".00000001"
             placeholder={t('recipes.editPanel.fields.portionsPerBatch')}
             {...register('portionsPerBatch')}
             lighter
@@ -356,7 +357,7 @@ const RecipeFormPanel = (props: Props) => {
               <LabeledInput
                 placeholder={t('quantity')}
                 type="number"
-                step="0.01"
+                step=".00000001"
                 lighter
                 suffix={selectedIngredient?.unit}
                 {...register(`ingredients.${i}.quantity`)}

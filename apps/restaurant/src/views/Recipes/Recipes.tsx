@@ -1,4 +1,4 @@
-import { LoadingAbsolute, useTitle } from 'shared-ui';
+import { Input, LoadingAbsolute, useTitle } from 'shared-ui';
 import React, { useEffect, useState } from 'react';
 import {
   recipesService,
@@ -11,6 +11,7 @@ import RecipeCategory from './Components/RecipeCategory/RecipeCategory';
 import { Tooltip } from 'react-tooltip';
 import RecipeDetail from '../../components/RecipeDetail/RecipeDetail';
 import { TFunction } from 'i18next';
+import styles from './styles.module.scss';
 
 export type RecipeCat = {
   label: string;
@@ -64,6 +65,7 @@ const Recipes = () => {
   const [loadingData, setLoadingData] = useState(false);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [recipeDetail, setRecipeDetail] = useState<Recipe | null>(null);
+  const [recipeResearch, setRecipeResearch] = useState('');
 
   function reloadRecipes() {
     if (!selectedRestaurantUUID) return;
@@ -85,6 +87,10 @@ const Recipes = () => {
     reloadRecipes();
   }, [selectedRestaurantUUID]);
 
+  const filteredRecipes = recipes.filter((recipe) =>
+    recipe.name.toLowerCase().includes(recipeResearch.toLowerCase())
+  );
+
   const handleRecipeClick = (recipe: Recipe) => {
     setRecipeDetail(recipe);
   };
@@ -92,6 +98,7 @@ const Recipes = () => {
   const handleRecipeUpdated = (recipe: Recipe) => {
     setRecipes(recipes.map((r) => (r.uuid === recipe.uuid ? recipe : r)));
     setRecipeDetail(recipe);
+    reloadRecipes();
   };
 
   const handleRecipeDeleted = (recipe: Recipe) => {
@@ -100,12 +107,19 @@ const Recipes = () => {
   };
 
   return (
-    <div className="recipes">
+    <div className={styles.recipes}>
+      <Input
+        type="text"
+        placeholder={t('search')}
+        value={recipeResearch}
+        onChange={(value) => setRecipeResearch(value)}
+        className={styles.searchRecipe}
+      />
       {getRecipeCategories(t).map((category, i) => (
         <RecipeCategory
           key={i}
           category={category}
-          recipes={recipes.filter(
+          recipes={filteredRecipes.filter(
             (recipe) => recipe.category === category.value
           )}
           onClickRecipe={handleRecipeClick}

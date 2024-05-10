@@ -9,7 +9,7 @@ import {
   DialogBox,
 } from 'shared-ui';
 import styles from './style.module.scss';
-import { Ingredient, Invoice, inventoryService } from '../../services';
+import { Invoice, inventoryService } from '../../services';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatCurrency } from '../../utils/helpers';
@@ -17,7 +17,7 @@ import { useRestaurantCurrency } from '../../store/useRestaurantStore';
 import { useForm, Controller } from 'react-hook-form';
 import { useIngredients } from '../../services/hooks';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
-import toast from 'react-hot-toast';
+import { MdDelete } from 'react-icons/md';
 
 type Props = {
   document: Invoice | null;
@@ -47,6 +47,7 @@ const DocumentDetail = (props: Props) => {
     null
   );
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isAddingIng, setIsAddingIng] = useState(false);
   const { control } = useForm();
 
   const { ingredients, loading: loadingIngredients } = useIngredients();
@@ -68,6 +69,7 @@ const DocumentDetail = (props: Props) => {
     } else {
       // Exit edit mode
       setEditableDocument(null);
+      setIsAddingIng(false);
     }
   };
 
@@ -179,6 +181,25 @@ const DocumentDetail = (props: Props) => {
     });
   };
 
+  const handleAddIngredient = () => {
+    const newIngredient: IngredientDetails = {
+      detectedName: '',
+      mappedName: '',
+      mappedUUID: '',
+      quantity: 0,
+      totalPrice: 0,
+    };
+
+    if (editableDocument) {
+      setIsAddingIng(true);
+      const updatedIngredientsList = [...editableDocument.ingredients];
+      updatedIngredientsList.push(newIngredient);
+      setEditableDocument((prevDocument) => ({
+        ...prevDocument,
+        ingredients: updatedIngredientsList,
+      }));
+    }
+  };
   const viewColumns = [
     {
       key: 'detectedName',
@@ -238,6 +259,7 @@ const DocumentDetail = (props: Props) => {
               className={styles.mappedNameInput}
               isClearable
               isSearchable
+              maxMenuHeight={200}
               onChange={(selectedOption) => {
                 field.onChange(selectedOption);
                 handleMappedNameChange(index, selectedOption);
@@ -262,7 +284,7 @@ const DocumentDetail = (props: Props) => {
           type="number"
           min={0}
           step="0.01"
-          placeholder={t('name')}
+          placeholder={t('quantity')}
           className={styles.quantity}
           onChange={(value) => handleIngredientChange(index, 'quantity', value)}
           value={editableDocument?.ingredients[index].quantity || ''}
@@ -278,7 +300,7 @@ const DocumentDetail = (props: Props) => {
           type="number"
           min={0}
           step="0.01"
-          placeholder={t('name')}
+          placeholder={t('totalCost')}
           className={styles.price}
           onChange={(value) =>
             handleIngredientChange(index, 'totalPrice', value)
@@ -287,6 +309,19 @@ const DocumentDetail = (props: Props) => {
         />
       ),
     },
+    // {
+    //   key: 'action',
+    //   renderItem: () => (
+    //     <IconButton
+    //       className={styles.deleteBtn}
+    //       icon={<MdDelete />}
+    //       tooltipMsg={t('delete')}
+    //       onClick={() => {
+    //         removeIngredient(i);
+    //       }}
+    //     />
+    //   ),
+    // },
   ];
 
   console.log(props.document?.ingredients);
@@ -322,7 +357,15 @@ const DocumentDetail = (props: Props) => {
               <Table
                 data={editableDocument?.ingredients}
                 columns={isEditMode ? editColumns : viewColumns}
+                className={styles.table}
               />
+              {!isAddingIng && (
+                <p
+                  className={styles.addIngredient}
+                  onClick={handleAddIngredient}>
+                  Add ingredient <i className="fa-solid fa-plus"></i>
+                </p>
+              )}
               <div className={styles.buttonsContaier}>
                 <Button
                   type="secondary"
