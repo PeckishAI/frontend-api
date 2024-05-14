@@ -1,10 +1,9 @@
 import React from 'react';
 import styles from './TrendCard.module.scss'; // Import css modules stylesheet as styles
 import { FiTrendingDown, FiTrendingUp } from 'react-icons/fi';
-import { FaEquals } from 'react-icons/fa';
+import { FaPoundSign } from 'react-icons/fa';
 import classnames from 'classnames';
 import Skeleton from 'react-loading-skeleton';
-import { useTranslation } from 'react-i18next';
 
 type Props = {
   title: string;
@@ -14,14 +13,15 @@ type Props = {
 };
 
 export const TrendCard = ({ icon, title, percentage, value }: Props) => {
-  const { t } = useTranslation('overview');
-
   return (
     <div className={styles.container}>
       <div className={styles.row}>
         <div>
           <h3 className={styles.title}>{title}</h3>
-          <p className={styles.value}>{value}</p>
+          <p className={styles.value}>
+            <FaPoundSign size={18} className={styles.pound} />
+            {value}
+          </p>
         </div>
         <div className={styles.icon}>{icon}</div>
       </div>
@@ -33,17 +33,14 @@ export const TrendCard = ({ icon, title, percentage, value }: Props) => {
             [styles.downTrend]: percentage && percentage < 0,
           })}>
           {percentage ? (
-            percentage === 0 ? (
-              <FaEquals className={styles.percentageIcon} />
-            ) : percentage > 0 ? (
+            percentage > 0 ? (
               <FiTrendingUp className={styles.percentageIcon} />
             ) : (
               <FiTrendingDown className={styles.percentageIcon} />
             )
           ) : null}
-          {percentage ?? '--'}%
+          <span className={styles.perText}> {percentage ?? '--'}%</span>
         </span>
-        <span className={styles.periodText}>{t('mom')}</span>
       </p>
     </div>
   );
