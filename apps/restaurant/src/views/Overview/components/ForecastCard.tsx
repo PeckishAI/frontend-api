@@ -1,6 +1,6 @@
 import { FaInfoCircle } from 'react-icons/fa';
 import styles from './ForecastCard.module.scss';
-import { Dropdown, IconButton, Table, Tabs } from 'shared-ui';
+import { Dropdown, IconButton, Loading, Table, Tabs } from 'shared-ui';
 import dayjs from 'dayjs';
 import { Tooltip } from 'react-tooltip';
 import { useState, useMemo } from 'react';
@@ -9,25 +9,26 @@ import { Forecast, MetricType } from '../../../services/overview.service';
 import Skeleton from 'react-loading-skeleton';
 import { prettyNumber } from '../../../utils/helpers';
 import { useTranslation } from 'react-i18next';
-
+import overviewService from '../../../services/overview.service';
 type Props = {
   data?: Forecast;
   currency?: string | null;
   loading: boolean;
 };
-
+import { format } from 'date-fns';
 // TODO: Calculate depending on available values
 
 //TODO: Vertical table (header = days)
 export const ForecastCard = (props: Props) => {
   const { t } = useTranslation(['overview', 'common']);
   const [selectedMode, setSelectedMode] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedChartMode, setSelectedChartMode] =
     useState<MetricType>('occupancy');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderItem = ({ value }: { value: any }) =>
-    value ? prettyNumber(value) : '--';
+    value || prettyNumber(value);
 
   const chartModes = useMemo(() => {
     const hasOccupancy = props.data && props.data[0]?.occupancy != null;
@@ -73,32 +74,43 @@ export const ForecastCard = (props: Props) => {
   }, [props.data]);
 
   const handleExportDataClick = () => {
+    setIsLoading(true);
     const rows = props.data;
     if (rows) {
-      const header = 'Date, Occupency, Sales, Profit, Savings\n';
-      const csvContent =
-        'data:text/csv;charset=utf-8,' +
-        header +
-        rows
-          .map((row) => {
-            const values = [];
-            values.push(row.date.toISOString()); // Convertir la date en format ISO string
-            values.push(row.occupancy || '-');
-            values.push(row.sales || '-');
-            values.push(row.profit || '-');
-            values.push(row.savings || '-');
-            return values.join(',');
-          })
-          .join('\n');
-
-      // Créer un lien d'ancrage pour le téléchargement
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement('a');
-      link.setAttribute('href', encodedUri);
-      link.setAttribute('download', 'forecast.csv');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      overviewService
+        .getCsv(
+          props?.selectedRestaurantUUID,
+          format(props.value[0], 'yyyy-MM-dd'),
+          format(props.value[1], 'yyyy-MM-dd'),
+          'True'
+        )
+        .then((response) => {
+          const csvHeader = Object.keys(response.csv_data[0]).join(',') + '\n';
+          const csvData = response.csv_data
+            .map((item) => Object.values(item).join(','))
+            .join('\n');
+          const csvContent = csvHeader + csvData;
+          const blob = new Blob([csvContent], {
+            type: 'text/csv;charset=utf-8',
+          });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'data.csv';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          setIsLoading(false);
+          console.log('Download initiated');
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.error('Error downloading CSV:', error);
+        });
+    } else {
+      setIsLoading(false);
+      console.error('No data available to download.');
     }
   };
 
@@ -115,6 +127,7 @@ export const ForecastCard = (props: Props) => {
               className={styles.tabs}
             />
           </div>
+          {isLoading && <Loading />}
           <div className={styles.rightHeader}>
             {selectedMode === 1 && (
               <Dropdown
@@ -138,26 +151,77 @@ export const ForecastCard = (props: Props) => {
             />
           </div>
         </div>
+
         <div className={styles.content}>
           {/* {Children} */}
           {selectedMode === 0 ? (
             props.loading ? (
               <ForecastTableSkeleton />
             ) : (
-              <Table
-                data={props.data}
-                columns={[
-                  {
-                    header: t('common:date'),
-                    key: 'date',
-                    renderItem: ({ row }) => dayjs(row.date).format('ddd D'),
-                  },
-                  { header: t('occupancy'), key: 'occupancy', renderItem },
-                  { header: t('sales'), key: 'sales', renderItem },
-                  { header: t('profit'), key: 'profit', renderItem },
-                  { header: t('savings'), key: 'savings', renderItem },
-                ]}
-              />
+              <>
+                <Table
+                  style={{ background: 'red' }}
+                  data={props.data}
+                  columns={[
+                    // {
+                    //   header: t('common:date'),
+                    //   key: 'date',
+                    //   renderItem: ({ row }) => dayjs(row.date).format('ddd D'),
+                    // },
+                    {
+                      header: t('ingredient_name'),
+                      key: 'ingredient_name',
+                      renderItem,
+                    },
+                    {
+                      header: t('unit'),
+                      key: 'unit',
+                      renderItem,
+                    },
+                    {
+                      header: t('opening_qty'),
+                      key: 'opening_qty',
+                      renderItem,
+                    },
+                    {
+                      header: t('purchased_qty'),
+                      key: 'purchased_qty',
+                      renderItem,
+                    },
+
+                    {
+                      header: t('cost_per_unit'),
+                      key: 'cost_per_unit',
+                      renderItem,
+                    },
+                    {
+                      header: t('sold_qty'),
+                      key: 'sold_qty',
+                      renderItem,
+                    },
+                    {
+                      header: t('closing_qty'),
+                      key: 'closing_qty',
+                      renderItem,
+                    },
+                    {
+                      header: t('actual_cos'),
+                      key: 'actual_cos',
+                      renderItem,
+                    },
+                    {
+                      header: t('theoretical_cos'),
+                      key: 'theoretical_cos',
+                      renderItem,
+                    },
+                    {
+                      header: t('variance'),
+                      key: 'variance',
+                      renderItem,
+                    },
+                  ]}
+                />
+              </>
             )
           ) : (
             <ForecastChart
@@ -187,15 +251,16 @@ const ForecastTableSkeleton = () => {
         savings: 0,
       }))}
       columns={[
-        {
-          header: 'Date',
-          key: 'date',
-          renderItem: ({ row }) => dayjs(row.date).format('ddd D'),
-        },
-        { header: 'Occupancy', key: 'occupancy', renderItem },
-        { header: 'Sales', key: 'sales', renderItem },
-        { header: 'Profit', key: 'profit', renderItem },
-        { header: 'Savings', key: 'savings', renderItem },
+        { header: 'ingredient_name', key: 'ingredient_name', renderItem },
+        { header: 'unit', key: 'unit', renderItem },
+        { header: 'opening_qty', key: 'opening_qty', renderItem },
+        { header: 'purchased_qty', key: 'purchased_qty', renderItem },
+        { header: 'cost_per_unit', key: 'cost_per_unit', renderItem },
+        { header: 'sold_qty', key: 'sold_qty', renderItem },
+        { header: 'closing_qty', key: 'closing_qty', renderItem },
+        { header: 'actual_cos', key: 'actual_cos', renderItem },
+        { header: 'theoretical_cos', key: 'theoretical_cos', renderItem },
+        { header: 'variance', key: 'variance', renderItem },
       ]}
     />
   );
