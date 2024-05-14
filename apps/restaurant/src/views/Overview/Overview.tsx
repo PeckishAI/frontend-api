@@ -1,5 +1,4 @@
 import { FaRegMoneyBillAlt } from 'react-icons/fa';
-import { HiOutlineUserGroup } from 'react-icons/hi';
 import { TrendCard, TrendCardSkeleton } from './components/TrendCard';
 import { formatCurrency, prettyNumber } from '../../utils/helpers';
 import styles from './Overview.module.scss';
@@ -7,6 +6,7 @@ import { ForecastCard } from './components/ForecastCard';
 import { Tooltip } from 'react-tooltip';
 import { useEffect, useState } from 'react';
 import overviewService, {
+  ApiResponse,
   Forecast,
   MetricType,
   RestaurantMetric,
@@ -15,9 +15,12 @@ import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { useTranslation } from 'react-i18next';
 import { EmptyPage, useTitle } from 'shared-ui';
 import { TFunction } from 'i18next';
+import DateRangePickerComponent from '../../components/DateRangePicker/DateRangePicker';
+import { format } from 'date-fns';
+import Vector from '../../assets/img/categories/Vector.svg';
 
 const metricIcon: { [K in keyof RestaurantMetric]: React.ReactNode } = {
-  occupancy: <HiOutlineUserGroup />,
+  costofgoodsold: <img src={Vector} />,
   sales: <FaRegMoneyBillAlt />,
 };
 
@@ -46,10 +49,10 @@ const Overview = () => {
   useTitle(t('common:pages.overview'));
 
   const [loadingMetrics, setLoadingMetrics] = useState(false);
-  const [metrics, setMetrics] = useState<RestaurantMetric>();
-
+  const [cost, setcost] = useState<ApiResponse>();
   const [loadingForecast, setLoadingForecast] = useState(false);
   const [forecast, setForecast] = useState<Forecast>();
+  const [value, setValue] = useState([null, null]);
 
   const { selectedRestaurantUUID, restaurants } = useRestaurantStore();
 
@@ -59,56 +62,65 @@ const Overview = () => {
 
   useEffect(() => {
     if (!selectedRestaurantUUID) return;
+    if (value[0] && value[1]) {
+      setLoadingMetrics(true);
+      overviewService
+        .getCostMetric(
+          selectedRestaurantUUID,
+          format(value[0], 'yyyy-MM-dd'),
+          format(value[1], 'yyyy-MM-dd')
+        )
+        .then((res) => {
+          setcost(res);
+        })
+        .finally(() => {
+          setLoadingMetrics(false);
+        });
 
-    setLoadingMetrics(true);
-    overviewService
-      .getMetrics(selectedRestaurantUUID)
-      .then((res) => {
-        setMetrics(res);
-      })
-      .finally(() => {
-        setLoadingMetrics(false);
-      });
-
-    setLoadingForecast(true);
-    overviewService
-      .getForecast(selectedRestaurantUUID)
-      .then((res) => {
-        setForecast(res);
-      })
-      .finally(() => {
-        setLoadingForecast(false);
-      });
-  }, [selectedRestaurantUUID]);
+      overviewService
+        .getForecast(
+          selectedRestaurantUUID,
+          format(value[0], 'yyyy-MM-dd'),
+          format(value[1], 'yyyy-MM-dd')
+        )
+        .then((res) => {
+          setForecast(res);
+        })
+        .finally(() => {
+          setLoadingForecast(false);
+        });
+    }
+  }, [selectedRestaurantUUID, value[0], value[1]]);
 
   return (
     <>
+      <div className={styles.datepicker}>
+        <DateRangePickerComponent setValue={setValue} value={value} />
+      </div>
       {selectedRestaurantUUID ? (
         <>
           <div className={styles.trends}>
             {loadingMetrics && [1, 2].map((i) => <TrendCardSkeleton key={i} />)}
             {!loadingMetrics &&
-              metrics &&
-              (Object.keys(metrics) as (keyof RestaurantMetric)[]).map(
-                (key) => (
+              cost &&
+              Object.keys(cost).map((key) => (
+                <>
                   <TrendCard
                     key={key}
-                    title={t(key)}
-                    value={metricFormat[key]({
-                      value: metrics[key].value,
-                      t,
-                      currency: currentCurrency,
-                    })}
+                    title={key == 'costofgoodsold' ? 'Cost of goods sold' : key}
+                    value={cost[key].value?.toFixed(2)}
                     icon={metricIcon[key]}
-                    percentage={metrics[key].mom}
+                    percentage={cost[key].percentage}
                   />
-                )
-              )}
+                </>
+              ))}
           </div>
           <ForecastCard
             data={forecast}
             loading={loadingForecast}
+            selectedRestaurantUUID={selectedRestaurantUUID}
             currency={currentCurrency}
+            value={value}
           />
         </>
       ) : (
@@ -117,6 +129,7 @@ const Overview = () => {
           description={t('common:myrestaurants.emptyText')}
         />
       )}
+
       <Tooltip id="overview-tooltip" />
     </>
   );
