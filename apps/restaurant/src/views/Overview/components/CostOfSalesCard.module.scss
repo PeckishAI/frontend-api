@@ -1,0 +1,39 @@
+.card {
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px;
+  background-color: var(--secondaryColor);
+
+  .header {
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--borderColor);
+
+    .title {
+      font-weight: 700;
+    }
+
+    .tabs span {
+      margin-top: 8px;
+      font-size: 0.8rem !important;
+    }
+
+    .rightHeader {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+
+      .forecastIiconBtn {
+        color: var(--cardColor);
+      }
+      .forecastIiconBtn:hover {
+        background-color: var(--backgroundColor);
+      }
+    }
+  }
+  .content {
+    background-color: var(--backgroundColor);
+  }
+}

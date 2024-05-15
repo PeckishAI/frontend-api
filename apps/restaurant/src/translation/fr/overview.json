@@ -1,12 +1,12 @@
 {
-  "occupancy": "Coût du bien vendu",
+  "costofgoodssold": "Coût du bien vendu",
   "profit": "Profit",
   "sales": "Ventes",
   "savings": "Économies",
 
   "mom": "MoM",
-  "forecast": "Coût des ventes",
-  "forecastTooltip": "Ces données générées par Peckish sont des prévisions des performances futures",
+  "CostofSales": "Coût des ventes",
+  "CostofSalesTooltip": "Ces données générées par Peckish sont des prévisions des performances futures",
 
   "tab.table": "Tableau",
   "tab.chart": "Graphique",

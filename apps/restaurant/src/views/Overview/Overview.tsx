@@ -2,14 +2,13 @@ import { FaRegMoneyBillAlt } from 'react-icons/fa';
 import { TrendCard, TrendCardSkeleton } from './components/TrendCard';
 import { formatCurrency, prettyNumber } from '../../utils/helpers';
 import styles from './Overview.module.scss';
-import { ForecastCard } from './components/ForecastCard';
+import { CostOfSalesCard } from './components/CostOfSalesCard';
 import { Tooltip } from 'react-tooltip';
 import { useEffect, useState } from 'react';
 import overviewService, {
   ApiResponse,
-  Forecast,
+  CostofSales,
   MetricType,
-  RestaurantMetric,
 } from '../../services/overview.service';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { useTranslation } from 'react-i18next';
@@ -19,7 +18,7 @@ import DateRangePickerComponent from '../../components/DateRangePicker/DateRange
 import { format } from 'date-fns';
 import Vector from '../../assets/img/categories/Vector.svg';
 
-const metricIcon: { [K in keyof RestaurantMetric]: React.ReactNode } = {
+const metricIcon: { [K in keyof ApiResponse]: React.ReactNode } = {
   costofgoodsold: <img src={Vector} />,
   sales: <FaRegMoneyBillAlt />,
 };
@@ -34,7 +33,7 @@ export const metricFormat: {
     currency?: string | null;
   }) => string;
 } = {
-  occupancy: ({ value, t }) =>
+  costofgoodssold: ({ value, t }) =>
     t('trend.people', {
       count: value ?? 0,
       formattedCount: prettyNumber(value),
@@ -50,8 +49,8 @@ const Overview = () => {
 
   const [loadingMetrics, setLoadingMetrics] = useState(false);
   const [cost, setcost] = useState<ApiResponse>();
-  const [loadingForecast, setLoadingForecast] = useState(false);
-  const [forecast, setForecast] = useState<Forecast>();
+  const [loadingCostOfSales, setLoadingCostOfSales] = useState(false);
+  const [costOfSales, setCostOfSales] = useState<CostofSales>();
   const [value, setValue] = useState([null, null]);
 
   const { selectedRestaurantUUID, restaurants } = useRestaurantStore();
@@ -80,18 +79,18 @@ const Overview = () => {
         });
 
       overviewService
-        .getForecast(
+        .getCostOfSales(
           selectedRestaurantUUID,
           format(value[0], 'yyyy-MM-dd'),
           format(value[1], 'yyyy-MM-dd')
         )
         .then((res) => {
           if (res) {
-            setForecast(res);
+            setCostOfSales(res);
           }
         })
         .finally(() => {
-          setLoadingForecast(false);
+          setLoadingCostOfSales(false);
         });
     }
   }, [selectedRestaurantUUID, value[0], value[1]]);
@@ -128,9 +127,9 @@ const Overview = () => {
               <DateRangePickerComponent setValue={setValue} value={value} />
             </div>
           </div>
-          <ForecastCard
-            data={forecast}
-            loading={loadingForecast}
+          <CostOfSalesCard
+            data={costOfSales}
+            loading={loadingCostOfSales}
             selectedRestaurantUUID={selectedRestaurantUUID}
             currency={currentCurrency}
             value={value}

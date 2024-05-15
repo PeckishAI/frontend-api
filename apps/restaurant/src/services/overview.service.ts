@@ -3,17 +3,6 @@ import { GLOBAL_CONFIG } from 'shared-config';
 
 export type MetricType = 'costofgoodsold' | 'profits' | 'sales' | 'savings';
 
-export type RestaurantMetric = {
-  occupancy: {
-    value?: number;
-    mom?: number;
-  };
-  sales: {
-    value?: number;
-    mom?: number;
-  };
-};
-
 export type ApiResponse = {
   costofgoodsold: {
     value?: number;
@@ -43,6 +32,10 @@ const getCostMetric = async (
   weekEnd: string
 ): Promise<ApiResponse> => {
   try {
+    // const res = await axios.get<MetricsResponses>(
+    //   `${apiUrl}/overview/${restaurantUUID}/cost_and_sales?start_date=${weekStart}&end_date=${weekEnd}`
+    // );
+
     const res = await axios.get<MetricsResponses>(
       `${apiUrl}/overview/${restaurantUUID}/cost_and_sales?start_date=${weekStart}&end_date=${weekEnd}`
     );
@@ -58,12 +51,12 @@ const getCostMetric = async (
       },
     };
   } catch (error) {
-    console.error('Error fetching forecast data:', error);
+    console.error('Error fetching data:', error);
     return null;
   }
 };
 
-export type Forecast = {
+export type CostofSales = {
   date: Date;
   ingredient_name?: number;
   sales?: number;
@@ -75,13 +68,13 @@ export type Forecast = {
   variance: number;
 }[];
 
-const getForecast = async (
+const getCostOfSales = async (
   restaurantUUID: string,
   weekStart: string,
   weekEnd: string
-): Promise<Forecast> => {
+): Promise<CostofSales> => {
   try {
-    const res = await axios.get<Forecast>(
+    const res = await axios.get<CostofSales>(
       `${apiUrl}/overview/${restaurantUUID}/fetch_data`,
       {
         params: {
@@ -104,7 +97,7 @@ const getForecast = async (
       variance: item.variance,
     }));
   } catch (error) {
-    console.error('Error fetching forecast data:', error);
+    console.error('Error fetching data:', error);
     return null;
   }
 };
@@ -140,13 +133,13 @@ const getCsv = async (
       csv_data: res.data,
     };
   } catch (error) {
-    console.error('Error fetching forecast data:', error);
+    console.error('Error fetching Table data:', error);
     return [];
   }
 };
 
 export default {
-  getForecast,
+  getCostOfSales,
   getCostMetric,
   getCsv,
 };
