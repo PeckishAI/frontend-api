@@ -121,7 +121,7 @@ export const ForecastCard = (props: Props) => {
           <div>
             <h2 className={styles.title}>{t('forecast')}</h2>
             <Tabs
-              tabs={[t('tab.table'), t('tab.chart')]}
+              tabs={[t('tab.table')]} //  t('tab.chart')]
               onClick={setSelectedMode}
               selectedIndex={selectedMode}
               className={styles.tabs}
@@ -178,8 +178,8 @@ export const ForecastCard = (props: Props) => {
                       key: 'cost_per_unit',
                       renderItem: ({ value }) =>
                         value != null
-                          ? `£${parseFloat(value).toFixed(2)}`
-                          : '£0.00',
+                          ? `Â£${parseFloat(value).toFixed(2)}`
+                          : 'Â£0.00',
                     },
                     {
                       header: t('sold Qty'),
@@ -194,8 +194,8 @@ export const ForecastCard = (props: Props) => {
                       key: 'theoretical_cos',
                       renderItem: ({ value }) =>
                         value != null
-                          ? `£${parseFloat(value).toFixed(2)}`
-                          : '£0.00',
+                          ? `Â£${parseFloat(value).toFixed(2)}`
+                          : 'Â£0.00',
                     },
                     {
                       header: t('opening Qty'),
@@ -226,8 +226,8 @@ export const ForecastCard = (props: Props) => {
                       key: 'actual_cos',
                       renderItem: ({ value }) =>
                         value != null
-                          ? `£${parseFloat(value).toFixed(2)}`
-                          : '£0.00',
+                          ? `Â£${parseFloat(value).toFixed(2)}`
+                          : 'Â£0.00',
                     },
                     {
                       header: t('Variance'),

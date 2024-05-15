@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { GLOBAL_CONFIG } from 'shared-config';
 
 export type MetricType = 'costofgoodsold' | 'profits' | 'sales' | 'savings';
 
@@ -33,6 +34,9 @@ type MetricsResponses = {
     percentage?: number;
   };
 };
+
+const apiUrl = GLOBAL_CONFIG.apiUrl; // Get the API URL based on the environment
+
 const getCostMetric = async (
   restaurantUUID: string,
   weekStart: string,
@@ -40,7 +44,7 @@ const getCostMetric = async (
 ): Promise<ApiResponse> => {
   try {
     const res = await axios.get<MetricsResponses>(
-      `http://192.168.29.185:8080/overview/${restaurantUUID}/cost_and_sales?start_date=${weekStart}&end_date=${weekEnd}`
+      `${apiUrl}/overview/${restaurantUUID}/cost_and_sales?start_date=${weekStart}&end_date=${weekEnd}`
     );
 
     return {
@@ -55,7 +59,7 @@ const getCostMetric = async (
     };
   } catch (error) {
     console.error('Error fetching forecast data:', error);
-    return [];
+    return null;
   }
 };
 
@@ -78,7 +82,7 @@ const getForecast = async (
 ): Promise<Forecast> => {
   try {
     const res = await axios.get<Forecast>(
-      `http://192.168.29.185:8080/overview/${restaurantUUID}/fetch_data`,
+      `${apiUrl}/overview/${restaurantUUID}/fetch_data`,
       {
         params: {
           start_date: weekStart,
@@ -101,7 +105,7 @@ const getForecast = async (
     }));
   } catch (error) {
     console.error('Error fetching forecast data:', error);
-    return [];
+    return null;
   }
 };
 
@@ -129,7 +133,7 @@ const getCsv = async (
 ): Promise<GetCostResponse> => {
   try {
     const res = await axios.get<Ingredient>(
-      `http://192.168.29.185:8080/overview/${restaurantUUID}/fetch_data?start_date=${weekStart}&end_date=${weekEnd}&downlaod_csv=${downlaod_csv}`
+      `${apiUrl}/overview/${restaurantUUID}/fetch_data?start_date=${weekStart}&end_date=${weekEnd}&downlaod_csv=${downlaod_csv}`
     );
 
     return {
