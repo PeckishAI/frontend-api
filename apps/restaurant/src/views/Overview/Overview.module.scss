@@ -1,16 +1,18 @@
 .trends {
   display: grid;
   gap: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr); // Three columns
   margin-bottom: 20px;
 
-  // @media (min-width: 600px) {
-  //   grid-template-columns: repeat(2, 1fr);
-  // }
+  // Additional media queries for responsiveness
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(2, 1fr); // Two columns on smaller screens
+  }
 
-  // @media (min-width: 900px) {
-  //   grid-template-columns: repeat(4, 1fr);
-  // }
+  @media (max-width: 400px) {
+    grid-template-columns: repeat(1, 1fr); // One column on even smaller screens
+  }
+
 
   & > div {
     flex: 1;
@@ -18,7 +20,8 @@
 }
 
 .datepicker {
-  display: flex;
-  justify-content: flex-end;
+  display: grid; // Use grid for DatePicker
+  justify-content: start;
+  align-items: center;
   padding: 20px;
 }

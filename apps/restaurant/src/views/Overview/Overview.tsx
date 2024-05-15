@@ -71,7 +71,9 @@ const Overview = () => {
           format(value[1], 'yyyy-MM-dd')
         )
         .then((res) => {
-          setcost(res);
+          if (res) {
+            setcost(res);
+          }
         })
         .finally(() => {
           setLoadingMetrics(false);
@@ -84,7 +86,9 @@ const Overview = () => {
           format(value[1], 'yyyy-MM-dd')
         )
         .then((res) => {
-          setForecast(res);
+          if (res) {
+            setForecast(res);
+          }
         })
         .finally(() => {
           setLoadingForecast(false);
@@ -94,9 +98,6 @@ const Overview = () => {
 
   return (
     <>
-      <div className={styles.datepicker}>
-        <DateRangePickerComponent setValue={setValue} value={value} />
-      </div>
       {selectedRestaurantUUID ? (
         <>
           <div className={styles.trends}>
@@ -104,16 +105,28 @@ const Overview = () => {
             {!loadingMetrics &&
               cost &&
               Object.keys(cost).map((key) => (
-                <>
-                  <TrendCard
-                    key={key}
-                    title={key == 'costofgoodsold' ? 'Cost of goods sold' : key}
-                    value={cost[key].value?.toFixed(2)}
-                    icon={metricIcon[key]}
-                    percentage={cost[key].percentage}
-                  />
-                </>
+                <TrendCard
+                  key={key}
+                  title={key === 'costofgoodsold' ? 'Cost of Goods Sold' : key}
+                  value={cost[key]?.value?.toFixed(2) || 0}
+                  icon={metricIcon[key]}
+                  percentage={cost[key]?.percentage}
+                />
               ))}
+            {!loadingMetrics &&
+              !cost &&
+              [1, 2].map((key) => (
+                <TrendCard
+                  key={key}
+                  title={key === 1 ? 'Cost of Goods Sold' : 'Sales'}
+                  value="0"
+                  icon={metricIcon[key === 1 ? 'costofgoodsold' : 'sales']}
+                  percentage="0"
+                />
+              ))}
+            <div className={styles.datepicker}>
+              <DateRangePickerComponent setValue={setValue} value={value} />
+            </div>
           </div>
           <ForecastCard
             data={forecast}

@@ -28,7 +28,7 @@ export const ForecastCard = (props: Props) => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderItem = ({ value }: { value: any }) =>
-    value || prettyNumber(value);
+    value !== null && value !== undefined ? value : '0';
 
   const chartModes = useMemo(() => {
     const hasOccupancy = props.data && props.data[0]?.occupancy != null;
@@ -163,61 +163,79 @@ export const ForecastCard = (props: Props) => {
                   style={{ background: 'red' }}
                   data={props.data}
                   columns={[
-                    // {
-                    //   header: t('common:date'),
-                    //   key: 'date',
-                    //   renderItem: ({ row }) => dayjs(row.date).format('ddd D'),
-                    // },
                     {
-                      header: t('ingredient_name'),
+                      header: t('Ingredient Name'),
                       key: 'ingredient_name',
                       renderItem,
                     },
                     {
-                      header: t('unit'),
+                      header: t('Unit'),
                       key: 'unit',
                       renderItem,
                     },
                     {
-                      header: t('opening_qty'),
-                      key: 'opening_qty',
-                      renderItem,
-                    },
-                    {
-                      header: t('purchased_qty'),
-                      key: 'purchased_qty',
-                      renderItem,
-                    },
-
-                    {
-                      header: t('cost_per_unit'),
+                      header: t('cost/unit'),
                       key: 'cost_per_unit',
-                      renderItem,
+                      renderItem: ({ value }) =>
+                        value != null
+                          ? `£${parseFloat(value).toFixed(2)}`
+                          : '£0.00',
                     },
                     {
-                      header: t('sold_qty'),
+                      header: t('sold Qty'),
                       key: 'sold_qty',
-                      renderItem,
+                      renderItem: ({ value }) =>
+                        value != null
+                          ? `${parseFloat(value).toFixed(2)}`
+                          : '0.00',
                     },
                     {
-                      header: t('closing_qty'),
-                      key: 'closing_qty',
-                      renderItem,
-                    },
-                    {
-                      header: t('actual_cos'),
-                      key: 'actual_cos',
-                      renderItem,
-                    },
-                    {
-                      header: t('theoretical_cos'),
+                      header: t('Theoretical Cos'),
                       key: 'theoretical_cos',
-                      renderItem,
+                      renderItem: ({ value }) =>
+                        value != null
+                          ? `£${parseFloat(value).toFixed(2)}`
+                          : '£0.00',
                     },
                     {
-                      header: t('variance'),
+                      header: t('opening Qty'),
+                      key: 'opening_qty',
+                      renderItem: ({ value }) =>
+                        value != null
+                          ? `${parseFloat(value).toFixed(2)}`
+                          : '0.00',
+                    },
+                    {
+                      header: t('purchased Qty'),
+                      key: 'purchased_qty',
+                      renderItem: ({ value }) =>
+                        value != null
+                          ? `${parseFloat(value).toFixed(2)}`
+                          : '0.00',
+                    },
+                    {
+                      header: t('closing Qty'),
+                      key: 'closing_qty',
+                      renderItem: ({ value }) =>
+                        value != null
+                          ? `${parseFloat(value).toFixed(2)}`
+                          : '0.00',
+                    },
+                    {
+                      header: t('actual Cos'),
+                      key: 'actual_cos',
+                      renderItem: ({ value }) =>
+                        value != null
+                          ? `£${parseFloat(value).toFixed(2)}`
+                          : '£0.00',
+                    },
+                    {
+                      header: t('Variance'),
                       key: 'variance',
-                      renderItem,
+                      renderItem: ({ value }) =>
+                        value != null
+                          ? `${parseFloat(value).toFixed(2)}%`
+                          : '0.00%',
                     },
                   ]}
                 />
