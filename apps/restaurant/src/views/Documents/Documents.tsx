@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useTitle, Button } from 'shared-ui';
 import DocumentCard from './Components/DocumentCard/DocumentCard';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Invoice, inventoryService } from '../../services';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import DocumentDetail from '../../components/DocumentDetail/DocumentDetail';
@@ -45,7 +45,6 @@ const Documents = () => {
   };
 
   const handleDocumentClick = (clickedDocument: Invoice) => {
-    console.log('clicked');
     setDocumentDetail(clickedDocument);
   };
 
