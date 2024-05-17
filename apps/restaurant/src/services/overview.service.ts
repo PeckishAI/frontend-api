@@ -1,78 +1,151 @@
-import axiosClient from '.';
+import axiosClient from './index';
 
-export type MetricType = 'occupancy' | 'profits' | 'sales' | 'savings';
+export type MetricType = 'costofgoodsold' | 'profits' | 'sales' | 'savings';
 
-export type RestaurantMetric = {
-  occupancy: {
+export type ApiResponse = {
+  costofgoodsold: {
     value?: number;
-    mom?: number;
+    percentage?: number;
   };
   sales: {
     value?: number;
-    mom?: number;
+    percentage?: number;
+  };
+};
+type MetricsResponses = {
+  costofgoodsold: {
+    value?: number;
+    percentage?: number;
+  };
+  sales: {
+    value?: number;
+    percentage?: number;
   };
 };
 
-type MetricsResponse = {
-  Occupancy: {
-    curr_month?: number;
-    mom?: number;
-  };
-  Sales: {
-    curr_month?: number;
-    mom?: number;
-  };
+const getCostMetric = async (
+  restaurantUUID: string,
+  weekStart: string,
+  weekEnd: string
+): Promise<ApiResponse> => {
+  try {
+    const res = await axiosClient.get<MetricsResponses>(
+      `/overview/${restaurantUUID}/cost_and_sales`,
+      {
+        params: {
+          start_date: weekStart,
+          end_date: weekEnd,
+        },
+      }
+    );
+
+    return {
+      costofgoodsold: {
+        value: res.data.cost_of_goods,
+        percentage: res.data.cost_change_percentage,
+      },
+      sales: {
+        value: res.data.sales,
+        percentage: res.data.sales_change_percentage,
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
 };
 
-const getMetrics = async (
-  restaurantUUID: string
-): Promise<RestaurantMetric> => {
-  const res = await axiosClient.get<MetricsResponse>(
-    `/overview/${restaurantUUID}/metrics`
-  );
-
-  return {
-    occupancy: {
-      value: res.data.Occupancy.curr_month,
-      mom: res.data.Occupancy.mom,
-    },
-    sales: {
-      value: res.data.Sales.curr_month,
-      mom: res.data.Sales.mom,
-    },
-  };
-};
-
-type ForecastResponse = {
-  [date: string]: {
-    [metric in MetricType]?: number;
-  };
-};
-
-export type Forecast = {
+export type CostofSales = {
   date: Date;
-  occupancy?: number;
+  ingredient_name?: number;
   sales?: number;
-  profit?: number;
-  savings?: number;
+  opening_qty: number;
+  purchased_qty: number;
+  closing_qty: number;
+  actual_cos: number;
+  theoretical_cos: number;
+  variance: number;
 }[];
 
-const getForecast = async (restaurantUUID: string): Promise<Forecast> => {
-  const res = await axiosClient.get<ForecastResponse>(
-    `/overview/${restaurantUUID}/forecast`
-  );
-  console.log(res.data);
+const getCostOfSales = async (
+  restaurantUUID: string,
+  weekStart: string,
+  weekEnd: string
+): Promise<CostofSales> => {
+  try {
+    const res = await axiosClient.get<CostofSales>(
+      `/overview/${restaurantUUID}/fetch_data`,
+      {
+        params: {
+          start_date: weekStart,
+          end_date: weekEnd,
+        },
+      }
+    );
 
-  return Object.keys(res.data).map((date) => ({
-    date: new Date(date),
-    occupancy: res.data[date].occupancy,
-    sales: res.data[date].sales,
-    profit: res.data[date].profits,
-    savings: res.data[date].savings,
-  }));
+    return res.data.map((item) => ({
+      ingredient_name: item.ingredient_name,
+      unit: item.unit,
+      cost_per_unit: item.cost_per_unit,
+      opening_qty: item.opening_qty,
+      purchased_qty: item.purchased_qty,
+      sold_qty: item.sold_qty,
+      closing_qty: item.closing_qty,
+      actual_cos: item.actual_cos,
+      theoretical_cos: item.theoretical_cos,
+      variance: item.variance,
+    }));
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+};
+
+export type Ingredient = {
+  ingredient_name: string;
+  unit: string;
+  cost_per_unit: number;
+  opening_qty: number;
+  purchased_qty: number;
+  closing_qty: number;
+  actual_cos: number;
+  theoretical_cos: number;
+  sold_qty: number;
+  variance: number;
+};
+
+interface GetCostResponse {
+  csv_data: Ingredient;
+}
+const getCsv = async (
+  restaurantUUID: string,
+  weekStart: string,
+  weekEnd: string,
+  downlaod_csv: string
+): Promise<GetCostResponse> => {
+  try {
+    const res = await axiosClient.get<Ingredient>(
+      `/overview/${restaurantUUID}/fetch_data`,
+      {
+        params: {
+          start_date: weekStart,
+          end_date: weekEnd,
+          downlaod_csv: downlaod_csv,
+        },
+      }
+    );
+
+    return {
+      csv_data: res.data,
+    };
+  } catch (error) {
+    console.error('Error fetching Table data:', error);
+    return [];
+  }
 };
 
 export default {
-  getMetrics,
-  getForecast,
+  getCostOfSales,
+  getCostMetric,
+  getCsv,
 };
