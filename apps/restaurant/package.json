@@ -36,6 +36,7 @@
     "react-router-dom": "^6.15.0",
     "react-slick": "^0.29.0",
     "react-tooltip": "^5.21.1",
+    "rsuite": "^5.60.2",
     "shared-config": "*",
     "shared-translation": "*",
     "shared-ui": "*",
