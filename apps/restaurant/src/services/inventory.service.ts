@@ -1,7 +1,8 @@
+import axiosClient from './index';
 import axios, { Ingredient, Invoice, InvoiceIngredient } from './index';
 
 const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
-  const res = await axios.get('/documents/' + restaurantUUID);
+  const res = await axiosClient.get('/documents/' + restaurantUUID);
 
   // Check if res.data is an object
   if (typeof res.data !== 'object' || res.data === null) {
@@ -57,7 +58,7 @@ const updateDocument = (
   supplier_uuid: string,
   data: FormDocument
 ) => {
-  return axios.post('/documents/' + documentUUID + '/update', {
+  return axiosClient.post('/documents/' + documentUUID + '/update', {
     restaurant_uuid: restaurantUUID,
     date: data.date,
     supplier: data.supplier,
