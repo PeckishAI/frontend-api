@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { GLOBAL_CONFIG } from 'shared-config';
+import axiosClient from './index';
 
 export type MetricType = 'costofgoodsold' | 'profits' | 'sales' | 'savings';
 
@@ -24,20 +23,20 @@ type MetricsResponses = {
   };
 };
 
-const apiUrl = GLOBAL_CONFIG.apiUrl; // Get the API URL based on the environment
-
 const getCostMetric = async (
   restaurantUUID: string,
   weekStart: string,
   weekEnd: string
 ): Promise<ApiResponse> => {
   try {
-    // const res = await axios.get<MetricsResponses>(
-    //   `${apiUrl}/overview/${restaurantUUID}/cost_and_sales?start_date=${weekStart}&end_date=${weekEnd}`
-    // );
-
-    const res = await axios.get<MetricsResponses>(
-      `${apiUrl}/overview/${restaurantUUID}/cost_and_sales?start_date=${weekStart}&end_date=${weekEnd}`
+    const res = await axiosClient.get<MetricsResponses>(
+      `/overview/${restaurantUUID}/cost_and_sales`,
+      {
+        params: {
+          start_date: weekStart,
+          end_date: weekEnd,
+        },
+      }
     );
 
     return {
@@ -74,8 +73,8 @@ const getCostOfSales = async (
   weekEnd: string
 ): Promise<CostofSales> => {
   try {
-    const res = await axios.get<CostofSales>(
-      `${apiUrl}/overview/${restaurantUUID}/fetch_data`,
+    const res = await axiosClient.get<CostofSales>(
+      `/overview/${restaurantUUID}/fetch_data`,
       {
         params: {
           start_date: weekStart,
@@ -125,8 +124,15 @@ const getCsv = async (
   downlaod_csv: string
 ): Promise<GetCostResponse> => {
   try {
-    const res = await axios.get<Ingredient>(
-      `${apiUrl}/overview/${restaurantUUID}/fetch_data?start_date=${weekStart}&end_date=${weekEnd}&downlaod_csv=${downlaod_csv}`
+    const res = await axiosClient.get<Ingredient>(
+      `/overview/${restaurantUUID}/fetch_data`,
+      {
+        params: {
+          start_date: weekStart,
+          end_date: weekEnd,
+          downlaod_csv: downlaod_csv,
+        },
+      }
     );
 
     return {
