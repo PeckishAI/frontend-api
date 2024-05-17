@@ -7,6 +7,7 @@ import {
   Button,
   LabeledInput,
   DialogBox,
+  Loading,
 } from 'shared-ui';
 import styles from './style.module.scss';
 import { Invoice, inventoryService } from '../../services';
@@ -17,7 +18,8 @@ import { useRestaurantCurrency } from '../../store/useRestaurantStore';
 import { useForm, Controller } from 'react-hook-form';
 import { useIngredients } from '../../services/hooks';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
-import { MdDelete } from 'react-icons/md';
+import { toast } from 'react-hot-toast';
+import { classNames } from 'classnames';
 
 type Props = {
   document: Invoice | null;
@@ -40,14 +42,12 @@ type IngredientDetails = {
 const DocumentDetail = (props: Props) => {
   const { t } = useTranslation(['common', 'ingredient']);
   const { currencyISO } = useRestaurantCurrency();
-
-  const [deleteDocument, setDeleteDocument] = useState<Invoice | null>(null);
   const [confirmDeletePopup, setConfirmDeletePopup] = useState(false);
   const [editableDocument, setEditableDocument] = useState<Invoice | null>(
     null
   );
+  const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [isAddingIng, setIsAddingIng] = useState(false);
   const { control } = useForm();
 
   const { ingredients, loading: loadingIngredients } = useIngredients();
@@ -69,7 +69,6 @@ const DocumentDetail = (props: Props) => {
     } else {
       // Exit edit mode
       setEditableDocument(null);
-      setIsAddingIng(false);
     }
   };
 
@@ -100,8 +99,6 @@ const DocumentDetail = (props: Props) => {
     field: keyof IngredientDetails,
     value: any
   ) => {
-    console.log('Value:', value);
-
     if (!editableDocument || !editableDocument.ingredients) {
       console.error('Editable document or ingredients are undefined');
       return;
@@ -120,34 +117,48 @@ const DocumentDetail = (props: Props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     if (editableDocument) {
-      console.log(editableDocument);
+      const lastRow =
+        editableDocument.ingredients[editableDocument.ingredients.length - 1];
+
+      if (
+        !lastRow.detectedName ||
+        !lastRow.mappedName ||
+        !lastRow.quantity ||
+        !lastRow.unit ||
+        !lastRow.unitPrice ||
+        !lastRow.totalPrice
+      ) {
+        toast.error('Please fill in all required fields in the last row.');
+        return;
+      }
       try {
         // Prepare the data for updating
         const updatedData = {
           date: editableDocument.date,
           supplier: editableDocument.supplier,
+          amount: +editableDocument.amount,
           path: editableDocument.path,
           ingredients: editableDocument.ingredients.map((ing) => ({
             detectedName: ing.detectedName,
             mappedName: ing.mappedName,
             mappedUUID: ing.mappedUUID,
-            unitPrice: ing.unitPrice,
-            quantity: ing.quantity,
+            unitPrice: +ing.unitPrice,
+            quantity: +ing.quantity,
             unit: ing.unit,
-            totalPrice: ing.totalPrice,
+            totalPrice: +ing.totalPrice,
           })),
-          amount: editableDocument.amount,
         };
-
         // Call the updateDocument function
         await inventoryService.updateDocument(
           selectedRestaurantUUID,
           editableDocument.documentUUID,
+          editableDocument.supplier_uuid,
           updatedData
         );
-
-        console.log('Document updated successfully');
+        setIsLoading(false);
+        toast.success('Document updated successfully');
         setIsEditMode(false);
         setEditableDocument(null);
 
@@ -156,6 +167,7 @@ const DocumentDetail = (props: Props) => {
           props.onDocumentChanged(editableDocument, 'updated');
         }
       } catch (error) {
+        setIsLoading(false);
         console.error('Failed to update document:', error);
       }
     }
@@ -187,11 +199,28 @@ const DocumentDetail = (props: Props) => {
       mappedName: '',
       mappedUUID: '',
       quantity: 0,
+      unit: '',
+      unitPrice: 0,
       totalPrice: 0,
     };
 
     if (editableDocument) {
-      setIsAddingIng(true);
+      const lastRow =
+        editableDocument.ingredients[editableDocument.ingredients.length - 1];
+      if (
+        (lastRow && !lastRow.detectedName) ||
+        !lastRow.mappedName ||
+        !lastRow.quantity ||
+        !lastRow.unit ||
+        !lastRow.unitPrice ||
+        !lastRow.totalPrice
+      ) {
+        toast.error(
+          'Please fill in all fields in the current row before adding a new row'
+        );
+        return;
+      }
+
       const updatedIngredientsList = [...editableDocument.ingredients];
       updatedIngredientsList.push(newIngredient);
       setEditableDocument((prevDocument) => ({
@@ -200,6 +229,7 @@ const DocumentDetail = (props: Props) => {
       }));
     }
   };
+
   const viewColumns = [
     {
       key: 'detectedName',
@@ -216,6 +246,18 @@ const DocumentDetail = (props: Props) => {
       header: t('quantity'),
       classname: 'column-bold',
       renderItem: ({ row }) => `${row.quantity}`,
+    },
+    {
+      key: 'unit',
+      header: t('unit'),
+      classname: 'column-bold',
+      renderItem: ({ row }) => `${row.unit}`,
+    },
+    {
+      key: 'unitPrice',
+      header: t('unitCost'),
+      classname: 'column-bold',
+      renderItem: ({ row }) => `${row.unitPrice}`,
     },
     {
       key: 'totalPrice',
@@ -292,6 +334,38 @@ const DocumentDetail = (props: Props) => {
       ),
     },
     {
+      key: 'unit',
+      header: t('unit'),
+      classname: 'column-bold',
+      renderItem: ({ row, index }) => (
+        <Input
+          type="text"
+          placeholder={t('unit')}
+          className={styles.quantity}
+          onChange={(value) => handleIngredientChange(index, 'unit', value)}
+          value={editableDocument?.ingredients[index].unit || ''}
+        />
+      ),
+    },
+    {
+      key: 'unitPrice',
+      header: t('unitCost'),
+      classname: 'column-bold',
+      renderItem: ({ row, index }) => (
+        <Input
+          type="number"
+          min={0}
+          step="0.01"
+          placeholder={t('unitCost')}
+          className={styles.price}
+          onChange={(value) =>
+            handleIngredientChange(index, 'unitPrice', value)
+          }
+          value={editableDocument?.ingredients[index].unitPrice || ''}
+        />
+      ),
+    },
+    {
       key: 'totalPrice',
       header: t('totalCost'),
       classname: 'column-bold',
@@ -324,8 +398,6 @@ const DocumentDetail = (props: Props) => {
     // },
   ];
 
-  console.log(props.document?.ingredients);
-
   return (
     <>
       <SidePanel
@@ -336,49 +408,58 @@ const DocumentDetail = (props: Props) => {
         {isEditMode ? (
           <div className={styles.documentDetail}>
             <form onSubmit={handleSubmit} className={styles.editForm}>
-              <div className={styles.headerData}>
-                <LabeledInput
-                  type="text"
-                  placeholder={t('ingredient:supplier')}
-                  className={styles.input}
-                  onChange={(e) => handleInputChange(e, 'supplier')}
-                  value={editableDocument?.supplier || ''}
-                />
-                <LabeledInput
-                  type="number"
-                  min={0}
-                  suffix={currencyISO}
-                  className={styles.input}
-                  placeholder={t('price')}
-                  onChange={(e) => handleInputChange(e, 'amount')}
-                  value={editableDocument?.amount || 0}
-                />
-              </div>
-              <Table
-                data={editableDocument?.ingredients}
-                columns={isEditMode ? editColumns : viewColumns}
-                className={styles.table}
-              />
-              {!isAddingIng && (
-                <p
-                  className={styles.addIngredient}
-                  onClick={handleAddIngredient}>
-                  Add ingredient <i className="fa-solid fa-plus"></i>
-                </p>
+              {isLoading ? (
+                <div className={styles.loader}>
+                  <Loading size="large" />
+                </div>
+              ) : (
+                <>
+                  <div className={styles.headerData}>
+                    <LabeledInput
+                      type="text"
+                      placeholder={t('ingredient:supplier')}
+                      className={styles.input}
+                      onChange={(e) => handleInputChange(e, 'supplier')}
+                      value={editableDocument?.supplier || ''}
+                    />
+                    <LabeledInput
+                      type="number"
+                      min={0}
+                      step={'any'}
+                      suffix={currencyISO}
+                      className={styles.input}
+                      placeholder={t('price')}
+                      onChange={(e) => handleInputChange(e, 'amount')}
+                      value={editableDocument?.amount}
+                    />
+                  </div>
+                  <Table
+                    data={editableDocument?.ingredients}
+                    columns={isEditMode ? editColumns : viewColumns}
+                    className={styles.table}
+                  />
+                  <p
+                    className={styles.addIngredient}
+                    onClick={handleAddIngredient}>
+                    Add ingredient <i className="fa-solid fa-plus"></i>
+                  </p>
+
+                  <div className={styles.buttonsContaier}>
+                    <Button
+                      type="secondary"
+                      actionType="button"
+                      value={t('cancel')}
+                      onClick={toggleEditMode}
+                    />
+                    <Button
+                      type="primary"
+                      actionType="submit"
+                      value={t('document.save')}
+                      className={styles.button}
+                    />
+                  </div>
+                </>
               )}
-              <div className={styles.buttonsContaier}>
-                <Button
-                  type="secondary"
-                  actionType="button"
-                  value={t('cancel')}
-                  onClick={toggleEditMode}
-                />
-                <Button
-                  type="primary"
-                  actionType="submit"
-                  value={t('document.save')}
-                />
-              </div>
             </form>
           </div>
         ) : (
@@ -424,6 +505,16 @@ const DocumentDetail = (props: Props) => {
                   key: 'quantity',
                   header: t('quantity'),
                   renderItem: ({ row }) => `${row.quantity}`,
+                },
+                { key: 'unit', header: t('unit') },
+
+                {
+                  key: 'unitPrice',
+                  header: t('unitCost'),
+                  renderItem: ({ row }) =>
+                    row.unitPrice
+                      ? formatCurrency(row.unitPrice, currencyISO)
+                      : '-',
                 },
                 {
                   key: 'totalPrice',
