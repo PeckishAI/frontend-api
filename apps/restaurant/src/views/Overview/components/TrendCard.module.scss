@@ -30,6 +30,10 @@
       margin-left: 10px;
       color: var(--primaryColor);
     }
+
+    .pound{
+      color: #575757;
+    }
   }
 
   .trend {
@@ -37,6 +41,10 @@
     align-items: center;
     font-size: 0.85rem;
 
+    .perText{
+      color: black;
+    }
+    
     .percentage {
       &.equalTrend {
         color: black;
