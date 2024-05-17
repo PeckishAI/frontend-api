@@ -8,7 +8,7 @@ type Props = React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement
 > & {
-  value?: string;
+  value?: string | number;
   placeholder: string;
   icon?: React.ReactNode;
   error?: string;

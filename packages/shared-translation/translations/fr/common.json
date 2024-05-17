@@ -13,6 +13,7 @@
   "actions": "Actions",
   "availability": "Disponibilité",
   "unit": "Unité",
+  "unitPrice":"prix unitaire",
   "status": "Statut",
   "detail": "Détail",
   "customer": "Client",
