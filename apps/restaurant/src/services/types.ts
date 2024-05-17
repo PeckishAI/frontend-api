@@ -33,6 +33,7 @@ export type Invoice = {
   date?: string;
   supplier?: string;
   image?: string;
+  supplier_uuid: string;
   ingredients: InvoiceIngredient[];
   restaurantUUID?: string;
   path?: string;

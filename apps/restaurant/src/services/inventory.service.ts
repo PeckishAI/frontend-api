@@ -16,25 +16,25 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
     return {
       ...documentData,
       documentUUID: key,
+      supplier_uuid: documentData.supplier_uuid,
       ingredients: documentData.ingredients.map((ingredient: any) => ({
         mappedUUID: ingredient['mapping_uuid'],
         detectedName: ingredient['ingredient_name'],
         mappedName: ingredient['mapping_name'],
         quantity: ingredient['quantity'],
         unit: ingredient['unit'],
+        unitPrice: ingredient['unit_price'],
         totalPrice: ingredient['total_price'],
-        unitPrice: ingredient['unitPrice'],
       })),
     };
   });
-
-  console.log('Converted Data:', convertedData);
   return convertedData;
 };
 
 type FormDocument = {
   date: string;
   supplier: string;
+  supplier_uuid: string;
   path: string;
   ingredients: InvoiceIngredient[];
 };
@@ -53,12 +53,14 @@ const convertToBase64 = (file: File): Promise<string> => {
 const updateDocument = (
   restaurantUUID: string,
   documentUUID: string,
+  supplier_uuid: string,
   data: FormDocument
 ) => {
   return axios.post('/documents/' + documentUUID + '/update', {
     restaurant_uuid: restaurantUUID,
     date: data.date,
     supplier: data.supplier,
+    supplier_uuid: supplier_uuid,
     ingredients: data.ingredients,
   });
 };
@@ -127,7 +129,6 @@ const updateIngredient = (ingredient: Ingredient) => {
     supplier: ingredient.supplier,
     cost: ingredient.unitCost,
   };
-  console.log('formated ingredient : ', ingredientFormated);
 
   return axios.post(
     '/inventory/' + ingredient.id + '/update',
