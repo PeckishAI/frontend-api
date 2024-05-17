@@ -7,6 +7,7 @@ export type Ingredient = {
   parLevel: number;
   unit: string;
   supplier: string;
+  amount: number;
   unitCost: number;
   actions?: void;
 };

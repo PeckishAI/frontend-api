@@ -35,6 +35,7 @@ type FormDocument = {
   date: string;
   supplier: string;
   supplier_uuid: string;
+  amount: number;
   path: string;
   ingredients: InvoiceIngredient[];
 };
@@ -62,6 +63,7 @@ const updateDocument = (
     supplier: data.supplier,
     supplier_uuid: supplier_uuid,
     ingredients: data.ingredients,
+    amount: data.amount,
   });
 };
 
@@ -84,6 +86,7 @@ const getIngredientList = async (
     unitCost: res.data[key]['cost'],
     tagUUID: res.data[key]['tag_uuid'],
     supplier: res.data[key]['supplier'],
+    amount: res.data[key]['amount'],
   }));
 };
 

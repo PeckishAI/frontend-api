@@ -7,6 +7,7 @@ import {
   Button,
   LabeledInput,
   DialogBox,
+  Loading,
 } from 'shared-ui';
 import styles from './style.module.scss';
 import { Invoice, inventoryService } from '../../services';
@@ -18,6 +19,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useIngredients } from '../../services/hooks';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { toast } from 'react-hot-toast';
+import { classNames } from 'classnames';
 
 type Props = {
   document: Invoice | null;
@@ -44,6 +46,7 @@ const DocumentDetail = (props: Props) => {
   const [editableDocument, setEditableDocument] = useState<Invoice | null>(
     null
   );
+  const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const { control } = useForm();
 
@@ -114,6 +117,7 @@ const DocumentDetail = (props: Props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     if (editableDocument) {
       const lastRow =
         editableDocument.ingredients[editableDocument.ingredients.length - 1];
@@ -134,6 +138,7 @@ const DocumentDetail = (props: Props) => {
         const updatedData = {
           date: editableDocument.date,
           supplier: editableDocument.supplier,
+          amount: +editableDocument.amount,
           path: editableDocument.path,
           ingredients: editableDocument.ingredients.map((ing) => ({
             detectedName: ing.detectedName,
@@ -144,7 +149,6 @@ const DocumentDetail = (props: Props) => {
             unit: ing.unit,
             totalPrice: +ing.totalPrice,
           })),
-          amount: editableDocument.amount,
         };
         // Call the updateDocument function
         await inventoryService.updateDocument(
@@ -153,6 +157,7 @@ const DocumentDetail = (props: Props) => {
           editableDocument.supplier_uuid,
           updatedData
         );
+        setIsLoading(false);
         toast.success('Document updated successfully');
         setIsEditMode(false);
         setEditableDocument(null);
@@ -162,6 +167,7 @@ const DocumentDetail = (props: Props) => {
           props.onDocumentChanged(editableDocument, 'updated');
         }
       } catch (error) {
+        setIsLoading(false);
         console.error('Failed to update document:', error);
       }
     }
@@ -323,7 +329,7 @@ const DocumentDetail = (props: Props) => {
           placeholder={t('quantity')}
           className={styles.quantity}
           onChange={(value) => handleIngredientChange(index, 'quantity', value)}
-          value={editableDocument?.ingredients[index].quantity || 0}
+          value={editableDocument?.ingredients[index].quantity || ''}
         />
       ),
     },
@@ -334,8 +340,6 @@ const DocumentDetail = (props: Props) => {
       renderItem: ({ row, index }) => (
         <Input
           type="text"
-          min={0}
-          step="0.01"
           placeholder={t('unit')}
           className={styles.quantity}
           onChange={(value) => handleIngredientChange(index, 'unit', value)}
@@ -357,7 +361,7 @@ const DocumentDetail = (props: Props) => {
           onChange={(value) =>
             handleIngredientChange(index, 'unitPrice', value)
           }
-          value={editableDocument?.ingredients[index].unitPrice || 0}
+          value={editableDocument?.ingredients[index].unitPrice || ''}
         />
       ),
     },
@@ -375,7 +379,7 @@ const DocumentDetail = (props: Props) => {
           onChange={(value) =>
             handleIngredientChange(index, 'totalPrice', value)
           }
-          value={editableDocument?.ingredients[index].totalPrice || 0}
+          value={editableDocument?.ingredients[index].totalPrice || ''}
         />
       ),
     },
@@ -404,47 +408,58 @@ const DocumentDetail = (props: Props) => {
         {isEditMode ? (
           <div className={styles.documentDetail}>
             <form onSubmit={handleSubmit} className={styles.editForm}>
-              <div className={styles.headerData}>
-                <LabeledInput
-                  type="text"
-                  placeholder={t('ingredient:supplier')}
-                  className={styles.input}
-                  onChange={(e) => handleInputChange(e, 'supplier')}
-                  value={editableDocument?.supplier || ''}
-                />
-                <LabeledInput
-                  type="number"
-                  min={0}
-                  step={'any'}
-                  suffix={currencyISO}
-                  className={styles.input}
-                  placeholder={t('price')}
-                  onChange={(e) => handleInputChange(e, 'amount')}
-                  value={editableDocument?.amount || 0}
-                />
-              </div>
-              <Table
-                data={editableDocument?.ingredients}
-                columns={isEditMode ? editColumns : viewColumns}
-                className={styles.table}
-              />
-              <p className={styles.addIngredient} onClick={handleAddIngredient}>
-                Add ingredient <i className="fa-solid fa-plus"></i>
-              </p>
+              {isLoading ? (
+                <div className={styles.loader}>
+                  <Loading size="large" />
+                </div>
+              ) : (
+                <>
+                  <div className={styles.headerData}>
+                    <LabeledInput
+                      type="text"
+                      placeholder={t('ingredient:supplier')}
+                      className={styles.input}
+                      onChange={(e) => handleInputChange(e, 'supplier')}
+                      value={editableDocument?.supplier || ''}
+                    />
+                    <LabeledInput
+                      type="number"
+                      min={0}
+                      step={'any'}
+                      suffix={currencyISO}
+                      className={styles.input}
+                      placeholder={t('price')}
+                      onChange={(e) => handleInputChange(e, 'amount')}
+                      value={editableDocument?.amount}
+                    />
+                  </div>
+                  <Table
+                    data={editableDocument?.ingredients}
+                    columns={isEditMode ? editColumns : viewColumns}
+                    className={styles.table}
+                  />
+                  <p
+                    className={styles.addIngredient}
+                    onClick={handleAddIngredient}>
+                    Add ingredient <i className="fa-solid fa-plus"></i>
+                  </p>
 
-              <div className={styles.buttonsContaier}>
-                <Button
-                  type="secondary"
-                  actionType="button"
-                  value={t('cancel')}
-                  onClick={toggleEditMode}
-                />
-                <Button
-                  type="primary"
-                  actionType="submit"
-                  value={t('document.save')}
-                />
-              </div>
+                  <div className={styles.buttonsContaier}>
+                    <Button
+                      type="secondary"
+                      actionType="button"
+                      value={t('cancel')}
+                      onClick={toggleEditMode}
+                    />
+                    <Button
+                      type="primary"
+                      actionType="submit"
+                      value={t('document.save')}
+                      className={styles.button}
+                    />
+                  </div>
+                </>
+              )}
             </form>
           </div>
         ) : (
