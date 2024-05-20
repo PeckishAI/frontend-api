@@ -117,18 +117,15 @@ const DocumentDetail = (props: Props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     if (editableDocument) {
       const lastRow =
         editableDocument.ingredients[editableDocument.ingredients.length - 1];
-
       if (
         !lastRow.detectedName ||
         !lastRow.mappedName ||
         !lastRow.quantity ||
         !lastRow.unit ||
-        !lastRow.unitPrice ||
-        !lastRow.totalPrice
+        !lastRow.unitPrice
       ) {
         toast.error('Please fill in all required fields in the last row.');
         return;
@@ -150,6 +147,7 @@ const DocumentDetail = (props: Props) => {
             totalPrice: +ing.totalPrice,
           })),
         };
+        setIsLoading(true);
         // Call the updateDocument function
         await inventoryService.updateDocument(
           selectedRestaurantUUID,
@@ -212,8 +210,7 @@ const DocumentDetail = (props: Props) => {
         !lastRow.mappedName ||
         !lastRow.quantity ||
         !lastRow.unit ||
-        !lastRow.unitPrice ||
-        !lastRow.totalPrice
+        !lastRow.unitPrice
       ) {
         toast.error(
           'Please fill in all fields in the current row before adding a new row'
