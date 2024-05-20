@@ -117,6 +117,7 @@ const DocumentDetail = (props: Props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     if (editableDocument) {
       const lastRow =
         editableDocument.ingredients[editableDocument.ingredients.length - 1];
