@@ -7,22 +7,37 @@ import { useState, useMemo } from 'react';
 import { CostOfSalesChart } from './CostOfSalesChart';
 import { CostofSales, MetricType } from '../../../services/overview.service';
 import Skeleton from 'react-loading-skeleton';
-import { prettyNumber } from '../../../utils/helpers';
 import { useTranslation } from 'react-i18next';
 import overviewService from '../../../services/overview.service';
+import { format } from 'date-fns';
+import CostFilters from './CostFilter/CostFilters';
+
 type Props = {
   data?: CostofSales;
   currency?: string | null;
   loading: boolean;
+  value: [Date | null, Date | null];
+  selectedRestaurantUUID: string;
+  filterOption?: string;
+  setFilters: string;
+  filters: string;
+  isLoading: boolean;
+  setIsLoading: boolean;
 };
-import { format } from 'date-fns';
-// TODO: Calculate depending on available values
 
-//TODO: Vertical table (header = days)
-export const CostOfSalesCard = (props: Props) => {
+export const CostOfSalesCard: React.FC<Props> = ({
+  data,
+  loading,
+  selectedRestaurantUUID,
+  currency,
+  value,
+  filterOption,
+  setFilters,
+  filters,
+  setIsLoading,
+}) => {
   const { t } = useTranslation(['overview', 'common']);
   const [selectedMode, setSelectedMode] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedChartMode, setSelectedChartMode] =
     useState<MetricType>('costofgoodssold');
 
@@ -31,11 +46,10 @@ export const CostOfSalesCard = (props: Props) => {
     value !== null && value !== undefined ? value : '0';
 
   const chartModes = useMemo(() => {
-    const hascostofgoodssold =
-      props.data && props.data[0]?.costofgoodssold != null;
-    const hasSales = props.data && props.data[0]?.sales != null;
-    const hasProfit = props.data && props.data[0]?.profit != null;
-    const hasSavings = props.data && props.data[0]?.savings != null;
+    const hascostofgoodssold = data && data[0]?.costofgoodssold != null;
+    const hasSales = data && data[0]?.sales != null;
+    const hasProfit = data && data[0]?.profit != null;
+    const hasSavings = data && data[0]?.savings != null;
 
     const modes = [
       {
@@ -72,18 +86,20 @@ export const CostOfSalesCard = (props: Props) => {
       setSelectedChartMode('costofgoodssold');
     }
     return modes;
-  }, [props.data]);
+  }, [data]);
 
   const handleExportDataClick = () => {
     setIsLoading(true);
-    const rows = props.data;
+
+    const rows = data;
     if (rows) {
       overviewService
         .getCsv(
-          props?.selectedRestaurantUUID,
-          format(props.value[0], 'yyyy-MM-dd'),
-          format(props.value[1], 'yyyy-MM-dd'),
-          'True'
+          selectedRestaurantUUID,
+          format(value[0], 'yyyy-MM-dd'),
+          format(value[1], 'yyyy-MM-dd'),
+          'True',
+          filters?.selectedTag?.name
         )
         .then((response) => {
           const csvHeader = Object.keys(response.csv_data[0]).join(',') + '\n';
@@ -128,7 +144,6 @@ export const CostOfSalesCard = (props: Props) => {
               className={styles.tabs}
             />
           </div>
-          {isLoading && <Loading />}
           <div className={styles.rightHeader}>
             {selectedMode === 1 && (
               <Dropdown
@@ -139,6 +154,14 @@ export const CostOfSalesCard = (props: Props) => {
                 }
               />
             )}
+
+            <CostFilters
+              tag_names={(filterOption || []).map((s) => ({
+                name: s.tag_name,
+              }))}
+              onApplyFilters={(newFilters) => setFilters(newFilters)}
+            />
+
             <IconButton
               icon={<i className="fa-solid fa-file-export"></i>}
               onClick={handleExportDataClick}
@@ -156,13 +179,13 @@ export const CostOfSalesCard = (props: Props) => {
         <div className={styles.content}>
           {/* {Children} */}
           {selectedMode === 0 ? (
-            props.loading ? (
+            loading ? (
               <ForecastTableSkeleton />
             ) : (
               <>
                 <Table
                   style={{ background: 'red' }}
-                  data={props.data}
+                  data={data}
                   columns={[
                     {
                       header: t('Ingredient Name'),
@@ -244,9 +267,9 @@ export const CostOfSalesCard = (props: Props) => {
             )
           ) : (
             <CostOfSalesChart
-              data={props.data}
+              data={data}
               visibleMetric={selectedChartMode}
-              currency={props.currency}
+              currency={currency}
             />
           )}
         </div>
