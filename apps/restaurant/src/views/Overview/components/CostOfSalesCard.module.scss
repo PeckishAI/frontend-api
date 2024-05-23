@@ -30,11 +30,9 @@
 
       .forecastIiconBtn {
         color: var(--cardColor);
-        padding: 0px;
       }
-
-      .forecastIicon {
-        color: var(--cardColor);
+      .forecastIiconBtn:hover {
+        background-color: var(--backgroundColor);
       }
     }
   }
