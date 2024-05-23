@@ -74,10 +74,10 @@ const CostFilters = ({ tag_names, onApplyFilters }: Props) => {
       <IconButton
         icon={<i className="fa-solid fa-filter"></i>}
         onClick={handleClick}
-        tooltipMsg={t('filter')}
-        tooltipId="inventory-tooltip"
-        className={styles.filterIcon}
+        tooltipMsg={t('common:filter')}
+        tooltipId="forecast-tooltip"
         ref={triggerRef}
+        className={styles.filterIcon}
       />
       {isVisible && (
         <div ref={popupRef} className={styles.filters}>

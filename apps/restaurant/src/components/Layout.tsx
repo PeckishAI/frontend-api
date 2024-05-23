@@ -22,6 +22,7 @@ const Layout = () => {
   const navigate = useNavigate();
 
   const { logout, user } = useUserStore();
+
   const {
     selectedRestaurantUUID,
     setSelectedRestaurantUUID,
@@ -68,28 +69,31 @@ const Layout = () => {
       name: t('pages.myRestaurants'),
       icon: <i className="fa-solid fa-utensils"></i>,
       navigateTo: '/',
+      disable: !user?.permissions?.my_restaurants,
     },
     {
       name: t('pages.overview'),
       icon: <i className="fa-solid fa-chart-line"></i>,
       navigateTo: '/overview',
-      disable: user && !user.onboarded,
+      disable: !user?.permissions?.overview,
     },
     {
       name: t('pages.inventory.stock'),
       icon: <i className="fa-solid fa-cubes-stacked"></i>,
       navigateTo: '/inventory/stock',
+      disable: !user?.permissions?.inventory,
     },
     {
       name: t('pages.recipes'),
       icon: <i className="fa-solid fa-burger"></i>,
       navigateTo: '/recipes',
-      disable: user && !user.onboarded,
+      disable: !user?.permissions?.recipes,
     },
     {
       name: t('pages.documents'),
       icon: <i className="fa-solid fa-file"></i>,
       navigateTo: '/documents',
+      disable: !user?.permissions?.documents,
     },
     {
       separatorName: t('services'),
@@ -98,6 +102,7 @@ const Layout = () => {
       name: t('pages.integrations'),
       icon: <i className="fa-solid fa-puzzle-piece"></i>,
       navigateTo: '/integrations',
+      disable: !user?.permissions?.integrations,
     },
   ];
 

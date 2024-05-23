@@ -169,10 +169,11 @@ export const CostOfSalesCard: React.FC<Props> = ({
               tooltipId="forecast-tooltip"
               className={styles.forecastIiconBtn}
             />
-            <FaInfoCircle
-              data-tooltip-id="forecast-tooltip"
-              data-tooltip-content={t('CostofSalesTooltip')}
-              className={styles.forecastIicon}
+            <IconButton
+              icon={<i className="fa-solid fa-circle-info"></i>}
+              tooltipMsg={t('CostofSalesTooltip')}
+              tooltipId="forecast-tooltip"
+              className={styles.forecastIiconBtn}
             />
           </div>
         </div>

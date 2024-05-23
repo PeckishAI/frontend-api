@@ -6,6 +6,9 @@
   color: var(--cardColor);
   padding: 0px;
 }
+.filterIcon:hover {
+  background-color: var(--backgroundColor);
+}
 
 @keyframes fadeIn {
   from {
