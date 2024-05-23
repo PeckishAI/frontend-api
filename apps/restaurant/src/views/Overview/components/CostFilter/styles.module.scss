@@ -4,7 +4,9 @@
 }
 .filterIcon{
   color: var(--cardColor);
+  padding: 0px;
 }
+
 @keyframes fadeIn {
   from {
     opacity: 0;
