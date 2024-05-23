@@ -21,6 +21,7 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
       ingredients: documentData.ingredients.map((ingredient: any) => ({
         mappedUUID: ingredient['mapping_uuid'],
         detectedName: ingredient['ingredient_name'],
+        tag_name: ingredient['tag_name'],
         mappedName: ingredient['mapping_name'],
         quantity: ingredient['quantity'],
         unit: ingredient['unit'],

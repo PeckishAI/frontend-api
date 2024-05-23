@@ -58,6 +58,7 @@ const getCostMetric = async (
 export type CostofSales = {
   date: Date;
   ingredient_name?: number;
+  tag_name: string;
   sales?: number;
   opening_qty: number;
   purchased_qty: number;
@@ -85,6 +86,7 @@ const getCostOfSales = async (
 
     return res.data.map((item) => ({
       ingredient_name: item.ingredient_name,
+      tag_name: item.tag_name,
       unit: item.unit,
       cost_per_unit: item.cost_per_unit,
       opening_qty: item.opening_qty,
@@ -95,8 +97,8 @@ const getCostOfSales = async (
       theoretical_cos: item.theoretical_cos,
       variance: item.variance,
     }));
-  } catch (error) {
-    console.error('Error fetching data:', error);
+  } catch (res) {
+    console.error('Error fetching data:', res?.data.error);
     return null;
   }
 };
@@ -121,7 +123,8 @@ const getCsv = async (
   restaurantUUID: string,
   weekStart: string,
   weekEnd: string,
-  downlaod_csv: string
+  download_csv: string,
+  tag: string
 ): Promise<GetCostResponse> => {
   try {
     const res = await axiosClient.get<Ingredient>(
@@ -130,11 +133,13 @@ const getCsv = async (
         params: {
           start_date: weekStart,
           end_date: weekEnd,
-          downlaod_csv: downlaod_csv,
+          download_csv: download_csv,
+          tag: tag,
         },
       }
     );
 
+    console.log('res', res.data);
     return {
       csv_data: res.data,
     };

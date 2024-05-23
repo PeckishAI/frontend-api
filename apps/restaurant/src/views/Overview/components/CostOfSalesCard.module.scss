@@ -21,15 +21,20 @@
     }
 
     .rightHeader {
-      display: flex;
-      align-items: center;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 20px; 
+      justify-items: center; 
+      align-items: center; 
+    
 
       .forecastIiconBtn {
         color: var(--cardColor);
+        padding: 0px;
       }
-      .forecastIiconBtn:hover {
-        background-color: var(--backgroundColor);
+
+      .forecastIicon {
+        color: var(--cardColor);
       }
     }
   }
