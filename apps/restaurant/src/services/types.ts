@@ -17,6 +17,10 @@ export type Tag = {
   name: string;
 };
 
+export type Tags = {
+  name: string;
+};
+
 export type InvoiceIngredient = {
   inventoryIngredientRef?: Ingredient | null;
   mappedUUID?: string;

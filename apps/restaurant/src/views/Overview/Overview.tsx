@@ -12,11 +12,15 @@ import overviewService, {
 } from '../../services/overview.service';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { useTranslation } from 'react-i18next';
-import { EmptyPage, useTitle } from 'shared-ui';
+import { EmptyPage, Loading, useTitle } from 'shared-ui';
 import { TFunction } from 'i18next';
 import DateRangePickerComponent from '../../components/DateRangePicker/DateRangePicker';
 import { format } from 'date-fns';
 import Vector from '../../assets/img/categories/Vector.svg';
+import {
+  FiltersType,
+  defaultFilters,
+} from './components/CostFilter/CostFilters';
 
 const metricIcon: { [K in keyof ApiResponse]: React.ReactNode } = {
   costofgoodsold: <img src={Vector} />,
@@ -48,9 +52,12 @@ const Overview = () => {
   useTitle(t('common:pages.overview'));
 
   const [loadingMetrics, setLoadingMetrics] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [cost, setcost] = useState<ApiResponse>();
   const [loadingCostOfSales, setLoadingCostOfSales] = useState(false);
   const [costOfSales, setCostOfSales] = useState<CostofSales>();
+  const [filterOption, setFilterOption] = useState<CostofSales>();
+  const [filters, setFilters] = useState<FiltersType>(defaultFilters);
   const [value, setValue] = useState([null, null]);
 
   const { selectedRestaurantUUID, restaurants } = useRestaurantStore();
@@ -87,6 +94,7 @@ const Overview = () => {
         .then((res) => {
           if (res) {
             setCostOfSales(res);
+            setFilterOption(res);
           }
         })
         .finally(() => {
@@ -95,45 +103,75 @@ const Overview = () => {
     }
   }, [selectedRestaurantUUID, value[0], value[1]]);
 
+  useEffect(() => {
+    const applyFilters = () => {
+      let filteredList = [...(filterOption || [])];
+
+      if (filters.selectedTag) {
+        filteredList = filteredList.filter(
+          (ingredient) => ingredient.tag_name === filters?.selectedTag?.name
+        );
+      }
+
+      setCostOfSales(filteredList);
+    };
+
+    applyFilters();
+  }, [filters]);
+
   return (
     <>
       {selectedRestaurantUUID ? (
         <>
-          <div className={styles.trends}>
-            {loadingMetrics && [1, 2].map((i) => <TrendCardSkeleton key={i} />)}
-            {!loadingMetrics &&
-              cost &&
-              Object.keys(cost).map((key) => (
-                <TrendCard
-                  key={key}
-                  title={key === 'costofgoodsold' ? 'Cost of Goods Sold' : key}
-                  value={cost[key]?.value?.toFixed(2) || 0}
-                  icon={metricIcon[key]}
-                  percentage={cost[key]?.percentage}
-                />
-              ))}
-            {!loadingMetrics &&
-              !cost &&
-              [1, 2].map((key) => (
-                <TrendCard
-                  key={key}
-                  title={key === 1 ? 'Cost of Goods Sold' : 'Sales'}
-                  value="0"
-                  icon={metricIcon[key === 1 ? 'costofgoodsold' : 'sales']}
-                  percentage="0"
-                />
-              ))}
-            <div className={styles.datepicker}>
-              <DateRangePickerComponent setValue={setValue} value={value} />
+          <>
+            <div className={styles.trends}>
+              {loadingMetrics &&
+                [1, 2].map((i) => <TrendCardSkeleton key={i} />)}
+
+              {!loadingMetrics &&
+                cost &&
+                Object.keys(cost).map((key) => (
+                  <TrendCard
+                    key={key}
+                    title={
+                      key === 'costofgoodsold' ? 'Cost of Goods Sold' : key
+                    }
+                    value={cost[key]?.value?.toFixed(2) || 0}
+                    icon={metricIcon[key]}
+                    percentage={cost[key]?.percentage}
+                  />
+                ))}
+              {!loadingMetrics &&
+                !cost &&
+                [1, 2].map((key) => (
+                  <TrendCard
+                    key={key}
+                    title={key === 1 ? 'Cost of Goods Sold' : 'Sales'}
+                    value="0"
+                    icon={metricIcon[key === 1 ? 'costofgoodsold' : 'sales']}
+                    percentage="0"
+                  />
+                ))}
+              <div className={styles.datepicker}>
+                <DateRangePickerComponent setValue={setValue} value={value} />
+              </div>
             </div>
-          </div>
-          <CostOfSalesCard
-            data={costOfSales}
-            loading={loadingCostOfSales}
-            selectedRestaurantUUID={selectedRestaurantUUID}
-            currency={currentCurrency}
-            value={value}
-          />
+            {isLoading ? (
+              <Loading size="large" />
+            ) : (
+              <CostOfSalesCard
+                data={costOfSales}
+                filterOption={filterOption}
+                loading={loadingCostOfSales}
+                selectedRestaurantUUID={selectedRestaurantUUID}
+                currency={currentCurrency}
+                value={value}
+                setFilters={setFilters}
+                filters={filters}
+                setIsLoading={setIsLoading}
+              />
+            )}
+          </>
         </>
       ) : (
         <EmptyPage

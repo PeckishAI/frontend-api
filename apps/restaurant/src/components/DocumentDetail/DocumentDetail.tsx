@@ -19,7 +19,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { useIngredients } from '../../services/hooks';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { toast } from 'react-hot-toast';
-import { classNames } from 'classnames';
 
 type Props = {
   document: Invoice | null;
