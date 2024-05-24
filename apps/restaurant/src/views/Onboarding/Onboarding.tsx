@@ -9,7 +9,7 @@ const Onboarding = () => {
 
   const { user } = useUserStore();
 
-  if (user && user.onboarded) {
+  if (user && user.user.onboarded) {
     return <Navigate to="/" />;
   }
 

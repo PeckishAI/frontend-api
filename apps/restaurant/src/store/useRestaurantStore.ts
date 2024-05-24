@@ -41,7 +41,7 @@ export const useRestaurantStore = create<RestaurantStore>()((set) => ({
     });
 
     const restaurants = await restaurantService.getUserRestaurants(
-      user.user_uuid
+      user.user.user_uuid
     );
 
     // Retrieve last selected restaurant from local storage
