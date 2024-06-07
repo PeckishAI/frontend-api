@@ -6,6 +6,7 @@ import axiosClient from '../../../../services';
 import { useUserStore } from '@peckishai/user-management';
 import { POS, Integration } from '../../Integrations';
 import { useOAuth2 } from '../../../../utils/oauth/useOAuth2';
+import { useRestaurantStore } from '../../../../store/useRestaurantStore';
 
 type Props = {
   isVisible: boolean;
@@ -13,10 +14,6 @@ type Props = {
   toggleModal: () => void;
   onIntegrated: (integration?: Integration) => void;
 };
-
-// function oauth(auth_type: string | undefined, oauth_url: string | undefined) {
-//   console.log(auth_type, oauth_url);
-// }
 
 const LoginModal = (props: Props) => {
   const { t } = useTranslation(['common', 'validation', 'onboarding']);
@@ -30,14 +27,17 @@ const LoginModal = (props: Props) => {
   >(null);
   const [integrated, setIntegrated] = useState<Integration>();
 
+  const { selectedRestaurantUUID } = useRestaurantStore();
+
   const { getAuth, error, loading, data } = useOAuth2({
-    authorizeUrl: props.pos?.data?.oauth_url ?? '',
+    authorizeUrl:
+      props.pos?.name === 'Xero'
+        ? `${props.pos?.data?.oauth_url}/${selectedRestaurantUUID}`
+        : props.pos?.data?.oauth_url ?? '',
     clientId: props.pos?.data?.client_id ?? '',
     redirectUri: window.location.origin + '/oauth/callback',
     scope: props.pos?.data?.scope ?? '',
   });
-
-  console.log('error', error, 'loading', loading, 'data', data);
 
   function FieldsValid() {
     if (!userName) {
@@ -54,7 +54,6 @@ const LoginModal = (props: Props) => {
 
   useEffect(() => {
     if (error) {
-      console.log('error', error);
       setRetrieveDataStatus('fail');
       return;
     }
@@ -79,7 +78,11 @@ const LoginModal = (props: Props) => {
   const handleLoginClick = () => {
     if (props.pos?.auth_type === 'oauth') {
       setRetrieveDataStatus('loading');
-      getAuth();
+      if (props.pos?.name === 'Xero') {
+        window.location.href = `${props.pos?.data?.oauth_url}/${selectedRestaurantUUID}`;
+      } else {
+        getAuth();
+      }
       return;
     }
 
@@ -122,7 +125,6 @@ const LoginModal = (props: Props) => {
             <>
               <LabeledInput
                 type="text"
-                // width="300px"
                 value={userName}
                 placeholder="Username"
                 onChange={(e) => setUserName(e.target.value)}
@@ -130,7 +132,6 @@ const LoginModal = (props: Props) => {
               />
               <LabeledInput
                 type="password"
-                // width="300px"
                 value={userPassword}
                 placeholder="Password"
                 onChange={(e) => setUserPassword(e.target.value)}
