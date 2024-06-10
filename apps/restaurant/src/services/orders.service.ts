@@ -1,5 +1,6 @@
 import { IngredientOption } from '../views/PlaceOrder/Components/IngredientsTable/IngredientsTable';
 import { GeneratedOrder } from '../views/PlaceOrder/Components/ShoppingView/ShoppingView';
+import axiosClient from './index';
 import axios from './index';
 
 export type PredictOrderResponse = {
@@ -14,9 +15,63 @@ export type SupplierOrder = {
   note?: string | null;
 };
 
-const getOrders = async (restaurantUUID: string) => {
-  const res = await axios.get(`/order/${restaurantUUID}`);
-  return res;
+// const getOrders = async (restaurantUUID: string) => {
+//   const res = await axios.get(`/order/${restaurantUUID}`);
+//   return res;
+// }
+
+export type OrderResponse = {
+  supplier: string;
+  orderDate: string;
+  deliveryDate: string;
+  status: string;
+  price: number;
+  uuid: number;
+  products: {
+    unit: string;
+    name: string;
+    quantity: number;
+    unitCost: number;
+    // actualStock: number;
+    // id: string;
+    // tagUUID?: string | null | undefined;
+    // theoriticalStock?: number | undefined;
+    // parLevel: number;
+    // amount: number;
+  }[];
+};
+
+const getOrders = async (
+  restaurantUUID: string
+): Promise<OrderResponse[] | null> => {
+  try {
+    const res = await axiosClient.get<OrderResponse>(
+      `/orders/${restaurantUUID}`
+    );
+    return res.data.map((item) => ({
+      supplier: item.supplier,
+      orderDate: item.orderDate,
+      deliveryDate: item.deliveryDate,
+      status: item.status,
+      price: item.price,
+      uuid: item.uuid,
+      products: item.products.map((product: any) => ({
+        unit: product.unit,
+        name: product.name,
+        quantity: product.quantity,
+        unitCost: product.price,
+        // actualStock: product.actualStock,
+        // id: product.id,
+        // tagUUID: product.tagUUID,
+        // theoriticalStock: product.theoriticalStock,
+        // parLevel: product.parLevel,
+        // amount: product.amount,
+      })),
+    }));
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    return null;
+  }
 };
 
 const getOrderGeneration = async (
