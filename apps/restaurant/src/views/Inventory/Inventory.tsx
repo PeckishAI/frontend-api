@@ -79,7 +79,7 @@ const Inventory = () => {
         <OrderTab
           ref={orderTabRef}
           // setLoadingState={setLoadingData}
-          // searchValue={searchValue}
+          searchValue={searchValue}
           forceOptionsUpdate={forceUpdate}
         />
       );

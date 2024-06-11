@@ -19,6 +19,7 @@ import {
   useRestaurantCurrency,
   useRestaurantStore,
 } from '../../../store/useRestaurantStore';
+import Fuse from 'fuse.js';
 import { ordersService } from '../../../services/orders.service';
 
 export type OrderTabRef = {
@@ -29,6 +30,7 @@ type Props = {
   forceOptionsUpdate: () => void;
   isVisible: boolean;
   onRequestClose: () => void;
+  searchValue: string;
 };
 
 export const units: DropdownOptionsDefinitionType[] = [
@@ -144,6 +146,15 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
       [t, currencyISO]
     );
 
+    const OrderFilter = props.searchValue
+      ? new Fuse(orderList, {
+          keys: ['supplier'],
+          distance: 10,
+        })
+          .search(props.searchValue)
+          .map((r) => r.item)
+      : orderList;
+
     return (
       <div className="orders">
         {isLoading ? (
@@ -151,7 +162,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
         ) : orderList.length === 0 ? (
           <p className={styles.noOrder}>There is no order.</p>
         ) : (
-          <Table data={orderList} columns={columns} />
+          <Table data={OrderFilter} columns={columns} />
         )}
 
         <OrderDetail
