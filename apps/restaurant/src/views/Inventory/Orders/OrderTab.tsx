@@ -1,15 +1,26 @@
-import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
+import {
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useState,
+  useEffect,
+} from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Table, OrderDetail } from 'shared-ui';
+import { Button, Table, OrderDetail, Loading } from 'shared-ui';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import styles from './OrderTab.module.scss';
 import { Tooltip } from 'react-tooltip';
-import { Order, useOrders } from '../../../utils/orders-mock';
+import { Order } from '../../../utils/orders-mock';
 import { formatCurrency } from '../../../utils/helpers';
-import { useRestaurantCurrency } from '../../../store/useRestaurantStore';
+import {
+  useRestaurantCurrency,
+  useRestaurantStore,
+} from '../../../store/useRestaurantStore';
+import Fuse from 'fuse.js';
+import { ordersService } from '../../../services/orders.service';
 
 export type OrderTabRef = {
   renderOptions: () => React.ReactNode;
@@ -19,6 +30,7 @@ type Props = {
   forceOptionsUpdate: () => void;
   isVisible: boolean;
   onRequestClose: () => void;
+  searchValue: string;
 };
 
 export const units: DropdownOptionsDefinitionType[] = [
@@ -42,9 +54,31 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
     //   return bDate.unix() - aDate.unix();
     // });
     const [orderList, setOrderList] = useState<Order[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const selectedOrder = orderList.find((order) => order.uuid === orderDetail);
     const { currencyISO } = useRestaurantCurrency();
+
+    const { selectedRestaurantUUID } = useRestaurantStore();
+
+    useEffect(() => {
+      if (!selectedRestaurantUUID) return;
+
+      setIsLoading(true);
+      ordersService
+        .getOrders(selectedRestaurantUUID)
+        .then((res) => {
+          if (res) {
+            setOrderList(res);
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching orders:', error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }, [selectedRestaurantUUID]);
 
     // Render options for the tab bar
     useImperativeHandle(
@@ -112,12 +146,23 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
       [t, currencyISO]
     );
 
+    const OrderFilter = props.searchValue
+      ? new Fuse(orderList, {
+          keys: ['supplier'],
+          distance: 10,
+        })
+          .search(props.searchValue)
+          .map((r) => r.item)
+      : orderList;
+
     return (
       <div className="orders">
-        {orderList.length === 0 ? (
+        {isLoading ? (
+          <Loading size="large" />
+        ) : orderList.length === 0 ? (
           <p className={styles.noOrder}>There is no order.</p>
         ) : (
-          <Table data={orderList} columns={columns} />
+          <Table data={OrderFilter} columns={columns} />
         )}
 
         <OrderDetail

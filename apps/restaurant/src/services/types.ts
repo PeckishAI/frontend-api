@@ -10,6 +10,7 @@ export type Ingredient = {
   amount: number;
   unitCost: number;
   actions?: void;
+  quantity: number;
 };
 
 export type Tag = {
