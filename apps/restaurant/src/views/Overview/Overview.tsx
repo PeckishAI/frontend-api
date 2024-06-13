@@ -54,6 +54,7 @@ const Overview = () => {
   const [cost, setcost] = useState<ApiResponse>();
   const [loadingCostOfSales, setLoadingCostOfSales] = useState(false);
   const [costOfSales, setCostOfSales] = useState<CostofSales>();
+
   const [filterOption, setFilterOption] = useState<CostofSales>();
   const [filters, setFilters] = useState<FiltersType>(defaultFilters);
   const [value, setValue] = useState([null, null]);
@@ -145,7 +146,7 @@ const Overview = () => {
                     }
                     value={cost[key]?.value?.toFixed(2) || '0'}
                     icon={metricIcon[key]}
-                    percentage={cost[key]?.percentage}
+                    percentage={cost[key]?.percentage.toFixed(2) || '0'}
                   />
                 ))}
               {!loadingMetrics &&
