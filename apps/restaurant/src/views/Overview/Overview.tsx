@@ -21,14 +21,12 @@ import {
   FiltersType,
   defaultFilters,
 } from './components/CostFilter/CostFilters';
+import CustomPagination from './components/Pagination/CustomPagination';
 
 const metricIcon: { [K in keyof ApiResponse]: React.ReactNode } = {
   costofgoodsold: <img src={Vector} />,
   sales: <FaRegMoneyBillAlt />,
 };
-
-// Savings <MdOutlineSavings />
-// Profits <PiBankBold />
 
 export const metricFormat: {
   [K in MetricType]: (options: {
@@ -56,11 +54,22 @@ const Overview = () => {
   const [cost, setcost] = useState<ApiResponse>();
   const [loadingCostOfSales, setLoadingCostOfSales] = useState(false);
   const [costOfSales, setCostOfSales] = useState<CostofSales>();
+
   const [filterOption, setFilterOption] = useState<CostofSales>();
   const [filters, setFilters] = useState<FiltersType>(defaultFilters);
   const [value, setValue] = useState([null, null]);
-
+  const [page, setPage] = useState(1);
   const { selectedRestaurantUUID, restaurants } = useRestaurantStore();
+
+  const ITEMS_PER_PAGE = 10; // Define items per page
+
+  const handleChange = (NewValue: number) => {
+    setPage(NewValue);
+  };
+
+  const startIndex = (page - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedCostOfSales = costOfSales?.slice(startIndex, endIndex);
 
   const currentCurrency = restaurants.find(
     (restaurant) => restaurant.uuid === selectedRestaurantUUID
@@ -112,7 +121,6 @@ const Overview = () => {
           (ingredient) => ingredient.tag_name === filters?.selectedTag?.name
         );
       }
-
       setCostOfSales(filteredList);
     };
 
@@ -136,9 +144,9 @@ const Overview = () => {
                     title={
                       key === 'costofgoodsold' ? 'Cost of Goods Sold' : key
                     }
-                    value={cost[key]?.value?.toFixed(2) || 0}
+                    value={cost[key]?.value?.toFixed(2) || '0'}
                     icon={metricIcon[key]}
-                    percentage={cost[key]?.percentage}
+                    percentage={cost[key]?.percentage.toFixed(2) || '0'}
                   />
                 ))}
               {!loadingMetrics &&
@@ -159,17 +167,40 @@ const Overview = () => {
             {isLoading ? (
               <Loading size="large" />
             ) : (
-              <CostOfSalesCard
-                data={costOfSales}
-                filterOption={filterOption}
-                loading={loadingCostOfSales}
-                selectedRestaurantUUID={selectedRestaurantUUID}
-                currency={currentCurrency}
-                value={value}
-                setFilters={setFilters}
-                filters={filters}
-                setIsLoading={setIsLoading}
-              />
+              <>
+                <CostOfSalesCard
+                  data={paginatedCostOfSales}
+                  filterOption={filterOption}
+                  loading={loadingCostOfSales}
+                  selectedRestaurantUUID={selectedRestaurantUUID}
+                  currency={currentCurrency}
+                  value={value}
+                  setFilters={setFilters}
+                  filters={filters}
+                  setIsLoading={setIsLoading}
+                />
+                <CustomPagination
+                  shape="rounded"
+                  count={Math.ceil((costOfSales?.length || 0) / ITEMS_PER_PAGE)}
+                  value={page}
+                  onChange={handleChange}
+                  sx={{
+                    '& .MuiPaginationItem-root': {
+                      color: '#5e72e4',
+                      '&:hover': {
+                        backgroundColor: 'none',
+                      },
+                    },
+                    '& .MuiPaginationItem-root.Mui-selected': {
+                      backgroundColor: '#5e72e4',
+                      color: 'white',
+                      '&:hover': {
+                        backgroundColor: '#5e72e4',
+                      },
+                    },
+                  }}
+                />
+              </>
             )}
           </>
         </>

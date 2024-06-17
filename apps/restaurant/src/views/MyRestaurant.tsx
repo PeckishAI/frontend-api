@@ -21,8 +21,6 @@ const MyRestaurant = () => {
     loadRestaurants();
   }, [restaurants, loadRestaurants]);
 
-  console.log('restaurants', restaurants);
-
   const handleOverviewClick = (restaurantUUID) => {
     if (user?.permissions?.overview) {
       setSelectedRestaurantUUID(restaurantUUID);

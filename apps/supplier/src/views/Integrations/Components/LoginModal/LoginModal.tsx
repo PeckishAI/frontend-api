@@ -20,7 +20,7 @@ type Props = {
 
 const LoginModal = (props: Props) => {
   const { t } = useTranslation(['common', 'validation', 'onboarding']);
-  const userId = useUserStore((state) => state.user?.user_uuid);
+  const userId = useUserStore((state) => state.user?.user.user_uuid);
 
   const [userName, setUserName] = useState<string>('');
   const [userPassword, setUserPassword] = useState<string>('');

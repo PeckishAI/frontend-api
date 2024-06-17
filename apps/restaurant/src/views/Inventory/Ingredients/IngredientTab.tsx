@@ -32,6 +32,7 @@ import Filters, {
   FiltersType,
   defaultFilters,
 } from '../Components/Filters/Filters';
+import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -83,6 +84,20 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const [suppliers, setSuppliers] = useState<DropdownOptionsDefinitionType[]>(
       []
+    );
+
+    const [page, setPage] = useState(1);
+    const handleChange = (NewValue) => {
+      setPage(NewValue);
+    };
+
+    const ITEMS_PER_PAGE = 10; // Define items per page
+
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const paginatedIngredients = filteredIngredients?.slice(
+      startIndex,
+      endIndex
     );
 
     const selectedRestaurantUUID = useRestaurantStore(
@@ -664,7 +679,28 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     return (
       <>
-        <Table data={filteredIngredients} columns={columns} />
+        <Table data={paginatedIngredients} columns={columns} />
+        <CustomPagination
+          shape="rounded"
+          count={Math.ceil((filteredIngredients?.length || 0) / ITEMS_PER_PAGE)}
+          value={page}
+          onChange={handleChange}
+          sx={{
+            '& .MuiPaginationItem-root': {
+              color: '#5e72e4',
+              '&:hover': {
+                backgroundColor: 'none',
+              },
+            },
+            '& .MuiPaginationItem-root.Mui-selected': {
+              backgroundColor: '#5e72e4',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: '#5e72e4',
+              },
+            },
+          }}
+        />
 
         <ImportIngredients
           openUploader={importIngredientsPopup}

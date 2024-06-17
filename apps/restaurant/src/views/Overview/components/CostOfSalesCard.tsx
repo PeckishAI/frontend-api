@@ -1,6 +1,5 @@
-import { FaInfoCircle } from 'react-icons/fa';
 import styles from './CostOfSalesCard.module.scss';
-import { Dropdown, IconButton, Loading, Table, Tabs } from 'shared-ui';
+import { Dropdown, IconButton, Table, Tabs } from 'shared-ui';
 import dayjs from 'dayjs';
 import { Tooltip } from 'react-tooltip';
 import { useState, useMemo } from 'react';
@@ -19,10 +18,10 @@ type Props = {
   value: [Date | null, Date | null];
   selectedRestaurantUUID: string;
   filterOption?: string;
-  setFilters: string;
+  setFilters: () => void;
   filters: string;
   isLoading: boolean;
-  setIsLoading: boolean;
+  setIsLoading: (value: boolean) => void;
 };
 
 export const CostOfSalesCard: React.FC<Props> = ({
@@ -40,7 +39,7 @@ export const CostOfSalesCard: React.FC<Props> = ({
   const [selectedMode, setSelectedMode] = useState(0);
   const [selectedChartMode, setSelectedChartMode] =
     useState<MetricType>('costofgoodssold');
-
+  console.log('filterOption', filterOption);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderItem = ({ value }: { value: any }) =>
     value !== null && value !== undefined ? value : '0';
