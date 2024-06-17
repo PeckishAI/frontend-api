@@ -430,6 +430,13 @@ const DocumentDetail = (props: Props) => {
                       value={editableDocument?.amount}
                     />
                   </div>
+                  <div className={styles.documentContainer}>
+                    <img
+                      className={styles.documentImage}
+                      src={props.document?.path}
+                      alt={props.document?.path}
+                    />
+                  </div>
                   <Table
                     data={editableDocument?.ingredients}
                     columns={isEditMode ? editColumns : viewColumns}
