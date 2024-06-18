@@ -46,8 +46,14 @@ export const ProtectedRoute = (props: Props) => {
           return;
         }
 
+        const path = location.pathname.slice(1);
+        const basePath = path.split('/')[0];
+
+        // Check for permissions
         const hasPermission =
-          user?.permissions[location.pathname.slice(1)] === true;
+          user?.permissions[basePath] === true ||
+          user?.permissions[path] === true;
+
         if (!hasPermission) {
           navigate('/');
         }
