@@ -8,6 +8,7 @@
   "unit": "Unité",
   "supplier": "Fournisseur",
   "quantity": "Quantité",
+  "receivedQty":"Quantité reçue",
   "cost": "Prix",
   "unitCost": "Prix unitaire",
   "actions": "Actions",

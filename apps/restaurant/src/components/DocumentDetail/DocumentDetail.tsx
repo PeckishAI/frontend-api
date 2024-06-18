@@ -36,6 +36,7 @@ type IngredientDetails = {
   unitPrice?: number;
   unit?: string;
   totalPrice?: number;
+  received_qty: number;
 };
 
 const DocumentDetail = (props: Props) => {
@@ -116,7 +117,6 @@ const DocumentDetail = (props: Props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     if (editableDocument) {
       const lastRow =
         editableDocument.ingredients[editableDocument.ingredients.length - 1];
@@ -125,6 +125,7 @@ const DocumentDetail = (props: Props) => {
         !lastRow.mappedName ||
         !lastRow.quantity ||
         !lastRow.unit ||
+        !lastRow.received_qty ||
         !lastRow.unitPrice
       ) {
         toast.error('Please fill in all required fields in the last row.');
@@ -141,6 +142,7 @@ const DocumentDetail = (props: Props) => {
             detectedName: ing.detectedName,
             mappedName: ing.mappedName,
             mappedUUID: ing.mappedUUID,
+            received_qty: +ing.received_qty,
             unitPrice: +ing.unitPrice,
             quantity: +ing.quantity,
             unit: ing.unit,
@@ -199,6 +201,7 @@ const DocumentDetail = (props: Props) => {
       quantity: 0,
       unit: '',
       unitPrice: 0,
+      received_qty: 0,
       totalPrice: 0,
     };
 
@@ -209,6 +212,7 @@ const DocumentDetail = (props: Props) => {
         (lastRow && !lastRow.detectedName) ||
         !lastRow.mappedName ||
         !lastRow.quantity ||
+        !lastRow.received_qty ||
         !lastRow.unit ||
         !lastRow.unitPrice
       ) {
@@ -243,6 +247,12 @@ const DocumentDetail = (props: Props) => {
       header: t('quantity'),
       classname: 'column-bold',
       renderItem: ({ row }) => `${row.quantity}`,
+    },
+    {
+      key: 'received_qty',
+      header: t('receivedQty'),
+      classname: 'column-bold',
+      renderItem: ({ row }) => `${row.received_qty}`,
     },
     {
       key: 'unit',
@@ -288,30 +298,32 @@ const DocumentDetail = (props: Props) => {
       header: t('document.givenName'),
       classname: 'column-bold',
       renderItem: ({ row, index }) => (
-        <Controller
-          name={`mappedName-${index}`}
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              options={ingredientOptions}
-              className={styles.mappedNameInput}
-              isClearable
-              isSearchable
-              maxMenuHeight={200}
-              onChange={(selectedOption) => {
-                field.onChange(selectedOption);
-                handleMappedNameChange(index, selectedOption);
-              }}
-              value={ingredientOptions.find(
-                (option) =>
-                  option.value ===
-                  (editableDocument?.ingredients[index].mappedUUID ||
-                    field.value)
-              )}
-            />
-          )}
-        />
+        <div style={{ width: 180 }}>
+          <Controller
+            name={`mappedName-${index}`}
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={ingredientOptions}
+                className={styles.detectedNameInput}
+                isClearable
+                isSearchable
+                maxMenuHeight={200}
+                onChange={(selectedOption) => {
+                  field.onChange(selectedOption);
+                  handleMappedNameChange(index, selectedOption);
+                }}
+                value={ingredientOptions.find(
+                  (option) =>
+                    option.value ===
+                    (editableDocument?.ingredients[index].mappedUUID ||
+                      field.value)
+                )}
+              />
+            )}
+          />
+        </div>
       ),
     },
     {
@@ -327,6 +339,23 @@ const DocumentDetail = (props: Props) => {
           className={styles.quantity}
           onChange={(value) => handleIngredientChange(index, 'quantity', value)}
           value={editableDocument?.ingredients[index].quantity || ''}
+        />
+      ),
+    },
+    {
+      key: 'received_qty',
+      header: t('receivedQty'),
+      classname: 'column-bold',
+      renderItem: ({ row, index }) => (
+        <Input
+          type="number"
+          min={0}
+          placeholder={t('receivedQty')}
+          className={styles.quantity}
+          onChange={(value) =>
+            handleIngredientChange(index, 'received_qty', value)
+          }
+          value={editableDocument?.ingredients[index].received_qty || ''}
         />
       ),
     },
@@ -502,6 +531,11 @@ const DocumentDetail = (props: Props) => {
                   key: 'quantity',
                   header: t('quantity'),
                   renderItem: ({ row }) => `${row.quantity}`,
+                },
+                {
+                  key: 'received_qty',
+                  header: t('receivedQty'),
+                  renderItem: ({ row }) => `${row.received_qty}`,
                 },
                 { key: 'unit', header: t('unit') },
 
