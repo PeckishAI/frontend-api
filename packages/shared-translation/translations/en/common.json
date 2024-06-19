@@ -5,7 +5,7 @@
   "or": "or",
 
   "quantity": "Quantity",
-  "receivedQty":"Received Quantity",
+  "receivedQty":"Received Qty",
   "price": "Price",
   "cost": "Cost",
   "totalCost": "Total cost",
