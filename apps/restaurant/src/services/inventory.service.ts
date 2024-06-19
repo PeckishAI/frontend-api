@@ -60,7 +60,7 @@ const updateDocument = (
   supplier_uuid: string,
   data: FormDocument
 ) => {
-  return axios.post('/documents/' + documentUUID + '/update', {
+  return axiosClient.post('/documents/' + documentUUID + '/update', {
     restaurant_uuid: restaurantUUID,
     date: data.date,
     supplier: data.supplier,
