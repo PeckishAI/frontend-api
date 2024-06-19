@@ -59,6 +59,10 @@ export const router = createBrowserRouter([
             element: <Documents />,
           },
           {
+            path: '/documents/:id',
+            element: <Documents />,
+          },
+          {
             path: '/orders/validation',
             element: <OrderValidation />,
           },

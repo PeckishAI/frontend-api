@@ -7,6 +7,7 @@ import { useRestaurantStore } from '../../store/useRestaurantStore';
 import DocumentDetail from '../../components/DocumentDetail/DocumentDetail';
 import styles from './style.module.scss';
 import ImportIngredients from './Components/ImportIngredients/ImportIngredients';
+import { useLocation, useParams } from 'react-router-dom';
 
 const Documents = () => {
   const { t } = useTranslation();
@@ -15,10 +16,15 @@ const Documents = () => {
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
+  const location = useLocation();
+  const { id } = useParams();
+  console.log('id', id);
   const [loadingData, setLoadingData] = useState(false);
   const [document, setDocument] = useState<Invoice[]>([]);
   const [documentDetail, setDocumentDetail] = useState<Invoice | null>(null);
   const [showImportPopup, setShowImportPopup] = useState(false);
+
+  console.log('documentDetail', document);
 
   function reloadDocuments() {
     if (!selectedRestaurantUUID) return;
@@ -65,6 +71,15 @@ const Documents = () => {
     );
     setDocumentDetail(null);
   };
+
+  useEffect(() => {
+    if (id) {
+      const selectedDocument = document.find((doc) => doc.documentUUID === id);
+      if (selectedDocument) {
+        setDocumentDetail(selectedDocument);
+      }
+    }
+  }, [id, document]);
 
   // Upload new invoices
 
