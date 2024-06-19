@@ -5,6 +5,7 @@
   "or": "ou",
 
   "quantity": "Quantité",
+  "receivedQty":"Quantité reçue",
   "price": "Prix",
   "cost": "Coût",
   "totalCost": "Coût total",
