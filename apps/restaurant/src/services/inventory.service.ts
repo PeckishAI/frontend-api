@@ -24,6 +24,7 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
         tag_name: ingredient['tag_name'],
         mappedName: ingredient['mapping_name'],
         quantity: ingredient['quantity'],
+        received_qty: ingredient['received_qty'],
         unit: ingredient['unit'],
         unitPrice: ingredient['unit_price'],
         totalPrice: ingredient['total_price'],

@@ -8,6 +8,7 @@
   "unit": "Unit",
   "supplier": "Supplier",
   "quantity": "Quantity",
+  "receivedQty":"Received Qty",
   "cost": "Cost",
   "unitCost": "Cost per unit",
   "actions": "Actions",
