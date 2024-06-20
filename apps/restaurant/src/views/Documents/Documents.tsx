@@ -7,7 +7,7 @@ import { useRestaurantStore } from '../../store/useRestaurantStore';
 import DocumentDetail from '../../components/DocumentDetail/DocumentDetail';
 import styles from './style.module.scss';
 import ImportIngredients from './Components/ImportIngredients/ImportIngredients';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const Documents = () => {
   const { t } = useTranslation();
@@ -16,9 +16,7 @@ const Documents = () => {
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
-  const location = useLocation();
   const { id } = useParams();
-  console.log('id', id);
   const [loadingData, setLoadingData] = useState(false);
   const [document, setDocument] = useState<Invoice[]>([]);
   const [documentDetail, setDocumentDetail] = useState<Invoice | null>(null);
@@ -101,23 +99,25 @@ const Documents = () => {
           onClick={handleUploadClick} // Attach click handler
         />
       </div>
-      <div className={styles.cardsContainer}>
-        {document.map((doc, index) => {
-          return (
-            <DocumentCard
-              key={index}
-              uuid={doc.documentUUID}
-              supplier={doc.supplier}
-              date={doc.date}
-              image={doc.path}
-              path={doc.path}
-              amount={doc.amount}
-              onClick={() => {
-                handleDocumentClick(doc);
-              }}
-            />
-          );
-        })}
+      <div>
+        {document.length > 0 ? (
+          <div className={styles.cardsContainer}>
+            {document.map((doc, index) => (
+              <DocumentCard
+                key={index}
+                uuid={doc.documentUUID}
+                supplier={doc.supplier}
+                date={doc.date}
+                image={doc.path}
+                path={doc.path}
+                amount={doc.amount}
+                onClick={() => handleDocumentClick(doc)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className={styles.noDocuments}>There are no documents.</div>
+        )}
       </div>
       <DocumentDetail
         document={documentDetail}
