@@ -2,9 +2,7 @@ import axiosClient from './index';
 import axios, { Ingredient, Invoice, InvoiceIngredient } from './index';
 
 const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
-  const res = await axios.get(
-    'http://192.168.1.14:8080/documents/' + restaurantUUID
-  );
+  const res = await axiosClient.get('/documents/' + restaurantUUID);
 
   // Check if res.data is an object
   if (typeof res.data !== 'object' || res.data === null) {
