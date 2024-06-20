@@ -15,4 +15,12 @@
     flex-wrap: wrap;
     gap: 30px;
   }
+  .noDocuments {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    text-align: center;
+    font-weight: 500;
+  }
 }
