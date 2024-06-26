@@ -103,23 +103,25 @@ const Documents = () => {
           onClick={handleUploadClick} // Attach click handler
         />
       </div>
-      <div className={styles.cardsContainer}>
-        {document.map((doc, index) => {
-          return (
-            <DocumentCard
-              key={index}
-              uuid={doc.documentUUID}
-              supplier={doc.supplier}
-              date={doc.date}
-              image={doc.path}
-              path={doc.path}
-              amount={doc.amount}
-              onClick={() => {
-                handleDocumentClick(doc);
-              }}
-            />
-          );
-        })}
+      <div>
+        {document.length > 0 ? (
+          <div className={styles.cardsContainer}>
+            {document.map((doc, index) => (
+              <DocumentCard
+                key={index}
+                uuid={doc.documentUUID}
+                supplier={doc.supplier}
+                date={doc.date}
+                image={doc.path}
+                path={doc.path}
+                amount={doc.amount}
+                onClick={() => handleDocumentClick(doc)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className={styles.noDocuments}>There are no documents.</div>
+        )}
       </div>
       <DocumentDetail
         document={documentDetail}
