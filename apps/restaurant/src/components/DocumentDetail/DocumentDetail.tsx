@@ -125,7 +125,6 @@ const DocumentDetail = (props: Props) => {
         !lastRow.mappedName ||
         !lastRow.quantity ||
         !lastRow.unit ||
-        !lastRow.received_qty ||
         !lastRow.unitPrice
       ) {
         toast.error('Please fill in all required fields in the last row.');
@@ -212,7 +211,6 @@ const DocumentDetail = (props: Props) => {
         (lastRow && !lastRow.detectedName) ||
         !lastRow.mappedName ||
         !lastRow.quantity ||
-        !lastRow.received_qty ||
         !lastRow.unit ||
         !lastRow.unitPrice
       ) {
