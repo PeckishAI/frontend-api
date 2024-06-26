@@ -334,7 +334,7 @@ const DocumentDetail = (props: Props) => {
         <Input
           type="number"
           min={0}
-          step="0.01"
+          step="0.001"
           placeholder={t('quantity')}
           className={styles.quantity}
           onChange={(value) => handleIngredientChange(index, 'quantity', value)}
@@ -350,6 +350,7 @@ const DocumentDetail = (props: Props) => {
         <Input
           type="number"
           min={0}
+          step="0.001"
           placeholder={t('receivedQty')}
           className={styles.quantity}
           onChange={(value) =>
