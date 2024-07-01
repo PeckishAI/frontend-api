@@ -8,6 +8,8 @@ import DocumentDetail from '../../components/DocumentDetail/DocumentDetail';
 import styles from './style.module.scss';
 import ImportIngredients from './Components/ImportIngredients/ImportIngredients';
 import { useParams } from 'react-router-dom';
+import ConfirmationPopup from '../ConfirmModal/ConfirmationPopup';
+import { useUserStore } from '@peckishai/user-management';
 
 const Documents = () => {
   const { t } = useTranslation();
@@ -16,13 +18,22 @@ const Documents = () => {
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
+
+  const { user } = useUserStore();
   const { id } = useParams();
   const [loadingData, setLoadingData] = useState(false);
   const [document, setDocument] = useState<Invoice[]>([]);
   const [documentDetail, setDocumentDetail] = useState<Invoice | null>(null);
   const [showImportPopup, setShowImportPopup] = useState(false);
+  const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
 
-  console.log('document', document);
+  const [show, setShow] = useState(true);
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [actionData, setActionData] = useState<string[]>([]);
+
+  const handleCancel = () => {
+    setIsPopupVisible(false);
+  };
 
   function reloadDocuments() {
     if (!selectedRestaurantUUID) return;
@@ -39,6 +50,49 @@ const Documents = () => {
         setLoadingData(false);
       });
   }
+
+  const handleButtonClick = (doc) => {
+    setActionData({ type: 'confirmDocument', data: doc });
+    setIsPopupVisible(true);
+  };
+
+  const handleLogSelectedDocumentsClick = () => {
+    setActionData({ type: 'logSelectedDocuments', data: selectedDocuments });
+    setIsPopupVisible(true);
+  };
+
+  const toggleSelection = (doc) => {
+    setSelectedDocuments((prevSelected) => {
+      const isSelected = prevSelected.some(
+        (selectedDoc) => selectedDoc.documentUUID === doc.documentUUID
+      );
+      if (isSelected) {
+        return prevSelected.filter(
+          (selectedDoc) => selectedDoc.documentUUID !== doc.documentUUID
+        );
+      } else {
+        return [...prevSelected, doc];
+      }
+    });
+  };
+
+  const handleConfirm = async () => {
+    if (actionData) {
+      try {
+        if (actionData.type === 'confirmDocument') {
+          console.log('confirm Data', actionData.data);
+          // inventoryService.addSelected(selectedRestaurantUUID, actionData.data);
+        } else if (actionData.type === 'logSelectedDocuments') {
+          console.log('logSelectedDocuments Data', actionData.data);
+          // inventoryService.addSelected(selectedRestaurantUUID, actionData.data);
+          setSelectedDocuments([]);
+        }
+      } catch (error) {
+        console.error('API call error:', error);
+      }
+    }
+    setIsPopupVisible(false);
+  };
 
   useEffect(() => {
     reloadDocuments();
@@ -79,14 +133,6 @@ const Documents = () => {
     }
   }, [id, document]);
 
-  // Upload new invoices
-
-  // Delete invoices
-
-  // Download invoices
-
-  // Edit invoices
-
   return (
     <div className={styles.documents}>
       <p className={styles.explaination}>
@@ -99,6 +145,13 @@ const Documents = () => {
           value={t('document.upload')}
           className={styles.uploadButton}
           onClick={handleUploadClick} // Attach click handler
+        />
+        <Button
+          type="primary"
+          value={t('document.send')}
+          className={styles.uploadButton}
+          onClick={handleLogSelectedDocumentsClick} // Attach click handler
+          disabled={selectedDocuments.length <= 0}
         />
       </div>
       <div>
@@ -114,33 +167,47 @@ const Documents = () => {
                 path={doc.path}
                 amount={doc.amount}
                 onClick={() => handleDocumentClick(doc)}
+                onButtonClick={() => handleButtonClick(doc)}
+                isSelected={selectedDocuments.some(
+                  (selectedDoc) => selectedDoc.documentUUID === doc.documentUUID
+                )}
+                toggleSelection={() => toggleSelection(doc)}
+                show={show}
               />
             ))}
           </div>
         ) : (
           <div className={styles.noDocuments}>There are no documents.</div>
         )}
+
+        <DocumentDetail
+          document={documentDetail}
+          isOpen={documentDetail !== null}
+          onRequestClose={() => setDocumentDetail(null)}
+          onDocumentChanged={(document, action) => {
+            if (action === 'deleted') {
+              handleDeleteDocument(document);
+            } else if (action === 'updated') {
+              handleDocumentUpdated(document);
+            }
+          }}
+          onDeleteDocument={() => handleDeleteDocument(documentDetail)}
+        />
+        <ConfirmationPopup
+          isVisible={isPopupVisible}
+          title="Confirm Action"
+          message="Are you sure you want to proceed?"
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
+        <ImportIngredients
+          openUploader={showImportPopup}
+          onCloseUploader={() => setShowImportPopup(false)}
+          onIngredientsImported={() => {
+            // handle imported ingredients here
+          }}
+        />
       </div>
-      <DocumentDetail
-        document={documentDetail}
-        isOpen={documentDetail !== null}
-        onRequestClose={() => setDocumentDetail(null)}
-        onDocumentChanged={(document, action) => {
-          if (action === 'deleted') {
-            handleDocumentDeleted(document);
-          } else if (action === 'updated') {
-            handleDocumentUpdated(document);
-          }
-        }}
-        onDeleteDocument={() => handleDeleteDocument(documentDetail)}
-      />
-      <ImportIngredients
-        openUploader={showImportPopup}
-        onCloseUploader={() => setShowImportPopup(false)}
-        onIngredientsImported={() => {
-          // handle imported ingredients here
-        }}
-      />
     </div>
   );
 };
