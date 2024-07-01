@@ -1,7 +1,12 @@
 .recipes {
   position: relative;
+  .search {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 5px; /* Adjusted gap to 5px */
+  }
   .searchRecipe {
-    position: absolute;
     top: 10px;
     right: 0;
     width: 250px;
