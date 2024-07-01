@@ -78,7 +78,9 @@ const LoginModal = (props: Props) => {
   const handleLoginClick = () => {
     if (props.pos?.auth_type === 'oauth') {
       setRetrieveDataStatus('loading');
-      if (props.pos?.name === 'Xero') {
+      if (props.pos?.name === 'Toast') {
+        window.location.href = `${props.pos?.data?.oauth_url}`;
+      } else if (props.pos?.name === 'Xero') {
         window.location.href = `${props.pos?.data?.oauth_url}/${selectedRestaurantUUID}`;
       } else {
         getAuth();
