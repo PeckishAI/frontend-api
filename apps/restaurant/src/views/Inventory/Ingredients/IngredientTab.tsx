@@ -85,7 +85,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [suppliers, setSuppliers] = useState<DropdownOptionsDefinitionType[]>(
       []
     );
-
     const [page, setPage] = useState(1);
     const handleChange = (NewValue) => {
       setPage(NewValue);
@@ -112,7 +111,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         .then((res) => {
           const suppliersList: DropdownOptionsDefinitionType[] = [];
           res.forEach((supplier) => {
-            suppliersList.push({ label: supplier.name, value: supplier.name });
+            suppliersList.push({
+              label: supplier.name,
+              value: supplier.supplier_uuid, // Update here to use supplier_uuid
+              supplier_uuid: supplier.supplier_uuid,
+            });
           });
           setSuppliers(suppliersList);
         });
@@ -124,7 +127,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
         if (props.searchValue) {
           filteredList = new Fuse(filteredList, {
-            keys: ['name', 'supplier'],
+            keys: ['name', 'supplier_uuid'],
           })
             .search(props.searchValue)
             .map((r) => r.item);
@@ -133,7 +136,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         if (filters.selectedSupplier) {
           filteredList = filteredList.filter(
             (ingredient) =>
-              ingredient.supplier === filters.selectedSupplier!.uuid
+              ingredient.supplier_uuid === filters.selectedSupplier!.uuid
           );
         }
 
@@ -165,7 +168,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               values.push(row.actualStock || '-');
               values.push(row.theoriticalStock || '-');
               values.push(row.unit || '-');
-              values.push(row.supplier || '-');
+              values.push(row.supplier_uuid || '-');
               values.push(row.unitCost || '-');
               return values.join(',');
             })
@@ -317,7 +320,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       props.setLoadingState(true);
       if (editingRowId && !addingRow) {
         console.log('API request to edit ingredient');
-        console.log(editingRowId);
         props.setLoadingState(false);
         inventoryService
           .getIngredientPreview(editingRowId)
@@ -437,8 +439,34 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const handleConfirmPopupPreviewEdit = () => {
       if (!editedValues) return;
+
+      const {
+        id,
+        name,
+        tagUUID,
+        parLevel,
+        actualStock,
+        unit,
+        supplier_uuid,
+        supplier,
+        unitCost,
+      } = editedValues;
+
+      const updatedIngredient = {
+        id,
+        name,
+        tagUUID,
+        parLevel,
+        actualStock,
+        unit,
+        supplier_uuid,
+        supplier, // Include supplier when updating
+        unitCost,
+        restaurantUUID: selectedRestaurantUUID, // Add the selectedRestaurantUUID here
+      };
+
       inventoryService
-        .updateIngredient(editedValues)
+        .updateIngredient(updatedIngredient)
         .catch((err) => {
           togglePopupError(err.message);
         })
@@ -461,7 +489,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         parLevel: 0,
         actualStock: 0,
         unit: units[0].value,
-        supplier: suppliers.length ? suppliers[0].value : '',
+        supplier_uuid: suppliers.length ? suppliers[0].value : '',
+        supplier: suppliers.length ? suppliers[0].label : '',
         unitCost: 0,
         actions: undefined,
       };
@@ -602,7 +631,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           ),
       },
       {
-        key: 'supplier',
+        key: 'supplier_uuid',
         header: t('ingredient:supplier'),
         width: '15%',
         renderItem: ({ row }) =>
@@ -610,8 +639,20 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             <Dropdown
               placeholder={t('inventory.selectSupplier')}
               options={suppliers}
-              selectedOption={editedValues!.supplier}
-              onOptionChange={(value) => handleValueChange('supplier', value)}
+              selectedOption={editedValues!.supplier_uuid}
+              onOptionChange={(value) => {
+                const selectedSupplier = suppliers.find(
+                  (supplier) => supplier.value === value
+                );
+                setEditedValues((prevValues) => ({
+                  ...prevValues!,
+                  supplier_uuid: value,
+                  supplier: selectedSupplier?.label || '',
+                }));
+              }}
+              getOptionLabel={(option) =>
+                suppliers.find((s) => s.value === option)?.label || option
+              }
             />
           ) : (
             row.supplier

@@ -11,6 +11,8 @@ export type Ingredient = {
   unitCost: number;
   actions?: void;
   quantity: number;
+  restaurantUUID?: string;
+  supplier_uuid?: string;
 };
 
 export type Tag = {

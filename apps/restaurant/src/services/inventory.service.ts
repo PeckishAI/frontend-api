@@ -133,7 +133,9 @@ const updateIngredient = (ingredient: Ingredient) => {
     actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
     supplier: ingredient.supplier,
+    supplier_uuid: ingredient.supplier_uuid,
     cost: ingredient.unitCost,
+    restaurant_uuid: ingredient.restaurantUUID,
   };
 
   return axios.post(
