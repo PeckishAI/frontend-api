@@ -8,6 +8,8 @@ import ShoppingView, {
 import { useState } from 'react';
 import { ordersService } from '../../services/orders.service';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
+import { useNavigate } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 
 const PlaceOrder = () => {
   const { t } = useTranslation(['placeOrder']);
@@ -21,6 +23,7 @@ const PlaceOrder = () => {
   const [generatedOrder, setGeneratedOrder] = useState<
     GeneratedOrder | undefined
   >();
+  const navigate = useNavigate();
 
   const handlePrefillOrder = async () => {
     if (selectedRestaurantUUID) {
@@ -34,6 +37,11 @@ const PlaceOrder = () => {
 
   return (
     <div className={styles.placeOrder}>
+      <div
+        className={styles.backIcon}
+        onClick={() => navigate('/inventory/orders')}>
+        <FaArrowLeft /> Back
+      </div>
       <div className={styles.header}>
         <p className={styles.message}>{t('placeOrder:placeOrder.message')}</p>
         <div className={styles.tools}>

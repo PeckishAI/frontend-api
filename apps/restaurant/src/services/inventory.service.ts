@@ -70,6 +70,56 @@ const updateDocument = (
   });
 };
 
+// interface DocumentData {
+//   amount: number;
+//   created_at: string;
+//   date: string;
+//   ingredients: Ingredient[];
+//   path: null | string;
+//   supplier: string;
+//   supplier_uuid: string;
+//   documentUUID: string;
+// }
+
+// interface Ingredient {
+//   mappedUUID: string;
+//   detectedName: string;
+//   mappedName: string;
+//   quantity: number;
+//   unit: string;
+//   unitPrice: number;
+//   totalPrice: number;
+// }
+
+// const addSelected = (restaurantUUID: string, data: DocumentData) => {
+//   return axiosClient.post(
+//     'http://192.168.1.17:8080/addSelected/' + restaurantUUID,
+//     {
+//       restaurant_uuid: restaurantUUID,
+//       data: data,
+//     }
+//   );
+// };
+
+// const addSelected = async (restaurantUUID: string, data: DocumentData) => {
+//   try {
+//     const response = await axiosClient.post(
+//       `/addIngredient/${restaurantUUID}`,
+//       {
+//         restaurant_uuid: restaurantUUID,
+//         data: data,
+//       }
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error(
+//       'Error adding ingredient:',
+//       error.response?.data || error.message
+//     );
+//     throw error;
+//   }
+// };
+
 const deleteDocument = (documentId: string) => {
   return axios.post('/documents/' + documentId + '/delete');
 };
@@ -133,7 +183,9 @@ const updateIngredient = (ingredient: Ingredient) => {
     actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
     supplier: ingredient.supplier,
+    supplier_uuid: ingredient.supplier_uuid,
     cost: ingredient.unitCost,
+    restaurant_uuid: ingredient.restaurantUUID,
   };
 
   return axios.post(
@@ -284,4 +336,5 @@ export const inventoryService = {
   getDocument,
   updateDocument,
   deleteDocument,
+  //addSelected,
 };
