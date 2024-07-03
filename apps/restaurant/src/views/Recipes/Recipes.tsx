@@ -1,4 +1,4 @@
-import { Input, LoadingAbsolute, useTitle } from 'shared-ui';
+import { Button, Input, LoadingAbsolute, useTitle } from 'shared-ui';
 import React, { useEffect, useState } from 'react';
 import {
   recipesService,
@@ -108,13 +108,21 @@ const Recipes = () => {
 
   return (
     <div className={styles.recipes}>
-      <Input
-        type="text"
-        placeholder={t('search')}
-        value={recipeResearch}
-        onChange={(value) => setRecipeResearch(value)}
-        className={styles.searchRecipe}
-      />
+      <div className={styles.search}>
+        <Button
+          value={t('add Preparation')}
+          type="primary"
+          className={styles.button}
+          // onClick={!addingRow ? handleAddNewIngredient : undefined}
+        />
+        <Input
+          type="text"
+          placeholder={t('search')}
+          value={recipeResearch}
+          onChange={(value) => setRecipeResearch(value)}
+          className={styles.searchRecipe}
+        />
+      </div>
       {getRecipeCategories(t).map((category, i) => (
         <RecipeCategory
           key={i}

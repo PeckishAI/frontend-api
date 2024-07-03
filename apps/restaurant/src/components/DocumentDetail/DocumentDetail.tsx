@@ -349,7 +349,6 @@ const DocumentDetail = (props: Props) => {
         <Input
           type="number"
           min={0}
-          step="0.001"
           placeholder={t('receivedQty')}
           className={styles.quantity}
           onChange={(value) =>
