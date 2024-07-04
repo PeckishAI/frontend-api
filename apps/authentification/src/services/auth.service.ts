@@ -25,6 +25,17 @@ const logIn = async (email: string, password: string): Promise<LogInResult> => {
   return res.data;
 };
 
+const resetPassword = async (
+  token: string | null,
+  password: string
+): Promise<void> => {
+  if (!token) throw new Error('Token is required');
+  await apiClient.post('/pos/toast/reset_password', {
+    token,
+    password,
+  });
+};
+
 const googleLogIn = async (accessToken: string): Promise<LogInResult> => {
   const res = await apiClient.post<LogInResult>('/google/sign-in', {
     access_token: accessToken,
@@ -97,4 +108,5 @@ export default {
   googleRegister,
   chooseUsage,
   appleLogIn,
+  resetPassword,
 };
