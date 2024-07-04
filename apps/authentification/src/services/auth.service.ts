@@ -30,7 +30,7 @@ const resetPassword = async (
   password: string
 ): Promise<void> => {
   if (!token) throw new Error('Token is required');
-  await apiClient.post('/pos/toast/reset_password', {
+  await apiClient.post('/reset_password', {
     token,
     password,
   });
