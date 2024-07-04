@@ -4,7 +4,7 @@ import { Button, LabeledInput } from 'shared-ui';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import authService from '../services/auth.service';
@@ -27,6 +27,7 @@ export const ResetPassword = () => {
   const { t } = useTranslation(['error', 'common']);
   const [loading, setLoading] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const token = new URLSearchParams(location.search).get('token');
 
   const {
@@ -41,6 +42,7 @@ export const ResetPassword = () => {
     setLoading(true);
     try {
       await authService.resetPassword(token, data.password);
+      navigate('/sign-in');
     } catch (err) {
       if (isAxiosError(err) && err.response) {
         console.log('error', err.response);
