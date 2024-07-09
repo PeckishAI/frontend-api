@@ -18,33 +18,44 @@ type Props = {
 };
 
 const DocumentCard = (props: Props) => {
+  const {
+    onClick,
+    image,
+    supplier,
+    date,
+    amount,
+    show,
+    toggleSelection,
+    isSelected,
+    onButtonClick,
+  } = props;
   const { currencyISO } = useRestaurantCurrency();
 
   return (
-    <div className="document-card" onClick={props.onClick}>
+    <div className="document-card" onClick={onClick}>
       <div className="logo-container">
-        <img className="logo-integrations" src={props.image}></img>
+        <img className="logo-integrations" src={image}></img>
       </div>
       <div className="document-info">
-        <p className="supplier">{props.supplier}</p>
-        <p className="date">{props.date}</p>
-        <p className="price">{formatCurrency(props.amount, currencyISO)}</p>
-        {props.show && (
+        <p className="supplier">{supplier}</p>
+        <p className="date">{date}</p>
+        <p className="price">{formatCurrency(amount, currencyISO)}</p>
+        {show && (
           <>
             <div
               className="check-icon"
               onClick={(e) => {
                 e.stopPropagation();
-                props.toggleSelection();
+                toggleSelection();
               }}>
-              {props.isSelected ? <FaCheckCircle /> : <FaRegCircle />}
+              {isSelected ? <FaCheckCircle /> : <FaRegCircle />}
             </div>
 
             <FaSync
               className="sync-icon"
               onClick={(e) => {
                 e.stopPropagation(); // To prevent the click event from bubbling up to the parent div
-                props.onButtonClick();
+                onButtonClick();
               }}
             />
           </>
