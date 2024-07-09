@@ -43,6 +43,11 @@ export const getRecipeCategories = (
     icon: <i className="fa-solid fa-ice-cream"></i>,
   },
   {
+    label: t('recipesCategories.modifiers'),
+    value: 'modifiers',
+    icon: <i className="fa-solid fa-ice-cream"></i>,
+  },
+  {
     label: t('recipesCategories.snacks'),
     value: 'snacks',
     icon: <i className="fa-solid fa-cookie-bite"></i>,

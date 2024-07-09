@@ -113,10 +113,12 @@ const RecipeDetail = (props: Props) => {
         isOpen={deleteRecipe !== null}
         onRequestClose={() => setDeleteRecipe(null)}
         onConfirm={() =>
-          recipesService.deleteRecipe(deleteRecipe?.uuid ?? '').then(() => {
-            props.onRecipeChanged(deleteRecipe!, 'deleted');
-            setDeleteRecipe(null);
-          })
+          recipesService
+            .deleteRecipe(deleteRecipe?.uuid, deleteRecipe?.category ?? '')
+            .then(() => {
+              props.onRecipeChanged(deleteRecipe!, 'deleted');
+              setDeleteRecipe(null);
+            })
         }
       />
       <RecipeFormPanel
@@ -127,6 +129,7 @@ const RecipeDetail = (props: Props) => {
         onSubmitted={(recipe) => {
           props.onRecipeChanged(recipe, 'updated');
           setEditRecipe(null);
+          props.onRequestClose();
         }}
         recipe={editRecipe}
       />
