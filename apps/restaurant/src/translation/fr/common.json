@@ -166,6 +166,7 @@
     "givenName": "Nom donné",
     "detectedName": "Nom détecté",
     "save": "Sauvegarder",
-    "upload": "Importer"
+    "upload": "Importer",
+    "send":"Envoyer à Xero"
   }
 }

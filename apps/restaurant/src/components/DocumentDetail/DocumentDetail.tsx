@@ -141,7 +141,7 @@ const DocumentDetail = (props: Props) => {
             detectedName: ing.detectedName,
             mappedName: ing.mappedName,
             mappedUUID: ing.mappedUUID,
-            received_qty: +ing.received_qty,
+            received_qty: ing.received_qty ? +ing.received_qty : null,
             unitPrice: +ing.unitPrice,
             quantity: +ing.quantity,
             unit: ing.unit,
@@ -348,7 +348,6 @@ const DocumentDetail = (props: Props) => {
         <Input
           type="number"
           min={0}
-          step="0.001"
           placeholder={t('receivedQty')}
           className={styles.quantity}
           onChange={(value) =>

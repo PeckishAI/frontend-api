@@ -1,6 +1,7 @@
 import './style.scss';
 import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
 import { formatCurrency } from '../../../../utils/helpers';
+import { FaCheckCircle, FaRegCircle, FaSync } from 'react-icons/fa';
 
 type Props = {
   uuid?: string;
@@ -10,6 +11,10 @@ type Props = {
   path?: string;
   amount?: number;
   onClick: () => void;
+  isSelected: boolean;
+  show: boolean;
+  toggleSelection: () => void;
+  onButtonClick: () => void;
 };
 
 const DocumentCard = (props: Props) => {
@@ -24,6 +29,26 @@ const DocumentCard = (props: Props) => {
         <p className="supplier">{props.supplier}</p>
         <p className="date">{props.date}</p>
         <p className="price">{formatCurrency(props.amount, currencyISO)}</p>
+        {props.show && (
+          <>
+            <div
+              className="check-icon"
+              onClick={(e) => {
+                e.stopPropagation();
+                props.toggleSelection();
+              }}>
+              {props.isSelected ? <FaCheckCircle /> : <FaRegCircle />}
+            </div>
+
+            <FaSync
+              className="sync-icon"
+              onClick={(e) => {
+                e.stopPropagation(); // To prevent the click event from bubbling up to the parent div
+                props.onButtonClick();
+              }}
+            />
+          </>
+        )}
       </div>
     </div>
   );

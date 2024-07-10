@@ -73,8 +73,16 @@
 }
 .table {
   overflow: visible;
+  width: 100%;
+  border-collapse: collapse;
 }
 
+.table thead {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+}
 .optionsButtons {
   position: absolute;
   top: 0;
