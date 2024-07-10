@@ -241,28 +241,30 @@ const RecipeFormPanel = (props: Props) => {
           error={errors.name?.message}
         />
 
-        <Controller
-          control={control}
-          name="category"
-          render={({ field: { onChange, name, onBlur, ref, value } }) => (
-            <Select
-              size="large"
-              isSearchable={false}
-              isMulti={false}
-              placeholder={t('category')}
-              components={{ Option: CategoryOption }}
-              options={categories}
-              innerRef={ref}
-              name={name}
-              onChange={(val) => {
-                onChange(val?.value ?? null);
-              }}
-              onBlur={onBlur}
-              value={categories.find((cat) => cat.value === value) ?? null}
-              error={errors.category?.message}
-            />
-          )}
-        />
+        {props?.recipe?.category !== 'modifiers' && (
+          <Controller
+            control={control}
+            name="category"
+            render={({ field: { onChange, name, onBlur, ref, value } }) => (
+              <Select
+                size="large"
+                isSearchable={false}
+                isMulti={false}
+                placeholder={t('category')}
+                components={{ Option: CategoryOption }}
+                options={categories}
+                innerRef={ref}
+                name={name}
+                onChange={(val) => {
+                  onChange(val?.value ?? null);
+                }}
+                onBlur={onBlur}
+                value={categories.find((cat) => cat.value === value) ?? null}
+                error={errors.category?.message}
+              />
+            )}
+          />
+        )}
 
         <div className={styles.rowInputs}>
           {recipeType !== 'preparation' && (

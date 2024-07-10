@@ -5,6 +5,7 @@ export type RecipeCategory =
   | 'starters'
   | 'mainCourses'
   | 'desserts'
+  | 'modifiers'
   | 'snacks'
   | 'others';
 
@@ -98,8 +99,8 @@ const createRecipe = async (
   return res.data.recipe_uuid as string;
 };
 
-const deleteRecipe = (recipeId: string) => {
-  return axios.post('/recipe/' + recipeId + '/delete');
+const deleteRecipe = (recipeId: string, category: string) => {
+  return axios.post('/recipe/' + recipeId + `/delete?category=${category}`);
 };
 
 export const recipesService = {
