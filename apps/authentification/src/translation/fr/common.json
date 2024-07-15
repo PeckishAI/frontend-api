@@ -3,10 +3,19 @@
   "sign-in.description": "Entrez votre email et votre mot de passe pour vous connecter à Peckish",
   "sign-in.create-account": "Vous n'avez pas de compte ?",
 
+  "reset-password.title":"Réinitialisez votre mot de passe",
+  "reset-password.description":"Entrez le mot de passe de votre choix et confirmez le mot de passe",
+
   "sign-up.title": "Créer un compte",
   "sign-up.description": "Inscrivez-vous pour commencer à utiliser Peckish",
   "sign-up.already-register": "Vous avez déjà un compte ?",
   "sign-up.tos-checkbox": "Accepter les <tosLink>Conditions Générales d'Utilisation</tosLink> et la <privacyLink>Politique de Confidentialité</privacyLink>",
+
+  "request-reset.title":"Besoin d'un nouveau mot de passe ?",
+  "request-reset.description":"Veuillez fournir votre adresse e-mail et nous vous enverrons des instructions sur la façon de modifier votre mot de passe.",
+  "request-reset.request-reset":"réinitialiser le mot de passe",
+  "request-reset.go-back":"Revenir à la connexion",
+  "request-reset.check-email":"Revenir à la connexion",
 
   "choose-usage.title": "Qui êtes vous ?",
   "choose-usage.description": "À quelles fins souhaitez-vous utiliser Peckish.",
@@ -16,7 +25,9 @@
   "choose-usage.restaurant.description": "Gestion de stock améliorée",
 
   "remember-me": "Se souvenir de moi",
+  "forgot-password":"Mot de passe oublié?",
   "sign-in": "Se connecter",
+  "reset-password":"Confirmer",
   "sign-in-google": "Connexion avec Google",
   "sign-in-apple": "Continuer avec Apple",
   "sign-up": "Créer un compte",
