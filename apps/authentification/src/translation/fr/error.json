@@ -7,6 +7,8 @@
   "password-dont-match": "Les mots de passe ne correspondent pas",
   "accept-tos": "Vous devez accepter les termes et conditions",
 
+  "user-not-found":"Utilisateur non trouvé",
+  "check-email":"Merci de consulter vos emails",
   "unknown-error": "Une erreur inconnue est survenue. Veuillez réessayer.",
 
   "sign-in.account-not-found": "Compte introuvable, veuillez en créer un d'abord.",
