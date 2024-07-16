@@ -7,6 +7,8 @@
   "password-dont-match": "Passwords don't match",
   "accept-tos": "You must accept the terms & conditions",
 
+  "user-not-found":"User not found",
+  "check-email":"Please check your email",
   "unknown-error": "An error occured while sign-in. Please try again",
 
   "sign-in.account-not-found": "Account not found, please create one first.",
@@ -21,5 +23,4 @@
 
   "apple-auth.aborted": "Apple authentification aborted.",
   "apple-auth.failed": "Apple authentification failed."
-
 }

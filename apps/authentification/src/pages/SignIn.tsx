@@ -107,11 +107,18 @@ export const SignIn = () => {
             {...register('password')}
             error={errors.password?.message}
           />
-          <Checkbox
-            label={t('common:remember-me')}
-            checked={rememberMe}
-            onCheck={setRememberMe}
-          />
+          <div className="remember-me-container">
+            <Checkbox
+              label={t('common:remember-me')}
+              checked={rememberMe}
+              onCheck={setRememberMe}
+            />
+            <div
+              className="forget-password-button"
+              onClick={() => navigate('/email-reset-password')}>
+              {t('common:forgot-password')}
+            </div>
+          </div>
 
           <Button
             type="primary"
