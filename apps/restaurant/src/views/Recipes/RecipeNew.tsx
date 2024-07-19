@@ -28,7 +28,7 @@ const getTabName = (tabIndex: number) => {
   return 'recipe';
 };
 
-const getRecipeCategories = (t: TFunction<['common'], undefined>) => [
+export const getRecipeCategories = (t: TFunction<['common'], undefined>) => [
   {
     label: t('recipesCategories.drinks'),
     value: 'drinks',
@@ -52,6 +52,44 @@ const getRecipeCategories = (t: TFunction<['common'], undefined>) => [
   {
     label: t('recipesCategories.modifiers'),
     value: 'modifiers',
+    icon: <i className="fa-solid fa-ice-cream"></i>,
+  },
+  {
+    label: t('recipesCategories.snacks'),
+    value: 'snacks',
+    icon: <i className="fa-solid fa-cookie-bite"></i>,
+  },
+  {
+    label: t('recipesCategories.preparations'),
+    value: 'preparations',
+    icon: <i className="fa-solid fa-martini-glass"></i>,
+  },
+  {
+    label: t('recipesCategories.others'),
+    value: 'others',
+    icon: <i className="fa-solid fa-bone"></i>,
+  },
+];
+
+export const getRecipeCategorie = (t: TFunction<['common'], undefined>) => [
+  {
+    label: t('recipesCategories.drinks'),
+    value: 'drinks',
+    icon: <i className="fa-solid fa-martini-glass"></i>,
+  },
+  {
+    label: t('recipesCategories.starters'),
+    value: 'starters',
+    icon: <i className="fa-solid fa-bowl-food"></i>,
+  },
+  {
+    label: t('recipesCategories.mainCourses'),
+    value: 'mainCourses',
+    icon: <i className="fa-solid fa-bell-concierge"></i>,
+  },
+  {
+    label: t('recipesCategories.desserts'),
+    value: 'desserts',
     icon: <i className="fa-solid fa-ice-cream"></i>,
   },
   {
