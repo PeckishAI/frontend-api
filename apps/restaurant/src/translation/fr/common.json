@@ -8,6 +8,8 @@
       "orders": "Commandes"
     },
     "recipes": "Recettes",
+    "preparations":"Les préparatifs",
+    "modifiers":"Modificatrices",
     "onboarding": "Intégrations",
     "onboarding_selectProducts": "Séléctionnez les produits",
     "onboarding_createPreparations": "Créez vos préparations",
@@ -37,6 +39,7 @@
     "starters": "Entrées",
     "mainCourses": "Plats princiaux",
     "desserts": "Desserts",
+    "preparations":"Les préparatifs",
     "modifiers": "Modifiers",
     "snacks": "Snacks",
     "others": "Autres"
@@ -79,6 +82,16 @@
       "createSupplier": "Créer le fournisseur \"{{name}}\""
     },
     "automaticSendCheckbox": "Envoyer une invitation automatique au fournisseur"
+  },
+  "recipes.addPreparation": {
+    "addPreparationBtn": "Ajouter une nouvelle préparation",
+    "title": "Ajouter une nouvelle préparation",
+   "subtitle": "Recherchez votre fournisseur ici ou créez-en un nouveau si vous ne le trouvez pas",
+    "select": {
+      "placeholder": "Sélectionnez un fournisseur",
+      "createSupplier": "Créer le fournisseur \"{{name}}\""
+    },
+    "automaticSendCheckbox": "ajoutez une nouvelle préparation avant de vérifier tous les détails"
   },
 
   "orders.detail": "Detail",

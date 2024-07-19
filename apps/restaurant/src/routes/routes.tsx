@@ -12,6 +12,7 @@ import OAuthPopup from '../utils/oauth/OAuth2Popup';
 import { OnboardRestaurant } from '../views/Onboarding/OnboardRestaurant';
 import Documents from '../views/Documents/Documents';
 import PlaceOrder from '../views/PlaceOrder/PlaceOrder';
+import RecipeNew from '../views/Recipes/RecipeNew';
 
 export const router = createBrowserRouter([
   {
@@ -48,7 +49,11 @@ export const router = createBrowserRouter([
           },
           {
             path: '/recipes',
-            element: <Recipes />,
+            element: <RecipeNew />,
+          },
+          {
+            path: '/recipes/:tab',
+            element: <RecipeNew />,
           },
           {
             path: '/integrations',
