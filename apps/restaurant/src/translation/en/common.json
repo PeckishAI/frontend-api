@@ -8,6 +8,8 @@
       "orders": "Orders"
     },
     "recipes": "Recipes",
+    "preparations":"Preparations",
+    "modifiers":"Modifiers",
     "onboarding": "Onboarding",
     "onboarding_selectProducts": "Select products",
     "onboarding_createPreparations": "Create preparations",
@@ -39,6 +41,7 @@
     "desserts": "Desserts",
     "modifiers": "Modifiers",
     "snacks": "Snacks",
+    "preparations":"Preparations",
     "others": "Others"
   },
 
@@ -79,6 +82,16 @@
       "createSupplier": "Create supplier \"{{name}}\""
     },
     "automaticSendCheckbox": "Send an automatic invitation to the supplier"
+  },
+  "recipes.addPreparation": {
+    "addPreparationBtn": "Add Preparation",
+    "title": "Add a new Preparation",
+    "subtitle": "Search your supplier here or create a new one if you don't find it",
+    "select": {
+      "placeholder": "Select a supplier",
+      "createSupplier": "Create supplier \"{{name}}\""
+    },
+    "automaticSendCheckbox": "add a new preparation before check the all details"
   },
 
   "orders.detail": "Detail",
