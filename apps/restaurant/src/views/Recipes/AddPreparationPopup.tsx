@@ -289,7 +289,7 @@ const AddPreparationPopup = (props: Props) => {
           />
           <Button
             type="primary"
-            value={t('validate')}
+            value={t('confirm')}
             actionType="submit"
             loading={isSubmitting}
           />
