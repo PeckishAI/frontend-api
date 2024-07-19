@@ -140,6 +140,7 @@ const getIngredientList = async (
     tagUUID: res.data[key]['tag_uuid'],
     supplier: res.data[key]['supplier'],
     amount: res.data[key]['amount'],
+    type: res.data[key]['type'],
   }));
 };
 

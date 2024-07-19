@@ -1,27 +1,30 @@
+import { useEffect, ReactElement } from 'react';
+import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { z } from 'zod';
-import styles from './RecipeFormPanel.module.scss';
-import { Button, IconButton, LabeledInput, Select, SidePanel } from 'shared-ui';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { Button, IconButton, LabeledInput, Select, SidePanel } from 'shared-ui';
+import { FaPlus } from 'react-icons/fa';
+import { MdDelete } from 'react-icons/md';
+import { useTranslation, Trans } from 'react-i18next';
+import classNames from 'classnames';
+import { formatCurrency } from '../../utils/helpers';
+import { useIngredients } from '../../services/hooks';
+import {
+  useRestaurantCurrency,
+  useRestaurantStore,
+} from '../../store/useRestaurantStore';
 import {
   Recipe,
   RecipeCategory,
   RecipeType,
   recipesService,
 } from '../../services';
-import { useIngredients } from '../../services/hooks';
-import { FaPlus } from 'react-icons/fa';
-import { MdDelete } from 'react-icons/md';
-import { ReactElement, useEffect } from 'react';
-import {
-  useRestaurantCurrency,
-  useRestaurantStore,
-} from '../../store/useRestaurantStore';
-import { formatCurrency } from '../../utils/helpers';
-import classNames from 'classnames';
-import { Trans, useTranslation } from 'react-i18next';
 import { components, OptionProps } from 'react-select';
+import styles from './RecipeFormPanel.module.scss';
 import { getRecipeCategories } from '../../views/Recipes/Recipes';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import ListSubheader from '@mui/material/ListSubheader';
 
 const RecipeSchema = z
   .object({
@@ -36,7 +39,7 @@ const RecipeSchema = z
     ingredients: z.array(
       z.object({
         selectedUUID: z.string().nonempty('required'),
-        // Allow null for quantity to initialize empty field, but make it required in the form submission
+        type: z.string().nonempty('required'),
         quantity: z.coerce
           .number()
           .positive('positive-number')
@@ -46,8 +49,6 @@ const RecipeSchema = z
     ),
   })
   .refine((val) => {
-    console.log('ici', val);
-
     if (val.type !== 'preparation') {
       return val.pricePerPortion !== undefined;
     }
@@ -80,6 +81,7 @@ const RecipeFormPanel = (props: Props) => {
     reset,
     watch,
     control,
+    setValue,
     handleSubmit,
     formState: { errors, isDirty, isSubmitting },
   } = useForm<EditRecipeForm>({
@@ -117,13 +119,24 @@ const RecipeFormPanel = (props: Props) => {
           ingredients: (props.recipe?.ingredients ?? []).map((ing) => ({
             selectedUUID: ing.uuid,
             quantity: ing.quantity,
+            type: ing.type,
           })),
         });
       }
     }
   }, [props.isOpen, props.recipe]);
 
-  // Batch cost
+  useEffect(() => {
+    ingredientFields.forEach((field, index) => {
+      const selectedIngredient = ingredients.find(
+        (ing) => ing.id === watch(`ingredients.${index}.selectedUUID`)
+      );
+      if (selectedIngredient) {
+        setValue(`ingredients.${index}.type`, selectedIngredient.type);
+      }
+    });
+  }, [watch('ingredients'), ingredients]);
+
   const totalCost = watch('ingredients').reduce((acc, ing) => {
     const ingredient = ingredients.find((i) => i.id === ing.selectedUUID);
     if (ingredient) {
@@ -138,16 +151,15 @@ const RecipeFormPanel = (props: Props) => {
 
   // handle form submission
   const handleFormSubmit = handleSubmit((data) => {
-    console.log(data);
     const requestData = {
       ...data,
       ingredients: data.ingredients.map((ing) => ({
         ingredient_uuid: ing.selectedUUID,
         quantity: ing.quantity ?? 0,
+        type: ing.type,
       })),
     };
 
-    // Use the correct service depending on the action
     const service =
       props.action === 'create'
         ? recipesService.createRecipe(
@@ -166,9 +178,8 @@ const RecipeFormPanel = (props: Props) => {
       props.onSubmitted({
         ...props.recipe,
         uuid:
-          props.recipe?.uuid ?? props.action === 'create'
-            ? (res as string)
-            : '',
+          props.recipe?.uuid ??
+          (props.action === 'create' ? (res as string) : ''),
         type: recipeType,
         isOnboarded: props.recipe?.isOnboarded ?? true,
         name: data.name,
@@ -186,6 +197,7 @@ const RecipeFormPanel = (props: Props) => {
             ...ingredient,
             uuid: ing.selectedUUID,
             quantity: ing.quantity ?? 0,
+            type: ing.type,
           };
         }),
       });
@@ -199,7 +211,20 @@ const RecipeFormPanel = (props: Props) => {
     value: cat.value,
   }));
 
-  console.log(errors);
+  // Flatten data and add a type field
+  const allItems = ingredients.map((item) => ({
+    ...item,
+    groupBy: item.type === 'ingredient' ? 'Ingredients' : 'Preparations',
+  }));
+
+  // Handle change event
+  const handleChange = (onChange, setValue, index) => (event, value) => {
+    onChange(value?.id ?? null);
+    const ingredient = ingredients.find((ing) => ing.id === value?.id);
+    if (ingredient?.type) {
+      setValue(`ingredients.${index}.type`, ingredient.type);
+    }
+  };
 
   return (
     <SidePanel
@@ -338,21 +363,56 @@ const RecipeFormPanel = (props: Props) => {
                 control={control}
                 name={`ingredients.${i}.selectedUUID`}
                 render={({ field: { onChange, name, onBlur, ref } }) => (
-                  <Select
-                    size="large"
-                    placeholder={t('recipes.editPanel.table.ingredientSelect')}
-                    options={ingredients}
-                    getOptionLabel={(option) => option.name}
-                    getOptionValue={(option) => option.id}
-                    isLoading={loadingIngredients}
-                    innerRef={ref}
-                    name={name}
-                    onChange={(val) => {
-                      onChange(val?.id ?? null);
-                    }}
-                    onBlur={onBlur}
-                    value={selectedIngredient}
-                    error={errors.ingredients?.[i]?.selectedUUID?.message}
+                  <Autocomplete
+                    options={allItems.sort(
+                      (a, b) => -b.groupBy.localeCompare(a.groupBy)
+                    )}
+                    groupBy={(option) => option.groupBy}
+                    getOptionLabel={(option) => option.name || ''}
+                    onChange={handleChange(onChange, setValue, i)}
+                    loading={loadingIngredients}
+                    isOptionEqualToValue={(option, value) =>
+                      option.id === value?.id
+                    }
+                    value={
+                      selectedIngredient
+                        ? {
+                            name: selectedIngredient.name,
+                            id: selectedIngredient.id,
+                          }
+                        : null
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={t('recipes.editPanel.table.ingredientSelect')}
+                        variant="filled"
+                        sx={{
+                          '& .MuiFilledInput-root': {
+                            border: '2px solid grey',
+                            borderRadius: 1,
+                            background: 'white',
+                            height: '40px',
+                            fontSize: '16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            borderColor: 'grey.300',
+                            borderBottom: 'none ',
+                          },
+                          '& .MuiFilledInput-root:hover': {
+                            borderColor: '#337ab7',
+                          },
+                        }}
+                      />
+                    )}
+                    renderGroup={(params) => (
+                      <li key={params.group}>
+                        <ListSubheader>{params.group}</ListSubheader>
+                        {params.children.map((child, index) => (
+                          <div key={`${params.group}-${index}`}>{child}</div>
+                        ))}
+                      </li>
+                    )}
                   />
                 )}
               />
@@ -388,7 +448,8 @@ const RecipeFormPanel = (props: Props) => {
           onClick={() => {
             addIngredient({
               selectedUUID: '',
-              quantity: null,
+              quantity: 0,
+              type: '',
             });
           }}>
           <FaPlus />

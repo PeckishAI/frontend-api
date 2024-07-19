@@ -7,6 +7,7 @@ export type RecipeCategory =
   | 'desserts'
   | 'modifiers'
   | 'snacks'
+  | 'preparations'
   | 'others';
 
 export type RecipeType = 'recipe' | 'preparation' | 'product';
@@ -60,9 +61,11 @@ type FormRecipe = {
   category: RecipeCategory;
   pricePerPortion?: number;
   portionsPerBatch: number;
+  type: string;
   ingredients: {
     ingredient_uuid: string;
     quantity: number;
+    type: string;
   }[];
 };
 
@@ -73,6 +76,7 @@ const updateRecipe = (
 ) => {
   return axios.post('/recipe/' + recipeUUID + '/update', {
     restaurant_uuid: restaurantUUID,
+    type: data.type,
     recipe_name: data.name,
     category: data.category,
     portion_price: data.pricePerPortion,
@@ -89,7 +93,7 @@ const createRecipe = async (
   const res = await axios.post('/recipes/' + restaurantUUID, {
     type,
     restaurant_uuid: restaurantUUID,
-    recipe_name: data.name,
+    recipe_name: data.recipe_name,
     category: data.category,
     portion_price: data.pricePerPortion,
     portion_count: data.portionsPerBatch,

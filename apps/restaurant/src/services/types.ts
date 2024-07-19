@@ -1,4 +1,5 @@
 export type Ingredient = {
+  type?: string;
   id: string;
   name: string;
   tagUUID?: string | null;
