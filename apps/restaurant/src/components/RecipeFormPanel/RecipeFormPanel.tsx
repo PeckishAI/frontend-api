@@ -21,7 +21,7 @@ import {
 } from '../../services';
 import { components, OptionProps } from 'react-select';
 import styles from './RecipeFormPanel.module.scss';
-import { getRecipeCategories } from '../../views/Recipes/Recipes';
+import { getRecipeCategorie } from '../../views/Recipes/RecipeNew';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import ListSubheader from '@mui/material/ListSubheader';
@@ -205,7 +205,7 @@ const RecipeFormPanel = (props: Props) => {
   });
 
   // Categories options
-  const categories = getRecipeCategories(t).map((cat) => ({
+  const categories = getRecipeCategorie(t).map((cat) => ({
     icon: cat.icon,
     label: cat.label,
     value: cat.value,
