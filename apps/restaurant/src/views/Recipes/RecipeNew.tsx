@@ -15,16 +15,16 @@ type RouteParams = {
 };
 
 const getTabIndex = (tab?: string) => {
-  if (tab === 'recipes') return 0;
-  if (tab === 'preparations') return 1;
-  if (tab === 'modifiers') return 2;
+  if (tab === 'recipe') return 0;
+  if (tab === 'preparation') return 1;
+  if (tab === 'modifier') return 2;
   return 0;
 };
 
 const getTabName = (tabIndex: number) => {
   if (tabIndex === 0) return 'recipe';
-  if (tabIndex === 1) return 'preparations';
-  if (tabIndex === 2) return 'modifiers';
+  if (tabIndex === 1) return 'preparation';
+  if (tabIndex === 2) return 'modifier';
   return 'recipe';
 };
 

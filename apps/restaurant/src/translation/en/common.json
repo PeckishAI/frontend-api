@@ -140,6 +140,12 @@
         "name": "Preparation name"
       }
     },
+    "modifier": {
+      "title": "Edit <highlight>{{name}}<highlight> modifier",
+      "fields": {
+        "name": "Modifier name"
+      }
+    },
     "fields": {
       "pricePerPortion": "Price (per portion)",
       "portionsPerBatch": "Portions per batch"

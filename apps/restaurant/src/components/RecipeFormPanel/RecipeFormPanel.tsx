@@ -29,7 +29,7 @@ import ListSubheader from '@mui/material/ListSubheader';
 const RecipeSchema = z
   .object({
     name: z.string().trim().nonempty('required'),
-    type: z.enum(['recipe', 'preparation', 'product']),
+    type: z.enum(['recipe', 'preparation', 'modifier']),
     category: z.custom<RecipeCategory>().refine((val) => !!val, 'required'),
     pricePerPortion: z.coerce
       .number()
@@ -257,7 +257,7 @@ const RecipeFormPanel = (props: Props) => {
         <LabeledInput
           placeholder={t(
             `recipes.editPanel.${
-              recipeType as 'recipe' | 'preparation'
+              recipeType as 'recipe' | 'preparation' | 'modifier'
             }.fields.name`
           )}
           autoComplete="off"
