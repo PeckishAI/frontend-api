@@ -10,7 +10,7 @@ export type RecipeCategory =
   | 'preparations'
   | 'others';
 
-export type RecipeType = 'recipe' | 'preparation' | 'product';
+export type RecipeType = 'recipe' | 'preparation' | 'modifier';
 
 export type Recipe = {
   uuid: string;
