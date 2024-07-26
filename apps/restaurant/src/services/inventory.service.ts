@@ -99,7 +99,7 @@ interface DocumentData {
 const sendInvoice = async (restaurantUUID: string, data: DocumentData[]) => {
   try {
     const response = await axios.post(
-      `/accounting/xero/send_invoice/${restaurantUUID}`,
+      `/accounting/xero/send-invoice/${restaurantUUID}`,
       data
     );
     return response.data;

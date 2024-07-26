@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useTitle, Button } from 'shared-ui';
+import { useTitle, Button, Loading } from 'shared-ui';
 import DocumentCard from './Components/DocumentCard/DocumentCard';
 import { useEffect, useState } from 'react';
 import { Invoice, inventoryService } from '../../services';
@@ -20,6 +20,7 @@ const Documents = () => {
 
   const { id } = useParams();
   const [loadingData, setLoadingData] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [document, setDocument] = useState<Invoice[]>([]);
   const [documentDetail, setDocumentDetail] = useState<Invoice | null>(null);
   const [showImportPopup, setShowImportPopup] = useState(false);
@@ -74,7 +75,8 @@ const Documents = () => {
 
   const handleConfirm = async () => {
     if (!actionData) return;
-    setLoadingData(true);
+    setLoading(true);
+
     try {
       let documentsToSend = [];
 
@@ -103,13 +105,15 @@ const Documents = () => {
           setSelectedDocuments([]);
         }
 
-        // These actions will only occur if the API call was successful
-        setIsPopupVisible(false);
-        setLoadingData(true);
-        reloadDocuments();
+        // Actions after successful API call
+        setIsPopupVisible(false); // Close the popup
+        reloadDocuments(); // Reload documents to update the list
       }
     } catch (error) {
       console.error('API call error:', error);
+    } finally {
+      setLoading(false);
+      reloadDocuments();
     }
   };
 
@@ -237,6 +241,7 @@ const Documents = () => {
             // handle imported ingredients here
           }}
         />
+        {loading && <Loading size="large" />}
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ type Props = {
   amount?: number;
   onClick: () => void;
   isSelected: boolean;
-  showSyncStatus: boolean;
+  showSyncStatus: string;
   toggleSelection: () => void;
   onButtonClick: () => void;
 };
@@ -40,7 +40,7 @@ const DocumentCard = (props: Props) => {
         <p className="supplier">{supplier}</p>
         <p className="date">{date}</p>
         <p className="price">{formatCurrency(amount, currencyISO)}</p>
-        {!showSyncStatus ? (
+        {showSyncStatus !== 'true' ? (
           <>
             <div
               className="check-icon"
