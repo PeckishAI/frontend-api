@@ -65,6 +65,7 @@
   "suppliers.waitLink": "The invitation is pending, or copy the link to send a new one",
   "suppliers.linkCopied": "Invitation link copied to clipboard",
   "suppliers.revokeAccess": "Revoke access",
+  "suppliers.sync":"Sync",
   "suppliers.removeSupplierToast": {
     "loading": "Deleting supplier...",
     "success": "Supplier deleted",
@@ -73,6 +74,12 @@
   "suppliers.removeSupplierPopup": {
     "title": "Revoke access to inventory",
     "subtitle": "Do you want to remove {{name}}'s access to your inventory?"
+  },
+  "suppliers.syncSupplierPopup": {
+    "title": "Sync access to Supplier",
+    "subtitle": "Sync Supplier with Xero contacts.",
+    "selectSyncContact":"Select Sync Contact",
+    "syncSupplierBtn":"Create Contact to Xero"
   },
   "suppliers.addSupplier": {
     "title": "Add a new supplier",

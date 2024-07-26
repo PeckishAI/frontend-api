@@ -48,10 +48,26 @@ const Integrations = () => {
   const [selectedPOS, setSelectedPOS] = useState<POS | undefined>();
   const [searchTerm, setSearchTerm] = useState('');
   const [integrated, setIntegrated] = useState<Integration[]>([]);
-
-  const reloadRestaurants = useRestaurantStore(
-    (state) => state.loadRestaurants
+  const [connectedIntegrations, setConnectedIntegrations] = useState<string[]>(
+    []
   );
+
+  const { loadRestaurants, restaurants } = useRestaurantStore((state) => ({
+    loadRestaurants: state.loadRestaurants,
+    restaurants: state.restaurants,
+  }));
+
+  useEffect(() => {
+    if (restaurants.length > 0) {
+      restaurants.forEach((restaurant) => {
+        restaurant.provider.forEach((provide) => {
+          if (provide.xero) {
+            setConnectedIntegrations((prev) => [...prev, 'Xero']);
+          }
+        });
+      });
+    }
+  }, [restaurants]);
 
   // Fetch data from API Backend (Get POS)
   useEffect(() => {
@@ -113,7 +129,7 @@ const Integrations = () => {
   };
 
   const handleValidIntegrations = () => {
-    reloadRestaurants();
+    loadRestaurants();
     navigate('/myRestaurant');
   };
 
@@ -154,7 +170,7 @@ const Integrations = () => {
       {inegrationsByCat.map(
         (category) =>
           category.integrations.length > 0 && (
-            <div>
+            <div key={category.value}>
               <div className="category">
                 {category.icon}
                 <p className="name">{category.label}</p>
@@ -165,15 +181,17 @@ const Integrations = () => {
                     key={pos.name}
                     name={pos.display_name}
                     image={pos.logo_uri}
-                    button_display={pos.button_display}
+                    button_display={
+                      connectedIntegrations.includes(pos.display_name)
+                        ? 'Connected'
+                        : pos.button_display
+                    }
+                    disabled={connectedIntegrations.includes(pos.display_name)}
                     onClick={() => {
-                      setLoginModalVisible(true);
-                      setSelectedPOS(pos);
-                      // if (pos.auth_type === 'modal') {
-                      //   // Show login modal
-                      // } else {
-                      //   // Redirect to oauth_url
-                      // }
+                      if (!connectedIntegrations.includes(pos.display_name)) {
+                        setLoginModalVisible(true);
+                        setSelectedPOS(pos);
+                      }
                     }}
                   />
                 ))}

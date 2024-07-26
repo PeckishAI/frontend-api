@@ -65,6 +65,7 @@
   "suppliers.waitLink": "L'invitation est en attente, ou copiez le lien pour en envoyer une nouvelle",
   "suppliers.linkCopied": "Lien d'invitation copié dans le presse-papiers",
   "suppliers.revokeAccess": "Révoquer l'accès",
+  "suppliers.sync":"Synchroniser",
   "suppliers.removeSupplierToast": {
     "loading": "Suppression du fournisseur...",
     "success": "Fournisseur supprimé",
@@ -73,6 +74,12 @@
   "suppliers.removeSupplierPopup": {
     "title": "Révoquer l'accès à l'inventaire",
     "subtitle": "Voulez-vous supprimer l'accès de {{name}} à votre inventaire ?"
+  },
+  "suppliers.syncSupplierPopup": {
+    "title": "Synchroniser l'accès au fournisseur",
+    "subtitle": "Synchronisez le fournisseur avec les contacts Xero.",
+    "selectSyncContact":"Sélectionnez Synchroniser le contact",
+    "syncSupplierBtn":"Créer un contact avec Xero"
   },
   "suppliers.addSupplier": {
     "title": "Ajouter un nouveau fournisseur",

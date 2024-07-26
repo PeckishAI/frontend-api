@@ -18,6 +18,7 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
       ...documentData,
       documentUUID: key,
       supplier_uuid: documentData.supplier_uuid,
+      sync_status: documentData.sync_status,
       ingredients: documentData.ingredients.map((ingredient: any) => ({
         mappedUUID: ingredient['mapping_uuid'],
         detectedName: ingredient['ingredient_name'],
@@ -70,16 +71,10 @@ const updateDocument = (
   });
 };
 
-// interface DocumentData {
-//   amount: number;
-//   created_at: string;
-//   date: string;
-//   ingredients: Ingredient[];
-//   path: null | string;
-//   supplier: string;
-//   supplier_uuid: string;
-//   documentUUID: string;
-// }
+interface DocumentData {
+  supplier_uuid: string;
+  documentUUID: string;
+}
 
 // interface Ingredient {
 //   mappedUUID: string;
@@ -101,24 +96,21 @@ const updateDocument = (
 //   );
 // };
 
-// const addSelected = async (restaurantUUID: string, data: DocumentData) => {
-//   try {
-//     const response = await axiosClient.post(
-//       `/addIngredient/${restaurantUUID}`,
-//       {
-//         restaurant_uuid: restaurantUUID,
-//         data: data,
-//       }
-//     );
-//     return response.data;
-//   } catch (error) {
-//     console.error(
-//       'Error adding ingredient:',
-//       error.response?.data || error.message
-//     );
-//     throw error;
-//   }
-// };
+const sendInvoice = async (restaurantUUID: string, data: DocumentData[]) => {
+  try {
+    const response = await axios.post(
+      `/accounting/xero/send_invoice/${restaurantUUID}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error adding ingredient:',
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
 
 const deleteDocument = (documentId: string) => {
   return axios.post('/documents/' + documentId + '/delete');
@@ -337,5 +329,5 @@ export const inventoryService = {
   getDocument,
   updateDocument,
   deleteDocument,
-  //addSelected,
+  sendInvoice,
 };

@@ -12,7 +12,7 @@ type Props = {
   amount?: number;
   onClick: () => void;
   isSelected: boolean;
-  show: boolean;
+  showSyncStatus: boolean;
   toggleSelection: () => void;
   onButtonClick: () => void;
 };
@@ -24,7 +24,7 @@ const DocumentCard = (props: Props) => {
     supplier,
     date,
     amount,
-    show,
+    showSyncStatus,
     toggleSelection,
     isSelected,
     onButtonClick,
@@ -40,7 +40,7 @@ const DocumentCard = (props: Props) => {
         <p className="supplier">{supplier}</p>
         <p className="date">{date}</p>
         <p className="price">{formatCurrency(amount, currencyISO)}</p>
-        {show && (
+        {!showSyncStatus ? (
           <>
             <div
               className="check-icon"
@@ -56,6 +56,15 @@ const DocumentCard = (props: Props) => {
               onClick={(e) => {
                 e.stopPropagation(); // To prevent the click event from bubbling up to the parent div
                 onButtonClick();
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <FaSync
+              className="sync-icon disabled"
+              onClick={(e) => {
+                e.stopPropagation();
               }}
             />
           </>

@@ -9,7 +9,6 @@ import styles from './style.module.scss';
 import ImportIngredients from './Components/ImportIngredients/ImportIngredients';
 import { useParams } from 'react-router-dom';
 import ConfirmationPopup from '../ConfirmModal/ConfirmationPopup';
-import { useUserStore } from '@peckishai/user-management';
 
 const Documents = () => {
   const { t } = useTranslation();
@@ -19,15 +18,12 @@ const Documents = () => {
     (state) => state.selectedRestaurantUUID
   );
 
-  const { user } = useUserStore();
   const { id } = useParams();
   const [loadingData, setLoadingData] = useState(false);
   const [document, setDocument] = useState<Invoice[]>([]);
   const [documentDetail, setDocumentDetail] = useState<Invoice | null>(null);
   const [showImportPopup, setShowImportPopup] = useState(false);
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
-
-  const [show, setShow] = useState(true);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [actionData, setActionData] = useState<string[]>([]);
 
@@ -77,21 +73,44 @@ const Documents = () => {
   };
 
   const handleConfirm = async () => {
-    if (actionData) {
-      try {
-        if (actionData.type === 'confirmDocument') {
-          console.log('confirm Data', actionData.data);
-          // inventoryService.addSelected(selectedRestaurantUUID, actionData.data);
-        } else if (actionData.type === 'logSelectedDocuments') {
-          console.log('logSelectedDocuments Data', actionData.data);
-          // inventoryService.addSelected(selectedRestaurantUUID, actionData.data);
+    if (!actionData) return;
+    setLoadingData(true);
+    try {
+      let documentsToSend = [];
+
+      if (actionData.type === 'confirmDocument') {
+        const { documentUUID, supplier_uuid } = actionData.data;
+        documentsToSend = [
+          {
+            document_uuid: documentUUID,
+            supplier_uuid: supplier_uuid,
+          },
+        ];
+      } else if (actionData.type === 'logSelectedDocuments') {
+        documentsToSend = (actionData.data as Invoice[]).map((doc) => ({
+          document_uuid: doc.documentUUID,
+          supplier_uuid: doc.supplier_uuid,
+        }));
+      }
+
+      if (documentsToSend.length > 0) {
+        await inventoryService.sendInvoice(
+          selectedRestaurantUUID,
+          documentsToSend
+        );
+
+        if (actionData.type === 'logSelectedDocuments') {
           setSelectedDocuments([]);
         }
-      } catch (error) {
-        console.error('API call error:', error);
+
+        // These actions will only occur if the API call was successful
+        setIsPopupVisible(false);
+        setLoadingData(true);
+        reloadDocuments();
       }
+    } catch (error) {
+      console.error('API call error:', error);
     }
-    setIsPopupVisible(false);
   };
 
   useEffect(() => {
@@ -116,6 +135,17 @@ const Documents = () => {
   };
 
   const handleDeleteDocument = (documentToDelete: Invoice) => {
+    inventoryService
+      .deleteDocument(documentToDelete.documentUUID)
+      .then((res) => {
+        console.log('clear', res);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoadingData(false);
+      });
     setDocument((prevDoc) =>
       prevDoc.filter(
         (doc) => doc.documentUUID !== documentToDelete.documentUUID
@@ -172,7 +202,7 @@ const Documents = () => {
                   (selectedDoc) => selectedDoc.documentUUID === doc.documentUUID
                 )}
                 toggleSelection={() => toggleSelection(doc)}
-                show={show}
+                showSyncStatus={doc.sync_status}
               />
             ))}
           </div>
