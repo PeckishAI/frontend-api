@@ -115,7 +115,13 @@ const getIngredientList = async (
     unit: res.data[key]['unit'],
     unitCost: res.data[key]['cost'],
     tagUUID: res.data[key]['tag_uuid'],
-    supplier: res.data[key]['supplier'],
+    supplier_details: res.data[key]['supplier_details'].map(
+      (supplier: any) => ({
+        supplier_id: supplier['supplier_id'],
+        supplier_name: supplier['supplier_name'],
+        supplier_cost: supplier['supplier_cost'],
+      })
+    ),
     amount: res.data[key]['amount'],
     type: res.data[key]['type'],
   }));
@@ -129,7 +135,7 @@ const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
     par_level: ingredient.parLevel,
     actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
-    supplier: ingredient.supplier,
+    supplier_details: ingredient.supplier_details,
     cost: ingredient.unitCost,
   };
 
@@ -137,19 +143,6 @@ const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
 };
 
 const updateIngredient = (ingredient: Ingredient) => {
-  // const ingredientFormated = Object.keys(ingredient)
-  //   .filter(
-  //     (key) =>
-  //       key !== 'id' &&
-  //       key !== 'theoriticalStock' &&
-  //       ingredient[key] !== null &&
-  //       ingredient[key] !== undefined &&
-  //       ingredient[key] !== ''
-  //   )
-  //   .reduce((obj, key) => {
-  //     obj[key] = ingredient[key];
-  //     return obj;
-  //   }, {});
   const ingredientFormated = {
     id: ingredient.id,
     name: ingredient.name,

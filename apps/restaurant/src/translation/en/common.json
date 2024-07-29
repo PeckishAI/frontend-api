@@ -33,6 +33,7 @@
   "inventory.uploadCSV.popup.subtitle": "We have extracted the following column names from your file. Please check if the mapping is correct.",
   "inventory.selectSupplier": "Select a supplier",
   "inventory.selectUnit": "Select a unit",
+  "inventory.manageSupplier": "Manage Supplier",
 
   "recipesCategories": {
     "drinks": "Drinks",
