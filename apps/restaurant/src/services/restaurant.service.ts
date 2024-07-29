@@ -1,4 +1,4 @@
-import axiosClient from '.';
+import { axiosClient } from '.';
 import { Restaurant } from '../store/useRestaurantStore';
 
 type RestaurantResponse = {
@@ -33,9 +33,9 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
     ...r,
     uuid: r.restaurant_uuid,
     created_at: new Date(r.created_at),
-    provider: r.provider.map((p) => ({
-      xero: p.xero,
-    })),
+    // provider: r.provider.map((p) => ({
+    //   xero: p.xero,
+    // })),
     users: r.users.map((u) => ({
       ...u,
       uuid: u.user_uuid,

@@ -66,6 +66,7 @@
   "suppliers.linkCopied": "Lien d'invitation copié dans le presse-papiers",
   "suppliers.revokeAccess": "Révoquer l'accès",
   "suppliers.sync":"Synchroniser",
+  "suppliers.synced":"Synchronisée",
   "suppliers.removeSupplierToast": {
     "loading": "Suppression du fournisseur...",
     "success": "Fournisseur supprimé",

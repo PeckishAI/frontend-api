@@ -48,9 +48,9 @@ export const SupplierCard = ({
         <FaTrash className={styles.menuIcon} />
         {t('suppliers.revokeAccess')}
       </MenuItem>
-      <MenuItem onClick={onKey}>
+      <MenuItem onClick={onKey} disabled={supplier.is_synced}>
         <FaSync className={styles.menuIcon} />
-        {t('suppliers.sync')}
+        {supplier.is_synced ? t('suppliers.synced') : t('suppliers.sync')}
       </MenuItem>
     </Menu>
   );

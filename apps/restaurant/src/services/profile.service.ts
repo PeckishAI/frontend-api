@@ -1,4 +1,4 @@
-import axiosClient from '.';
+import { axiosClient } from '.';
 
 const BASE_URL = '/profile';
 

@@ -60,11 +60,13 @@ const Integrations = () => {
   useEffect(() => {
     if (restaurants.length > 0) {
       restaurants.forEach((restaurant) => {
-        restaurant.provider.forEach((provide) => {
-          if (provide.xero) {
-            setConnectedIntegrations((prev) => [...prev, 'Xero']);
-          }
-        });
+        if (restaurant.provider && Array.isArray(restaurant.provider)) {
+          restaurant.provider.forEach((provide) => {
+            if (provide.xero) {
+              setConnectedIntegrations((prev) => [...prev, 'Xero']);
+            }
+          });
+        }
       });
     }
   }, [restaurants]);
@@ -75,7 +77,6 @@ const Integrations = () => {
       try {
         setLoadingdata(true);
         const list = await onboardingService.getPOSList();
-        console.log(list.data);
 
         setPOSList(list.data);
       } catch (error) {

@@ -1,5 +1,5 @@
 import { Tag } from './types';
-import axiosClient from '.';
+import { axiosClient } from '.';
 
 const getAll = async (restaurantUUID: string): Promise<Tag[]> => {
   const res = await axiosClient.get('/tag/' + restaurantUUID);

@@ -66,6 +66,7 @@
   "suppliers.linkCopied": "Invitation link copied to clipboard",
   "suppliers.revokeAccess": "Revoke access",
   "suppliers.sync":"Sync",
+  "suppliers.synced":"Synced",
   "suppliers.removeSupplierToast": {
     "loading": "Deleting supplier...",
     "success": "Supplier deleted",

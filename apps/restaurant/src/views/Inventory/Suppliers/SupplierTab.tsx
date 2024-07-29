@@ -30,7 +30,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     const { t } = useTranslation('common');
 
     const [suppliers, setSuppliers] = useState<LinkedSupplier[]>([]);
-
     const [isLoading, setLoading] = useState(true);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [showDialog, setShowDialog] = useState(false);
@@ -50,6 +49,22 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     const restaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
+
+    const fetchSuppliersAndSync = async () => {
+      try {
+        const data =
+          await supplierService.getRestaurantSuppliers(restaurantUUID);
+        setSuppliers(data);
+
+        handleSync();
+      } catch (error) {
+        console.error('Error fetching suppliers or syncing:', error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      }
+    };
 
     // Render options for the tab bar
     useImperativeHandle(
@@ -72,24 +87,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     useEffect(() => {
       if (!restaurantUUID) return;
-
-      const fetchSuppliersAndSync = async () => {
-        try {
-          // Fetch suppliers
-          const data =
-            await supplierService.getRestaurantSuppliers(restaurantUUID);
-          setSuppliers(data);
-
-          // Sync suppliers
-          handleSync();
-        } catch (error) {
-          console.error('Error fetching suppliers or syncing:', error);
-        } finally {
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
-        }
-      };
 
       fetchSuppliersAndSync();
     }, [restaurantUUID]);
@@ -137,7 +134,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
       );
 
       if (contact) {
-        setLoading(true);
         // If contactId is provided, use it along with the contact name
         new Promise((resolve, reject) =>
           supplierService
@@ -150,6 +146,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
               console.log('res', res);
               setSyncingSupplierUUID(null);
               setShowDialog(false);
+              fetchSuppliersAndSync();
               resolve(true);
             })
             .catch(() => reject())
@@ -161,9 +158,9 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
             .addOnlySupplier(restaurantUUID, syncingSupplierUUID)
             .then((res) => {
               console.log('res', res);
-              // setSyncContact(res);
               setSyncingSupplierUUID(null);
               setShowDialog(false);
+              fetchSuppliersAndSync();
               resolve(true);
             })
             .catch(() => reject())

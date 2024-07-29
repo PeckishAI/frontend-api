@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useTitle, Button, Loading } from 'shared-ui';
+import { useTitle, Button, Loading, Lottie } from 'shared-ui';
 import DocumentCard from './Components/DocumentCard/DocumentCard';
 import { useEffect, useState } from 'react';
 import { Invoice, inventoryService } from '../../services';
@@ -75,6 +75,8 @@ const Documents = () => {
 
   const handleConfirm = async () => {
     if (!actionData) return;
+
+    setIsPopupVisible(false);
     setLoading(true);
 
     try {
@@ -104,16 +106,12 @@ const Documents = () => {
         if (actionData.type === 'logSelectedDocuments') {
           setSelectedDocuments([]);
         }
-
-        // Actions after successful API call
-        setIsPopupVisible(false); // Close the popup
-        reloadDocuments(); // Reload documents to update the list
+        reloadDocuments();
       }
     } catch (error) {
       console.error('API call error:', error);
     } finally {
       setLoading(false);
-      reloadDocuments();
     }
   };
 
@@ -169,6 +167,11 @@ const Documents = () => {
 
   return (
     <div className={styles.documents}>
+      {loading && (
+        <div className={styles.loadingContainer}>
+          <Lottie type="loading" width="200px" />
+        </div>
+      )}
       <p className={styles.explaination}>
         Import and save your invoices so you can place orders more quickly from
         your saved documents.
@@ -241,7 +244,6 @@ const Documents = () => {
             // handle imported ingredients here
           }}
         />
-        {loading && <Loading size="large" />}
       </div>
     </div>
   );
