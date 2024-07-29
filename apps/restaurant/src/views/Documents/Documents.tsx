@@ -9,6 +9,7 @@ import styles from './style.module.scss';
 import ImportIngredients from './Components/ImportIngredients/ImportIngredients';
 import { useParams } from 'react-router-dom';
 import ConfirmationPopup from '../ConfirmModal/ConfirmationPopup';
+import toast from 'react-hot-toast';
 
 const Documents = () => {
   const { t } = useTranslation();
@@ -107,6 +108,7 @@ const Documents = () => {
           setSelectedDocuments([]);
         }
         reloadDocuments();
+        toast.success('Invoice send to Xero Successfully!');
       }
     } catch (error) {
       console.error('API call error:', error);

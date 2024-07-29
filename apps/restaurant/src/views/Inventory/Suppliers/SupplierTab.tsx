@@ -147,6 +147,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
               setSyncingSupplierUUID(null);
               setShowDialog(false);
               fetchSuppliersAndSync();
+              toast.success('Supplier sync with Xero');
               resolve(true);
             })
             .catch(() => reject())
@@ -161,6 +162,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
               setSyncingSupplierUUID(null);
               setShowDialog(false);
               fetchSuppliersAndSync();
+              toast.success('Supplier sync with Xero');
               resolve(true);
             })
             .catch(() => reject())
