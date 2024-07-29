@@ -1,7 +1,6 @@
 import { IngredientOption } from '../views/PlaceOrder/Components/IngredientsTable/IngredientsTable';
 import { GeneratedOrder } from '../views/PlaceOrder/Components/ShoppingView/ShoppingView';
-import axiosClient from './index';
-import axios from './index';
+import { axiosClient } from './index';
 
 export type PredictOrderResponse = {
   ingredientUUID: string;
@@ -16,7 +15,7 @@ export type SupplierOrder = {
 };
 
 // const getOrders = async (restaurantUUID: string) => {
-//   const res = await axios.get(`/order/${restaurantUUID}`);
+//   const res = await axiosClient.get(`/order/${restaurantUUID}`);
 //   return res;
 // }
 
@@ -77,7 +76,7 @@ const getOrders = async (
 const getOrderGeneration = async (
   restaurantUUID: string
 ): Promise<GeneratedOrder> => {
-  const res = await axios.get<PredictOrderResponse[]>(
+  const res = await axiosClient.get<PredictOrderResponse[]>(
     'documents/' + restaurantUUID + '/predict_order'
   );
 
@@ -104,7 +103,7 @@ const placeSupplierOrder = (
   restaurantUUID: string,
   supplierOrder: SupplierOrder
 ) => {
-  return axios.post('orders/' + restaurantUUID, supplierOrder);
+  return axiosClient.post('orders/' + restaurantUUID, supplierOrder);
 };
 
 export const ordersService = {

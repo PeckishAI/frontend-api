@@ -68,7 +68,6 @@ type Props = {
 
 const RecipeFormPanel = (props: Props) => {
   const recipeType = props.recipe?.type ?? props.type ?? 'recipe';
-
   const { t } = useTranslation(['common']);
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
@@ -252,7 +251,6 @@ const RecipeFormPanel = (props: Props) => {
           />
         )}
       </h1>
-
       <form className={styles.inputContainer} onSubmit={handleFormSubmit}>
         <LabeledInput
           placeholder={t(
