@@ -87,6 +87,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [suppliers, setSuppliers] = useState<DropdownOptionsDefinitionType[]>(
       []
     );
+    const [addModalOpen, setAddModalOpen] = useState(false);
     const [page, setPage] = useState(1);
     const handleChange = (NewValue) => {
       setPage(NewValue);
@@ -862,6 +863,14 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           subMsg={popupError}
           isOpen={popupError === '' ? false : true}
           onRequestClose={() => togglePopupError('')}
+        />
+
+        <AddSupplierModal
+          isOpen={addModalOpen}
+          onRequestClose={() => setAddModalOpen(false)}
+          onSave={handleSave}
+          suppliers={suppliers}
+          supplier_details={supplierEdit?.supplier_details}
         />
       </>
     );

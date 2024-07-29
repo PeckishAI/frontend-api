@@ -1,3 +1,9 @@
+export type Supplier = {
+  supplier_id: string;
+  supplier_name: string;
+  supplier_cost: number;
+};
+
 export type Ingredient = {
   type?: string;
   id: string;
@@ -7,13 +13,12 @@ export type Ingredient = {
   theoriticalStock?: number;
   parLevel: number;
   unit: string;
-  supplier: string;
-  amount: number;
   unitCost: number;
+  amount: number;
   actions?: void;
   quantity: number;
   restaurantUUID?: string;
-  supplier_uuid?: string;
+  supplier_details?: Supplier[]; // Updated to include an array of suppliers
 };
 
 export type Tag = {
