@@ -44,7 +44,7 @@ export const SupplierCard = ({
       </MenuItem> */}
       <MenuItem className={styles.menuDelete} onClick={onPressDelete}>
         <FaTrash className={styles.menuIcon} />
-        {t('suppliers.revokeAccess')}
+        {t('suppliers.deleteSupplier')}
       </MenuItem>
     </Menu>
   );
