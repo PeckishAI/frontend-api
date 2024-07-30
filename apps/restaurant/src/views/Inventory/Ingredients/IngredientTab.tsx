@@ -63,6 +63,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [filteredIngredients, setFilteredIngredients] = useState<
       Ingredient[]
     >([]);
+
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
     const [tagList, setTagList] = useState<Tag[]>([]);
     const [loadingTag, setLoadingTag] = useState(false);
@@ -161,7 +162,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const rows = ingredientsList;
       if (rows) {
         const header =
-          'Ingredient name, Par level, Actual stock, Theoretical stock, Unit, Supplier, Cost per unit\n';
+          'Ingredient name, Par level, Actual stock, Theoretical stock, Unit, Suppliers, Cost per unit\n';
         const csvContent =
           'data:text/csv;charset=utf-8,' +
           header +
