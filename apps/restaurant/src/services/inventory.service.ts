@@ -151,8 +151,7 @@ const updateIngredient = (ingredient: Ingredient) => {
     par_level: ingredient.parLevel,
     actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
-    supplier: ingredient.supplier,
-    supplier_uuid: ingredient.supplier_uuid,
+    supplier_details: ingredient.supplier_details,
     cost: ingredient.unitCost,
     restaurant_uuid: ingredient.restaurantUUID,
   };
