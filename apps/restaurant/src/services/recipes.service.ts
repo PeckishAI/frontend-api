@@ -1,4 +1,4 @@
-import axios from './index';
+import { axiosClient } from './index';
 
 export type RecipeCategory =
   | 'drinks'
@@ -35,7 +35,7 @@ const getRecipes = async (
   restaurantUUID: string,
   type: 'all' | RecipeType = 'all'
 ): Promise<Recipe[]> => {
-  const res = await axios.get('/recipes/' + restaurantUUID, {
+  const res = await axiosClient.get('/recipes/' + restaurantUUID, {
     params: {
       type,
     },
@@ -74,7 +74,7 @@ const updateRecipe = (
   recipeUUID: string,
   data: FormRecipe
 ) => {
-  return axios.post('/recipe/' + recipeUUID + '/update', {
+  return axiosClient.post('/recipe/' + recipeUUID + '/update', {
     restaurant_uuid: restaurantUUID,
     type: data.type,
     recipe_name: data.name,
@@ -90,7 +90,7 @@ const createRecipe = async (
   type: RecipeType,
   data: FormRecipe
 ) => {
-  const res = await axios.post('/recipes/' + restaurantUUID, {
+  const res = await axiosClient.post('/recipes/' + restaurantUUID, {
     type,
     restaurant_uuid: restaurantUUID,
     recipe_name: data.recipe_name,
@@ -104,7 +104,9 @@ const createRecipe = async (
 };
 
 const deleteRecipe = (recipeId: string, category: string) => {
-  return axios.post('/recipe/' + recipeId + `/delete?category=${category}`);
+  return axiosClient.post(
+    '/recipe/' + recipeId + `/delete?category=${category}`
+  );
 };
 
 export const recipesService = {
