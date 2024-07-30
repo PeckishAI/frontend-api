@@ -46,7 +46,7 @@ export const SupplierCard = ({
       </MenuItem> */}
       <MenuItem className={styles.menuDelete} onClick={onPressDelete}>
         <FaTrash className={styles.menuIcon} />
-        {t('suppliers.revokeAccess')}
+        {t('suppliers.deleteSupplier')}
       </MenuItem>
       <MenuItem onClick={onKey} disabled={supplier.is_synced}>
         <FaSync className={styles.menuIcon} />

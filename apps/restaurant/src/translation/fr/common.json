@@ -65,6 +65,7 @@
   "suppliers.linked": "Vous êtes lié à ce fournisseur",
   "suppliers.waitLink": "L'invitation est en attente, ou copiez le lien pour en envoyer une nouvelle",
   "suppliers.linkCopied": "Lien d'invitation copié dans le presse-papiers",
+  "suppliers.deleteSupplier": "Supprimer le fournisseur",
   "suppliers.revokeAccess": "Révoquer l'accès",
   "suppliers.sync":"Synchroniser",
   "suppliers.synced":"Synchronisée",
@@ -74,7 +75,7 @@
     "error": "Erreur lors de la suppression du fournisseur"
   },
   "suppliers.removeSupplierPopup": {
-    "title": "Révoquer l'accès à l'inventaire",
+  "suppliers.deleteSupplier": "Supprimer le fournisseur",
     "subtitle": "Voulez-vous supprimer l'accès de {{name}} à votre inventaire ?"
   },
   "suppliers.syncSupplierPopup": {
