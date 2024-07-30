@@ -16,7 +16,7 @@ type Props = {
   amount?: number;
   onClick: () => void;
   isSelected: boolean;
-  showSyncStatus: boolean;
+  showSyncStatus: string;
   toggleSelection: () => void;
   onButtonClick: () => void;
 };
@@ -65,7 +65,7 @@ const DocumentCard = (props: Props) => {
         <p className="date">{date}</p>
         <p className="price">{formatCurrency(amount, currencyISO)}</p>
         {hasXeroIntegration &&
-          (!showSyncStatus ? (
+          (showSyncStatus !== 'true' ? (
             <>
               <div
                 className="check-icon"

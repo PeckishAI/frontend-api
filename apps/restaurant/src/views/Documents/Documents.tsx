@@ -231,6 +231,7 @@ const Documents = () => {
             }
           }}
           onDeleteDocument={() => handleDeleteDocument(documentDetail)}
+          reloadDocuments={reloadDocuments}
         />
         <ConfirmationPopup
           isVisible={isPopupVisible}
