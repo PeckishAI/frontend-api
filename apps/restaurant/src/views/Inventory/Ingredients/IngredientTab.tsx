@@ -129,18 +129,20 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         let filteredList = [...ingredientsList];
 
         if (props.searchValue) {
-          filteredList = new Fuse(filteredList, {
+          const fuse = new Fuse(filteredList, {
             keys: ['name', 'supplier_uuid'],
-          })
-            .search(props.searchValue)
-            .map((r) => r.item);
+          });
+          filteredList = fuse.search(props.searchValue).map((r) => r.item);
         }
 
         if (filters.selectedSupplier) {
-          filteredList = filteredList.filter(
-            (ingredient) =>
-              ingredient.supplier_uuid === filters.selectedSupplier!.uuid
-          );
+          const selectedSupplierId = filters.selectedSupplier!.uuid;
+          filteredList = filteredList.filter((ingredient) => {
+            const supplierIds = ingredient.supplier_details?.map(
+              (supplier) => supplier.supplier_id
+            );
+            return supplierIds?.includes(selectedSupplierId);
+          });
         }
 
         if (filters.selectedTag) {
@@ -159,7 +161,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const rows = ingredientsList;
       if (rows) {
         const header =
-          'Ingredient name, Par level, Actual stock, Theoritical stock, Unit, Supplier, Cost per unit\n';
+          'Ingredient name, Par level, Actual stock, Theoretical stock, Unit, Supplier, Cost per unit\n';
         const csvContent =
           'data:text/csv;charset=utf-8,' +
           header +
@@ -173,6 +175,20 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               values.push(row.unit || '-');
               values.push(row.supplier_uuid || '-');
               values.push(row.unitCost || '-');
+
+              // Extract supplier names and costs from supplier_details
+              const suppliers =
+                row?.supplier_details?.length > 0
+                  ? row?.supplier_details
+                      .map(
+                        (supplier) =>
+                          `{${supplier.supplier_name} (${supplier.supplier_cost})}`
+                      )
+                      .join('; ')
+                  : '-';
+              values.push(suppliers);
+
+              values.push(row.unitCost || '-'); // Cost per unit
               return values.join(',');
             })
             .join('\n');
