@@ -270,8 +270,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
               ))}
             </div>
           </>
-        )} */}
-
+        )}
         <DialogBox
           type="warning"
           msg={t('suppliers.removeSupplierPopup.title')}
