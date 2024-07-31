@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './style.scss';
 import { Button, LabeledInput, Lottie, Popup } from 'shared-ui';
 import { useTranslation } from 'react-i18next';
-import axiosClient from '../../../../services';
+import { axiosClient } from '../../../../services';
 import { useUserStore } from '@peckishai/user-management';
 import { POS, Integration } from '../../Integrations';
 import { useOAuth2 } from '../../../../utils/oauth/useOAuth2';
