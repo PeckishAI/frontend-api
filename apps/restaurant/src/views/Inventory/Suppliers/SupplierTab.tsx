@@ -190,11 +190,11 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     const suppliersFiltered = props.searchValue
       ? new Fuse(suppliers, {
-          keys: ['name', 'email', 'phone'],
-          distance: 10,
-        })
-          .search(props.searchValue)
-          .map((r) => r.item)
+        keys: ['name', 'email', 'phone'],
+        distance: 10,
+      })
+        .search(props.searchValue)
+        .map((r) => r.item)
       : suppliers;
 
     // const linkedSuppliers = suppliersFiltered.filter((s) => s.linked);
@@ -249,7 +249,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           </>
         )}
 
-        {pendingSuppliers.length > 0 && (
+        {/* {pendingSuppliers.length > 0 && (
           <>
             <h1 className={styles.sectionTitle}>
               {t('suppliers.pendingInvitations')}
@@ -270,7 +270,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
               ))}
             </div>
           </>
-        )}
+        )} */}
         <DialogBox
           type="warning"
           msg={t('suppliers.removeSupplierPopup.title')}

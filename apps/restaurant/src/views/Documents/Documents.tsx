@@ -19,7 +19,6 @@ const Documents = () => {
     (state) => state.selectedRestaurantUUID
   );
 
-  const { user } = useUserStore();
   const { id } = useParams();
   const [loadingData, setLoadingData] = useState(false);
   const [loading, setLoading] = useState(false);
