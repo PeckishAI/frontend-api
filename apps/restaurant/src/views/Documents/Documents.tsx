@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useTitle, Button } from 'shared-ui';
+import { useTitle, Button, Loading, Lottie } from 'shared-ui';
 import DocumentCard from './Components/DocumentCard/DocumentCard';
 import { useEffect, useState } from 'react';
 import { Invoice, inventoryService } from '../../services';
@@ -9,7 +9,7 @@ import styles from './style.module.scss';
 import ImportIngredients from './Components/ImportIngredients/ImportIngredients';
 import { useParams } from 'react-router-dom';
 import ConfirmationPopup from '../ConfirmModal/ConfirmationPopup';
-import { useUserStore } from '@peckishai/user-management';
+import toast from 'react-hot-toast';
 
 const Documents = () => {
   const { t } = useTranslation();
@@ -19,15 +19,13 @@ const Documents = () => {
     (state) => state.selectedRestaurantUUID
   );
 
-  const { user } = useUserStore();
   const { id } = useParams();
   const [loadingData, setLoadingData] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [document, setDocument] = useState<Invoice[]>([]);
   const [documentDetail, setDocumentDetail] = useState<Invoice | null>(null);
   const [showImportPopup, setShowImportPopup] = useState(false);
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
-
-  const [show, setShow] = useState(true);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [actionData, setActionData] = useState<string[]>([]);
 
@@ -77,21 +75,46 @@ const Documents = () => {
   };
 
   const handleConfirm = async () => {
-    if (actionData) {
-      try {
-        if (actionData.type === 'confirmDocument') {
-          console.log('confirm Data', actionData.data);
-          // inventoryService.addSelected(selectedRestaurantUUID, actionData.data);
-        } else if (actionData.type === 'logSelectedDocuments') {
-          console.log('logSelectedDocuments Data', actionData.data);
-          // inventoryService.addSelected(selectedRestaurantUUID, actionData.data);
+    if (!actionData) return;
+
+    setIsPopupVisible(false);
+    setLoading(true);
+
+    try {
+      let documentsToSend = [];
+
+      if (actionData.type === 'confirmDocument') {
+        const { documentUUID, supplier_uuid } = actionData.data;
+        documentsToSend = [
+          {
+            document_uuid: documentUUID,
+            supplier_uuid: supplier_uuid,
+          },
+        ];
+      } else if (actionData.type === 'logSelectedDocuments') {
+        documentsToSend = (actionData.data as Invoice[]).map((doc) => ({
+          document_uuid: doc.documentUUID,
+          supplier_uuid: doc.supplier_uuid,
+        }));
+      }
+
+      if (documentsToSend.length > 0) {
+        await inventoryService.sendInvoice(
+          selectedRestaurantUUID,
+          documentsToSend
+        );
+
+        if (actionData.type === 'logSelectedDocuments') {
           setSelectedDocuments([]);
         }
-      } catch (error) {
-        console.error('API call error:', error);
+        reloadDocuments();
+        toast.success('Invoice send to Xero Successfully!');
       }
+    } catch (error) {
+      console.error('API call error:', error);
+    } finally {
+      setLoading(false);
     }
-    setIsPopupVisible(false);
   };
 
   useEffect(() => {
@@ -116,6 +139,17 @@ const Documents = () => {
   };
 
   const handleDeleteDocument = (documentToDelete: Invoice) => {
+    inventoryService
+      .deleteDocument(documentToDelete.documentUUID)
+      .then((res) => {
+        console.log('clear', res);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoadingData(false);
+      });
     setDocument((prevDoc) =>
       prevDoc.filter(
         (doc) => doc.documentUUID !== documentToDelete.documentUUID
@@ -135,6 +169,11 @@ const Documents = () => {
 
   return (
     <div className={styles.documents}>
+      {loading && (
+        <div className={styles.loadingContainer}>
+          <Lottie type="loading" width="200px" />
+        </div>
+      )}
       <p className={styles.explaination}>
         Import and save your invoices so you can place orders more quickly from
         your saved documents.
@@ -172,7 +211,7 @@ const Documents = () => {
                   (selectedDoc) => selectedDoc.documentUUID === doc.documentUUID
                 )}
                 toggleSelection={() => toggleSelection(doc)}
-                show={show}
+                showSyncStatus={doc.sync_status}
               />
             ))}
           </div>
@@ -192,6 +231,7 @@ const Documents = () => {
             }
           }}
           onDeleteDocument={() => handleDeleteDocument(documentDetail)}
+          reloadDocuments={reloadDocuments}
         />
         <ConfirmationPopup
           isVisible={isPopupVisible}

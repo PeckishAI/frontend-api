@@ -1,8 +1,9 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, DialogBox, EmptyPage } from 'shared-ui';
+import { Button, DialogBox, Dropdown, EmptyPage } from 'shared-ui';
 import supplierService, {
   LinkedSupplier,
+  SyncSupplier,
 } from '../../../services/supplier.service';
 import styles from './SupplierTab.module.scss';
 import { SupplierCard, SupplierCardSkeleton } from './components/SupplierCard';
@@ -29,10 +30,17 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     const { t } = useTranslation('common');
 
     const [suppliers, setSuppliers] = useState<LinkedSupplier[]>([]);
-
     const [isLoading, setLoading] = useState(true);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [showDialog, setShowDialog] = useState(false);
     const [deletingSupplierUUID, setDeletingSupplierUUID] = useState<
+      string | null
+    >(null);
+    const [syncContacts, setSyncContacts] = useState<SyncSupplier[]>([]);
+    const [selectedSyncContact, setSelectedSyncContact] = useState<
+      string | null
+    >(null);
+    const [syncingSupplierUUID, setSyncingSupplierUUID] = useState<
       string | null
     >(null);
 
@@ -41,6 +49,22 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     const restaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
+
+    const fetchSuppliersAndSync = async () => {
+      try {
+        const data =
+          await supplierService.getRestaurantSuppliers(restaurantUUID);
+        setSuppliers(data);
+
+        handleSync();
+      } catch (error) {
+        console.error('Error fetching suppliers or syncing:', error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      }
+    };
 
     // Render options for the tab bar
     useImperativeHandle(
@@ -64,14 +88,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     useEffect(() => {
       if (!restaurantUUID) return;
 
-      supplierService.getRestaurantSuppliers(restaurantUUID).then((data) => {
-        setSuppliers(data);
-        // SUPPLIERS = res;
-      });
-
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
+      fetchSuppliersAndSync();
     }, [restaurantUUID]);
 
     const handleCopyInvitationLink = (invitationKey?: string) => {
@@ -82,7 +99,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
       const link = `${GLOBAL_CONFIG.supplierUrl}/invitation/${invitationKey}`;
       navigator.clipboard.writeText(link);
-
       toast.success(t('suppliers.linkCopied'));
     };
 
@@ -97,7 +113,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
               setSuppliers((suppliers) =>
                 suppliers.filter((s) => s.uuid !== deletingSupplierUUID)
               );
-
               setDeletingSupplierUUID(null);
               resolve(true);
             })
@@ -111,6 +126,65 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
       );
     };
 
+    const handleSubmit = (contactId?: string) => {
+      if (!restaurantUUID || !syncingSupplierUUID) return;
+
+      const contact = syncContacts.find(
+        (contact) => contact.contact_id === contactId
+      );
+
+      if (contact) {
+        // If contactId is provided, use it along with the contact name
+        new Promise((resolve, reject) =>
+          supplierService
+            .addSyncSupplier(
+              restaurantUUID,
+              syncingSupplierUUID,
+              contact.contact_id
+            )
+            .then((res) => {
+              console.log('res', res);
+              setSyncingSupplierUUID(null);
+              setShowDialog(false);
+              fetchSuppliersAndSync();
+              toast.success('Supplier sync with Xero');
+              resolve(true);
+            })
+            .catch(() => reject())
+        );
+      } else {
+        // If no contactId is provided, use only the supplier_uuid
+        new Promise((resolve, reject) =>
+          supplierService
+            .addOnlySupplier(restaurantUUID, syncingSupplierUUID)
+            .then((res) => {
+              console.log('res', res);
+              setSyncingSupplierUUID(null);
+              setShowDialog(false);
+              fetchSuppliersAndSync();
+              toast.success('Supplier sync with Xero');
+              resolve(true);
+            })
+            .catch(() => reject())
+        );
+      }
+    };
+
+    const handleSync = () => {
+      if (!restaurantUUID) return;
+      setShowDialog(false);
+      new Promise((resolve, reject) =>
+        supplierService
+          .getSync(restaurantUUID)
+          .then((res) => {
+            setSyncContacts(res);
+            setSyncingSupplierUUID(null);
+            resolve(true); // Resolve the promise after successful operation
+          })
+          .catch(() => reject())
+      );
+    };
+
     const suppliersFiltered = props.searchValue
       ? new Fuse(suppliers, {
           keys: ['name', 'email', 'phone'],
@@ -119,9 +193,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           .search(props.searchValue)
           .map((r) => r.item)
       : suppliers;
-
-    // const linkedSuppliers = suppliersFiltered.filter((s) => s.linked);
-    // const pendingSuppliers = suppliersFiltered.filter((s) => !s.linked);
 
     if (isLoading) {
       return (
@@ -162,54 +233,15 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
                   onPressCopy={() =>
                     handleCopyInvitationLink(supplier.invitationKey)
                   }
-                />
-              ))}
-            </div>
-          </>
-        )}
-
-        {/* {linkedSuppliers.length > 0 && (
-          <>
-            <h1 className={styles.sectionTitle}>
-              {t('suppliers.acceptedInvitations')}
-            </h1>
-            <div className={styles.cardContainer}>
-              {linkedSuppliers.map((supplier) => (
-                <SupplierCard
-                  key={supplier.uuid}
-                  supplier={supplier}
-                  onPressDelete={() => {
-                    setShowDeleteDialog(true);
-                    setDeletingSupplierUUID(supplier.uuid);
+                  onKey={() => {
+                    setShowDialog(true);
+                    setSyncingSupplierUUID(supplier.uuid);
                   }}
                 />
               ))}
             </div>
           </>
         )}
-
-        {pendingSuppliers.length > 0 && (
-          <>
-            <h1 className={styles.sectionTitle}>
-              {t('suppliers.pendingInvitations')}
-            </h1>
-            <div className={styles.cardContainer}>
-              {pendingSuppliers.map((supplier) => (
-                <SupplierCard
-                  key={supplier.uuid}
-                  supplier={supplier}
-                  onPressCopy={() =>
-                    handleCopyInvitationLink(supplier.invitationKey)
-                  }
-                  onPressDelete={() => {
-                    setShowDeleteDialog(true);
-                    setDeletingSupplierUUID(supplier.uuid);
-                  }}
-                />
-              ))}
-            </div>
-          </>
-        )} */}
 
         <DialogBox
           type="warning"
@@ -224,6 +256,40 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           }}
           onConfirm={handleDeleteSupplier}
         />
+
+        <DialogBox
+          type="warning"
+          msg={t('suppliers.syncSupplierPopup.title')}
+          subMsg={t('suppliers.syncSupplierPopup.subtitle', {
+            name: suppliers.find((s) => s.uuid === syncingSupplierUUID)?.name,
+          })}
+          isOpen={showDialog}
+          onRequestClose={() => {
+            setShowDialog(false);
+            setSyncingSupplierUUID(null);
+          }}
+          onConfirm={() =>
+            handleSubmit(selectedSyncContact, syncingSupplierUUID)
+          }
+          disabledConfirm={!selectedSyncContact}>
+          <div className={styles.dropdownSection}>
+            <Button
+              value={t('suppliers.syncSupplierPopup.syncSupplierBtn')}
+              onClick={() => handleSubmit()}
+              type="primary"
+            />
+            --OR--
+            <Dropdown
+              placeholder={t('suppliers.syncSupplierPopup.selectSyncContact')}
+              options={syncContacts.map((contact) => ({
+                label: contact.name,
+                value: contact.contact_id,
+              }))}
+              selectedOption={selectedSyncContact}
+              onOptionChange={(value) => setSelectedSyncContact(value)}
+            />
+          </div>
+        </DialogBox>
 
         <AddSupplierPopup
           isVisible={showAddPopup}

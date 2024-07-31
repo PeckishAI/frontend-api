@@ -45,6 +45,16 @@
           flex: 1;
         }
       }
+      .remember-me-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .forget-password-button{
+          cursor: pointer;
+          font-size: 0.9rem;
+        }
+      }     
     }
 
     .or {

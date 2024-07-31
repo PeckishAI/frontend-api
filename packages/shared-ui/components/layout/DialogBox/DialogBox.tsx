@@ -11,7 +11,9 @@ type Props = {
   list?: string[];
   isOpen: boolean;
   onRequestClose: () => void;
+  disabledConfirm?: boolean;
   onConfirm?: () => void | Promise<void>;
+  children?: React.ReactNode; // Add children prop
 };
 
 const DialogBox = (props: Props) => {
@@ -38,6 +40,7 @@ const DialogBox = (props: Props) => {
             ))}
           </ul>
         )}
+        <div className="button-container">{props.children}</div>
         <div className="button-container">
           {['error', 'info'].includes(props.type) && (
             <Button
@@ -66,6 +69,7 @@ const DialogBox = (props: Props) => {
                     });
                   }
                 }}
+                disabled={props.disabledConfirm}
               />
             </>
           )}

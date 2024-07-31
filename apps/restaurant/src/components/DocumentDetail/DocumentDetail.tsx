@@ -26,6 +26,7 @@ type Props = {
   onRequestClose: () => void;
   onDocumentChanged: (document: Invoice, action: 'deleted' | 'updated') => void;
   onDeleteDocument: () => void;
+  reloadDocuments: () => void;
 };
 
 type IngredientDetails = {
@@ -160,6 +161,7 @@ const DocumentDetail = (props: Props) => {
         toast.success('Document updated successfully');
         setIsEditMode(false);
         setEditableDocument(null);
+        props.reloadDocuments();
 
         // Optionally, invoke a callback or refresh data
         if (props.onDocumentChanged) {

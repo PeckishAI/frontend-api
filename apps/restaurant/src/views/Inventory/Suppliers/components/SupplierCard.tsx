@@ -1,7 +1,7 @@
 import { Menu, MenuItem } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
-import { FaPhone, FaTrash } from 'react-icons/fa';
+import { FaPhone, FaSync, FaTrash } from 'react-icons/fa';
 import { FiCopy, FiMoreVertical } from 'react-icons/fi';
 import { MdAlternateEmail } from 'react-icons/md';
 import { LinkedSupplier } from '../../../../services';
@@ -15,12 +15,14 @@ type Props = {
   supplier: LinkedSupplier;
   onPressDelete: () => void;
   onPressCopy?: () => void;
+  onKey?: () => void;
 };
 
 export const SupplierCard = ({
   supplier,
   onPressCopy,
   onPressDelete,
+  onKey,
 }: Props) => {
   const { t } = useTranslation('common');
   const renderMoreOptions = () => (
@@ -44,7 +46,11 @@ export const SupplierCard = ({
       </MenuItem> */}
       <MenuItem className={styles.menuDelete} onClick={onPressDelete}>
         <FaTrash className={styles.menuIcon} />
-        {t('suppliers.revokeAccess')}
+        {t('suppliers.deleteSupplier')}
+      </MenuItem>
+      <MenuItem onClick={onKey} disabled={supplier.is_synced}>
+        <FaSync className={styles.menuIcon} />
+        {supplier.is_synced ? t('suppliers.synced') : t('suppliers.sync')}
       </MenuItem>
     </Menu>
   );
