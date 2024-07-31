@@ -12,6 +12,9 @@ export type Restaurant = {
   created_at: Date;
   users: Pick<User, 'email' | 'user_uuid' | 'name' | 'picture'>[];
   currency: string | null;
+  provider: {
+    xero: boolean;
+  }[];
 };
 
 type RestaurantStore = {

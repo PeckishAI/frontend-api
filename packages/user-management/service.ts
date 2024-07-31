@@ -76,9 +76,11 @@ export const applyAxiosInterceptors = (instance: AxiosInstance) => {
       if (!axios.isAxiosError(error)) return Promise.reject(error);
 
       // const originalRequest = error.config;
-      if (error.response) {
-        const status = error.response.status;
-
+      const status = error.response?.status;
+      const errorMessage = error.response?.data.error;
+      if (errorMessage) {
+        toast.error(errorMessage);
+      } else {
         if (status === 401) {
           // TODO : refresh access token with the refreshToken
 

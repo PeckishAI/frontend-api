@@ -1,7 +1,11 @@
 import './style.scss';
-import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
+import {
+  useRestaurantCurrency,
+  useRestaurantStore,
+} from '../../../../store/useRestaurantStore';
 import { formatCurrency } from '../../../../utils/helpers';
 import { FaCheckCircle, FaRegCircle, FaSync } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
 
 type Props = {
   uuid?: string;
@@ -12,43 +16,82 @@ type Props = {
   amount?: number;
   onClick: () => void;
   isSelected: boolean;
-  show: boolean;
+  showSyncStatus: string;
   toggleSelection: () => void;
   onButtonClick: () => void;
 };
 
 const DocumentCard = (props: Props) => {
+  const {
+    onClick,
+    image,
+    supplier,
+    date,
+    amount,
+    showSyncStatus,
+    toggleSelection,
+    isSelected,
+    onButtonClick,
+  } = props;
   const { currencyISO } = useRestaurantCurrency();
+  const [connectedIntegrations, setConnectedIntegrations] = useState<string[]>(
+    []
+  );
+  const { restaurants } = useRestaurantStore((state) => ({
+    loadRestaurants: state.loadRestaurants,
+    restaurants: state.restaurants,
+  }));
+  useEffect(() => {
+    if (restaurants.length > 0) {
+      const integrations: string[] = [];
+      restaurants.forEach((restaurant) => {
+        restaurant.provider.forEach((provide) => {
+          if (provide.xero) {
+            integrations.push('Xero');
+          }
+        });
+      });
+      setConnectedIntegrations(integrations);
+    }
+  }, [restaurants]);
+
+  const hasXeroIntegration = connectedIntegrations.includes('Xero');
 
   return (
-    <div className="document-card" onClick={props.onClick}>
-      <div className="logo-container">
-        <img className="logo-integrations" src={props.image}></img>
-      </div>
+    <div className="document-card" onClick={onClick}>
+      <div className="logo-container"></div>
       <div className="document-info">
-        <p className="supplier">{props.supplier}</p>
-        <p className="date">{props.date}</p>
-        <p className="price">{formatCurrency(props.amount, currencyISO)}</p>
-        {props.show && (
-          <>
-            <div
-              className="check-icon"
+        <p className="supplier">{supplier}</p>
+        <p className="date">{date}</p>
+        <p className="price">{formatCurrency(amount, currencyISO)}</p>
+        {hasXeroIntegration &&
+          (showSyncStatus !== 'true' ? (
+            <>
+              <div
+                className="check-icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleSelection();
+                }}>
+                {isSelected ? <FaCheckCircle /> : <FaRegCircle />}
+              </div>
+
+              <FaSync
+                className="sync-icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onButtonClick();
+                }}
+              />
+            </>
+          ) : (
+            <FaSync
+              className="sync-icon disabled"
               onClick={(e) => {
                 e.stopPropagation();
-                props.toggleSelection();
-              }}>
-              {props.isSelected ? <FaCheckCircle /> : <FaRegCircle />}
-            </div>
-
-            <FaSync
-              className="sync-icon"
-              onClick={(e) => {
-                e.stopPropagation(); // To prevent the click event from bubbling up to the parent div
-                props.onButtonClick();
               }}
             />
-          </>
-        )}
+          ))}
       </div>
     </div>
   );

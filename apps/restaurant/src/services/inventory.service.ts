@@ -1,5 +1,10 @@
-import axiosClient from './index';
-import axios, { Ingredient, Invoice, InvoiceIngredient } from './index';
+import {
+  axiosClient,
+  axiosIntegrationClient,
+  Ingredient,
+  Invoice,
+  InvoiceIngredient,
+} from './index';
 
 const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
   const res = await axiosClient.get('/documents/' + restaurantUUID);
@@ -18,6 +23,7 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
       ...documentData,
       documentUUID: key,
       supplier_uuid: documentData.supplier_uuid,
+      sync_status: documentData.sync_status,
       ingredients: documentData.ingredients.map((ingredient: any) => ({
         mappedUUID: ingredient['mapping_uuid'],
         detectedName: ingredient['ingredient_name'],
@@ -70,64 +76,35 @@ const updateDocument = (
   });
 };
 
-// interface DocumentData {
-//   amount: number;
-//   created_at: string;
-//   date: string;
-//   ingredients: Ingredient[];
-//   path: null | string;
-//   supplier: string;
-//   supplier_uuid: string;
-//   documentUUID: string;
-// }
+interface DocumentData {
+  supplier_uuid: string;
+  documentUUID: string;
+}
 
-// interface Ingredient {
-//   mappedUUID: string;
-//   detectedName: string;
-//   mappedName: string;
-//   quantity: number;
-//   unit: string;
-//   unitPrice: number;
-//   totalPrice: number;
-// }
-
-// const addSelected = (restaurantUUID: string, data: DocumentData) => {
-//   return axiosClient.post(
-//     'http://192.168.1.17:8080/addSelected/' + restaurantUUID,
-//     {
-//       restaurant_uuid: restaurantUUID,
-//       data: data,
-//     }
-//   );
-// };
-
-// const addSelected = async (restaurantUUID: string, data: DocumentData) => {
-//   try {
-//     const response = await axiosClient.post(
-//       `/addIngredient/${restaurantUUID}`,
-//       {
-//         restaurant_uuid: restaurantUUID,
-//         data: data,
-//       }
-//     );
-//     return response.data;
-//   } catch (error) {
-//     console.error(
-//       'Error adding ingredient:',
-//       error.response?.data || error.message
-//     );
-//     throw error;
-//   }
-// };
+const sendInvoice = async (restaurantUUID: string, data: DocumentData[]) => {
+  try {
+    const response = await axiosIntegrationClient.post(
+      `/accounting/xero/send-invoice/${restaurantUUID}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error adding ingredient:',
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
 
 const deleteDocument = (documentId: string) => {
-  return axios.post('/documents/' + documentId + '/delete');
+  return axiosClient.post('/documents/' + documentId + '/delete');
 };
 
 const getIngredientList = async (
   restaurantUUID: string
 ): Promise<Ingredient[]> => {
-  const res = await axios.get('/inventory/' + restaurantUUID);
+  const res = await axiosClient.get('/inventory/' + restaurantUUID);
 
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
@@ -140,6 +117,7 @@ const getIngredientList = async (
     tagUUID: res.data[key]['tag_uuid'],
     supplier: res.data[key]['supplier'],
     amount: res.data[key]['amount'],
+    type: res.data[key]['type'],
   }));
 };
 
@@ -155,7 +133,7 @@ const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
     cost: ingredient.unitCost,
   };
 
-  return axios.post('/inventory/' + restaurantUUID, FormatedIngredient);
+  return axiosClient.post('/inventory/' + restaurantUUID, FormatedIngredient);
 };
 
 const updateIngredient = (ingredient: Ingredient) => {
@@ -188,18 +166,18 @@ const updateIngredient = (ingredient: Ingredient) => {
     restaurant_uuid: ingredient.restaurantUUID,
   };
 
-  return axios.post(
+  return axiosClient.post(
     '/inventory/' + ingredient.id + '/update',
     ingredientFormated
   );
 };
 
 const getIngredientPreview = (ingredientId: string) => {
-  return axios.get<string[]>('/inventory/' + ingredientId + '/preview');
+  return axiosClient.get<string[]>('/inventory/' + ingredientId + '/preview');
 };
 
 const deleteIngredient = (id: string) => {
-  return axios.post('/inventory/' + id + '/delete');
+  return axiosClient.post('/inventory/' + id + '/delete');
 };
 
 export type ColumnsNameMapping = {
@@ -222,7 +200,7 @@ const uploadCsvFile = async (
   const formData = new FormData();
   formData.append('file', file);
 
-  const res = await axios.post(
+  const res = await axiosClient.post(
     '/inventory/' + restaurantUUID + '/upload/smart_reader',
     formData,
     {
@@ -255,7 +233,7 @@ const getPreviewUploadedCsv = async (
   headerValues: ColumnsNameMapping
 ) => {
   const formData = getFormData(file, headerValues);
-  const res = await axios.post(
+  const res = await axiosClient.post(
     '/inventory/' + restaurantUUID + '/upload/preview',
     formData,
     {
@@ -274,11 +252,15 @@ const validUploadedCsv = (
 ) => {
   const formData = getFormData(file, headerValues);
 
-  return axios.post('/inventory/' + restaurantUUID + '/upload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  return axiosClient.post(
+    '/inventory/' + restaurantUUID + '/upload',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
 };
 
 const uploadImgFile = async (
@@ -291,7 +273,7 @@ const uploadImgFile = async (
 
   const base64 = await convertToBase64(file);
 
-  const res = await axios.post(
+  const res = await axiosClient.post(
     'https://invoices-api-k2w3p2ptza-ew.a.run.app/api/v1/extract',
     formData,
     {
@@ -319,7 +301,7 @@ const uploadImgFile = async (
 const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
   console.log('inboiceData: ', invoiceData);
 
-  return axios.post('/documents/' + restaurantUUID, invoiceData);
+  return axiosClient.post('/documents/' + restaurantUUID, invoiceData);
 };
 
 export const inventoryService = {
@@ -336,5 +318,5 @@ export const inventoryService = {
   getDocument,
   updateDocument,
   deleteDocument,
-  //addSelected,
+  sendInvoice,
 };

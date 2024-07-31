@@ -47,4 +47,5 @@ export type Invoice = {
   restaurantUUID?: string;
   path?: string;
   amount?: number;
+  sync_status?: string;
 };
