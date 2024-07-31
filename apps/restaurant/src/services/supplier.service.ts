@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { axiosClient, axiosIntegrationClient } from './index';
 
 export type Supplier = {
@@ -99,7 +98,7 @@ const addSyncSupplier = async (
   contact_id: string
 ): Promise<void> => {
   const res = await axiosIntegrationClient.post(
-    `/accounting/xero/sync_supplier/${restaurantUUID}`,
+    `/accounting/xero/sync-supplier/${restaurantUUID}`,
     {
       supplier_uuid: supplierUUID,
       contact_id: contact_id,
@@ -113,7 +112,7 @@ const addOnlySupplier = async (
   supplierUUID: string
 ): Promise<void> => {
   const res = await axiosIntegrationClient.post(
-    `/accounting/xero/add_supplier/${restaurantUUID}`,
+    `/accounting/xero/add-supplier/${restaurantUUID}`,
     {
       supplier_uuid: supplierUUID,
     }
