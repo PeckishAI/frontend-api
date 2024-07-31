@@ -173,17 +173,15 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     const handleSync = () => {
       if (!restaurantUUID) return;
       setShowDialog(false);
-      toast.promise(
-        new Promise((resolve, reject) =>
-          supplierService
-            .getSync(restaurantUUID)
-            .then((res) => {
-              setSyncContacts(res);
-              setSyncingSupplierUUID(null);
-              resolve(); // Resolve the promise after successful operation
-            })
-            .catch(() => reject())
-        )
+      new Promise((resolve, reject) =>
+        supplierService
+          .getSync(restaurantUUID)
+          .then((res) => {
+            setSyncContacts(res);
+            setSyncingSupplierUUID(null);
+            resolve(true); // Resolve the promise after successful operation
+          })
+          .catch(() => reject())
       );
     };
 
