@@ -5,10 +5,12 @@ export type RecipeCategory =
   | 'starters'
   | 'mainCourses'
   | 'desserts'
+  | 'modifiers'
   | 'snacks'
+  | 'preparations'
   | 'others';
 
-export type RecipeType = 'recipe' | 'preparation' | 'product';
+export type RecipeType = 'recipe' | 'preparation' | 'modifier';
 
 export type Recipe = {
   uuid: string;
@@ -59,9 +61,11 @@ type FormRecipe = {
   category: RecipeCategory;
   pricePerPortion?: number;
   portionsPerBatch: number;
+  type: string;
   ingredients: {
     ingredient_uuid: string;
     quantity: number;
+    type: string;
   }[];
 };
 
@@ -72,6 +76,7 @@ const updateRecipe = (
 ) => {
   return axiosClient.post('/recipe/' + recipeUUID + '/update', {
     restaurant_uuid: restaurantUUID,
+    type: data.type,
     recipe_name: data.name,
     category: data.category,
     portion_price: data.pricePerPortion,
@@ -88,7 +93,7 @@ const createRecipe = async (
   const res = await axiosClient.post('/recipes/' + restaurantUUID, {
     type,
     restaurant_uuid: restaurantUUID,
-    recipe_name: data.name,
+    recipe_name: data.recipe_name,
     category: data.category,
     portion_price: data.pricePerPortion,
     portion_count: data.portionsPerBatch,
@@ -98,8 +103,10 @@ const createRecipe = async (
   return res.data.recipe_uuid as string;
 };
 
-const deleteRecipe = (recipeId: string) => {
-  return axiosClient.post('/recipe/' + recipeId + '/delete');
+const deleteRecipe = (recipeId: string, category: string) => {
+  return axiosClient.post(
+    '/recipe/' + recipeId + `/delete?category=${category}`
+  );
 };
 
 export const recipesService = {

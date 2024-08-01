@@ -8,6 +8,8 @@
       "orders": "Orders"
     },
     "recipes": "Recipes",
+    "preparations":"Preparations",
+    "modifiers":"Modifiers",
     "onboarding": "Onboarding",
     "onboarding_selectProducts": "Select products",
     "onboarding_createPreparations": "Create preparations",
@@ -37,7 +39,9 @@
     "starters": "Starters",
     "mainCourses": "Main courses",
     "desserts": "Desserts",
+    "modifiers": "Modifiers",
     "snacks": "Snacks",
+    "preparations":"Preparations",
     "others": "Others"
   },
 
@@ -60,6 +64,7 @@
   "suppliers.linked": "You are linked to this supplier",
   "suppliers.waitLink": "The invitation is pending, or copy the link to send a new one",
   "suppliers.linkCopied": "Invitation link copied to clipboard",
+  "suppliers.deleteSupplier": "Delete Supplier",
   "suppliers.revokeAccess": "Revoke access",
   "suppliers.sync":"Sync",
   "suppliers.synced":"Synced",
@@ -69,7 +74,7 @@
     "error": "Error deleting supplier"
   },
   "suppliers.removeSupplierPopup": {
-    "title": "Revoke access to inventory",
+    "title": "Delete Supplier",
     "subtitle": "Do you want to remove {{name}}'s access to your inventory?"
   },
   "suppliers.syncSupplierPopup": {
@@ -86,6 +91,16 @@
       "createSupplier": "Create supplier \"{{name}}\""
     },
     "automaticSendCheckbox": "Send an automatic invitation to the supplier"
+  },
+  "recipes.addPreparation": {
+    "addPreparationBtn": "Add Preparation",
+    "title": "Add a new Preparation",
+    "subtitle": "Search your supplier here or create a new one if you don't find it",
+    "select": {
+      "placeholder": "Select a supplier",
+      "createSupplier": "Create supplier \"{{name}}\""
+    },
+    "automaticSendCheckbox": "add a new preparation before check the all details"
   },
 
   "orders.detail": "Detail",
@@ -132,6 +147,12 @@
       "title": "Edit <highlight>{{name}}<highlight> preparation",
       "fields": {
         "name": "Preparation name"
+      }
+    },
+    "modifier": {
+      "title": "Edit <highlight>{{name}}<highlight> modifier",
+      "fields": {
+        "name": "Modifier name"
       }
     },
     "fields": {

@@ -19,7 +19,6 @@ const RecipeDetail = (props: Props) => {
 
   const [editRecipe, setEditRecipe] = useState<Recipe | null>(null);
   const [deleteRecipe, setDeleteRecipe] = useState<Recipe | null>(null);
-
   const { currencyISO } = useRestaurantCurrency();
 
   return (
@@ -86,7 +85,7 @@ const RecipeDetail = (props: Props) => {
               {
                 key: 'quantity',
                 header: t('quantity'),
-                renderItem: ({ row }) => `${row.quantity} ${row.unit}`,
+                renderItem: ({ row }) => `${row.quantity} ${row.unit || ''}`,
               },
               {
                 key: 'cost',
@@ -113,23 +112,29 @@ const RecipeDetail = (props: Props) => {
         isOpen={deleteRecipe !== null}
         onRequestClose={() => setDeleteRecipe(null)}
         onConfirm={() =>
-          recipesService.deleteRecipe(deleteRecipe?.uuid ?? '').then(() => {
-            props.onRecipeChanged(deleteRecipe!, 'deleted');
-            setDeleteRecipe(null);
-          })
+          recipesService
+            .deleteRecipe(deleteRecipe?.uuid, deleteRecipe?.category ?? '')
+            .then(() => {
+              props.onRecipeChanged(deleteRecipe!, 'deleted');
+              setDeleteRecipe(null);
+            })
         }
       />
-      <RecipeFormPanel
-        type={props.recipe?.type}
-        action="edit"
-        isOpen={editRecipe !== null}
-        onRequestClose={() => setEditRecipe(null)}
-        onSubmitted={(recipe) => {
-          props.onRecipeChanged(recipe, 'updated');
-          setEditRecipe(null);
-        }}
-        recipe={editRecipe}
-      />
+
+      {editRecipe && (
+        <RecipeFormPanel
+          type={props.recipe?.type}
+          action="edit"
+          isOpen={editRecipe !== null}
+          onRequestClose={() => setEditRecipe(null)}
+          onSubmitted={(recipe) => {
+            props.onRecipeChanged(recipe, 'updated');
+            setEditRecipe(null);
+            props.onRequestClose();
+          }}
+          recipe={editRecipe}
+        />
+      )}
     </>
   );
 };

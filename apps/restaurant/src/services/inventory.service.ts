@@ -136,20 +136,21 @@ const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
   return axiosClient.post('/inventory/' + restaurantUUID, FormatedIngredient);
 };
 
+const getOnlyIngredientList = async (
+  restaurantUUID: string
+): Promise<Ingredient[]> => {
+  const res = await axiosClient.get('/ingredients-list/' + restaurantUUID);
+
+  return Object.keys(res.data).map<Ingredient>((key) => ({
+    id: key,
+    name: res.data[key]['name'],
+    unit: res.data[key]['unit'],
+    unitCost: res.data[key]['cost'],
+    type: res.data[key]['type'],
+  }));
+};
+
 const updateIngredient = (ingredient: Ingredient) => {
-  // const ingredientFormated = Object.keys(ingredient)
-  //   .filter(
-  //     (key) =>
-  //       key !== 'id' &&
-  //       key !== 'theoriticalStock' &&
-  //       ingredient[key] !== null &&
-  //       ingredient[key] !== undefined &&
-  //       ingredient[key] !== ''
-  //   )
-  //   .reduce((obj, key) => {
-  //     obj[key] = ingredient[key];
-  //     return obj;
-  //   }, {});
   const ingredientFormated = {
     id: ingredient.id,
     name: ingredient.name,
@@ -306,6 +307,7 @@ const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
 
 export const inventoryService = {
   getIngredientList,
+  getOnlyIngredientList,
   addIngredient,
   updateIngredient,
   getIngredientPreview,

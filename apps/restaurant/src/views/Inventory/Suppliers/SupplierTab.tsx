@@ -30,7 +30,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     const { t } = useTranslation('common');
 
     const [suppliers, setSuppliers] = useState<LinkedSupplier[]>([]);
-
     const [isLoading, setLoading] = useState(true);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [showDialog, setShowDialog] = useState(false);
@@ -46,18 +45,22 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     >(null);
 
     const [showAddPopup, setShowAddPopup] = useState(false);
+    const [connectedIntegrations, setConnectedIntegrations] =
+      useState<boolean>();
 
-    const restaurantUUID = useRestaurantStore(
-      (state) => state.selectedRestaurantUUID
-    );
+    const { restaurantUUID, restaurants } = useRestaurantStore((state) => ({
+      restaurantUUID: state.selectedRestaurantUUID,
+      restaurants: state.restaurants,
+    }));
 
     const fetchSuppliersAndSync = async () => {
       try {
         const data =
           await supplierService.getRestaurantSuppliers(restaurantUUID);
         setSuppliers(data);
-
-        handleSync();
+        {
+          connectedIntegrations && handleSync();
+        }
       } catch (error) {
         console.error('Error fetching suppliers or syncing:', error);
       } finally {
@@ -92,6 +95,20 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
       fetchSuppliersAndSync();
     }, [restaurantUUID]);
 
+    useEffect(() => {
+      if (!restaurantUUID) return;
+
+      // Log the xero value when restaurantUUID changes
+      const selectedRestaurant = restaurants.find(
+        (restaurant) => restaurant.uuid === restaurantUUID
+      );
+      if (selectedRestaurant) {
+        selectedRestaurant.provider.forEach((provide) => {
+          setConnectedIntegrations(provide.xero);
+        });
+      }
+    }, [restaurants, restaurantUUID]);
+
     const handleCopyInvitationLink = (invitationKey?: string) => {
       if (!invitationKey) {
         toast.error(t('suppliers.noLink'));
@@ -100,7 +117,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
       const link = `${GLOBAL_CONFIG.supplierUrl}/invitation/${invitationKey}`;
       navigator.clipboard.writeText(link);
-
       toast.success(t('suppliers.linkCopied'));
     };
 
@@ -115,7 +131,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
               setSuppliers((suppliers) =>
                 suppliers.filter((s) => s.uuid !== deletingSupplierUUID)
               );
-
               setDeletingSupplierUUID(null);
               resolve(true);
             })
@@ -175,13 +190,11 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     const handleSync = () => {
       if (!restaurantUUID) return;
-      setShowDialog(false);
       new Promise((resolve, reject) =>
         supplierService
           .getSync(restaurantUUID)
           .then((res) => {
             setSyncContacts(res);
-            setSyncingSupplierUUID(null);
             resolve(true); // Resolve the promise after successful operation
           })
           .catch(() => reject())
@@ -190,15 +203,12 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     const suppliersFiltered = props.searchValue
       ? new Fuse(suppliers, {
-        keys: ['name', 'email', 'phone'],
-        distance: 10,
-      })
-        .search(props.searchValue)
-        .map((r) => r.item)
+          keys: ['name', 'email', 'phone'],
+          distance: 10,
+        })
+          .search(props.searchValue)
+          .map((r) => r.item)
       : suppliers;
-
-    // const linkedSuppliers = suppliersFiltered.filter((s) => s.linked);
-    // const pendingSuppliers = suppliersFiltered.filter((s) => !s.linked);
 
     if (isLoading) {
       return (
@@ -217,6 +227,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     return (
       <>
+        {console.log('syncingSupplierUUID', syncingSupplierUUID)}
         {suppliers.length === 0 && (
           <EmptyPage
             className={styles.emptyPage}
@@ -241,36 +252,16 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
                   }
                   onKey={() => {
                     setShowDialog(true);
-                    setSyncingSupplierUUID(supplier.uuid);
+                    setSyncingSupplierUUID(supplier?.uuid);
+                    handleSync();
                   }}
+                  connectedIntegrations={connectedIntegrations}
                 />
               ))}
             </div>
           </>
         )}
 
-        {/* {pendingSuppliers.length > 0 && (
-          <>
-            <h1 className={styles.sectionTitle}>
-              {t('suppliers.pendingInvitations')}
-            </h1>
-            <div className={styles.cardContainer}>
-              {pendingSuppliers.map((supplier) => (
-                <SupplierCard
-                  key={supplier.uuid}
-                  supplier={supplier}
-                  onPressCopy={() =>
-                    handleCopyInvitationLink(supplier.invitationKey)
-                  }
-                  onPressDelete={() => {
-                    setShowDeleteDialog(true);
-                    setDeletingSupplierUUID(supplier.uuid);
-                  }}
-                />
-              ))}
-            </div>
-          </>
-        )} */}
         <DialogBox
           type="warning"
           msg={t('suppliers.removeSupplierPopup.title')}

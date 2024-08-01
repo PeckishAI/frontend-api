@@ -26,8 +26,6 @@ const Documents = () => {
   const [documentDetail, setDocumentDetail] = useState<Invoice | null>(null);
   const [showImportPopup, setShowImportPopup] = useState(false);
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
-
-  const [show, setShow] = useState(true);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [actionData, setActionData] = useState<string[]>([]);
 
@@ -117,7 +115,6 @@ const Documents = () => {
     } finally {
       setLoading(false);
     }
-    setIsPopupVisible(false);
   };
 
   useEffect(() => {
@@ -142,6 +139,17 @@ const Documents = () => {
   };
 
   const handleDeleteDocument = (documentToDelete: Invoice) => {
+    inventoryService
+      .deleteDocument(documentToDelete.documentUUID)
+      .then((res) => {
+        console.log('clear', res);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoadingData(false);
+      });
     setDocument((prevDoc) =>
       prevDoc.filter(
         (doc) => doc.documentUUID !== documentToDelete.documentUUID

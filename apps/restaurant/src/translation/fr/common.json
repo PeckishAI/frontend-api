@@ -8,6 +8,8 @@
       "orders": "Commandes"
     },
     "recipes": "Recettes",
+    "preparations":"Les préparatifs",
+    "modifiers":"Modificatrices",
     "onboarding": "Intégrations",
     "onboarding_selectProducts": "Séléctionnez les produits",
     "onboarding_createPreparations": "Créez vos préparations",
@@ -37,6 +39,8 @@
     "starters": "Entrées",
     "mainCourses": "Plats princiaux",
     "desserts": "Desserts",
+    "preparations":"Les préparatifs",
+    "modifiers": "Modifiers",
     "snacks": "Snacks",
     "others": "Autres"
   },
@@ -60,6 +64,7 @@
   "suppliers.linked": "Vous êtes lié à ce fournisseur",
   "suppliers.waitLink": "L'invitation est en attente, ou copiez le lien pour en envoyer une nouvelle",
   "suppliers.linkCopied": "Lien d'invitation copié dans le presse-papiers",
+  "suppliers.deleteSupplier": "Supprimer le fournisseur",
   "suppliers.revokeAccess": "Révoquer l'accès",
   "suppliers.sync":"Synchroniser",
   "suppliers.synced":"Synchronisée",
@@ -69,7 +74,7 @@
     "error": "Erreur lors de la suppression du fournisseur"
   },
   "suppliers.removeSupplierPopup": {
-    "title": "Révoquer l'accès à l'inventaire",
+  "suppliers.deleteSupplier": "Supprimer le fournisseur",
     "subtitle": "Voulez-vous supprimer l'accès de {{name}} à votre inventaire ?"
   },
   "suppliers.syncSupplierPopup": {
@@ -86,6 +91,16 @@
       "createSupplier": "Créer le fournisseur \"{{name}}\""
     },
     "automaticSendCheckbox": "Envoyer une invitation automatique au fournisseur"
+  },
+  "recipes.addPreparation": {
+    "addPreparationBtn": "Ajouter une nouvelle préparation",
+    "title": "Ajouter une nouvelle préparation",
+   "subtitle": "Recherchez votre fournisseur ici ou créez-en un nouveau si vous ne le trouvez pas",
+    "select": {
+      "placeholder": "Sélectionnez un fournisseur",
+      "createSupplier": "Créer le fournisseur \"{{name}}\""
+    },
+    "automaticSendCheckbox": "ajoutez une nouvelle préparation avant de vérifier tous les détails"
   },
 
   "orders.detail": "Detail",
@@ -130,6 +145,12 @@
       "title": "Modifier la préparation <highlight>{{name}}<highlight>",
       "fields": {
         "name": "Nom de la préparation"
+      }
+    },
+    "modifier": {
+      "title": "Modifier le modificateur <highlight>{{name}}<highlight>",
+      "fields": {
+        "name": "Nom du modificateur"
       }
     },
     "fields": {

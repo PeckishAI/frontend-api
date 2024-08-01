@@ -62,6 +62,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [filteredIngredients, setFilteredIngredients] = useState<
       Ingredient[]
     >([]);
+
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
     const [tagList, setTagList] = useState<Tag[]>([]);
     const [loadingTag, setLoadingTag] = useState(false);
@@ -168,8 +169,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               values.push(row.actualStock || '-');
               values.push(row.theoriticalStock || '-');
               values.push(row.unit || '-');
-              values.push(row.supplier_uuid || '-');
-              values.push(row.unitCost || '-');
+              values.push(row.unitCost || '-'); // Cost per unit
               return values.join(',');
             })
             .join('\n');
@@ -316,10 +316,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const handleSaveEdit = () => {
       if (!selectedRestaurantUUID || !editedValues) return;
-
       props.setLoadingState(true);
       if (editingRowId && !addingRow) {
-        console.log('API request to edit ingredient');
         props.setLoadingState(false);
         inventoryService
           .getIngredientPreview(editingRowId)
@@ -333,7 +331,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             props.setLoadingState(false);
           });
       } else {
-        console.log('API request to Add new ingredient');
         inventoryService
           .addIngredient(selectedRestaurantUUID, editedValues)
           .catch((err) => {
@@ -358,7 +355,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const handleDeleteClick = (row: Ingredient) => {
       setDeletingRowId(row.id);
-      props.setLoadingState(true);
       inventoryService
         .getIngredientPreview(row.id)
         .then((res) => {
@@ -438,8 +434,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     };
 
     const handleConfirmPopupPreviewEdit = () => {
+      props.setLoadingState(true);
       if (!editedValues) return;
-
       const {
         id,
         name,
@@ -464,7 +460,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         unitCost,
         restaurantUUID: selectedRestaurantUUID, // Add the selectedRestaurantUUID here
       };
-
       inventoryService
         .updateIngredient(updatedIngredient)
         .catch((err) => {
@@ -578,7 +573,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         key: 'parLevel',
         header: t('ingredient:parLvel'),
         width: '10%',
-        // renderItem: () => '-', // temp till real value provided by backend
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
             <Input
@@ -609,11 +603,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             row.actualStock
           ),
       },
-      // {
-      //   key: 'theoriticalStock',
-      //   header: t('ingredient:theoreticalStock'),
-      //   width: '15%',
-      // },
       {
         key: 'unit',
         header: t('ingredient:unit'),

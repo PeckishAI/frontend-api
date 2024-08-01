@@ -34,7 +34,7 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
     uuid: r.restaurant_uuid,
     created_at: new Date(r.created_at),
     provider: r.provider.map((p) => ({
-    xero: p.xero,
+      xero: p.xero,
     })),
     users: r.users.map((u) => ({
       ...u,

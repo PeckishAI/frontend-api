@@ -1,4 +1,5 @@
 export type Ingredient = {
+  type?: string;
   id: string;
   name: string;
   tagUUID?: string | null;
@@ -6,9 +7,9 @@ export type Ingredient = {
   theoriticalStock?: number;
   parLevel: number;
   unit: string;
+  unitCost: number;
   supplier: string;
   amount: number;
-  unitCost: number;
   actions?: void;
   quantity: number;
   restaurantUUID?: string;

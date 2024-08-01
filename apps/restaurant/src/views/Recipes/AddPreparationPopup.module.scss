@@ -1,0 +1,38 @@
+.inputContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); // Two columns
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.rowInputs {
+
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.addIngredientButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  height: var(--input-large-height);
+
+  color: var(--primaryColor);
+  font-size: 0.9rem;
+}
+
+.buttonsContainer {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+
+  button {
+    flex: 1;
+  }
+}
+
+.autoCheckbox {
+  margin-top: 20px;
+}

@@ -3,6 +3,15 @@
   "sign-in.description": "Enter your email and password to log in to Peckish",
   "sign-in.create-account": "Don't have an account ?",
 
+  "reset-password.title":"Reset Your Password",
+  "reset-password.description":"Enter your choice password and confirm password",
+  
+  "request-reset.title":"Need a new password?",
+  "request-reset.description":"Please provide your email address and we'll send you instructions on how to change your password.",
+  "request-reset.request-reset":"Reset Password",
+  "request-reset.go-back":"Go back to Login",
+  "request-reset.check-email":"Please check your email",
+
   "sign-up.title": "Sign Up!",
   "sign-up.description": "Register to start using Peckish",
   "sign-up.already-register": "Already have an account ?",
@@ -16,7 +25,9 @@
   "choose-usage.restaurant.description": "Enhanced stock management",
 
   "remember-me": "Remember me",
+  "forgot-password":"Forgot Password?",
   "sign-in": "Sign In",
+  "reset-password":"Confirm",
   "sign-in-google": "Sign In with Google",
   "sign-in-apple": "Continue with Apple",
   "sign-up": "Create an account",

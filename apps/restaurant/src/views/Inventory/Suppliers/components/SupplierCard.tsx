@@ -16,6 +16,7 @@ type Props = {
   onPressDelete: () => void;
   onPressCopy?: () => void;
   onKey?: () => void;
+  connectedIntegrations?: boolean;
 };
 
 export const SupplierCard = ({
@@ -23,6 +24,7 @@ export const SupplierCard = ({
   onPressCopy,
   onPressDelete,
   onKey,
+  connectedIntegrations,
 }: Props) => {
   const { t } = useTranslation('common');
   const renderMoreOptions = () => (
@@ -48,10 +50,12 @@ export const SupplierCard = ({
         <FaTrash className={styles.menuIcon} />
         {t('suppliers.revokeAccess')}
       </MenuItem>
-      <MenuItem onClick={onKey} disabled={supplier.is_synced}>
-        <FaSync className={styles.menuIcon} />
-        {supplier.is_synced ? t('suppliers.synced') : t('suppliers.sync')}
-      </MenuItem>
+      {connectedIntegrations && (
+        <MenuItem onClick={onKey} disabled={supplier.is_synced}>
+          <FaSync className={styles.menuIcon} />
+          {supplier.is_synced ? t('suppliers.synced') : t('suppliers.sync')}
+        </MenuItem>
+      )}
     </Menu>
   );
 
