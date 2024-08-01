@@ -104,9 +104,7 @@ const deleteDocument = (documentId: string) => {
 const getIngredientList = async (
   restaurantUUID: string
 ): Promise<Ingredient[]> => {
-  const res = await axiosClient.get(
-    'http://192.168.1.30:8080/inventory/' + restaurantUUID
-  );
+  const res = await axiosClient.get('/inventory/' + restaurantUUID);
 
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
@@ -135,10 +133,7 @@ const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
     cost: ingredient.unitCost,
   };
 
-  return axiosClient.post(
-    'http://192.168.1.30:8080/inventory/' + restaurantUUID,
-    FormatedIngredient
-  );
+  return axiosClient.post('/inventory/' + restaurantUUID, FormatedIngredient);
 };
 
 const getOnlyIngredientList = async (
@@ -173,7 +168,7 @@ const updateIngredient = (ingredient: Ingredient) => {
   };
 
   return axiosClient.post(
-    'http://192.168.1.30:8080/inventory/' + ingredient.id + '/update',
+    '/inventory/' + ingredient.id + '/update',
     ingredientFormated
   );
 };
