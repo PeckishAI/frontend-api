@@ -52,6 +52,10 @@ export const SupplierCard = ({
         <FaSync className={styles.menuIcon} />
         {supplier.is_synced ? t('suppliers.synced') : t('suppliers.sync')}
       </MenuItem>
+      <MenuItem onClick={onKey} disabled={supplier.is_synced}>
+        <FaSync className={styles.menuIcon} />
+        {supplier.is_synced ? t('suppliers.synced') : t('suppliers.sync')}
+      </MenuItem>
     </Menu>
   );
 

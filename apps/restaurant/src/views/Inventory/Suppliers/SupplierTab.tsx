@@ -243,6 +243,28 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           </>
         )}
 
+        {/* {pendingSuppliers.length > 0 && (
+          <>
+            <h1 className={styles.sectionTitle}>
+              {t('suppliers.pendingInvitations')}
+            </h1>
+            <div className={styles.cardContainer}>
+              {pendingSuppliers.map((supplier) => (
+                <SupplierCard
+                  key={supplier.uuid}
+                  supplier={supplier}
+                  onPressCopy={() =>
+                    handleCopyInvitationLink(supplier.invitationKey)
+                  }
+                  onPressDelete={() => {
+                    setShowDeleteDialog(true);
+                    setDeletingSupplierUUID(supplier.uuid);
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )} */}
         <DialogBox
           type="warning"
           msg={t('suppliers.removeSupplierPopup.title')}
