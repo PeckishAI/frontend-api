@@ -104,7 +104,9 @@ const deleteDocument = (documentId: string) => {
 const getIngredientList = async (
   restaurantUUID: string
 ): Promise<Ingredient[]> => {
-  const res = await axiosClient.get('/inventory/' + restaurantUUID);
+  const res = await axiosClient.get(
+    'http://192.168.1.30:8080/inventory/' + restaurantUUID
+  );
 
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
@@ -115,13 +117,7 @@ const getIngredientList = async (
     unit: res.data[key]['unit'],
     unitCost: res.data[key]['cost'],
     tagUUID: res.data[key]['tag_uuid'],
-    supplier_details: res.data[key]['supplier_details'].map(
-      (supplier: any) => ({
-        supplier_id: supplier['supplier_id'],
-        supplier_name: supplier['supplier_name'],
-        supplier_cost: supplier['supplier_cost'],
-      })
-    ),
+    supplier: res.data[key]['supplier'],
     amount: res.data[key]['amount'],
     type: res.data[key]['type'],
   }));
@@ -135,11 +131,14 @@ const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
     par_level: ingredient.parLevel,
     actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
-    supplier_details: ingredient.supplier_details,
+    supplier: ingredient.supplier,
     cost: ingredient.unitCost,
   };
 
-  return axiosClient.post('/inventory/' + restaurantUUID, FormatedIngredient);
+  return axiosClient.post(
+    'http://192.168.1.30:8080/inventory/' + restaurantUUID,
+    FormatedIngredient
+  );
 };
 
 const getOnlyIngredientList = async (
@@ -167,13 +166,14 @@ const updateIngredient = (ingredient: Ingredient) => {
     par_level: ingredient.parLevel,
     actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
-    supplier_details: ingredient.supplier_details,
+    supplier: ingredient.supplier,
+    supplier_uuid: ingredient.supplier_uuid,
     cost: ingredient.unitCost,
     restaurant_uuid: ingredient.restaurantUUID,
   };
 
   return axiosClient.post(
-    '/inventory/' + ingredient.id + '/update',
+    'http://192.168.1.30:8080/inventory/' + ingredient.id + '/update',
     ingredientFormated
   );
 };

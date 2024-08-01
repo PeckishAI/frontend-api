@@ -33,7 +33,6 @@ import Filters, {
   defaultFilters,
 } from '../Components/Filters/Filters';
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
-import AddSupplierModal from './AddSupplieModal';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -74,7 +73,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [selectedIngredients, setSelectedIngredients] = useState<
       Ingredient[]
     >([]);
-    const [supplierEdit, setSupplierEdit] = useState<Ingredient | null>(null);
     const [importIngredientsPopup, setImportIngredientsPopup] = useState(false);
     const [popupDelete, setPopupDelete] = useState<string[] | undefined>(
       undefined
@@ -88,7 +86,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [suppliers, setSuppliers] = useState<DropdownOptionsDefinitionType[]>(
       []
     );
-    const [addModalOpen, setAddModalOpen] = useState(false);
     const [page, setPage] = useState(1);
     const handleChange = (NewValue) => {
       setPage(NewValue);
@@ -130,25 +127,23 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         let filteredList = [...ingredientsList];
 
         if (props.searchValue) {
-          const fuse = new Fuse(filteredList, {
+          filteredList = new Fuse(filteredList, {
             keys: ['name', 'supplier_uuid'],
-          });
-          filteredList = fuse.search(props.searchValue).map((r) => r.item);
+          })
+            .search(props.searchValue)
+            .map((r) => r.item);
         }
 
         if (filters.selectedSupplier) {
           filteredList = filteredList.filter(
             (ingredient) =>
-              ingredient.supplier_details?.some(
-                (supplier) =>
-                  supplier.supplier_id === filters?.selectedSupplier!.uuid
-              )
+              ingredient.supplier_uuid === filters.selectedSupplier!.uuid
           );
         }
 
         if (filters.selectedTag) {
           filteredList = filteredList.filter(
-            (ingredient) => ingredient.tagUUID === filters?.selectedTag!.uuid
+            (ingredient) => ingredient.tagUUID === filters.selectedTag!.uuid
           );
         }
 
@@ -162,7 +157,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const rows = ingredientsList;
       if (rows) {
         const header =
-          'Ingredient name, Par level, Actual stock, Theoretical stock, Unit, Suppliers, Cost per unit\n';
+          'Ingredient name, Par level, Actual stock, Theoritical stock, Unit, Supplier, Cost per unit\n';
         const csvContent =
           'data:text/csv;charset=utf-8,' +
           header +
@@ -174,17 +169,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               values.push(row.actualStock || '-');
               values.push(row.theoriticalStock || '-');
               values.push(row.unit || '-');
-              // Extract supplier names and costs from supplier_details
-              const suppliers =
-                row?.supplier_details?.length > 0
-                  ? row?.supplier_details
-                      .map(
-                        (supplier) =>
-                          `{${supplier.supplier_name} (${supplier.supplier_cost})}`
-                      )
-                      .join('; ')
-                  : '-';
-              values.push(suppliers);
               values.push(row.unitCost || '-'); // Cost per unit
               return values.join(',');
             })
@@ -331,7 +315,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     };
 
     const handleSaveEdit = () => {
-      if (!selectedRestaurantUUID || !editedValues || !validateInputs()) return;
+      if (!selectedRestaurantUUID || !editedValues) return;
       props.setLoadingState(true);
       if (editingRowId && !addingRow) {
         props.setLoadingState(false);
@@ -369,46 +353,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       }
     };
 
-    const handleSave = (data) => {
-      props.setLoadingState(true);
-      const supplierDetails = data.ingredients.map((ingredient) => ({
-        supplier_id: ingredient.supplier_id,
-        supplier_name: ingredient.supplier_name || '', // Provide a default empty string if supplierName is not present
-        supplier_cost: Number(ingredient.supplier_cost), // Convert cost to a number
-      }));
-
-      // Update the editedValues state with the new supplier details
-      setSupplierEdit((prevValues) => ({
-        ...prevValues!,
-        supplier_details: supplierDetails,
-      }));
-
-      const { id, name, tagUUID, parLevel, actualStock, unit, unitCost } =
-        supplierEdit;
-
-      const updatedIngredient = {
-        id,
-        name,
-        tagUUID,
-        parLevel,
-        actualStock,
-        unit,
-        supplier_details: supplierDetails, // Include supplier when updating
-        unitCost,
-        restaurantUUID: selectedRestaurantUUID, // Add the selectedRestaurantUUID here
-      };
-      inventoryService
-        .updateIngredient(updatedIngredient)
-        .catch((err) => {})
-        .then(() => {
-          reloadInventoryData();
-          props.setLoadingState(false);
-        });
-    };
-
     const handleDeleteClick = (row: Ingredient) => {
       setDeletingRowId(row.id);
-      props.setLoadingState(true);
       inventoryService
         .getIngredientPreview(row.id)
         .then((res) => {
@@ -497,7 +443,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         parLevel,
         actualStock,
         unit,
-        supplier_details,
+        supplier_uuid,
+        supplier,
         unitCost,
       } = editedValues;
 
@@ -508,7 +455,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         parLevel,
         actualStock,
         unit,
-        supplier_details, // Include supplier when updating
+        supplier_uuid,
+        supplier, // Include supplier when updating
         unitCost,
         restaurantUUID: selectedRestaurantUUID, // Add the selectedRestaurantUUID here
       };
@@ -517,10 +465,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         .catch((err) => {
           togglePopupError(err.message);
         })
-        .then(() => {
-          reloadInventoryData();
-          props.setLoadingState(false);
-        });
+        .then(() => reloadInventoryData());
       setEditingRowId(null);
       setEditedValues(null);
       togglePopupPreviewEdit(undefined);
@@ -549,40 +494,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setAddingRow(true);
       setEditingRowId(newIngredient.id);
       setEditedValues(newIngredient);
-    };
-
-    const validateInputs = () => {
-      if (!editedValues) return false;
-
-      const { name, tagUUID, parLevel, actualStock, unit, unitCost } =
-        editedValues;
-
-      if (!name || name.trim() === '') {
-        toast.error('Name is Required');
-        return false;
-      }
-      if (!tagUUID) {
-        toast.error('Tag is required');
-        return false;
-      }
-      if (parLevel === undefined || parLevel < 0) {
-        toast.error('parLevel is required');
-        return false;
-      }
-      if (actualStock === undefined || actualStock < 0) {
-        toast.error('actualStock is required');
-        return false;
-      }
-      if (!unit) {
-        toast.error('Unit is required');
-        return false;
-      }
-      if (unitCost === undefined || unitCost < 0) {
-        toast.error('unitCost is required');
-        return false;
-      }
-
-      return true;
     };
 
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
@@ -649,8 +560,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               })}
               getOptionLabel={(option) => option.name}
               getOptionValue={(option) => option.uuid}
-              onChange={(value) =>
-                handleValueChange('tagUUID', value?.uuid ?? '')
+              onChange={
+                (value) => handleValueChange('tagUUID', value?.uuid ?? '') // transform '' to null value in tagService
               }
               value={tagList.find((tag) => editedValues?.tagUUID === tag.uuid)}
             />
@@ -714,34 +625,26 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         width: '15%',
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
-            <>
-              {/* <Dropdown
-                placeholder={t('inventory.selectSupplier')}
-                options={suppliers}
-                selectedOption={editedValues!.supplier_uuid}
-                onOptionChange={(value) => {
-                  const selectedSupplier = suppliers.find(
-                    (supplier) => supplier.value === value
-                  );
-                  setEditedValues((prevValues) => ({
-                    ...prevValues!,
-                    supplier_uuid: value,
-                    supplier: selectedSupplier?.label || '',
-                  }));
-                }}
-                getOptionLabel={(option) =>
-                  suppliers.find((s) => s.value === option)?.label || option
-                }
-              /> */}
-            </>
+            <Dropdown
+              placeholder={t('inventory.selectSupplier')}
+              options={suppliers}
+              selectedOption={editedValues!.supplier_uuid}
+              onOptionChange={(value) => {
+                const selectedSupplier = suppliers.find(
+                  (supplier) => supplier.value === value
+                );
+                setEditedValues((prevValues) => ({
+                  ...prevValues!,
+                  supplier_uuid: value,
+                  supplier: selectedSupplier?.label || '',
+                }));
+              }}
+              getOptionLabel={(option) =>
+                suppliers.find((s) => s.value === option)?.label || option
+              }
+            />
           ) : (
-            <button
-              onClick={() => {
-                setAddModalOpen(true);
-                setSupplierEdit(row);
-              }}>
-              {t('inventory.manageSupplier')}
-            </button>
+            row.supplier
           ),
       },
       {
@@ -876,14 +779,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           subMsg={popupError}
           isOpen={popupError === '' ? false : true}
           onRequestClose={() => togglePopupError('')}
-        />
-
-        <AddSupplierModal
-          isOpen={addModalOpen}
-          onRequestClose={() => setAddModalOpen(false)}
-          onSave={handleSave}
-          suppliers={suppliers}
-          supplier_details={supplierEdit?.supplier_details}
         />
       </>
     );
