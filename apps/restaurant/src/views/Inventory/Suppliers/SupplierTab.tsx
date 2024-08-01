@@ -45,18 +45,22 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     >(null);
 
     const [showAddPopup, setShowAddPopup] = useState(false);
+    const [connectedIntegrations, setConnectedIntegrations] =
+      useState<boolean>();
 
-    const restaurantUUID = useRestaurantStore(
-      (state) => state.selectedRestaurantUUID
-    );
+    const { restaurantUUID, restaurants } = useRestaurantStore((state) => ({
+      restaurantUUID: state.selectedRestaurantUUID,
+      restaurants: state.restaurants,
+    }));
 
     const fetchSuppliersAndSync = async () => {
       try {
         const data =
           await supplierService.getRestaurantSuppliers(restaurantUUID);
         setSuppliers(data);
-
-        handleSync();
+        {
+          connectedIntegrations && handleSync();
+        }
       } catch (error) {
         console.error('Error fetching suppliers or syncing:', error);
       } finally {
@@ -90,6 +94,20 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
       fetchSuppliersAndSync();
     }, [restaurantUUID]);
+
+    useEffect(() => {
+      if (!restaurantUUID) return;
+
+      // Log the xero value when restaurantUUID changes
+      const selectedRestaurant = restaurants.find(
+        (restaurant) => restaurant.uuid === restaurantUUID
+      );
+      if (selectedRestaurant) {
+        selectedRestaurant.provider.forEach((provide) => {
+          setConnectedIntegrations(provide.xero);
+        });
+      }
+    }, [restaurants, restaurantUUID]);
 
     const handleCopyInvitationLink = (invitationKey?: string) => {
       if (!invitationKey) {
@@ -172,13 +190,11 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     const handleSync = () => {
       if (!restaurantUUID) return;
-      setShowDialog(false);
       new Promise((resolve, reject) =>
         supplierService
           .getSync(restaurantUUID)
           .then((res) => {
             setSyncContacts(res);
-            setSyncingSupplierUUID(null);
             resolve(true); // Resolve the promise after successful operation
           })
           .catch(() => reject())
@@ -211,6 +227,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     return (
       <>
+        {console.log('syncingSupplierUUID', syncingSupplierUUID)}
         {suppliers.length === 0 && (
           <EmptyPage
             className={styles.emptyPage}
@@ -235,8 +252,10 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
                   }
                   onKey={() => {
                     setShowDialog(true);
-                    setSyncingSupplierUUID(supplier.uuid);
+                    setSyncingSupplierUUID(supplier?.uuid);
+                    handleSync();
                   }}
+                  connectedIntegrations={connectedIntegrations}
                 />
               ))}
             </div>

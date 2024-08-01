@@ -48,28 +48,30 @@ const Integrations = () => {
   const [selectedPOS, setSelectedPOS] = useState<POS | undefined>();
   const [searchTerm, setSearchTerm] = useState('');
   const [integrated, setIntegrated] = useState<Integration[]>([]);
-  const [connectedIntegrations, setConnectedIntegrations] = useState<string[]>(
-    []
+  const [xeroIntegration, setXeroIntegration] = useState(false);
+
+  const { loadRestaurants, restaurants, restaurantUUID } = useRestaurantStore(
+    (state) => ({
+      loadRestaurants: state.loadRestaurants,
+      restaurants: state.restaurants,
+      restaurantUUID: state.selectedRestaurantUUID,
+    })
   );
 
-  const { loadRestaurants, restaurants } = useRestaurantStore((state) => ({
-    loadRestaurants: state.loadRestaurants,
-    restaurants: state.restaurants,
-  }));
-
   useEffect(() => {
-    if (restaurants.length > 0) {
-      restaurants.forEach((restaurant) => {
-        if (restaurant.provider && Array.isArray(restaurant.provider)) {
-          restaurant.provider.forEach((provide) => {
-            if (provide.xero) {
-              setConnectedIntegrations((prev) => [...prev, 'Xero']);
-            }
-          });
-        }
-      });
+    if (!restaurantUUID) return;
+
+    const selectedRestaurant = restaurants.find(
+      (restaurant) => restaurant.restaurant_uuid === restaurantUUID
+    );
+
+    if (selectedRestaurant) {
+      const hasXero = selectedRestaurant.provider.some(
+        (provider) => provider.xero === true
+      );
+      setXeroIntegration(hasXero);
     }
-  }, [restaurants]);
+  }, [restaurantUUID, restaurants]);
 
   // Fetch data from API Backend (Get POS)
   useEffect(() => {
@@ -98,7 +100,7 @@ const Integrations = () => {
     (soft) => soft.type === 'DELIVERY'
   );
   const others = filteredSoftwareList.filter((soft) => soft.type === 'OTHER');
-  const inegrationsByCat: IntegrationCat[] = [
+  const integrationsByCat: IntegrationCat[] = [
     {
       label: t('integrationCategories.pos'),
       value: 'POS',
@@ -134,7 +136,6 @@ const Integrations = () => {
     navigate('/myRestaurant');
   };
 
-  // Loop through object and return cards
   return (
     <div className="integrations">
       <p id="welcome">{t('onboarding:onboarding.msg')}</p>
@@ -168,7 +169,7 @@ const Integrations = () => {
           />
         </>
       ) : undefined}
-      {inegrationsByCat.map(
+      {integrationsByCat.map(
         (category) =>
           category.integrations.length > 0 && (
             <div key={category.value}>
@@ -183,13 +184,13 @@ const Integrations = () => {
                     name={pos.display_name}
                     image={pos.logo_uri}
                     button_display={
-                      connectedIntegrations.includes(pos.display_name)
+                      pos.display_name === 'Xero' && xeroIntegration
                         ? 'Connected'
                         : pos.button_display
                     }
-                    disabled={connectedIntegrations.includes(pos.display_name)}
+                    disabled={pos.display_name === 'Xero' && xeroIntegration}
                     onClick={() => {
-                      if (!connectedIntegrations.includes(pos.display_name)) {
+                      if (!(pos.display_name === 'Xero' && xeroIntegration)) {
                         setLoginModalVisible(true);
                         setSelectedPOS(pos);
                       }

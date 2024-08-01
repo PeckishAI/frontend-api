@@ -37,34 +37,36 @@ const DocumentCard = (props: Props) => {
   const [connectedIntegrations, setConnectedIntegrations] = useState<string[]>(
     []
   );
-  const { restaurants } = useRestaurantStore((state) => ({
+  const { restaurants, restaurantUUID } = useRestaurantStore((state) => ({
     loadRestaurants: state.loadRestaurants,
     restaurants: state.restaurants,
+    restaurantUUID: state.selectedRestaurantUUID,
   }));
   useEffect(() => {
-    if (restaurants.length > 0) {
-      const integrations: string[] = [];
-      restaurants.forEach((restaurant) => {
-        restaurant.provider.forEach((provide) => {
-          if (provide.xero) {
-            integrations.push('Xero');
-          }
-        });
-      });
-      setConnectedIntegrations(integrations);
-    }
-  }, [restaurants]);
+    if (!restaurantUUID) return;
 
-  const hasXeroIntegration = connectedIntegrations.includes('Xero');
+    const selectedRestaurant = restaurants.find(
+      (restaurant) => restaurant.restaurant_uuid === restaurantUUID
+    );
+
+    if (selectedRestaurant) {
+      const hasXero = selectedRestaurant.provider.some(
+        (provider) => provider.xero === true
+      );
+      setConnectedIntegrations(hasXero);
+    }
+  }, [restaurantUUID, restaurants]);
 
   return (
     <div className="document-card" onClick={onClick}>
-      <div className="logo-container"></div>
+      <div className="logo-container">
+        <img className="logo-integrations" src={image}></img>
+      </div>
       <div className="document-info">
         <p className="supplier">{supplier}</p>
         <p className="date">{date}</p>
         <p className="price">{formatCurrency(amount, currencyISO)}</p>
-        {hasXeroIntegration &&
+        {connectedIntegrations &&
           (showSyncStatus !== 'true' ? (
             <>
               <div

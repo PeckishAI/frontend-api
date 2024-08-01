@@ -1,4 +1,4 @@
-import { useEffect, ReactElement } from 'react';
+import { useEffect, ReactElement, useState } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,9 +14,11 @@ import {
   useRestaurantStore,
 } from '../../store/useRestaurantStore';
 import {
+  Ingredient,
   Recipe,
   RecipeCategory,
   RecipeType,
+  inventoryService,
   recipesService,
 } from '../../services';
 import { components, OptionProps } from 'react-select';
@@ -72,7 +74,8 @@ const RecipeFormPanel = (props: Props) => {
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   )!;
-  const { ingredients, loading: loadingIngredients } = useIngredients();
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const { loading: loadingIngredients } = useIngredients();
   const { currencyISO, currencySymbol } = useRestaurantCurrency();
 
   const {
@@ -124,6 +127,20 @@ const RecipeFormPanel = (props: Props) => {
       }
     }
   }, [props.isOpen, props.recipe]);
+
+  const getOnlyIngredient = () => {
+    if (!selectedRestaurantUUID) return;
+    inventoryService
+      .getOnlyIngredientList(selectedRestaurantUUID)
+      .then(setIngredients)
+      .catch((e) => {
+        console.error('useIngredients error', e);
+      })
+      .finally(() => {});
+  };
+  useEffect(() => {
+    getOnlyIngredient();
+  }, [selectedRestaurantUUID]);
 
   useEffect(() => {
     ingredientFields.forEach((field, index) => {

@@ -137,18 +137,18 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         }
 
         if (filters.selectedSupplier) {
-          const selectedSupplierId = filters.selectedSupplier!.uuid;
-          filteredList = filteredList.filter((ingredient) => {
-            const supplierIds = ingredient.supplier_details?.map(
-              (supplier) => supplier.supplier_id
-            );
-            return supplierIds?.includes(selectedSupplierId);
-          });
+          filteredList = filteredList.filter(
+            (ingredient) =>
+              ingredient.supplier_details?.some(
+                (supplier) =>
+                  supplier.supplier_id === filters?.selectedSupplier!.uuid
+              )
+          );
         }
 
         if (filters.selectedTag) {
           filteredList = filteredList.filter(
-            (ingredient) => ingredient.tagUUID === filters.selectedTag!.uuid
+            (ingredient) => ingredient.tagUUID === filters?.selectedTag!.uuid
           );
         }
 
@@ -174,9 +174,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               values.push(row.actualStock || '-');
               values.push(row.theoriticalStock || '-');
               values.push(row.unit || '-');
-              values.push(row.supplier_uuid || '-');
-              values.push(row.unitCost || '-');
-
               // Extract supplier names and costs from supplier_details
               const suppliers =
                 row?.supplier_details?.length > 0
@@ -188,7 +185,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       .join('; ')
                   : '-';
               values.push(suppliers);
-
               values.push(row.unitCost || '-'); // Cost per unit
               return values.join(',');
             })
