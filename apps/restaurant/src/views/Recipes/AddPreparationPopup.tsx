@@ -46,6 +46,7 @@ type Props = {
   onRecipeChanged: (recipe: Recipe, action: 'deleted' | 'updated') => void;
   onModifierAdded: (supplier: PreparationForm) => void;
   onReload: () => void;
+  ingredients: any;
 };
 
 const AddPreparationPopup = (props: Props) => {
@@ -71,7 +72,7 @@ const AddPreparationPopup = (props: Props) => {
     },
   });
 
-  const { ingredients, loading: loadingIngredients } = useIngredients();
+  const { loading: loadingIngredients } = useIngredients();
   const { fields: ingredientFields, append: addIngredient } = useFieldArray({
     control,
     name: 'ingredients',
@@ -86,23 +87,23 @@ const AddPreparationPopup = (props: Props) => {
   useEffect(() => {
     ingredientFields.forEach((field, index) => {
       const ingredient_uuid = watch(`ingredients.${index}.ingredient_uuid`);
-      const selectedIngredient = ingredients.find(
+      const selectedIngredient = props.ingredients.find(
         (ing) => ing.id === ingredient_uuid
       );
       if (selectedIngredient) {
         setValue(`ingredients.${index}.type`, selectedIngredient.type);
       }
     });
-  }, [watch('ingredients'), ingredients]);
+  }, [watch('ingredients'), props.ingredients]);
 
-  const allItems = ingredients.map((item) => ({
+  const allItems = props.ingredients.map((item) => ({
     ...item,
     groupBy: item.type === 'ingredient' ? 'Ingredients' : 'Preparations',
   }));
 
   const handleChange = (onChange, setValue, index) => (event, value) => {
     onChange(value?.id ?? null);
-    const ingredient = ingredients.find((ing) => ing.id === value?.id);
+    const ingredient = props.ingredients.find((ing) => ing.id === value?.id);
     if (ingredient?.type) {
       setValue(`ingredients.${index}.type`, ingredient.type);
     }
@@ -187,7 +188,7 @@ const AddPreparationPopup = (props: Props) => {
             const ingredient_uuid = watch(
               `ingredients.${index}.ingredient_uuid`
             );
-            const selectedIngredient = ingredients.find(
+            const selectedIngredient = props.ingredients.find(
               (ing) => ing.id === ingredient_uuid
             );
 

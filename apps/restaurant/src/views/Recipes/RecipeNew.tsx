@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Button, Input, LoadingAbsolute, useTitle, Tabs } from 'shared-ui';
 import { useTranslation } from 'react-i18next';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
-import { recipesService, Recipe } from '../../services';
+import {
+  recipesService,
+  Recipe,
+  inventoryService,
+  Ingredient,
+} from '../../services';
 import RecipeDetail from '../../components/RecipeDetail/RecipeDetail';
 import AddPreparationPopup from '../Recipes/AddPreparationPopup';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -116,10 +121,6 @@ const RecipeNew = () => {
   const { tab } = useParams<RouteParams>();
   const navigate = useNavigate();
 
-  const selectedRestaurantUUID = useRestaurantStore(
-    (state) => state.selectedRestaurantUUID
-  );
-
   const TABS = [
     t('pages.recipes'),
     t('pages.preparations'),
@@ -132,6 +133,26 @@ const RecipeNew = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [recipeDetail, setRecipeDetail] = useState<Recipe | null>(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  )!;
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+
+  const getOnlyIngredient = () => {
+    if (!selectedRestaurantUUID) return;
+    inventoryService
+      .getOnlyIngredientList(selectedRestaurantUUID)
+      .then(setIngredients)
+      .catch((e) => {
+        console.error('useIngredients error', e);
+      });
+  };
+
+  useEffect(() => {
+    const tabName = getTabName(selectedTab);
+    setSelectedTab(getTabIndex(tab));
+    reloadRecipes(tabName);
+  }, [selectedRestaurantUUID, tab, selectedTab]);
 
   const reloadRecipes = (tabName: string) => {
     if (!selectedRestaurantUUID) return;
@@ -148,12 +169,6 @@ const RecipeNew = () => {
         setLoadingData(false);
       });
   };
-
-  useEffect(() => {
-    const tabName = getTabName(selectedTab);
-    setSelectedTab(getTabIndex(tab));
-    reloadRecipes(tabName);
-  }, [selectedRestaurantUUID, tab, selectedTab]);
 
   const filteredRecipes = recipes.filter((recipe) =>
     recipe.name.toLowerCase().includes(recipeResearch.toLowerCase())
@@ -236,10 +251,16 @@ const RecipeNew = () => {
     return null;
   };
 
+  useEffect(() => {
+    if (showAddPopup) {
+      getOnlyIngredient();
+    }
+  }, [showAddPopup]);
+
   return (
     <div className={styles.recipes}>
       <div className={styles.search}>
-        {selectedTab == 1 && (
+        {selectedTab === 1 && (
           <Button
             value={t('recipes.addPreparation.addPreparationBtn')}
             type="primary"
@@ -288,10 +309,11 @@ const RecipeNew = () => {
           }
         }}
       />
-      {selectedTab == 1 && (
+      {selectedTab === 1 && (
         <AddPreparationPopup
           isVisible={showAddPopup}
           onRequestClose={() => setShowAddPopup(false)}
+          ingredients={ingredients}
           onRecipeChanged={(recipe, action) => {
             if (action === 'deleted') {
               handleRecipeDeleted(recipe);

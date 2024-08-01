@@ -190,13 +190,11 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     const handleSync = () => {
       if (!restaurantUUID) return;
-      setShowDialog(false);
       new Promise((resolve, reject) =>
         supplierService
           .getSync(restaurantUUID)
           .then((res) => {
             setSyncContacts(res);
-            setSyncingSupplierUUID(null);
             resolve(true); // Resolve the promise after successful operation
           })
           .catch(() => reject())
@@ -229,6 +227,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     return (
       <>
+        {console.log('syncingSupplierUUID', syncingSupplierUUID)}
         {suppliers.length === 0 && (
           <EmptyPage
             className={styles.emptyPage}
@@ -253,10 +252,8 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
                   }
                   onKey={() => {
                     setShowDialog(true);
-                    setSyncingSupplierUUID(supplier.uuid);
-                    {
-                      connectedIntegrations && handleSync();
-                    }
+                    setSyncingSupplierUUID(supplier?.uuid);
+                    handleSync();
                   }}
                   connectedIntegrations={connectedIntegrations}
                 />
