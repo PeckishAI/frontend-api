@@ -159,6 +159,13 @@ const Documents = () => {
     }
   }, [id, document]);
 
+  const sortedDocuments = [...document].sort((a, b) => {
+    const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+    const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+
+    return dateB.getTime() - dateA.getTime();
+  });
+
   return (
     <div className={styles.documents}>
       {loading && (
@@ -188,7 +195,7 @@ const Documents = () => {
       <div>
         {document.length > 0 ? (
           <div className={styles.cardsContainer}>
-            {document.map((doc, index) => (
+            {sortedDocuments.map((doc, index) => (
               <DocumentCard
                 key={index}
                 uuid={doc.documentUUID}
