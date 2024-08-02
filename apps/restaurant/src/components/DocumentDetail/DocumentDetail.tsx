@@ -466,30 +466,31 @@ const DocumentDetail = (props: Props) => {
                       alt={props.document?.path}
                     />
                   </div>
-                  <Table
-                    data={editableDocument?.ingredients}
-                    columns={isEditMode ? editColumns : viewColumns}
-                    className={styles.table}
-                  />
-                  <p
-                    className={styles.addIngredient}
-                    onClick={handleAddIngredient}>
-                    Add ingredient <i className="fa-solid fa-plus"></i>
-                  </p>
-
-                  <div className={styles.buttonsContaier}>
-                    <Button
-                      type="secondary"
-                      actionType="button"
-                      value={t('cancel')}
-                      onClick={toggleEditMode}
+                  <div className={styles.scrollDiv}>
+                    <Table
+                      data={editableDocument?.ingredients}
+                      columns={isEditMode ? editColumns : viewColumns}
+                      className={styles.table}
                     />
-                    <Button
-                      type="primary"
-                      actionType="submit"
-                      value={t('document.save')}
-                      className={styles.button}
-                    />
+                    <p
+                      className={styles.addIngredient}
+                      onClick={handleAddIngredient}>
+                      Add ingredient <i className="fa-solid fa-plus"></i>
+                    </p>
+                    <div className={styles.buttonsContaier}>
+                      <Button
+                        type="secondary"
+                        actionType="button"
+                        value={t('cancel')}
+                        onClick={toggleEditMode}
+                      />
+                      <Button
+                        type="primary"
+                        actionType="submit"
+                        value={t('document.save')}
+                        className={styles.button}
+                      />
+                    </div>{' '}
                   </div>
                 </>
               )}
@@ -528,42 +529,43 @@ const DocumentDetail = (props: Props) => {
                 alt={props.document?.path}
               />
             </div>
+            <div className={styles.scrollDiv}>
+              <Table
+                data={props.document?.ingredients}
+                columns={[
+                  { key: 'detectedName', header: t('document.detectedName') },
+                  { key: 'mappedName', header: t('document.givenName') },
+                  {
+                    key: 'quantity',
+                    header: t('quantity'),
+                    renderItem: ({ row }) => `${row.quantity}`,
+                  },
+                  {
+                    key: 'received_qty',
+                    header: t('receivedQty'),
+                    renderItem: ({ row }) => `${row.received_qty}`,
+                  },
+                  { key: 'unit', header: t('unit') },
 
-            <Table
-              data={props.document?.ingredients}
-              columns={[
-                { key: 'detectedName', header: t('document.detectedName') },
-                { key: 'mappedName', header: t('document.givenName') },
-                {
-                  key: 'quantity',
-                  header: t('quantity'),
-                  renderItem: ({ row }) => `${row.quantity}`,
-                },
-                {
-                  key: 'received_qty',
-                  header: t('receivedQty'),
-                  renderItem: ({ row }) => `${row.received_qty}`,
-                },
-                { key: 'unit', header: t('unit') },
-
-                {
-                  key: 'unitPrice',
-                  header: t('unitCost'),
-                  renderItem: ({ row }) =>
-                    row.unitPrice
-                      ? formatCurrency(row.unitPrice, currencyISO)
-                      : '-',
-                },
-                {
-                  key: 'totalPrice',
-                  header: t('totalCost'),
-                  renderItem: ({ row }) =>
-                    row.totalPrice
-                      ? formatCurrency(row.totalPrice, currencyISO)
-                      : '-',
-                },
-              ]}
-            />
+                  {
+                    key: 'unitPrice',
+                    header: t('unitCost'),
+                    renderItem: ({ row }) =>
+                      row.unitPrice
+                        ? formatCurrency(row.unitPrice, currencyISO)
+                        : '-',
+                  },
+                  {
+                    key: 'totalPrice',
+                    header: t('totalCost'),
+                    renderItem: ({ row }) =>
+                      row.totalPrice
+                        ? formatCurrency(row.totalPrice, currencyISO)
+                        : '-',
+                  },
+                ]}
+              />
+            </div>
             {props.document?.ingredients.length === 0 && (
               <p className={styles.noIngredients}>
                 {t('recipes.card.no-ingredients')}
@@ -578,6 +580,7 @@ const DocumentDetail = (props: Props) => {
               onConfirm={() => {
                 props.onDeleteDocument();
                 setConfirmDeletePopup(false);
+                props.onRequestClose();
               }}
             />
           </div>

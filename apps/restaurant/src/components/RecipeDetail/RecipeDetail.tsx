@@ -78,25 +78,27 @@ const RecipeDetail = (props: Props) => {
               </p>
             )}
           </div>
-          <Table
-            data={props.recipe?.ingredients}
-            columns={[
-              { key: 'name', header: t('name') },
-              {
-                key: 'quantity',
-                header: t('quantity'),
-                renderItem: ({ row }) => `${row.quantity} ${row.unit || ''}`,
-              },
-              {
-                key: 'cost',
-                header: t('totalCost'),
-                renderItem: ({ row }) =>
-                  row.cost
-                    ? formatCurrency(row.cost * row.quantity, currencyISO)
-                    : '-',
-              },
-            ]}
-          />
+          <div className={styles.scrollDiv}>
+            <Table
+              data={props.recipe?.ingredients}
+              columns={[
+                { key: 'name', header: t('name') },
+                {
+                  key: 'quantity',
+                  header: t('quantity'),
+                  renderItem: ({ row }) => `${row.quantity} ${row.unit || ''}`,
+                },
+                {
+                  key: 'cost',
+                  header: t('totalCost'),
+                  renderItem: ({ row }) =>
+                    row.cost
+                      ? formatCurrency(row.cost * row.quantity, currencyISO)
+                      : '-',
+                },
+              ]}
+            />
+          </div>
           {props.recipe?.ingredients.length === 0 && (
             <p className={styles.noIngredients}>
               {t('recipes.card.no-ingredients')}

@@ -66,17 +66,23 @@
 .inputContainer {
   display: flex;
   flex-direction: column;
+  max-height: calc(100% - 80px);
   gap: 15px;
+}
+
+.tableContainer {
+  display: flex-1;
+  overflow-y: auto;
 }
 
 .rowInputs {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;  
+  margin-bottom: 10px;
   gap: 15px;
 
   & > div:not(.deleteBtn) {
-    // width: 100%;
     flex: 1;
   }
 }

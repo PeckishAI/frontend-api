@@ -15,6 +15,10 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+  &.active {
+    background-color: var(--backgroundColor); 
+    }
+
 
   span {
     white-space: nowrap;
