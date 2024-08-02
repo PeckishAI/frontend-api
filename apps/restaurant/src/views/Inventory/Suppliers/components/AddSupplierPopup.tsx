@@ -29,6 +29,7 @@ type SupplierForm = z.infer<typeof AddSupplierSchema>;
 type Props = {
   isVisible: boolean;
   onRequestClose: () => void;
+  fetchSuppliersAndSync: () => void;
   onSupplierAdded: (supplier: {
     name: string;
     email?: string;
@@ -63,7 +64,6 @@ const AddSupplierPopup = (props: Props) => {
   }, [props.isVisible, reset]);
 
   const handleSubmitForm = handleSubmit(async (data) => {
-    console.log('Submit', data);
     if (!restaurantUUID) return;
 
     const uuid = await supplierService
@@ -82,6 +82,7 @@ const AddSupplierPopup = (props: Props) => {
       .then(() => {
         props.onRequestClose();
         props.onSupplierAdded(data);
+        props.fetchSuppliersAndSync();
       });
   });
 
