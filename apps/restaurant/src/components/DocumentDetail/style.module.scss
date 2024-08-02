@@ -1,6 +1,7 @@
 .documentDetail {
   position: relative;
-  max-height: calc(100% - 80px);
+  height: 100%;
+  overflow: scroll;
   .name {
     color: var(--textSecondaryColor);
     font-weight: var(--semiBold);
@@ -70,19 +71,6 @@
     max-height: 300px;
   }
 }
-.scrollDiv{
-  flex: 1;
-  overflow-y: auto;
-  max-height: calc(100vh - 213px); 
-}
-
-.scrollDivEdit{
-  flex: 1;
-  overflow-y: auto;
-  max-height: calc(100vh - 350px); 
-}
-
-
 .table {
   overflow: visible;
   width: 100%;
