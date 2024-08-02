@@ -235,6 +235,7 @@ const Documents = () => {
               handleDeleteDocument(document);
             } else if (action === 'updated') {
               handleDocumentUpdated(document);
+              setDocumentDetail(null);
             }
           }}
           onDeleteDocument={() => handleDeleteDocument(documentDetail)}

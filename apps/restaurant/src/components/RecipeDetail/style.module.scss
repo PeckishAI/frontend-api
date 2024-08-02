@@ -1,4 +1,5 @@
 .recipeDetail {
+  max-height: calc(100% - 80px);
   position: relative;
   .name {
     color: var(--primaryColor);
@@ -14,6 +15,7 @@
   }
 
   .category {
+   
     margin: 2px 0;
     font-size: 0.9rem;
     font-weight: var(--regular);
@@ -21,6 +23,12 @@
       font-weight: var(--bold);
       color: var(--textSecondaryColor);
     }
+  }
+
+  .scrollDiv{
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 226px); 
   }
 
   .metrics {

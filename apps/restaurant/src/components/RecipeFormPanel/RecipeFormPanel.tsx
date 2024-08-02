@@ -27,7 +27,6 @@ import { getRecipeCategorie } from '../../views/Recipes/RecipeNew';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import ListSubheader from '@mui/material/ListSubheader';
-
 const RecipeSchema = z
   .object({
     name: z.string().trim().nonempty('required'),
@@ -365,98 +364,100 @@ const RecipeFormPanel = (props: Props) => {
             )}
           </div>
         </div>
+        <div className={styles.tableContainer}>
+          {ingredientFields.map(({ id }, i) => {
+            const rowField = watch(`ingredients.${i}`);
 
-        {ingredientFields.map(({ id }, i) => {
-          const rowField = watch(`ingredients.${i}`);
+            const selectedIngredient =
+              ingredients.find((ing) => ing.id === rowField.selectedUUID) ??
+              null;
 
-          const selectedIngredient =
-            ingredients.find((ing) => ing.id === rowField.selectedUUID) ?? null;
-
-          return (
-            <div key={id} className={styles.rowInputs}>
-              <Controller
-                control={control}
-                name={`ingredients.${i}.selectedUUID`}
-                render={({ field: { onChange, name, onBlur, ref } }) => (
-                  <Autocomplete
-                    options={allItems.sort(
-                      (a, b) => -b.groupBy.localeCompare(a.groupBy)
-                    )}
-                    groupBy={(option) => option.groupBy}
-                    getOptionLabel={(option) => option.name || ''}
-                    onChange={handleChange(onChange, setValue, i)}
-                    loading={loadingIngredients}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value?.id
-                    }
-                    value={
-                      selectedIngredient
-                        ? {
-                            name: selectedIngredient.name,
-                            id: selectedIngredient.id,
-                          }
-                        : null
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label={t('recipes.editPanel.table.ingredientSelect')}
-                        variant="filled"
-                        sx={{
-                          '& .MuiFilledInput-root': {
-                            border: '2px solid grey',
-                            borderRadius: 1,
-                            background: 'white',
-                            height: '40px',
-                            fontSize: '16px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            borderColor: 'grey.300',
-                            borderBottom: 'none ',
-                          },
-                          '& .MuiFilledInput-root:hover': {
-                            borderColor: '#337ab7',
-                          },
-                        }}
-                      />
-                    )}
-                    renderGroup={(params) => (
-                      <li key={params.group}>
-                        <ListSubheader>{params.group}</ListSubheader>
-                        {params.children.map((child, index) => (
-                          <div key={`${params.group}-${index}`}>{child}</div>
-                        ))}
-                      </li>
-                    )}
-                  />
-                )}
-              />
-              <LabeledInput
-                placeholder={t('quantity')}
-                type="number"
-                step=".00000001"
-                lighter
-                suffix={selectedIngredient?.unit}
-                {...register(`ingredients.${i}.quantity`)}
-                error={errors.ingredients?.[i]?.quantity?.message}
-              />
-              <p className={styles.ingredientCost}>
-                {formatCurrency(
-                  (selectedIngredient?.cost ?? 0) * (rowField.quantity ?? 0),
-                  currencyISO
-                )}
-              </p>
-              <IconButton
-                className={styles.deleteBtn}
-                icon={<MdDelete />}
-                tooltipMsg={t('delete')}
-                onClick={() => {
-                  removeIngredient(i);
-                }}
-              />
-            </div>
-          );
-        })}
+            return (
+              <div key={id} className={styles.rowInputs}>
+                <Controller
+                  control={control}
+                  name={`ingredients.${i}.selectedUUID`}
+                  render={({ field: { onChange, name, onBlur, ref } }) => (
+                    <Autocomplete
+                      options={allItems.sort(
+                        (a, b) => -b.groupBy.localeCompare(a.groupBy)
+                      )}
+                      groupBy={(option) => option.groupBy}
+                      getOptionLabel={(option) => option.name || ''}
+                      onChange={handleChange(onChange, setValue, i)}
+                      loading={loadingIngredients}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value?.id
+                      }
+                      value={
+                        selectedIngredient
+                          ? {
+                              name: selectedIngredient.name,
+                              id: selectedIngredient.id,
+                            }
+                          : null
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label={t('recipes.editPanel.table.ingredientSelect')}
+                          variant="filled"
+                          sx={{
+                            '& .MuiFilledInput-root': {
+                              border: '2px solid grey',
+                              borderRadius: 1,
+                              background: 'white',
+                              height: '40px',
+                              fontSize: '16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              borderColor: 'grey.300',
+                              borderBottom: 'none ',
+                            },
+                            '& .MuiFilledInput-root:hover': {
+                              borderColor: '#337ab7',
+                            },
+                          }}
+                        />
+                      )}
+                      // renderGroup={(params) => (
+                      //   <li key={params.group}>
+                      //     <ListSubheader>{params.group}</ListSubheader>
+                      //     {params.children.map((child, index) => (
+                      //       <div key={`${params.group}-${index}`}>{child}</div>
+                      //     ))}
+                      //   </li>
+                      // )}
+                    />
+                  )}
+                />
+                <LabeledInput
+                  placeholder={t('quantity')}
+                  type="number"
+                  step=".00000001"
+                  lighter
+                  suffix={selectedIngredient?.unit}
+                  {...register(`ingredients.${i}.quantity`)}
+                  error={errors.ingredients?.[i]?.quantity?.message}
+                />
+                <p className={styles.ingredientCost}>
+                  {formatCurrency(
+                    (selectedIngredient?.cost ?? 0) * (rowField.quantity ?? 0),
+                    currencyISO
+                  )}
+                </p>
+                <IconButton
+                  className={styles.deleteBtn}
+                  icon={<MdDelete />}
+                  tooltipMsg={t('delete')}
+                  onClick={() => {
+                    removeIngredient(i);
+                  }}
+                />
+              </div>
+            );
+          })}
+        </div>
 
         <div
           className={styles.addIngredientButton}

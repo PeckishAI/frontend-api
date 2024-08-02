@@ -241,16 +241,16 @@ const AddPreparationPopup = (props: Props) => {
                             }}
                           />
                         )}
-                        renderGroup={(params) => (
-                          <li key={params.group}>
-                            <ListSubheader>{params.group}</ListSubheader>
-                            {params.children.map((child, index) => (
-                              <div key={`${params.group}-${index}`}>
-                                {child}
-                              </div>
-                            ))}
-                          </li>
-                        )}
+                        // renderGroup={(params) => (
+                        //   <li key={params.group}>
+                        //     <ListSubheader>{params.group}</ListSubheader>
+                        //     {params.children.map((child, index) => (
+                        //       <div key={`${params.group}-${index}`}>
+                        //         {child}
+                        //       </div>
+                        //     ))}
+                        //   </li>
+                        // )}
                       />
                     )}
                   />

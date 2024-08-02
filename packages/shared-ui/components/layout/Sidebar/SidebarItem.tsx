@@ -32,10 +32,12 @@ const SidebarItem = (props: Props) => {
 
   return (
     <NavLink
-      className={classNames(
-        'sidebar-item',
-        props.disable ? 'sidebar-item-disable' : ''
-      )}
+      className={({ isActive }) =>
+        classNames('sidebar-item', {
+          'sidebar-item-disable': props.disable,
+          active: isActive,
+        })
+      }
       to={props.to}
       onClick={handleClick}>
       <div className="icon-container">{props.icon}</div>
