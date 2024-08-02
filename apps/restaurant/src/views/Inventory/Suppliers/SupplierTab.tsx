@@ -161,8 +161,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
               contact.contact_id
             )
             .then((res) => {
-              console.log('res', res);
-              setSyncingSupplierUUID(null);
               setShowDialog(false);
               fetchSuppliersAndSync();
               toast.success('Supplier sync with Xero');
@@ -177,7 +175,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
             .addOnlySupplier(restaurantUUID, syncingSupplierUUID)
             .then((res) => {
               console.log('res', res);
-              setSyncingSupplierUUID(null);
               setShowDialog(false);
               fetchSuppliersAndSync();
               toast.success('Supplier sync with Xero');
@@ -227,7 +224,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
     return (
       <>
-        {console.log('syncingSupplierUUID', syncingSupplierUUID)}
         {suppliers.length === 0 && (
           <EmptyPage
             className={styles.emptyPage}
@@ -312,6 +308,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
 
         <AddSupplierPopup
           isVisible={showAddPopup}
+          fetchSuppliersAndSync={fetchSuppliersAndSync}
           onRequestClose={() => setShowAddPopup(false)}
           onSupplierAdded={(supplier) => {
             setSuppliers((suppliers) => [
