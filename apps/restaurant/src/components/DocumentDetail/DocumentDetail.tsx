@@ -466,32 +466,32 @@ const DocumentDetail = (props: Props) => {
                       alt={props.document?.path}
                     />
                   </div>
-                  <div className={styles.scrollDiv}>
+                  <div className={styles.scrollDivEdit}>
                     <Table
                       data={editableDocument?.ingredients}
                       columns={isEditMode ? editColumns : viewColumns}
                       className={styles.table}
                     />
-                    <p
-                      className={styles.addIngredient}
-                      onClick={handleAddIngredient}>
-                      Add ingredient <i className="fa-solid fa-plus"></i>
-                    </p>
-                    <div className={styles.buttonsContaier}>
-                      <Button
-                        type="secondary"
-                        actionType="button"
-                        value={t('cancel')}
-                        onClick={toggleEditMode}
-                      />
-                      <Button
-                        type="primary"
-                        actionType="submit"
-                        value={t('document.save')}
-                        className={styles.button}
-                      />
-                    </div>{' '}
                   </div>
+                  <p
+                    className={styles.addIngredient}
+                    onClick={handleAddIngredient}>
+                    Add ingredient <i className="fa-solid fa-plus"></i>
+                  </p>
+                  <div className={styles.buttonsContaier}>
+                    <Button
+                      type="secondary"
+                      actionType="button"
+                      value={t('cancel')}
+                      onClick={toggleEditMode}
+                    />
+                    <Button
+                      type="primary"
+                      actionType="submit"
+                      value={t('document.save')}
+                      className={styles.button}
+                    />
+                  </div>{' '}
                 </>
               )}
             </form>
