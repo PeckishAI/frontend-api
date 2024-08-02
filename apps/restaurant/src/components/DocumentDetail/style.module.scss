@@ -73,8 +73,15 @@
 .scrollDiv{
   flex: 1;
   overflow-y: auto;
-  max-height: calc(100vh - 226px); 
+  max-height: calc(100vh - 213px); 
 }
+
+.scrollDivEdit{
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 350px); 
+}
+
 
 .table {
   overflow: visible;
