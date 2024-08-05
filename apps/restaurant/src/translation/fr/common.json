@@ -33,6 +33,7 @@
   "inventory.uploadCSV.popup.subtitle": "Nous avons extrait les noms de colonnes suivants de votre fichier. Veuillez vérifier si le mappage est correct.",
   "inventory.selectSupplier": "Sélectionnez un fournisseur",
   "inventory.selectUnit": "Sélectionnez une unité",
+  "inventory.manageSupplier": "Gérer le fournisseur",
 
   "recipesCategories": {
     "drinks": "Boissons",
@@ -65,7 +66,6 @@
   "suppliers.waitLink": "L'invitation est en attente, ou copiez le lien pour en envoyer une nouvelle",
   "suppliers.linkCopied": "Lien d'invitation copié dans le presse-papiers",
   "suppliers.deleteSupplier": "Supprimer le fournisseur",
-  "suppliers.revokeAccess": "Révoquer l'accès",
   "suppliers.sync":"Synchroniser",
   "suppliers.synced":"Synchronisée",
   "suppliers.removeSupplierToast": {

@@ -139,7 +139,6 @@ const getCsv = async (
       }
     );
 
-    console.log('res', res.data);
     return {
       csv_data: res.data,
     };

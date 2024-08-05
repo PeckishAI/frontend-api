@@ -35,11 +35,11 @@ export const CostOfSalesCard: React.FC<Props> = ({
   filters,
   setIsLoading,
 }) => {
-  const { t } = useTranslation(['overview', 'common']);
+  const { t } = useTranslation(['overview', 'common', 'ingredient']);
   const [selectedMode, setSelectedMode] = useState(0);
   const [selectedChartMode, setSelectedChartMode] =
     useState<MetricType>('costofgoodssold');
-  console.log('filterOption', filterOption);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderItem = ({ value }: { value: any }) =>
     value !== null && value !== undefined ? value : '0';
@@ -189,17 +189,17 @@ export const CostOfSalesCard: React.FC<Props> = ({
                   data={data}
                   columns={[
                     {
-                      header: t('Ingredient Name'),
+                      header: t('ingredient:ingredientName'),
                       key: 'ingredient_name',
                       renderItem,
                     },
                     {
-                      header: t('Unit'),
+                      header: t('ingredient:unit'),
                       key: 'unit',
                       renderItem,
                     },
                     {
-                      header: t('cost/unit'),
+                      header: t('ingredient:unitCost'),
                       key: 'cost_per_unit',
                       renderItem: ({ value }) =>
                         value != null
@@ -207,7 +207,7 @@ export const CostOfSalesCard: React.FC<Props> = ({
                           : '£0.00',
                     },
                     {
-                      header: t('sold Qty'),
+                      header: t('ingredient:soldQty'),
                       key: 'sold_qty',
                       renderItem: ({ value }) =>
                         value != null
@@ -215,7 +215,7 @@ export const CostOfSalesCard: React.FC<Props> = ({
                           : '0.00',
                     },
                     {
-                      header: t('Theoretical Cos'),
+                      header: t('ingredient:theoreticalStock'),
                       key: 'theoretical_cos',
                       renderItem: ({ value }) =>
                         value != null
@@ -223,7 +223,7 @@ export const CostOfSalesCard: React.FC<Props> = ({
                           : '£0.00',
                     },
                     {
-                      header: t('opening Qty'),
+                      header: t('ingredient:openingQty'),
                       key: 'opening_qty',
                       renderItem: ({ value }) =>
                         value != null
@@ -231,7 +231,7 @@ export const CostOfSalesCard: React.FC<Props> = ({
                           : '0.00',
                     },
                     {
-                      header: t('purchased Qty'),
+                      header: t('ingredient:purchasedQty'),
                       key: 'purchased_qty',
                       renderItem: ({ value }) =>
                         value != null
@@ -239,7 +239,7 @@ export const CostOfSalesCard: React.FC<Props> = ({
                           : '0.00',
                     },
                     {
-                      header: t('closing Qty'),
+                      header: t('ingredient:closingQty'),
                       key: 'closing_qty',
                       renderItem: ({ value }) =>
                         value != null
@@ -247,7 +247,7 @@ export const CostOfSalesCard: React.FC<Props> = ({
                           : '0.00',
                     },
                     {
-                      header: t('actual Cos'),
+                      header: t('ingredient:actualCos'),
                       key: 'actual_cos',
                       renderItem: ({ value }) =>
                         value != null
@@ -255,7 +255,7 @@ export const CostOfSalesCard: React.FC<Props> = ({
                           : '£0.00',
                     },
                     {
-                      header: t('Variance'),
+                      header: t('ingredient:variance'),
                       key: 'variance',
                       renderItem: ({ value }) =>
                         value != null

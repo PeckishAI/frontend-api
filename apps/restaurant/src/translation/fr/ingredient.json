@@ -12,6 +12,12 @@
   "cost": "Prix",
   "unitCost": "Prix unitaire",
   "actions": "Actions",
+  "soldQty":"Quantité vendue",
+  "openingQty":"Qté d'ouverture",
+  "purchasedQty":"Quantité achetée",
+  "closingQty":"Qté de clôture",
+  "actualCos":"Cos réel",
+  "variance":"Variance",
 
   "placeholder.ingredientName": "Ex : Salade",
   "placeholder.ingredientQuantity": "Ex : 180",

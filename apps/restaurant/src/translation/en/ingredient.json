@@ -12,6 +12,12 @@
   "cost": "Cost",
   "unitCost": "Cost per unit",
   "actions": "Actions",
+  "soldQty":"Sold Qty",
+  "openingQty":"Opening Qty",
+  "purchasedQty":"Purchased Qty",
+  "closingQty":"Closing Qty",
+  "actualCos":"actual Cos",
+  "variance":"Variance",
 
   "placeholder.ingredientName": "Ex : Salad",
   "placeholder.ingredientQuantity": "Ex : 180",
