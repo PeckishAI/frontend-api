@@ -83,7 +83,7 @@ const CostFilters = ({ tag_names, onApplyFilters }: Props) => {
         <div ref={popupRef} className={styles.filters}>
           <p className={styles.title}>{t('filterBy')} :</p>
           <Select
-            placeholder={t('tag:Tag')}
+            placeholder={t('ingredient:tag')}
             options={uniqueTagNames}
             size="small"
             isClearable

@@ -65,7 +65,6 @@
   "suppliers.waitLink": "The invitation is pending, or copy the link to send a new one",
   "suppliers.linkCopied": "Invitation link copied to clipboard",
   "suppliers.deleteSupplier": "Delete Supplier",
-  "suppliers.revokeAccess": "Revoke access",
   "suppliers.sync":"Sync",
   "suppliers.synced":"Synced",
   "suppliers.removeSupplierToast": {
