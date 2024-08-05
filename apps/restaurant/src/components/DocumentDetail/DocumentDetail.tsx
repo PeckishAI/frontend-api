@@ -528,42 +528,43 @@ const DocumentDetail = (props: Props) => {
                 alt={props.document?.path}
               />
             </div>
+            <div className={styles.scrollDiv}>
+              <Table
+                data={props.document?.ingredients}
+                columns={[
+                  { key: 'detectedName', header: t('document.detectedName') },
+                  { key: 'mappedName', header: t('document.givenName') },
+                  {
+                    key: 'quantity',
+                    header: t('quantity'),
+                    renderItem: ({ row }) => `${row.quantity}`,
+                  },
+                  {
+                    key: 'received_qty',
+                    header: t('receivedQty'),
+                    renderItem: ({ row }) => `${row.received_qty}`,
+                  },
+                  { key: 'unit', header: t('unit') },
 
-            <Table
-              data={props.document?.ingredients}
-              columns={[
-                { key: 'detectedName', header: t('document.detectedName') },
-                { key: 'mappedName', header: t('document.givenName') },
-                {
-                  key: 'quantity',
-                  header: t('quantity'),
-                  renderItem: ({ row }) => `${row.quantity}`,
-                },
-                {
-                  key: 'received_qty',
-                  header: t('receivedQty'),
-                  renderItem: ({ row }) => `${row.received_qty}`,
-                },
-                { key: 'unit', header: t('unit') },
-
-                {
-                  key: 'unitPrice',
-                  header: t('unitCost'),
-                  renderItem: ({ row }) =>
-                    row.unitPrice
-                      ? formatCurrency(row.unitPrice, currencyISO)
-                      : '-',
-                },
-                {
-                  key: 'totalPrice',
-                  header: t('totalCost'),
-                  renderItem: ({ row }) =>
-                    row.totalPrice
-                      ? formatCurrency(row.totalPrice, currencyISO)
-                      : '-',
-                },
-              ]}
-            />
+                  {
+                    key: 'unitPrice',
+                    header: t('unitCost'),
+                    renderItem: ({ row }) =>
+                      row.unitPrice
+                        ? formatCurrency(row.unitPrice, currencyISO)
+                        : '-',
+                  },
+                  {
+                    key: 'totalPrice',
+                    header: t('totalCost'),
+                    renderItem: ({ row }) =>
+                      row.totalPrice
+                        ? formatCurrency(row.totalPrice, currencyISO)
+                        : '-',
+                  },
+                ]}
+              />
+            </div>
             {props.document?.ingredients.length === 0 && (
               <p className={styles.noIngredients}>
                 {t('recipes.card.no-ingredients')}
