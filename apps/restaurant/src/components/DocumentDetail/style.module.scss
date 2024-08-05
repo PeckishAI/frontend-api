@@ -111,6 +111,13 @@
     border-radius: 5px;
   }
 }
+
+.scrollDiv{
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 226px); 
+}
+
 .addIngredient {
   text-align: center;
   color: var(--primaryColor);
