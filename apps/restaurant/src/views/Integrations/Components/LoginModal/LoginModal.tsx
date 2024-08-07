@@ -65,8 +65,6 @@ const LoginModal = (props: Props) => {
           redirect_uri: window.location.origin + '/oauth/callback',
         })
         .then((res) => {
-          console.log('res integrate oauth', res);
-
           setRetrieveDataStatus('success');
         })
         .catch(() => {
@@ -89,9 +87,15 @@ const LoginModal = (props: Props) => {
     }
 
     if (FieldsValid() && userId) {
+      const integrationUrl =
+        props.pos?.name === 'red_cat'
+          ? `${props?.pos?.url}/${userId}`
+          : `${props?.pos?.url}/integrate/${userId}`;
+
       setRetrieveDataStatus('loading');
+
       axiosClient
-        .post(props.pos?.url + '/integrate/' + userId, {
+        .post(integrationUrl, {
           username: userName,
           password: userPassword,
         })
@@ -101,6 +105,9 @@ const LoginModal = (props: Props) => {
             restaurantNumber: res.data.length,
           });
           setRetrieveDataStatus('success');
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         })
         .catch((err) => {
           console.log(err);

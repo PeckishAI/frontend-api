@@ -10,7 +10,8 @@ type RestaurantResponse = {
   restaurant_uuid: string;
   currency: string | null;
   provider: {
-    xero: boolean;
+    xero?: boolean;
+    red_cat?: boolean;
   }[];
   users: {
     user_email: string;
@@ -35,6 +36,7 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
     created_at: new Date(r.created_at),
     provider: r.provider.map((p) => ({
       xero: p.xero,
+      red_cat: p.red_cat,
     })),
     users: r.users.map((u) => ({
       ...u,
