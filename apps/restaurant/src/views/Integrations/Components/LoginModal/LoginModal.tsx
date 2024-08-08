@@ -31,7 +31,7 @@ const LoginModal = (props: Props) => {
 
   const { getAuth, error, loading, data } = useOAuth2({
     authorizeUrl:
-      props.pos?.name === 'Xero'
+      props.pos?.name === 'xero'
         ? `${props.pos?.data?.oauth_url}/${selectedRestaurantUUID}`
         : props.pos?.data?.oauth_url ?? '',
     clientId: props.pos?.data?.client_id ?? '',
@@ -76,9 +76,9 @@ const LoginModal = (props: Props) => {
   const handleLoginClick = () => {
     if (props.pos?.auth_type === 'oauth') {
       setRetrieveDataStatus('loading');
-      if (props.pos?.name === 'Toast') {
+      if (props.pos?.name === 'toast') {
         window.location.href = `${props.pos?.data?.oauth_url}`;
-      } else if (props.pos?.name === 'Xero') {
+      } else if (props.pos?.name === 'xero') {
         window.location.href = `${props.pos?.data?.oauth_url}/${selectedRestaurantUUID}`;
       } else {
         getAuth();
