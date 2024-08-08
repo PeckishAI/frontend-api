@@ -90,7 +90,7 @@ const LoginModal = (props: Props) => {
       let integrationUrl;
       if (props.pos?.name === 'red_cat') {
         integrationUrl = `${props?.pos?.url}/${userId}`;
-      } else if (props.pos?.name === 'Vita Mojo') {
+      } else if (props.pos?.name === 'vitamojo') {
         integrationUrl = `${props?.pos?.url}/${selectedRestaurantUUID}/user/${userId}`;
       } else {
         integrationUrl = `${props?.pos?.url}/integrate/${userId}`;
