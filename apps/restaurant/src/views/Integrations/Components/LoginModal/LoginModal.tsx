@@ -87,10 +87,14 @@ const LoginModal = (props: Props) => {
     }
 
     if (FieldsValid() && userId) {
-      const integrationUrl =
-        props.pos?.name === 'red_cat'
-          ? `${props?.pos?.url}/${userId}`
-          : `${props?.pos?.url}/integrate/${userId}`;
+      let integrationUrl;
+      if (props.pos?.name === 'red_cat') {
+        integrationUrl = `${props?.pos?.url}/${userId}`;
+      } else if (props.pos?.name === 'Vita Mojo') {
+        integrationUrl = `${props?.pos?.url}/${selectedRestaurantUUID}/user/${userId}`;
+      } else {
+        integrationUrl = `${props?.pos?.url}/integrate/${userId}`;
+      }
 
       setRetrieveDataStatus('loading');
 
