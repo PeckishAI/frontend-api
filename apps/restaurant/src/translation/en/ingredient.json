@@ -18,6 +18,7 @@
   "closingQty":"Closing Qty",
   "actualCos":"actual Cos",
   "variance":"Variance",
+  "supplierCost":"Supplier Cost",
 
   "placeholder.ingredientName": "Ex : Salad",
   "placeholder.ingredientQuantity": "Ex : 180",
