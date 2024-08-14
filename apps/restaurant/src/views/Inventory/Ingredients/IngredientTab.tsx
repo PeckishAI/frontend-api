@@ -33,7 +33,6 @@ import Filters, {
   defaultFilters,
 } from '../Components/Filters/Filters';
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
-import AddSupplierModal from './AddSupplieModal';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -75,7 +74,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       Ingredient[]
     >([]);
     const [importIngredientsPopup, setImportIngredientsPopup] = useState(false);
-    const [supplierEdit, setSupplierEdit] = useState<Ingredient | null>(null);
     const [popupDelete, setPopupDelete] = useState<string[] | undefined>(
       undefined
     );
@@ -84,7 +82,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       string[] | undefined
     >(undefined);
     const [popupError, setPopupError] = useState('');
-    const [addModalOpen, setAddModalOpen] = useState(false);
     const [suppliers, setSuppliers] = useState<DropdownOptionsDefinitionType[]>(
       []
     );
@@ -204,7 +201,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       forwardedRef,
       () => {
         props.forceOptionsUpdate();
-        console.log('imperative handle');
 
         return {
           renderOptions: () => {
@@ -373,7 +369,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       inventoryService
         .getIngredientPreview(row.id)
         .then((res) => {
-          console.log('preview with id :', row.id, res.data);
           togglePopupDelete(res.data);
         })
         .catch((err) => {
@@ -386,20 +381,28 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const handleSave = (data) => {
       props.setLoadingState(true);
-      const supplierDetails = data.ingredients.map((ingredient) => ({
-        supplier_id: ingredient.supplier_id,
-        supplier_name: ingredient.supplier_name || '', // Provide a default empty string if supplierName is not present
-        supplier_cost: Number(ingredient.supplier_cost), // Convert cost to a number
-      }));
-
+      // const supplierDetails = data.ingredients.map((ingredient) => ({
+      //   supplier_id: ingredient.supplier_id,
+      //   supplier_name: ingredient.supplier_name || '', // Provide a default empty string if supplierName is not present
+      //   supplier_cost: Number(ingredient.supplier_cost), // Convert cost to a number
+      // }));
+      // console.log('supplierEdit', editedValues);
       // Update the editedValues state with the new supplier details
-      setSupplierEdit((prevValues) => ({
-        ...prevValues!,
-        supplier_details: supplierDetails,
-      }));
-
-      const { id, name, tagUUID, parLevel, actualStock, unit, unitCost } =
-        supplierEdit;
+      // setEditedValues((prevValues) => ({
+      //   ...prevValues!,
+      //   supplier_details: supplierDetails,
+      // }));
+      // console.log('1111111', editedValues);
+      const {
+        id,
+        name,
+        tagUUID,
+        parLevel,
+        actualStock,
+        unit,
+        unitCost,
+        supplier_details,
+      } = data;
 
       const updatedIngredient = {
         id,
@@ -408,7 +411,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         parLevel,
         actualStock,
         unit,
-        supplier_details: supplierDetails, // Include supplier when updating
+        supplier_details, // Include supplier when updating
         unitCost,
         restaurantUUID: selectedRestaurantUUID, // Add the selectedRestaurantUUID here
       };
@@ -419,6 +422,33 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           reloadInventoryData();
           props.setLoadingState(false);
         });
+    };
+
+    const handleAddSupplierDetail = () => {
+      setEditedValues((prevValues) => {
+        const newDetails = prevValues.supplier_details
+          ? [...prevValues.supplier_details]
+          : [];
+        newDetails.push({ supplier_uuid: '', supplier_cost: 0 });
+        return { ...prevValues, supplier_details: newDetails };
+      });
+    };
+
+    const handleRemoveSupplierDetail = (index) => {
+      setEditedValues((prevValues) => {
+        if (!prevValues) return prevValues;
+
+        // Filter out the supplier detail at the specific index
+        const updatedSupplierDetails = prevValues.supplier_details.filter(
+          (_, idx) => idx !== index
+        );
+
+        // Return the updated object with the new supplier details array
+        return {
+          ...prevValues,
+          supplier_details: updatedSupplierDetails,
+        };
+      });
     };
 
     // Handle inputs change
@@ -673,80 +703,173 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           ),
       },
       {
-        key: 'supplier_uuid',
-        header: t('ingredient:supplier'),
+        key: 'supplier_name',
+        header: t('ingredient:supplierName'),
         width: '15%',
-        renderItem: ({ row }) =>
-          editingRowId === row.id ? (
-            <>
-              {/* <Dropdown
-                placeholder={t('inventory.selectSupplier')}
-                options={suppliers}
-                selectedOption={editedValues!.supplier_uuid}
-                onOptionChange={(value) => {
-                  const selectedSupplier = suppliers.find(
-                    (supplier) => supplier.value === value
-                  );
-                  setEditedValues((prevValues) => ({
-                    ...prevValues!,
-                    supplier_uuid: value,
-                    supplier: selectedSupplier?.label || '',
-                  }));
-                }}
-                getOptionLabel={(option) =>
-                  suppliers.find((s) => s.value === option)?.label || option
-                }
-              /> */}
-            </>
-          ) : (
-            <button
-              onClick={() => {
-                setAddModalOpen(true);
-                setSupplierEdit(row);
-              }}>
-              {t('inventory.manageSupplier')}
-            </button>
-          ),
+        renderItem: ({ row, index }) => {
+          if (editingRowId === row.id) {
+            return (
+              <>
+                <div>
+                  {editedValues?.supplier_details.map((detail, detailIndex) => (
+                    <div
+                      key={detailIndex}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '5px',
+                        gap: '10px',
+                      }}>
+                      <Dropdown
+                        placeholder={t('Select a supplier')}
+                        options={suppliers}
+                        selectedOption={detail.supplier_id}
+                        onOptionChange={(value) => {
+                          const selectedSupplier = suppliers.find(
+                            (supplier) => supplier.value === value
+                          );
+                          if (selectedSupplier) {
+                            setEditedValues((prevValues) => {
+                              const newDetails = [
+                                ...prevValues.supplier_details,
+                              ];
+                              newDetails[detailIndex] = {
+                                ...newDetails[detailIndex],
+                                supplier_id: value,
+                                supplier_name: selectedSupplier.label,
+                              };
+                              return {
+                                ...prevValues,
+                                supplier_details: newDetails,
+                              };
+                            });
+                          }
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            );
+          } else {
+            return (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  padding: '5px',
+                }}>
+                {row.supplier_details.map((detail, detailIndex) => (
+                  <span key={detailIndex}>
+                    {detail.supplier_name || 'Select a supplier'}
+                  </span>
+                ))}
+              </div>
+            );
+          }
+        },
       },
+
       {
-        key: 'unitCost',
-        header: t('ingredient:unitCost'),
-        width: '10%',
-        classname: 'column-bold',
-        renderItem: ({ row }) =>
-          editingRowId === row.id ? (
-            <Input
-              type="number"
-              min={0}
-              placeholder={t('ingredient:unitCost')}
-              onChange={(value) => handleValueChange('unitCost', value)}
-              value={editedValues!.unitCost}
-            />
-          ) : row.unitCost ? (
-            formatCurrency(row.unitCost, currencyISO)
-          ) : (
-            '-'
-          ),
+        key: 'supplier_cost',
+        header: t('ingredient:supplierCost'),
+        width: '15%',
+        renderItem: ({ row, index }) => {
+          if (editingRowId === row.id) {
+            return (
+              <>
+                {editedValues?.supplier_details.map((detail, detailIndex) => (
+                  <div
+                    key={detailIndex}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '5px',
+                      gap: '10px',
+                    }}>
+                    <Input
+                      type="number"
+                      min={0}
+                      placeholder={t('Cost')}
+                      value={detail.supplier_cost}
+                      onChange={(e) => {
+                        const cost = e;
+                        setEditedValues((prevValues) => {
+                          const newDetails = [...prevValues.supplier_details];
+                          newDetails[detailIndex] = {
+                            ...newDetails[detailIndex],
+                            supplier_cost: cost,
+                          };
+                          return {
+                            ...prevValues,
+                            supplier_details: newDetails,
+                          };
+                        });
+                      }}
+                    />
+                    {/* <button>Delete</button> */}
+                    <div className="actions">
+                      <i
+                        className="fa-solid fa-trash"
+                        data-tooltip-id="inventory-tooltip"
+                        data-tooltip-content={t('delete')}
+                        onClick={() =>
+                          handleRemoveSupplierDetail(detailIndex)
+                        }></i>
+                    </div>
+                  </div>
+                ))}
+              </>
+            );
+          } else {
+            return (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  flexDirection: 'column',
+                  padding: '5px',
+                }}>
+                {row.supplier_details.map((detail, detailIndex) => (
+                  <span key={detailIndex}>{detail.supplier_cost}</span>
+                ))}
+              </div>
+            );
+          }
+        },
       },
       {
         key: 'actions',
         header: t('ingredient:actions'),
         width: '10%',
-        renderItem: ({ row }) => {
+        renderItem: ({ row, index }) => {
           return (
             <div className="actions">
               {editingRowId === row.id ? (
-                <i
-                  className="fa-solid fa-check"
-                  data-tooltip-id="inventory-tooltip"
-                  data-tooltip-content={t('validate')}
-                  onClick={handleSaveEdit}></i>
+                <>
+                  {' '}
+                  <i
+                    className="fa-solid fa-plus"
+                    data-tooltip-id="inventory-tooltip"
+                    data-tooltip-content={t('validate')}
+                    onClick={handleAddSupplierDetail}></i>
+                  <i
+                    className="fa-solid fa-check"
+                    data-tooltip-id="inventory-tooltip"
+                    data-tooltip-content={t('validate')}
+                    onClick={handleSaveEdit}></i>
+                </>
               ) : (
-                <i
-                  className="fa-solid fa-pen-to-square"
-                  data-tooltip-id="inventory-tooltip"
-                  data-tooltip-content={t('edit')}
-                  onClick={() => handleEditClick(row)}></i>
+                <>
+                  <i
+                    className="fa-solid fa-pen-to-square"
+                    data-tooltip-id="inventory-tooltip"
+                    data-tooltip-content={t('edit')}
+                    onClick={() => handleEditClick(row)}></i>
+                </>
               )}
 
               {editingRowId === row.id ? (
@@ -840,14 +963,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           subMsg={popupError}
           isOpen={popupError === '' ? false : true}
           onRequestClose={() => togglePopupError('')}
-        />
-
-        <AddSupplierModal
-          isOpen={addModalOpen}
-          onRequestClose={() => setAddModalOpen(false)}
-          onSave={handleSave}
-          suppliers={suppliers}
-          supplier_details={supplierEdit?.supplier_details}
         />
       </>
     );
