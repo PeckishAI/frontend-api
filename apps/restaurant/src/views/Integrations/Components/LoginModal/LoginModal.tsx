@@ -20,8 +20,8 @@ const LoginModal = (props: Props) => {
   const { t } = useTranslation(['common', 'validation', 'onboarding']);
   const userId = useUserStore((state) => state.user?.user.user_uuid);
 
-  const [redCatModalVisible, setRedCatModalVisible] = useState(false);
-  const [redCatData, setRedCatData] = useState([]);
+  const [commonModalVisible, setCommonModalVisible] = useState(false);
+  const [modalData, setModalData] = useState([]);
 
   const [userName, setUserName] = useState<string>('');
   const [userPassword, setUserPassword] = useState<string>('');
@@ -34,7 +34,7 @@ const LoginModal = (props: Props) => {
   const { selectedRestaurantUUID } = useRestaurantStore();
 
   const redCatModal = () => {
-    setRedCatModalVisible(!redCatModalVisible);
+    setCommonModalVisible(!commonModalVisible);
     setRetrieveDataStatus(null);
   };
 
@@ -99,10 +99,10 @@ const LoginModal = (props: Props) => {
       let integrationUrl;
       let client;
       if (props.pos?.name === 'red_cat') {
-        integrationUrl = `/pos/red-cat/list-store/${userId}`;
+        integrationUrl = `/pos/red-cat/list-stores/${userId}`;
         client = axiosIntegrationClient;
       } else if (props.pos?.name === 'vitamojo') {
-        integrationUrl = `/${selectedRestaurantUUID}/user/${userId}`;
+        integrationUrl = `/pos/vitamojo/list-stores/${userId}`;
         client = axiosIntegrationClient;
       } else {
         integrationUrl = `${props?.pos?.url}/integrate/${userId}`;
@@ -117,10 +117,9 @@ const LoginModal = (props: Props) => {
           password: userPassword,
         })
         .then((res) => {
-          console.log('integrationUrl', res);
-          if (props.pos?.name === 'red_cat') {
-            setRedCatModalVisible(true);
-            setRedCatData(res);
+          if (props.pos?.name === 'red_cat' || props.pos?.name === 'vitamojo') {
+            setCommonModalVisible(true);
+            setModalData(res);
           } else {
             setIntegrated({
               name: res.data[0],
@@ -129,7 +128,7 @@ const LoginModal = (props: Props) => {
             setRetrieveDataStatus('success');
             setTimeout(() => {
               window.location.reload();
-            }, 2000);
+            }, 3000);
           }
         })
         .catch((err) => {
@@ -245,12 +244,13 @@ const LoginModal = (props: Props) => {
         )}
       </Popup>
       <RedCatModal
-        isVisible={redCatModalVisible}
-        setRedCatModalVisible={setRedCatModalVisible}
+        isVisible={commonModalVisible}
+        pos={props.pos}
+        setCommonModalVisible={setCommonModalVisible}
         LoginModal={props.toggleModal}
         toggleModal={redCatModal}
         setRetrieveDataStatus={setRetrieveDataStatus}
-        redCatData={redCatData}
+        modalData={modalData}
       />
     </>
   );

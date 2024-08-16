@@ -9,20 +9,20 @@ import toast from 'react-hot-toast';
 
 type Props = {
   isVisible: boolean;
-  pos?: POS;
   toggleModal: () => void;
   LoginModal: () => void;
-  redCatData: any;
+  pos?: POS;
+  modalData: any;
   setRetrieveDataStatus: () => void;
-  setRedCatModalVisible: () => void;
+  setCommonModalVisible: () => void;
 };
 
 const RedCatModal = (props: Props) => {
   const { t } = useTranslation(['common', 'validation', 'onboarding']);
   const userId = useUserStore((state) => state.user?.user.user_uuid);
 
-  const a = props?.redCatData?.data?.RedCat_restaurant_list;
-  const units = props?.redCatData?.data?.peckish_restaurant;
+  const a = props?.modalData?.data?.third_party_restaurants;
+  const units = props?.modalData?.data?.peckish_restaurants;
   const [rows, setRows] = useState(a);
 
   useEffect(() => {
@@ -39,9 +39,9 @@ const RedCatModal = (props: Props) => {
     const selectedRow = newRows[index];
     const previousSupplier = selectedRow.selectedSupplier;
 
-    if (newRest[selectedRow.store_name]) {
+    if (newRest[selectedRow.restaurant_name]) {
       const newNewRest = { ...newRest };
-      delete newNewRest[selectedRow.store_name];
+      delete newNewRest[selectedRow.restaurant_name];
       setNewRest(newNewRest);
     }
 
@@ -58,11 +58,11 @@ const RedCatModal = (props: Props) => {
       newUsedSuppliers[value] = true;
       setSync((prev) => ({
         ...prev,
-        [selectedRow.store_id]: value,
+        [selectedRow.restaurant_uuid]: value,
       }));
     } else {
       const newSync = { ...sync };
-      delete newSync[selectedRow.store_id];
+      delete newSync[selectedRow.restaurant_uuid];
       setSync(newSync);
     }
 
@@ -75,17 +75,21 @@ const RedCatModal = (props: Props) => {
     setNewRest((prev) => {
       const updatedNewRest = { ...prev };
 
-      if (updatedNewRest[selectedRow.store_name] === selectedRow.store_id) {
-        delete updatedNewRest[selectedRow.store_name];
+      if (
+        updatedNewRest[selectedRow.restaurant_name] ===
+        selectedRow.restaurant_uuid
+      ) {
+        delete updatedNewRest[selectedRow.restaurant_name];
       } else {
-        updatedNewRest[selectedRow.store_name] = selectedRow.store_id;
+        updatedNewRest[selectedRow.restaurant_name] =
+          selectedRow.restaurant_uuid;
       }
 
       return updatedNewRest;
     });
 
     const newSync = { ...sync };
-    delete newSync[selectedRow.store_id];
+    delete newSync[selectedRow.restaurant_uuid];
     setSync(newSync);
 
     const newUsedSuppliers = { ...usedSuppliers };
@@ -93,28 +97,37 @@ const RedCatModal = (props: Props) => {
     setUsedSuppliers(newUsedSuppliers);
 
     const newRows = [...rows];
-    newRows[index].selectedSupplier = ''; // Clear the selected supplier
+    newRows[index].selectedSupplier = '';
     setRows(newRows);
   };
 
   const handleClick = () => {
     const pairedData = {
-      sync,
-      new_rest: newRest,
-      token: props?.redCatData?.data?.token,
-      username: props?.redCatData?.data?.username,
-      password: props?.redCatData?.data?.password,
+      sync_restaurant_details: sync,
+      onboard_restaurants_details: newRest,
+      token: props?.modalData?.data?.token || '',
+      username: props?.modalData?.data?.username,
+      password: props?.modalData?.data?.password,
     };
+
+    let apiUrl;
+    if (props.pos?.name === 'red_cat') {
+      apiUrl = `/pos/red-cat/sync-add-restaurant/${userId}`;
+    } else if (props.pos?.name === 'vitamojo') {
+      apiUrl = `/pos/vitamojo/sync-add-restaurant/${userId}`;
+    } else {
+      apiUrl = `/pos/${props?.pos?.name}/sync-add-restaurant/${userId}`;
+    }
+
     setLoading(true);
 
     axiosIntegrationClient
-      .post(`/pos/red-cat/sync-add-restaurant/${userId}`, pairedData)
+      .post(apiUrl, pairedData)
       .then((res) => {
         props.setRetrieveDataStatus(null);
         props.LoginModal();
-        props.setRedCatModalVisible(false);
-        props.LoginModal();
-        toast.success('Success to Restaurant');
+        props.setCommonModalVisible(false);
+        toast.success('Restaurant synced to Peckish successfully!');
         setLoading(false);
         setTimeout(() => {
           window.location.reload();
@@ -127,20 +140,15 @@ const RedCatModal = (props: Props) => {
   };
 
   const getFilteredUnits = () => {
-    return units.filter((unit) => !usedSuppliers[unit.restaurant_uuid]);
+    return units.filter((unit) => !usedSuppliers[unit?.restaurant_uuid]);
   };
 
   return (
     <Popup
       isVisible={props.isVisible}
       onRequestClose={props.toggleModal}
-      title={t('onboarding:onboarding.modal.title')}
-      subtitle={t(
-        props.pos?.auth_type === 'modal'
-          ? 'onboarding:onboarding.modal.description.login'
-          : 'onboarding:onboarding.modal.description.oauth',
-        { name: props.pos?.display_name }
-      )}>
+      title={t('onboarding:restaurant.modal.title')}
+      subtitle={t('onboarding:restaurant.modal.description')}>
       <div
         className="modal-content"
         style={{ maxHeight: '400px', overflowY: 'auto', padding: '16px' }}>
@@ -149,10 +157,10 @@ const RedCatModal = (props: Props) => {
         ) : (
           rows?.map((row, index) => (
             <div key={index} className="input-dropdown-pair">
-              <span className="span">{row.store_name || ''}</span>
+              <span className="span">{row.restaurant_name || ''}</span>
               <div className="select">
                 <Select
-                  placeholder="supplier"
+                  placeholder="restaurant"
                   options={getFilteredUnits()}
                   size="small"
                   isClearable
@@ -172,7 +180,7 @@ const RedCatModal = (props: Props) => {
               </div>
               <Button
                 value="Add to Peckish"
-                type={newRest[row.store_name] ? 'primary' : 'secondary'}
+                type={newRest[row.restaurant_name] ? 'primary' : 'secondary'}
                 onClick={() => handleAdd(index)}
               />
             </div>
