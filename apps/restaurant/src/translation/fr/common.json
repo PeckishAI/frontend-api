@@ -33,7 +33,7 @@
   "inventory.uploadCSV.popup.subtitle": "Nous avons extrait les noms de colonnes suivants de votre fichier. Veuillez vérifier si le mappage est correct.",
   "inventory.selectSupplier": "Sélectionnez un fournisseur",
   "inventory.selectUnit": "Sélectionnez une unité",
-  "inventory.manageSupplier": "Gérer le fournisseur",
+  "inventory.add": "Ajouter un fournisseur",
 
   "recipesCategories": {
     "drinks": "Boissons",
