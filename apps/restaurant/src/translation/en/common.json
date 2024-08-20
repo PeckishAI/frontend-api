@@ -94,6 +94,7 @@
   },
   "recipes.addPreparation": {
     "addPreparationBtn": "Add Preparation",
+    "addRecipe":"Add Recipe",
     "title": "Add a new Preparation",
     "subtitle": "Search your supplier here or create a new one if you don't find it",
     "select": {
