@@ -561,14 +561,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     // Handle for actions above the tab component
     const handleAddNewIngredient = () => {
       const newIngredient: Ingredient = {
-        id: '',
+        id: '', // New ingredient will have a temporary empty id
         name: '',
         tagUUID: null,
         parLevel: 0,
         actualStock: 0,
         unit: units[0].value,
-        supplier_uuid: suppliers.length ? suppliers[0].value : '',
-        supplier: suppliers.length ? suppliers[0].label : '',
+        // supplier_uuid: suppliers.length ? suppliers[0].value : '',
+        // supplier: suppliers.length ? suppliers[0].label : '',
+        supplier_details: [
+          { supplier_id: '', supplier_name: '', supplier_cost: 0 },
+        ],
         unitCost: 0,
         actions: undefined,
       };
