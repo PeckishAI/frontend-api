@@ -9,7 +9,6 @@ import { Recipe, recipesService } from '../../services';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import ListSubheader from '@mui/material/ListSubheader';
 import { useIngredients } from '../../services/hooks';
 import { FaPlus } from 'react-icons/fa';
 import Select from 'react-select';
@@ -44,9 +43,10 @@ type Props = {
   isVisible: boolean;
   onRequestClose: () => void;
   onRecipeChanged: (recipe: Recipe, action: 'deleted' | 'updated') => void;
-  onModifierAdded: (supplier: PreparationForm) => void;
   onReload: () => void;
   ingredients: any;
+  selectedTab: number;
+  categories: Array<{ value: string; label: string }>;
 };
 
 const AddPreparationPopup = (props: Props) => {
@@ -111,12 +111,11 @@ const AddPreparationPopup = (props: Props) => {
 
   const handleSubmitForm = handleSubmit(async (data) => {
     if (!restaurantUUID) return;
-    const type = 'preparation';
 
     try {
       const uuid = await recipesService.createRecipe(
         restaurantUUID,
-        type,
+        props.selectedTab === 1 ? 'preparation' : 'recipe',
         data
       );
       props.onRequestClose();
@@ -126,14 +125,6 @@ const AddPreparationPopup = (props: Props) => {
       console.error('Error creating preparation:', error);
     }
   });
-
-  // const categories = getRecipeCategories(t).map((cat) => ({
-  //   icon: cat.icon,
-  //   label: cat.label,
-  //   value: cat.value,
-  // }));
-
-  const categories = [{ value: 'preparations', label: 'Preparation' }];
 
   return (
     <Popup
@@ -151,14 +142,23 @@ const AddPreparationPopup = (props: Props) => {
                 isSearchable={false}
                 isMulti={false}
                 placeholder={t('category')}
-                options={categories}
+                options={props.categories}
                 innerRef={ref}
                 name={name}
                 onChange={(val) => {
                   onChange(val?.value ?? null);
                 }}
                 onBlur={onBlur}
-                value={categories.find((cat) => cat.value === value) ?? null}
+                value={
+                  props.categories.find((cat) => cat.value === value) ?? null
+                }
+                error={errors.category?.message}
+                styles={{
+                  menu: (provided) => ({
+                    ...provided,
+                    zIndex: 10,
+                  }),
+                }}
                 error={errors.category?.message}
               />
             )}
@@ -241,16 +241,6 @@ const AddPreparationPopup = (props: Props) => {
                             }}
                           />
                         )}
-                        // renderGroup={(params) => (
-                        //   <li key={params.group}>
-                        //     <ListSubheader>{params.group}</ListSubheader>
-                        //     {params.children.map((child, index) => (
-                        //       <div key={`${params.group}-${index}`}>
-                        //         {child}
-                        //       </div>
-                        //     ))}
-                        //   </li>
-                        // )}
                       />
                     )}
                   />

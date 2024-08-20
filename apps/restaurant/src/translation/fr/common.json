@@ -85,6 +85,7 @@
   },
   "suppliers.addSupplier": {
     "title": "Ajouter un nouveau fournisseur",
+    "addRecipe":"Ajouter la recette",
     "subtitle": "Recherchez votre fournisseur ici ou créez-en un nouveau si vous ne le trouvez pas",
     "select": {
       "placeholder": "Sélectionnez un fournisseur",
