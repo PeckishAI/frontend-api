@@ -11,7 +11,7 @@ import {
 } from 'shared-ui';
 import styles from './style.module.scss';
 import { Invoice, inventoryService } from '../../services';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatCurrency } from '../../utils/helpers';
 import { useRestaurantCurrency } from '../../store/useRestaurantStore';
@@ -63,7 +63,7 @@ const DocumentDetail = (props: Props) => {
   );
 
   const toggleEditMode = () => {
-    setIsEditMode(!isEditMode);
+    setIsEditMode((prevState) => !prevState); // Toggle edit mode state
     if (!isEditMode) {
       // Enter edit mode
       setEditableDocument(props.document);
@@ -146,7 +146,7 @@ const DocumentDetail = (props: Props) => {
             unitPrice: +ing.unitPrice,
             quantity: +ing.quantity,
             unit: ing.unit,
-            totalPrice: +ing.totalPrice,
+            totalPrice: +ing.totalPrice ? +ing.totalPrice : null,
           })),
         };
         setIsLoading(true);
@@ -230,6 +230,11 @@ const DocumentDetail = (props: Props) => {
       }));
     }
   };
+
+  useEffect(() => {
+    setIsEditMode(false); // Reset edit mode
+    setEditableDocument(null); // Clear editable document
+  }, [props.document]);
 
   const viewColumns = [
     {
@@ -381,7 +386,7 @@ const DocumentDetail = (props: Props) => {
         <Input
           type="number"
           min={0}
-          step="0.01"
+          step="any"
           placeholder={t('unitCost')}
           className={styles.price}
           onChange={(value) =>
@@ -398,7 +403,6 @@ const DocumentDetail = (props: Props) => {
       renderItem: ({ row, index }) => (
         <Input
           type="number"
-          min={0}
           step="any"
           placeholder={t('totalCost')}
           className={styles.price}

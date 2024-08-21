@@ -14,27 +14,36 @@ import { FaPlus } from 'react-icons/fa';
 import Select from 'react-select';
 
 const AddPreparationSchema = z.object({
-  category: z
-    .string()
-    .optional()
-    .or(z.null().transform(() => undefined)),
-  cost: z.number().min(0).optional(),
-  recipe_name: z
-    .string()
-    .optional()
-    .or(z.null().transform(() => undefined)),
-  portionsPerBatch: z.number().min(0).optional(),
-  pricePerPortion: z.number().min(0).optional(),
+  category: z.string({
+    required_error: 'Category is required',
+    invalid_type_error: 'Category is required',
+  }),
+  recipe_name: z.string().min(1, { message: 'Recipe name is required' }),
+  portionsPerBatch: z.number({
+    required_error: 'Portions per batch is required',
+    invalid_type_error: 'Portions per batch is required',
+  }),
+  pricePerPortion: z.number({
+    required_error: 'Price per portion is required',
+    invalid_type_error: 'Price per portion is required',
+  }),
   ingredients: z
     .array(
       z.object({
-        ingredient_uuid: z.string().optional(),
-        quantity: z.number().min(0, { message: 'must be a positive number' }),
+        ingredient_uuid: z
+          .string()
+          .min(1, { message: 'Ingredient selection is required' })
+          .refine((val) => val !== '', {
+            message: 'Ingredient UUID cannot be empty',
+          }),
+        quantity: z.number({
+          required_error: 'Quantity is required',
+          invalid_type_error: 'Quantity is required',
+        }),
         type: z.string().optional(),
       })
     )
     .min(1, { message: 'At least one ingredient is required' }),
-  automaticInvitation: z.boolean(),
 });
 
 type PreparationForm = z.infer<typeof AddPreparationSchema>;
@@ -67,7 +76,6 @@ const AddPreparationPopup = (props: Props) => {
   } = useForm<PreparationForm>({
     resolver: zodResolver(AddPreparationSchema),
     defaultValues: {
-      automaticInvitation: true,
       ingredients: [{ ingredient_uuid: '', quantity: 0, type: '' }],
     },
   });
@@ -102,8 +110,11 @@ const AddPreparationPopup = (props: Props) => {
   }));
 
   const handleChange = (onChange, setValue, index) => (event, value) => {
-    onChange(value?.id ?? null);
-    const ingredient = props.ingredients.find((ing) => ing.id === value?.id);
+    const selectedValue = value?.id ?? '';
+    onChange(selectedValue);
+    const ingredient = props.ingredients.find(
+      (ing) => ing.id === selectedValue
+    );
     if (ingredient?.type) {
       setValue(`ingredients.${index}.type`, ingredient.type);
     }
@@ -130,42 +141,58 @@ const AddPreparationPopup = (props: Props) => {
     <Popup
       isVisible={props.isVisible}
       onRequestClose={props.onRequestClose}
-      title={t('recipes.addPreparation.title')}>
+      title={
+        props.selectedTab === 1
+          ? t('recipes.addPreparation.title')
+          : t('recipes.addPreparation.recipe_title')
+      }>
       <form onSubmit={handleSubmitForm}>
         <div className={styles.inputContainer}>
           <Controller
             control={control}
             name="category"
-            render={({ field: { onChange, name, onBlur, ref, value } }) => (
-              <Select
-                size="large"
-                isSearchable={false}
-                isMulti={false}
-                placeholder={t('category')}
-                options={props.categories}
-                innerRef={ref}
-                name={name}
-                onChange={(val) => {
-                  onChange(val?.value ?? null);
-                }}
-                onBlur={onBlur}
-                value={
-                  props.categories.find((cat) => cat.value === value) ?? null
-                }
-                error={errors.category?.message}
-                styles={{
-                  menu: (provided) => ({
-                    ...provided,
-                    zIndex: 10,
-                  }),
-                }}
-                error={errors.category?.message}
-              />
+            render={({
+              field: { onChange, name, onBlur, ref, value },
+              fieldState: { error },
+            }) => (
+              <>
+                {' '}
+                <div className={styles.selectContainer}>
+                  <Select
+                    size="large"
+                    isSearchable={false}
+                    isMulti={false}
+                    placeholder={t('category')}
+                    options={props.categories}
+                    innerRef={ref}
+                    name={name}
+                    onChange={(val) => {
+                      onChange(val?.value ?? null);
+                    }}
+                    onBlur={onBlur}
+                    value={
+                      props.categories.find((cat) => cat.value === value) ??
+                      null
+                    }
+                    styles={{
+                      menu: (provided) => ({
+                        ...provided,
+                        zIndex: 10,
+                      }),
+                    }}
+                  />
+                  {error && (
+                    <div className={styles.errorMessage}>
+                      {errors.category?.message}
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           />
           <LabeledInput
             lighter
-            placeholder={t('recipe_name')}
+            placeholder={t('recipes.editPanel.fields.recipeName')}
             type="text"
             error={errors.recipe_name?.message}
             {...register('recipe_name')}
@@ -239,6 +266,9 @@ const AddPreparationPopup = (props: Props) => {
                                 borderColor: '#337ab7',
                               },
                             }}
+                            error={Boolean(
+                              errors.ingredients?.[index]?.ingredient_uuid
+                            )}
                           />
                         )}
                       />
@@ -267,11 +297,6 @@ const AddPreparationPopup = (props: Props) => {
             <p>{t('recipes.editPanel.table.addIngredient')}</p>
           </div>
         </div>
-        <Checkbox
-          label={t('recipes.addPreparation.automaticSendCheckbox')}
-          className={styles.autoCheckbox}
-          {...register('automaticInvitation')}
-        />
         <div className={styles.buttonsContainer}>
           <Button
             type="secondary"
