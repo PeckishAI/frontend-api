@@ -1,7 +1,7 @@
 {
   "ingredientName": "Ingredient name",
   "tag": "Tag",
-  "theoreticalStock": "Theoretical stock",
+  "theoreticalStock": "Theoretical COS",
   "safetyStock": "Safety stock",
   "parLvel": "Par level",
   "actualStock": "Actual stock",
