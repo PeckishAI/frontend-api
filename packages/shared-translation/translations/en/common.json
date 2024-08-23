@@ -65,6 +65,7 @@
   "orders.supplier": "Supplier",
   "orders.orderDate": "Order date",
   "orders.deliveryDate": "Delivery date",
+  "orders.orderNumber":"Order Number",
   "orders.status": "Status",
   "orders.statusStates": {
     "pending": "Pending",

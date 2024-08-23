@@ -112,6 +112,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
         { key: 'supplier', header: t('orders.supplier') },
         { key: 'orderDate', header: t('orders.orderDate') },
         { key: 'deliveryDate', header: t('orders.deliveryDate') },
+        { key: 'orderNumber', header: t('orders.orderNumber') },
         {
           key: 'status',
           header: t('orders.status'),

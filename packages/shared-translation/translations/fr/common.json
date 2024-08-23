@@ -3,7 +3,6 @@
   "password": "Mot de passe",
   "confirm-password": "Confirmation",
   "or": "ou",
-
   "quantity": "Quantité",
   "receivedQty":"Quantité reçue",
   "price": "Prix",
@@ -65,6 +64,7 @@
   "orders.supplier": "Fournisseur",
   "orders.orderDate": "Date de commande",
   "orders.deliveryDate": "Date de livraison",
+  "orders.orderNumber":"Numéro de commande",
   "orders.status": "Statut",
   "orders.statusStates": {
     "pending": "En attente",

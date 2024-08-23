@@ -171,7 +171,7 @@ const RecipeNew = () => {
   };
 
   const filteredRecipes = recipes.filter((recipe) =>
-    recipe.name.toLowerCase().includes(recipeResearch.toLowerCase())
+    recipe?.name?.toLowerCase().includes(recipeResearch.toLowerCase())
   );
 
   const handleRecipeClick = (recipe: Recipe) => {

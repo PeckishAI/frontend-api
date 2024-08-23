@@ -1,3 +1,4 @@
+
 import { IngredientOption } from '../views/PlaceOrder/Components/IngredientsTable/IngredientsTable';
 import { GeneratedOrder } from '../views/PlaceOrder/Components/ShoppingView/ShoppingView';
 import { axiosClient } from './index';
@@ -22,6 +23,7 @@ export type SupplierOrder = {
 export type OrderResponse = {
   supplier: string;
   orderDate: string;
+  orderNumber: string;
   deliveryDate: string;
   status: string;
   price: number;
@@ -50,6 +52,7 @@ const getOrders = async (
     return res.data.map((item) => ({
       supplier: item.supplier,
       orderDate: item.orderDate,
+      orderNumber: item.orderNumber,
       deliveryDate: item.deliveryDate,
       status: item.status,
       price: item.price,
