@@ -10,7 +10,7 @@ import { useRestaurantStore } from '../../store/useRestaurantStore';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { useIngredients } from '../../services/hooks';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaTrash } from 'react-icons/fa';
 import Select from 'react-select';
 
 const AddPreparationSchema = z.object({
@@ -81,7 +81,11 @@ const AddPreparationPopup = (props: Props) => {
   });
 
   const { loading: loadingIngredients } = useIngredients();
-  const { fields: ingredientFields, append: addIngredient } = useFieldArray({
+  const {
+    fields: ingredientFields,
+    append: addIngredient,
+    remove: removeIngredient,
+  } = useFieldArray({
     control,
     name: 'ingredients',
   });
@@ -201,6 +205,7 @@ const AddPreparationPopup = (props: Props) => {
             lighter
             placeholder={t('recipes.editPanel.fields.portionsPerBatch')}
             type="number"
+            step="any"
             error={errors.portionsPerBatch?.message}
             {...register('portionsPerBatch', { valueAsNumber: true })}
           />
@@ -208,9 +213,11 @@ const AddPreparationPopup = (props: Props) => {
             lighter
             placeholder={t('recipes.editPanel.fields.pricePerPortion')}
             type="number"
+            step="any"
             error={errors.pricePerPortion?.message}
             {...register('pricePerPortion', { valueAsNumber: true })}
           />
+
           {ingredientFields.map((field, index) => {
             const ingredient_uuid = watch(
               `ingredients.${index}.ingredient_uuid`
@@ -221,70 +228,105 @@ const AddPreparationPopup = (props: Props) => {
 
             return (
               <>
-                <div key={field.id} className={styles.rowInputs}>
-                  <Controller
-                    control={control}
-                    name={`ingredients.${index}.ingredient_uuid`}
-                    render={({ field: { onChange } }) => (
-                      <Autocomplete
-                        options={allItems.sort(
-                          (a, b) => -b.groupBy.localeCompare(a.groupBy)
-                        )}
-                        groupBy={(option) => option.groupBy}
-                        getOptionLabel={(option) => option.name || ''}
-                        onChange={handleChange(onChange, setValue, index)}
-                        loading={loadingIngredients}
-                        value={
-                          selectedIngredient
-                            ? {
-                                name: selectedIngredient.name,
-                                id: selectedIngredient.id,
-                              }
-                            : null
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label={t(
-                              'recipes.editPanel.table.ingredientSelect'
-                            )}
-                            variant="filled"
-                            size="small"
-                            sx={{
-                              '& .MuiFilledInput-root': {
-                                border: '1px solid grey',
-                                borderRadius: 1,
-                                background: 'white',
-                                height: '40px',
-                                fontSize: '16px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                borderColor: 'grey.300',
-                                borderBottom: 'none',
-                              },
-                              '& .MuiFilledInput-root:hover': {
-                                borderColor: '#337ab7',
-                              },
-                            }}
-                            error={Boolean(
-                              errors.ingredients?.[index]?.ingredient_uuid
-                            )}
-                          />
-                        )}
-                      />
-                    )}
+                <div key={field.id}>
+                  <div>
+                    <Controller
+                      control={control}
+                      name={`ingredients.${index}.ingredient_uuid`}
+                      render={({ field: { onChange } }) => (
+                        <Autocomplete
+                          options={allItems.sort(
+                            (a, b) => -b.groupBy.localeCompare(a.groupBy)
+                          )}
+                          groupBy={(option) => option.groupBy}
+                          getOptionLabel={(option) => option.name || ''}
+                          onChange={handleChange(onChange, setValue, index)}
+                          loading={loadingIngredients}
+                          value={
+                            selectedIngredient
+                              ? {
+                                  name: selectedIngredient.name,
+                                  id: selectedIngredient.id,
+                                }
+                              : null
+                          }
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label={t(
+                                'recipes.editPanel.table.ingredientSelect'
+                              )}
+                              variant="filled"
+                              size="small"
+                              sx={{
+                                '& .MuiFilledInput-root': {
+                                  border: '1px solid grey',
+                                  borderRadius: 1,
+                                  background: 'white',
+                                  height: '40px',
+                                  fontSize: '16px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  borderColor: 'grey.300',
+                                  borderBottom: 'none',
+                                },
+                                '& .MuiFilledInput-root:hover': {
+                                  borderColor: '#337ab7',
+                                },
+                              }}
+                              error={Boolean(
+                                errors.ingredients?.[index]?.ingredient_uuid
+                              )}
+                            />
+                          )}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className={styles.quantityCss}>
+                  <LabeledInput
+                    placeholder={t('quantity')}
+                    type="number"
+                    step=".00000001"
+                    lighter
+                    {...register(`ingredients.${index}.quantity`, {
+                      valueAsNumber: true,
+                    })}
+                    error={errors.ingredients?.[index]?.quantity?.message}
+                  />
+
+                  <TextField
+                    label={t('unit')}
+                    variant="filled"
+                    size="small"
+                    value={selectedIngredient?.unit || ''}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    sx={{
+                      '& .MuiFilledInput-root': {
+                        border: '1px solid grey',
+                        borderRadius: 1,
+                        background: 'lightgrey',
+                        height: '40px',
+                        fontSize: '16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        borderColor: 'grey.300',
+                        borderBottom: 'none',
+                      },
+                      '& .MuiFilledInput-root.Mui-disabled': {
+                        backgroundColor: 'lightgrey',
+                      },
+                    }}
+                  />
+
+                  <FaTrash
+                    className={styles.deleteButton}
+                    onClick={() => removeIngredient(index)}
                   />
                 </div>
-                <LabeledInput
-                  placeholder={t('quantity')}
-                  type="number"
-                  step=".00000001"
-                  lighter
-                  {...register(`ingredients.${index}.quantity`, {
-                    valueAsNumber: true,
-                  })}
-                  error={errors.ingredients?.[index]?.quantity?.message}
-                />
               </>
             );
           })}

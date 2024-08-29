@@ -9,6 +9,11 @@
   align-items: center;
   gap: 0.5rem;
 }
+.quantityCss {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
 
 .addIngredientButton {
   display: flex;
@@ -34,6 +39,10 @@
 .selectContainer {
   position: relative;
   margin-bottom: 10px;
+}
+.deleteButton {
+  width: 58px;
+  height: 21px;
 }
 
 .errorMessage {

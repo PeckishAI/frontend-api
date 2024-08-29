@@ -167,10 +167,7 @@ const updateIngredient = (ingredient: Ingredient) => {
   const ingredientFormated = {
     id: ingredient.id,
     name: ingredient.name,
-    tag_uuid:
-      ingredient.tagUUID && ingredient.tagUUID.trim() !== ''
-        ? ingredient.tagUUID
-        : null,
+    tag_details: ingredient.tag_details,
     par_level: ingredient.parLevel,
     actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
