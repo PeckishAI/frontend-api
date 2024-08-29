@@ -336,6 +336,7 @@ const AddPreparationPopup = (props: Props) => {
               addIngredient({ ingredient_uuid: '', quantity: 0, type: '' })
             }>
             <FaPlus />
+            {console.log('object')}
             <p>{t('recipes.editPanel.table.addIngredient')}</p>
           </div>
         </div>
