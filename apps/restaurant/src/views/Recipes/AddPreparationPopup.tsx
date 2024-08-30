@@ -7,8 +7,6 @@ import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { Recipe, recipesService } from '../../services';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
 import { useIngredients } from '../../services/hooks';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 import Select from 'react-select';
@@ -124,6 +122,23 @@ const AddPreparationPopup = (props: Props) => {
     }
   };
 
+  const filteredIngredients = (searchInput) => {
+    const searchText = searchInput ? searchInput.trim().toLowerCase() : '';
+
+    if (!searchText) {
+      return props.ingredients; // Return all ingredients if no search input
+    }
+
+    // Exact match should come first
+    const exactMatches = props.ingredients.filter(
+      (ingredient) => ingredient.name?.toLowerCase() === searchText
+    );
+    console.log('exactMatches');
+    // Then, partial matches where the name starts with the search text
+
+    return [...exactMatches];
+  };
+
   const handleSubmitForm = handleSubmit(async (data) => {
     if (!restaurantUUID) return;
 
@@ -141,10 +156,28 @@ const AddPreparationPopup = (props: Props) => {
     }
   });
 
+  const groupedOptions = Object.values(allItems).reduce((groups, item) => {
+    const group = item.groupBy || 'Other'; // Fallback to 'Other' if no groupBy defined
+    if (!groups[group]) {
+      groups[group] = [];
+    }
+    groups[group].push({
+      label: item.name,
+      value: item.id,
+    });
+    return groups;
+  }, {});
+
+  const groupedSelectOptions = Object.keys(groupedOptions).map((group) => ({
+    label: group, // The group label (e.g., 'Ingredients', 'Preparations')
+    options: groupedOptions[group], // The array of options within the group
+  }));
+
   return (
     <Popup
       isVisible={props.isVisible}
       onRequestClose={props.onRequestClose}
+      maxWidth={'47%'}
       title={
         props.selectedTab === 1
           ? t('recipes.addPreparation.title')
@@ -233,52 +266,42 @@ const AddPreparationPopup = (props: Props) => {
                     <Controller
                       control={control}
                       name={`ingredients.${index}.ingredient_uuid`}
-                      render={({ field: { onChange } }) => (
-                        <Autocomplete
-                          options={allItems.sort(
-                            (a, b) => -b.groupBy.localeCompare(a.groupBy)
+                      render={({
+                        field: { onChange, onBlur, ref, value },
+                        fieldState: { error },
+                      }) => (
+                        <Select
+                          size="large"
+                          isSearchable={true} // Enable search functionality
+                          placeholder={t(
+                            'recipes.editPanel.table.ingredientSelect'
                           )}
-                          groupBy={(option) => option.groupBy}
-                          getOptionLabel={(option) => option.name || ''}
-                          onChange={handleChange(onChange, setValue, index)}
-                          loading={loadingIngredients}
+                          options={groupedSelectOptions} // Use grouped options
+                          name={name}
+                          onChange={(selectedOption) => {
+                            onChange(selectedOption?.value ?? null);
+                          }}
+                          onBlur={onBlur}
                           value={
-                            selectedIngredient
-                              ? {
-                                  name: selectedIngredient.name,
-                                  id: selectedIngredient.id,
-                                }
-                              : null
+                            Object.values(allItems)
+                              .map((item) => ({
+                                label: item.name,
+                                value: item.id,
+                              }))
+                              .find((option) => option.value === value) ?? null
                           }
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label={t(
-                                'recipes.editPanel.table.ingredientSelect'
-                              )}
-                              variant="filled"
-                              size="small"
-                              sx={{
-                                '& .MuiFilledInput-root': {
-                                  border: '1px solid grey',
-                                  borderRadius: 1,
-                                  background: 'white',
-                                  height: '40px',
-                                  fontSize: '16px',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  borderColor: 'grey.300',
-                                  borderBottom: 'none',
-                                },
-                                '& .MuiFilledInput-root:hover': {
-                                  borderColor: '#337ab7',
-                                },
-                              }}
-                              error={Boolean(
-                                errors.ingredients?.[index]?.ingredient_uuid
-                              )}
-                            />
-                          )}
+                          styles={{
+                            menu: (provided) => ({
+                              ...provided,
+                              zIndex: 9999,
+                              maxHeight: '300px',
+                              overflowY: 'auto',
+                            }),
+                            control: (provided) => ({
+                              ...provided,
+                              minWidth: '200px',
+                            }),
+                          }}
                         />
                       )}
                     />
@@ -296,14 +319,12 @@ const AddPreparationPopup = (props: Props) => {
                     error={errors.ingredients?.[index]?.quantity?.message}
                   />
 
-                  <TextField
-                    label={t('unit')}
-                    variant="filled"
-                    size="small"
+                  <LabeledInput
+                    placeholder={t('unit')}
+                    type="text"
+                    lighter
                     value={selectedIngredient?.unit || ''}
-                    InputProps={{
-                      readOnly: true,
-                    }}
+                    readOnly
                     sx={{
                       '& .MuiFilledInput-root': {
                         border: '1px solid grey',

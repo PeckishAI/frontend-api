@@ -232,14 +232,22 @@ const RecipeFormPanel = (props: Props) => {
     groupBy: item.type === 'ingredient' ? 'Ingredients' : 'Preparations',
   }));
 
-  // Handle change event
-  const handleChange = (onChange, setValue, index) => (event, value) => {
-    onChange(value?.id ?? null);
-    const ingredient = ingredients.find((ing) => ing.id === value?.id);
-    if (ingredient?.type) {
-      setValue(`ingredients.${index}.type`, ingredient.type);
+  const groupedOptions = allItems.reduce((groups, item) => {
+    const group = item.groupBy || 'Other';
+    if (!groups[group]) {
+      groups[group] = [];
     }
-  };
+    groups[group].push({
+      label: item.name,
+      value: item.id,
+    });
+    return groups;
+  }, {});
+
+  const selectOptions = Object.keys(groupedOptions).map((group) => ({
+    label: group,
+    options: groupedOptions[group],
+  }));
 
   return (
     <SidePanel
@@ -364,7 +372,7 @@ const RecipeFormPanel = (props: Props) => {
             )}
           </div>
         </div>
-        <div className={styles.tableContainer}>
+        <div>
           {ingredientFields.map(({ id }, i) => {
             const rowField = watch(`ingredients.${i}`);
 
@@ -377,57 +385,34 @@ const RecipeFormPanel = (props: Props) => {
                 <Controller
                   control={control}
                   name={`ingredients.${i}.selectedUUID`}
-                  render={({ field: { onChange, name, onBlur, ref } }) => (
-                    <Autocomplete
-                      options={allItems.sort(
-                        (a, b) => -b.groupBy.localeCompare(a.groupBy)
+                  render={({
+                    field: { onChange, name, onBlur, ref, value },
+                  }) => (
+                    <Select
+                      size="large"
+                      options={selectOptions} // Pass the grouped and formatted options
+                      placeholder={t(
+                        'recipes.editPanel.table.ingredientSelect'
                       )}
-                      groupBy={(option) => option.groupBy}
-                      getOptionLabel={(option) => option.name || ''}
-                      onChange={handleChange(onChange, setValue, i)}
-                      loading={loadingIngredients}
-                      isOptionEqualToValue={(option, value) =>
-                        option.id === value?.id
-                      }
+                      isSearchable={true}
+                      onChange={(selectedOption) => {
+                        onChange(selectedOption?.value ?? null);
+                        // Update ingredient type if needed
+                        const selectedIngredient = ingredients.find(
+                          (ing) => ing.id === selectedOption?.value
+                        );
+                        if (selectedIngredient?.type) {
+                          setValue(
+                            `ingredients.${i}.type`,
+                            selectedIngredient.type
+                          );
+                        }
+                      }}
                       value={
-                        selectedIngredient
-                          ? {
-                              name: selectedIngredient.name,
-                              id: selectedIngredient.id,
-                            }
-                          : null
+                        selectOptions
+                          .flatMap((group) => group.options)
+                          .find((option) => option.value === value) ?? null
                       }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label={t('recipes.editPanel.table.ingredientSelect')}
-                          variant="filled"
-                          sx={{
-                            '& .MuiFilledInput-root': {
-                              border: '2px solid grey',
-                              borderRadius: 1,
-                              background: 'white',
-                              height: '40px',
-                              fontSize: '16px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              borderColor: 'grey.300',
-                              borderBottom: 'none ',
-                            },
-                            '& .MuiFilledInput-root:hover': {
-                              borderColor: '#337ab7',
-                            },
-                          }}
-                        />
-                      )}
-                      // renderGroup={(params) => (
-                      //   <li key={params.group}>
-                      //     <ListSubheader>{params.group}</ListSubheader>
-                      //     {params.children.map((child, index) => (
-                      //       <div key={`${params.group}-${index}`}>{child}</div>
-                      //     ))}
-                      //   </li>
-                      // )}
                     />
                   )}
                 />
@@ -442,7 +427,8 @@ const RecipeFormPanel = (props: Props) => {
                 />
                 <p className={styles.ingredientCost}>
                   {formatCurrency(
-                    (selectedIngredient?.cost ?? 0) * (rowField.quantity ?? 0),
+                    (selectedIngredient?.unitCost ?? 0) *
+                      (rowField.quantity ?? 0),
                     currencyISO
                   )}
                 </p>
