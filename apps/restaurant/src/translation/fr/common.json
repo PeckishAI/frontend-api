@@ -85,7 +85,10 @@
   },
   "suppliers.addSupplier": {
     "title": "Ajouter un nouveau fournisseur",
+    "edit_title":"Modifier un fournisseur",
+    "addRecipe":"Ajouter la recette",
     "subtitle": "Recherchez votre fournisseur ici ou créez-en un nouveau si vous ne le trouvez pas",
+    "edit_subtitle": "Modifier et mettre à jour votre fournisseur",
     "select": {
       "placeholder": "Sélectionnez un fournisseur",
       "createSupplier": "Créer le fournisseur \"{{name}}\""
@@ -95,6 +98,7 @@
   "recipes.addPreparation": {
     "addPreparationBtn": "Ajouter une nouvelle préparation",
     "title": "Ajouter une nouvelle préparation",
+    "recipe_title":"Ajouter une nouvelle recette",
    "subtitle": "Recherchez votre fournisseur ici ou créez-en un nouveau si vous ne le trouvez pas",
     "select": {
       "placeholder": "Sélectionnez un fournisseur",
@@ -155,7 +159,8 @@
     },
     "fields": {
       "pricePerPortion": "Prix par portion",
-      "portionsPerBatch": "Portions par lot"
+      "portionsPerBatch": "Portions par lot",
+      "recipeName":"Nom de la recette"
     },
     "table": {
       "title": "Ingrédients :",

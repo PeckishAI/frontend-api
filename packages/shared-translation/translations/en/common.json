@@ -64,6 +64,7 @@
 
   "orders.supplier": "Supplier",
   "orders.orderDate": "Order date",
+  "orders.orderNumber":"Order Number",
   "orders.deliveryDate": "Delivery date",
   "orders.status": "Status",
   "orders.statusStates": {

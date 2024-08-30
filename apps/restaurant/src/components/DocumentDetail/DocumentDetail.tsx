@@ -520,6 +520,7 @@ const DocumentDetail = (props: Props) => {
                           value={editableDocument?.amount}
                         />
                       </div>
+
                       <div>
                         <Table
                           data={editableDocument?.ingredients}
