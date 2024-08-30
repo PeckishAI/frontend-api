@@ -433,7 +433,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           props.setLoadingState(false);
         });
     };
-
     const handleAddSupplierDetail = () => {
       setEditedValues((prevValues) => {
         const newDetails = prevValues.supplier_details
@@ -540,6 +539,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         })
         .then(() => {
           reloadTagList();
+
           reloadInventoryData();
           props.setLoadingState(false);
         });

@@ -10,7 +10,7 @@
   "quantity": "Quantity",
   "receivedQty":"Received Qty",
   "cost": "Cost",
-  "unitCost": "Cost per unit",
+  "unitCost": "Unit Cost",
   "actions": "Actions",
   "soldQty":"Sold Qty",
   "openingQty":"Opening Qty",

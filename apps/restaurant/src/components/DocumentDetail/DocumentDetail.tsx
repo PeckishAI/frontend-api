@@ -450,7 +450,7 @@ const DocumentDetail = (props: Props) => {
       <SidePanel
         isOpen={props.document !== null}
         scrollable={true}
-        width="900px"
+        width="100%"
         onRequestClose={() => props.onRequestClose()}>
         {isEditMode ? (
           <div className={styles.documentDetail}>
@@ -461,53 +461,66 @@ const DocumentDetail = (props: Props) => {
                 </div>
               ) : (
                 <>
-                  <div className={styles.headerData}>
-                    <LabeledInput
-                      type="text"
-                      placeholder={t('ingredient:supplier')}
-                      className={styles.input}
-                      onChange={(e) => handleInputChange(e, 'supplier')}
-                      value={editableDocument?.supplier || ''}
-                    />
-                    <LabeledInput
-                      type="number"
-                      min={0}
-                      step={'any'}
-                      suffix={currencyISO}
-                      className={styles.input}
-                      placeholder={t('price')}
-                      onChange={(e) => handleInputChange(e, 'amount')}
-                      value={editableDocument?.amount}
-                    />
-                  </div>
-
                   <div className={styles.flexContainer}>
                     {props?.document?.path?.length > 0 && (
                       <div className={styles.carouselContainer}>
-                        <Carousel
-                          swipeable={true}
-                          draggable={false}
-                          responsive={responsive}
-                          ssr={true}
-                          infinite={true}
-                          autoPlay={false}
-                          keyBoardControl={true}
-                          containerClass="carousel-container"
-                          dotListClass="custom-dot-list-style"
-                          itemClass="carousel-item-padding-40-px">
-                          {props?.document?.path?.map((image, index) => (
-                            <div key={index} className={styles.imageContainer}>
-                              <img
-                                className={styles.documentImage}
-                                src={image}
-                                alt={`Document image ${index + 1}`}
-                              />
-                            </div>
-                          ))}
-                        </Carousel>
+                        {props.document.path.length === 1 ? (
+                          <div className={styles.imageContainer}>
+                            <img
+                              className={styles.documentImage}
+                              src={props.document.path[0]}
+                              alt="Document image"
+                            />
+                          </div>
+                        ) : (
+                          <Carousel
+                            swipeable={true}
+                            draggable={false}
+                            responsive={responsive}
+                            ssr={true}
+                            infinite={true}
+                            autoPlay={false}
+                            keyBoardControl={true}
+                            containerClass="carousel-container"
+                            dotListClass="custom-dot-list-style"
+                            itemClass="carousel-item-padding-40-px">
+                            {props.document.path.map((image, index) => (
+                              <div
+                                key={index}
+                                className={styles.imageContainer}>
+                                <img
+                                  className={styles.documentImage}
+                                  src={image}
+                                  alt={`Document image ${index + 1}`}
+                                />
+                              </div>
+                            ))}
+                          </Carousel>
+                        )}
                       </div>
                     )}
+
                     <div className={styles.scrollDiv}>
+                      <div className={styles.headerData}>
+                        <LabeledInput
+                          type="text"
+                          placeholder={t('ingredient:supplier')}
+                          className={styles.input}
+                          onChange={(e) => handleInputChange(e, 'supplier')}
+                          value={editableDocument?.supplier || ''}
+                        />
+                        <LabeledInput
+                          type="number"
+                          min={0}
+                          step={'any'}
+                          suffix={currencyISO}
+                          className={styles.input}
+                          placeholder={t('price')}
+                          onChange={(e) => handleInputChange(e, 'amount')}
+                          value={editableDocument?.amount}
+                        />
+                      </div>
+
                       <div>
                         <Table
                           data={editableDocument?.ingredients}
@@ -542,24 +555,6 @@ const DocumentDetail = (props: Props) => {
           </div>
         ) : (
           <div className={styles.documentDetail}>
-            <div className={styles.supplier}>
-              <div>
-                <p className={styles.name}>
-                  {t('ingredient:supplier')}:
-                  <span className={styles.value}>
-                    {' '}
-                    {props.document?.supplier}
-                  </span>
-                </p>
-                <p className={styles.name}>
-                  {t('price')}:
-                  <span className={styles.value}>
-                    {' '}
-                    {formatCurrency(props.document?.amount, currencyISO)}
-                  </span>
-                </p>
-              </div>
-            </div>
             <div className={styles.optionsButtons}>
               <IconButton
                 icon={<i className="fa-solid fa-pen-to-square"></i>}
@@ -575,32 +570,59 @@ const DocumentDetail = (props: Props) => {
             <div className={styles.flexContainer}>
               {props.document?.path?.length > 0 && (
                 <div className={styles.carouselContainer}>
-                  <Carousel
-                    swipeable={true}
-                    draggable={false}
-                    showDots={true}
-                    responsive={responsive}
-                    ssr={true}
-                    infinite={true}
-                    autoPlay={false}
-                    keyBoardControl={true}
-                    containerClass="carousel-container"
-                    removeArrowOnDeviceType={['tablet', 'mobile']}
-                    dotListClass="custom-dot-list-style"
-                    itemClass="carousel-item-padding-40-px">
-                    {props.document?.path?.map((image, index) => (
-                      <div key={index} className={styles.imageContainer}>
-                        <img
-                          className={styles.documentImage}
-                          src={image}
-                          alt={`Document image ${index + 1}`}
-                        />
-                      </div>
-                    ))}
-                  </Carousel>
+                  {props?.document?.path.length === 1 ? (
+                    <div className={styles.imageContainer}>
+                      <img
+                        className={styles.documentImage}
+                        src={props.document.path[0]}
+                        alt="Document image"
+                      />
+                    </div>
+                  ) : (
+                    <Carousel
+                      swipeable={true}
+                      draggable={false}
+                      showDots={true}
+                      responsive={responsive}
+                      ssr={true}
+                      infinite={true}
+                      autoPlay={false}
+                      keyBoardControl={true}
+                      containerClass="carousel-container"
+                      removeArrowOnDeviceType={['tablet', 'mobile']}
+                      dotListClass="custom-dot-list-style"
+                      itemClass="carousel-item-padding-40-px">
+                      {props.document.path.map((image, index) => (
+                        <div key={index} className={styles.imageContainer}>
+                          <img
+                            className={styles.documentImage}
+                            src={image}
+                            alt={`Document image ${index + 1}`}
+                          />
+                        </div>
+                      ))}
+                    </Carousel>
+                  )}
                 </div>
               )}
+
               <div className={styles.scrollDiv}>
+                <div>
+                  <p className={styles.name}>
+                    {t('ingredient:supplier')}:
+                    <span className={styles.value}>
+                      {' '}
+                      {props.document?.supplier}
+                    </span>
+                  </p>
+                  <p className={styles.name}>
+                    {t('price')}:
+                    <span className={styles.value}>
+                      {' '}
+                      {formatCurrency(props.document?.amount, currencyISO)}
+                    </span>
+                  </p>
+                </div>
                 <Table
                   data={props.document?.ingredients}
                   columns={[

@@ -4,6 +4,7 @@
   justify-content: center;
   width: 100%;
   margin: 20px 0;
+
   .documentImage {
     max-width: 100%;
     max-height: 100%;
@@ -13,12 +14,13 @@
 
 .supplier {
   display: flex;
-  justify-content: flex-end;
-  text-align: right;
-  flex-direction: column;
+
   .name {
     font-weight: bold;
+
   }
+}
+
   .value {
     font-weight: normal;
   }
@@ -26,11 +28,15 @@
 
 .carouselContainer {
   position: flex;
-  // width: 50%;
   margin: 20px 0;
+  max-height: 400px;
+
   .imageContainer {
+    height: 400px;
     .documentImage {
       width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
   }
 }
@@ -49,13 +55,13 @@
   overflow: visible;
   width: 100%;
   border-collapse: collapse;
-}
 
-.table thead {
-  position: sticky;
-  top: 0;
-  background: white;
-  z-index: 1;
+  thead {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+  }
 }
 
 .optionsButtons {
@@ -80,6 +86,7 @@
   display: flex;
   gap: 10px;
   margin: 10px 0;
+
   .input {
     width: 200px;
     border: 1px solid var(--borderColor);
@@ -91,15 +98,20 @@
   gap: 20px; /* Add space between the image and table */
 }
 
+.flexContainer {
+  display: flex;
+  gap: 20px;
+}
+
 .carouselContainer {
-  width: 40%; /* Adjust the width to your preference */
+  width: 40%;
   height: 100%;
 }
 
 .scrollDiv {
   flex: 1;
   overflow-y: auto;
-  max-height: calc(100vh - 226px);
+  max-height: calc(100vh - 120px);
 }
 
 .addIngredient {
@@ -107,6 +119,7 @@
   color: var(--primaryColor);
   cursor: pointer;
   margin: 20px 0;
+
   i {
     margin: 0 5px;
   }
