@@ -101,43 +101,30 @@ const AddPreparationPopup = (props: Props) => {
         (ing) => ing.id === ingredient_uuid
       );
       if (selectedIngredient) {
-        setValue(`ingredients.${index}.type`, selectedIngredient.type);
+        setValue(`ingredients.${index}.type`, selectedIngredient.type || '');
       }
     });
-  }, [watch('ingredients'), props.ingredients]);
+  }, [watch('ingredients'), props.ingredients, setValue]);
 
-  const allItems = props.ingredients.map((item) => ({
-    ...item,
-    groupBy: item.type === 'ingredient' ? 'Ingredients' : 'Preparations',
+  const groupedOptions = Object.values(props.ingredients).reduce(
+    (groups, item) => {
+      const group = item.type === 'ingredient' ? 'Ingredients' : 'Preparations';
+      if (!groups[group]) {
+        groups[group] = [];
+      }
+      groups[group].push({
+        label: item.name,
+        value: item.id,
+      });
+      return groups;
+    },
+    {}
+  );
+
+  const groupedSelectOptions = Object.keys(groupedOptions).map((group) => ({
+    label: group,
+    options: groupedOptions[group],
   }));
-
-  const handleChange = (onChange, setValue, index) => (event, value) => {
-    const selectedValue = value?.id ?? '';
-    onChange(selectedValue);
-    const ingredient = props.ingredients.find(
-      (ing) => ing.id === selectedValue
-    );
-    if (ingredient?.type) {
-      setValue(`ingredients.${index}.type`, ingredient.type);
-    }
-  };
-
-  const filteredIngredients = (searchInput) => {
-    const searchText = searchInput ? searchInput.trim().toLowerCase() : '';
-
-    if (!searchText) {
-      return props.ingredients; // Return all ingredients if no search input
-    }
-
-    // Exact match should come first
-    const exactMatches = props.ingredients.filter(
-      (ingredient) => ingredient.name?.toLowerCase() === searchText
-    );
-    console.log('exactMatches');
-    // Then, partial matches where the name starts with the search text
-
-    return [...exactMatches];
-  };
 
   const handleSubmitForm = handleSubmit(async (data) => {
     if (!restaurantUUID) return;
@@ -155,23 +142,6 @@ const AddPreparationPopup = (props: Props) => {
       console.error('Error creating preparation:', error);
     }
   });
-
-  const groupedOptions = Object.values(allItems).reduce((groups, item) => {
-    const group = item.groupBy || 'Other'; // Fallback to 'Other' if no groupBy defined
-    if (!groups[group]) {
-      groups[group] = [];
-    }
-    groups[group].push({
-      label: item.name,
-      value: item.id,
-    });
-    return groups;
-  }, {});
-
-  const groupedSelectOptions = Object.keys(groupedOptions).map((group) => ({
-    label: group, // The group label (e.g., 'Ingredients', 'Preparations')
-    options: groupedOptions[group], // The array of options within the group
-  }));
 
   return (
     <Popup
@@ -279,11 +249,20 @@ const AddPreparationPopup = (props: Props) => {
                           options={groupedSelectOptions} // Use grouped options
                           name={name}
                           onChange={(selectedOption) => {
-                            onChange(selectedOption?.value ?? null);
+                            onChange(selectedOption?.value ?? '');
+                            const selected = props.ingredients.find(
+                              (ing) => ing.id === selectedOption?.value
+                            );
+                            if (selected) {
+                              setValue(
+                                `ingredients.${index}.type`,
+                                selected.type || ''
+                              );
+                            }
                           }}
                           onBlur={onBlur}
                           value={
-                            Object.values(allItems)
+                            Object.values(props.ingredients)
                               .map((item) => ({
                                 label: item.name,
                                 value: item.id,
@@ -293,8 +272,6 @@ const AddPreparationPopup = (props: Props) => {
                           styles={{
                             menu: (provided) => ({
                               ...provided,
-                              zIndex: 9999,
-                              maxHeight: '300px',
                               overflowY: 'auto',
                             }),
                             control: (provided) => ({
