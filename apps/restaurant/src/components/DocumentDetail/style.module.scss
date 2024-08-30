@@ -17,9 +17,7 @@
 
   .name {
     font-weight: bold;
-
   }
-}
 
   .value {
     font-weight: normal;
@@ -92,10 +90,6 @@
     border: 1px solid var(--borderColor);
     border-radius: 5px;
   }
-}
-.flexContainer {
-  display: flex; /* Enable flexbox */
-  gap: 20px; /* Add space between the image and table */
 }
 
 .flexContainer {
