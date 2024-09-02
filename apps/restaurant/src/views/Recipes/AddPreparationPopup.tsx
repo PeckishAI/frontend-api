@@ -320,10 +320,12 @@ const AddPreparationPopup = (props: Props) => {
                     }}
                   />
 
-                  <FaTrash
-                    className={styles.deleteButton}
-                    onClick={() => removeIngredient(index)}
-                  />
+                  {index > 0 && (
+                    <FaTrash
+                      className={styles.deleteButton}
+                      onClick={() => removeIngredient(index)}
+                    />
+                  )}
                 </div>
               </>
             );

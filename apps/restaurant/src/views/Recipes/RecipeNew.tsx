@@ -127,6 +127,18 @@ const RecipeNew = () => {
     t('pages.modifiers'),
   ];
 
+  const categories = [
+    { value: 'drinks', label: 'Drinks' },
+    { value: 'starters', label: 'Starters' },
+    { value: 'mainCourses', label: 'MainCourses' },
+    { value: 'desserts', label: 'Desserts' },
+    { value: 'snacks', label: 'Snacks' },
+    { value: 'others', label: 'Others' },
+  ];
+  const preparationCategories = [
+    { value: 'preparations', label: 'Preparation' },
+  ];
+
   const [selectedTab, setSelectedTab] = useState(0);
   const [recipeResearch, setRecipeResearch] = useState('');
   const [loadingData, setLoadingData] = useState(false);
@@ -170,8 +182,9 @@ const RecipeNew = () => {
       });
   };
 
-  const filteredRecipes = recipes.filter((recipe) =>
-    recipe.name.toLowerCase().includes(recipeResearch.toLowerCase())
+  const filteredRecipes = recipes.filter(
+    (recipe) =>
+      recipe?.name?.toLowerCase().includes(recipeResearch.toLowerCase())
   );
 
   const handleRecipeClick = (recipe: Recipe) => {
@@ -260,6 +273,14 @@ const RecipeNew = () => {
   return (
     <div className={styles.recipes}>
       <div className={styles.search}>
+        {selectedTab === 0 && (
+          <Button
+            value={t('recipes.addPreparation.addRecipe')}
+            type="primary"
+            className={styles.button}
+            onClick={() => setShowAddPopup(true)}
+          />
+        )}
         {selectedTab === 1 && (
           <Button
             value={t('recipes.addPreparation.addPreparationBtn')}
@@ -309,21 +330,22 @@ const RecipeNew = () => {
           }
         }}
       />
-      {selectedTab === 1 && (
-        <AddPreparationPopup
-          isVisible={showAddPopup}
-          onRequestClose={() => setShowAddPopup(false)}
-          ingredients={ingredients}
-          onRecipeChanged={(recipe, action) => {
-            if (action === 'deleted') {
-              handleRecipeDeleted(recipe);
-            } else if (action === 'updated') {
-              handleRecipeUpdated(recipe);
-            }
-          }}
-          onReload={() => reloadRecipes(getTabName(selectedTab))}
-        />
-      )}
+
+      <AddPreparationPopup
+        isVisible={showAddPopup}
+        selectedTab={selectedTab}
+        onRequestClose={() => setShowAddPopup(false)}
+        categories={selectedTab === 1 ? preparationCategories : categories}
+        ingredients={ingredients}
+        onRecipeChanged={(recipe, action) => {
+          if (action === 'deleted') {
+            handleRecipeDeleted(recipe);
+          } else if (action === 'updated') {
+            handleRecipeUpdated(recipe);
+          }
+        }}
+        onReload={() => reloadRecipes(getTabName(selectedTab))}
+      />
     </div>
   );
 };
