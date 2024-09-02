@@ -328,14 +328,14 @@ const AddPreparationPopup = (props: Props) => {
               </>
             );
           })}
-          <div
-            className={styles.addIngredientButton}
-            onClick={() =>
-              addIngredient({ ingredient_uuid: '', quantity: 0, type: '' })
-            }>
-            <FaPlus />
-            <p>{t('recipes.editPanel.table.addIngredient')}</p>
-          </div>
+        </div>
+        <div
+          className={styles.addIngredientButton}
+          onClick={() =>
+            addIngredient({ ingredient_uuid: '', quantity: 0, type: '' })
+          }>
+          <FaPlus />
+          <p>{t('recipes.editPanel.table.addIngredient')}</p>
         </div>
         <div className={styles.buttonsContainer}>
           <Button
