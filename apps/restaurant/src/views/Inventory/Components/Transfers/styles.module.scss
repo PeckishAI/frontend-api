@@ -1,0 +1,92 @@
+.inputContainer {
+  margin-bottom: 20px;
+}
+
+.rowInputs {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 10px;
+
+  /* Make each Select element take more space */
+  .react-select-container {
+    flex: 2;
+  }
+
+  .quantityUnitGroup {
+    display: flex;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .quantityUnitGroup input {
+    max-width: 100px;
+  }
+
+  .deleteButton {
+    background: none;
+    border: none;
+    color: #d9534f;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      color: #c9302c;
+    }
+  }
+}
+
+.addIngredientButton {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  height: var(--input-large-height);
+  color: var(--primaryColor);
+  font-size: 0.9rem;
+}
+
+.buttonsContainer {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+
+  button {
+    flex: 1;
+  }
+}
+
+.autoCheckbox {
+  margin-top: 20px;
+}
+
+.restaurantContainer {
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--borderColor);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.ingredientContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.rowInputs > * {
+  flex: 1;
+}
+
+.arrowContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
