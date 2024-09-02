@@ -60,7 +60,7 @@ const DocumentCard = (props: Props) => {
   return (
     <div className="document-card" onClick={onClick}>
       <div className="logo-container">
-        <img className="logo-integrations" src={image}></img>
+        <img className="logo-integrations" src={image[0]}></img>
       </div>
       <div className="document-info">
         <p className="supplier">{supplier}</p>

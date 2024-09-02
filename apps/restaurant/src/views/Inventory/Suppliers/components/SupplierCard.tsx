@@ -1,7 +1,7 @@
 import { Menu, MenuItem } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
-import { FaPhone, FaSync, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaPhone, FaSync, FaTrash } from 'react-icons/fa';
 import { FiCopy, FiMoreVertical } from 'react-icons/fi';
 import { MdAlternateEmail } from 'react-icons/md';
 import { LinkedSupplier } from '../../../../services';
@@ -16,6 +16,7 @@ type Props = {
   onPressDelete: () => void;
   onPressCopy?: () => void;
   onKey?: () => void;
+  onEdit?: () => void;
   connectedIntegrations?: boolean;
 };
 
@@ -24,6 +25,7 @@ export const SupplierCard = ({
   onPressCopy,
   onPressDelete,
   onKey,
+  onEdit,
   connectedIntegrations,
 }: Props) => {
   const { t } = useTranslation('common');
@@ -36,16 +38,16 @@ export const SupplierCard = ({
       }
       transition
       align="end">
-      {!supplier.linked && (
+      {/* {!supplier.linked && (
         <MenuItem onClick={onPressCopy}>
           <FiCopy className={styles.menuIcon} />
           {t('suppliers.copyLink')}
         </MenuItem>
-      )}
-      {/* <MenuItem disabled>
+      )} */}
+      <MenuItem onClick={onEdit}>
         <FaEdit className={styles.menuIcon} />
         Edit
-      </MenuItem> */}
+      </MenuItem>
       <MenuItem className={styles.menuDelete} onClick={onPressDelete}>
         <FaTrash className={styles.menuIcon} />
         {t('suppliers.deleteSupplier')}

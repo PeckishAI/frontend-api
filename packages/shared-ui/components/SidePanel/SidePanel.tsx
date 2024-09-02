@@ -10,6 +10,7 @@ type Props = {
   onRequestClose: () => void;
   className?: string;
   scrollable?: boolean;
+  width?: string;
 };
 
 const SidePanel = (props: Props) => {
@@ -36,7 +37,8 @@ const SidePanel = (props: Props) => {
         className={classNames('sidePanel', props.className, {
           visible: props.isOpen,
           'sidePanel-scrollable': props.scrollable,
-        })}>
+        })}
+        style={{ width: props?.width }}>
         <i
           className="fa-solid fa-xmark close-icon"
           data-tooltip-id="customer-tooltip"
