@@ -17,7 +17,7 @@ const transferEvents = [
     ],
   },
   {
-    fromSite: 'Site C',
+    fromSite: 'Site B',
     toSite: 'Site D',
     transferDate: '25 Jun 2024',
     transferredBy: 'Jane Smith',
