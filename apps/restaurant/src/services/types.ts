@@ -54,3 +54,14 @@ export type Invoice = {
   amount?: number;
   sync_status?: string;
 };
+
+export type TransferForm = {
+  from_restaurant_uuid: string;
+  to_restaurant_uuid: string;
+  ingredients: {
+    from_ingredient_uuid: string;
+    to_ingredient_uuid: string;
+    quantity: number;
+    unit?: string;
+  }[];
+};
