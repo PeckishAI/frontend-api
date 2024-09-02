@@ -29,7 +29,7 @@ sidePanel-scrollable {
   bottom: 0;
   width: 700px;
   padding: 40px 30px;
-  opacity: 0;
+  display: none;
   transform: translateX(700px);
   background-color: var(--backgroundColor);
   box-shadow: 0 0 10px 0 rgb(203, 203, 203);
@@ -57,6 +57,6 @@ sidePanel-scrollable {
   }
   &.visible {
     transform: translateX(0);
-    opacity: 1;
+    display: block;
   }
 }
