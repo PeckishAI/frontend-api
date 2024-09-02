@@ -20,7 +20,7 @@ import { useIngredients } from '../../services/hooks';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { toast } from 'react-hot-toast';
 import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
+// import 'react-multi-carousel/lib/styles.css';
 
 type Props = {
   document: Invoice | null;
