@@ -11,7 +11,7 @@ import {
 } from 'shared-ui';
 import styles from './style.module.scss';
 import { Invoice, inventoryService } from '../../services';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatCurrency } from '../../utils/helpers';
 import { useRestaurantCurrency } from '../../store/useRestaurantStore';
@@ -19,6 +19,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { useIngredients } from '../../services/hooks';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { toast } from 'react-hot-toast';
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
 
 type Props = {
   document: Invoice | null;
@@ -63,7 +65,7 @@ const DocumentDetail = (props: Props) => {
   );
 
   const toggleEditMode = () => {
-    setIsEditMode(!isEditMode);
+    setIsEditMode((prevState) => !prevState); // Toggle edit mode state
     if (!isEditMode) {
       // Enter edit mode
       setEditableDocument(props.document);
@@ -80,8 +82,6 @@ const DocumentDetail = (props: Props) => {
       return {
         ...prevDocument,
         [field]: value,
-        // Ensure that all other properties of Invoice are present here
-        // For example, if ingredients is a required property, you should handle it like this:
         ingredients: prevDocument.ingredients || [],
       };
     });
@@ -146,11 +146,10 @@ const DocumentDetail = (props: Props) => {
             unitPrice: +ing.unitPrice,
             quantity: +ing.quantity,
             unit: ing.unit,
-            totalPrice: +ing.totalPrice,
+            totalPrice: +ing.totalPrice ? +ing.totalPrice : null,
           })),
         };
         setIsLoading(true);
-        // Call the updateDocument function
         await inventoryService.updateDocument(
           selectedRestaurantUUID,
           editableDocument.documentUUID,
@@ -163,7 +162,6 @@ const DocumentDetail = (props: Props) => {
         setEditableDocument(null);
         props.reloadDocuments();
 
-        // Optionally, invoke a callback or refresh data
         if (props.onDocumentChanged) {
           props.onDocumentChanged(editableDocument, 'updated');
         }
@@ -206,30 +204,52 @@ const DocumentDetail = (props: Props) => {
       totalPrice: 0,
     };
 
-    if (editableDocument) {
-      const lastRow =
-        editableDocument.ingredients[editableDocument.ingredients.length - 1];
-      if (
-        (lastRow && !lastRow.detectedName) ||
-        !lastRow.mappedName ||
-        !lastRow.quantity ||
-        !lastRow.unit ||
-        !lastRow.unitPrice
-      ) {
-        toast.error(
-          'Please fill in all fields in the current row before adding a new row'
-        );
-        return;
-      }
+    if (editableDocument && editableDocument.ingredients) {
+      // Check if there are any existing rows
+      if (editableDocument.ingredients.length > 0) {
+        const lastRow =
+          editableDocument.ingredients[editableDocument.ingredients.length - 1];
 
-      const updatedIngredientsList = [...editableDocument.ingredients];
-      updatedIngredientsList.push(newIngredient);
-      setEditableDocument((prevDocument) => ({
-        ...prevDocument,
-        ingredients: updatedIngredientsList,
-      }));
+        // Ensure the last row is fully filled out before allowing a new row to be added
+        if (
+          lastRow &&
+          lastRow.detectedName &&
+          lastRow.mappedName &&
+          lastRow.quantity &&
+          lastRow.unit &&
+          lastRow.unitPrice
+        ) {
+          // Add the new row
+          const updatedIngredientsList = [
+            ...editableDocument.ingredients,
+            newIngredient,
+          ];
+          setEditableDocument((prevDocument) => ({
+            ...prevDocument,
+            ingredients: updatedIngredientsList,
+          }));
+        } else {
+          toast.error(
+            'Please fill in all fields in the current row before adding a new row'
+          );
+        }
+      } else {
+        // No rows exist, so add the first row without checking
+        const updatedIngredientsList = [newIngredient];
+        setEditableDocument((prevDocument) => ({
+          ...prevDocument,
+          ingredients: updatedIngredientsList,
+        }));
+      }
+    } else {
+      console.error('Editable document or ingredients are undefined');
     }
   };
+
+  useEffect(() => {
+    setIsEditMode(false); // Reset edit mode
+    setEditableDocument(null); // Clear editable document
+  }, [props.document]);
 
   const viewColumns = [
     {
@@ -381,7 +401,7 @@ const DocumentDetail = (props: Props) => {
         <Input
           type="number"
           min={0}
-          step="0.01"
+          step="any"
           placeholder={t('unitCost')}
           className={styles.price}
           onChange={(value) =>
@@ -398,8 +418,7 @@ const DocumentDetail = (props: Props) => {
       renderItem: ({ row, index }) => (
         <Input
           type="number"
-          min={0}
-          step="0.01"
+          step="any"
           placeholder={t('totalCost')}
           className={styles.price}
           onChange={(value) =>
@@ -409,28 +428,30 @@ const DocumentDetail = (props: Props) => {
         />
       ),
     },
-    // {
-    //   key: 'action',
-    //   renderItem: () => (
-    //     <IconButton
-    //       className={styles.deleteBtn}
-    //       icon={<MdDelete />}
-    //       tooltipMsg={t('delete')}
-    //       onClick={() => {
-    //         removeIngredient(i);
-    //       }}
-    //     />
-    //   ),
-    // },
   ];
+
+  const responsive = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 1,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 1,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+    },
+  };
 
   return (
     <>
       <SidePanel
         isOpen={props.document !== null}
         scrollable={true}
+        width="100%"
         onRequestClose={() => props.onRequestClose()}>
-        {/* ... */}
         {isEditMode ? (
           <div className={styles.documentDetail}>
             <form onSubmit={handleSubmit} className={styles.editForm}>
@@ -440,56 +461,92 @@ const DocumentDetail = (props: Props) => {
                 </div>
               ) : (
                 <>
-                  <div className={styles.headerData}>
-                    <LabeledInput
-                      type="text"
-                      placeholder={t('ingredient:supplier')}
-                      className={styles.input}
-                      onChange={(e) => handleInputChange(e, 'supplier')}
-                      value={editableDocument?.supplier || ''}
-                    />
-                    <LabeledInput
-                      type="number"
-                      min={0}
-                      step={'any'}
-                      suffix={currencyISO}
-                      className={styles.input}
-                      placeholder={t('price')}
-                      onChange={(e) => handleInputChange(e, 'amount')}
-                      value={editableDocument?.amount}
-                    />
-                  </div>
-                  <div className={styles.documentContainer}>
-                    <img
-                      className={styles.documentImage}
-                      src={props.document?.path}
-                      alt={props.document?.path}
-                    />
-                  </div>
-                  <Table
-                    data={editableDocument?.ingredients}
-                    columns={isEditMode ? editColumns : viewColumns}
-                    className={styles.table}
-                  />
-                  <p
-                    className={styles.addIngredient}
-                    onClick={handleAddIngredient}>
-                    Add ingredient <i className="fa-solid fa-plus"></i>
-                  </p>
+                  <div className={styles.flexContainer}>
+                    {props?.document?.path?.length > 0 && (
+                      <div className={styles.carouselContainer}>
+                        {props.document.path.length === 1 ? (
+                          <div className={styles.imageContainer}>
+                            <img
+                              className={styles.documentImage}
+                              src={props.document.path[0]}
+                              alt="Document image"
+                            />
+                          </div>
+                        ) : (
+                          <Carousel
+                            swipeable={true}
+                            draggable={false}
+                            responsive={responsive}
+                            ssr={true}
+                            infinite={true}
+                            autoPlay={false}
+                            keyBoardControl={true}
+                            containerClass="carousel-container"
+                            dotListClass="custom-dot-list-style"
+                            itemClass="carousel-item-padding-40-px">
+                            {props.document.path.map((image, index) => (
+                              <div
+                                key={index}
+                                className={styles.imageContainer}>
+                                <img
+                                  className={styles.documentImage}
+                                  src={image}
+                                  alt={`Document image ${index + 1}`}
+                                />
+                              </div>
+                            ))}
+                          </Carousel>
+                        )}
+                      </div>
+                    )}
 
-                  <div className={styles.buttonsContaier}>
-                    <Button
-                      type="secondary"
-                      actionType="button"
-                      value={t('cancel')}
-                      onClick={toggleEditMode}
-                    />
-                    <Button
-                      type="primary"
-                      actionType="submit"
-                      value={t('document.save')}
-                      className={styles.button}
-                    />
+                    <div className={styles.scrollDiv}>
+                      <div className={styles.headerData}>
+                        <LabeledInput
+                          type="text"
+                          placeholder={t('ingredient:supplier')}
+                          className={styles.input}
+                          onChange={(e) => handleInputChange(e, 'supplier')}
+                          value={editableDocument?.supplier || ''}
+                        />
+                        <LabeledInput
+                          type="number"
+                          min={0}
+                          step={'any'}
+                          suffix={currencyISO}
+                          className={styles.input}
+                          placeholder={t('price')}
+                          onChange={(e) => handleInputChange(e, 'amount')}
+                          value={editableDocument?.amount}
+                        />
+                      </div>
+                      <div>
+                        <Table
+                          data={editableDocument?.ingredients}
+                          columns={isEditMode ? editColumns : viewColumns}
+                          className={styles.table}
+                        />
+                        <p
+                          className={styles.addIngredient}
+                          onClick={handleAddIngredient}>
+                          Add ingredient <i className="fa-solid fa-plus"></i>
+                        </p>
+                      </div>
+                      <div className={styles.buttonsContainer}>
+                        <Button
+                          type="secondary"
+                          actionType="button"
+                          value={t('cancel')}
+                          onClick={toggleEditMode}
+                        />
+                        <Button
+                          type="primary"
+                          actionType="submit"
+                          value={t('document.save')}
+                          className={styles.button}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
@@ -497,83 +554,120 @@ const DocumentDetail = (props: Props) => {
           </div>
         ) : (
           <div className={styles.documentDetail}>
-            <p className={styles.name}>
-              {t('ingredient:supplier')}:
-              <span className={styles.value}> {props.document?.supplier}</span>
-            </p>
-            <p className={styles.name}>
-              {t('price')}:
-              <span className={styles.value}>
-                {' '}
-                {formatCurrency(props.document?.amount, currencyISO)}
-              </span>
-            </p>
-            <div className={styles.optionsButtons}>
-              <IconButton
-                icon={<i className="fa-solid fa-pen-to-square"></i>}
-                tooltipMsg={t('edit')}
-                onClick={toggleEditMode}
-              />
-              <IconButton
-                icon={<i className="fa-solid fa-trash"></i>}
-                tooltipMsg={t('delete')}
-                onClick={() => setConfirmDeletePopup(true)}
-              />
+            <div className={styles.flexContainer}>
+              {props.document?.path?.length > 0 && (
+                <div className={styles.carouselContainer}>
+                  {props?.document?.path.length === 1 ? (
+                    <div className={styles.imageContainer}>
+                      <img
+                        className={styles.documentImage}
+                        src={props.document.path[0]}
+                        alt="Document image"
+                      />
+                    </div>
+                  ) : (
+                    <Carousel
+                      swipeable={true}
+                      draggable={false}
+                      showDots={true}
+                      responsive={responsive}
+                      ssr={true}
+                      infinite={true}
+                      autoPlay={false}
+                      keyBoardControl={true}
+                      containerClass="carousel-container"
+                      removeArrowOnDeviceType={['tablet', 'mobile']}
+                      dotListClass="custom-dot-list-style"
+                      itemClass="carousel-item-padding-40-px">
+                      {props.document.path.map((image, index) => (
+                        <div key={index} className={styles.imageContainer}>
+                          <img
+                            className={styles.documentImage}
+                            src={image}
+                            alt={`Document image ${index + 1}`}
+                          />
+                        </div>
+                      ))}
+                    </Carousel>
+                  )}
+                </div>
+              )}
+
+              <div className={styles.scrollDiv}>
+                <div>
+                  <div className={styles.editButton}>
+                    <div className={styles.supplier}>
+                      <p className={styles.name}>
+                        {t('ingredient:supplier')}:
+                        <span className={styles.value}>
+                          {' '}
+                          {props.document?.supplier}
+                        </span>
+                      </p>
+                      <p className={styles.name}>
+                        {t('price')}:
+                        <span className={styles.value}>
+                          {' '}
+                          {formatCurrency(props.document?.amount, currencyISO)}
+                        </span>
+                      </p>
+                    </div>
+                    <div className={styles.flexContainer}>
+                      <IconButton
+                        icon={<i className="fa-solid fa-pen-to-square"></i>}
+                        tooltipMsg={t('edit')}
+                        onClick={toggleEditMode}
+                      />
+                      <IconButton
+                        icon={<i className="fa-solid fa-trash"></i>}
+                        tooltipMsg={t('delete')}
+                        onClick={() => setConfirmDeletePopup(true)}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <Table
+                  data={props.document?.ingredients}
+                  columns={[
+                    { key: 'detectedName', header: t('document.detectedName') },
+                    { key: 'mappedName', header: t('document.givenName') },
+                    {
+                      key: 'quantity',
+                      header: t('quantity'),
+                      renderItem: ({ row }) => `${row.quantity}`,
+                    },
+                    {
+                      key: 'received_qty',
+                      header: t('receivedQty'),
+                      renderItem: ({ row }) => `${row.received_qty}`,
+                    },
+                    { key: 'unit', header: t('unit') },
+
+                    {
+                      key: 'unitPrice',
+                      header: t('unitCost'),
+                      renderItem: ({ row }) =>
+                        row.unitPrice
+                          ? formatCurrency(row.unitPrice, currencyISO)
+                          : '-',
+                    },
+                    {
+                      key: 'totalPrice',
+                      header: t('totalCost'),
+                      renderItem: ({ row }) =>
+                        row.totalPrice
+                          ? formatCurrency(row.totalPrice, currencyISO)
+                          : '-',
+                    },
+                  ]}
+                />
+              </div>
             </div>
 
-            <div className={styles.documentContainer}>
-              <img
-                className={styles.documentImage}
-                src={props.document?.path}
-                alt={props.document?.path}
-              />
-            </div>
-            <div className={styles.scrollDiv}>
-              <Table
-                data={props.document?.ingredients}
-                columns={[
-                  { key: 'detectedName', header: t('document.detectedName') },
-                  { key: 'mappedName', header: t('document.givenName') },
-                  {
-                    key: 'quantity',
-                    header: t('quantity'),
-                    renderItem: ({ row }) => `${row.quantity}`,
-                  },
-                  {
-                    key: 'received_qty',
-                    header: t('receivedQty'),
-                    renderItem: ({ row }) => `${row.received_qty}`,
-                  },
-                  { key: 'unit', header: t('unit') },
-
-                  {
-                    key: 'unitPrice',
-                    header: t('unitCost'),
-                    renderItem: ({ row }) =>
-                      row.unitPrice
-                        ? formatCurrency(row.unitPrice, currencyISO)
-                        : '-',
-                  },
-                  {
-                    key: 'totalPrice',
-                    header: t('totalCost'),
-                    renderItem: ({ row }) =>
-                      row.totalPrice
-                        ? formatCurrency(row.totalPrice, currencyISO)
-                        : '-',
-                  },
-                ]}
-              />
-            </div>
-            {props.document?.ingredients.length === 0 && (
-              <p className={styles.noIngredients}>
-                {t('recipes.card.no-ingredients')}
-              </p>
-            )}
             <DialogBox
               type="warning"
               msg="Delete document"
-              subMsg="Do you want to delete this docuement ?"
+              subMsg="Do you want to delete this document?"
               isOpen={confirmDeletePopup}
               onRequestClose={() => setConfirmDeletePopup(false)}
               onConfirm={() => {
