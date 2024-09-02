@@ -520,7 +520,6 @@ const DocumentDetail = (props: Props) => {
                           value={editableDocument?.amount}
                         />
                       </div>
-
                       <div>
                         <Table
                           data={editableDocument?.ingredients}
@@ -555,18 +554,6 @@ const DocumentDetail = (props: Props) => {
           </div>
         ) : (
           <div className={styles.documentDetail}>
-            <div className={styles.optionsButtons}>
-              <IconButton
-                icon={<i className="fa-solid fa-pen-to-square"></i>}
-                tooltipMsg={t('edit')}
-                onClick={toggleEditMode}
-              />
-              <IconButton
-                icon={<i className="fa-solid fa-trash"></i>}
-                tooltipMsg={t('delete')}
-                onClick={() => setConfirmDeletePopup(true)}
-              />
-            </div>
             <div className={styles.flexContainer}>
               {props.document?.path?.length > 0 && (
                 <div className={styles.carouselContainer}>
@@ -608,20 +595,36 @@ const DocumentDetail = (props: Props) => {
 
               <div className={styles.scrollDiv}>
                 <div>
-                  <p className={styles.name}>
-                    {t('ingredient:supplier')}:
-                    <span className={styles.value}>
-                      {' '}
-                      {props.document?.supplier}
-                    </span>
-                  </p>
-                  <p className={styles.name}>
-                    {t('price')}:
-                    <span className={styles.value}>
-                      {' '}
-                      {formatCurrency(props.document?.amount, currencyISO)}
-                    </span>
-                  </p>
+                  <div className={styles.editButton}>
+                    <div className={styles.supplier}>
+                      <p className={styles.name}>
+                        {t('ingredient:supplier')}:
+                        <span className={styles.value}>
+                          {' '}
+                          {props.document?.supplier}
+                        </span>
+                      </p>
+                      <p className={styles.name}>
+                        {t('price')}:
+                        <span className={styles.value}>
+                          {' '}
+                          {formatCurrency(props.document?.amount, currencyISO)}
+                        </span>
+                      </p>
+                    </div>
+                    <div className={styles.flexContainer}>
+                      <IconButton
+                        icon={<i className="fa-solid fa-pen-to-square"></i>}
+                        tooltipMsg={t('edit')}
+                        onClick={toggleEditMode}
+                      />
+                      <IconButton
+                        icon={<i className="fa-solid fa-trash"></i>}
+                        tooltipMsg={t('delete')}
+                        onClick={() => setConfirmDeletePopup(true)}
+                      />
+                    </div>
+                  </div>
                 </div>
                 <Table
                   data={props.document?.ingredients}
