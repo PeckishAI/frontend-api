@@ -198,9 +198,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         }
 
         if (filters.selectedTag) {
-          filteredList = filteredList.filter(
-            (ingredient) => ingredient.tagUUID === filters?.selectedTag!.uuid
-          );
+          filteredList = filteredList.filter((ingredient) => {
+            return ingredient.tagUUID?.some(
+              (tag) => tag === filters?.selectedTag?.uuid
+            );
+          });
         }
 
         setFilteredIngredients(filteredList);
@@ -210,7 +212,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     }, [props.searchValue, filters, ingredientsList]);
 
     const handleExportDataClick = useCallback(() => {
-      const rows = ingredientsList;
+      const rows = filteredIngredients;
       if (rows) {
         const header =
           'Ingredient name, Par level, Actual stock, Theoretical stock, Unit, Suppliers, Cost per unit\n';
@@ -250,7 +252,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         link.click();
         document.body.removeChild(link);
       }
-    }, [ingredientsList]);
+    }, [filteredIngredients]);
 
     useImperativeHandle(
       forwardedRef,
@@ -659,10 +661,20 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           ) : row.tagUUID &&
             Array.isArray(row.tagUUID) &&
             row.tagUUID.length > 0 ? (
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                maxHeight: '100px',
+                overflowY: row.tagUUID.length > 6 ? 'scroll' : 'visible',
+              }}>
               {row.tagUUID.map((uuid) => {
                 const tag = tagList.find((tag) => tag.uuid === uuid);
                 if (tag) {
+                  const displayName =
+                    tag.name.length > 6
+                      ? `${tag.name.slice(0, 6)}...`
+                      : tag.name;
                   return (
                     <span
                       key={uuid}
@@ -675,8 +687,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                         backgroundColor: tag.color || '#d3d3d3',
                         color: '#333',
                         fontSize: '12px',
+                        maxWidth: '100px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
                       }}>
-                      {tag.name}
+                      {displayName}
                     </span>
                   );
                 } else {
@@ -692,6 +708,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                         backgroundColor: '#d3d3d3',
                         color: '#333',
                         fontSize: '12px',
+                        maxWidth: '100px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
                       }}>
                       -
                     </span>
