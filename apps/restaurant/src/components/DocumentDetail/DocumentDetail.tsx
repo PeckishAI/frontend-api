@@ -25,6 +25,7 @@ import supplierService from '../../services/supplier.service';
 import SupplierNew from '../../views/Inventory/Suppliers/components/SuppplierNew';
 import CreatableSelect from 'react-select/creatable';
 
+
 type Props = {
   document: Invoice | null;
   isOpen: boolean;
@@ -473,6 +474,7 @@ const DocumentDetail = (props: Props) => {
       items: 1,
     },
   };
+
   const options = suppliers.map((supplier) => ({
     label: supplier.label,
     value: supplier.value,
@@ -489,6 +491,7 @@ const DocumentDetail = (props: Props) => {
       });
     }
   }, [props.document?.supplier]);
+
 
   return (
     <>
@@ -544,11 +547,11 @@ const DocumentDetail = (props: Props) => {
                         )}
                       </div>
                     )}
-                    {console.log('props', props.document?.supplier)}
 
                     <div className={styles.scrollDiv}>
                       <div className={styles.headerData}>
                         {/* <LabeledInput
+                        
                           type="text"
                           placeholder={t('ingredient:supplier')}
                           className={styles.input}
