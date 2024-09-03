@@ -319,6 +319,7 @@ const AddPreparationPopup = (props: Props) => {
                       },
                     }}
                   />
+
                   {index > 0 && (
                     <FaTrash
                       className={styles.deleteButton}
