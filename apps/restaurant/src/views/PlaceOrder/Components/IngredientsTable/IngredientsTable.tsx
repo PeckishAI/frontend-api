@@ -5,9 +5,16 @@ import { useIngredients } from '../../../../services/hooks';
 import { useEffect, useMemo, useState } from 'react';
 import Fuse from 'fuse.js';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
-import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
+import {
+  useRestaurantCurrency,
+  useRestaurantStore,
+} from '../../../../store/useRestaurantStore';
 import { formatCurrency } from '../../../../utils/helpers';
-import { Supplier } from '../../../../services/supplier.service';
+import supplierService, {
+  Supplier,
+} from '../../../../services/supplier.service';
+import CreatableSelect from 'react-select/creatable';
+import SupplierNew from '../../../Inventory/Suppliers/components/SuppplierNew';
 
 type Props = {
   supplierFilter: Supplier | null;
@@ -27,15 +34,31 @@ export type IngredientOption = {
 
 const IngredientsTable = (props: Props) => {
   const { t } = useTranslation(['ingredient', 'placeOrder']);
-
   const { ingredients, loading: loadingIngredients } = useIngredients();
   const [ingredientOptions, setIngredientOptions] = useState<
     IngredientOption[]
   >([]);
+  const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
+  const [newInputAdd, setNewInputAdd] = useState('');
 
+  const [suppliers, setSuppliers] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [showAddPopup, setShowAddPopup] = useState(false);
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
+
+  const handleInputChange = (value, field, ingredientUUID) => {
+    console.log('Value', value);
+    setInputValues((prev) => ({
+      ...prev,
+      [ingredientUUID]: value,
+    }));
+    setNewInputAdd('');
+  };
   const { currencyISO } = useRestaurantCurrency();
 
-  // set ingredientList
   useEffect(() => {
     if (ingredients && ingredients.length > 0) {
       const newIngredientOptions: IngredientOption[] = ingredients.map(
@@ -75,17 +98,29 @@ const IngredientsTable = (props: Props) => {
     [props.searchTermFilter, filteredBySupplier]
   );
 
+  useEffect(() => {
+    if (!selectedRestaurantUUID) return;
+
+    supplierService
+      .getRestaurantSuppliers(selectedRestaurantUUID)
+      .then((res) => {
+        const suppliersList = res.map((supplier) => ({
+          label: supplier.name,
+          value: supplier.supplier_uuid,
+        }));
+        setSuppliers(suppliersList);
+      });
+  }, [selectedRestaurantUUID]);
+
   const handleQuantityChange = (uuid: string, newQuantity: string) => {
     const newQuantityNb = Number(newQuantity);
 
-    // Update cartItems
     if (newQuantityNb >= 0) {
       const existingItemIndex = props.cartItems.findIndex(
         (item) => item.ingredientUUID === uuid
       );
 
       if (existingItemIndex === -1) {
-        // If the ingredient isn't in cart, add it
         const ingredientToAdd = ingredientOptions.find(
           (option) => option.ingredientUUID === uuid
         );
@@ -96,7 +131,6 @@ const IngredientsTable = (props: Props) => {
           ]);
         }
       } else {
-        // Else, update ingredient quantity in cart
         props.setCartItems((prevCartItems) =>
           prevCartItems.map((item) =>
             item.ingredientUUID === uuid
@@ -106,7 +140,6 @@ const IngredientsTable = (props: Props) => {
         );
       }
     } else {
-      // If the quantity requested is equal to 0, remove item
       props.setCartItems((prevCartItems) =>
         prevCartItems.filter((item) => item.ingredientUUID !== uuid)
       );
@@ -126,6 +159,73 @@ const IngredientsTable = (props: Props) => {
       key: 'ingredientSupplier',
       header: t('ingredient:supplier'),
       width: '25%',
+      renderItem: ({ row }) => {
+        const inputValue = inputValues[row.ingredientUUID] || '';
+
+        return (
+          <CreatableSelect
+            options={suppliers}
+            className={styles.input}
+            inputValue={inputValue}
+            value={suppliers.find((supplier) => supplier.value === inputValue)}
+            onInputChange={(newInputValue) => {
+              handleInputChange(newInputValue, 'supplier', row.ingredientUUID);
+            }}
+            onChange={(newValue, actionMeta) => {
+              if (actionMeta.action === 'create-option') {
+                setShowAddPopup(true);
+                handleInputChange(
+                  newValue.label,
+                  'supplier',
+                  row.ingredientUUID
+                );
+                setNewInputAdd(newValue.label);
+              } else if (newValue) {
+                handleInputChange(
+                  newValue.value,
+                  'supplier',
+                  row.ingredientUUID
+                );
+              } else {
+                handleInputChange('', 'supplier', row.ingredientUUID);
+              }
+            }}
+            isClearable
+            placeholder="Enter or select a supplier"
+            noOptionsMessage={({ inputValue }) =>
+              inputValue !== ''
+                ? `Add "${inputValue}" as new supplier`
+                : 'No options'
+            }
+            styles={{
+              control: (provided) => ({
+                ...provided,
+                minHeight: '56px',
+              }),
+              menu: (provided) => ({
+                ...provided,
+                zIndex: 9999,
+              }),
+              menuList: (provided) => ({
+                ...provided,
+                maxHeight: '200px',
+                overflowY: 'auto',
+              }),
+              option: (provided, state) => ({
+                ...provided,
+                backgroundColor: state.isSelected
+                  ? '#007BFF'
+                  : provided.backgroundColor,
+                color: state.isSelected ? '#FFFFFF' : provided.color,
+              }),
+              container: (provided) => ({
+                ...provided,
+                overflow: 'visible',
+              }),
+            }}
+          />
+        );
+      },
     },
     {
       key: 'ingredientUnitPrice',
@@ -199,17 +299,24 @@ const IngredientsTable = (props: Props) => {
   ];
 
   return (
-    <div className={styles.ingredientsContainer}>
-      {loadingIngredients ? (
-        <p>{t('ingredient:loadingIngredients')}</p>
-      ) : (
-        <>
-          <div className={styles.tabContainer}>
-            <Table data={filteredIngredients} columns={placeOrderColumn} />
-          </div>
-        </>
-      )}
-    </div>
+    <>
+      <div className={styles.ingredientsContainer}>
+        {loadingIngredients ? (
+          <p>{t('ingredient:loadingIngredients')}</p>
+        ) : (
+          <>
+            <div className={styles.tabContainer}>
+              <Table data={filteredIngredients} columns={placeOrderColumn} />
+            </div>
+          </>
+        )}
+      </div>
+      <SupplierNew
+        isVisible={showAddPopup}
+        onRequestClose={() => setShowAddPopup(false)}
+        onNew={newInputAdd}
+      />
+    </>
   );
 };
 
