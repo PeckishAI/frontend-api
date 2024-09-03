@@ -320,6 +320,35 @@ const AddPreparationPopup = (props: Props) => {
                     }}
                   />
 
+                  <FaTrash
+                    className={styles.deleteButton}
+                    onClick={() => removeIngredient(index)}
+                  />
+
+                  <LabeledInput
+                    placeholder={t('unit')}
+                    type="text"
+                    lighter
+                    value={selectedIngredient?.unit || ''}
+                    readOnly
+                    sx={{
+                      '& .MuiFilledInput-root': {
+                        border: '1px solid grey',
+                        borderRadius: 1,
+                        background: 'lightgrey',
+                        height: '40px',
+                        fontSize: '16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        borderColor: 'grey.300',
+                        borderBottom: 'none',
+                      },
+                      '& .MuiFilledInput-root.Mui-disabled': {
+                        backgroundColor: 'lightgrey',
+                      },
+                    }}
+                  />
+
                   {index > 0 && (
                     <FaTrash
                       className={styles.deleteButton}
