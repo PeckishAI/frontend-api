@@ -85,7 +85,7 @@ export const SupplierCard = ({
           </a>
         )}
       </div>
-      {supplier.linked ? (
+      {/* {supplier.linked ? (
         <i
           className={classNames('fa-solid fa-link', styles.linked)}
           data-tooltip-content={t('suppliers.linked')}
@@ -95,7 +95,7 @@ export const SupplierCard = ({
           className={classNames('fa-solid fa-hourglass-half', styles.unlinked)}
           data-tooltip-content={t('suppliers.waitLink')}
           data-tooltip-id="suppliers-tooltip"></i>
-      )}
+      )} */}
     </div>
   );
 };
