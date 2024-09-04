@@ -11,7 +11,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
-import supplierService from '../../../../services/supplier.service';
+import supplierService, {
+  LinkedSupplier,
+} from '../../../../services/supplier.service';
 import { useRestaurantStore } from '../../../../store/useRestaurantStore';
 
 const AddSupplierSchema = z.object({
@@ -21,7 +23,7 @@ const AddSupplierSchema = z.object({
     .string()
     .optional()
     .or(z.null().transform(() => undefined)),
-  automaticInvitation: z.boolean(),
+  // automaticInvitation: z.boolean(),
 });
 
 type SupplierForm = z.infer<typeof AddSupplierSchema>;
@@ -29,12 +31,15 @@ type SupplierForm = z.infer<typeof AddSupplierSchema>;
 type Props = {
   isVisible: boolean;
   onRequestClose: () => void;
-  fetchSuppliersAndSync: () => void;
+  onSupplierUpdated?: (supplier: LinkedSupplier) => void;
+  editSupplier?: LinkedSupplier | null;
+  mode: 'add' | 'edit';
   onSupplierAdded: (supplier: {
     name: string;
     email?: string;
     phone?: string;
   }) => void;
+  fetchSuppliersAndSync: () => void;
 };
 
 const AddSupplierPopup = (props: Props) => {
@@ -52,46 +57,86 @@ const AddSupplierPopup = (props: Props) => {
     reset,
   } = useForm<SupplierForm>({
     resolver: zodResolver(AddSupplierSchema),
-    defaultValues: {
-      automaticInvitation: true,
-    },
+    // defaultValues: {
+    //   automaticInvitation: true,
+    // },
   });
 
   useEffect(() => {
-    if (!props.isVisible) {
-      reset();
+    if (props.mode === 'edit' && props.editSupplier) {
+      reset({
+        name: props.editSupplier.name,
+        email: props.editSupplier.email || '',
+        phone: props.editSupplier.phone || '',
+        automaticInvitation: true,
+      });
+    } else {
+      reset({
+        name: '',
+        email: '',
+        phone: '',
+        // automaticInvitation: true,
+      });
     }
-  }, [props.isVisible, reset]);
+  }, [props.mode, props.editSupplier, reset]);
 
   const handleSubmitForm = handleSubmit(async (data) => {
     if (!restaurantUUID) return;
 
-    const uuid = await supplierService
-      .createSupplier({
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-      })
-      .then((res) => res.supplier_uuid)
-      .catch(() => null);
+    if (props.mode === 'add') {
+      const uuid = await supplierService
+        .createSupplier({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+        })
+        .then((res) => res.supplier_uuid)
+        .catch(() => null);
 
-    if (!uuid) return;
+      if (!uuid) return;
 
-    return supplierService
-      .addSupplierToRestaurant(restaurantUUID, uuid)
-      .then(() => {
-        props.onRequestClose();
-        props.onSupplierAdded(data);
-        props.fetchSuppliersAndSync();
-      });
+      return supplierService
+        .addSupplierToRestaurant(restaurantUUID, uuid)
+        .then(() => {
+          props.onRequestClose();
+          props.onSupplierAdded(data);
+          props.fetchSuppliersAndSync();
+          reset();
+        });
+    } else if (props.mode === 'edit' && props.editSupplier) {
+      return supplierService
+        .updateSupplier(props.editSupplier.supplier_uuid, {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+        })
+        .then(() => {
+          props.onRequestClose();
+          if (props.onSupplierUpdated) {
+            props.onSupplierUpdated({
+              ...props.editSupplier,
+              ...data,
+            });
+          }
+          props.fetchSuppliersAndSync();
+        });
+    }
   });
 
   return (
     <Popup
       isVisible={props.isVisible}
       onRequestClose={props.onRequestClose}
-      title={t('suppliers.addSupplier.title')}
-      subtitle={t('suppliers.addSupplier.subtitle')}>
+      title={
+        props.mode === 'add'
+          ? t('suppliers.addSupplier.title')
+          : t('suppliers.addSupplier.edit_title')
+      }
+      subtitle={
+        props.mode === 'edit'
+          ? t('suppliers.addSupplier.subtitle')
+          : t('suppliers.addSupplier.edit_subtitle')
+      }>
       <form onSubmit={handleSubmitForm}>
         <div className={styles.inputContainer}>
           <>
@@ -119,11 +164,11 @@ const AddSupplierPopup = (props: Props) => {
           </>
         </div>
 
-        <Checkbox
+        {/* <Checkbox
           label={t('suppliers.addSupplier.automaticSendCheckbox')}
           className={styles.autoCheckbox}
           {...register('automaticInvitation')}
-        />
+        /> */}
 
         <div className={styles.buttonsContainer}>
           <Button

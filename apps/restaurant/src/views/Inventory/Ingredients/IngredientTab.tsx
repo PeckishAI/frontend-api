@@ -155,7 +155,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     }, [props.searchValue, filters, ingredientsList]);
 
     const handleExportDataClick = useCallback(() => {
-      const rows = ingredientsList;
+      const rows = filteredIngredients;
       if (rows) {
         const header =
           'Ingredient name, Par level, Actual stock, Theoretical stock, Unit, Suppliers, Cost per unit\n';
@@ -195,7 +195,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         link.click();
         document.body.removeChild(link);
       }
-    }, [ingredientsList]);
+    }, [filteredIngredients]);
 
     useImperativeHandle(
       forwardedRef,
