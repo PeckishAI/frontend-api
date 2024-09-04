@@ -34,6 +34,7 @@ const Layout = () => {
 
   const handleTransferPopup = async () => {
     const allIngredients: IngredientOption[] = [];
+    setTransferPopupVisible(true);
 
     for (const restaurant of restaurants) {
       const fetchedIngredients = await inventoryService.getIngredientList(
@@ -49,7 +50,6 @@ const Layout = () => {
     }
 
     setIngredients(allIngredients);
-    setTransferPopupVisible(true);
   };
 
   const closeTransferPopup = () => {
