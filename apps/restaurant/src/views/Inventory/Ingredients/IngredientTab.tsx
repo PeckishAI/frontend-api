@@ -33,6 +33,7 @@ import Filters, {
   defaultFilters,
 } from '../Components/Filters/Filters';
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
+import AddIngredientPopup from './IngredientCard/IngredientCard';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -62,6 +63,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [filteredIngredients, setFilteredIngredients] = useState<
       Ingredient[]
     >([]);
+    const [isAddIngredientPopupVisible, setIsAddIngredientPopupVisible] =
+      useState(false);
 
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
     const [tagList, setTagList] = useState<Tag[]>([]);
@@ -102,6 +105,22 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
+
+    const handleAddIngredient = (newIngredient) => {
+      setIngredientsList((prevList) => [...prevList, newIngredient]);
+      setIsAddIngredientPopupVisible(false); // Close the popup after adding
+      reloadInventoryData(); // Reload the data
+    };
+
+    const handleOpenPopup = () => {
+      console.log('Opening popup');
+      setIsAddIngredientPopupVisible(true);
+    };
+
+    const handleClosePopup = () => {
+      console.log('Closing popup');
+      setIsAddIngredientPopupVisible(false);
+    };
 
     useEffect(() => {
       if (!selectedRestaurantUUID) return;
@@ -229,10 +248,19 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       tooltipId="inventory-tooltip"
                     />
                     <Button
-                      value={t('inventory.addIngredientBtn')}
+                      value="Add Ingredient"
                       type="primary"
-                      className="add"
-                      onClick={!addingRow ? handleAddNewIngredient : undefined}
+                      onClick={handleOpenPopup} // Open the popup
+                    />
+                    <Tooltip
+                      className="tooltip"
+                      id="inventory-tooltip"
+                      delayShow={500}
+                    />
+                    <AddIngredientPopup
+                      isVisible={isAddIngredientPopupVisible}
+                      onRequestClose={handleClosePopup} // Close the popup
+                      onIngrAdded={handleAddIngredient} // Handle the new ingredient addition
                     />
                   </>
                 ) : (
@@ -917,6 +945,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               },
             },
           }}
+        />
+
+        <AddIngredientPopup
+          isVisible={isAddIngredientPopupVisible}
+          onRequestClose={handleClosePopup}
+          onIngrAdded={handleAddIngredient}
         />
 
         <ImportIngredients

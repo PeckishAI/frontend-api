@@ -1,0 +1,87 @@
+.inputContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem; /* Add spacing between elements */
+  margin-bottom: 2rem;
+}
+
+.section {
+  margin-bottom: 2rem;
+
+  h4 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+}
+
+.stockDetailsInline {
+  display: flex;
+  gap: 1rem;
+
+  .inputWrapper {
+    flex: 1;
+  }
+}
+
+.buttonsContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.supplierEntry {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.supplierEntry input {
+  height: var(--input-small-height);
+}
+
+.popupTitle {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.popupSubtitle {
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+input[type='text'],
+input[type='number'],
+.selectContainer {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ced4da !important; /* Enforcing the border */
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: white !important; /* Ensure background color is not transparent */
+  box-sizing: border-box; /* Ensure padding does not affect the size */
+}
+
+input[type='text']:focus,
+input[type='number']:focus,
+.selectContainer:focus {
+  outline: none;
+  border-color: #80bdff !important; /* Enforcing the focus border */
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.selectContainer {
+  width: 100% !important; /* Ensure dropdown is full width */
+}
+
+.inputContainer .selectContainer {
+  margin-top: 1rem; /* Add margin above the select dropdown */
+}
+
+.inputWrapper {
+  margin-bottom: 5px;
+}
