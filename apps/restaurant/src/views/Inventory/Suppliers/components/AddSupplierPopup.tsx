@@ -21,7 +21,7 @@ const AddSupplierSchema = z.object({
     .string()
     .optional()
     .or(z.null().transform(() => undefined)),
-  automaticInvitation: z.boolean(),
+  // automaticInvitation: z.boolean(),
 });
 
 type SupplierForm = z.infer<typeof AddSupplierSchema>;
@@ -52,9 +52,9 @@ const AddSupplierPopup = (props: Props) => {
     reset,
   } = useForm<SupplierForm>({
     resolver: zodResolver(AddSupplierSchema),
-    defaultValues: {
-      automaticInvitation: true,
-    },
+    // defaultValues: {
+    //   automaticInvitation: true,
+    // },
   });
 
   useEffect(() => {
@@ -119,11 +119,11 @@ const AddSupplierPopup = (props: Props) => {
           </>
         </div>
 
-        <Checkbox
+        {/* <Checkbox
           label={t('suppliers.addSupplier.automaticSendCheckbox')}
           className={styles.autoCheckbox}
           {...register('automaticInvitation')}
-        />
+        /> */}
 
         <div className={styles.buttonsContainer}>
           <Button
