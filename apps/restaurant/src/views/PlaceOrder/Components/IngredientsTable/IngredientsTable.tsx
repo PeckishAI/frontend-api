@@ -5,10 +5,15 @@ import { useIngredients } from '../../../../services/hooks';
 import { useEffect, useMemo, useState } from 'react';
 import Fuse from 'fuse.js';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
-import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
+import {
+  useRestaurantCurrency,
+  useRestaurantStore,
+} from '../../../../store/useRestaurantStore';
 import { formatCurrency } from '../../../../utils/helpers';
 import { Supplier } from '../../../../services/supplier.service';
 import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
+import SupplierNew from '../../../Inventory/Suppliers/components/SuppplierNew';
 
 type Props = {
   supplierFilter: Supplier | null;
@@ -31,17 +36,34 @@ export type IngredientOption = {
 
 const IngredientsTable = (props: Props) => {
   const { t } = useTranslation(['ingredient', 'placeOrder']);
-
   const { ingredients, loading: loadingIngredients } = useIngredients();
   const [ingredientOptions, setIngredientOptions] = useState<
     IngredientOption[]
   >([]);
+  const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
+  const [newInputAdd, setNewInputAdd] = useState('');
+
+  const [suppliers, setSuppliers] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [showAddPopup, setShowAddPopup] = useState(false);
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
+
+  const handleInputChange = (value, field, ingredientUUID) => {
+    console.log('Value', value);
+    setInputValues((prev) => ({
+      ...prev,
+      [ingredientUUID]: value,
+    }));
+    setNewInputAdd('');
+  };
   const { currencyISO } = useRestaurantCurrency();
   const [selectedSupplierMap, setSelectedSupplierMap] = useState<
     Record<string, string>
   >({});
 
-  // Set ingredientList
   useEffect(() => {
     if (ingredients && ingredients.length > 0) {
       const newIngredientOptions: IngredientOption[] = ingredients.map(
@@ -222,6 +244,7 @@ const IngredientsTable = (props: Props) => {
             onChange={(selectedOption) => {
               const newSupplier = selectedOption?.value || '';
               handleSupplierChange(row.ingredientUUID, newSupplier);
+
             }}
           />
         );
@@ -308,17 +331,24 @@ const IngredientsTable = (props: Props) => {
   ];
 
   return (
-    <div className={styles.ingredientsContainer}>
-      {loadingIngredients ? (
-        <p>{t('ingredient:loadingIngredients')}</p>
-      ) : (
-        <>
-          <div className={styles.tabContainer}>
-            <Table data={filteredIngredients} columns={placeOrderColumn} />
-          </div>
-        </>
-      )}
-    </div>
+    <>
+      <div className={styles.ingredientsContainer}>
+        {loadingIngredients ? (
+          <p>{t('ingredient:loadingIngredients')}</p>
+        ) : (
+          <>
+            <div className={styles.tabContainer}>
+              <Table data={filteredIngredients} columns={placeOrderColumn} />
+            </div>
+          </>
+        )}
+      </div>
+      <SupplierNew
+        isVisible={showAddPopup}
+        onRequestClose={() => setShowAddPopup(false)}
+        onNew={newInputAdd}
+      />
+    </>
   );
 };
 

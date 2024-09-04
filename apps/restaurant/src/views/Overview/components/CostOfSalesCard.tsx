@@ -262,6 +262,14 @@ export const CostOfSalesCard: React.FC<Props> = ({
                           ? `${parseFloat(value).toFixed(2)}%`
                           : '0.00%',
                     },
+                    {
+                      header: t('ingredient:variance_value'),
+                      key: 'variance_value',
+                      renderItem: ({ value }) =>
+                        value != null
+                          ? `${parseFloat(value).toFixed(2)}`
+                          : '0.00',
+                    },
                   ]}
                 />
               </>

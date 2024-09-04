@@ -3,6 +3,8 @@
   "onboarding.userNotOnboarded.msg": "Intégrez votre restaurant dans le menu Intégrations pour utiliser cette fonctionnalité.",
   "onboarding.modal.title": "Nouvelle intégration",
   "onboarding.modal.description.oauth": "Intégrer {{name}}",
+  "restaurant.modal.title":"Connectez votre restaurant",
+  "restaurant.modal.description":"Cartographier avec l'existant ou créer un nouveau en ajoutant à Peckish",
   "onboarding.modal.description.oauth.message": "Cliquez sur le bouton ci-dessous pour vous connecter à votre compte {{name}}",
   "onboarding.modal.description.login": "Veuillez fournir vos identifiants {{name}}",
   "onboarding.searchPlaceholder": "Rechercher un système",
