@@ -18,6 +18,14 @@ const createTransfer = async (data: TransferForm) => {
   return;
 };
 
+const getTransferHistory = async (restaurantId: string) => {
+  console.log(restaurantId);
+  const res = await axiosClient.get(`/inventory/transfer/${restaurantId}`);
+  console.log(res.data);
+  return res.data;
+};
+
 export const transferService = {
   createTransfer,
+  getTransferHistory,
 };
