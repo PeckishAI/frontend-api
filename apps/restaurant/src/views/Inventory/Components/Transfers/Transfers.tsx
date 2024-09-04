@@ -1,12 +1,12 @@
 import { Button, LabeledInput, Popup } from 'shared-ui';
 import styles from './styles.module.scss';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Select, { SingleValue } from 'react-select';
 import { z } from 'zod';
 import { FaPlus } from 'react-icons/fa';
-import { transferService } from '../../../../services';
+import { transferService, inventoryService } from '../../../../services'; // import inventoryService to fetch ingredients
 
 type RestaurantOption = {
   id: string;
@@ -17,7 +17,6 @@ type IngredientOption = {
   id: string;
   name: string;
   unit?: string;
-  restaurantId: string;
 };
 
 export const TransferStock = z.object({
@@ -52,16 +51,19 @@ type AddTransferPopupProps = {
   onRequestClose: () => void;
   onReload: () => void;
   restaurants: RestaurantOption[];
-  ingredients: IngredientOption[];
 };
 
 const AddTransferPopup: React.FC<AddTransferPopupProps> = (props) => {
+  const [fromIngredients, setFromIngredients] = useState<IngredientOption[]>(
+    []
+  );
+  const [toIngredients, setToIngredients] = useState<IngredientOption[]>([]);
+
   const {
     register,
     handleSubmit,
     control,
     watch,
-    setValue,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<TransferForm>({
@@ -88,12 +90,31 @@ const AddTransferPopup: React.FC<AddTransferPopupProps> = (props) => {
   const selectedFromRestaurant = watch('from_restaurant_uuid');
   const selectedToRestaurant = watch('to_restaurant_uuid');
 
-  const fromIngredients = props.ingredients.filter(
-    (ingredient) => ingredient.restaurantId === selectedFromRestaurant
-  );
-  const toIngredients = props.ingredients.filter(
-    (ingredient) => ingredient.restaurantId === selectedToRestaurant
-  );
+  // Fetch ingredients when the "From Site" restaurant is selected
+  useEffect(() => {
+    if (selectedFromRestaurant) {
+      inventoryService
+        .getOnlyIngredientList(selectedFromRestaurant)
+        .then((ingredients) => {
+          setFromIngredients(ingredients);
+        });
+    } else {
+      setFromIngredients([]); // Clear the ingredients when no restaurant is selected
+    }
+  }, [selectedFromRestaurant]);
+
+  // Fetch ingredients when the "To Site" restaurant is selected
+  useEffect(() => {
+    if (selectedToRestaurant) {
+      inventoryService
+        .getOnlyIngredientList(selectedToRestaurant)
+        .then((ingredients) => {
+          setToIngredients(ingredients);
+        });
+    } else {
+      setToIngredients([]);
+    }
+  }, [selectedToRestaurant]);
 
   useEffect(() => {
     if (!props.isVisible) {
@@ -119,6 +140,7 @@ const AddTransferPopup: React.FC<AddTransferPopupProps> = (props) => {
       <form onSubmit={handleSubmitForm}>
         <div className={styles.inputContainer}>
           <div className={styles.restaurantContainer}>
+            {/* From Restaurant Select */}
             <Controller
               control={control}
               name="from_restaurant_uuid"
@@ -151,6 +173,7 @@ const AddTransferPopup: React.FC<AddTransferPopupProps> = (props) => {
             <div className={styles.arrowContainer}>
               <i className="fa-solid fa-arrow-right"></i>
             </div>
+            {/* To Restaurant Select */}
             <Controller
               control={control}
               name="to_restaurant_uuid"
@@ -181,9 +204,11 @@ const AddTransferPopup: React.FC<AddTransferPopupProps> = (props) => {
               )}
             />
           </div>
+
           <div className={styles.ingredientContainer}>
             {ingredientFields.map((field, index) => (
               <div key={field.id} className={styles.rowInputs}>
+                {/* From Ingredient Select */}
                 <Controller
                   control={control}
                   name={`ingredients.${index}.from_ingredient_uuid`}
@@ -232,6 +257,7 @@ const AddTransferPopup: React.FC<AddTransferPopupProps> = (props) => {
                   />
                 </div>
 
+                {/* To Ingredient Select */}
                 <Controller
                   control={control}
                   name={`ingredients.${index}.to_ingredient_uuid`}

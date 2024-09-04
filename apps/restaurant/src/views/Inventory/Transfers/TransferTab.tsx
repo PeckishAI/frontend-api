@@ -28,28 +28,29 @@ export const TransferTab = () => {
     (state) => state.selectedRestaurantUUID
   );
 
+  // Fetch transfer history when restaurantUUID changes
   useEffect(() => {
     if (!selectedRestaurantUUID) return;
-  });
 
-  useEffect(() => {
     const fetchTransferHistory = async () => {
+      setLoading(true); // Start loading when the request begins
       try {
         const data = await transferService.getTransferHistory(
           selectedRestaurantUUID
-        ); // replace with actual restaurantId
-        const formattedData = data.map((item: any) => item.transfer_event); // Extract the transfer_event object
+        );
+        const formattedData = data.map((item: any) => item.transfer_event); // Assuming each item has a `transfer_event` field
         setTransferEvents(formattedData);
+        setError(null); // Clear error on successful fetch
       } catch (err) {
         console.error('Failed to fetch transfer history:', err);
         setError('Failed to fetch transfer history');
       } finally {
-        setLoading(false);
+        setLoading(false); // End loading when the request completes
       }
     };
 
     fetchTransferHistory();
-  }, []);
+  }, [selectedRestaurantUUID]); // Add restaurantUUID as a dependency to re-fetch data when it changes
 
   if (loading) {
     return <div>Loading...</div>;
