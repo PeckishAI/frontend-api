@@ -1,8 +1,8 @@
 import { axiosClient, axiosIntegrationClient } from './index';
 
 export type Supplier = {
-  uuid: string;
-  name: string;
+  uuid?: string;
+  name?: string;
   email?: string;
   phone?: string;
   created_at?: Date;
@@ -83,6 +83,23 @@ const createSupplier = async (
   return res.data;
 };
 
+interface UpdateSupplierResponse {
+  success: boolean;
+  supplier: Supplier;
+}
+
+const updateSupplier = async (
+  supplierUUID: string,
+  supplier: Supplier
+): Promise<UpdateSupplierResponse> => {
+  const res = await axiosClient.post<UpdateSupplierResponse>(
+    `/suppliers/${supplierUUID}/update`,
+    supplier
+  );
+
+  return res.data;
+};
+
 const addSupplierToRestaurant = async (
   restaurantUUID: string,
   supplierUUID: string
@@ -141,6 +158,7 @@ export default {
   createSupplier,
   addSupplierToRestaurant,
   revokeSupplierAccess,
+  updateSupplier,
   getSync,
   addSyncSupplier,
   addOnlySupplier,
