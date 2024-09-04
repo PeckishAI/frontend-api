@@ -5,11 +5,12 @@
     "inventory": {
       "stock": "Inventory",
       "suppliers": "Suppliers",
-      "orders": "Orders"
+      "orders": "Orders",
+      "transfers": "Transfers"
     },
     "recipes": "Recipes",
-    "preparations":"Preparations",
-    "modifiers":"Modifiers",
+    "preparations": "Preparations",
+    "modifiers": "Modifiers",
     "onboarding": "Onboarding",
     "onboarding_selectProducts": "Select products",
     "onboarding_createPreparations": "Create preparations",
@@ -42,7 +43,7 @@
     "desserts": "Desserts",
     "modifiers": "Modifiers",
     "snacks": "Snacks",
-    "preparations":"Preparations",
+    "preparations": "Preparations",
     "others": "Others"
   },
 
@@ -66,8 +67,8 @@
   "suppliers.waitLink": "The invitation is pending, or copy the link to send a new one",
   "suppliers.linkCopied": "Invitation link copied to clipboard",
   "suppliers.deleteSupplier": "Delete Supplier",
-  "suppliers.sync":"Sync",
-  "suppliers.synced":"Synced",
+  "suppliers.sync": "Sync",
+  "suppliers.synced": "Synced",
   "suppliers.removeSupplierToast": {
     "loading": "Deleting supplier...",
     "success": "Supplier deleted",
@@ -80,8 +81,8 @@
   "suppliers.syncSupplierPopup": {
     "title": "Sync access to Supplier",
     "subtitle": "Sync Supplier with Xero contacts.",
-    "selectSyncContact":"Select Sync Contact",
-    "syncSupplierBtn":"Create Contact to Xero"
+    "selectSyncContact": "Select Sync Contact",
+    "syncSupplierBtn": "Create Contact to Xero"
   },
   "suppliers.addSupplier": {
     "title": "Add a new supplier",
@@ -203,6 +204,6 @@
     "detectedName": "Detected name",
     "save": "Save",
     "upload": "Upload",
-    "send":"Send to Xero"
+    "send": "Send to Xero"
   }
 }

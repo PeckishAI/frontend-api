@@ -24,3 +24,4 @@ export * from './onboarding.service';
 export * from './recipes.service';
 export * from './supplier.service';
 export * from './types';
+export * from './transfer.service';

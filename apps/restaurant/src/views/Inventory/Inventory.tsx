@@ -5,15 +5,25 @@ import { SupplierTab, SupplierTabRef } from './Suppliers/SupplierTab';
 import { IngredientTab, IngredientTabRef } from './Ingredients/IngredientTab';
 import { useNavigate, useParams } from 'react-router-dom';
 import { OrderTab, OrderTabRef } from './Orders/OrderTab';
+import { TransferTab, TransferTabRef } from './Transfers/TransferTab';
+
+// type RouteParams = {
+//   tab: 'stock' | 'suppliers' | 'orders';
+// };
 
 type RouteParams = {
-  tab: 'stock' | 'suppliers' | 'orders';
+  tab: 'stock' | 'suppliers' | 'orders' | 'transfers';
 };
+
+// type RouteParams = {
+//   tab: 'stock' | 'suppliers' | 'orders' | 'transfers';
+// };
 
 const getTabIndex = (tab?: string) => {
   if (tab === 'stock') return 0;
   if (tab === 'suppliers') return 1;
   if (tab === 'orders') return 2;
+  if (tab === 'transfers') return 3;
   return 0;
 };
 
@@ -21,6 +31,7 @@ const getTabName = (tabIndex: number) => {
   if (tabIndex === 0) return 'stock';
   if (tabIndex === 1) return 'suppliers';
   if (tabIndex === 2) return 'orders';
+  if (tabIndex === 3) return 'transfers';
   return 'stock';
 };
 
@@ -35,11 +46,13 @@ const Inventory = () => {
     t('pages.inventory.stock'),
     t('pages.inventory.suppliers'),
     t('pages.inventory.orders'),
+    t('pages.inventory.transfers'),
   ];
 
   const supplierTabRef = useRef<SupplierTabRef>(null);
   const ingredientTabRef = useRef<IngredientTabRef>(null);
   const orderTabRef = useRef<OrderTabRef>(null);
+  const transferTabRef = useRef<TransferTabRef>(null);
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [searchValue, setSearchValue] = useState<string>('');
@@ -84,6 +97,16 @@ const Inventory = () => {
         />
       );
     }
+    if (selectedTab === 3) {
+      return (
+        <TransferTab
+          ref={transferTabRef}
+          setLoadingState={setLoadingData}
+          searchValue={searchValue}
+          forceOptionsUpdate={forceUpdate}
+        />
+      );
+    }
     return null;
   };
 
@@ -110,6 +133,7 @@ const Inventory = () => {
           {selectedTab === 0 && ingredientTabRef.current?.renderOptions()}
           {selectedTab === 1 && supplierTabRef.current?.renderOptions()}
           {selectedTab === 2 && orderTabRef.current?.renderOptions()}
+          {/* {selectedTab === 3 && transferTabRef.current?.renderOptions()} */}
         </div>
       </div>
 

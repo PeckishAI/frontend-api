@@ -53,11 +53,12 @@ const UploadCsvValidation = (props: Props) => {
         uploadSuccess={() => {
           props.uploadSuccess();
         }}
-        onUpload={(mappedColumns) =>
+        onUpload={(mappedColumns, selectedValues) =>
           inventoryService.validUploadedCsv(
             selectedRestaurantUUID,
             props.file,
-            mappedColumns
+            mappedColumns,
+            selectedValues
           )
         }
       />

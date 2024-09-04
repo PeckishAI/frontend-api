@@ -1,0 +1,70 @@
+.transferHistorySection {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+
+  h3 {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .date {
+    font-size: 14px;
+    color: #888888;
+  }
+}
+
+.details {
+  p {
+    font-size: 14px;
+    color: #555555;
+    margin-bottom: 10px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+
+    .ingredient {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-top: 1px solid #f0f0f0;
+
+      &:first-child {
+        border-top: none;
+      }
+
+      span {
+        font-size: 14px;
+        color: #555555;
+      }
+    }
+  }
+}
+
+.ingredientsToggle {
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #4c51bf; /* Darker shade on hover */
+  }
+}
+
+.sending {
+  color: rgb(241, 79, 79);
+}
+.receiving {
+  color: rgb(57, 205, 57);
+}

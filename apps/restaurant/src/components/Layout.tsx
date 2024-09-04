@@ -12,9 +12,16 @@ import {
 } from 'shared-ui';
 import { useRestaurantStore } from '../store/useRestaurantStore';
 import { useUserStore } from '@peckishai/user-management';
-import { restaurantService } from '../services';
+import { restaurantService, inventoryService, Ingredient } from '../services';
 import { Tooltip } from 'react-tooltip';
 import { NotificationCenter } from './NotificationCenter/NotificationCenter';
+import AddTransferPopup from '../views/Inventory/Components/Transfers/Transfers';
+
+type IngredientOption = {
+  id: string;
+  name: string;
+  restaurantId: string;
+};
 
 const Layout = () => {
   const { t } = useTranslation();
@@ -22,6 +29,36 @@ const Layout = () => {
   const navigate = useNavigate();
 
   const { logout, user } = useUserStore();
+  const [isTransferPopupVisible, setTransferPopupVisible] = useState(false);
+  const [ingredients, setIngredients] = useState<IngredientOption[]>([]);
+
+  const handleTransferPopup = async () => {
+    const allIngredients: IngredientOption[] = [];
+    setTransferPopupVisible(true);
+
+    for (const restaurant of restaurants) {
+      const fetchedIngredients = await inventoryService.getIngredientList(
+        restaurant.uuid
+      );
+      const formattedIngredients = fetchedIngredients.map((ingredient) => ({
+        id: ingredient.id,
+        name: ingredient.name,
+        restaurantId: restaurant.uuid, // Attach the restaurant ID to each ingredient
+      }));
+
+      allIngredients.push(...formattedIngredients);
+    }
+
+    setIngredients(allIngredients);
+  };
+
+  const closeTransferPopup = () => {
+    setTransferPopupVisible(false);
+  };
+
+  const handleReload = () => {
+    console.log('Reloading data...');
+  };
 
   const {
     selectedRestaurantUUID,
@@ -57,13 +94,15 @@ const Layout = () => {
 
   const title = useNavTitle();
 
-  // if (user && !user.onboarded) {
-  //   return <Navigate to="/onboarding" />;
-  // }
-
   const restaurantsOptions = restaurants.map((restaurant) => ({
     label: restaurant.name,
     value: restaurant.uuid,
+  }));
+
+  // Transforming the restaurant data to fit the AddTransferPopup
+  const transformedRestaurants = restaurants.map((restaurant) => ({
+    id: restaurant.uuid,
+    name: restaurant.name,
   }));
 
   const sidebarItems = [
@@ -151,6 +190,19 @@ const Layout = () => {
           onLogout={handleLogout}
           options={
             <>
+              <IconButton
+                icon={<i className="fa-solid fa-boxes-packing"></i>}
+                tooltipMsg={t('transfer')}
+                tooltipId="nav-tooltip"
+                onClick={handleTransferPopup}
+              />
+              <AddTransferPopup
+                isVisible={isTransferPopupVisible}
+                onRequestClose={closeTransferPopup}
+                onReload={handleReload}
+                restaurants={transformedRestaurants} // Using the actual restaurant data
+                ingredients={ingredients} // You will replace this with actual ingredients data later
+              />
               <NotificationCenter />
               <IconButton
                 icon={<i className="fa-solid fa-rotate"></i>}
