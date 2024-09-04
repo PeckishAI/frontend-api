@@ -192,6 +192,7 @@ export type ColumnsNameMapping = {
   unit: string;
   cost: string;
   supplier: string;
+  sync_supplier_data: string;
 };
 
 export type PreviewCsvResponse = {
@@ -222,7 +223,7 @@ const uploadCsvFile = async (
   };
 };
 
-const getFormData = (file: File, headerValues: ColumnsNameMapping) => {
+const getFormData = (file: File, headerValues: ColumnsNameMapping, selectedValues:any) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('ingredient', headerValues.ingredient);
@@ -230,6 +231,7 @@ const getFormData = (file: File, headerValues: ColumnsNameMapping) => {
   formData.append('unit', headerValues.unit);
   formData.append('cost', headerValues.cost);
   formData.append('supplier', headerValues.supplier);
+  formData.append('sync_supplier_data', JSON.stringify(selectedValues));
   return formData;
 };
 
@@ -238,7 +240,7 @@ const getPreviewUploadedCsv = async (
   file: File,
   headerValues: ColumnsNameMapping
 ) => {
-  const formData = getFormData(file, headerValues);
+  const formData = getFormData(file, headerValues, null);
   const res = await axiosClient.post(
     '/inventory/' + restaurantUUID + '/upload/preview',
     formData,
@@ -254,9 +256,10 @@ const getPreviewUploadedCsv = async (
 const validUploadedCsv = (
   restaurantUUID: string,
   file: File,
-  headerValues: ColumnsNameMapping
+  headerValues: ColumnsNameMapping,
+  selectedValues:any
 ) => {
-  const formData = getFormData(file, headerValues);
+  const formData = getFormData(file, headerValues, selectedValues);
 
   return axiosClient.post(
     '/inventory/' + restaurantUUID + '/upload',
