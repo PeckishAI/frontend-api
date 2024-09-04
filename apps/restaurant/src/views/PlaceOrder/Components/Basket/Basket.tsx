@@ -45,21 +45,26 @@ const Basket = (props: Props) => {
     setRemoveItemPopup('');
   };
 
-  const handleQuantityChange = (uuid: string, newQuantity: string) => {
-    const item = props.cartItems.find((item) => item.ingredientUUID === uuid);
+  const handleQuantityChange = (
+    uuid: string,
+    supplier: string,
+    newQuantity: string
+  ) => {
+    const newQuantityNb = Number(newQuantity);
 
-    if (item !== undefined) {
-      const newQuantityNb = Number(newQuantity);
-      if (newQuantityNb <= 0) setRemoveItemPopup(uuid);
-      else {
-        props.setCartItems((prevCartItems) =>
-          prevCartItems.map((item) =>
-            item.ingredientUUID === uuid
-              ? { ...item, ingredientQuantity: newQuantityNb }
-              : item
-          )
-        );
-      }
+    if (newQuantityNb <= 0) {
+      setRemoveItemPopup(uuid);
+    } else {
+      props.setCartItems((prevCartItems) =>
+        prevCartItems.map((item) =>
+          item.ingredientUUID === uuid && item.ingredientSupplier === supplier
+            ? {
+                ...item,
+                ingredientQuantity: newQuantityNb,
+              }
+            : item
+        )
+      );
     }
   };
 
@@ -136,7 +141,9 @@ const Basket = (props: Props) => {
               </p>
               <div className={styles.ingredients}>
                 {items.map((item) => (
-                  <div className={styles.row} key={item.ingredientUUID}>
+                  <div
+                    className={styles.row}
+                    key={`${item.ingredientUUID}-${item.ingredientSupplier}`}>
                     <p className={styles.label}>{item.ingredientName}</p>
                     <div className={styles.qantityContainer}>
                       <p className={styles.qty}>{item.ingredientUnit} x</p>
@@ -145,6 +152,7 @@ const Basket = (props: Props) => {
                         onClick={() =>
                           handleQuantityChange(
                             item.ingredientUUID,
+                            item.ingredientSupplier,
                             String(item.ingredientQuantity - 1)
                           )
                         }></i>
@@ -156,7 +164,11 @@ const Basket = (props: Props) => {
                         className={styles.quantity}
                         value={item.ingredientQuantity}
                         onChange={(value) =>
-                          handleQuantityChange(item.ingredientUUID, value)
+                          handleQuantityChange(
+                            item.ingredientUUID,
+                            item.ingredientSupplier,
+                            value
+                          )
                         }
                       />
                       <i
@@ -164,6 +176,7 @@ const Basket = (props: Props) => {
                         onClick={() =>
                           handleQuantityChange(
                             item.ingredientUUID,
+                            item.ingredientSupplier,
                             String(item.ingredientQuantity + 1)
                           )
                         }></i>

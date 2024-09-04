@@ -118,13 +118,14 @@ const ShoppingView = (props: Props) => {
     if (!selectedRestaurantUUID || !suppliers) return;
 
     const ingredientsBySupplier = groupIngredientsBySupplier(cartItems);
-
     // Create order per supplier
     const orders: SupplierOrder[] = Object.entries(ingredientsBySupplier).map(
       ([supplierName, ingredients]) => ({
         supplier_uuid:
-          suppliers.find((s) => s.name === supplierName)?.uuid ?? supplierName,
-        price: calculateOrderAmount(ingredients), // Calculer le montant total de la commande
+          suppliers.find((s) => {
+            return s.name === supplierName;
+          })?.uuid ?? supplierName,
+        price: calculateOrderAmount(ingredients),
         ingredients,
         note: supplierNotes.find((note) => note.supplierName === supplierName)
           ?.note,
