@@ -1,42 +1,48 @@
 .inputContainer {
   margin-bottom: 20px;
-  min-width: 400px;
+  width: 100%; /* Full width for flexibility */
+  min-width: 500px;
 }
 
-.rowInputs {
+.row {
+  display: grid;
+  grid-template-columns: 90% 10%; /* 90% for dropdowns/inputs, 10% for delete button */
+  align-items: center; /* Vertically align contents */
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.restaurantFields {
+  display: flex;
+  justify-content: space-between; /* Space out From and To dropdowns */
+  width: 100%;
+}
+
+.ingredientFields {
+  display: flex;
+  justify-content: space-between; /* Space out From and To dropdowns */
+  width: 100%;
+}
+
+.quantityUnitGroup {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 10px;
+  gap: 0.5rem;
+}
 
-  /* Make each Select element take more space */
-  .react-select-container {
-    flex: 2;
-  }
+.quantityUnitGroup input {
+  max-width: 60px; /* Control input width */
+}
 
-  .quantityUnitGroup {
-    display: flex;
-    gap: 0.5rem;
-    flex: 1;
-  }
+.deleteButtonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #d9534f;
 
-  .quantityUnitGroup input {
-    max-width: 100px;
-  }
-
-  .deleteButton {
-    background: none;
-    border: none;
-    color: #d9534f;
-    cursor: pointer;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:hover {
-      color: #c9302c;
-    }
+  &:hover {
+    color: #c9302c;
   }
 }
 
@@ -46,7 +52,6 @@
   justify-content: flex-start;
   gap: 10px;
   cursor: pointer;
-  height: var(--input-large-height);
   color: var(--primaryColor);
   font-size: 0.9rem;
 }
@@ -61,33 +66,13 @@
   }
 }
 
-.autoCheckbox {
-  margin-top: 20px;
-}
-
-.restaurantContainer {
-  margin-bottom: 10px;
-  border-bottom: 1px solid var(--borderColor);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  padding: 10px 0;
-}
-
-.ingredientContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 10px 0;
-}
-
-.rowInputs > * {
-  flex: 1;
-}
-
 .arrowContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
+}
+
+.unitDisplay {
+  margin-top: 10px;
 }
