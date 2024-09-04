@@ -231,7 +231,7 @@ const UploadValidation = <
         </div>
         <div
           className="preview"
-          style={preview ? { maxHeight: '400px', overflow: "auto" } : { maxHeight: 0 }}>
+          style={preview ? { maxHeight: '150px', overflow: "auto" } : { maxHeight: 0 }}>
           <div className=''>
             {supplier && <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}><p style={{ marginBottom: "12px" }}>We have detected <strong>{supplier.length}</strong> new supllier</p>
               <Button
