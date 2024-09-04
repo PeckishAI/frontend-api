@@ -44,7 +44,25 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
       string | null
     >(null);
 
-    const [showAddPopup, setShowAddPopup] = useState(false);
+    const [popupMode, setPopupMode] = useState<'add' | 'edit'>('add');
+    const [editSupplier, setEditSupplier] = useState<LinkedSupplier | null>(
+      null
+    );
+
+    const [showPopup, setShowPopup] = useState(false);
+
+    const handleAddSupplierClick = () => {
+      setPopupMode('add');
+      setEditSupplier(null);
+      setShowPopup(true);
+    };
+
+    const handleEditSupplierClick = (supplier: LinkedSupplier) => {
+      setPopupMode('edit');
+      setEditSupplier(supplier);
+      setShowPopup(true);
+    };
+
     const [connectedIntegrations, setConnectedIntegrations] =
       useState<boolean>();
 
@@ -81,7 +99,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
             <Button
               value={t('inventory.addSupplierBtn')}
               type="primary"
-              onClick={() => setShowAddPopup(true)}
+              onClick={() => handleAddSupplierClick()}
             />
           ),
         };
@@ -251,6 +269,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
                     setSyncingSupplierUUID(supplier?.uuid);
                     handleSync();
                   }}
+                  onEdit={() => handleEditSupplierClick(supplier)}
                   connectedIntegrations={connectedIntegrations}
                 />
               ))}
@@ -307,9 +326,9 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
         </DialogBox>
 
         <AddSupplierPopup
-          isVisible={showAddPopup}
+          isVisible={showPopup}
           fetchSuppliersAndSync={fetchSuppliersAndSync}
-          onRequestClose={() => setShowAddPopup(false)}
+          onRequestClose={() => setShowPopup(false)}
           onSupplierAdded={(supplier) => {
             setSuppliers((suppliers) => [
               ...suppliers,
@@ -321,6 +340,17 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
               },
             ]);
           }}
+          onSupplierUpdated={(updatedSupplier) => {
+            setSuppliers((prev) =>
+              prev.map((supplier) =>
+                supplier.uuid === updatedSupplier.uuid
+                  ? updatedSupplier
+                  : supplier
+              )
+            );
+          }}
+          editSupplier={editSupplier}
+          mode={popupMode}
         />
         <Tooltip className="tooltip" id="suppliers-tooltip" delayShow={500} />
       </>
