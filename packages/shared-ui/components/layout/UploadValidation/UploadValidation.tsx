@@ -155,14 +155,14 @@ const UploadValidation = <
         .onUpload(columnsNames, selectedValues)
         .then(() => {
           setErrror(false);
-          toast.success('ajout avec succes');
+          toast.success(t('common:inventory.successBulkImport'));
           props.uploadSuccess();
           setIsLoading(true);
         })
         .catch((err) => {
           console.log('error : ', err);
           setErrror(true);
-          toast.error('erreur produit');
+          toast.error(t('common:inventory.errorBulkImport'));
           setIsLoading(true);
         });
     }
@@ -200,7 +200,7 @@ const UploadValidation = <
             <Loading size="large" />
           </div>
         ) }
-        <div className="headers">
+        <div className="headers">2
           {props.headers.map((field) => (
             <div className="header" key={field.name}>
               <span>{field.name}</span>
