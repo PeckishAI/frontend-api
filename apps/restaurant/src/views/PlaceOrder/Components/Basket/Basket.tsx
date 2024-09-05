@@ -250,7 +250,7 @@ const Basket = (props: Props) => {
           type="primary"
           value={t('placeOrder:placeOrder.title')}
           className={styles.submit}
-          disabled={totalAmount === 0}
+          // disabled={totalAmount === 0}
           onClick={handlePlaceOrder}
         />
       </div>
