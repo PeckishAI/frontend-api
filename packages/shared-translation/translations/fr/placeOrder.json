@@ -10,6 +10,8 @@
   "filterByIngredient": "Filter par ingrédient",
 
   "basket": "Panier",
+  "email":"Voulez-vous envoyer un e-mail aux fournisseurs ?",
+  "email-text":"Cochez cette case pour envoyer un email",
   "addToBasket": "Ajouter au panier",
   "shoppingBasket": "Panier d'achats",
   "basketIsEmpty": "Le panier est vide.",
