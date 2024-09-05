@@ -23,6 +23,7 @@ export type SupplierOrder = {
 export type OrderResponse = {
   supplier: string;
   orderDate: string;
+  orderNumber: string;
   deliveryDate: string;
   status: string;
   price: number;
@@ -52,6 +53,7 @@ const getOrders = async (
       supplier: item.supplier,
       orderDate: item.orderDate,
       deliveryDate: item.deliveryDate,
+      orderNumber: item.orderNumber,
       status: item.status,
       price: item.price,
       uuid: item.uuid,
