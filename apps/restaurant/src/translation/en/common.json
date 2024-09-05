@@ -35,6 +35,8 @@
   "inventory.selectSupplier": "Select a supplier",
   "inventory.selectUnit": "Select a unit",
   "inventory.add": "Add Supplier",
+  "inventory.successBulkImport": "Ingredients imported Successfully",
+  "inventory.errorBulkImport": "Error importing ingredients",
 
   "recipesCategories": {
     "drinks": "Drinks",
