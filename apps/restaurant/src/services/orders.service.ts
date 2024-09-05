@@ -12,6 +12,7 @@ export type SupplierOrder = {
   price: number;
   ingredients: IngredientOption[];
   note?: string | null;
+  deliveryDates?: string | null;
 };
 
 // const getOrders = async (restaurantUUID: string) => {
@@ -105,7 +106,7 @@ const placeSupplierOrder = (
   restaurantUUID: string,
   supplierOrder: SupplierOrder
 ) => {
-  return axiosClient.post('orders/' + restaurantUUID, supplierOrder);
+  return axiosClient.post('/orders/' + restaurantUUID, supplierOrder);
 };
 
 export const ordersService = {

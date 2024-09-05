@@ -223,7 +223,12 @@ const IngredientsTable = (props: Props) => {
           value: supplier.supplier_name,
         }));
 
-        if (supplierNames.length === 1) {
+        if (supplierNames.length === 0) {
+          // If no suppliers, show '--'
+          return <p>--</p>;
+        }
+
+        if (supplierNames?.length === 1) {
           // If there is only one supplier, show the name directly
           return <p>{supplierNames[0].label}</p>;
         }
