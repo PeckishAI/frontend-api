@@ -1,4 +1,4 @@
-import { Button, Checkbox, LabeledInput, Popup } from 'shared-ui';
+import { Button, Checkbox, LabeledInput, Popup, Select } from 'shared-ui';
 import styles from './AddPreparationPopup.module.scss';
 import { useEffect } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
@@ -9,7 +9,6 @@ import { Recipe, recipesService } from '../../services';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { useIngredients } from '../../services/hooks';
 import { FaPlus, FaTrash } from 'react-icons/fa';
-import Select from 'react-select';
 
 const AddPreparationSchema = z.object({
   category: z.string({
@@ -319,7 +318,6 @@ const AddPreparationPopup = (props: Props) => {
                       },
                     }}
                   />
-
                   {index > 0 && (
                     <FaTrash
                       className={styles.deleteButton}

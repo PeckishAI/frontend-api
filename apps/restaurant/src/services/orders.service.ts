@@ -12,6 +12,7 @@ export type SupplierOrder = {
   price: number;
   ingredients: IngredientOption[];
   note?: string | null;
+  deliveryDates?: string | null;
 };
 
 // const getOrders = async (restaurantUUID: string) => {
@@ -22,6 +23,7 @@ export type SupplierOrder = {
 export type OrderResponse = {
   supplier: string;
   orderDate: string;
+  orderNumber: string;
   deliveryDate: string;
   status: string;
   price: number;
@@ -50,7 +52,9 @@ const getOrders = async (
     return res.data.map((item) => ({
       supplier: item.supplier,
       orderDate: item.orderDate,
+      orderNumber: item.orderNumber,
       deliveryDate: item.deliveryDate,
+      orderNumber: item.orderNumber,
       status: item.status,
       price: item.price,
       uuid: item.uuid,
@@ -103,7 +107,7 @@ const placeSupplierOrder = (
   restaurantUUID: string,
   supplierOrder: SupplierOrder
 ) => {
-  return axiosClient.post('orders/' + restaurantUUID, supplierOrder);
+  return axiosClient.post('/orders/' + restaurantUUID, supplierOrder);
 };
 
 export const ordersService = {
