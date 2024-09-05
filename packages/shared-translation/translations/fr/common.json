@@ -64,6 +64,7 @@
 
   "orders.supplier": "Fournisseur",
   "orders.orderDate": "Date de commande",
+  "orders.orderNumber":"Numéro de commande",
   "orders.deliveryDate": "Date de livraison",
   "orders.status": "Statut",
   "orders.statusStates": {
