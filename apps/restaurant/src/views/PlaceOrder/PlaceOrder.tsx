@@ -44,13 +44,13 @@ const PlaceOrder = () => {
       </div>
       <div className={styles.header}>
         <p className={styles.message}>{t('placeOrder:placeOrder.message')}</p>
-        <div className={styles.tools}>
+        {/* <div className={styles.tools}>
           <Button
             type="primary"
             value={t('placeOrder:orderGeneration')}
             onClick={() => setIsDialogBoxVisible(true)}
           />
-        </div>
+        </div> */}
       </div>
       <ShoppingView generatedOrder={generatedOrder} />
       <DialogBox
