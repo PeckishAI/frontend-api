@@ -3,7 +3,7 @@ import IngredientsTable, {
   IngredientOption,
 } from '../IngredientsTable/IngredientsTable';
 import { useEffect, useState } from 'react';
-import { Button, Input, Select, SidePanel } from 'shared-ui';
+import { Button, DialogBox, Input, Select, SidePanel } from 'shared-ui';
 import Basket from '../Basket/Basket';
 import { Supplier } from '../../../../services';
 import { useRestaurantStore } from '../../../../store/useRestaurantStore';
@@ -47,6 +47,8 @@ const ShoppingView = (props: Props) => {
   const [cartItems, setCartItems] = useState<IngredientOption[]>([]);
   const [supplierNotes, setSupplierNotes] = useState<SupplierNote[]>([]);
   const [basketIsOpen, setBasketIsOpen] = useState(false);
+  const [showEmailDailog, setShowEmailDialog] = useState(false);
+  const [sendEmail, setSendEmail] = useState(false); // New state to track email confirmation
 
   useEffect(() => {
     if (!selectedRestaurantUUID) return;
@@ -115,6 +117,17 @@ const ShoppingView = (props: Props) => {
   };
 
   const handleOrderSubmited = (deliveryDates: Record<string, Date | null>) => {
+    // Store the delivery dates to be used after confirmation
+    window.deliveryDatesToSubmit = deliveryDates;
+
+    // Open the email confirmation dialog
+    setShowEmailDialog(true);
+  };
+
+  const handleOrderAfterConfirmation = (email: boolean) => {
+    // Retrieve the delivery dates saved earlier
+    const deliveryDates = window.deliveryDatesToSubmit;
+
     if (!selectedRestaurantUUID || !suppliers) return;
 
     const ingredientsBySupplier = groupIngredientsBySupplier(cartItems);
@@ -123,9 +136,7 @@ const ShoppingView = (props: Props) => {
     const orders: SupplierOrder[] = Object.entries(ingredientsBySupplier).map(
       ([supplierName, ingredients]) => ({
         supplier_uuid:
-          suppliers.find((s) => {
-            return s.name === supplierName;
-          })?.uuid ?? supplierName,
+          suppliers.find((s) => s.name === supplierName)?.uuid ?? supplierName,
         price: calculateOrderAmount(ingredients),
         ingredients,
         note: supplierNotes.find((note) => note.supplierName === supplierName)
@@ -134,19 +145,19 @@ const ShoppingView = (props: Props) => {
       })
     );
 
-    // send one by one order
     let orderSuccess = 0;
     orders.forEach((order) => {
       ordersService
-        .placeSupplierOrder(selectedRestaurantUUID, order)
+        .placeSupplierOrder(selectedRestaurantUUID, { ...order, email })
         .then(() => {
           orderSuccess++;
-          console.log('Order sent:', order);
+          console.log(`Order sent with email=${email}:`, order);
         })
         .catch(() => {})
         .finally(() => {
-          if (orderSuccess === orders.length)
+          if (orderSuccess === orders.length) {
             toast.success(t('placeOrder:orderSubmited'));
+          }
         });
     });
 
@@ -222,6 +233,33 @@ const ShoppingView = (props: Props) => {
         searchTermFilter={searchTerm}
         supplierFilter={selectedSupplier}
       />
+
+      <DialogBox
+        type="warning"
+        msg={t('placeOrder:email')}
+        isOpen={showEmailDailog}
+        onRequestClose={() => {
+          setShowEmailDialog(false);
+        }}
+        onConfirm={() => {
+          handleOrderAfterConfirmation(sendEmail);
+          setShowEmailDialog(false);
+        }}>
+        <div className={styles.dropdownSection}>
+          <div className={styles.flexContainer}>
+            <input
+              type="checkbox"
+              id="sendEmailCheckbox"
+              checked={sendEmail}
+              className={styles.input}
+              onChange={(e) => setSendEmail(e.target.checked)}
+            />
+            <label htmlFor="sendEmailCheckbox">
+              {t('placeOrder:emailText')}
+            </label>
+          </div>
+        </div>
+      </DialogBox>
 
       <SidePanel isOpen={basketIsOpen} onRequestClose={toggleBasket}>
         <Basket
