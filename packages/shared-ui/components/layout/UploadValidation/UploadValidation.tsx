@@ -200,7 +200,7 @@ const UploadValidation = <
             <Loading size="large" />
           </div>
         ) }
-        <div className="headers">2
+        <div className="headers">
           {props.headers.map((field) => (
             <div className="header" key={field.name}>
               <span>{field.name}</span>
