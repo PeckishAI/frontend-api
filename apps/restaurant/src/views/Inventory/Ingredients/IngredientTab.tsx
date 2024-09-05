@@ -12,7 +12,6 @@ import {
   Input,
   DialogBox,
   Checkbox,
-  Select,
 } from 'shared-ui';
 import { Ingredient, Tag, inventoryService } from '../../../services';
 import {
@@ -20,19 +19,20 @@ import {
   useRestaurantStore,
 } from '../../../store/useRestaurantStore';
 import Table, { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
+import Autocomplete from '@mui/material/Autocomplete';
+import Chip from '@mui/material/Chip';
 import { Tooltip } from 'react-tooltip';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import supplierService from '../../../services/supplier.service';
 import ImportIngredients from '../Components/ImportIngredients/ImportIngredients';
 import Fuse from 'fuse.js';
-import { formatCurrency } from '../../../utils/helpers';
 import { tagService } from '../../../services/tag.service';
-import toast from 'react-hot-toast';
 import Filters, {
   FiltersType,
   defaultFilters,
 } from '../Components/Filters/Filters';
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
+import { TextField } from '@mui/material';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -65,7 +65,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
     const [tagList, setTagList] = useState<Tag[]>([]);
-    const [loadingTag, setLoadingTag] = useState(false);
+    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+    const [inputValue, setInputValue] = useState<string>('');
     const [editingRowId, setEditingRowId] = useState<string | null>();
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
     const [addingRow, setAddingRow] = useState(false);
@@ -102,8 +103,62 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
+    const ensureTagObjects = (values: (Tag | string)[]): Tag[] => {
+      return values.map((value) =>
+        typeof value === 'string' ? { uuid: '', name: value } : value
+      );
+    };
 
-    useEffect(() => {
+    const handleSelectedTags = (
+      event: React.SyntheticEvent,
+      newValue: (Tag | string)[]
+    ) => {
+      const tags = ensureTagObjects(newValue);
+
+      setSelectedTags(tags);
+
+      setEditedValues((prevValues) => {
+        return { ...prevValues, tag_details: tags };
+      });
+    };
+
+    const handleInputChange = (event, newInputValue) => {
+      setInputValue(newInputValue);
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter' && inputValue) {
+        event.preventDefault();
+
+        const data = {
+          uuid: '', // Initially no UUID for the new tag
+          name: inputValue,
+        };
+
+        // Add the new tag if it's not already in options
+        if (!tagList.some((tag) => tag.name === inputValue)) {
+          setTagList((prevOptions) => [...prevOptions, data]);
+        }
+
+        setSelectedTags((prevTags) => [...prevTags, data]);
+
+        setEditedValues((prevValues) => {
+          const existingTagDetails = Array.isArray(prevValues?.tag_details)
+            ? prevValues.tag_details
+            : [];
+
+          return {
+            ...prevValues,
+            tag_details: [...existingTagDetails, data],
+          };
+        });
+
+        setInputValue('');
+      }
+    };
+
+    
+    const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
 
       supplierService
@@ -143,9 +198,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         }
 
         if (filters.selectedTag) {
-          filteredList = filteredList.filter(
-            (ingredient) => ingredient.tagUUID === filters?.selectedTag!.uuid
-          );
+          filteredList = filteredList.filter((ingredient) => {
+            return ingredient.tagUUID?.some(
+              (tag) => tag === filters?.selectedTag?.uuid
+            );
+          });
         }
 
         setFilteredIngredients(filteredList);
@@ -293,7 +350,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     useEffect(() => {
       reloadInventoryData();
       reloadTagList();
-    }, [reloadInventoryData, reloadTagList]);
+      reloadRestaurantSuppliers();
+    }, [reloadInventoryData, reloadTagList, reloadRestaurantSuppliers]);
 
     // Handle for selecting actions in table
     const handleSelectIngredient = (row: Ingredient) => {
@@ -378,52 +436,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           props.setLoadingState(false);
         });
     };
-
-    const handleSave = (data) => {
-      props.setLoadingState(true);
-      // const supplierDetails = data.ingredients.map((ingredient) => ({
-      //   supplier_id: ingredient.supplier_id,
-      //   supplier_name: ingredient.supplier_name || '', // Provide a default empty string if supplierName is not present
-      //   supplier_cost: Number(ingredient.supplier_cost), // Convert cost to a number
-      // }));
-      // console.log('supplierEdit', editedValues);
-      // Update the editedValues state with the new supplier details
-      // setEditedValues((prevValues) => ({
-      //   ...prevValues!,
-      //   supplier_details: supplierDetails,
-      // }));
-      // console.log('1111111', editedValues);
-      const {
-        id,
-        name,
-        tagUUID,
-        parLevel,
-        actualStock,
-        unit,
-        unitCost,
-        supplier_details,
-      } = data;
-
-      const updatedIngredient = {
-        id,
-        name,
-        tagUUID,
-        parLevel,
-        actualStock,
-        unit,
-        supplier_details, // Include supplier when updating
-        unitCost,
-        restaurantUUID: selectedRestaurantUUID, // Add the selectedRestaurantUUID here
-      };
-      inventoryService
-        .updateIngredient(updatedIngredient)
-        .catch((err) => {})
-        .then(() => {
-          reloadInventoryData();
-          props.setLoadingState(false);
-        });
-    };
-
     const handleAddSupplierDetail = () => {
       setEditedValues((prevValues) => {
         const newDetails = prevValues.supplier_details
@@ -457,24 +469,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         ...prevValues!,
         [field]: value,
       }));
-    };
-
-    const handleCreateTag = (name: string) => {
-      if (!selectedRestaurantUUID) return;
-      const isExisting = tagList.findIndex((tag) => tag.name === name);
-      if (isExisting !== -1) {
-        toast.error('Tag already exists.');
-        return;
-      }
-
-      setLoadingTag(true);
-      tagService
-        .create(name, selectedRestaurantUUID)
-        .then(() => {
-          reloadTagList();
-          toast.success(name + ' TAG created');
-        })
-        .finally(() => setLoadingTag(false));
     };
 
     // Handle for Popups
@@ -521,7 +515,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const {
         id,
         name,
-        tagUUID,
+        tag_details,
         parLevel,
         actualStock,
         unit,
@@ -532,7 +526,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const updatedIngredient = {
         id,
         name,
-        tagUUID,
+        tag_details,
         parLevel,
         actualStock,
         unit,
@@ -540,12 +534,15 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         unitCost,
         restaurantUUID: selectedRestaurantUUID, // Add the selectedRestaurantUUID here
       };
+
       inventoryService
         .updateIngredient(updatedIngredient)
         .catch((err) => {
           togglePopupError(err.message);
         })
         .then(() => {
+          reloadTagList();
+
           reloadInventoryData();
           props.setLoadingState(false);
         });
@@ -566,11 +563,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         tagUUID: null,
         parLevel: 0,
         actualStock: 0,
-        unit: units[0].value,
+        unit: null,
         // supplier_uuid: suppliers.length ? suppliers[0].value : '',
         // supplier: suppliers.length ? suppliers[0].label : '',
         supplier_details: [
-          { supplier_id: '', supplier_name: '', supplier_cost: 0 },
+          { supplier_id: null, supplier_name: '', supplier_cost: 0 },
         ],
         unitCost: 0,
         actions: undefined,
@@ -630,29 +627,101 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         minWidth: '150px',
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
-            <Select
-              placeholder={t('ingredient:addTag')}
+            <Autocomplete
+              multiple
+              freeSolo
+              ListboxProps={{ style: { maxHeight: 150 } }}
               options={tagList}
-              size="small"
-              isClearable
-              isCreatable
-              menuPosition="fixed"
-              maxMenuHeight={200}
-              isLoading={loadingTag}
-              onCreateOption={handleCreateTag}
-              getNewOptionData={(inputVal) => ({
-                uuid: '',
-                name: `Create '${inputVal}'`,
-              })}
-              getOptionLabel={(option) => option.name}
-              getOptionValue={(option) => option.uuid}
-              onChange={
-                (value) => handleValueChange('tagUUID', value?.uuid ?? '') // transform '' to null value in tagService
+              value={selectedTags}
+              onChange={handleSelectedTags}
+              onInputChange={handleInputChange}
+              inputValue={inputValue}
+              getOptionLabel={(option) => option?.name}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    label={option.name}
+                    {...getTagProps({ index })}
+                    key={option.uuid}
+                  />
+                ))
               }
-              value={tagList.find((tag) => editedValues?.tagUUID === tag.uuid)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  onKeyDown={handleKeyDown}
+                />
+              )}
+              sx={{
+                '& .MuiInputBase-root': {
+                  padding: '5px',
+                },
+              }}
             />
+          ) : row.tagUUID &&
+            Array.isArray(row.tagUUID) &&
+            row.tagUUID.length > 0 ? (
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                maxHeight: '100px',
+                overflowY: row.tagUUID.length > 6 ? 'scroll' : 'visible',
+              }}>
+              {row.tagUUID.map((uuid) => {
+                const tag = tagList.find((tag) => tag.uuid === uuid);
+                if (tag) {
+                  const displayName =
+                    tag.name.length > 6
+                      ? `${tag.name.slice(0, 6)}...`
+                      : tag.name;
+                  return (
+                    <span
+                      key={uuid}
+                      style={{
+                        display: 'inline-block',
+                        padding: '5px 10px',
+                        marginRight: '5px',
+                        marginBottom: '5px',
+                        borderRadius: '12px',
+                        backgroundColor: tag.color || '#d3d3d3',
+                        color: '#333',
+                        fontSize: '12px',
+                        maxWidth: '100px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}>
+                      {displayName}
+                    </span>
+                  );
+                } else {
+                  return (
+                    <span
+                      key={uuid}
+                      style={{
+                        display: 'inline-block',
+                        padding: '5px 10px',
+                        marginRight: '5px',
+                        marginBottom: '5px',
+                        borderRadius: '12px',
+                        backgroundColor: '#d3d3d3',
+                        color: '#333',
+                        fontSize: '12px',
+                        maxWidth: '100px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}>
+                      -
+                    </span>
+                  );
+                }
+              })}
+            </div>
           ) : (
-            tagList.find((tag) => tag.uuid === row.tagUUID)?.name ?? '-'
+            '-' // Fallback if there are no tags
           ),
       },
       {
@@ -922,7 +991,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         <ImportIngredients
           openUploader={importIngredientsPopup}
           onCloseUploader={() => setImportIngredientsPopup(false)}
-          onIngredientsImported={() => reloadInventoryData()}
+          onIngredientsImported={() => {
+            reloadInventoryData();
+            reloadRestaurantSuppliers();
+          }}
         />
 
         <Tooltip className="tooltip" id="inventory-tooltip" delayShow={500} />

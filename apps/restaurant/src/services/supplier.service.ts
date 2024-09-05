@@ -156,6 +156,7 @@ export default {
   getRestaurantSuppliers,
   getSuppliers,
   createSupplier,
+  updateSupplier,
   addSupplierToRestaurant,
   revokeSupplierAccess,
   updateSupplier,
