@@ -1,6 +1,6 @@
 import './style.scss';
 import { useTranslation } from 'react-i18next';
-import { Button, Popup, Select } from 'shared-ui';
+import { Button, Loading, Popup, Select } from 'shared-ui';
 import { useEffect, useState } from 'react';
 import { ColumnsNameMapping } from '../../../../../apps/restaurant/src/services';
 import { useRestaurantStore } from '../../../../../apps/restaurant/src/store/useRestaurantStore';
@@ -60,6 +60,7 @@ const UploadValidation = <
     null
   );
   const [popupMode, setPopupMode] = useState<'add' | 'edit'>('add');
+  const [isLoading, setIsLoading] = useState(false);
 
 
 
@@ -114,7 +115,6 @@ const UploadValidation = <
   };
 
   const handleChange = (value: SelectOption | null, index: number, sup: string) => {
-    console.log('sup', value);
 
     setSelectedValues((prevSelectedValues) => ({
       ...prevSelectedValues,
@@ -150,26 +150,26 @@ const UploadValidation = <
   const handleValidClick = () => {
     if (headerValues !== null && selectedRestaurantUUID !== undefined) {
       const columnsNames = getColumnNames() as T;
-      console.log('columnsNames', columnsNames)
-
+      setIsLoading(true);
       props
         .onUpload(columnsNames, selectedValues)
         .then(() => {
           setErrror(false);
           toast.success('ajout avec succes');
           props.uploadSuccess();
+          setIsLoading(true);
         })
         .catch((err) => {
           console.log('error : ', err);
           setErrror(true);
           toast.error('erreur produit');
+          setIsLoading(true);
         });
     }
   };
 
   useEffect(() => {
     if (!selectedRestaurantUUID) return;
-    console.log('selectedRestaurantUUID', selectedRestaurantUUID)
 
     supplierService
       .getRestaurantSuppliers(selectedRestaurantUUID)
@@ -195,6 +195,11 @@ const UploadValidation = <
       subtitle={t('inventory.uploadCSV.popup.subtitle')}
       onRequestClose={props.onCancelClick}>
       <div className="upload-popup">
+        {isLoading && (
+          <div className='loader'>
+            <Loading size="large" />
+          </div>
+        ) }
         <div className="headers">
           {props.headers.map((field) => (
             <div className="header" key={field.name}>
@@ -231,7 +236,7 @@ const UploadValidation = <
         </div>
         <div
           className="preview"
-          style={preview ? { maxHeight: '150px', overflow: "auto" } : { maxHeight: 0 }}>
+          style={preview ? { maxHeight: 'calc(100vh - 360px)', overflow: "auto" } : { maxHeight: 0 }}>
           <div className=''>
             {supplier && <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}><p style={{ marginBottom: "12px" }}>We have detected <strong>{supplier.length}</strong> new supllier</p>
               <Button
@@ -246,16 +251,18 @@ const UploadValidation = <
               supplier && supplier.map((item, index) => {
                 return <div key={index} className='flex' style={{ marginBottom: "12px", }}>
                   <p style={{ minWidth: "120px" }}>{item?.Supplier}</p>
-                  <Select
-                    isClearable
-                    placeholder="Select an option"
-                    options={suppliers.map((option) => ({
-                      value: option.uuid,
-                      label: option.name,
-                    }))}
-                    value={selectedValues[item?.Supplier] || null}
-                    onChange={(value) => handleChange(value as SelectOption | null, index, item?.Supplier)}
-                  />
+                  <div style={{width:"200px"}}>
+                    <Select
+                      isClearable
+                      placeholder="Select an option"
+                      options={suppliers.map((option) => ({
+                        value: option.uuid,
+                        label: option.name,
+                      }))}
+                      value={selectedValues[item?.Supplier] || null}
+                      onChange={(value) => handleChange(value as SelectOption | null, index, item?.Supplier)}
+                    />
+                  </div>
 
                 </div>
               })
