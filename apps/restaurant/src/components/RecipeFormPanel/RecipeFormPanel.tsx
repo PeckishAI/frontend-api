@@ -24,9 +24,7 @@ import {
 import { components, OptionProps } from 'react-select';
 import styles from './RecipeFormPanel.module.scss';
 import { getRecipeCategorie } from '../../views/Recipes/RecipeNew';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import ListSubheader from '@mui/material/ListSubheader';
+
 const RecipeSchema = z
   .object({
     name: z.string().trim().nonempty('required'),

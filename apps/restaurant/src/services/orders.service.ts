@@ -54,6 +54,7 @@ const getOrders = async (
       orderDate: item.orderDate,
       orderNumber: item.orderNumber,
       deliveryDate: item.deliveryDate,
+      orderNumber: item.orderNumber,
       status: item.status,
       price: item.price,
       uuid: item.uuid,

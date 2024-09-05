@@ -1,4 +1,4 @@
-import { IconButton, Input, Table, useDebounceMemo } from 'shared-ui';
+import { IconButton, Input, Select, Table, useDebounceMemo } from 'shared-ui';
 import styles from './styles.module.scss';
 import { useTranslation } from 'react-i18next';
 import { useIngredients } from '../../../../services/hooks';
@@ -65,17 +65,17 @@ const IngredientsTable = (props: Props) => {
   >({});
 
   useEffect(() => {
-    if (ingredients && ingredients.length > 0) {
+    if (ingredients && ingredients?.length > 0) {
       const newIngredientOptions: IngredientOption[] = ingredients.map(
         (ingredient) => {
           // Get the first supplier's details if available
           const firstSupplier =
-            ingredient.supplier_details.length > 0
+            ingredient?.supplier_details?.length > 0
               ? ingredient.supplier_details[0]
               : { supplier_name: '', supplier_cost: 0 };
 
           // Map over supplier_details and join supplier_names
-          const supplierNames = ingredient.supplier_details
+          const supplierNames = ingredient?.supplier_details
             .map((supplier) => supplier.supplier_name)
             .join(', '); // Join names with comma
 
@@ -141,9 +141,9 @@ const IngredientsTable = (props: Props) => {
         );
 
         if (existingItemIndex !== -1) {
-          // If the supplier entry already exists, increase the quantity by 1
+          // If the supplier entry already exists, increase the quantity by 0
           const updatedCartItems = [...prevCartItems];
-          updatedCartItems[existingItemIndex].ingredientQuantity += 1;
+          updatedCartItems[existingItemIndex].ingredientQuantity += 0;
           return updatedCartItems;
         }
 
@@ -218,17 +218,18 @@ const IngredientsTable = (props: Props) => {
           (ing) => ing.id === row.ingredientUUID
         );
 
-        const supplierNames = ingredient?.supplier_details.map((supplier) => ({
-          label: supplier.supplier_name,
-          value: supplier.supplier_name,
-        }));
+        const supplierNames =
+          ingredient?.supplier_details?.map((supplier) => ({
+            label: supplier.supplier_name,
+            value: supplier.supplier_name,
+          })) || [];
 
         if (supplierNames.length === 0) {
           // If no suppliers, show '--'
           return <p>--</p>;
         }
 
-        if (supplierNames?.length === 1) {
+        if (supplierNames.length === 1) {
           // If there is only one supplier, show the name directly
           return <p>{supplierNames[0].label}</p>;
         }
@@ -238,6 +239,7 @@ const IngredientsTable = (props: Props) => {
 
         return (
           <Select
+            size="Large"
             options={supplierNames}
             isMulti={false}
             value={
@@ -245,7 +247,7 @@ const IngredientsTable = (props: Props) => {
                 ? { label: selectedSupplier, value: selectedSupplier }
                 : null
             }
-            placeholder={'Select supplier'} // Placeholder will show "Select supplier"
+            placeholder={'Select supplier'}
             onChange={(selectedOption) => {
               const newSupplier = selectedOption?.value || '';
               handleSupplierChange(row.ingredientUUID, newSupplier);

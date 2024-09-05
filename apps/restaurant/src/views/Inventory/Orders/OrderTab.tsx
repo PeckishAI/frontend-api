@@ -109,6 +109,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
 
     const columns: ColumnDefinitionType<Order>[] = useMemo(
       () => [
+        { key: 'orderNumber', header: t('orders.orderNumber') },
         { key: 'supplier', header: t('orders.supplier') },
         { key: 'orderDate', header: t('orders.orderDate') },
         { key: 'orderNumber', header: t('orders.orderNumber') },
