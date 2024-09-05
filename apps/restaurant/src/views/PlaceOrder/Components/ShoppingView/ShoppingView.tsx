@@ -114,11 +114,12 @@ const ShoppingView = (props: Props) => {
     setSelectedSupplier(supplier);
   };
 
-  const handleOrderSubmited = () => {
+  const handleOrderSubmited = (deliveryDates: Record<string, Date | null>) => {
     if (!selectedRestaurantUUID || !suppliers) return;
 
     const ingredientsBySupplier = groupIngredientsBySupplier(cartItems);
-    // Create order per supplier
+
+    // Create orders per supplier
     const orders: SupplierOrder[] = Object.entries(ingredientsBySupplier).map(
       ([supplierName, ingredients]) => ({
         supplier_uuid:
@@ -129,6 +130,7 @@ const ShoppingView = (props: Props) => {
         ingredients,
         note: supplierNotes.find((note) => note.supplierName === supplierName)
           ?.note,
+        delivery_date: deliveryDates[supplierName] ?? null, // Add delivery date for each supplier
       })
     );
 
@@ -139,7 +141,7 @@ const ShoppingView = (props: Props) => {
         .placeSupplierOrder(selectedRestaurantUUID, order)
         .then(() => {
           orderSuccess++;
-          console.log('Commande envoyée:', order);
+          console.log('Order sent:', order);
         })
         .catch(() => {})
         .finally(() => {
@@ -147,6 +149,7 @@ const ShoppingView = (props: Props) => {
             toast.success(t('placeOrder:orderSubmited'));
         });
     });
+
     setCartItems([]);
     setSupplierNotes([]);
     setBasketIsOpen(false);
