@@ -19,8 +19,6 @@ import {
   useRestaurantStore,
 } from '../../../store/useRestaurantStore';
 import Table, { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
-import Autocomplete from '@mui/material/Autocomplete';
-import Chip from '@mui/material/Chip';
 import { Tooltip } from 'react-tooltip';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import supplierService from '../../../services/supplier.service';
@@ -105,61 +103,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
-    const ensureTagObjects = (values: (Tag | string)[]): Tag[] => {
-      return values.map((value) =>
-        typeof value === 'string' ? { uuid: '', name: value } : value
-      );
-    };
-
-    const handleSelectedTags = (
-      event: React.SyntheticEvent,
-      newValue: (Tag | string)[]
-    ) => {
-      const tags = ensureTagObjects(newValue);
-
-      setSelectedTags(tags);
-
-      setEditedValues((prevValues) => {
-        return { ...prevValues, tag_details: tags };
-      });
-    };
-
-    const handleInputChange = (event, newInputValue) => {
-      setInputValue(newInputValue);
-    };
-
-    const handleKeyDown = (event) => {
-      if (event.key === 'Enter' && inputValue) {
-        event.preventDefault();
-
-        const data = {
-          uuid: '', // Initially no UUID for the new tag
-          name: inputValue,
-        };
-
-        // Add the new tag if it's not already in options
-        if (!tagList.some((tag) => tag.name === inputValue)) {
-          setTagList((prevOptions) => [...prevOptions, data]);
-        }
-
-        setSelectedTags((prevTags) => [...prevTags, data]);
-
-        setEditedValues((prevValues) => {
-          const existingTagDetails = Array.isArray(prevValues?.tag_details)
-            ? prevValues.tag_details
-            : [];
-
-          return {
-            ...prevValues,
-            tag_details: [...existingTagDetails, data],
-          };
-        });
-
-        setInputValue('');
-      }
-    };
-
-    
     const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
 
@@ -599,7 +542,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         // supplier: suppliers.length ? suppliers[0].label : '',
         supplier_details: [
           { supplier_id: null, supplier_name: null, supplier_cost: 0 },
-
         ],
         unitCost: 0,
         actions: undefined,
@@ -885,7 +827,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             '-' // Fallback if there are no tags
           );
         },
-
       },
       {
         key: 'parLevel',
