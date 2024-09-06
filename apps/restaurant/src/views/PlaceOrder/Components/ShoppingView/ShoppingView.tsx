@@ -3,7 +3,14 @@ import IngredientsTable, {
   IngredientOption,
 } from '../IngredientsTable/IngredientsTable';
 import { useEffect, useState } from 'react';
-import { Button, DialogBox, Input, Select, SidePanel } from 'shared-ui';
+import {
+  Button,
+  Checkbox,
+  DialogBox,
+  Input,
+  Select,
+  SidePanel,
+} from 'shared-ui';
 import Basket from '../Basket/Basket';
 import { Supplier } from '../../../../services';
 import { useRestaurantStore } from '../../../../store/useRestaurantStore';
@@ -247,12 +254,10 @@ const ShoppingView = (props: Props) => {
         }}>
         <div className={styles.dropdownSection}>
           <div className={styles.flexContainer}>
-            <input
-              type="checkbox"
-              id="sendEmailCheckbox"
+            <Checkbox
+              className={styles.autoCheckbox}
               checked={sendEmail}
-              className={styles.input}
-              onChange={(e) => setSendEmail(e.target.checked)}
+              onCheck={(checked) => setSendEmail(checked)}
             />
             <label htmlFor="sendEmailCheckbox">
               {t('placeOrder:emailText')}
