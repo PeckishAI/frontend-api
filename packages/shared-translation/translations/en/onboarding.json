@@ -2,6 +2,8 @@
   "onboarding.msg": "Select a software that you want to integrate to Peckish !",
   "onboarding.userNotOnboarded.msg": "Onboard your restaurant in Integrations menu to use this feature.",
   "onboarding.modal.title": "New integration",
+  "restaurant.modal.title":"Connect Your Restaurant",
+  "restaurant.modal.description":"Map with existing or Create New by Add to Peckish",
   "onboarding.modal.description.oauth": "Integrate with {{name}}",
   "onboarding.modal.description.oauth.message": "Click on the button below to connect Peckish with {{name}}",
   "onboarding.modal.description.login": "Please input your credentials for {{name}}",

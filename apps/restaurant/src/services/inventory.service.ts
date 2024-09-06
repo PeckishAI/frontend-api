@@ -97,8 +97,14 @@ const sendInvoice = async (restaurantUUID: string, data: DocumentData[]) => {
   }
 };
 
-const deleteDocument = (documentId: string) => {
-  return axiosClient.post('/documents/' + documentId + '/delete');
+const deleteDocument = async (documentId: string) => {
+  try {
+    const response = await axiosClient.post(`/documents/${documentId}/delete`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    throw error;
+  }
 };
 
 const getIngredientList = async (
@@ -124,6 +130,7 @@ const getIngredientList = async (
     ),
     amount: res.data[key]['amount'],
     type: res.data[key]['type'],
+    quantity: res.data[key]['quantity'],
   }));
 };
 
