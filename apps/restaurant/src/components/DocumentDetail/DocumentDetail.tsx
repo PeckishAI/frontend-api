@@ -21,6 +21,8 @@ import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { toast } from 'react-hot-toast';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
+import DatePicker from 'react-datepicker';
 
 type Props = {
   document: Invoice | null;
@@ -52,6 +54,37 @@ const DocumentDetail = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const { control } = useForm();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  useEffect(() => {
+    if (props.document?.date) {
+      setSelectedDate(new Date(props.document.date));
+    }
+  }, [props.document]);
+
+  const handleDateChange = (date: Date | null) => {
+    if (date) {
+      const formattedDate = date.toLocaleDateString('en-CA');
+      setSelectedDate(date);
+      handleInputChange({ target: { value: formattedDate } }, 'date');
+    } else {
+      setSelectedDate(null);
+      handleInputChange({ target: { value: '' } }, 'date');
+    }
+  };
+
+  const toggleEditMode = () => {
+    setIsEditMode((prevState) => !prevState);
+    if (!isEditMode) {
+      setEditableDocument(props.document);
+      setSelectedDate(
+        props.document?.date ? new Date(props.document.date) : null
+      );
+    } else {
+      setEditableDocument(null);
+      setSelectedDate(null);
+    }
+  };
 
   const { ingredients, loading: loadingIngredients } = useIngredients();
 
@@ -63,17 +96,6 @@ const DocumentDetail = (props: Props) => {
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
-
-  const toggleEditMode = () => {
-    setIsEditMode((prevState) => !prevState); // Toggle edit mode state
-    if (!isEditMode) {
-      // Enter edit mode
-      setEditableDocument(props.document);
-    } else {
-      // Exit edit mode
-      setEditableDocument(null);
-    }
-  };
 
   const handleDocumentChange = (field: keyof Invoice, value: any) => {
     setEditableDocument((prevDocument) => {
@@ -519,6 +541,20 @@ const DocumentDetail = (props: Props) => {
                           onChange={(e) => handleInputChange(e, 'amount')}
                           value={editableDocument?.amount}
                         />
+                        <DatePicker
+                          selected={
+                            selectedDate ||
+                            (editableDocument?.date
+                              ? new Date(editableDocument.date)
+                              : null)
+                          }
+                          onChange={handleDateChange}
+                          dateFormat="yyyy-MM-dd"
+                          placeholderText={'Select a Date'}
+                          className={styles.datePicker}
+                          isClearable
+                          showPopperArrow={false}
+                        />
                       </div>
                       <div>
                         <Table
@@ -611,6 +647,14 @@ const DocumentDetail = (props: Props) => {
                           {formatCurrency(props.document?.amount, currencyISO)}
                         </span>
                       </p>
+                      <p className={styles.name}>
+                        {t('date')}:
+                        <span className={styles.value}>
+                          {' '}
+                          {props.document?.date}
+                        </span>
+                      </p>
+                      <span className={styles.value}></span>
                     </div>
                     <div className={styles.flexContainer}>
                       <IconButton
