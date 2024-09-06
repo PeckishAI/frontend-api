@@ -66,6 +66,7 @@ export type CostofSales = {
   actual_cos: number;
   theoretical_cos: number;
   variance: number;
+  variance_value: number;
 }[];
 
 const getCostOfSales = async (
@@ -96,6 +97,7 @@ const getCostOfSales = async (
       actual_cos: item.actual_cos,
       theoretical_cos: item.theoretical_cos,
       variance: item.variance,
+      varience_value: item.varience_value,
     }));
   } catch (res) {
     console.error('Error fetching data:', res?.data.error);
@@ -114,6 +116,7 @@ export type Ingredient = {
   theoretical_cos: number;
   sold_qty: number;
   variance: number;
+  variance_value: number;
 };
 
 interface GetCostResponse {

@@ -6,6 +6,7 @@ type Props = {
   image: string;
   button_display: string;
   onClick: () => void;
+  disabled: boolean;
 };
 
 const IntegrationCard = (props: Props) => {
@@ -17,6 +18,7 @@ const IntegrationCard = (props: Props) => {
           type="primary"
           value={props.button_display}
           onClick={props.onClick}
+          disabled={props.disabled}
         />
       </div>
       <div className="logo-container">

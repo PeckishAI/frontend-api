@@ -21,6 +21,10 @@ import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { toast } from 'react-hot-toast';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import supplierService from '../../services/supplier.service';
+import SupplierNew from '../../views/Inventory/Suppliers/components/SuppplierNew';
+import CreatableSelect from 'react-select/creatable';
+
 
 type Props = {
   document: Invoice | null;
@@ -54,6 +58,10 @@ const DocumentDetail = (props: Props) => {
   const { control } = useForm();
 
   const { ingredients, loading: loadingIngredients } = useIngredients();
+  const [showAddPopup, setShowAddPopup] = useState(false);
+  const [suppliers, setSuppliers] = useState<LinkedSupplier[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [newInputAdd, setNewInputAdd] = useState('');
 
   const ingredientOptions = ingredients.map((ingredient) => ({
     value: ingredient.id,
@@ -88,10 +96,14 @@ const DocumentDetail = (props: Props) => {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: keyof Invoice
+    e: React.ChangeEvent<HTMLInputElement> | { target: { value: any } },
+    field: keyof Invoice = 'supplier'
   ) => {
-    const value = e.target.value;
+    // Check if `e.target.value` exists, otherwise use `e.value` directly
+    const value = e.target ? e.target.value : e;
+
+    console.log('Selected value:', value);
+
     handleDocumentChange(field, value);
   };
 
@@ -115,6 +127,24 @@ const DocumentDetail = (props: Props) => {
       ingredients: updatedIngredients,
     });
   };
+
+  useEffect(() => {
+    if (!selectedRestaurantUUID) return;
+
+    supplierService
+      .getRestaurantSuppliers(selectedRestaurantUUID)
+      .then((res) => {
+        const suppliersList: DropdownOptionsDefinitionType[] = [];
+        res.forEach((supplier) => {
+          suppliersList.push({
+            label: supplier.name,
+            value: supplier.supplier_uuid, // Update here to use supplier_uuid
+            supplier_uuid: supplier.supplier_uuid,
+          });
+        });
+        setSuppliers(suppliersList);
+      });
+  }, [selectedRestaurantUUID]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -445,6 +475,24 @@ const DocumentDetail = (props: Props) => {
     },
   };
 
+  const options = suppliers.map((supplier) => ({
+    label: supplier.label,
+    value: supplier.value,
+  }));
+
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
+
+  // This useEffect can be used to set the selected supplier from props if needed
+  useEffect(() => {
+    if (props.document?.supplier) {
+      setSelectedSupplier({
+        label: props.document.supplier,
+        value: props.document.supplier_uuid || props.document.supplier, // assuming supplier_uuid is available
+      });
+    }
+  }, [props.document?.supplier]);
+
+
   return (
     <>
       <SidePanel
@@ -502,13 +550,80 @@ const DocumentDetail = (props: Props) => {
 
                     <div className={styles.scrollDiv}>
                       <div className={styles.headerData}>
-                        <LabeledInput
+                        {/* <LabeledInput
+                        
                           type="text"
                           placeholder={t('ingredient:supplier')}
                           className={styles.input}
                           onChange={(e) => handleInputChange(e, 'supplier')}
                           value={editableDocument?.supplier || ''}
+                        /> */}
+                        <CreatableSelect
+                          options={options}
+                          className={styles.input}
+                          inputValue={inputValue}
+                          value={selectedSupplier} // Control the selected value
+                          onInputChange={(newInputValue) => {
+                            setInputValue(newInputValue);
+                          }}
+                          onChange={(selectedOption, actionMeta) => {
+                            if (actionMeta.action === 'create-option') {
+                              // Handle the creation of a new supplier
+                              setShowAddPopup(true); // Show the "Add New Supplier" popup
+                              handleInputChange(
+                                selectedOption.label,
+                                'supplier'
+                              );
+                              setNewInputAdd(selectedOption.label);
+                              setSelectedSupplier(null); // Clear selected value after adding new supplier
+                            } else if (selectedOption) {
+                              handleInputChange(
+                                selectedOption.value,
+                                'supplier'
+                              );
+                              setSelectedSupplier(selectedOption); // Set the selected supplier
+                            } else {
+                              setSelectedSupplier(null); // Clear the selected value if nothing is selected
+                            }
+                          }}
+                          styles={{
+                            control: (provided) => ({
+                              ...provided,
+                              minHeight: '56px', // Adjust this if needed
+                            }),
+                            menu: (provided) => ({
+                              ...provided,
+                              zIndex: 9999, // Ensure dropdown is above other elements
+                            }),
+                            menuList: (provided) => ({
+                              ...provided,
+                              maxHeight: '200px', // Limit the height of the dropdown list
+                              overflowY: 'auto', // Enable scrolling if the list is long
+                            }),
+                            option: (provided, state) => ({
+                              ...provided,
+                              backgroundColor: state.isSelected
+                                ? '#007BFF'
+                                : provided.backgroundColor,
+                              color: state.isSelected
+                                ? '#FFFFFF'
+                                : provided.color,
+                            }),
+                            container: (provided) => ({
+                              ...provided,
+                              overflow: 'visible', // Ensure the dropdown is not clipped
+                            }),
+                          }}
+                          isClearable
+                          isSearchable
+                          placeholder="Enter or select a supplier"
+                          noOptionsMessage={({ inputValue }) =>
+                            inputValue !== ''
+                              ? `Add "${inputValue}" as new supplier`
+                              : 'No options'
+                          }
                         />
+
                         <LabeledInput
                           type="number"
                           min={0}
@@ -677,6 +792,11 @@ const DocumentDetail = (props: Props) => {
             />
           </div>
         )}
+        <SupplierNew
+          isVisible={showAddPopup}
+          onRequestClose={() => setShowAddPopup(false)}
+          onNew={newInputAdd}
+        />
       </SidePanel>
     </>
   );
