@@ -10,6 +10,8 @@
   "filterByIngredient": "Filter by ingredient",
 
   "basket": "Basket",
+  "email":"Do you want to send email to the suppliers?",
+  "emailText":"Check this box to send email",
   "addToBasket": "Add to basket",
   "shoppingBasket": "Shopping basket",
   "basketIsEmpty": "Basket is empty.",

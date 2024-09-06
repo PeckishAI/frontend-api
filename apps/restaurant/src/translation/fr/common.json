@@ -34,6 +34,8 @@
   "inventory.selectSupplier": "Sélectionnez un fournisseur",
   "inventory.selectUnit": "Sélectionnez une unité",
   "inventory.add": "Ajouter un fournisseur",
+  "inventory.successBulkImport": "Ingrédients importés avec succès",
+  "inventory.errorBulkImport": "Erreur lors de l'importation des ingrédients",
 
   "recipesCategories": {
     "drinks": "Boissons",

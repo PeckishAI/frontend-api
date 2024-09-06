@@ -7,12 +7,16 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { SupplierNote } from '../ShoppingView/ShoppingView';
 import classNames from 'classnames';
+import DatePicker from 'react-datepicker'; // Add DatePicker import
+import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
 
 type Props = {
   cartItems: IngredientOption[];
   setCartItems: React.Dispatch<React.SetStateAction<IngredientOption[]>>;
   setSupplierNotes: React.Dispatch<React.SetStateAction<SupplierNote[]>>;
-  onOrderSubmited: () => void;
+  onOrderSubmited: (
+    deliveryDates: Record<string, Date | null> // Pass delivery dates in order submit
+  ) => void;
 };
 
 const Basket = (props: Props) => {
@@ -20,10 +24,11 @@ const Basket = (props: Props) => {
   const { currencyISO } = useRestaurantCurrency();
 
   const [removeItemPopup, setRemoveItemPopup] = useState('');
-  // notes Values for each supplier stored here to avoid update parent state on valuesChange
   const [notesValues, setNotesValues] = useState<SupplierNote[]>([]);
+  const [deliveryDates, setDeliveryDates] = useState<
+    Record<string, Date | null>
+  >({});
 
-  // Create an object where suppliers are keys and ingredients values.
   const ingredientsBySupplier: Record<string, IngredientOption[]> =
     props.cartItems.reduce((acc, item) => {
       if (!acc[item.ingredientSupplier]) {
@@ -92,13 +97,35 @@ const Basket = (props: Props) => {
       { supplierName: supplierName, note: '' },
     ]);
   };
+
   const handleRemoveNote = (supplierName: string) => {
     setNotesValues((prevList) =>
       prevList.filter((item) => item.supplierName !== supplierName)
     );
   };
 
-  // update supplierNotes in parent component with 500ms debounce to avoid spam and lag
+  const getFormattedBrowserDate = () => {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  };
+  const handleDateChange = (supplierName: string, date: Date | null) => {
+    const formattedDate = date
+      ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+          2,
+          '0'
+        )}-${String(date.getDate()).padStart(2, '0')}`
+      : getFormattedBrowserDate();
+
+    setDeliveryDates((prevDates) => ({
+      ...prevDates,
+      [supplierName]: formattedDate,
+    }));
+  };
+
   useDebounceEffect(
     () => {
       props.setSupplierNotes(notesValues);
@@ -109,7 +136,7 @@ const Basket = (props: Props) => {
 
   const handlePlaceOrder = () => {
     setNotesValues([]);
-    props.onOrderSubmited();
+    props.onOrderSubmited(deliveryDates);
   };
 
   return (
@@ -131,9 +158,22 @@ const Basket = (props: Props) => {
         <div className={styles.container}>
           {Object.entries(ingredientsBySupplier).map(([supplier, items]) => (
             <div className={styles.ingredientsBySupplier} key={supplier}>
-              <p className={styles.supplierName}>
-                {supplier === 'null' ? t('common:unknown') : supplier}
-              </p>
+              <div className={styles.flexContainer}>
+                <div>
+                  <p className={styles.supplierName}></p>
+                  {supplier === 'null' ? t('common:unknown') : supplier}
+                </div>
+                <div>
+                  <DatePicker
+                    selected={deliveryDates[supplier] || null}
+                    dateFormat="yyyy-MM-dd"
+                    onChange={(date) => handleDateChange(supplier, date)}
+                    placeholderText={'select Delivery Date'}
+                    className={styles.datePicker}
+                    minDate={new Date()}
+                  />
+                </div>
+              </div>
               <div className={styles.ingredients}>
                 {items.map((item) => (
                   <div className={styles.row} key={item.ingredientUUID}>
@@ -216,7 +256,7 @@ const Basket = (props: Props) => {
           type="primary"
           value={t('placeOrder:placeOrder.title')}
           className={styles.submit}
-          disabled={totalAmount === 0}
+          // disabled={totalAmount === 0}
           onClick={handlePlaceOrder}
         />
       </div>

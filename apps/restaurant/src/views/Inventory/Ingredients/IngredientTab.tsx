@@ -103,7 +103,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       (state) => state.selectedRestaurantUUID
     );
 
-    useEffect(() => {
+
+    const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
 
       supplierService
@@ -295,7 +296,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     useEffect(() => {
       reloadInventoryData();
       reloadTagList();
-    }, [reloadInventoryData, reloadTagList]);
+      reloadRestaurantSuppliers();
+    }, [reloadInventoryData, reloadTagList, reloadRestaurantSuppliers]);
 
     // Handle for selecting actions in table
     const handleSelectIngredient = (row: Ingredient) => {
@@ -924,7 +926,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         <ImportIngredients
           openUploader={importIngredientsPopup}
           onCloseUploader={() => setImportIngredientsPopup(false)}
-          onIngredientsImported={() => reloadInventoryData()}
+          onIngredientsImported={() => {
+            reloadInventoryData();
+            reloadRestaurantSuppliers();
+          }}
         />
 
         <Tooltip className="tooltip" id="inventory-tooltip" delayShow={500} />
