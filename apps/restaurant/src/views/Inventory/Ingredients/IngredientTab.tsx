@@ -550,7 +550,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         // supplier_uuid: suppliers.length ? suppliers[0].value : '',
         // supplier: suppliers.length ? suppliers[0].label : '',
         supplier_details: [
-          { supplier_id: '', supplier_name: '', supplier_cost: 0 },
+          { supplier_id: null, supplier_name: null, supplier_cost: 0 },
         ],
         unitCost: 0,
         actions: undefined,
