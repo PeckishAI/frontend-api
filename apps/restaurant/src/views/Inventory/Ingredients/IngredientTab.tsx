@@ -32,7 +32,7 @@ import Filters, {
   defaultFilters,
 } from '../Components/Filters/Filters';
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
-import { TextField } from '@mui/material';
+import CreatableSelect from 'react-select/creatable';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -62,11 +62,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [filteredIngredients, setFilteredIngredients] = useState<
       Ingredient[]
     >([]);
+    const [ingredientTags, setIngredientTags] = useState<{
+      [key: string]: Tag[];
+    }>({});
+    const [inputValue, setInputValue] = useState<string>('');
 
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
     const [tagList, setTagList] = useState<Tag[]>([]);
-    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
-    const [inputValue, setInputValue] = useState<string>('');
     const [editingRowId, setEditingRowId] = useState<string | null>();
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
     const [addingRow, setAddingRow] = useState(false);
@@ -405,7 +407,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           .catch((err) => {
             togglePopupError(err.message);
           })
-          .then(() => reloadInventoryData());
+          .then(() => {
+            reloadTagList();
+            reloadInventoryData();
+          });
         setAddingRow(false);
       }
     };
@@ -463,6 +468,38 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       });
     };
 
+    const handleSelectedTags = (
+      event: React.SyntheticEvent,
+      newValue: (Tag | string)[],
+      rowId: string
+    ) => {
+      // Convert the newValue to an array of tag objects
+      const tags = newValue.map((item) => {
+        if (typeof item === 'string') {
+          // If the item is a string, it's a new tag created by the user
+          return { name: item, uuid: '' }; // Ensure uuid is empty
+        } else if (item.uuid === item.name) {
+          // If the uuid matches the name, it's likely a new tag that needs an empty uuid
+          return { name: item.name, uuid: '' };
+        } else {
+          // If the item is an object, it’s an existing tag
+          return item;
+        }
+      });
+
+      // Update the state only for the specific row (ingredient)
+      setIngredientTags((prevTags) => ({
+        ...prevTags,
+        [rowId]: tags,
+      }));
+
+      // Update the editedValues with the new tags
+      setEditedValues((prevValues) => ({
+        ...prevValues,
+        tag_details: tags,
+      }));
+    };
+
     // Handle inputs change
     const handleValueChange = (field: keyof Ingredient, value: string) => {
       setEditedValues((prevValues) => ({
@@ -508,20 +545,14 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const togglePopupPreviewEdit = (msg: string[] | undefined) => {
       setPopupPreviewEdit(msg);
     };
-
     const handleConfirmPopupPreviewEdit = () => {
       props.setLoadingState(true);
       if (!editedValues) return;
-      const {
-        id,
-        name,
-        tag_details,
-        parLevel,
-        actualStock,
-        unit,
-        supplier_details,
-        unitCost,
-      } = editedValues;
+      const { id, name, parLevel, actualStock, unit, unitCost } = editedValues;
+
+      // Ensure tag_details and supplier_details are always defined
+      const tag_details = editedValues.tag_details || ingredientTags[id] || [];
+      const supplier_details = editedValues.supplier_details || [];
 
       const updatedIngredient = {
         id,
@@ -532,7 +563,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         unit,
         supplier_details,
         unitCost,
-        restaurantUUID: selectedRestaurantUUID, // Add the selectedRestaurantUUID here
+        restaurantUUID: selectedRestaurantUUID,
       };
 
       inventoryService
@@ -542,10 +573,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         })
         .then(() => {
           reloadTagList();
-
           reloadInventoryData();
           props.setLoadingState(false);
         });
+
       setEditingRowId(null);
       setEditedValues(null);
       togglePopupPreviewEdit(undefined);
@@ -560,20 +591,22 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const newIngredient: Ingredient = {
         id: '', // New ingredient will have a temporary empty id
         name: '',
-        tagUUID: null,
+        tag_details: null,
         parLevel: 0,
         actualStock: 0,
         unit: null,
         // supplier_uuid: suppliers.length ? suppliers[0].value : '',
         // supplier: suppliers.length ? suppliers[0].label : '',
         supplier_details: [
-          { supplier_id: null, supplier_name: '', supplier_cost: 0 },
+          { supplier_id: null, supplier_name: null, supplier_cost: 0 },
+
         ],
         unitCost: 0,
         actions: undefined,
       };
 
       setIngredientsList((list) => [newIngredient, ...list]);
+      setIngredientTags('');
       setAddingRow(true);
       setEditingRowId(newIngredient.id);
       setEditedValues(newIngredient);
@@ -625,40 +658,168 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         header: t('ingredient:tag'),
         width: '15%',
         minWidth: '150px',
-        renderItem: ({ row }) =>
-          editingRowId === row.id ? (
-            <Autocomplete
-              multiple
-              freeSolo
-              ListboxProps={{ style: { maxHeight: 150 } }}
-              options={tagList}
-              value={selectedTags}
-              onChange={handleSelectedTags}
-              onInputChange={handleInputChange}
-              inputValue={inputValue}
-              getOptionLabel={(option) => option?.name}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => (
-                  <Chip
-                    label={option.name}
-                    {...getTagProps({ index })}
-                    key={option.uuid}
-                  />
-                ))
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  onKeyDown={handleKeyDown}
-                />
-              )}
-              sx={{
-                '& .MuiInputBase-root': {
-                  padding: '5px',
-                },
+        renderItem: ({ row }) => {
+          // Find the initial selected tags based on the tagUUIDs
+          const initialSelectedTags = row.tagUUID
+            ? row.tagUUID
+                .map((uuid) => tagList.find((tag) => tag.uuid === uuid))
+                .filter(Boolean)
+            : [];
+
+          // Use the row-specific tags if available, otherwise fall back to initialSelectedTags
+          const autocompleteValue =
+            ingredientTags[row.id] || initialSelectedTags;
+
+          return editingRowId === row.id ? (
+            <CreatableSelect
+              isMulti
+              maxMenuHeight={2}
+              isClearable={false}
+              options={tagList.map((tag) => ({
+                label: tag.name ? String(tag.name) : 'Unknown', // Ensure name is a string
+                value: tag.uuid,
+              }))}
+              onInputChange={(newInputValue) => {
+                if (typeof newInputValue === 'string') {
+                  setInputValue(newInputValue);
+                }
               }}
+              value={autocompleteValue.map((tag) => ({
+                label: tag.name || 'Unknown',
+                value: tag.uuid,
+              }))}
+              onChange={(newValue) => {
+                const formattedValue = newValue.map((option) => {
+                  if (!option.value) {
+                    // If value (uuid) is empty, this is a new tag
+                    return {
+                      name: option.label || 'Unknown', // Use the entered name
+                      uuid: '', // Set uuid to empty string or some placeholder
+                    };
+                  } else {
+                    return {
+                      name: option.label || 'Unknown',
+                      uuid: option.value,
+                    };
+                  }
+                });
+                handleSelectedTags(null, formattedValue, row.id);
+              }}
+              inputValue={inputValue}
+              styles={{
+                control: (provided) => ({
+                  ...provided,
+                  minHeight: '1px', // Adjust this if
+                  borderRadius: '12px',
+                  maxHeight: '200px',
+                  overflowY: 'auto',
+                  margin: '5px',
+                }),
+                menu: (provided) => ({
+                  ...provided,
+                  zIndex: 9999, // Ensure dropdown is above other elements
+                }),
+                menuList: (provided) => ({
+                  ...provided,
+                  maxHeight: '200px', // Limit the height of the dropdown list
+                  overflowY: 'auto', // Enable scrolling if the list is
+                }),
+                option: (provided, state) => ({
+                  ...provided,
+                  backgroundColor: state.isSelected
+                    ? '#007BFF'
+                    : provided.backgroundColor,
+                  color: state.isSelected ? '#FFFFFF' : provided.color,
+                }),
+                container: (provided) => ({
+                  ...provided,
+                  overflow: 'visible', // Ensure the dropdown is not clipped
+                }),
+                multiValue: (provided, state) => ({
+                  ...provided,
+                  backgroundColor: '#5E72E4', // Background color for existing tags
+                  color: '#FFFFFF', // Text color for the tags
+                  borderRadius: '12px',
+                }),
+                multiValueLabel: (provided) => ({
+                  ...provided,
+                  color: '#ffffff', // Text color inside the tag
+                  borderRadius: '12px',
+                }),
+                multiValueRemove: (provided) => ({
+                  ...provided,
+                  color: '#ffffff', // Color of the 'X' icon
+                  ':hover': {
+                    backgroundColor: '#b5adad', // Change background color on hover (optional)
+                    borderRadius: '12px',
+                    color: '#ffffff',
+                  },
+                }),
+              }}
+              formatCreateLabel={(inputValue) => `Create "${inputValue}"`}
             />
+          ) : row.tagUUID &&
+            Array.isArray(row.tagUUID) &&
+            row.tagUUID.length > 0 ? (
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                maxHeight: '100px',
+                padding: '5px',
+                overflowY: row.tagUUID.length > 6 ? 'scroll' : 'visible',
+              }}>
+              {row.tagUUID.map((uuid) => {
+                const tag = tagList.find((tag) => tag.uuid === uuid);
+                if (tag) {
+                  const displayName =
+                    tag.name.length > 6
+                      ? `${tag.name.slice(0, 6)}...`
+                      : tag.name;
+                  return (
+                    <span
+                      key={uuid}
+                      style={{
+                        display: 'inline-block',
+                        padding: '5px 10px',
+                        marginRight: '5px',
+                        marginBottom: '5px',
+                        borderRadius: '12px',
+                        backgroundColor: '#5E72E4',
+                        color: '#FFFFFF',
+                        fontSize: '12px',
+                        maxWidth: '100px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}>
+                      {displayName}
+                    </span>
+                  );
+                } else {
+                  return (
+                    <span
+                      key={uuid}
+                      style={{
+                        display: 'inline-block',
+                        padding: '5px 10px',
+                        marginRight: '5px',
+                        marginBottom: '5px',
+                        borderRadius: '12px',
+                        backgroundColor: '#d3d3d3',
+                        color: '#333',
+                        fontSize: '12px',
+                        maxWidth: '100px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}>
+                      -
+                    </span>
+                  );
+                }
+              })}
+            </div>
           ) : row.tagUUID &&
             Array.isArray(row.tagUUID) &&
             row.tagUUID.length > 0 ? (
@@ -722,7 +883,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             </div>
           ) : (
             '-' // Fallback if there are no tags
-          ),
+          );
+        },
+
       },
       {
         key: 'parLevel',

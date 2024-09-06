@@ -9,6 +9,7 @@ export type Ingredient = {
   id: string;
   name: string;
   tagUUID?: string[] | null;
+  tag_details?: string[] | null;
   actualStock: number;
   theoriticalStock?: number;
   parLevel: number;
