@@ -114,7 +114,7 @@ const getIngredientList = async (
     theoriticalStock: res.data[key]['theoritical_stock'],
     unit: res.data[key]['unit'],
     unitCost: res.data[key]['cost'],
-    tagUUID: res.data[key]['tag_uuid'],
+    tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
     supplier_details: res.data[key]['supplier_details'].map(
       (supplier: any) => ({
         supplier_id: supplier['supplier_id'],
@@ -128,10 +128,10 @@ const getIngredientList = async (
 };
 
 const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
-  const FormatedIngredient = {
+  const FormattedIngredient = {
     id: ingredient.id,
     name: ingredient.name,
-    tag_uuid: ingredient.tagUUID,
+    tag_details: ingredient.tag_details,
     par_level: ingredient.parLevel,
     actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
@@ -139,7 +139,7 @@ const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
     cost: ingredient.unitCost,
   };
 
-  return axiosClient.post('/inventory/' + restaurantUUID, FormatedIngredient);
+  return axiosClient.post('/inventory/' + restaurantUUID, FormattedIngredient);
 };
 
 const getOnlyIngredientList = async (
@@ -160,10 +160,7 @@ const updateIngredient = (ingredient: Ingredient) => {
   const ingredientFormated = {
     id: ingredient.id,
     name: ingredient.name,
-    tag_uuid:
-      ingredient.tagUUID && ingredient.tagUUID.trim() !== ''
-        ? ingredient.tagUUID
-        : null,
+    tag_details: ingredient.tag_details,
     par_level: ingredient.parLevel,
     actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
