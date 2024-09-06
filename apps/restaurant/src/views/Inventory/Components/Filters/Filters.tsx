@@ -86,11 +86,13 @@ const Filters = ({ suppliers, tags, onApplyFilters }: Props) => {
       {isVisible && (
         <div ref={popupRef} className={styles.filters}>
           <p className={styles.title}>{t('filterBy')} :</p>
+          <div className='filter-selection'>
           <Select
             placeholder={'Tag'}
             options={tags}
             size="small"
             isClearable
+            isMulti
             menuPosition="fixed"
             maxMenuHeight={200}
             getOptionLabel={(option) => option.name}
@@ -103,6 +105,7 @@ const Filters = ({ suppliers, tags, onApplyFilters }: Props) => {
             options={suppliers}
             size="small"
             isClearable
+            isMulti
             menuPosition="fixed"
             maxMenuHeight={200}
             getOptionLabel={(option) => option.name}
@@ -110,6 +113,7 @@ const Filters = ({ suppliers, tags, onApplyFilters }: Props) => {
             onChange={(value) => handleFiltersChange('selectedSupplier', value)}
             value={filters?.selectedSupplier}
           />
+          </div>
           <div className={styles.buttons}>
             <Button
               value={t('reset')}

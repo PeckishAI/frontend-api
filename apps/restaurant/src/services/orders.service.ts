@@ -107,7 +107,7 @@ const placeSupplierOrder = (
   restaurantUUID: string,
   supplierOrder: SupplierOrder
 ) => {
-  return axiosClient.post('/orders/' + restaurantUUID, supplierOrder);
+  return axiosClient.post('orders/' + restaurantUUID, supplierOrder);
 };
 
 export const ordersService = {

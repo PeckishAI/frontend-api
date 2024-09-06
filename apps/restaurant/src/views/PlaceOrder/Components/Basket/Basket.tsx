@@ -104,20 +104,26 @@ const Basket = (props: Props) => {
     );
   };
 
+  const getFormattedBrowserDate = () => {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  };
   const handleDateChange = (supplierName: string, date: Date | null) => {
-    if (date) {
-      // No need to change the date, just format it
-      const year = date.getUTCFullYear();
-      const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Ensure month is 2 digits
-      const day = String(date.getUTCDate()).padStart(2, '0'); // Ensure day is 2 digits
+    const formattedDate = date
+      ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+          2,
+          '0'
+        )}-${String(date.getDate()).padStart(2, '0')}`
+      : getFormattedBrowserDate();
 
-      const formattedDate = `${year}-${month}-${day}`; // Format as YYYY-MM-DD
-
-      setDeliveryDates((prevDates) => ({
-        ...prevDates,
-        [supplierName]: formattedDate, // Save formatted date
-      }));
-    }
+    setDeliveryDates((prevDates) => ({
+      ...prevDates,
+      [supplierName]: formattedDate,
+    }));
   };
 
   useDebounceEffect(
@@ -250,7 +256,7 @@ const Basket = (props: Props) => {
           type="primary"
           value={t('placeOrder:placeOrder.title')}
           className={styles.submit}
-          disabled={totalAmount === 0}
+          // disabled={totalAmount === 0}
           onClick={handlePlaceOrder}
         />
       </div>

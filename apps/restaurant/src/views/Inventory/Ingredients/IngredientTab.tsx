@@ -132,22 +132,22 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           filteredList = fuse.search(props.searchValue).map((r) => r.item);
         }
 
-        if (filters.selectedSupplier) {
-          filteredList = filteredList.filter(
-            (ingredient) =>
-              ingredient.supplier_details?.some(
-                (supplier) =>
-                  supplier.supplier_id === filters?.selectedSupplier!.uuid
+        if (filters.selectedSupplier && filters.selectedSupplier.length > 0) {
+          const selectedSupplierUuids = filters.selectedSupplier.map(supplier => supplier.uuid);
+          filteredList = filteredList.filter(ingredient =>
+              ingredient.supplier_details?.some(supplier =>
+                  selectedSupplierUuids.includes(supplier.supplier_id)
               )
           );
         }
-
-        if (filters.selectedTag) {
-          filteredList = filteredList.filter((ingredient) => {
-            return ingredient.tagUUID?.some(
-              (tag) => tag === filters?.selectedTag?.uuid
-            );
-          });
+     
+        if (filters.selectedTag && filters.selectedTag.length > 0) {
+          const selectedTagUuids = filters.selectedTag.map(tag => tag.uuid);
+          filteredList = filteredList.filter(ingredient =>
+              ingredient.tagUUID?.some(tagUuid =>
+                  selectedTagUuids.includes(tagUuid)
+              )
+          );
         }
 
         setFilteredIngredients(filteredList);
@@ -384,6 +384,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           props.setLoadingState(false);
         });
     };
+
     const handleAddSupplierDetail = () => {
       setEditedValues((prevValues) => {
         const newDetails = prevValues.supplier_details
@@ -535,6 +536,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         id: '', // New ingredient will have a temporary empty id
         name: '',
         tag_details: null,
+        tagUUID: null,
         parLevel: 0,
         actualStock: 0,
         unit: null,

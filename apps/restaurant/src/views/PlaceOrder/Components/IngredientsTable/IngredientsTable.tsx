@@ -97,14 +97,14 @@ const IngredientsTable = (props: Props) => {
   const filteredBySupplier = useMemo(() => {
     return props.supplierFilter
       ? ingredientOptions.filter((option) => {
-          // Split the ingredientSupplier string into an array of supplier names
-          const supplierNamesArray = option.ingredientSupplier
-            .split(',')
-            .map((supplier) => supplier.trim());
+        // Split the ingredientSupplier string into an array of supplier names
+        const supplierNamesArray = option.ingredientSupplier
+          .split(',')
+          .map((supplier) => supplier.trim());
 
-          // Check if the selected supplier exists in the array
-          return supplierNamesArray.includes(props.supplierFilter.name);
-        })
+        // Check if the selected supplier exists in the array
+        return supplierNamesArray.includes(props.supplierFilter.name);
+      })
       : ingredientOptions;
   }, [props.supplierFilter, ingredientOptions]);
 
@@ -112,10 +112,10 @@ const IngredientsTable = (props: Props) => {
     () => {
       return props.searchTermFilter
         ? new Fuse(filteredBySupplier, {
-            keys: ['ingredientName'],
-          })
-            .search(props.searchTermFilter)
-            .map((r) => r.item)
+          keys: ['ingredientName'],
+        })
+          .search(props.searchTermFilter)
+          .map((r) => r.item)
         : filteredBySupplier;
     },
     200,
@@ -168,10 +168,10 @@ const IngredientsTable = (props: Props) => {
         prevOptions.map((option) =>
           option.ingredientUUID === uuid
             ? {
-                ...option,
-                ingredientSupplier: newSupplier,
-                ingredientUnitPrice: selectedSupplierDetails.supplier_cost,
-              }
+              ...option,
+              ingredientSupplier: newSupplier,
+              ingredientUnitPrice: selectedSupplierDetails.supplier_cost,
+            }
             : option
         )
       );
@@ -188,12 +188,12 @@ const IngredientsTable = (props: Props) => {
         .map((item) =>
           item.ingredientUUID === uuid && item.ingredientSupplier === supplier
             ? {
-                ...item,
-                ingredientQuantity: Math.max(
-                  0,
-                  item.ingredientQuantity + changeAmount
-                ),
-              }
+              ...item,
+              ingredientQuantity: Math.max(
+                0,
+                item.ingredientQuantity + changeAmount
+              ),
+            }
             : item
         )
         .filter((item) => item.ingredientQuantity > 0);
@@ -204,38 +204,39 @@ const IngredientsTable = (props: Props) => {
     IngredientOption,
     keyof IngredientOption
   >[] = [
-    {
-      key: 'ingredientName',
-      header: t('ingredient:ingredientName'),
-      width: '25%',
-    },
-    {
-      key: 'ingredientSupplier',
-      header: t('ingredient:supplier'),
-      width: '25%',
-      renderItem: ({ row }) => {
-        const ingredient = ingredients.find(
-          (ing) => ing.id === row.ingredientUUID
-        );
+      {
+        key: 'ingredientName',
+        header: t('ingredient:ingredientName'),
+        width: '25%',
+      },
+      {
+        key: 'ingredientSupplier',
+        header: t('ingredient:supplier'),
+        width: '25%',
+        renderItem: ({ row }) => {
+          const ingredient = ingredients.find(
+            (ing) => ing.id === row.ingredientUUID
+          );
 
-        const supplierNames =
-          ingredient?.supplier_details?.map((supplier) => ({
-            label: supplier.supplier_name,
-            value: supplier.supplier_name,
-          })) || [];
+          const supplierNames =
+            ingredient?.supplier_details?.map((supplier) => ({
+              label: supplier.supplier_name,
+              value: supplier.supplier_name,
+            })) || [];
 
-        if (supplierNames.length === 0) {
-          // If no suppliers, show '--'
-          return <p>--</p>;
-        }
+          if (supplierNames.length === 0) {
+            // If no suppliers, show '--'
+            return <p>--</p>;
+          }
 
-        if (supplierNames.length === 1) {
-          // If there is only one supplier, show the name directly
-          return <p>{supplierNames[0].label}</p>;
-        }
+          if (supplierNames.length === 1) {
+            // If there is only one supplier, show the name directly
+            return <p>{supplierNames[0].label}</p>;
+          }
 
-        const selectedSupplier =
-          selectedSupplierMap[row.ingredientUUID] || null; // Initially null to show placeholder
+          const selectedSupplier =
+            selectedSupplierMap[row.ingredientUUID] || null; // Initially null to show placeholder
+
 
         return (
           <Select
@@ -256,86 +257,85 @@ const IngredientsTable = (props: Props) => {
           />
         );
       },
-    },
-    {
-      key: 'ingredientUnitPrice',
-      header: t('ingredient:unitCost'),
-      renderItem: ({ row }) => (
-        <p>{formatCurrency(row.ingredientUnitPrice, currencyISO)}</p>
-      ),
-    },
-    {
-      key: 'ingredientUnit',
-      header: t('ingredient:unit'),
-    },
-    {
-      key: 'ingredientQuantity',
-      header: t('ingredient:quantity'),
-      width: '15%',
-      renderItem: ({ row }) => {
-        const item = props.cartItems.find(
-          (item) =>
-            item.ingredientUUID === row.ingredientUUID &&
-            item.ingredientSupplier === selectedSupplierMap[row.ingredientUUID]
-        );
+      {
+        key: 'ingredientUnitPrice',
+        header: t('ingredient:unitCost'),
+        renderItem: ({ row }) => (
+          <p>{formatCurrency(row.ingredientUnitPrice, currencyISO)}</p>
+        ),
+      },
+      {
+        key: 'ingredientUnit',
+        header: t('ingredient:unit'),
+      },
+      {
+        key: 'ingredientQuantity',
+        header: t('ingredient:quantity'),
+        width: '15%',
+        renderItem: ({ row }) => {
+          const item = props.cartItems.find(
+            (item) =>
+              item.ingredientUUID === row.ingredientUUID &&
+              item.ingredientSupplier === selectedSupplierMap[row.ingredientUUID]
+          );
 
-        return (
-          <div className={styles.quantitySection}>
-            {item === undefined ? (
-              <IconButton
-                icon={<i className="fa-solid fa-cart-plus"></i>}
-                className={styles.addToCard}
-                onClick={() =>
-                  handleSupplierChange(
-                    row.ingredientUUID,
-                    selectedSupplierMap[row.ingredientUUID] ||
-                      row.ingredientSupplier
-                  )
-                }
-                tooltipMsg={t('placeOrder:addToBasket')}
-              />
-            ) : (
-              <>
-                <i
-                  className="fa-solid fa-minus"
+          return (
+            <div className={styles.quantitySection}>
+              {item === undefined ? (
+                <IconButton
+                  icon={<i className="fa-solid fa-cart-plus"></i>}
+                  className={styles.addToCard}
                   onClick={() =>
-                    handleQuantityChange(
+                    handleSupplierChange(
                       row.ingredientUUID,
-                      -1,
-                      item.ingredientSupplier
-                    )
-                  }></i>
-                <Input
-                  type="number"
-                  min={0}
-                  step="1"
-                  placeholder={t('ingredient:placeholder.ingredientQuantity')}
-                  className={styles.quantity}
-                  value={item.ingredientQuantity}
-                  onChange={(e) =>
-                    handleQuantityChange(
-                      row.ingredientUUID,
-                      parseInt(e.target.value, 10) - item.ingredientQuantity,
-                      item.ingredientSupplier
+                      selectedSupplierMap[row.ingredientUUID] ||
+                      row.ingredientSupplier
                     )
                   }
+                  tooltipMsg={t('placeOrder:addToBasket')}
                 />
-                <i
-                  className="fa-solid fa-plus"
-                  onClick={() =>
-                    handleQuantityChange(
-                      row.ingredientUUID,
-                      1,
-                      item.ingredientSupplier
-                    )
-                  }></i>
-              </>
-            )}
-          </div>
-        );
+              ) : (
+                <>
+                  <i
+                    className="fa-solid fa-minus"
+                    onClick={() =>
+                      handleQuantityChange(
+                        row.ingredientUUID,
+                        -1,
+                        item.ingredientSupplier
+                      )
+                    }></i>
+                  <Input
+                    type="number"
+                    min={0}
+                    step="1"
+                    placeholder={t('ingredient:placeholder.ingredientQuantity')}
+                    className={styles.quantity}
+                    value={item.ingredientQuantity}
+                    onChange={(e) =>
+                      handleQuantityChange(
+                        row.ingredientUUID,
+                        parseInt(e, 10) - item.ingredientQuantity,
+                        item.ingredientSupplier
+                      )
+                    }
+                  />
+                  <i
+                    className="fa-solid fa-plus"
+                    onClick={() =>
+                      handleQuantityChange(
+                        row.ingredientUUID,
+                        1,
+                        item.ingredientSupplier
+                      )
+                    }></i>
+                </>
+              )}
+            </div>
+          );
+        },
       },
-    },
-  ];
+    ];
 
   return (
     <>
