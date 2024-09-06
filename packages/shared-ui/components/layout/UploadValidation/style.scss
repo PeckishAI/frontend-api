@@ -101,3 +101,19 @@
     justify-content: center;
     background: #0000002b;
 }
+
+.filter-selection{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  ._selectContainer_9jfxl_1 > div{
+    height: auto !important;
+    & > div {
+      height: auto !important;
+  
+    }
+  }
+  .css-1p3m7a8-multiValue{
+    border-radius: 12px;
+  }
+}

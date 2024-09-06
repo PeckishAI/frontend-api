@@ -133,19 +133,21 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           filteredList = fuse.search(props.searchValue).map((r) => r.item);
         }
 
-        if (filters.selectedSupplier) {
-          filteredList = filteredList.filter(
-            (ingredient) =>
-              ingredient.supplier_details?.some(
-                (supplier) =>
-                  supplier.supplier_id === filters?.selectedSupplier!.uuid
+        if (filters.selectedSupplier && filters.selectedSupplier.length > 0) {
+          const selectedSupplierUuids = filters.selectedSupplier.map(supplier => supplier.uuid);
+          filteredList = filteredList.filter(ingredient =>
+              ingredient.supplier_details?.some(supplier =>
+                  selectedSupplierUuids.includes(supplier.supplier_id)
               )
           );
         }
 
-        if (filters.selectedTag) {
-          filteredList = filteredList.filter(
-            (ingredient) => ingredient.tagUUID === filters?.selectedTag!.uuid
+        if (filters.selectedTag && filters.selectedTag.length > 0) {
+          const selectedTagUuids = filters.selectedTag.map(tag => tag.uuid);
+          filteredList = filteredList.filter(ingredient =>
+              ingredient.tagUUID?.some(tagUuid =>
+                  selectedTagUuids.includes(tagUuid)
+              )
           );
         }
 
