@@ -52,6 +52,7 @@ const getOrders = async (
     return res.data.map((item) => ({
       supplier: item.supplier,
       orderDate: item.orderDate,
+      orderNumber: item.orderNumber,
       deliveryDate: item.deliveryDate,
       orderNumber: item.orderNumber,
       status: item.status,

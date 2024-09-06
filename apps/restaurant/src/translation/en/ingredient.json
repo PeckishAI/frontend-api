@@ -18,6 +18,7 @@
   "closingQty":"Closing Qty",
   "actualCos":"actual Cos",
   "variance":"Variance",
+  "variance_value":"Variance Value",
   "supplierCost":"Unit Cost",
   "supplierName":"Supplier Name",
 

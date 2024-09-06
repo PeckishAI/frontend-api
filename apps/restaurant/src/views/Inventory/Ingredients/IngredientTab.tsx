@@ -12,7 +12,6 @@ import {
   Input,
   DialogBox,
   Checkbox,
-  Select,
 } from 'shared-ui';
 import { Ingredient, Tag, inventoryService } from '../../../services';
 import {
@@ -25,16 +24,13 @@ import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dro
 import supplierService from '../../../services/supplier.service';
 import ImportIngredients from '../Components/ImportIngredients/ImportIngredients';
 import Fuse from 'fuse.js';
-import { formatCurrency } from '../../../utils/helpers';
 import { tagService } from '../../../services/tag.service';
-import toast from 'react-hot-toast';
 import Filters, {
   FiltersType,
   defaultFilters,
 } from '../Components/Filters/Filters';
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
 import CreatableSelect from 'react-select/creatable';
-
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -107,8 +103,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
-
-
     const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
 
@@ -146,7 +140,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               )
           );
         }
-
+     
         if (filters.selectedTag && filters.selectedTag.length > 0) {
           const selectedTagUuids = filters.selectedTag.map(tag => tag.uuid);
           filteredList = filteredList.filter(ingredient =>
@@ -495,7 +489,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const togglePopupPreviewEdit = (msg: string[] | undefined) => {
       setPopupPreviewEdit(msg);
     };
-
     const handleConfirmPopupPreviewEdit = () => {
       props.setLoadingState(true);
       if (!editedValues) return;
@@ -546,11 +539,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         tagUUID: null,
         parLevel: 0,
         actualStock: 0,
-        unit: units[0].value,
+        unit: null,
         // supplier_uuid: suppliers.length ? suppliers[0].value : '',
         // supplier: suppliers.length ? suppliers[0].label : '',
         supplier_details: [
-          { supplier_id: '', supplier_name: '', supplier_cost: 0 },
+          { supplier_id: null, supplier_name: null, supplier_cost: 0 },
         ],
         unitCost: 0,
         actions: undefined,
@@ -836,7 +829,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             '-' // Fallback if there are no tags
           );
         },
-
       },
       {
         key: 'parLevel',
