@@ -54,6 +54,12 @@
       border-color: #6c757d;
       box-shadow: 0 0 5px rgba(108, 117, 125, 0.5);
     }
+    .calendarIcon {
+      width: 21px;
+      height: 20px;
+      cursor: pointer;
+      color: var(--primaryColor);
+    }
 
     .supplierName {
       font-weight: 500;

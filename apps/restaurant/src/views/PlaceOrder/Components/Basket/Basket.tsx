@@ -7,8 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { SupplierNote } from '../ShoppingView/ShoppingView';
 import classNames from 'classnames';
-import DatePicker from 'react-datepicker'; // Add DatePicker import
-import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { FaCalendarAlt } from 'react-icons/fa';
 
 type Props = {
   cartItems: IngredientOption[];
@@ -17,6 +18,10 @@ type Props = {
   onOrderSubmited: (
     deliveryDates: Record<string, Date | null> // Pass delivery dates in order submit
   ) => void;
+  showDatePickerForSupplier: Record<string, boolean>;
+  setShowDatePickerForSupplier: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  >;
 };
 
 const Basket = (props: Props) => {
@@ -28,6 +33,13 @@ const Basket = (props: Props) => {
   const [deliveryDates, setDeliveryDates] = useState<
     Record<string, Date | null>
   >({});
+
+  const handleCalendarIconClick = (supplierName: string) => {
+    props.setShowDatePickerForSupplier((prev) => ({
+      ...prev,
+      [supplierName]: !prev[supplierName],
+    }));
+  };
 
   const ingredientsBySupplier: Record<string, IngredientOption[]> =
     props.cartItems.reduce((acc, item) => {
@@ -164,14 +176,21 @@ const Basket = (props: Props) => {
                   {supplier === 'null' ? t('common:unknown') : supplier}
                 </div>
                 <div>
-                  <DatePicker
-                    selected={deliveryDates[supplier] || null}
-                    dateFormat="yyyy-MM-dd"
-                    onChange={(date) => handleDateChange(supplier, date)}
-                    placeholderText={'select Delivery Date'}
-                    className={styles.datePicker}
-                    minDate={new Date()}
-                  />
+                  {!props.showDatePickerForSupplier?.[supplier] ? (
+                    <FaCalendarAlt
+                      className={styles.calendarIcon}
+                      onClick={() => handleCalendarIconClick(supplier)}
+                    />
+                  ) : (
+                    <DatePicker
+                      selected={deliveryDates[supplier] || null}
+                      dateFormat="yyyy-MM-dd"
+                      onChange={(date) => handleDateChange(supplier, date)}
+                      placeholderText={'Select Delivery Date'}
+                      className={styles.datePicker}
+                      minDate={new Date()}
+                    />
+                  )}
                 </div>
               </div>
               <div className={styles.ingredients}>
