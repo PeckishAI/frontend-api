@@ -83,11 +83,7 @@
   display: flex;
   gap: 10px;
   margin: 10px 0;
-  .inputSupplier {
-    width: 200px;
-    // border: 1px solid var(--borderColor);
-    // border-radius: 4px;
-  }
+
   .input {
     width: 200px;
     border: 1px solid var(--borderColor);
@@ -112,8 +108,8 @@
     border-width: 2px;
   }
   .calendarIcon {
-    width: 20px;
-    height: 44px;
+    width: 21px;
+    height: 40px;
     cursor: pointer;
     color: var(--primaryColor);
   }
