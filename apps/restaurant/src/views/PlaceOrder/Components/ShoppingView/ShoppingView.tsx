@@ -56,6 +56,9 @@ const ShoppingView = (props: Props) => {
   const [basketIsOpen, setBasketIsOpen] = useState(false);
   const [showEmailDailog, setShowEmailDialog] = useState(false);
   const [sendEmail, setSendEmail] = useState(false); // New state to track email confirmation
+  const [showDatePickerForSupplier, setShowDatePickerForSupplier] = useState<
+    Record<string, boolean>
+  >({});
 
   useEffect(() => {
     if (!selectedRestaurantUUID) return;
@@ -117,6 +120,7 @@ const ShoppingView = (props: Props) => {
 
   const toggleBasket = () => {
     setBasketIsOpen((state) => !state);
+    setShowDatePickerForSupplier('');
   };
 
   const handleSupplierChange = (supplier: Supplier) => {
@@ -272,6 +276,8 @@ const ShoppingView = (props: Props) => {
           setCartItems={setCartItems}
           setSupplierNotes={setSupplierNotes}
           onOrderSubmited={handleOrderSubmited}
+          setShowDatePickerForSupplier={setShowDatePickerForSupplier}
+          showDatePickerForSupplier={showDatePickerForSupplier}
         />
       </SidePanel>
     </div>
