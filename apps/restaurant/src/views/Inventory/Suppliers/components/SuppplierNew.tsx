@@ -69,7 +69,6 @@ const SupplierNew = (props: Props) => {
   }, [props.isVisible, reset]);
 
   const handleSubmitForm = handleSubmit(async (data) => {
-    debugger;
     if (!restaurantUUID) return;
 
     const uuid = await supplierService
