@@ -24,8 +24,11 @@ import 'react-multi-carousel/lib/styles.css';
 import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
 import DatePicker from 'react-datepicker';
 import supplierService from '../../services/supplier.service';
+
 import CreatableSelect from 'react-select/creatable';
 import { FaCalendarAlt } from 'react-icons/fa';
+
+import SupplierNew from '../../views/Inventory/Suppliers/components/SuppplierNew';
 
 type Props = {
   document: Invoice | null;
@@ -588,6 +591,7 @@ const DocumentDetail = (props: Props) => {
                         <CreatableSelect
                           options={options}
                           className={styles.inputSupplier}
+                          className={styles.input}
                           inputValue={inputValue}
                           value={selectedSupplier} // Control the selected value
                           onInputChange={(newInputValue) => {
@@ -611,6 +615,7 @@ const DocumentDetail = (props: Props) => {
                               setSelectedSupplier(selectedOption);
                             } else {
                               setSelectedSupplier(null);
+
                             }
                           }}
                           styles={{
@@ -628,6 +633,7 @@ const DocumentDetail = (props: Props) => {
                               ...provided,
                               maxHeight: '200px',
                               overflowY: 'auto',
+
                             }),
                             option: (provided, state) => ({
                               ...provided,
@@ -641,6 +647,7 @@ const DocumentDetail = (props: Props) => {
                             container: (provided) => ({
                               ...provided,
                               overflow: 'visible',
+
                             }),
                           }}
                           isClearable
@@ -849,11 +856,12 @@ const DocumentDetail = (props: Props) => {
             />
           </div>
         )}
-        {/* <SupplierNew
+
+        <SupplierNew
           isVisible={showAddPopup}
           onRequestClose={() => setShowAddPopup(false)}
           onNew={newInputAdd}
-        /> */}
+        />
       </SidePanel>
     </>
   );
