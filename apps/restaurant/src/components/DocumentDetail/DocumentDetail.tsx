@@ -11,7 +11,7 @@ import {
 } from 'shared-ui';
 import styles from './style.module.scss';
 import { Invoice, inventoryService } from '../../services';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatCurrency } from '../../utils/helpers';
 import { useRestaurantCurrency } from '../../store/useRestaurantStore';
@@ -21,6 +21,9 @@ import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { toast } from 'react-hot-toast';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import { FaCalendarAlt } from 'react-icons/fa';
+import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
+import DatePicker from 'react-datepicker';
 
 type Props = {
   document: Invoice | null;
@@ -52,6 +55,9 @@ const DocumentDetail = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const { control } = useForm();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const datePickerRef = useRef(null);
 
   const { ingredients, loading: loadingIngredients } = useIngredients();
 
@@ -64,11 +70,35 @@ const DocumentDetail = (props: Props) => {
     (state) => state.selectedRestaurantUUID
   );
 
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+    if (date) {
+      const formattedDate = date.toLocaleDateString('en-CA');
+      handleInputChange({ target: { value: formattedDate } }, 'date');
+    } else {
+      handleInputChange({ target: { value: '' } }, 'date');
+    }
+  };
+
+  const handleCalendarIconClick = () => {
+    setShowDatePicker((prev) => !prev);
+  };
+
+  useEffect(() => {
+    if (props.document?.date) {
+      setSelectedDate(new Date(props.document.date));
+    }
+  }, [props.document]);
+
   const toggleEditMode = () => {
     setIsEditMode((prevState) => !prevState); // Toggle edit mode state
     if (!isEditMode) {
       // Enter edit mode
       setEditableDocument(props.document);
+      setShowDatePicker(false);
+      setSelectedDate(
+        props.document?.date ? new Date(props.document.date) : null
+      );
     } else {
       // Exit edit mode
       setEditableDocument(null);
@@ -519,6 +549,25 @@ const DocumentDetail = (props: Props) => {
                           onChange={(e) => handleInputChange(e, 'amount')}
                           value={editableDocument?.amount}
                         />
+                        {showDatePicker && (
+                          <DatePicker
+                            ref={datePickerRef}
+                            selected={selectedDate}
+                            onChange={handleDateChange}
+                            dateFormat="yyyy-MM-dd"
+                            placeholderText={'Select a Date'}
+                            className={styles.datePicker}
+                            isClearable
+                            showPopperArrow={false}
+                            onClickOutside={() => setShowDatePicker(false)}
+                          />
+                        )}
+                        {!showDatePicker && (
+                          <FaCalendarAlt
+                            className={styles.calendarIcon}
+                            onClick={handleCalendarIconClick}
+                          />
+                        )}
                       </div>
                       <div>
                         <Table
@@ -609,6 +658,13 @@ const DocumentDetail = (props: Props) => {
                         <span className={styles.value}>
                           {' '}
                           {formatCurrency(props.document?.amount, currencyISO)}
+                        </span>
+                      </p>
+                      <p className={styles.name}>
+                        {t('date')}:
+                        <span className={styles.value}>
+                          {' '}
+                          {props.document?.date}
                         </span>
                       </p>
                     </div>
