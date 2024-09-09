@@ -1,5 +1,6 @@
 .navbar {
   width: 100%;
+  margin: 3px;
   height: var(--navbarHeight);
   // background-color: var(--navbarColor);
   // box-shadow: 4px 1px 5px 0px #00000024;
@@ -7,15 +8,19 @@
   align-items: flex-end;
   justify-content: space-between;
   padding: 0 30px;
+  background-color: var(--secondaryColor);
+  border-radius: 10px;
 
   .page-title {
     color: var(--primaryColor);
     letter-spacing: 1px;
+    margin-bottom: 8px;
   }
   .nav-actions {
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-bottom: 8px;
   }
 }
 

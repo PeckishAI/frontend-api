@@ -16,6 +16,7 @@ import { restaurantService, inventoryService, Ingredient } from '../services';
 import { Tooltip } from 'react-tooltip';
 import { NotificationCenter } from './NotificationCenter/NotificationCenter';
 import AddTransferPopup from '../views/Inventory/Components/Transfers/Transfers';
+import './layout.module.scss';
 
 type IngredientOption = {
   id: string;

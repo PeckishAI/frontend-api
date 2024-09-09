@@ -314,7 +314,7 @@ const AddTransferPopup: React.FC<AddTransferPopupProps> = (props) => {
                 {/* Quantity and Unit Display */}
                 <div className={styles.quantityUnitGroup}>
                   <LabeledInput
-                    placeholder="Qty"
+                    placeholder="Quantity"
                     type="number"
                     {...register(`ingredients.${index}.quantity`, {
                       valueAsNumber: true,

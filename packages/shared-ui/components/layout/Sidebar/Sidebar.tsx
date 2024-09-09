@@ -26,7 +26,9 @@ const Sidebar = (props: Props) => {
         toggle={() => setBurgerClicked(!burgerClicked)}
         className="sidebar-burger"
       />
-      <h1 className="company-name">peckish</h1>
+      <div className="logo-container">
+        <img src="/logo.png" alt="logo" className="logo-img" />
+      </div>
       <div className="sidebar-items-container">{props.children}</div>
     </div>
   );

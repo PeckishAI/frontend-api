@@ -21,6 +21,14 @@
     display: none;
     visibility: visible;
   }
+  .logo-img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 110px;
+    margin-top: 10px;
+    margin-left: 10px;
+  }
   .company-name {
     height: calc(var(--navbarHeight) + 20px);
     display: flex;

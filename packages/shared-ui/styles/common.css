@@ -1,16 +1,16 @@
 :root {
   /* Colors */
-  --primaryColor: #5e72e4;
-  --primaryColorLighten: #dee1f7;
-  --primaryColorAccentued: #5567cd;
+  --primaryColor: #0b1a03;
+  --primaryColorLighten: #fafaf5;
+  --primaryColorAccentued: #0b1a03;
   --onPrimaryColor: #fcfcfc;
-  --secondaryColor: #f6f1f1;
-  --secondaryColorAccentued: #dedcdc;
-  --backgroundColor: #ffffff;
+  --secondaryColor: #fafaf5;
+  --secondaryColorAccentued: #e1e1d9;
+  --backgroundColor: #fafaf5;
   --onBackgroundColor: #151515;
   --borderColor: #dbdbdb;
   --cardColor: #272727;
-  --navbarColor: #f6f1f1;
+  --navbarColor: #e1e1d9;
   --errorColor: #fc4343;
   --successColor: #0bb86e;
 
@@ -34,7 +34,7 @@
   /* Values */
   --btnRadius: 10px;
   --transitionDuration: 0.4s;
-  --navbarHeight: 50px;
+  --navbarHeight: 60px;
   --sidebarWidth: 210px;
 
   /* Input variables */
