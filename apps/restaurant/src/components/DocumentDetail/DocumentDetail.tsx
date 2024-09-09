@@ -11,7 +11,7 @@ import {
 } from 'shared-ui';
 import styles from './style.module.scss';
 import { Invoice, inventoryService } from '../../services';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatCurrency } from '../../utils/helpers';
 import { useRestaurantCurrency } from '../../store/useRestaurantStore';
@@ -24,9 +24,11 @@ import 'react-multi-carousel/lib/styles.css';
 import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
 import DatePicker from 'react-datepicker';
 import supplierService from '../../services/supplier.service';
-import SupplierNew from '../../views/Inventory/Suppliers/components/SuppplierNew';
-import CreatableSelect from 'react-select/creatable';
 
+import CreatableSelect from 'react-select/creatable';
+import { FaCalendarAlt } from 'react-icons/fa';
+
+import SupplierNew from '../../views/Inventory/Suppliers/components/SuppplierNew';
 
 type Props = {
   document: Invoice | null;
@@ -60,27 +62,34 @@ const DocumentDetail = (props: Props) => {
   const { control } = useForm();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const datePickerRef = useRef(null);
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+    if (date) {
+      const formattedDate = date.toLocaleDateString('en-CA');
+      handleInputChange({ target: { value: formattedDate } }, 'date');
+    } else {
+      handleInputChange({ target: { value: '' } }, 'date');
+    }
+  };
+
+  const handleCalendarIconClick = () => {
+    setShowDatePicker((prev) => !prev);
+  };
+
   useEffect(() => {
     if (props.document?.date) {
       setSelectedDate(new Date(props.document.date));
     }
   }, [props.document]);
 
-  const handleDateChange = (date: Date | null) => {
-    if (date) {
-      const formattedDate = date.toLocaleDateString('en-CA');
-      setSelectedDate(date);
-      handleInputChange({ target: { value: formattedDate } }, 'date');
-    } else {
-      setSelectedDate(null);
-      handleInputChange({ target: { value: '' } }, 'date');
-    }
-  };
-
   const toggleEditMode = () => {
     setIsEditMode((prevState) => !prevState);
     if (!isEditMode) {
       setEditableDocument(props.document);
+      setShowDatePicker(false);
       setSelectedDate(
         props.document?.date ? new Date(props.document.date) : null
       );
@@ -514,7 +523,6 @@ const DocumentDetail = (props: Props) => {
     }
   }, [props.document?.supplier]);
 
-
   return (
     <>
       <SidePanel
@@ -582,6 +590,7 @@ const DocumentDetail = (props: Props) => {
                         /> */}
                         <CreatableSelect
                           options={options}
+                          className={styles.inputSupplier}
                           className={styles.input}
                           inputValue={inputValue}
                           value={selectedSupplier} // Control the selected value
@@ -603,24 +612,28 @@ const DocumentDetail = (props: Props) => {
                                 selectedOption.value,
                                 'supplier'
                               );
-                              setSelectedSupplier(selectedOption); // Set the selected supplier
+                              setSelectedSupplier(selectedOption);
                             } else {
-                              setSelectedSupplier(null); // Clear the selected value if nothing is selected
+                              setSelectedSupplier(null);
+
                             }
                           }}
                           styles={{
                             control: (provided) => ({
                               ...provided,
-                              minHeight: '56px', // Adjust this if needed
+                              minHeight: '45px',
+                              border: `1px solid grey.300`,
                             }),
+
                             menu: (provided) => ({
                               ...provided,
-                              zIndex: 9999, // Ensure dropdown is above other elements
+                              zIndex: 9999,
                             }),
                             menuList: (provided) => ({
                               ...provided,
-                              maxHeight: '200px', // Limit the height of the dropdown list
-                              overflowY: 'auto', // Enable scrolling if the list is long
+                              maxHeight: '200px',
+                              overflowY: 'auto',
+
                             }),
                             option: (provided, state) => ({
                               ...provided,
@@ -633,7 +646,8 @@ const DocumentDetail = (props: Props) => {
                             }),
                             container: (provided) => ({
                               ...provided,
-                              overflow: 'visible', // Ensure the dropdown is not clipped
+                              overflow: 'visible',
+
                             }),
                           }}
                           isClearable
@@ -656,20 +670,26 @@ const DocumentDetail = (props: Props) => {
                           onChange={(e) => handleInputChange(e, 'amount')}
                           value={editableDocument?.amount}
                         />
-                        <DatePicker
-                          selected={
-                            selectedDate ||
-                            (editableDocument?.date
-                              ? new Date(editableDocument.date)
-                              : null)
-                          }
-                          onChange={handleDateChange}
-                          dateFormat="yyyy-MM-dd"
-                          placeholderText={'Select a Date'}
-                          className={styles.datePicker}
-                          isClearable
-                          showPopperArrow={false}
-                        />
+
+                        {showDatePicker && (
+                          <DatePicker
+                            ref={datePickerRef}
+                            selected={selectedDate}
+                            onChange={handleDateChange}
+                            dateFormat="yyyy-MM-dd"
+                            placeholderText={'Select a Date'}
+                            className={styles.datePicker}
+                            isClearable
+                            showPopperArrow={false}
+                            onClickOutside={() => setShowDatePicker(false)}
+                          />
+                        )}
+                        {!showDatePicker && (
+                          <FaCalendarAlt
+                            className={styles.calendarIcon}
+                            onClick={handleCalendarIconClick}
+                          />
+                        )}
                       </div>
                       <div>
                         <Table
@@ -836,6 +856,7 @@ const DocumentDetail = (props: Props) => {
             />
           </div>
         )}
+
         <SupplierNew
           isVisible={showAddPopup}
           onRequestClose={() => setShowAddPopup(false)}
