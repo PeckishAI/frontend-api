@@ -607,6 +607,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setEditedValues(newIngredient);
     };
 
+    const columnHeaderStyle = {
+      cursor: 'pointer',
+      padding: '10px',
+      backgroundColor: '#f5f5f5',
+      transition: 'background-color 0.3s ease',
+    };
+    
+    const columnHeaderHoverStyle = {
+      backgroundColor: '#e0e0e0', // Change background color on hover
+    };
+
     useEffect(() => {
       reloadInventoryData();
       reloadTagList();
@@ -639,8 +650,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       {
         key: 'name',
         header: () => (
-          <div onClick={() => handleSort('name')}>
-            {t('ingredient:ingredientName')} {renderSortArrow('name')} {/* Arrow will be shown by default */}
+          <div
+            onClick={() => handleSort('name')}
+            style={columnHeaderStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+          >
+            {t('ingredient:ingredientName')} {renderSortArrow('name')}
           </div>
         ),
         width: '15%',
@@ -895,7 +911,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       {
         key: 'parLevel',
         header: () => (
-          <div onClick={() => handleSort('parLevel')}>
+          <div
+            onClick={() => handleSort('parLevel')}
+            style={columnHeaderStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+          >
             {t('ingredient:parLvel')} {renderSortArrow('parLevel')}
           </div>
         ),
@@ -916,7 +937,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       {
         key: 'actualStock',
         header: () => (
-          <div onClick={() => handleSort('actualStock')}>
+          <div
+            onClick={() => handleSort('actualStock')}
+            style={columnHeaderStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+          >
             {t('ingredient:actualStock')} {renderSortArrow('actualStock')}
           </div>
         ),
@@ -937,7 +963,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       {
         key: 'unit',
         header: () => (
-          <div onClick={() => handleSort('unit')}>
+          <div
+            onClick={() => handleSort('unit')}
+            style={columnHeaderStyle}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+          >
             {t('ingredient:unit')} {renderSortArrow('unit')}
           </div>
         ),
