@@ -158,7 +158,7 @@ const DocumentDetail = (props: Props) => {
     });
   };
 
-  useEffect(() => {
+  const fetchSuppliers = () => {
     if (!selectedRestaurantUUID) return;
 
     supplierService
@@ -168,12 +168,19 @@ const DocumentDetail = (props: Props) => {
         res.forEach((supplier) => {
           suppliersList.push({
             label: supplier.name,
-            value: supplier.supplier_uuid, // Update here to use supplier_uuid
+            value: supplier.supplier_uuid,
             supplier_uuid: supplier.supplier_uuid,
           });
         });
         setSuppliers(suppliersList);
+      })
+      .catch((error) => {
+        console.error('Error fetching suppliers:', error);
       });
+  };
+
+  useEffect(() => {
+    fetchSuppliers();
   }, [selectedRestaurantUUID]);
 
   const handleSubmit = async (e) => {
@@ -866,6 +873,7 @@ const DocumentDetail = (props: Props) => {
           isVisible={showAddPopup}
           onRequestClose={() => setShowAddPopup(false)}
           onNew={newInputAdd}
+          fetchSuppliers={fetchSuppliers}
         />
       </SidePanel>
     </>
