@@ -12,7 +12,6 @@ import {
   Input,
   DialogBox,
   Checkbox,
-  Select,
 } from 'shared-ui';
 import { Ingredient, Tag, inventoryService } from '../../../services';
 import {
@@ -25,16 +24,13 @@ import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dro
 import supplierService from '../../../services/supplier.service';
 import ImportIngredients from '../Components/ImportIngredients/ImportIngredients';
 import Fuse from 'fuse.js';
-import { formatCurrency } from '../../../utils/helpers';
 import { tagService } from '../../../services/tag.service';
-import toast from 'react-hot-toast';
 import Filters, {
   FiltersType,
   defaultFilters,
 } from '../Components/Filters/Filters';
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
 import CreatableSelect from 'react-select/creatable';
-
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -99,10 +95,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
-    const paginatedIngredients = filteredIngredients?.slice(
-      startIndex,
-      endIndex
-    );
+
+    // Sorting state
+    const [sortColumn, setSortColumn] = useState<'name'>('name'); 
+    const [sortDirection, setSortDirection] = useState<'asc'>('asc'); 
 
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
@@ -119,7 +115,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           res.forEach((supplier) => {
             suppliersList.push({
               label: supplier.name,
-              value: supplier.supplier_uuid, // Update here to use supplier_uuid
+              value: supplier.supplier_uuid,
               supplier_uuid: supplier.supplier_uuid,
             });
           });
@@ -162,6 +158,58 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       applyFilters();
     }, [props.searchValue, filters, ingredientsList]);
 
+    // Sorting logic
+    const sortIngredients = (ingredients: Ingredient[]) => {
+      if (!sortColumn) return ingredients;
+    
+      const sorted = [...ingredients].sort((a, b) => {
+        let aValue = a[sortColumn as keyof Ingredient];
+        let bValue = b[sortColumn as keyof Ingredient];
+    
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return aValue.localeCompare(bValue);
+        } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return aValue - bValue;
+        }
+    
+        return 0;
+      });
+    
+      return sortDirection === 'asc' ? sorted : sorted.reverse();
+    };
+
+    // Handle sorting (only on Ingredient Name, Par Level, Actual Stock, and Unit)
+    const handleSort = (columnKey: keyof Ingredient) => {
+      const sortableColumns = ['name', 'parLevel', 'actualStock', 'unit'];
+      if (sortableColumns.includes(columnKey)) {
+        if (sortColumn === columnKey) {
+          setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+          setSortColumn(columnKey);
+          setSortDirection('asc');
+        }
+      }
+    };
+
+    // Render sort arrow with increased size
+    const arrowStyle = {
+      color: '#007BFF',
+      fontSize: '16px', // Increased arrow size
+      marginLeft: '5px',
+    };
+
+    const renderSortArrow = (columnKey: keyof Ingredient) => {
+      if (sortColumn !== columnKey) return null;
+      return sortDirection === 'asc' ? (
+        <span style={arrowStyle}>↑</span>
+      ) : (
+        <span style={arrowStyle}>↓</span>
+      );
+    };
+
+    const sortedIngredients = sortIngredients(filteredIngredients);
+    const paginatedIngredients = sortedIngredients.slice(startIndex, endIndex);
+
     const handleExportDataClick = useCallback(() => {
       const rows = filteredIngredients;
       if (rows) {
@@ -173,12 +221,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           rows
             .map((row) => {
               const values = [];
-              values.push(row.name); // Convertir la date en format ISO string
+              values.push(row.name); 
               values.push(row.parLevel || '-');
               values.push(row.actualStock || '-');
               values.push(row.theoriticalStock || '-');
               values.push(row.unit || '-');
-              // Extract supplier names and costs from supplier_details
               const suppliers =
                 row?.supplier_details?.length > 0
                   ? row?.supplier_details
@@ -194,7 +241,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             })
             .join('\n');
 
-        // Créer un lien d'ancrage pour le téléchargement
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement('a');
         link.setAttribute('href', encodedUri);
@@ -546,9 +592,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         tagUUID: null,
         parLevel: 0,
         actualStock: 0,
-        unit: units[0].value,
-        // supplier_uuid: suppliers.length ? suppliers[0].value : '',
-        // supplier: suppliers.length ? suppliers[0].label : '',
+        unit: null,
         supplier_details: [
           { supplier_id: null, supplier_name: null, supplier_cost: 0 },
         ],
@@ -563,32 +607,20 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setEditedValues(newIngredient);
     };
 
+    useEffect(() => {
+      reloadInventoryData();
+      reloadTagList();
+      reloadRestaurantSuppliers();
+    }, [reloadInventoryData, reloadTagList, reloadRestaurantSuppliers]);
+
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
       {
-        key: 'id',
-        header: () => (
-          <Checkbox
-            onCheck={handleSelectAll}
-            checked={
-              ingredientsList.length === 0
-                ? false
-                : selectedIngredients.length === ingredientsList.length
-            }
-          />
-        ),
-        width: '20px',
-        renderItem: ({ row }) => (
-          <Checkbox
-            checked={
-              selectedIngredients.find((i) => i.id === row.id) ? true : false
-            }
-            onCheck={() => handleSelectIngredient(row)}
-          />
-        ),
-      },
-      {
         key: 'name',
-        header: t('ingredient:ingredientName'),
+        header: () => (
+          <div onClick={() => handleSort('name')}>
+            {t('ingredient:ingredientName')} {renderSortArrow('name')} {/* Arrow will be shown by default */}
+          </div>
+        ),
         width: '15%',
         classname: 'column-bold',
         renderItem: ({ row }) =>
@@ -840,7 +872,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
       {
         key: 'parLevel',
-        header: t('ingredient:parLvel'),
+        header: () => (
+          <div onClick={() => handleSort('parLevel')}>
+            {t('ingredient:parLvel')} {renderSortArrow('parLevel')}
+          </div>
+        ),
         width: '10%',
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
@@ -857,7 +893,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
       {
         key: 'actualStock',
-        header: t('ingredient:actualStock'),
+        header: () => (
+          <div onClick={() => handleSort('actualStock')}>
+            {t('ingredient:actualStock')} {renderSortArrow('actualStock')}
+          </div>
+        ),
         width: '15%',
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
@@ -874,7 +914,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
       {
         key: 'unit',
-        header: t('ingredient:unit'),
+        header: () => (
+          <div onClick={() => handleSort('unit')}>
+            {t('ingredient:unit')} {renderSortArrow('unit')}
+          </div>
+        ),
         width: '10%',
         renderItem: ({ row }) =>
           editingRowId === row.id ? (
@@ -890,7 +934,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
       {
         key: 'supplier_name',
-        header: t('ingredient:supplierName'),
+        header: t('ingredient:supplierName'), // No sorting
         width: '15%',
         renderItem: ({ row, index }) => {
           if (editingRowId === row.id) {
@@ -957,7 +1001,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           }
         },
       },
-
       {
         key: 'supplier_cost',
         header: t('ingredient:supplierCost'),
@@ -995,7 +1038,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                         });
                       }}
                     />
-                    {/* <button>Delete</button> */}
                     <div className="actions">
                       <i
                         className="fa-solid fa-trash"

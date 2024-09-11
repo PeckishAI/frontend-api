@@ -24,6 +24,12 @@ import 'react-multi-carousel/lib/styles.css';
 import { FaCalendarAlt } from 'react-icons/fa';
 import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
 import DatePicker from 'react-datepicker';
+import supplierService from '../../services/supplier.service';
+
+import CreatableSelect from 'react-select/creatable';
+import { FaCalendarAlt } from 'react-icons/fa';
+
+import SupplierNew from '../../views/Inventory/Suppliers/components/SuppplierNew';
 
 type Props = {
   document: Invoice | null;
@@ -538,6 +544,77 @@ const DocumentDetail = (props: Props) => {
                           className={styles.input}
                           onChange={(e) => handleInputChange(e, 'supplier')}
                           value={editableDocument?.supplier || ''}
+                        /> */}
+                        <CreatableSelect
+                          options={options}
+                          className={styles.inputSupplier}
+                          className={styles.input}
+                          inputValue={inputValue}
+                          value={selectedSupplier} // Control the selected value
+                          onInputChange={(newInputValue) => {
+                            setInputValue(newInputValue);
+                          }}
+                          onChange={(selectedOption, actionMeta) => {
+                            if (actionMeta.action === 'create-option') {
+                              // Handle the creation of a new supplier
+                              setShowAddPopup(true); // Show the "Add New Supplier" popup
+                              handleInputChange(
+                                selectedOption.label,
+                                'supplier'
+                              );
+                              setNewInputAdd(selectedOption.label);
+                              setSelectedSupplier(null); // Clear selected value after adding new supplier
+                            } else if (selectedOption) {
+                              handleInputChange(
+                                selectedOption.value,
+                                'supplier'
+                              );
+                              setSelectedSupplier(selectedOption);
+                            } else {
+                              setSelectedSupplier(null);
+
+                            }
+                          }}
+                          styles={{
+                            control: (provided) => ({
+                              ...provided,
+                              minHeight: '45px',
+                              border: `1px solid grey.300`,
+                            }),
+
+                            menu: (provided) => ({
+                              ...provided,
+                              zIndex: 9999,
+                            }),
+                            menuList: (provided) => ({
+                              ...provided,
+                              maxHeight: '200px',
+                              overflowY: 'auto',
+
+                            }),
+                            option: (provided, state) => ({
+                              ...provided,
+                              backgroundColor: state.isSelected
+                                ? '#007BFF'
+                                : provided.backgroundColor,
+                              color: state.isSelected
+                                ? '#FFFFFF'
+                                : provided.color,
+                            }),
+                            container: (provided) => ({
+                              ...provided,
+                              overflow: 'visible',
+
+                            }),
+                          }}
+                          isClearable
+                          isSearchable
+                          placeholder="Enter or select a supplier"
+                          noOptionsMessage={({ inputValue }) =>
+                            inputValue !== ''
+                              ? `Add "${inputValue}" as new supplier`
+                              : 'No options'
+                          }
                         />
                         <LabeledInput
                           type="number"
@@ -733,6 +810,12 @@ const DocumentDetail = (props: Props) => {
             />
           </div>
         )}
+
+        <SupplierNew
+          isVisible={showAddPopup}
+          onRequestClose={() => setShowAddPopup(false)}
+          onNew={newInputAdd}
+        />
       </SidePanel>
     </>
   );
