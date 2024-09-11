@@ -128,7 +128,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
             receivedQuantities[product.uuid] || product.received_quantity,
           unit: product.unit,
           uuid: product.uuid,
-          quantity: product.received_quantity,
+          quantity: product.quantity,
         })),
       };
 
