@@ -98,7 +98,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     // Make sure there is no default sorting applied
     const [sortColumn, setSortColumn] = useState<string | null>(null); // No default column
-    const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null); // No default direction
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null); 
+    const [hoveredColumn, setHoveredColumn] = useState<string | null>(null);
 
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
@@ -185,35 +186,58 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         setSortColumn(columnKey);
         setSortDirection('asc');
       }
+      setHoveredColumn(null); // Reset hover state on click
+    };
+
+    const handleMouseEnter = (columnKey: keyof Ingredient) => {
+      setHoveredColumn(columnKey);
+    };
+    
+    const handleMouseLeave = () => {
+      setHoveredColumn(null);
     };
 
     const arrowStyle = {
-      color: '#CCCCCC', 
-      fontSize: '22px', 
-      marginLeft: '5px',
-      marginBottom: '0px',
-      top: "-1px",
-      position: "relative"
-    };
-    
-    const activeArrowStyle = {
-      color: '#007BFF', 
+      color: '#CCCCCC', // Neutral light color
       fontSize: '22px',
       marginLeft: '5px',
       marginBottom: '0px',
-      top: "-1px",
-      position: "relative"
+      top: '-1px',
+      position: 'relative',
+    };
+
+    const hoverArrowStyle = {
+      ...arrowStyle,
+      color: '#007BFF', // Blue on hover
+    };
+
+    const activeArrowStyle = {
+      color: '#007BFF', // Dark blue when sorted
+      fontSize: '22px',
+      marginLeft: '5px',
+      marginBottom: '0px',
+      top: '-1px',
+      position: 'relative',
     };
 
     const renderSortArrow = (columnKey: keyof Ingredient) => {
-      if (sortColumn !== columnKey) {
-        return <span style={arrowStyle}>↑</span>; // Default neutral arrow
+      const isActiveColumn = sortColumn === columnKey;
+      const isHoveredColumn = hoveredColumn === columnKey;
+    
+      if (isActiveColumn) {
+        // If the column is the active one being sorted
+        return sortDirection === 'asc' ? (
+          <span style={activeArrowStyle}>↑</span>
+        ) : (
+          <span style={activeArrowStyle}>↓</span>
+        );
+      } else if (isHoveredColumn) {
+        // If the column is being hovered over
+        return <span style={hoverArrowStyle}>↑</span>;
+      } else {
+        // Default neutral arrow for other columns
+        return <span style={arrowStyle}>↑</span>;
       }
-      return sortDirection === 'asc' ? (
-        <span style={activeArrowStyle}>↑</span> // Dark arrow when sorted ascending
-      ) : (
-        <span style={activeArrowStyle}>↓</span> // Dark arrow when sorted descending
-      );
     };
     
     const sortedIngredients = sortIngredients(filteredIngredients);
@@ -658,6 +682,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         header: () => (
           <div
             onClick={() => handleSort('name')}
+            onMouseEnter={() => handleMouseEnter('name')}
+            onMouseLeave={handleMouseLeave}
             style={columnHeaderStyle}
           >
             {t('ingredient:ingredientName')} {renderSortArrow('name')}
@@ -917,6 +943,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         header: () => (
           <div
             onClick={() => handleSort('parLevel')}
+            onMouseEnter={() => handleMouseEnter('parLevel')}
+            onMouseLeave={handleMouseLeave}
             style={columnHeaderStyle}
           >
             {t('ingredient:parLvel')} {renderSortArrow('parLevel')}
@@ -941,6 +969,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         header: () => (
           <div
             onClick={() => handleSort('actualStock')}
+            onMouseEnter={() => handleMouseEnter('actualStock')}
+            onMouseLeave={handleMouseLeave}
             style={columnHeaderStyle}
           >
             {t('ingredient:actualStock')} {renderSortArrow('actualStock')}
@@ -965,6 +995,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         header: () => (
           <div
             onClick={() => handleSort('unit')}
+            onMouseEnter={() => handleMouseEnter('unit')}
+            onMouseLeave={handleMouseLeave}
             style={columnHeaderStyle}
           >
             {t('ingredient:unit')} {renderSortArrow('unit')}
