@@ -615,6 +615,28 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
       {
+        key: 'id',
+        header: () => (
+          <Checkbox
+            onCheck={handleSelectAll}
+            checked={
+              ingredientsList.length === 0
+                ? false
+                : selectedIngredients.length === ingredientsList.length
+            }
+          />
+        ),
+        width: '20px',
+        renderItem: ({ row }) => (
+          <Checkbox
+            checked={
+              selectedIngredients.find((i) => i.id === row.id) ? true : false
+            }
+            onCheck={() => handleSelectIngredient(row)}
+          />
+        ),
+      },
+      {
         key: 'name',
         header: () => (
           <div onClick={() => handleSort('name')}>
