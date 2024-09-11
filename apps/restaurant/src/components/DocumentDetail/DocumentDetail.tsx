@@ -24,6 +24,12 @@ import 'react-multi-carousel/lib/styles.css';
 import { FaCalendarAlt } from 'react-icons/fa';
 import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
 import DatePicker from 'react-datepicker';
+import supplierService from '../../services/supplier.service';
+
+import CreatableSelect from 'react-select/creatable';
+import { FaCalendarAlt } from 'react-icons/fa';
+
+import SupplierNew from '../../views/Inventory/Suppliers/components/SuppplierNew';
 
 type Props = {
   document: Invoice | null;
@@ -733,6 +739,12 @@ const DocumentDetail = (props: Props) => {
             />
           </div>
         )}
+
+        <SupplierNew
+          isVisible={showAddPopup}
+          onRequestClose={() => setShowAddPopup(false)}
+          onNew={newInputAdd}
+        />
       </SidePanel>
     </>
   );

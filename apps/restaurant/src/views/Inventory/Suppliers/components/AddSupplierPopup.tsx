@@ -68,7 +68,7 @@ const AddSupplierPopup = (props: Props) => {
         name: props.editSupplier.name,
         email: props.editSupplier.email || '',
         phone: props.editSupplier.phone || '',
-        automaticInvitation: true,
+        // automaticInvitation: true,
       });
     } else {
       reset({
@@ -133,7 +133,7 @@ const AddSupplierPopup = (props: Props) => {
           : t('suppliers.addSupplier.edit_title')
       }
       subtitle={
-        props.mode === 'edit'
+        props.mode === 'add'
           ? t('suppliers.addSupplier.subtitle')
           : t('suppliers.addSupplier.edit_subtitle')
       }>
