@@ -9,6 +9,11 @@
   color: var(--primaryColor);
   cursor: pointer;
 }
+.input {
+  width: 100%;
+  border: 1px solid var(--borderColor);
+  border-radius: 4px;
+}
 
 .orderButtonSection {
   display: flex;
