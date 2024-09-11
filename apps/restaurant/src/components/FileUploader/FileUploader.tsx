@@ -4,15 +4,16 @@ import style from './style.module.scss';
 type Props = {
   title: string;
   type: 'csv' | 'img';
-  onFileUploaded: (e: File) => void;
+  onFilesUploaded: (e: FileList) => void;
+  multiple?: boolean;
 };
 
 const FileUploader = (props: Props) => {
   const fileInput = useRef<HTMLInputElement>(null);
 
   const handleFileInput = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!fileInput.current || !e.target.files?.[0]) return;
-    props.onFileUploaded(e.target.files?.[0]);
+    if (!fileInput.current || !e.target.files?.length) return;
+    props.onFilesUploaded(e.target.files);
     e.target.value = '';
   };
 
@@ -25,6 +26,7 @@ const FileUploader = (props: Props) => {
         onChange={handleFileInput}
         ref={fileInput}
         style={{ display: 'none' }}
+        multiple={props.multiple}
       />
 
       {props.type === 'csv' ? (

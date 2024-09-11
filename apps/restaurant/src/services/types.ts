@@ -4,23 +4,6 @@ export type Supplier = {
   supplier_cost: number;
 };
 
-export type Ingredient = {
-  type?: string;
-  id: string;
-  name: string;
-  tagUUID?: string[] | null;
-  tag_details?: string[] | null;
-  actualStock: number;
-  theoriticalStock?: number;
-  parLevel: number;
-  unit: string;
-  amount: number;
-  actions?: void;
-  quantity: number;
-  restaurantUUID?: string;
-  supplier_details?: Supplier[];
-};
-
 export type Tag = {
   uuid: string;
   name: string;
@@ -30,30 +13,38 @@ export type Tags = {
   name: string;
 };
 
-export type InvoiceIngredient = {
-  inventoryIngredientRef?: Ingredient | null;
-  mappedUUID?: string;
-  mappedName?: string;
-  detectedName?: string;
-  quantity?: number;
-  unit?: string;
-  received_qty?: number;
-  unitPrice?: number;
-  totalPrice?: number;
-};
+export interface Ingredient {
+  id: string;
+  name: string;
+  unit: string;
+  actualStock?: number;
+  parLevel?: number;
+  supplier?: string;
+  unitCost?: number;
+}
 
 export type Invoice = {
   documentUUID?: string;
   created_at?: string;
   date?: string;
-  supplier?: string;
+  supplier_name?: string;
   image?: string;
   supplier_uuid: string;
   ingredients: InvoiceIngredient[];
   restaurantUUID?: string;
   path?: string;
-  amount?: number;
+  amount?: number; // Make sure amount is a number
   sync_status?: string;
+};
+
+export type InvoiceIngredient = {
+  mappedUUID: string;
+  mapped_name: string;
+  quantity: number;
+  given_name: string;
+  unit: string;
+  unitPrice: number;
+  totalPrice: number;
 };
 
 export type TransferForm = {

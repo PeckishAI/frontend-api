@@ -220,7 +220,11 @@ const uploadCsvFile = async (
   };
 };
 
-const getFormData = (file: File, headerValues: ColumnsNameMapping, selectedValues:any) => {
+const getFormData = (
+  file: File,
+  headerValues: ColumnsNameMapping,
+  selectedValues: any
+) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('ingredient', headerValues.ingredient);
@@ -254,7 +258,7 @@ const validUploadedCsv = (
   restaurantUUID: string,
   file: File,
   headerValues: ColumnsNameMapping,
-  selectedValues:any
+  selectedValues: any
 ) => {
   const formData = getFormData(file, headerValues, selectedValues);
 
@@ -269,45 +273,102 @@ const validUploadedCsv = (
   );
 };
 
+// const uploadImgFile = async (
+//   restaurantUUID: string,
+//   files: File[]
+// ): Promise<Invoice | null> => {
+//   try {
+//     const formData = new FormData();
+
+//     // Append each file to FormData under the 'images' key, similar to curl
+//     files.forEach((file) => {
+//       formData.append('images', file); // This replicates the curl --form behavior
+//     });
+
+//     const res = await axiosClient.post(
+//       `https://integrations-api-167544806451.europe-west1.run.app/tools/openai/invoices/${restaurantUUID}`,
+//       formData,
+//       {
+//         headers: {
+//           'Content-Type': 'multipart/form-data',
+//         },
+//       }
+//     );
+
+//     console.log('Invoice response data:', res.data);
+
+//     if (typeof res.data !== 'object' || res.data === null) {
+//       console.error('Response is not an object:', res.data);
+//       return null;
+//     }
+
+//     return {
+//       amount: res.data.amount,
+//       supplier: res.data.supplier,
+//       ingredients: res.data.ingredients,
+//     };
+//   } catch (error) {
+//     console.error('Error uploading images:', error);
+//     return null;
+//   }
+// };
+
 const uploadImgFile = async (
   restaurantUUID: string,
-  file: File
-): Promise<Invoice | null> => {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('restaurant_uuid', restaurantUUID);
+  files: File[]
+): Promise<any> => {
+  try {
+    const formData = new FormData();
 
-  const base64 = await convertToBase64(file);
+    // Append each file to FormData under the 'images' key, similar to curl
+    files.forEach((file) => {
+      formData.append('images', file);
+    });
 
-  const res = await axiosClient.post(
-    'https://invoices-api-k2w3p2ptza-ew.a.run.app/api/v1/extract',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
-  );
-  console.log('invoice res.data : ', res.data);
-  console.log('typeof res.data : ', typeof res.data);
-  // Check if res.data is xan object
-  if (typeof res.data !== 'object' || res.data === null) {
-    console.error('res.data is not an object:', res.data);
+    const res = await axiosClient.post(
+      `https://integrations-api-167544806451.europe-west1.run.app/tools/openai/invoices/${restaurantUUID}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    console.log('Invoice response data:', res.data);
+
+    return res.data;
+  } catch (error) {
+    console.error('Error uploading images:', error);
     return null;
   }
-
-  return {
-    amount: res.data.amount,
-    supplier: res.data.supplier,
-    image: base64,
-    ingredients: res.data.ingredients,
-  };
 };
 
-const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
-  console.log('inboiceData: ', invoiceData);
+export default uploadImgFile;
 
-  return axiosClient.post('/documents/' + restaurantUUID, invoiceData);
+const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
+  // Ensure the amount is a number (fallback to 0 if not provided)
+  const formattedInvoiceData: Invoice = {
+    ...invoiceData,
+    amount: invoiceData.amount ? Number(invoiceData.amount) : 0,
+    supplier_name: invoiceData.supplier_name ?? '',
+    supplier_uuid: invoiceData.supplier_uuid ?? '',
+    date: invoiceData.date ?? '',
+    ingredients: invoiceData.ingredients.map((ing) => ({
+      ...ing,
+      quantity: Number(ing.quantity),
+      unitPrice: Number(ing.unitPrice),
+      totalPrice: Number(ing.totalPrice),
+      mappedUUID: ing.mappedUUID ?? '',
+      given_name: ing.given_name,
+      unit: ing.unit ?? '',
+    })),
+  };
+
+  console.log('Formatted Invoice Data: ', formattedInvoiceData);
+
+  // Submit the formatted invoice data to the API
+  return axiosClient.post(`/documents/${restaurantUUID}`, formattedInvoiceData);
 };
 
 export const inventoryService = {
@@ -317,6 +378,7 @@ export const inventoryService = {
   updateIngredient,
   getIngredientPreview,
   deleteIngredient,
+  convertToBase64,
   uploadCsvFile,
   getPreviewUploadedCsv,
   validUploadedCsv,
