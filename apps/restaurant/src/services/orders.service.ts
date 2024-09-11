@@ -34,6 +34,7 @@ export type OrderResponse = {
     name: string;
     uuid: string;
     quantity: number;
+    received_quantity: number;
     unitCost: number;
     // actualStock: number;
     // id: string;
@@ -82,6 +83,7 @@ const getOrders = async (
         name: product.name,
         quantity: product.quantity,
         unitCost: product.price,
+        received_quantity: product.received_quantity,
         uuid: product.uuid,
         // actualStock: product.actualStock,
         // id: product.id,

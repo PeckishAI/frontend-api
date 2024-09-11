@@ -10,11 +10,13 @@
   cursor: pointer;
 }
 .input {
-  width: 100%;
+  width: 200px;
   border: 1px solid var(--borderColor);
   border-radius: 4px;
+  margin: 0 auto;
+  left: 5px;
+  position: relative;
 }
-
 .orderButtonSection {
   display: flex;
   justify-content: space-between;
