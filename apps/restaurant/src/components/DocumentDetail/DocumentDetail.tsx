@@ -21,7 +21,6 @@ import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { toast } from 'react-hot-toast';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { FaCalendarAlt } from 'react-icons/fa';
 import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
 import DatePicker from 'react-datepicker';
 import supplierService from '../../services/supplier.service';
@@ -62,19 +61,9 @@ const DocumentDetail = (props: Props) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const { control } = useForm();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
   const [showDatePicker, setShowDatePicker] = useState(false);
   const datePickerRef = useRef(null);
-
-  const { ingredients, loading: loadingIngredients } = useIngredients();
-
-  const ingredientOptions = ingredients.map((ingredient) => ({
-    value: ingredient.id,
-    label: ingredient.name,
-  }));
-
-  const selectedRestaurantUUID = useRestaurantStore(
-    (state) => state.selectedRestaurantUUID
-  );
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -97,19 +86,33 @@ const DocumentDetail = (props: Props) => {
   }, [props.document]);
 
   const toggleEditMode = () => {
-    setIsEditMode((prevState) => !prevState); // Toggle edit mode state
+    setIsEditMode((prevState) => !prevState);
     if (!isEditMode) {
-      // Enter edit mode
       setEditableDocument(props.document);
       setShowDatePicker(false);
       setSelectedDate(
         props.document?.date ? new Date(props.document.date) : null
       );
     } else {
-      // Exit edit mode
       setEditableDocument(null);
+      setSelectedDate(null);
     }
   };
+
+  const { ingredients, loading: loadingIngredients } = useIngredients();
+  const [showAddPopup, setShowAddPopup] = useState(false);
+  const [suppliers, setSuppliers] = useState<LinkedSupplier[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [newInputAdd, setNewInputAdd] = useState('');
+
+  const ingredientOptions = ingredients.map((ingredient) => ({
+    value: ingredient.id,
+    label: ingredient.name,
+  }));
+
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
 
   const handleDocumentChange = (field: keyof Invoice, value: any) => {
     setEditableDocument((prevDocument) => {
@@ -124,10 +127,14 @@ const DocumentDetail = (props: Props) => {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: keyof Invoice
+    e: React.ChangeEvent<HTMLInputElement> | { target: { value: any } },
+    field: keyof Invoice = 'supplier'
   ) => {
-    const value = e.target.value;
+    // Check if `e.target.value` exists, otherwise use `e.value` directly
+    const value = e.target ? e.target.value : e;
+
+    console.log('Selected value:', value);
+
     handleDocumentChange(field, value);
   };
 
@@ -151,6 +158,24 @@ const DocumentDetail = (props: Props) => {
       ingredients: updatedIngredients,
     });
   };
+
+  useEffect(() => {
+    if (!selectedRestaurantUUID) return;
+
+    supplierService
+      .getRestaurantSuppliers(selectedRestaurantUUID)
+      .then((res) => {
+        const suppliersList: DropdownOptionsDefinitionType[] = [];
+        res.forEach((supplier) => {
+          suppliersList.push({
+            label: supplier.name,
+            value: supplier.supplier_uuid, // Update here to use supplier_uuid
+            supplier_uuid: supplier.supplier_uuid,
+          });
+        });
+        setSuppliers(suppliersList);
+      });
+  }, [selectedRestaurantUUID]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -481,6 +506,23 @@ const DocumentDetail = (props: Props) => {
     },
   };
 
+  const options = suppliers.map((supplier) => ({
+    label: supplier.label,
+    value: supplier.value,
+  }));
+
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
+
+  // This useEffect can be used to set the selected supplier from props if needed
+  useEffect(() => {
+    if (props.document?.supplier) {
+      setSelectedSupplier({
+        label: props.document.supplier,
+        value: props.document.supplier_uuid || props.document.supplier, // assuming supplier_uuid is available
+      });
+    }
+  }, [props.document?.supplier]);
+
   return (
     <>
       <SidePanel
@@ -538,7 +580,8 @@ const DocumentDetail = (props: Props) => {
 
                     <div className={styles.scrollDiv}>
                       <div className={styles.headerData}>
-                        <LabeledInput
+                        {/* <LabeledInput
+                        
                           type="text"
                           placeholder={t('ingredient:supplier')}
                           className={styles.input}
@@ -572,7 +615,6 @@ const DocumentDetail = (props: Props) => {
                               setSelectedSupplier(selectedOption);
                             } else {
                               setSelectedSupplier(null);
-
                             }
                           }}
                           styles={{
@@ -590,7 +632,6 @@ const DocumentDetail = (props: Props) => {
                               ...provided,
                               maxHeight: '200px',
                               overflowY: 'auto',
-
                             }),
                             option: (provided, state) => ({
                               ...provided,
@@ -604,7 +645,6 @@ const DocumentDetail = (props: Props) => {
                             container: (provided) => ({
                               ...provided,
                               overflow: 'visible',
-
                             }),
                           }}
                           isClearable
@@ -616,6 +656,7 @@ const DocumentDetail = (props: Props) => {
                               : 'No options'
                           }
                         />
+
                         <LabeledInput
                           type="number"
                           min={0}
@@ -626,6 +667,7 @@ const DocumentDetail = (props: Props) => {
                           onChange={(e) => handleInputChange(e, 'amount')}
                           value={editableDocument?.amount}
                         />
+
                         {showDatePicker && (
                           <DatePicker
                             ref={datePickerRef}
@@ -744,6 +786,7 @@ const DocumentDetail = (props: Props) => {
                           {props.document?.date}
                         </span>
                       </p>
+                      <span className={styles.value}></span>
                     </div>
                     <div className={styles.flexContainer}>
                       <IconButton
