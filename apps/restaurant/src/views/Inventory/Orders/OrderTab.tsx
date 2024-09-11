@@ -90,7 +90,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
       if (selectedOrder) {
         const resetQuantities = {};
         selectedOrder.products.forEach((product) => {
-          resetQuantities[product.id] = product.quantity;
+          resetQuantities[product.id] = product.received_quantity;
         });
         setReceivedQuantities(resetQuantities);
       }
@@ -125,10 +125,10 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
         received_ingredients: selectedOrder.products.map((product) => ({
           name: product.name,
           received_quantity:
-            receivedQuantities[product.uuid] || product.quantity,
+            receivedQuantities[product.uuid] || product.received_quantity,
           unit: product.unit,
           uuid: product.uuid,
-          quantity: product.quantity,
+          quantity: product.received_quantity,
         })),
       };
 
@@ -265,28 +265,25 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
                     value: selectedOrder.status,
                   },
                   {
-                    value:
-                      selectedOrder.status === 'pending' ? (
-                        isEditMode ? (
-                          <div className={styles.quantitySection}>
-                            <FaCheck
-                              onClick={saveReceivedQuantities}
-                              className={styles.rightIcon}
-                            />
-                            <FaTimes
-                              onClick={handleCancelEdit}
-                              className={styles.icon}
-                            />
-                          </div>
-                        ) : (
-                          <Button
-                            value={'Received Stock'}
-                            type="primary"
-                            className="add"
-                            onClick={() => setIsEditMode(true)}
-                          />
-                        )
-                      ) : null,
+                    value: isEditMode ? (
+                      <div className={styles.quantitySection}>
+                        <FaCheck
+                          onClick={saveReceivedQuantities}
+                          className={styles.rightIcon}
+                        />
+                        <FaTimes
+                          onClick={handleCancelEdit}
+                          className={styles.icon}
+                        />
+                      </div>
+                    ) : (
+                      <Button
+                        value={'Received Stock'}
+                        type="primary"
+                        className="add"
+                        onClick={() => setIsEditMode(true)}
+                      />
+                    ),
                   },
                 ]
               : []
@@ -308,31 +305,34 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
                 formatCurrency(row.unitCost, currencyISO),
               classname: 'column-bold',
             },
-            ...(isEditMode
-              ? [
-                  {
-                    key: 'receivedQuantity',
-                    header: t('orders.receivedQtys'),
-                    renderItem: ({ row }) => (
-                      <LabeledInput
-                        type="number"
-                        min={0}
-                        className={styles.input}
-                        step={'any'}
-                        value={
-                          receivedQuantities[row.uuid] !== undefined
-                            ? receivedQuantities[row.uuid]
-                            : row.quantity
-                        }
-                        onChange={(e) =>
-                          handleReceivedQuantityChange(row.uuid, e.target.value)
-                        }
-                        placeholder={t('orders.receivedQtys')}
-                      />
-                    ),
-                  },
-                ]
-              : []),
+            {
+              key: 'receivedQuantity',
+              header: t('orders.receivedQtys'),
+              renderItem: ({ row }) =>
+                isEditMode ? (
+                  <LabeledInput
+                    type="number"
+                    min={0}
+                    className={styles.input}
+                    step="any"
+                    value={
+                      receivedQuantities[row.uuid] !== undefined
+                        ? receivedQuantities[row.uuid]
+                        : row.received_quantity
+                    }
+                    onChange={(e) =>
+                      handleReceivedQuantityChange(row.uuid, e.target.value)
+                    }
+                    placeholder={t('orders.receivedQtys')}
+                  />
+                ) : (
+                  `${
+                    receivedQuantities[row.uuid] !== undefined
+                      ? receivedQuantities[row.uuid]
+                      : row.received_quantity
+                  }`
+                ),
+            },
           ]}
           tableData={selectedOrder?.products || []}
         />
