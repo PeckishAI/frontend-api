@@ -6,7 +6,7 @@ import {
   useEffect,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Table, OrderDetail, Loading } from 'shared-ui';
+import { Button, Table, OrderDetail, Loading, LabeledInput } from 'shared-ui';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { useNavigate } from 'react-router-dom';
@@ -21,6 +21,8 @@ import {
 } from '../../../store/useRestaurantStore';
 import Fuse from 'fuse.js';
 import { ordersService } from '../../../services/orders.service';
+import { FaCheck, FaTimes } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 export type OrderTabRef = {
   renderOptions: () => React.ReactNode;
@@ -55,29 +57,103 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
     // });
     const [orderList, setOrderList] = useState<Order[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingData, setIsLoadingData] = useState(false);
 
     const selectedOrder = orderList.find((order) => order.uuid === orderDetail);
     const { currencyISO } = useRestaurantCurrency();
+    const selectedRestaurantUUID = useRestaurantStore(
+      (state) => state.selectedRestaurantUUID
+    )!;
 
-    const { selectedRestaurantUUID } = useRestaurantStore();
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [receivedQuantities, setReceivedQuantities] = useState({});
 
+    // Initialize receivedQuantities with default values from the selected order's products
     useEffect(() => {
+      if (selectedOrder) {
+        const initialQuantities = {};
+        selectedOrder.products.forEach((product) => {
+          initialQuantities[product.id] = product.quantity;
+        });
+        setReceivedQuantities(initialQuantities);
+      }
+    }, [selectedOrder]);
+
+    const handleReceivedQuantityChange = (id, value) => {
+      setReceivedQuantities((prevState) => ({
+        ...prevState,
+        [id]: value,
+      }));
+    };
+
+    const handleCancelEdit = () => {
+      if (selectedOrder) {
+        const resetQuantities = {};
+        selectedOrder.products.forEach((product) => {
+          resetQuantities[product.id] = product.quantity;
+        });
+        setReceivedQuantities(resetQuantities);
+      }
+      setIsEditMode(false);
+    };
+
+    const getOrders = async () => {
       if (!selectedRestaurantUUID) return;
 
       setIsLoading(true);
-      ordersService
-        .getOrders(selectedRestaurantUUID)
-        .then((res) => {
-          if (res) {
-            setOrderList(res);
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching orders:', error);
-        })
-        .finally(() => {
+      try {
+        const res = await ordersService.getOrders(selectedRestaurantUUID);
+        if (res) {
+          setOrderList(res);
           setIsLoading(false);
-        });
+        }
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const saveReceivedQuantities = async () => {
+      const ReceivedQtyChange = {
+        order_uuid: selectedOrder.uuid,
+        orderNumber: selectedOrder.orderNumber,
+        supplier: selectedOrder.supplier,
+        uuid: selectedOrder.uuid,
+        deliveryDate: selectedOrder.deliveryDate,
+        supplier_uuid: selectedOrder.supplier_uuid,
+        received_ingredients: selectedOrder.products.map((product) => ({
+          name: product.name,
+          received_quantity:
+            receivedQuantities[product.uuid] || product.quantity,
+          unit: product.unit,
+          uuid: product.uuid,
+          quantity: product.quantity,
+        })),
+      };
+
+      setIsLoadingData(true);
+      try {
+        const response = await ordersService.updateQuantity(
+          selectedRestaurantUUID,
+          ReceivedQtyChange
+        );
+        console.log('Update successful:', response.data);
+
+        setIsEditMode(false);
+        getOrders();
+        toast.success('Order quantity updated');
+        setOrderDetail(undefined);
+        setIsLoadingData(false);
+      } catch (error) {
+        console.error('Error updating quantities:', error);
+      } finally {
+        setIsLoadingData(false);
+      }
+    };
+
+    useEffect(() => {
+      getOrders(); // Fetch orders when selectedRestaurantUUID changes
     }, [selectedRestaurantUUID]);
 
     // Render options for the tab bar
@@ -116,7 +192,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
         {
           key: 'status',
           header: t('orders.status'),
-          renderItem: ({ row }) => t(`orders.statusStates.${row.status}`),
+          renderItem: ({ row }) => row.status,
         },
         {
           key: 'price',
@@ -165,7 +241,6 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
         ) : (
           <Table data={OrderFilter} columns={columns} />
         )}
-
         <OrderDetail
           isVisible={orderDetail !== undefined}
           onRequestClose={() => setOrderDetail(undefined)}
@@ -186,7 +261,31 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
                   },
                   {
                     title: t('orders.status'),
-                    value: t(`orders.statusStates.${selectedOrder.status}`),
+                    value: selectedOrder.status,
+                  },
+                  {
+                    value:
+                      selectedOrder.status === 'pending' ? (
+                        isEditMode ? (
+                          <div className={styles.quantitySection}>
+                            <FaCheck
+                              onClick={saveReceivedQuantities}
+                              className={styles.rightIcon}
+                            />
+                            <FaTimes
+                              onClick={handleCancelEdit}
+                              className={styles.icon}
+                            />
+                          </div>
+                        ) : (
+                          <Button
+                            value={'Received Stock'}
+                            type="primary"
+                            className="add"
+                            onClick={() => setIsEditMode(true)}
+                          />
+                        )
+                      ) : null,
                   },
                 ]
               : []
@@ -201,7 +300,6 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
               header: t('quantity'),
               renderItem: ({ row }) => `${row.quantity} ${row.unit}`,
             },
-
             {
               key: 'unitCost',
               header: t('price'),
@@ -209,9 +307,35 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
                 formatCurrency(row.unitCost, currencyISO),
               classname: 'column-bold',
             },
+            ...(isEditMode
+              ? [
+                  {
+                    key: 'receivedQuantity',
+                    header: t('orders.receivedQtys'),
+                    renderItem: ({ row }) => (
+                      <LabeledInput
+                        type="number"
+                        min={0}
+                        className={styles.input}
+                        step={'any'}
+                        value={
+                          receivedQuantities[row.uuid] !== undefined
+                            ? receivedQuantities[row.uuid]
+                            : row.quantity
+                        }
+                        onChange={(e) =>
+                          handleReceivedQuantityChange(row.uuid, e.target.value)
+                        }
+                        placeholder={t('orders.receivedQtys')}
+                      />
+                    ),
+                  },
+                ]
+              : []),
           ]}
           tableData={selectedOrder?.products || []}
         />
+
         <Tooltip className="tooltip" id="detail-tooltip" />
       </div>
     );
