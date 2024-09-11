@@ -22,6 +22,7 @@ export type SupplierOrder = {
 
 export type OrderResponse = {
   supplier: string;
+  supplier_uuid: string;
   orderDate: string;
   orderNumber: string;
   deliveryDate: string;
@@ -31,6 +32,7 @@ export type OrderResponse = {
   products: {
     unit: string;
     name: string;
+    uuid: string;
     quantity: number;
     unitCost: number;
     // actualStock: number;
@@ -39,6 +41,23 @@ export type OrderResponse = {
     // theoriticalStock?: number | undefined;
     // parLevel: number;
     // amount: number;
+  }[];
+};
+
+export type ReceivedQtyChange = {
+  supplier: string;
+  supplier_uuid: string;
+  orderDate: string;
+  orderNumber: string;
+  order_uuid: string;
+  deliveryDate: string;
+  uuid: number;
+  received_ingredients: {
+    unit: string;
+    name: string;
+    received_quantity: string;
+    uuid: string;
+    quantity: number;
   }[];
 };
 
@@ -58,11 +77,13 @@ const getOrders = async (
       status: item.status,
       price: item.price,
       uuid: item.uuid,
+      supplier_uuid: item.supplier_uuid,
       products: item.products.map((product: any) => ({
         unit: product.unit,
         name: product.name,
         quantity: product.quantity,
         unitCost: product.price,
+        uuid: product.uuid,
         // actualStock: product.actualStock,
         // id: product.id,
         // tagUUID: product.tagUUID,
@@ -110,8 +131,16 @@ const placeSupplierOrder = (
   return axiosClient.post('orders/' + restaurantUUID, supplierOrder);
 };
 
+const updateQuantity = (restaurantUUID: string, payload: ReceivedQtyChange) => {
+  return axiosClient.post(
+    `/orders/${restaurantUUID}/update_received_stock`,
+    payload
+  );
+};
+
 export const ordersService = {
   getOrders,
   getOrderGeneration,
   placeSupplierOrder,
+  updateQuantity,
 };
