@@ -96,9 +96,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
 
-    // Sorting state
-    const [sortColumn, setSortColumn] = useState<'name'>('name'); 
-    const [sortDirection, setSortDirection] = useState<'asc'>('asc'); 
+    // Make sure there is no default sorting applied
+    const [sortColumn, setSortColumn] = useState<string | null>(null); // No default column
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null); // No default direction
 
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
@@ -178,36 +178,44 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       return sortDirection === 'asc' ? sorted : sorted.reverse();
     };
 
-    // Handle sorting (only on Ingredient Name, Par Level, Actual Stock, and Unit)
     const handleSort = (columnKey: keyof Ingredient) => {
-      const sortableColumns = ['name', 'parLevel', 'actualStock', 'unit'];
-      if (sortableColumns.includes(columnKey)) {
-        if (sortColumn === columnKey) {
-          setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-        } else {
-          setSortColumn(columnKey);
-          setSortDirection('asc');
-        }
+      if (sortColumn === columnKey) {
+        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      } else {
+        setSortColumn(columnKey);
+        setSortDirection('asc');
       }
     };
 
-    // Render sort arrow with increased size
     const arrowStyle = {
-      color: '#007BFF',
-      fontSize: '16px', // Increased arrow size
-      marginLeft: '10px',
-      marginBottom:"4px"
+      color: '#CCCCCC', 
+      fontSize: '22px', 
+      marginLeft: '5px',
+      marginBottom: '0px',
+      top: "-1px",
+      position: "relative"
+    };
+    
+    const activeArrowStyle = {
+      color: '#007BFF', 
+      fontSize: '22px',
+      marginLeft: '5px',
+      marginBottom: '0px',
+      top: "-1px",
+      position: "relative"
     };
 
     const renderSortArrow = (columnKey: keyof Ingredient) => {
-      if (sortColumn !== columnKey) return null;
+      if (sortColumn !== columnKey) {
+        return <span style={arrowStyle}>↑</span>; // Default neutral arrow
+      }
       return sortDirection === 'asc' ? (
-        <span style={arrowStyle}>↑</span>
+        <span style={activeArrowStyle}>↑</span> // Dark arrow when sorted ascending
       ) : (
-        <span style={arrowStyle}>↓</span>
+        <span style={activeArrowStyle}>↓</span> // Dark arrow when sorted descending
       );
     };
-
+    
     const sortedIngredients = sortIngredients(filteredIngredients);
     const paginatedIngredients = sortedIngredients.slice(startIndex, endIndex);
 
@@ -611,13 +619,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const columnHeaderStyle = {
       cursor: 'pointer',
       padding: '10px',
-      backgroundColor: '#f5f5f5',
-      transition: 'background-color 0.3s ease',
-       display: 'flex', alignItems: 'center', justifyContent: 'center'
-    };
-    
-    const columnHeaderHoverStyle = {
-      backgroundColor: '#e0e0e0', // Change background color on hover
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     };
 
     useEffect(() => {
@@ -655,8 +659,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           <div
             onClick={() => handleSort('name')}
             style={columnHeaderStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
           >
             {t('ingredient:ingredientName')} {renderSortArrow('name')}
           </div>
@@ -916,8 +918,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           <div
             onClick={() => handleSort('parLevel')}
             style={columnHeaderStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
           >
             {t('ingredient:parLvel')} {renderSortArrow('parLevel')}
           </div>
@@ -942,8 +942,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           <div
             onClick={() => handleSort('actualStock')}
             style={columnHeaderStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
           >
             {t('ingredient:actualStock')} {renderSortArrow('actualStock')}
           </div>
@@ -968,8 +966,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           <div
             onClick={() => handleSort('unit')}
             style={columnHeaderStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e0e0e0')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
           >
             {t('ingredient:unit')} {renderSortArrow('unit')}
           </div>
