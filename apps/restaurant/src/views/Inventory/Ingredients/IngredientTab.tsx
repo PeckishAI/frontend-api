@@ -195,7 +195,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const arrowStyle = {
       color: '#007BFF',
       fontSize: '16px', // Increased arrow size
-      marginLeft: '5px',
+      marginLeft: '10px',
+      marginBottom:"4px"
     };
 
     const renderSortArrow = (columnKey: keyof Ingredient) => {
@@ -612,6 +613,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       padding: '10px',
       backgroundColor: '#f5f5f5',
       transition: 'background-color 0.3s ease',
+       display: 'flex', alignItems: 'center', justifyContent: 'center'
     };
     
     const columnHeaderHoverStyle = {
