@@ -116,3 +116,7 @@
   background-color: #5e72e4;
   border-radius: 5px;
 }
+
+.input:focus {
+  border: 2px solid var(--primaryColor);
+}
