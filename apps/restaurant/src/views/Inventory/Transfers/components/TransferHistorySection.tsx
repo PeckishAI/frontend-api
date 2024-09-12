@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './TransferHistorySection.module.scss';
 import { useRestaurantStore } from '../../../../store/useRestaurantStore';
-
+import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
 type Ingredient = {
   name: string;
   quantity: number;
@@ -17,11 +17,14 @@ type TransferEvent = {
   transferDate: string;
   transferredBy: string;
   transferAmount: number;
+  transferNumber: number;
   ingredients: Ingredient[];
 };
 
 type TransferHistorySectionProps = {
-  event: TransferEvent;
+  event: {
+    transfer_event: TransferEvent; // If `transfer_event` is a nested object
+  };
 };
 
 const TransferHistorySection: React.FC<TransferHistorySectionProps> = ({
@@ -36,39 +39,62 @@ const TransferHistorySection: React.FC<TransferHistorySectionProps> = ({
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
-  console.log('check selectedRestaurantUUID');
-  console.log(selectedRestaurantUUID);
-  console.log('check event');
-  console.log(event.fromSiteUUID);
-  console.log(event.toSiteUUID);
 
   const titleClass =
-    event.fromSiteUUID === selectedRestaurantUUID
+    event.transfer_event.fromSiteUUID === selectedRestaurantUUID
       ? styles.sending
-      : event.toSiteUUID === selectedRestaurantUUID
+      : event.transfer_event.toSiteUUID === selectedRestaurantUUID
       ? styles.receiving
       : '';
 
   return (
     <div className={styles.transferHistorySection}>
       <div className={styles.header}>
-        <h3 className={titleClass}>
-          {event.fromSiteUUID === selectedRestaurantUUID
-            ? `Sent to ${event.toSite}`
-            : event.toSiteUUID === selectedRestaurantUUID
-            ? `Received from ${event.fromSite}`
-            : `Transfer from ${event.fromSite} to ${event.toSite}`}
+        <h3>
+          {event.transfer_event.fromSiteUUID === selectedRestaurantUUID ? (
+            <>
+              <FaArrowUp className={styles.sending} />
+
+              {`  ${event.transfer_event.toSite}`}
+            </>
+          ) : event.transfer_event.toSiteUUID === selectedRestaurantUUID ? (
+            <>
+              <FaArrowDown className={styles.receiving} />
+
+              {`  ${event.transfer_event.fromSite}`}
+            </>
+          ) : (
+            `Transfer from ${event.transfer_event.fromSite} to ${event.transfer_event.toSite}`
+          )}
         </h3>
-        <p className={styles.date}>{event.transferDate}</p>
+        <p className={styles.date}>{event.transfer_event.transferDate}</p>
       </div>
       <div className={styles.details}>
         <p>
-          {event.transferredBy
-            ? `Transferred by ${event.transferredBy}`
-            : 'Transferred by -'}
+          {event.transfer_event.transferredBy ? (
+            <>
+              Transferred by: <b>{event.transfer_event.transferredBy}</b>
+            </>
+          ) : (
+            'Transferred by -'
+          )}
         </p>
         <p>
-          Total Amount: <b>€{event.transferAmount.toFixed(2)}</b>
+          Transfer Number:{' '}
+          <b>
+            {event.transfer_event.transferNumber
+              ? event.transfer_event.transferNumber
+              : '--'}
+          </b>
+        </p>
+        <p>
+          Total Amount:{' '}
+          <b>
+            €
+            {event?.transfer_event?.transferAmount
+              ? event?.transfer_event?.transferAmount.toFixed(2)
+              : '--'}
+          </b>
         </p>
         <div
           className={styles.ingredientsToggle}
@@ -76,23 +102,23 @@ const TransferHistorySection: React.FC<TransferHistorySectionProps> = ({
           <span>
             {isIngredientsVisible
               ? '▼ Hide ingredients'
-              : `▶ Show ingredients (${event.ingredients.length})`}
+              : `▶ Show ingredients (${event?.transfer_event.ingredients?.length})`}
           </span>
         </div>
         {isIngredientsVisible && (
-          <ul>
-            {event.ingredients.map((ingredient, index) => (
-              <li key={index} className={styles.ingredient}>
+          <div>
+            {event?.transfer_event?.ingredients?.map((ingredient, index) => (
+              <div key={index} className={styles.ingredient}>
                 <span>{ingredient.name}</span>
                 <span>
                   {ingredient.quantity > 1
-                    ? `${ingredient.quantity} ${ingredient.unit}s` // pluralize unit if quantity > 1
+                    ? `${ingredient.quantity} ${ingredient.unit}s`
                     : `${ingredient.quantity} ${ingredient.unit}`}
                 </span>
                 <span> - €{ingredient.amount.toFixed(2)}</span>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>
