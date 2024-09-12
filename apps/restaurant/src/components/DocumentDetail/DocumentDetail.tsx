@@ -29,6 +29,7 @@ import CreatableSelect from 'react-select/creatable';
 import { FaCalendarAlt } from 'react-icons/fa';
 import SupplierNew from '../../views/Inventory/Suppliers/components/SupplierNew';
 
+
 type Props = {
   document: Invoice | null;
   isOpen: boolean;
@@ -130,6 +131,7 @@ const DocumentDetail = (props: Props) => {
     e: React.ChangeEvent<HTMLInputElement> | { target: { value: any } },
     field: keyof Invoice = 'supplier'
   ) => {
+
     const value = e.target ? e.target.value : e;
 
     console.log('Selected value:', value);
@@ -181,6 +183,7 @@ const DocumentDetail = (props: Props) => {
 
   useEffect(() => {
     fetchSuppliers();
+
   }, [selectedRestaurantUUID]);
 
   const handleSubmit = async (e) => {
@@ -527,7 +530,6 @@ const DocumentDetail = (props: Props) => {
   }));
 
   const [selectedSupplier, setSelectedSupplier] = useState(null);
-  console.log('selectedSupplier', selectedSupplier);
   // This useEffect can be used to set the selected supplier from props if needed
   useEffect(() => {
     if (props.document?.supplier) {

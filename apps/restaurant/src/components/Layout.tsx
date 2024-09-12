@@ -76,14 +76,16 @@ const Layout = () => {
     if (!selectedRestaurantUUID) return;
 
     setIsRefreshing(true);
-    restaurantService.reloadPOS(selectedRestaurantUUID).then((success) => {
-      if (success) {
-        setTimeout(() => {
-          setIsRefreshing(false);
-          navigate(0);
-        }, 2500);
-      }
-    });
+    restaurantService
+      .reloadPOS(selectedRestaurantUUID, user?.user.user_uuid)
+      .then((success) => {
+        if (success) {
+          setTimeout(() => {
+            setIsRefreshing(false);
+            navigate(0);
+          }, 2500);
+        }
+      });
   };
 
   const handleLogout = () => {
