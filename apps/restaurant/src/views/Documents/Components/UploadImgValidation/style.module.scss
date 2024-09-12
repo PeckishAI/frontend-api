@@ -32,15 +32,17 @@
         flex-direction: column;
         // flex-wrap: wrap;
         gap: 20px;
+        align-items: center;
         margin: 0 10px;
         .data {
-          display: flex;
-          font-size: 0.9rem;
-          gap: 5px;
-          align-items: center;
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          grid-gap: 10px 10px;
           .label {
             font-weight: 600;
             color: var(--primaryColor);
+            display: flex;
+            align-items: center;
           }
           .value {
             color: var(--textSecondaryColor);
