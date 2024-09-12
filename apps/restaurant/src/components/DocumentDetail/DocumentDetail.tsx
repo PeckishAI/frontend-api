@@ -21,13 +21,9 @@ import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { toast } from 'react-hot-toast';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import { FaCalendarAlt } from 'react-icons/fa';
 import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
 import DatePicker from 'react-datepicker';
-import supplierService from '../../services/supplier.service';
-
-import CreatableSelect from 'react-select/creatable';
-import { FaCalendarAlt } from 'react-icons/fa';
-import SupplierNew from '../../views/Inventory/Suppliers/components/SupplierNew';
 
 type Props = {
   document: Invoice | null;
@@ -56,14 +52,23 @@ const DocumentDetail = (props: Props) => {
   const [editableDocument, setEditableDocument] = useState<Invoice | null>(
     null
   );
-  console.log('editableDocument', editableDocument);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const { control } = useForm();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
   const [showDatePicker, setShowDatePicker] = useState(false);
   const datePickerRef = useRef(null);
+
+  const { ingredients, loading: loadingIngredients } = useIngredients();
+
+  const ingredientOptions = ingredients.map((ingredient) => ({
+    value: ingredient.id,
+    label: ingredient.name,
+  }));
+
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -86,33 +91,19 @@ const DocumentDetail = (props: Props) => {
   }, [props.document]);
 
   const toggleEditMode = () => {
-    setIsEditMode((prevState) => !prevState);
+    setIsEditMode((prevState) => !prevState); // Toggle edit mode state
     if (!isEditMode) {
+      // Enter edit mode
       setEditableDocument(props.document);
       setShowDatePicker(false);
       setSelectedDate(
         props.document?.date ? new Date(props.document.date) : null
       );
     } else {
+      // Exit edit mode
       setEditableDocument(null);
-      setSelectedDate(null);
     }
   };
-
-  const { ingredients, loading: loadingIngredients } = useIngredients();
-  const [showAddPopup, setShowAddPopup] = useState(false);
-  const [suppliers, setSuppliers] = useState<LinkedSupplier[]>([]);
-  const [inputValue, setInputValue] = useState('');
-  const [newInputAdd, setNewInputAdd] = useState('');
-
-  const ingredientOptions = ingredients.map((ingredient) => ({
-    value: ingredient.id,
-    label: ingredient.name,
-  }));
-
-  const selectedRestaurantUUID = useRestaurantStore(
-    (state) => state.selectedRestaurantUUID
-  );
 
   const handleDocumentChange = (field: keyof Invoice, value: any) => {
     setEditableDocument((prevDocument) => {
@@ -127,13 +118,10 @@ const DocumentDetail = (props: Props) => {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement> | { target: { value: any } },
-    field: keyof Invoice = 'supplier'
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: keyof Invoice
   ) => {
-    const value = e.target ? e.target.value : e;
-
-    console.log('Selected value:', value);
-
+    const value = e.target.value;
     handleDocumentChange(field, value);
   };
 
@@ -158,39 +146,11 @@ const DocumentDetail = (props: Props) => {
     });
   };
 
-  const fetchSuppliers = () => {
-    if (!selectedRestaurantUUID) return;
-
-    supplierService
-      .getRestaurantSuppliers(selectedRestaurantUUID)
-      .then((res) => {
-        const suppliersList: DropdownOptionsDefinitionType[] = [];
-        res.forEach((supplier) => {
-          suppliersList.push({
-            label: supplier.name,
-            value: supplier.supplier_uuid,
-            supplier_uuid: supplier.supplier_uuid,
-          });
-        });
-        setSuppliers(suppliersList);
-      })
-      .catch((error) => {
-        console.error('Error fetching suppliers:', error);
-      });
-  };
-
-  useEffect(() => {
-    fetchSuppliers();
-  }, [selectedRestaurantUUID]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (editableDocument) {
       const lastRow =
         editableDocument.ingredients[editableDocument.ingredients.length - 1];
-
-      // Validate the last row before submission
       if (
         !lastRow.detectedName ||
         !lastRow.mappedName ||
@@ -201,14 +161,11 @@ const DocumentDetail = (props: Props) => {
         toast.error('Please fill in all required fields in the last row.');
         return;
       }
-
       try {
         // Prepare the data for updating
         const updatedData = {
           date: editableDocument.date,
-          supplier: selectedSupplier?.label || editableDocument.supplier,
-          supplier_uuid:
-            selectedSupplier?.value || editableDocument.supplier_uuid,
+          supplier: editableDocument.supplier,
           amount: +editableDocument.amount,
           path: editableDocument.path,
           ingredients: editableDocument.ingredients.map((ing) => ({
@@ -222,16 +179,13 @@ const DocumentDetail = (props: Props) => {
             totalPrice: +ing.totalPrice ? +ing.totalPrice : null,
           })),
         };
-
         setIsLoading(true);
-
-        // Call the update API with the updated data
         await inventoryService.updateDocument(
           selectedRestaurantUUID,
           editableDocument.documentUUID,
+          editableDocument.supplier_uuid,
           updatedData
         );
-
         setIsLoading(false);
         toast.success('Document updated successfully');
         setIsEditMode(false);
@@ -521,23 +475,6 @@ const DocumentDetail = (props: Props) => {
     },
   };
 
-  const options = suppliers.map((supplier) => ({
-    label: supplier.label,
-    value: supplier.value,
-  }));
-
-  const [selectedSupplier, setSelectedSupplier] = useState(null);
-  console.log('selectedSupplier', selectedSupplier);
-  // This useEffect can be used to set the selected supplier from props if needed
-  useEffect(() => {
-    if (props.document?.supplier) {
-      setSelectedSupplier({
-        label: props.document.supplier,
-        value: props.document.supplier_uuid || props.document.supplier, // assuming supplier_uuid is available
-      });
-    }
-  }, [props.document?.supplier]);
-
   return (
     <>
       <SidePanel
@@ -595,83 +532,13 @@ const DocumentDetail = (props: Props) => {
 
                     <div className={styles.scrollDiv}>
                       <div className={styles.headerData}>
-                        {/* <LabeledInput
-                        
+                        <LabeledInput
                           type="text"
                           placeholder={t('ingredient:supplier')}
                           className={styles.input}
                           onChange={(e) => handleInputChange(e, 'supplier')}
                           value={editableDocument?.supplier || ''}
-                        /> */}
-                        <CreatableSelect
-                          options={options}
-                          className={styles.inputSupplier}
-                          className={styles.input}
-                          inputValue={inputValue}
-                          value={selectedSupplier} // Control the selected value
-                          onInputChange={(newInputValue) => {
-                            setInputValue(newInputValue);
-                          }}
-                          onChange={(selectedOption, actionMeta) => {
-                            if (actionMeta.action === 'create-option') {
-                              // Handle the creation of a new supplier
-                              setShowAddPopup(true); // Show the "Add New Supplier" popup
-                              handleInputChange(
-                                selectedOption.label,
-                                'supplier'
-                              );
-                              setNewInputAdd(selectedOption.label);
-                              setSelectedSupplier(null); // Clear selected value after adding new supplier
-                            } else if (selectedOption) {
-                              handleInputChange(
-                                selectedOption.value,
-                                'supplier'
-                              );
-                              setSelectedSupplier(selectedOption);
-                            } else {
-                              setSelectedSupplier(null);
-                            }
-                          }}
-                          styles={{
-                            control: (provided) => ({
-                              ...provided,
-                              minHeight: '45px',
-                              border: `1px solid grey.300`,
-                            }),
-
-                            menu: (provided) => ({
-                              ...provided,
-                              zIndex: 9999,
-                            }),
-                            menuList: (provided) => ({
-                              ...provided,
-                              maxHeight: '200px',
-                              overflowY: 'auto',
-                            }),
-                            option: (provided, state) => ({
-                              ...provided,
-                              backgroundColor: state.isSelected
-                                ? '#007BFF'
-                                : provided.backgroundColor,
-                              color: state.isSelected
-                                ? '#FFFFFF'
-                                : provided.color,
-                            }),
-                            container: (provided) => ({
-                              ...provided,
-                              overflow: 'visible',
-                            }),
-                          }}
-                          isClearable
-                          isSearchable
-                          placeholder="Enter or select a supplier"
-                          noOptionsMessage={({ inputValue }) =>
-                            inputValue !== ''
-                              ? `Add "${inputValue}" as new supplier`
-                              : 'No options'
-                          }
                         />
-
                         <LabeledInput
                           type="number"
                           min={0}
@@ -682,7 +549,6 @@ const DocumentDetail = (props: Props) => {
                           onChange={(e) => handleInputChange(e, 'amount')}
                           value={editableDocument?.amount}
                         />
-
                         {showDatePicker && (
                           <DatePicker
                             ref={datePickerRef}
@@ -801,7 +667,6 @@ const DocumentDetail = (props: Props) => {
                           {props.document?.date}
                         </span>
                       </p>
-                      <span className={styles.value}></span>
                     </div>
                     <div className={styles.flexContainer}>
                       <IconButton
@@ -868,13 +733,6 @@ const DocumentDetail = (props: Props) => {
             />
           </div>
         )}
-
-        <SupplierNew
-          isVisible={showAddPopup}
-          onRequestClose={() => setShowAddPopup(false)}
-          onNew={newInputAdd}
-          fetchSuppliers={fetchSuppliers}
-        />
       </SidePanel>
     </>
   );
