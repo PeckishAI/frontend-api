@@ -66,6 +66,7 @@
   "orders.orderDate": "Date de commande",
   "orders.orderNumber":"Numéro de commande",
   "orders.deliveryDate": "Date de livraison",
+  "orders.receivedQtys":"Quantité reçue",
   "orders.status": "Statut",
   "orders.statusStates": {
     "pending": "En attente",
