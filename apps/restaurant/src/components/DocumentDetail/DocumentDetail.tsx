@@ -27,8 +27,8 @@ import supplierService from '../../services/supplier.service';
 
 import CreatableSelect from 'react-select/creatable';
 import { FaCalendarAlt } from 'react-icons/fa';
+import SupplierNew from '../../views/Inventory/Suppliers/components/SupplierNew';
 
-import SupplierNew from '../../views/Inventory/Suppliers/components/SuppplierNew';
 
 type Props = {
   document: Invoice | null;
@@ -57,6 +57,7 @@ const DocumentDetail = (props: Props) => {
   const [editableDocument, setEditableDocument] = useState<Invoice | null>(
     null
   );
+  console.log('editableDocument', editableDocument);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const { control } = useForm();
@@ -130,7 +131,7 @@ const DocumentDetail = (props: Props) => {
     e: React.ChangeEvent<HTMLInputElement> | { target: { value: any } },
     field: keyof Invoice = 'supplier'
   ) => {
-    // Check if `e.target.value` exists, otherwise use `e.value` directly
+
     const value = e.target ? e.target.value : e;
 
     console.log('Selected value:', value);
@@ -159,7 +160,7 @@ const DocumentDetail = (props: Props) => {
     });
   };
 
-  useEffect(() => {
+  const fetchSuppliers = () => {
     if (!selectedRestaurantUUID) return;
 
     supplierService
@@ -169,19 +170,30 @@ const DocumentDetail = (props: Props) => {
         res.forEach((supplier) => {
           suppliersList.push({
             label: supplier.name,
-            value: supplier.supplier_uuid, // Update here to use supplier_uuid
+            value: supplier.supplier_uuid,
             supplier_uuid: supplier.supplier_uuid,
           });
         });
         setSuppliers(suppliersList);
+      })
+      .catch((error) => {
+        console.error('Error fetching suppliers:', error);
       });
+  };
+
+  useEffect(() => {
+    fetchSuppliers();
+
   }, [selectedRestaurantUUID]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (editableDocument) {
       const lastRow =
         editableDocument.ingredients[editableDocument.ingredients.length - 1];
+
+      // Validate the last row before submission
       if (
         !lastRow.detectedName ||
         !lastRow.mappedName ||
@@ -192,11 +204,14 @@ const DocumentDetail = (props: Props) => {
         toast.error('Please fill in all required fields in the last row.');
         return;
       }
+
       try {
         // Prepare the data for updating
         const updatedData = {
           date: editableDocument.date,
-          supplier: editableDocument.supplier,
+          supplier: selectedSupplier?.label || editableDocument.supplier,
+          supplier_uuid:
+            selectedSupplier?.value || editableDocument.supplier_uuid,
           amount: +editableDocument.amount,
           path: editableDocument.path,
           ingredients: editableDocument.ingredients.map((ing) => ({
@@ -210,13 +225,16 @@ const DocumentDetail = (props: Props) => {
             totalPrice: +ing.totalPrice ? +ing.totalPrice : null,
           })),
         };
+
         setIsLoading(true);
+
+        // Call the update API with the updated data
         await inventoryService.updateDocument(
           selectedRestaurantUUID,
           editableDocument.documentUUID,
-          editableDocument.supplier_uuid,
           updatedData
         );
+
         setIsLoading(false);
         toast.success('Document updated successfully');
         setIsEditMode(false);
@@ -512,7 +530,6 @@ const DocumentDetail = (props: Props) => {
   }));
 
   const [selectedSupplier, setSelectedSupplier] = useState(null);
-
   // This useEffect can be used to set the selected supplier from props if needed
   useEffect(() => {
     if (props.document?.supplier) {
@@ -858,6 +875,7 @@ const DocumentDetail = (props: Props) => {
           isVisible={showAddPopup}
           onRequestClose={() => setShowAddPopup(false)}
           onNew={newInputAdd}
+          fetchSuppliers={fetchSuppliers}
         />
       </SidePanel>
     </>
