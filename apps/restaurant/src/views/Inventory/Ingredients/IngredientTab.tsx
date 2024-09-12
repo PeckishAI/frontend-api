@@ -32,7 +32,6 @@ import Filters, {
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
 import CreatableSelect from 'react-select/creatable';
 
-
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
   { label: 'g', value: 'g' },
@@ -97,9 +96,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
 
-    // Sorting state
-    const [sortColumn, setSortColumn] = useState<'name'>('name'); 
-    const [sortDirection, setSortDirection] = useState<'asc'>('asc'); 
+    // Make sure there is no default sorting applied
+    const [sortColumn, setSortColumn] = useState<string | null>(null); // No default column
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null); 
+    const [hoveredColumn, setHoveredColumn] = useState<string | null>(null);
 
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
@@ -179,35 +179,67 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       return sortDirection === 'asc' ? sorted : sorted.reverse();
     };
 
-    // Handle sorting (only on Ingredient Name, Par Level, Actual Stock, and Unit)
     const handleSort = (columnKey: keyof Ingredient) => {
-      const sortableColumns = ['name', 'parLevel', 'actualStock', 'unit'];
-      if (sortableColumns.includes(columnKey)) {
-        if (sortColumn === columnKey) {
-          setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-        } else {
-          setSortColumn(columnKey);
-          setSortDirection('asc');
-        }
+      if (sortColumn === columnKey) {
+        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      } else {
+        setSortColumn(columnKey);
+        setSortDirection('asc');
       }
+      setHoveredColumn(null); // Reset hover state on click
     };
 
-    // Render sort arrow with increased size
+    const handleMouseEnter = (columnKey: keyof Ingredient) => {
+      setHoveredColumn(columnKey);
+    };
+    
+    const handleMouseLeave = () => {
+      setHoveredColumn(null);
+    };
+
     const arrowStyle = {
-      color: '#007BFF',
-      fontSize: '16px', // Increased arrow size
+      color: '#CCCCCC', // Neutral light color
+      fontSize: '22px',
       marginLeft: '5px',
+      marginBottom: '0px',
+      top: '-1px',
+      position: 'relative',
+    };
+
+    const hoverArrowStyle = {
+      ...arrowStyle,
+      color: '#5E72E4',
+    };
+
+    const activeArrowStyle = {
+      color: '#5E72E4',
+      fontSize: '22px',
+      marginLeft: '5px',
+      marginBottom: '0px',
+      top: '-1px',
+      position: 'relative',
     };
 
     const renderSortArrow = (columnKey: keyof Ingredient) => {
-      if (sortColumn !== columnKey) return null;
-      return sortDirection === 'asc' ? (
-        <span style={arrowStyle}>↑</span>
-      ) : (
-        <span style={arrowStyle}>↓</span>
-      );
+      const isActiveColumn = sortColumn === columnKey;
+      const isHoveredColumn = hoveredColumn === columnKey;
+    
+      if (isActiveColumn) {
+        // If the column is the active one being sorted
+        return sortDirection === 'asc' ? (
+          <span style={activeArrowStyle}>↑</span>
+        ) : (
+          <span style={activeArrowStyle}>↓</span>
+        );
+      } else if (isHoveredColumn) {
+        // If the column is being hovered over
+        return <span style={hoverArrowStyle}>↑</span>;
+      } else {
+        // Default neutral arrow for other columns
+        return <span style={arrowStyle}>↑</span>;
+      }
     };
-
+    
     const sortedIngredients = sortIngredients(filteredIngredients);
     const paginatedIngredients = sortedIngredients.slice(startIndex, endIndex);
 
@@ -608,6 +640,14 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setEditedValues(newIngredient);
     };
 
+    const columnHeaderStyle = {
+      cursor: 'pointer',
+      padding: '10px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    };
+
     useEffect(() => {
       reloadInventoryData();
       reloadTagList();
@@ -616,10 +656,37 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
       {
+        key: 'id',
+        header: () => (
+          <Checkbox
+            onCheck={handleSelectAll}
+            checked={
+              ingredientsList.length === 0
+                ? false
+                : selectedIngredients.length === ingredientsList.length
+            }
+          />
+        ),
+        width: '20px',
+        renderItem: ({ row }) => (
+          <Checkbox
+            checked={
+              selectedIngredients.find((i) => i.id === row.id) ? true : false
+            }
+            onCheck={() => handleSelectIngredient(row)}
+          />
+        ),
+      },
+      {
         key: 'name',
         header: () => (
-          <div onClick={() => handleSort('name')}>
-            {t('ingredient:ingredientName')} {renderSortArrow('name')} {/* Arrow will be shown by default */}
+          <div
+            onClick={() => handleSort('name')}
+            onMouseEnter={() => handleMouseEnter('name')}
+            onMouseLeave={handleMouseLeave}
+            style={columnHeaderStyle}
+          >
+            {t('ingredient:ingredientName')} {renderSortArrow('name')}
           </div>
         ),
         width: '15%',
@@ -874,7 +941,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       {
         key: 'parLevel',
         header: () => (
-          <div onClick={() => handleSort('parLevel')}>
+          <div
+            onClick={() => handleSort('parLevel')}
+            onMouseEnter={() => handleMouseEnter('parLevel')}
+            onMouseLeave={handleMouseLeave}
+            style={columnHeaderStyle}
+          >
             {t('ingredient:parLvel')} {renderSortArrow('parLevel')}
           </div>
         ),
@@ -895,7 +967,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       {
         key: 'actualStock',
         header: () => (
-          <div onClick={() => handleSort('actualStock')}>
+          <div
+            onClick={() => handleSort('actualStock')}
+            onMouseEnter={() => handleMouseEnter('actualStock')}
+            onMouseLeave={handleMouseLeave}
+            style={columnHeaderStyle}
+          >
             {t('ingredient:actualStock')} {renderSortArrow('actualStock')}
           </div>
         ),
@@ -916,7 +993,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       {
         key: 'unit',
         header: () => (
-          <div onClick={() => handleSort('unit')}>
+          <div
+            onClick={() => handleSort('unit')}
+            onMouseEnter={() => handleMouseEnter('unit')}
+            onMouseLeave={handleMouseLeave}
+            style={columnHeaderStyle}
+          >
             {t('ingredient:unit')} {renderSortArrow('unit')}
           </div>
         ),
