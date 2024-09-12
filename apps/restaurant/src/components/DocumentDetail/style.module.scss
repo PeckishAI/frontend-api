@@ -69,11 +69,6 @@
   gap: 5px;
 }
 
-.detectedNameInput,
-.mappedNameInput {
-  width: 150px;
-}
-
 .quantity,
 .price {
   width: 75px;
@@ -82,12 +77,13 @@
 .headerData {
   display: flex;
   gap: 10px;
+  padding: 2px;
   margin: 10px 0;
 
   .input {
     width: 200px;
     border: 1px solid var(--borderColor);
-    border-radius: 4px;
+    // border-radius: 4px;
   }
   .datePicker {
     border: 1px solid var(--borderColor);

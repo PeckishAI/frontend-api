@@ -335,7 +335,6 @@ const DocumentDetail = (props: Props) => {
           type="text"
           min={0}
           placeholder={t('name')}
-          className={styles.detectedNameInput}
           onChange={(value) =>
             handleIngredientChange(index, 'detectedName', value)
           }
@@ -348,32 +347,29 @@ const DocumentDetail = (props: Props) => {
       header: t('document.givenName'),
       classname: 'column-bold',
       renderItem: ({ row, index }) => (
-        <div style={{ width: 180 }}>
-          <Controller
-            name={`mappedName-${index}`}
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                options={ingredientOptions}
-                className={styles.detectedNameInput}
-                isClearable
-                isSearchable
-                maxMenuHeight={200}
-                onChange={(selectedOption) => {
-                  field.onChange(selectedOption);
-                  handleMappedNameChange(index, selectedOption);
-                }}
-                value={ingredientOptions.find(
-                  (option) =>
-                    option.value ===
-                    (editableDocument?.ingredients[index].mappedUUID ||
-                      field.value)
-                )}
-              />
-            )}
-          />
-        </div>
+        <Controller
+          name={`mappedName-${index}`}
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              options={ingredientOptions}
+              isClearable
+              isSearchable
+              maxMenuHeight={200}
+              onChange={(selectedOption) => {
+                field.onChange(selectedOption);
+                handleMappedNameChange(index, selectedOption);
+              }}
+              value={ingredientOptions.find(
+                (option) =>
+                  option.value ===
+                  (editableDocument?.ingredients[index].mappedUUID ||
+                    field.value)
+              )}
+            />
+          )}
+        />
       ),
     },
     {

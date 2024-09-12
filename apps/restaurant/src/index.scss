@@ -60,3 +60,59 @@
 .react-datepicker-popper {
   z-index: 999 !important;
 }
+
+.react-datepicker__close-icon::after {
+  background-color: #5e72e4 !important;
+  border-radius: 50%;
+  color: white;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  font-size: 16px !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--selected:hover {
+  background-color: #5e72e4 !important;
+  border-radius: 50%;
+  color: white !important;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: #5e72e4 !important;
+  color: white !important;
+}
+
+::-webkit-input-placeholder {
+  opacity: 1;
+}
+
+::-moz-placeholder {
+  opacity: 1;
+}
+
+:-ms-input-placeholder {
+  opacity: 1;
+}
+
+::-ms-input-placeholder {
+  opacity: 1;
+}
+
+::placeholder {
+  opacity: 1;
+}
+
+::-webkit-scrollbar {
+  background-color: #ccc;
+  width: 5px;
+  border-radius: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #5e72e4;
+  border-radius: 5px;
+}
