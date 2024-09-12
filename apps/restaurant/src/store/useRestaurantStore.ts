@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { restaurantService } from '../services';
+import { restaurantService, transferService } from '../services';
 import { User, useUserStore } from '@peckishai/user-management';
 import i18n from '../translation/i18n';
 
@@ -21,20 +21,24 @@ type RestaurantStore = {
   selectedRestaurantUUID?: string;
   restaurants: Restaurant[];
   restaurantsLoading: boolean;
+  transferHistory: any[];
   setSelectedRestaurantUUID: (uuid: string) => void;
   loadRestaurants: () => void;
   addRestaurant: (restaurant: Restaurant) => void;
+  loadTransferHistory: (restaurantId: string) => void;
 };
 
 export const useRestaurantStore = create<RestaurantStore>()((set) => ({
   restaurants: [],
   selectedRestaurantUUID: undefined,
   restaurantsLoading: false,
+  transferHistory: [],
 
   setSelectedRestaurantUUID: (uuid: string) => {
     localStorage.setItem('selectedRestaurantUUID', uuid);
     set({ selectedRestaurantUUID: uuid });
   },
+
   loadRestaurants: async () => {
     const user = useUserStore.getState().user;
     if (!user) return;
@@ -47,10 +51,10 @@ export const useRestaurantStore = create<RestaurantStore>()((set) => ({
       user?.user?.user_uuid
     );
 
-    // Retrieve last selected restaurant from local storage
     const storedSelectedRestaurantUUID = localStorage.getItem(
       'selectedRestaurantUUID'
     );
+
     if (
       storedSelectedRestaurantUUID &&
       restaurants.some((r) => r.uuid === storedSelectedRestaurantUUID)
@@ -65,8 +69,18 @@ export const useRestaurantStore = create<RestaurantStore>()((set) => ({
       restaurantsLoading: false,
     });
   },
+
   addRestaurant: (restaurant: Restaurant) => {
     set((state) => ({ restaurants: [...state.restaurants, restaurant] }));
+  },
+
+  loadTransferHistory: async (restaurantId: string) => {
+    try {
+      const history = await transferService.getTransferHistory(restaurantId);
+      set({ transferHistory: history }); // Update transferHistory in store
+    } catch (error) {
+      console.error('Error fetching transfer history:', error);
+    }
   },
 }));
 
