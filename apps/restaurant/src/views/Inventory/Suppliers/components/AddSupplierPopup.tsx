@@ -85,11 +85,14 @@ const AddSupplierPopup = (props: Props) => {
 
     if (props.mode === 'add') {
       const uuid = await supplierService
-        .createSupplier({
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-        })
+        .createSupplier(
+          {
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+          },
+          restaurantUUID
+        )
         .then((res) => res.supplier_uuid)
         .catch(() => null);
 
