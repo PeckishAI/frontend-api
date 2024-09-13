@@ -21,7 +21,7 @@ import {
 } from '../../../store/useRestaurantStore';
 import Fuse from 'fuse.js';
 import { ordersService } from '../../../services/orders.service';
-import { FaCheck, FaTimes } from 'react-icons/fa';
+import { FaCheck, FaEdit, FaTimes } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 export type OrderTabRef = {
@@ -301,19 +301,21 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
                           className={styles.icon}
                         />
                       </div>
-                    ) : (
+                    ) : selectedOrder.status === 'pending' ? (
                       <Button
-                        value={'Received Stock'}
-                        className={
-                          selectedOrder.status === 'pending'
-                            ? styles.pendingStock
-                            : selectedOrder.status === 'received'
-                            ? styles.receivedStock
-                            : styles.receivedStock
-                        }
+                        value="Receive Stock"
+                        className={styles.pendingStock}
                         onClick={() => setIsEditMode(true)}
                       />
-                    ),
+                    ) : selectedOrder.status === 'received' ? (
+                      <div className={styles.receivedSection}>
+                        <span className={styles.receivedStock}>Received</span>
+                        <FaEdit
+                          onClick={() => setIsEditMode(true)}
+                          className={styles.editIcon}
+                        />
+                      </div>
+                    ) : null,
                   },
                 ]
               : []

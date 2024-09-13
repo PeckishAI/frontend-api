@@ -83,6 +83,14 @@
   color: white;
 }
 .receivedStock {
-  background-color: rgb(57, 205, 57);
-  color: white;
+  color: rgb(57, 205, 57);
+}
+.receivedSection {
+  display: flex;
+  gap: 10px;
+  font-size: 1rem;
+  color: var(--primaryColor);
+  .editIcon {
+    cursor: pointer;
+  }
 }
