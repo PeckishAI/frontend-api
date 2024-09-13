@@ -10,7 +10,10 @@ type RestaurantResponse = {
   restaurant_uuid: string;
   currency: string | null;
   provider: {
-    xero: boolean;
+    xero?: boolean;
+    red_cat?: boolean;
+    vitamojo?: boolean;
+    toast?: boolean;
   }[];
   users: {
     user_email: string;
@@ -35,6 +38,9 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
     created_at: new Date(r.created_at),
     provider: r.provider.map((p) => ({
       xero: p.xero,
+      red_cat: p.red_cat,
+      vitamojo: p.vitamojo,
+      toast: p.toast,
     })),
     users: r.users.map((u) => ({
       ...u,
@@ -45,9 +51,12 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
   }));
 };
 
-const reloadPOS = async (restaurantId: string): Promise<boolean> => {
+const reloadPOS = async (
+  restaurantId: string,
+  userUUID: string
+): Promise<boolean> => {
   return await axiosClient
-    .post(`/refresh/${restaurantId}`)
+    .post(`/refresh/${restaurantId}`, { user_id: userUUID })
     .then(() => true)
     .catch(() => false);
 };

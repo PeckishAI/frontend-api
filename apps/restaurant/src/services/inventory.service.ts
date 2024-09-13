@@ -23,6 +23,7 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
       ...documentData,
       documentUUID: key,
       supplier_uuid: documentData.supplier_uuid,
+      supplier: documentData.supplier,
       sync_status: documentData.sync_status,
       ingredients: documentData.ingredients.map((ingredient: any) => ({
         mappedUUID: ingredient['mapping_uuid'],
@@ -63,14 +64,13 @@ const convertToBase64 = (file: File): Promise<string> => {
 const updateDocument = (
   restaurantUUID: string,
   documentUUID: string,
-  supplier_uuid: string,
   data: FormDocument
 ) => {
   return axiosClient.post('/documents/' + documentUUID + '/update', {
     restaurant_uuid: restaurantUUID,
     date: data.date,
+    supplier_uuid: data.supplier_uuid,
     supplier: data.supplier,
-    supplier_uuid: supplier_uuid,
     ingredients: data.ingredients,
     amount: data.amount,
   });
@@ -97,8 +97,14 @@ const sendInvoice = async (restaurantUUID: string, data: DocumentData[]) => {
   }
 };
 
-const deleteDocument = (documentId: string) => {
-  return axiosClient.post('/documents/' + documentId + '/delete');
+const deleteDocument = async (documentId: string) => {
+  try {
+    const response = await axiosClient.post(`/documents/${documentId}/delete`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    throw error;
+  }
 };
 
 const getIngredientList = async (
@@ -124,6 +130,7 @@ const getIngredientList = async (
     ),
     amount: res.data[key]['amount'],
     type: res.data[key]['type'],
+    quantity: res.data[key]['quantity'],
   }));
 };
 
@@ -145,7 +152,9 @@ const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
 const getOnlyIngredientList = async (
   restaurantUUID: string
 ): Promise<Ingredient[]> => {
-  const res = await axiosClient.get('/ingredients-list/' + restaurantUUID);
+  const res = await axiosClient.get(
+    '/ingredients-list/' + restaurantUUID + '?fetch_preparations=false'
+  );
 
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
@@ -220,7 +229,11 @@ const uploadCsvFile = async (
   };
 };
 
-const getFormData = (file: File, headerValues: ColumnsNameMapping, selectedValues:any) => {
+const getFormData = (
+  file: File,
+  headerValues: ColumnsNameMapping,
+  selectedValues: any
+) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('ingredient', headerValues.ingredient);
@@ -254,7 +267,7 @@ const validUploadedCsv = (
   restaurantUUID: string,
   file: File,
   headerValues: ColumnsNameMapping,
-  selectedValues:any
+  selectedValues: any
 ) => {
   const formData = getFormData(file, headerValues, selectedValues);
 
