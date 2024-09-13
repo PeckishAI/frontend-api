@@ -90,9 +90,8 @@ const TransferHistorySection: React.FC<TransferHistorySectionProps> = ({
         <p>
           Total Amount:{' '}
           <b>
-            €
             {event?.transfer_event?.transferAmount
-              ? event?.transfer_event?.transferAmount.toFixed(2)
+              ? `€ ${event.transfer_event.transferAmount.toFixed(2)}`
               : '--'}
           </b>
         </p>
