@@ -185,15 +185,40 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
 
     const columns: ColumnDefinitionType<Order>[] = useMemo(
       () => [
-        { key: 'orderNumber', header: t('orders.orderNumber') },
+        {
+          key: 'orderNumber',
+          header: t('orders.orderNumber'),
+          classname: 'column-bold',
+        },
         { key: 'supplier', header: t('orders.supplier') },
         { key: 'orderDate', header: t('orders.orderDate') },
-        { key: 'orderNumber', header: t('orders.orderNumber') },
-        { key: 'deliveryDate', header: t('orders.deliveryDate') },
+        {
+          key: 'deliveryDate',
+          header: t('orders.deliveryDate'),
+          renderItem: ({ row }) => {
+            const formattedDeliveryDate = new Intl.DateTimeFormat('en-GB', {
+              weekday: 'short',
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            }).format(new Date(row.deliveryDate));
+
+            return <span>{formattedDeliveryDate}</span>;
+          },
+        },
         {
           key: 'status',
           header: t('orders.status'),
-          renderItem: ({ row }) => row.status,
+          renderItem: ({ row }) => {
+            const statusClass =
+              row.status === 'pending'
+                ? `${styles.status} ${styles.pending}`
+                : row.status === 'received'
+                ? `${styles.status} ${styles.received}`
+                : `${styles.status} ${styles.default}`;
+
+            return <span className={statusClass}>{t(`${row.status}`)}</span>;
+          },
         },
         {
           key: 'price',
@@ -226,7 +251,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
 
     const OrderFilter = props.searchValue
       ? new Fuse(orderList, {
-          keys: ['supplier'],
+          keys: ['supplier', 'orderNumber'],
           distance: 10,
         })
           .search(props.searchValue)
@@ -279,8 +304,13 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
                     ) : (
                       <Button
                         value={'Received Stock'}
-                        type="primary"
-                        className="add"
+                        className={
+                          selectedOrder.status === 'pending'
+                            ? styles.pendingStock
+                            : selectedOrder.status === 'received'
+                            ? styles.receivedStock
+                            : styles.receivedStock
+                        }
                         onClick={() => setIsEditMode(true)}
                       />
                     ),

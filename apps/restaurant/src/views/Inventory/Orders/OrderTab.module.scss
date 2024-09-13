@@ -48,3 +48,41 @@
   text-align: center;
   font-style: italic;
 }
+
+.statusSpan {
+  padding: '5px 10px';
+  border: 12px;
+  display: 'inline-block';
+  font-size: '12px';
+  border-radius: '12px';
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 12px;
+  display: inline-block;
+  font-size: 12px;
+  color: white;
+
+  &.pending {
+    background-color: var(--secondaryColorAccentued);
+    color: black;
+  }
+
+  &.received {
+    background-color: rgb(57, 205, 57);
+  }
+
+  &.default {
+    background-color: var(--secondaryColorAccentued);
+    color: black;
+  }
+}
+.pendingStock {
+  background-color: var(--primaryColor);
+  color: white;
+}
+.receivedStock {
+  background-color: rgb(57, 205, 57);
+  color: white;
+}
