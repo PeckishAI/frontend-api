@@ -74,11 +74,14 @@ const SupplierNew = (props: Props) => {
 
     try {
       const uuid = await supplierService
-        .createSupplier({
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-        })
+        .createSupplier(
+          {
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+          },
+          restaurantUUID
+        )
         .then((res) => {
           // Call onRequestClose after successful supplier creation
           props.onRequestClose();

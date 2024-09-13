@@ -59,8 +59,10 @@ type SuppliersResponse = {
   name: string;
 }[];
 
-const getSuppliers = async (): Promise<Supplier[]> => {
-  const res = await axiosClient.get<SuppliersResponse>('/suppliers');
+const getSuppliers = async (restaurantUUID: string): Promise<Supplier[]> => {
+  const res = await axiosClient.get<SuppliersResponse>(
+    `/suppliers/${restaurantUUID}`
+  );
 
   return res.data.map((supplier) => ({
     ...supplier,
@@ -73,10 +75,11 @@ type CreateSupplierResponse = {
 };
 
 const createSupplier = async (
-  supplier: Omit<Supplier, 'uuid' | 'created_at'>
+  supplier: Omit<Supplier, 'uuid' | 'created_at'>,
+  restaurantUUID: string
 ): Promise<CreateSupplierResponse> => {
   const res = await axiosClient.post<CreateSupplierResponse>(
-    '/suppliers',
+    `/suppliers/${restaurantUUID}`,
     supplier
   );
 
@@ -159,7 +162,6 @@ export default {
   updateSupplier,
   addSupplierToRestaurant,
   revokeSupplierAccess,
-  updateSupplier,
   getSync,
   addSyncSupplier,
   addOnlySupplier,
