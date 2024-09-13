@@ -120,6 +120,7 @@ const Inventory = () => {
               pathname: `/inventory/${getTabName(tabIndex)}`,
             });
             setSelectedTab(tabIndex);
+            setSearchValue('');
           }}
           selectedIndex={selectedTab}
         />

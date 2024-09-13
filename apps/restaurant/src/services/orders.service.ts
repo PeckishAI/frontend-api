@@ -85,6 +85,7 @@ const getOrders = async (
         quantity: product.quantity,
         received_quantity: product.received_quantity,
         unitCost: product.price,
+        received_quantity: product.received_quantity,
         uuid: product.uuid,
         // actualStock: product.actualStock,
         // id: product.id,
