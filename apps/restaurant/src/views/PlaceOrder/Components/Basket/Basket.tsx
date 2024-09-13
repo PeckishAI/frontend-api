@@ -147,7 +147,7 @@ const Basket = (props: Props) => {
   );
 
   const handlePlaceOrder = () => {
-    setNotesValues([]);
+    // setNotesValues([]);
     props.onOrderSubmited(deliveryDates);
   };
 
