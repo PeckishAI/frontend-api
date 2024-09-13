@@ -145,7 +145,9 @@ const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
 const getOnlyIngredientList = async (
   restaurantUUID: string
 ): Promise<Ingredient[]> => {
-  const res = await axiosClient.get('/ingredients-list/' + restaurantUUID);
+  const res = await axiosClient.get(
+    '/ingredients-list/' + restaurantUUID + '?fetch_preparations=false'
+  );
 
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
@@ -220,7 +222,11 @@ const uploadCsvFile = async (
   };
 };
 
-const getFormData = (file: File, headerValues: ColumnsNameMapping, selectedValues:any) => {
+const getFormData = (
+  file: File,
+  headerValues: ColumnsNameMapping,
+  selectedValues: any
+) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('ingredient', headerValues.ingredient);
@@ -254,7 +260,7 @@ const validUploadedCsv = (
   restaurantUUID: string,
   file: File,
   headerValues: ColumnsNameMapping,
-  selectedValues:any
+  selectedValues: any
 ) => {
   const formData = getFormData(file, headerValues, selectedValues);
 
