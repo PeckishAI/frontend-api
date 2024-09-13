@@ -152,7 +152,9 @@ const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
 const getOnlyIngredientList = async (
   restaurantUUID: string
 ): Promise<Ingredient[]> => {
-  const res = await axiosClient.get('/ingredients-list/' + restaurantUUID);
+  const res = await axiosClient.get(
+    '/ingredients-list/' + restaurantUUID + '?fetch_preparations=false'
+  );
 
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
