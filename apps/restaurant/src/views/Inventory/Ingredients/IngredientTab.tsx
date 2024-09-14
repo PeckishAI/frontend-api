@@ -34,7 +34,7 @@ import Filters, {
 } from '../Components/Filters/Filters';
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
 import CreatableSelect from 'react-select/creatable';
-
+import AddWastingPopup from '../Components/Wastes/Wastes';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -73,6 +73,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [tagList, setTagList] = useState<Tag[]>([]);
     const [editingRowId, setEditingRowId] = useState<string | null>();
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
+    const [wastingRowId, setWastingRowId] = useState<Ingredient>();
     const [addingRow, setAddingRow] = useState(false);
     const [editedValues, setEditedValues] = useState<Ingredient | null>(null);
     const [selectedIngredients, setSelectedIngredients] = useState<
@@ -95,6 +96,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setPage(NewValue);
     };
 
+    const [isWastingPopupVisible, setWastingPopupVisible] = useState(false);
+    const handleWastingClick = (row: Ingredient) => {
+      console.log('Row clicked:', row);
+      setWastingRowId(row);
+      setWastingPopupVisible(true);
+    };
+
     const ITEMS_PER_PAGE = 10; // Define items per page
 
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
@@ -107,7 +115,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
-
 
     const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
@@ -139,19 +146,23 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         }
 
         if (filters.selectedSupplier && filters.selectedSupplier.length > 0) {
-          const selectedSupplierUuids = filters.selectedSupplier.map(supplier => supplier.uuid);
-          filteredList = filteredList.filter(ingredient =>
-              ingredient.supplier_details?.some(supplier =>
-                  selectedSupplierUuids.includes(supplier.supplier_id)
+          const selectedSupplierUuids = filters.selectedSupplier.map(
+            (supplier) => supplier.uuid
+          );
+          filteredList = filteredList.filter(
+            (ingredient) =>
+              ingredient.supplier_details?.some((supplier) =>
+                selectedSupplierUuids.includes(supplier.supplier_id)
               )
           );
         }
 
         if (filters.selectedTag && filters.selectedTag.length > 0) {
-          const selectedTagUuids = filters.selectedTag.map(tag => tag.uuid);
-          filteredList = filteredList.filter(ingredient =>
-              ingredient.tagUUID?.some(tagUuid =>
-                  selectedTagUuids.includes(tagUuid)
+          const selectedTagUuids = filters.selectedTag.map((tag) => tag.uuid);
+          filteredList = filteredList.filter(
+            (ingredient) =>
+              ingredient.tagUUID?.some((tagUuid) =>
+                selectedTagUuids.includes(tagUuid)
               )
           );
         }
@@ -836,7 +847,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             '-' // Fallback if there are no tags
           );
         },
-
       },
       {
         key: 'parLevel',
@@ -1035,6 +1045,20 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           return (
             <div className="actions">
               {editingRowId === row.id ? (
+                <i
+                  className="fa-solid fa-times"
+                  data-tooltip-id="inventory-tooltip"
+                  data-tooltip-content={t('cancel')}
+                  onClick={handleCancelEdit}></i>
+              ) : (
+                <i
+                  className="fa-solid fa-recycle"
+                  data-tooltip-id="inventory-tooltip"
+                  data-tooltip-content={t('waste')}
+                  onClick={() => handleWastingClick(row)}></i>
+              )}
+
+              {editingRowId === row.id ? (
                 <>
                   {' '}
                   <i
@@ -1152,6 +1176,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           subMsg={popupError}
           isOpen={popupError === '' ? false : true}
           onRequestClose={() => togglePopupError('')}
+        />
+        <AddWastingPopup
+          onRequestClose={() => setWastingPopupVisible(false)}
+          isVisible={isWastingPopupVisible}
+          onReload={reloadInventoryData} // Ensure the page reloads after waste is submitted
+          ingredient={wastingRowId} // Pass the ingredient to the popup
         />
       </>
     );
