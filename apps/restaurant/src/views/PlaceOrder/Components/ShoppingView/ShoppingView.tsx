@@ -28,7 +28,6 @@ type Props = {
 };
 
 export type GeneratedOrder = {
-  // maybe replace type by InvoiceIngredient one
   ingredients: {
     uuid: string;
     quantity: number;
@@ -55,7 +54,7 @@ const ShoppingView = (props: Props) => {
   const [supplierNotes, setSupplierNotes] = useState<SupplierNote[]>([]);
   const [basketIsOpen, setBasketIsOpen] = useState(false);
   const [showEmailDailog, setShowEmailDialog] = useState(false);
-  const [sendEmail, setSendEmail] = useState(false); // New state to track email confirmation
+  const [sendEmail, setSendEmail] = useState(false);
   const [showDatePickerForSupplier, setShowDatePickerForSupplier] = useState<
     Record<string, boolean>
   >({});
@@ -86,15 +85,12 @@ const ShoppingView = (props: Props) => {
         );
 
         if (existingItemIndex === -1 && ingredientInventory) {
-          // If ingredient isn't in cart, add it
-
+          // Add new ingredient to cart
           const newIngredient = {
             ingredientUUID: ingredientInventory.id,
             ingredientName: ingredientInventory.name,
-            ingredientUnit: ingredientInventory.unit,
             ingredientQuantity: ingredient.quantity,
-            ingredientUnitPrice: ingredientInventory.unitCost,
-            ingredientSupplier: ingredientInventory.supplier,
+            ingredientSupplier: ingredientInventory.supplier_details,
           };
           setCartItems((prevCartItems) => [...prevCartItems, newIngredient]);
         } else {
@@ -114,13 +110,13 @@ const ShoppingView = (props: Props) => {
       setBasketIsOpen(true);
     }
   };
+
   useEffect(() => {
     handleGeneratedOrder();
   }, [props.generatedOrder]);
 
   const toggleBasket = () => {
     setBasketIsOpen((state) => !state);
-    setShowDatePickerForSupplier('');
   };
 
   const handleSupplierChange = (supplier: Supplier) => {
@@ -128,22 +124,17 @@ const ShoppingView = (props: Props) => {
   };
 
   const handleOrderSubmited = (deliveryDates: Record<string, Date | null>) => {
-    // Store the delivery dates to be used after confirmation
     window.deliveryDatesToSubmit = deliveryDates;
-
-    // Open the email confirmation dialog
     setShowEmailDialog(true);
   };
 
   const handleOrderAfterConfirmation = (email: boolean) => {
-    // Retrieve the delivery dates saved earlier
     const deliveryDates = window.deliveryDatesToSubmit;
 
     if (!selectedRestaurantUUID || !suppliers) return;
 
     const ingredientsBySupplier = groupIngredientsBySupplier(cartItems);
 
-    // Create orders per supplier
     const orders: SupplierOrder[] = Object.entries(ingredientsBySupplier).map(
       ([supplierName, ingredients]) => ({
         supplier_uuid:
@@ -152,7 +143,7 @@ const ShoppingView = (props: Props) => {
         ingredients,
         note: supplierNotes.find((note) => note.supplierName === supplierName)
           ?.note,
-        delivery_date: deliveryDates[supplierName] ?? null, // Add delivery date for each supplier
+        delivery_date: deliveryDates[supplierName] ?? null,
       })
     );
 
@@ -164,7 +155,6 @@ const ShoppingView = (props: Props) => {
           orderSuccess++;
           console.log(`Order sent with email=${email}:`, order);
         })
-        .catch(() => {})
         .finally(() => {
           if (orderSuccess === orders.length) {
             toast.success(t('placeOrder:orderSubmited'));
@@ -177,27 +167,31 @@ const ShoppingView = (props: Props) => {
     setBasketIsOpen(false);
   };
 
-  // function to regroup ingredients by supplier
   const groupIngredientsBySupplier = (ingredients: IngredientOption[]) => {
     const ingredientsBySupplier: { [key: string]: IngredientOption[] } = {};
 
     ingredients.forEach((ingredient) => {
-      if (!ingredientsBySupplier[ingredient.ingredientSupplier]) {
-        ingredientsBySupplier[ingredient.ingredientSupplier] = [];
+      const supplierName =
+        ingredient.ingredientSupplier[0]?.supplier_name || 'Unknown';
+      if (!ingredientsBySupplier[supplierName]) {
+        ingredientsBySupplier[supplierName] = [];
       }
-      ingredientsBySupplier[ingredient.ingredientSupplier].push(ingredient);
+      ingredientsBySupplier[supplierName].push(ingredient);
     });
 
     return ingredientsBySupplier;
   };
 
-  // function to calcul order price
   const calculateOrderAmount = (ingredients: IngredientOption[]) => {
-    return ingredients.reduce(
-      (total, ingredient) =>
-        total + ingredient.ingredientQuantity * ingredient.ingredientUnitPrice,
-      0
-    );
+    return ingredients.reduce((total, ingredient) => {
+      const selectedSupplier = ingredient.ingredientSupplier[0];
+      return (
+        total +
+        (selectedSupplier
+          ? ingredient.ingredientQuantity * selectedSupplier.supplier_cost
+          : 0)
+      );
+    }, 0);
   };
 
   return (
@@ -249,9 +243,7 @@ const ShoppingView = (props: Props) => {
         type="warning"
         msg={t('placeOrder:email')}
         isOpen={showEmailDailog}
-        onRequestClose={() => {
-          setShowEmailDialog(false);
-        }}
+        onRequestClose={() => setShowEmailDialog(false)}
         onConfirm={() => {
           handleOrderAfterConfirmation(sendEmail);
           setShowEmailDialog(false);

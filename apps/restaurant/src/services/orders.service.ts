@@ -30,7 +30,8 @@ export type OrderResponse = {
   price: number;
   uuid: number;
   products: {
-    unit: string;
+    unit_uuid: string;
+    unit_name: string;
     name: string;
     uuid: string;
     quantity: number;
@@ -54,7 +55,8 @@ export type ReceivedQtyChange = {
   deliveryDate: string;
   uuid: number;
   received_ingredients: {
-    unit: string;
+    unit_uuid: string;
+    unit_name: string;
     name: string;
     received_quantity: string;
     uuid: string;
@@ -69,6 +71,7 @@ const getOrders = async (
     const res = await axiosClient.get<OrderResponse>(
       `/orders/${restaurantUUID}`
     );
+    console.log('orders res: ', res.data);
     return res.data.map((item) => ({
       supplier: item.supplier,
       orderDate: item.orderDate,
@@ -80,7 +83,8 @@ const getOrders = async (
       uuid: item.uuid,
       supplier_uuid: item.supplier_uuid,
       products: item.products.map((product: any) => ({
-        unit: product.unit,
+        unit_name: product.unit_name,
+        unit_uuid: product.unit_uuid,
         name: product.name,
         quantity: product.quantity,
         received_quantity: product.received_quantity,

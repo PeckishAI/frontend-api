@@ -1,18 +1,23 @@
 import { Button, LabeledInput, Loading, Popup, Select } from 'shared-ui';
 import styles from './styles.module.scss';
-import { useEffect, useState } from 'react';
-import { Ingredient, Supplier, inventoryService } from '../../services';
+import { useEffect, useState, useCallback } from 'react';
+import {
+  Ingredient,
+  Supplier,
+  inventoryService,
+  unitService,
+} from '../../services';
 
 import {
   useRestaurantCurrency,
   useRestaurantStore,
 } from '../../store/useRestaurantStore';
-import { units } from '../../views/Inventory/Ingredients/IngredientTab';
 import { useTranslation } from 'react-i18next';
 import { useIngredients } from '../../services/hooks';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 import supplierService from '../../services/supplier.service';
+import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 
 type Props = {
   isVisible: boolean;
@@ -59,6 +64,27 @@ const CreateIngredient = (props: Props) => {
   const [ingredient, setIngredient] = useState<Form>(defaultValue);
   const [supplierOptions, setSupplierOptions] = useState<Supplier[]>([]);
   const [errors, setErrors] = useState<Errors | null>(null);
+
+  const [units, setUnits] = useState<DropdownOptionsDefinitionType[]>([]);
+
+  const fetchUnits = useCallback(async () => {
+    try {
+      const res = await unitService.getUnit(selectedRestaurantUUID);
+      const fetchedUnits: DropdownOptionsDefinitionType[] = res.map((unit) => ({
+        label: unit.unit_name,
+        value: unit.unit_uuid,
+      }));
+      setUnits(fetchedUnits);
+    } catch (error) {
+      console.error('Failed to fetch units:', error);
+    }
+  }, [selectedRestaurantUUID]);
+
+  useEffect(() => {
+    if (selectedRestaurantUUID) {
+      fetchUnits();
+    }
+  }, [selectedRestaurantUUID, fetchUnits]);
 
   useEffect(() => {
     if (!props.preFilledSupplier) {

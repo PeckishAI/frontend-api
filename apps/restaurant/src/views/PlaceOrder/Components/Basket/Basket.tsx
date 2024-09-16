@@ -41,17 +41,27 @@ const Basket = (props: Props) => {
     }));
   };
 
+  // Group ingredients by supplier
   const ingredientsBySupplier: Record<string, IngredientOption[]> =
     props.cartItems.reduce((acc, item) => {
-      if (!acc[item.ingredientSupplier]) {
-        acc[item.ingredientSupplier] = [];
+      const supplierName =
+        item.ingredientSupplier[0]?.supplier_name || 'Unknown'; // Use first supplier or 'Unknown'
+      if (!acc[supplierName]) {
+        acc[supplierName] = [];
       }
-      acc[item.ingredientSupplier].push(item);
+      acc[supplierName].push(item);
       return acc;
     }, {});
 
+  // Calculate total amount
   const totalAmount = props.cartItems.reduce((total, item) => {
-    return total + item.ingredientUnitPrice * item.ingredientQuantity;
+    const selectedSupplier = item.ingredientSupplier[0]; // Assume first supplier for now
+    return (
+      total +
+      (selectedSupplier
+        ? selectedSupplier.supplier_cost * item.ingredientQuantity
+        : 0)
+    );
   }, 0);
 
   const handleRemoveItem = (itemId: string) => {
@@ -124,6 +134,7 @@ const Basket = (props: Props) => {
 
     return `${year}-${month}-${day}`;
   };
+
   const handleDateChange = (supplierName: string, date: Date | null) => {
     const formattedDate = date
       ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
@@ -147,7 +158,8 @@ const Basket = (props: Props) => {
   );
 
   const handlePlaceOrder = () => {
-    // setNotesValues([]);
+    console.log('HEYYYYYYYY');
+    console.log(props.cartItems);
     props.onOrderSubmited(deliveryDates);
   };
 
@@ -173,7 +185,7 @@ const Basket = (props: Props) => {
               <div className={styles.flexContainer}>
                 <div>
                   <p className={styles.supplierName}></p>
-                  {supplier === 'null' ? t('common:unknown') : supplier}
+                  {supplier === 'Unknown' ? t('common:unknown') : supplier}
                 </div>
                 <div>
                   {!props.showDatePickerForSupplier?.[supplier] ? (
@@ -198,7 +210,9 @@ const Basket = (props: Props) => {
                   <div className={styles.row} key={item.ingredientUUID}>
                     <p className={styles.label}>{item.ingredientName}</p>
                     <div className={styles.qantityContainer}>
-                      <p className={styles.qty}>{item.ingredientUnit} x</p>
+                      <p className={styles.qty}>
+                        {item.ingredientSupplier[0]?.supplier_unit_name} x
+                      </p>
                       <i
                         className="fa-solid fa-minus"
                         onClick={() =>
@@ -229,7 +243,8 @@ const Basket = (props: Props) => {
                     </div>
                     <p className={styles.cost}>
                       {formatCurrency(
-                        item.ingredientQuantity * item.ingredientUnitPrice,
+                        item.ingredientQuantity *
+                          item.ingredientSupplier[0]?.supplier_cost || 0,
                         currencyISO
                       )}
                     </p>
@@ -275,7 +290,6 @@ const Basket = (props: Props) => {
           type="primary"
           value={t('placeOrder:placeOrder.title')}
           className={styles.submit}
-          // disabled={totalAmount === 0}
           onClick={handlePlaceOrder}
         />
       </div>

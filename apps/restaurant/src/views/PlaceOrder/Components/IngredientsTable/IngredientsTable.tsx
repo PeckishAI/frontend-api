@@ -11,7 +11,6 @@ import {
 } from '../../../../store/useRestaurantStore';
 import { formatCurrency } from '../../../../utils/helpers';
 import { Supplier } from '../../../../services/supplier.service';
-import CreatableSelect from 'react-select/creatable';
 import SupplierNew from '../../../Inventory/Suppliers/components/SuppplierNew';
 
 type Props = {
@@ -21,16 +20,19 @@ type Props = {
   setCartItems: React.Dispatch<React.SetStateAction<IngredientOption[]>>;
 };
 
+export type IngredientSupplier = {
+  supplier_uuid: string;
+  supplier_name: string;
+  supplier_cost: number;
+  supplier_unit_uuid: string;
+  supplier_unit_name: string;
+};
+
 export type IngredientOption = {
   ingredientUUID: string;
   ingredientName: string;
-  ingredientUnit: string;
   ingredientQuantity: number;
-  ingredientUnitPrice: number;
-  ingredientSupplier: {
-    supplier_name: string;
-    supplier_cost: number;
-  }[];
+  ingredientSupplier: IngredientSupplier[];
 };
 
 const IngredientsTable = (props: Props) => {
@@ -39,54 +41,28 @@ const IngredientsTable = (props: Props) => {
   const [ingredientOptions, setIngredientOptions] = useState<
     IngredientOption[]
   >([]);
-  const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
   const [newInputAdd, setNewInputAdd] = useState('');
-
-  const [suppliers, setSuppliers] = useState<
-    { label: string; value: string }[]
-  >([]);
   const [showAddPopup, setShowAddPopup] = useState(false);
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
 
-  const handleInputChange = (value, field, ingredientUUID) => {
-    console.log('Value', value);
-    setInputValues((prev) => ({
-      ...prev,
-      [ingredientUUID]: value,
-    }));
-    setNewInputAdd('');
-  };
   const { currencyISO } = useRestaurantCurrency();
   const [selectedSupplierMap, setSelectedSupplierMap] = useState<
     Record<string, string>
   >({});
 
+  console.log('ingredients', ingredients);
+
   useEffect(() => {
-    if (ingredients && ingredients?.length > 0) {
+    if (ingredients && ingredients.length > 0) {
       const newIngredientOptions: IngredientOption[] = ingredients.map(
-        (ingredient) => {
-          // Get the first supplier's details if available
-          const firstSupplier =
-            ingredient?.supplier_details?.length > 0
-              ? ingredient.supplier_details[0]
-              : { supplier_name: '', supplier_cost: 0 };
-
-          // Map over supplier_details and join supplier_names
-          const supplierNames = ingredient?.supplier_details
-            .map((supplier) => supplier.supplier_name)
-            .join(', '); // Join names with comma
-
-          return {
-            ingredientUUID: ingredient.id,
-            ingredientName: ingredient.name,
-            ingredientUnit: ingredient.unit,
-            ingredientQuantity: 0,
-            ingredientUnitPrice: firstSupplier.supplier_cost, // Use the first supplier's cost
-            ingredientSupplier: supplierNames, // Use concatenated supplier names
-          };
-        }
+        (ingredient) => ({
+          ingredientUUID: ingredient.id,
+          ingredientName: ingredient.name,
+          ingredientQuantity: 0,
+          ingredientSupplier: ingredient.supplier_details,
+        })
       );
 
       setIngredientOptions(newIngredientOptions);
@@ -95,24 +71,18 @@ const IngredientsTable = (props: Props) => {
 
   const filteredBySupplier = useMemo(() => {
     return props.supplierFilter
-      ? ingredientOptions.filter((option) => {
-          // Split the ingredientSupplier string into an array of supplier names
-          const supplierNamesArray = option.ingredientSupplier
-            .split(',')
-            .map((supplier) => supplier.trim());
-
-          // Check if the selected supplier exists in the array
-          return supplierNamesArray.includes(props.supplierFilter.name);
-        })
+      ? ingredientOptions.filter((option) =>
+          option.ingredientSupplier.some(
+            (supplier) => supplier.supplier_name === props.supplierFilter?.name
+          )
+        )
       : ingredientOptions;
   }, [props.supplierFilter, ingredientOptions]);
 
   const filteredIngredients = useDebounceMemo(
     () => {
       return props.searchTermFilter
-        ? new Fuse(filteredBySupplier, {
-            keys: ['ingredientName'],
-          })
+        ? new Fuse(filteredBySupplier, { keys: ['ingredientName'] })
             .search(props.searchTermFilter)
             .map((r) => r.item)
         : filteredBySupplier;
@@ -136,14 +106,12 @@ const IngredientsTable = (props: Props) => {
         const existingItemIndex = prevCartItems.findIndex(
           (item) =>
             item.ingredientUUID === uuid &&
-            item.ingredientSupplier === newSupplier
+            item.ingredientSupplier[0].supplier_name === newSupplier
         );
 
         if (existingItemIndex !== -1) {
-          // If the supplier entry already exists, increase the quantity by 0
-          const updatedCartItems = [...prevCartItems];
-          updatedCartItems[existingItemIndex].ingredientQuantity += 0;
-          return updatedCartItems;
+          // If the supplier entry already exists, return the same cart
+          return prevCartItems;
         }
 
         // If not, add a new entry to the cart
@@ -151,8 +119,7 @@ const IngredientsTable = (props: Props) => {
           ...prevCartItems,
           {
             ...ingredientToUpdate,
-            ingredientSupplier: newSupplier,
-            ingredientUnitPrice: selectedSupplierDetails.supplier_cost,
+            ingredientSupplier: [selectedSupplierDetails], // Set supplier array here
             ingredientQuantity: 1,
           },
         ];
@@ -162,18 +129,6 @@ const IngredientsTable = (props: Props) => {
         ...prevMap,
         [uuid]: newSupplier,
       }));
-
-      setIngredientOptions((prevOptions) =>
-        prevOptions.map((option) =>
-          option.ingredientUUID === uuid
-            ? {
-                ...option,
-                ingredientSupplier: newSupplier,
-                ingredientUnitPrice: selectedSupplierDetails.supplier_cost,
-              }
-            : option
-        )
-      );
     }
   };
 
@@ -185,7 +140,8 @@ const IngredientsTable = (props: Props) => {
     props.setCartItems((prevCartItems) => {
       return prevCartItems
         .map((item) =>
-          item.ingredientUUID === uuid && item.ingredientSupplier === supplier
+          item.ingredientUUID === uuid &&
+          item.ingredientSupplier[0].supplier_name === supplier
             ? {
                 ...item,
                 ingredientQuantity: Math.max(
@@ -218,25 +174,16 @@ const IngredientsTable = (props: Props) => {
         );
 
         const supplierNames =
-          ingredient?.supplier_details?.map((supplier) => ({
+          ingredient?.supplier_details.map((supplier) => ({
             label: supplier.supplier_name,
             value: supplier.supplier_name,
           })) || [];
 
-        if (supplierNames.length === 0) {
-          // If no suppliers, show '--'
-          return <p>--</p>;
-        }
-
-        if (supplierNames.length === 1) {
-          // If there is only one supplier, show the name directly
-          return <p>{supplierNames[0].label}</p>;
-        }
-
         const selectedSupplier =
-          selectedSupplierMap[row.ingredientUUID] || null; // Initially null to show placeholder
+          selectedSupplierMap[row.ingredientUUID] || null;
 
-        return (
+        // Only show dropdown if there are more than 1 supplier, else show supplier directly
+        return supplierNames.length > 1 ? (
           <Select
             size="Large"
             options={supplierNames}
@@ -252,20 +199,53 @@ const IngredientsTable = (props: Props) => {
               handleSupplierChange(row.ingredientUUID, newSupplier);
             }}
           />
+        ) : (
+          <p>{supplierNames[0]?.label || '--'}</p>
         );
       },
     },
     {
       key: 'ingredientUnitPrice',
       header: t('ingredient:unitCost'),
-      renderItem: ({ row }) => (
-        <p>{formatCurrency(row.ingredientUnitPrice, currencyISO)}</p>
-      ),
+      renderItem: ({ row }) => {
+        // Find the selected supplier based on user selection or default to the first supplier
+        const selectedSupplier =
+          row.ingredientSupplier.find(
+            (supplier) =>
+              supplier.supplier_name === selectedSupplierMap[row.ingredientUUID]
+          ) || row.ingredientSupplier[0]; // Default to the first supplier
+
+        // Ensure we have a valid supplier before accessing the supplier_cost
+        if (!selectedSupplier) {
+          return <p>--</p>; // Return a fallback value if no supplier is found
+        }
+
+        return (
+          <p>
+            {formatCurrency(selectedSupplier.supplier_cost || 0, currencyISO)}
+          </p>
+        );
+      },
     },
     {
       key: 'ingredientUnit',
       header: t('ingredient:unit'),
+      renderItem: ({ row }) => {
+        // Similar logic to ensure we have a valid supplier
+        const selectedSupplier =
+          row.ingredientSupplier.find(
+            (supplier) =>
+              supplier.supplier_name === selectedSupplierMap[row.ingredientUUID]
+          ) || row.ingredientSupplier[0];
+
+        if (!selectedSupplier) {
+          return <p>--</p>; // Return a fallback value if no supplier is found
+        }
+
+        return <p>{selectedSupplier.supplier_unit_name || '--'}</p>;
+      },
     },
+
     {
       key: 'ingredientQuantity',
       header: t('ingredient:quantity'),
@@ -274,7 +254,8 @@ const IngredientsTable = (props: Props) => {
         const item = props.cartItems.find(
           (item) =>
             item.ingredientUUID === row.ingredientUUID &&
-            item.ingredientSupplier === selectedSupplierMap[row.ingredientUUID]
+            item.ingredientSupplier[0].supplier_name ===
+              selectedSupplierMap[row.ingredientUUID]
         );
 
         return (
@@ -287,7 +268,7 @@ const IngredientsTable = (props: Props) => {
                   handleSupplierChange(
                     row.ingredientUUID,
                     selectedSupplierMap[row.ingredientUUID] ||
-                      row.ingredientSupplier
+                      row.ingredientSupplier[0].supplier_name
                   )
                 }
                 tooltipMsg={t('placeOrder:addToBasket')}
@@ -300,7 +281,7 @@ const IngredientsTable = (props: Props) => {
                     handleQuantityChange(
                       row.ingredientUUID,
                       -1,
-                      item.ingredientSupplier
+                      item.ingredientSupplier[0].supplier_name
                     )
                   }></i>
                 <Input
@@ -313,8 +294,8 @@ const IngredientsTable = (props: Props) => {
                   onChange={(e) =>
                     handleQuantityChange(
                       row.ingredientUUID,
-                      parseInt(e, 10) - item.ingredientQuantity,
-                      item.ingredientSupplier
+                      parseInt(e.target.value, 10) - item.ingredientQuantity,
+                      item.ingredientSupplier[0].supplier_name
                     )
                   }
                 />
@@ -324,7 +305,7 @@ const IngredientsTable = (props: Props) => {
                     handleQuantityChange(
                       row.ingredientUUID,
                       1,
-                      item.ingredientSupplier
+                      item.ingredientSupplier[0].supplier_name
                     )
                   }></i>
               </>

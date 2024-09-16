@@ -2,6 +2,8 @@ export type Supplier = {
   supplier_id: string;
   supplier_name: string;
   supplier_cost: number;
+  supplier_unit_uuid: string;
+  supplier_unit_name: string;
 };
 
 export type Ingredient = {
@@ -13,7 +15,8 @@ export type Ingredient = {
   actualStock: number;
   theoriticalStock?: number;
   parLevel: number;
-  unit: string;
+  unit_name: string;
+  unit_uuid: string;
   amount: number;
   actions?: void;
   quantity: number;
@@ -65,4 +68,9 @@ export type TransferForm = {
     quantity: number;
     unit?: string;
   }[];
+};
+
+export type Unit = {
+  unit_name: string;
+  unit_id: string;
 };

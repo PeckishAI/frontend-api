@@ -111,6 +111,7 @@ const getIngredientList = async (
   restaurantUUID: string
 ): Promise<Ingredient[]> => {
   const res = await axiosClient.get('/inventory/' + restaurantUUID);
+  console.log(res.data);
 
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
@@ -126,6 +127,8 @@ const getIngredientList = async (
         supplier_id: supplier['supplier_id'],
         supplier_name: supplier['supplier_name'],
         supplier_cost: supplier['supplier_cost'],
+        supplier_unit_uuid: supplier['supplier_unit_uuid'],
+        supplier_unit_name: supplier['supplier_unit_name'],
       })
     ),
     amount: res.data[key]['amount'],

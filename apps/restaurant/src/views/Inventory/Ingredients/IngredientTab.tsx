@@ -14,6 +14,7 @@ import {
   Checkbox,
 } from 'shared-ui';
 import { Ingredient, Tag, inventoryService } from '../../../services';
+import { Unit, unitService } from '../../../services/unit.service';
 import {
   useRestaurantCurrency,
   useRestaurantStore,
@@ -32,14 +33,14 @@ import Filters, {
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
 import CreatableSelect from 'react-select/creatable';
 
-export const units: DropdownOptionsDefinitionType[] = [
-  { label: 'kg', value: 'kg' },
-  { label: 'g', value: 'g' },
-  { label: 'tbsp', value: 'tbsp' },
-  { label: 'l', value: 'L' },
-  { label: 'ml', value: 'ml' },
-  { label: 'unit', value: 'unit' },
-];
+// export const units: DropdownOptionsDefinitionType[] = [
+//   { label: 'kg', value: 'kg' },
+//   { label: 'g', value: 'g' },
+//   { label: 'tbsp', value: 'tbsp' },
+//   { label: 'l', value: 'L' },
+//   { label: 'ml', value: 'ml' },
+//   { label: 'unit', value: 'unit' },
+// ];
 
 export type IngredientTabRef = {
   renderOptions: () => React.ReactNode;
@@ -60,6 +61,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [filteredIngredients, setFilteredIngredients] = useState<
       Ingredient[]
     >([]);
+
+    const [units, setUnits] = useState<DropdownOptionsDefinitionType[]>([]);
+
     const [ingredientTags, setIngredientTags] = useState<{
       [key: string]: Tag[];
     }>({});
@@ -106,6 +110,27 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
+
+    const fetchUnits = useCallback(async () => {
+      try {
+        const res = await unitService.getUnit(selectedRestaurantUUID);
+        const fetchedUnits: DropdownOptionsDefinitionType[] = res.map(
+          (unit) => ({
+            label: unit.unit_name,
+            value: unit.unit_uuid,
+          })
+        );
+        setUnits(fetchedUnits);
+      } catch (error) {
+        console.error('Failed to fetch units:', error);
+      }
+    }, [selectedRestaurantUUID]);
+
+    useEffect(() => {
+      if (selectedRestaurantUUID) {
+        fetchUnits();
+      }
+    }, [selectedRestaurantUUID, fetchUnits]);
 
     const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;

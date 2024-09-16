@@ -115,6 +115,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
     };
 
     const saveReceivedQuantities = async () => {
+      console.log('HEYYY', selectedOrder);
       const ReceivedQtyChange = {
         order_uuid: selectedOrder.uuid,
         orderNumber: selectedOrder.orderNumber,
@@ -126,7 +127,8 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
           name: product.name,
           received_quantity:
             receivedQuantities[product.uuid] || product.received_quantity,
-          unit: product.unit,
+          unit_uuid: product.unit_uuid,
+          unit_name: product.unit_name,
           uuid: product.uuid,
           quantity: product.quantity,
         })),
@@ -328,7 +330,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
             {
               key: 'quantity',
               header: t('quantity'),
-              renderItem: ({ row }) => `${row.quantity} ${row.unit}`,
+              renderItem: ({ row }) => `${row.quantity} ${row.unit_name}`,
             },
             {
               key: 'unitCost',
