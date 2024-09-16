@@ -30,8 +30,7 @@ type SupplierForm = z.infer<typeof AddSupplierSchema>;
 type Props = {
   isVisible: boolean;
   onRequestClose: () => void;
-  fetchSuppliers: () => void;
-  onSupplierNew: (name: string) => void;
+  onSupplierNew: (name: string, uuid: string) => void; // Pass both name and UUID
   onNew: string;
 };
 
@@ -41,6 +40,7 @@ const SupplierNew = (props: Props) => {
   const restaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
+  const { loadSuppliers } = useRestaurantStore();
 
   const {
     register,
@@ -82,23 +82,22 @@ const SupplierNew = (props: Props) => {
           },
           restaurantUUID
         )
-        .then((res) => {
-          // Call onRequestClose after successful supplier creation
+        .then(async (res) => {
+          toast.success('Supplier created successfully');
+
+          // Step 3: Reload suppliers after successfully adding to restaurant
+          await loadSuppliers(restaurantUUID);
           props.onRequestClose();
-          props.fetchSuppliers();
-          toast.success('Supplier created Successfully');
+          // Return the newly created supplier's UUID and name
           return res.supplier_uuid;
         })
         .catch(() => null);
 
       if (!uuid) return;
-
-      await supplierService.addSupplierToRestaurant(restaurantUUID, uuid);
-
-      // Pass only the name to the onSupplierNew prop
-      props.onSupplierNew(data.name);
+      props.onSupplierNew(data.name, uuid);
     } catch (error) {
       console.error('Error submitting the form:', error);
+      toast.error('Failed to create the supplier');
     }
   });
 

@@ -56,12 +56,11 @@ const DocumentDetail = (props: Props) => {
   const [editableDocument, setEditableDocument] = useState<Invoice | null>(
     null
   );
-  console.log('editableDocument', editableDocument);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const { control } = useForm();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const datePickerRef = useRef(null);
 
@@ -101,7 +100,8 @@ const DocumentDetail = (props: Props) => {
 
   const { ingredients, loading: loadingIngredients } = useIngredients();
   const [showAddPopup, setShowAddPopup] = useState(false);
-  const [suppliers, setSuppliers] = useState<LinkedSupplier[]>([]);
+  const { selectedRestaurantUUID, loadSuppliers, suppliers } =
+    useRestaurantStore();
   const [inputValue, setInputValue] = useState('');
   const [newInputAdd, setNewInputAdd] = useState('');
 
@@ -109,10 +109,6 @@ const DocumentDetail = (props: Props) => {
     value: ingredient.id,
     label: ingredient.name,
   }));
-
-  const selectedRestaurantUUID = useRestaurantStore(
-    (state) => state.selectedRestaurantUUID
-  );
 
   const handleDocumentChange = (field: keyof Invoice, value: any) => {
     setEditableDocument((prevDocument) => {
@@ -158,29 +154,10 @@ const DocumentDetail = (props: Props) => {
     });
   };
 
-  const fetchSuppliers = () => {
-    if (!selectedRestaurantUUID) return;
-
-    supplierService
-      .getRestaurantSuppliers(selectedRestaurantUUID)
-      .then((res) => {
-        const suppliersList: DropdownOptionsDefinitionType[] = [];
-        res.forEach((supplier) => {
-          suppliersList.push({
-            label: supplier.name,
-            value: supplier.supplier_uuid,
-            supplier_uuid: supplier.supplier_uuid,
-          });
-        });
-        setSuppliers(suppliersList);
-      })
-      .catch((error) => {
-        console.error('Error fetching suppliers:', error);
-      });
-  };
-
   useEffect(() => {
-    fetchSuppliers();
+    if (selectedRestaurantUUID) {
+      loadSuppliers(selectedRestaurantUUID);
+    }
   }, [selectedRestaurantUUID]);
 
   const handleSubmit = async (e) => {
@@ -526,8 +503,6 @@ const DocumentDetail = (props: Props) => {
     value: supplier.value,
   }));
 
-  const [selectedSupplier, setSelectedSupplier] = useState(null);
-  console.log('selectedSupplier', selectedSupplier);
   // This useEffect can be used to set the selected supplier from props if needed
   useEffect(() => {
     if (props.document?.supplier) {
@@ -873,7 +848,6 @@ const DocumentDetail = (props: Props) => {
           isVisible={showAddPopup}
           onRequestClose={() => setShowAddPopup(false)}
           onNew={newInputAdd}
-          fetchSuppliers={fetchSuppliers}
         />
       </SidePanel>
     </>
