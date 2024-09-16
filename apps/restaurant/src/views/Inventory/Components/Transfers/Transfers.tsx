@@ -372,10 +372,7 @@ const AddTransferPopup: React.FC<AddTransferPopupProps> = (props) => {
 
               {/* Delete Button */}
               <div className={styles.deleteButtonContainer}>
-                <FaTrash
-                  onClick={() => remove(index)}
-                  style={{ cursor: 'pointer', color: 'red' }}
-                />
+                <FaTrash onClick={() => remove(index)} />
               </div>
             </div>
           ))}

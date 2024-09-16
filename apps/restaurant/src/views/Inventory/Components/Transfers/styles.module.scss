@@ -38,12 +38,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 58px;
+  height: 21px;
   cursor: pointer;
-  color: #d9534f;
-
-  &:hover {
-    color: #c9302c;
-  }
 }
 
 .addIngredientButton {
