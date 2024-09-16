@@ -1,5 +1,5 @@
 import { axiosClient } from '.';
-import { Restaurant } from '../store/useRestaurantStore';
+import { Restaurant, User } from '../store/useRestaurantStore';
 
 type RestaurantResponse = {
   address: string;
@@ -18,6 +18,11 @@ type RestaurantResponse = {
     user_uuid: string;
     username: string;
   }[];
+};
+
+type UsersResponse = {
+  user_uuid: string;
+  name: string;
 };
 
 const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
@@ -45,6 +50,22 @@ const getUserRestaurants = async (userId: string): Promise<Restaurant[]> => {
   }));
 };
 
+const getUsersRestaurant = async (restaurantId: string): Promise<User[]> => {
+  console.log(restaurantId);
+  const res = await axiosClient.get<UsersResponse[]>(`${restaurantId}/users`);
+  console.log('hooo', res.data);
+
+  if (!res.data) {
+    return new Promise(() => []);
+  }
+
+  return res.data.map((u) => ({
+    ...u,
+    uuid: u.user_uuid,
+    name: u.name,
+  }));
+};
+
 const reloadPOS = async (restaurantId: string): Promise<boolean> => {
   return await axiosClient
     .post(`/refresh/${restaurantId}`)
@@ -55,4 +76,5 @@ const reloadPOS = async (restaurantId: string): Promise<boolean> => {
 export const restaurantService = {
   getUserRestaurants,
   reloadPOS,
+  getUsersRestaurant,
 };

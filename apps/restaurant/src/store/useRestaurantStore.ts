@@ -17,6 +17,11 @@ export type Restaurant = {
   }[];
 };
 
+export type User = {
+  uuid: string;
+  name: string;
+};
+
 type RestaurantStore = {
   selectedRestaurantUUID?: string;
   restaurants: Restaurant[];

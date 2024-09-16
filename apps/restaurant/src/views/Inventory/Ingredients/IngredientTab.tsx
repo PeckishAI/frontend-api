@@ -98,7 +98,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const [isWastingPopupVisible, setWastingPopupVisible] = useState(false);
     const handleWastingClick = (row: Ingredient) => {
-      console.log('Row clicked:', row);
       setWastingRowId(row);
       setWastingPopupVisible(true);
     };
