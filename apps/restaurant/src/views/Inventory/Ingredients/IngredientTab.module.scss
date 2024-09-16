@@ -1,0 +1,147 @@
+.optionsButtons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 5px;
+}
+
+.flexContainer {
+  display: flex;
+  gap: 20px;
+}
+
+// .divider {
+//   background-color: #333;
+//   border: #333;
+// }
+
+.divider {
+  gap: 10px;
+  border-bottom: 1px solid #e0e0e0;
+
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .titleRecipeName {
+    font-size: 18px;
+    color: #4a4a4a;
+  }
+
+  .value {
+    font-size: 16px;
+    color: #666;
+  }
+
+  //   .inputField {
+  //     width: 100%;
+  //     padding: 10px;
+  //     font-size: 16px;
+  //     border: 1px solid #ccc;
+  //     border-radius: 4px;
+  //     margin-top: 5px;
+  //     box-sizing: border-box;
+
+  //     &:focus {
+  //       border-color: #007bff;
+  //       outline: none;
+  //     }
+  //   }
+
+  .gridContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+.inputField {
+  width: 100%;
+  min-width: 100%;
+}
+
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.title {
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  .titleRecipeName {
+    color: var(--primaryColor);
+  }
+}
+.value {
+  color: var(--textSecondaryColor);
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100% - 80px);
+  gap: 15px;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 100px;
+  overflow-y: auto;
+  padding: 10px 0;
+}
+
+.tagItem {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  border-radius: 12px;
+  background-color: #d3d3d3; /* Fallback color */
+  color: #333;
+  font-size: 12px;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.supplierDetailContainer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.buttonsContainer {
+  // position: absolute;
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+}
