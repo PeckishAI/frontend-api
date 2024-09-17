@@ -71,6 +71,11 @@
   margin-bottom: 10px;
   width: 100%;
 }
+.supplierContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .inputField {
   width: 100%;
   min-width: 100%;
@@ -97,6 +102,11 @@
 }
 .value {
   color: var(--textSecondaryColor);
+}
+
+.values {
+  color: var(--textSecondaryColor);
+  font-weight: bold;
 }
 
 .inputContainer {
