@@ -599,8 +599,15 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const { id, name, parLevel, actualStock, unit, unitCost } = editedValues;
 
       // Ensure tag_details and supplier_details are always defined
-      const tag_details = editedValues.tag_details || ingredientTags[id] || [];
       const supplier_details = editedValues.supplier_details || [];
+
+      const tag_details = (editedValues?.tagUUID || []).map((uuid) => {
+        const tag = tagList.find((tag) => tag.uuid === uuid);
+        return {
+          name: tag?.name,
+          uuid: uuid,
+        };
+      });
 
       const updatedIngredient = {
         id,
@@ -623,6 +630,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           reloadTagList();
           reloadInventoryData();
           props.setLoadingState(false);
+          setIsSidePanelOpen(false);
         });
 
       setEditingRowId(null);
@@ -709,17 +717,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         width: '15%',
         classname: 'column-bold',
         renderItem: ({ row }) =>
-          editingRowId === row.id ? (
-            <Input
-              type="text"
-              min={0}
-              placeholder={t('name')}
-              onChange={(value) => handleValueChange('name', value)}
-              value={editedValues!.name}
-            />
-          ) : (
-            row.name
-          ),
+          // editingRowId === row.id ? (
+          //   <Input
+          //     type="text"
+          //     min={0}
+          //     placeholder={t('name')}
+          //     onChange={(value) => handleValueChange('name', value)}
+          //     value={editedValues!.name}
+          //   />
+          // ) : (
+          row.name,
+        // ),
       },
       {
         key: 'tagUUID',
@@ -738,95 +746,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           const autocompleteValue =
             ingredientTags[row.id] || initialSelectedTags;
 
-          return editingRowId === row.id ? (
-            <CreatableSelect
-              isMulti
-              maxMenuHeight={2}
-              isClearable={false}
-              options={tagList.map((tag) => ({
-                label: tag.name ? String(tag.name) : 'Unknown', // Ensure name is a string
-                value: tag.uuid,
-              }))}
-              onInputChange={(newInputValue) => {
-                if (typeof newInputValue === 'string') {
-                  setInputValue(newInputValue);
-                }
-              }}
-              value={autocompleteValue.map((tag) => ({
-                label: tag.name || 'Unknown',
-                value: tag.uuid,
-              }))}
-              onChange={(newValue) => {
-                const formattedValue = newValue.map((option) => {
-                  if (!option.value) {
-                    // If value (uuid) is empty, this is a new tag
-                    return {
-                      name: option.label || 'Unknown', // Use the entered name
-                      uuid: '', // Set uuid to empty string or some placeholder
-                    };
-                  } else {
-                    return {
-                      name: option.label || 'Unknown',
-                      uuid: option.value,
-                    };
-                  }
-                });
-                handleSelectedTags(null, formattedValue, row.id);
-              }}
-              inputValue={inputValue}
-              styles={{
-                control: (provided) => ({
-                  ...provided,
-                  minHeight: '1px', // Adjust this if
-                  borderRadius: '12px',
-                  maxHeight: '200px',
-                  overflowY: 'auto',
-                  margin: '5px',
-                }),
-                menu: (provided) => ({
-                  ...provided,
-                  zIndex: 9999, // Ensure dropdown is above other elements
-                }),
-                menuList: (provided) => ({
-                  ...provided,
-                  maxHeight: '200px', // Limit the height of the dropdown list
-                  overflowY: 'auto', // Enable scrolling if the list is
-                }),
-                option: (provided, state) => ({
-                  ...provided,
-                  backgroundColor: state.isSelected
-                    ? '#007BFF'
-                    : provided.backgroundColor,
-                  color: state.isSelected ? '#FFFFFF' : provided.color,
-                }),
-                container: (provided) => ({
-                  ...provided,
-                  overflow: 'visible', // Ensure the dropdown is not clipped
-                }),
-                multiValue: (provided, state) => ({
-                  ...provided,
-                  backgroundColor: '#5E72E4', // Background color for existing tags
-                  color: '#FFFFFF', // Text color for the tags
-                  borderRadius: '12px',
-                }),
-                multiValueLabel: (provided) => ({
-                  ...provided,
-                  color: '#ffffff', // Text color inside the tag
-                  borderRadius: '12px',
-                }),
-                multiValueRemove: (provided) => ({
-                  ...provided,
-                  color: '#ffffff', // Color of the 'X' icon
-                  ':hover': {
-                    backgroundColor: '#b5adad', // Change background color on hover (optional)
-                    borderRadius: '12px',
-                    color: '#ffffff',
-                  },
-                }),
-              }}
-              formatCreateLabel={(inputValue) => `Create "${inputValue}"`}
-            />
-          ) : row.tagUUID &&
+          return row.tagUUID &&
             Array.isArray(row.tagUUID) &&
             row.tagUUID.length > 0 ? (
             <div
@@ -967,17 +887,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         ),
         width: '10%',
         renderItem: ({ row }) =>
-          editingRowId === row.id ? (
-            <Input
-              type="number"
-              min={0}
-              placeholder={t('ingredient:parLvel')}
-              onChange={(value) => handleValueChange('parLevel', value)}
-              value={editedValues!.parLevel}
-            />
-          ) : (
-            row.parLevel
-          ),
+          // editingRowId === row.id ? (
+          //   <Input
+          //     type="number"
+          //     min={0}
+          //     placeholder={t('ingredient:parLvel')}
+          //     onChange={(value) => handleValueChange('parLevel', value)}
+          //     value={editedValues!.parLevel}
+          //   />
+          // ) : (
+          row.parLevel,
+        // ),
       },
       {
         key: 'actualStock',
@@ -992,17 +912,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         ),
         width: '15%',
         renderItem: ({ row }) =>
-          editingRowId === row.id ? (
-            <Input
-              type="number"
-              min={0}
-              placeholder={t('ingredient:actualStock')}
-              onChange={(value) => handleValueChange('actualStock', value)}
-              value={editedValues!.actualStock}
-            />
-          ) : (
-            row.actualStock
-          ),
+          // editingRowId === row.id ? (
+          //   <Input
+          //     type="number"
+          //     min={0}
+          //     placeholder={t('ingredient:actualStock')}
+          //     onChange={(value) => handleValueChange('actualStock', value)}
+          //     value={editedValues!.actualStock}
+          //   />
+          // ) : (
+          row.actualStock,
+        // ),
       },
       {
         key: 'unit',
@@ -1017,84 +937,84 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         ),
         width: '10%',
         renderItem: ({ row }) =>
-          editingRowId === row.id ? (
-            <Dropdown
-              placeholder={t('inventory.selectUnit')}
-              options={units}
-              selectedOption={editedValues!.unit}
-              onOptionChange={(value) => handleValueChange('unit', value)}
-            />
-          ) : (
-            row.unit
-          ),
+          // editingRowId === row.id ? (
+          //   <Dropdown
+          //     placeholder={t('inventory.selectUnit')}
+          //     options={units}
+          //     selectedOption={editedValues!.unit}
+          //     onOptionChange={(value) => handleValueChange('unit', value)}
+          //   />
+          // ) : (
+          row.unit,
+        // ),
       },
       {
         key: 'supplier_name',
         header: t('ingredient:supplierName'), // No sorting
         width: '15%',
         renderItem: ({ row, index }) => {
-          if (editingRowId === row.id) {
-            return (
-              <>
-                <div>
-                  {editedValues?.supplier_details.map((detail, detailIndex) => (
-                    <div
-                      key={detailIndex}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '5px',
-                        gap: '10px',
-                      }}>
-                      <Dropdown
-                        placeholder={t('Select a supplier')}
-                        options={suppliers}
-                        selectedOption={detail.supplier_id}
-                        onOptionChange={(value) => {
-                          const selectedSupplier = suppliers.find(
-                            (supplier) => supplier.value === value
-                          );
-                          if (selectedSupplier) {
-                            setEditedValues((prevValues) => {
-                              const newDetails = [
-                                ...prevValues.supplier_details,
-                              ];
-                              newDetails[detailIndex] = {
-                                ...newDetails[detailIndex],
-                                supplier_id: value,
-                                supplier_name: selectedSupplier.label,
-                              };
-                              return {
-                                ...prevValues,
-                                supplier_details: newDetails,
-                              };
-                            });
-                          }
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </>
-            );
-          } else {
-            return (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                  gap: '10px',
-                  padding: '5px',
-                }}>
-                {row.supplier_details.map((detail, detailIndex) => (
-                  <span key={detailIndex}>
-                    {detail.supplier_name || 'Select a supplier'}
-                  </span>
-                ))}
-              </div>
-            );
-          }
+          // if (editingRowId === row.id) {
+          //   return (
+          //     <>
+          //       <div>
+          //         {editedValues?.supplier_details.map((detail, detailIndex) => (
+          //           <div
+          //             key={detailIndex}
+          //             style={{
+          //               display: 'flex',
+          //               alignItems: 'center',
+          //               padding: '5px',
+          //               gap: '10px',
+          //             }}>
+          //             <Dropdown
+          //               placeholder={t('Select a supplier')}
+          //               options={suppliers}
+          //               selectedOption={detail.supplier_id}
+          //               onOptionChange={(value) => {
+          //                 const selectedSupplier = suppliers.find(
+          //                   (supplier) => supplier.value === value
+          //                 );
+          //                 if (selectedSupplier) {
+          //                   setEditedValues((prevValues) => {
+          //                     const newDetails = [
+          //                       ...prevValues.supplier_details,
+          //                     ];
+          //                     newDetails[detailIndex] = {
+          //                       ...newDetails[detailIndex],
+          //                       supplier_id: value,
+          //                       supplier_name: selectedSupplier.label,
+          //                     };
+          //                     return {
+          //                       ...prevValues,
+          //                       supplier_details: newDetails,
+          //                     };
+          //                   });
+          //                 }
+          //               }}
+          //             />
+          //           </div>
+          //         ))}
+          //       </div>
+          //     </>
+          //   );
+          // } else {
+          return (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                gap: '10px',
+                padding: '5px',
+              }}>
+              {row.supplier_details.map((detail, detailIndex) => (
+                <span key={detailIndex}>
+                  {detail.supplier_name || 'Select a supplier'}
+                </span>
+              ))}
+            </div>
+          );
+          // }
         },
       },
       {
@@ -1102,67 +1022,67 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         header: t('ingredient:supplierCost'),
         width: '15%',
         renderItem: ({ row, index }) => {
-          if (editingRowId === row.id) {
-            return (
-              <>
-                {editedValues?.supplier_details.map((detail, detailIndex) => (
-                  <div
-                    key={detailIndex}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: '5px',
-                      gap: '10px',
-                    }}>
-                    <Input
-                      type="number"
-                      min={0}
-                      placeholder={t('Cost')}
-                      value={detail.supplier_cost}
-                      onChange={(e) => {
-                        const cost = e;
-                        setEditedValues((prevValues) => {
-                          const newDetails = [...prevValues.supplier_details];
-                          newDetails[detailIndex] = {
-                            ...newDetails[detailIndex],
-                            supplier_cost: cost,
-                          };
-                          return {
-                            ...prevValues,
-                            supplier_details: newDetails,
-                          };
-                        });
-                      }}
-                    />
-                    <div className="actions">
-                      <i
-                        className="fa-solid fa-trash"
-                        data-tooltip-id="inventory-tooltip"
-                        data-tooltip-content={t('delete')}
-                        onClick={() =>
-                          handleRemoveSupplierDetail(detailIndex)
-                        }></i>
-                    </div>
-                  </div>
-                ))}
-              </>
-            );
-          } else {
-            return (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  flexDirection: 'column',
-                  padding: '5px',
-                }}>
-                {row.supplier_details.map((detail, detailIndex) => (
-                  <span key={detailIndex}>{detail.supplier_cost}</span>
-                ))}
-              </div>
-            );
-          }
+          // if (editingRowId === row.id) {
+          //   return (
+          //     <>
+          //       {editedValues?.supplier_details.map((detail, detailIndex) => (
+          //         <div
+          //           key={detailIndex}
+          //           style={{
+          //             display: 'flex',
+          //             alignItems: 'center',
+          //             padding: '5px',
+          //             gap: '10px',
+          //           }}>
+          //           <Input
+          //             type="number"
+          //             min={0}
+          //             placeholder={t('Cost')}
+          //             value={detail.supplier_cost}
+          //             onChange={(e) => {
+          //               const cost = e;
+          //               setEditedValues((prevValues) => {
+          //                 const newDetails = [...prevValues.supplier_details];
+          //                 newDetails[detailIndex] = {
+          //                   ...newDetails[detailIndex],
+          //                   supplier_cost: cost,
+          //                 };
+          //                 return {
+          //                   ...prevValues,
+          //                   supplier_details: newDetails,
+          //                 };
+          //               });
+          //             }}
+          //           />
+          //           <div className="actions">
+          //             <i
+          //               className="fa-solid fa-trash"
+          //               data-tooltip-id="inventory-tooltip"
+          //               data-tooltip-content={t('delete')}
+          //               onClick={() =>
+          //                 handleRemoveSupplierDetail(detailIndex)
+          //               }></i>
+          //           </div>
+          //         </div>
+          //       ))}
+          //     </>
+          //   );
+          // } else {
+          return (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                flexDirection: 'column',
+                padding: '5px',
+              }}>
+              {row.supplier_details.map((detail, detailIndex) => (
+                <span key={detailIndex}>{detail.supplier_cost}</span>
+              ))}
+            </div>
+          );
+          // }
         },
       },
       {
@@ -1252,12 +1172,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                     onClick={() => setIsEditMode(true)}
                     className="iconButton"
                   />
-                  <IconButton
+                  {/* <IconButton
                     icon={<i className="fa-solid fa-trash"></i>}
                     tooltipMsg={t('delete')}
                     onClick={handleDeleteClick}
                     className="iconButton"
-                  />
+                  /> */}
                 </>
               )}
             </div>
@@ -1398,38 +1318,48 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                         label: tag.name || '--',
                         value: tag.uuid,
                       }))}
-                      value={editedValues?.tagUUID?.map((uuid) => {
-                        const tag = tagList.find((tag) => tag.uuid === uuid);
-                        return {
-                          label: tag?.name || 'Unknown',
-                          value: uuid,
-                        };
-                      })}
+                      value={[
+                        // Existing tags from tagUUID
+                        ...(editedValues?.tagUUID || []).map((uuid) => {
+                          const tag = tagList.find((tag) => tag.uuid === uuid);
+                          return {
+                            label: tag?.name || 'Unknown',
+                            value: uuid,
+                          };
+                        }),
+
+                        ...(editedValues?.tag_details || [])
+                          .filter((tag) => !tag.uuid)
+                          .map((newTag) => ({
+                            label: newTag.name || 'New Tag',
+                            value: '',
+                          })),
+                      ]}
                       onChange={(newValue) => {
-                        const updatedTags = newValue.map((option) => {
-                          if (
-                            !option.value ||
-                            typeof option.value === 'object'
-                          ) {
-                            // For new tags or tags without uuid
+                        const updatedTagDetails = newValue.map((option) => {
+                          if (!option.value) {
                             return {
-                              name: option.label || 'Unknown', // Ensure the label (name) is correct
-                              uuid: option.value?.uuid || '', // Ensure uuid is handled correctly
+                              name: option.label || 'Unknown',
+                              uuid: '',
                             };
                           } else {
-                            // For existing tags
+                            const existingTag = tagList.find(
+                              (tag) => tag.uuid === option.value
+                            );
                             return {
-                              name: option.label,
+                              name: existingTag
+                                ? existingTag.name
+                                : option.label,
                               uuid: option.value,
                             };
                           }
                         });
 
-                        // Update the editedValues with the correctly formatted tag details
-                        setEditedValues({
-                          ...editedValues,
-                          tagUUID: updatedTags,
-                        });
+                        setEditedValues((prevValues) => ({
+                          ...prevValues,
+                          tag_details: updatedTagDetails,
+                          tagUUID: updatedTagDetails.map((tag) => tag.uuid),
+                        }));
                       }}
                     />
                   ) : (
@@ -1481,12 +1411,32 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
               <div className={styles.inputContainer}>
                 <div className={styles.divider}>
-                  <div className={styles.title}>
-                    {' '}
-                    <span className={styles.titleRecipeName}>
-                      Supplier Details:
-                    </span>
+                  <div className={styles.supplierContainer}>
+                    <div className={styles.title}>
+                      {' '}
+                      <span className={styles.titleRecipeName}>
+                        Supplier Details:
+                      </span>
+                    </div>
+                    {isEditMode && (
+                      <div className={styles.inputContainer}>
+                        <span
+                          className={styles.value}
+                          onClick={handleAddSupplierDetail}>
+                          {' '}
+                          <i
+                            className="fa-solid fa-plus"
+                            data-tooltip-id="inventory-tooltip"
+                            data-tooltip-content={t('validate')}></i>{' '}
+                          Add Supplier
+                        </span>
+                      </div>
+                    )}
                   </div>
+                  {/* <div className={styles.gridContainer}>
+                    <span className={styles.values}>Name</span>
+                    <span className={styles.values}>Cost</span>
+                  </div> */}
                   {isEditMode ? (
                     editedValues?.supplier_details?.map((detail, index) => (
                       <div
@@ -1539,7 +1489,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                   ) : (
                     <div>
                       {editedValues?.supplier_details?.map((detail, index) => (
-                        <div className={styles.flexContainer}>
+                        <div className={styles.gridContainer}>
                           <span key={index} className={styles.value}>
                             {detail.supplier_name}
                           </span>
@@ -1548,7 +1498,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       ))}
                     </div>
                   )}
-                  {isEditMode && (
+                  {/* {isEditMode && (
                     <div className={styles.inputContainer}>
                       <div
                         className={styles.value}
@@ -1561,7 +1511,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                         Add Supplier
                       </div>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>
