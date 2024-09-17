@@ -58,6 +58,16 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     //New  design state
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false); // Side panel visibility state
     const [isEditMode, setIsEditMode] = useState(false); // Edit mode toggle state
+    const [isIngredientsVisible, setIsIngredientsVisible] = useState(false);
+    const [isQuantityVisible, setIsQuantityVisible] = useState(false);
+
+    const toggleIngredientsVisibility = () => {
+      setIsIngredientsVisible(!isIngredientsVisible);
+    };
+
+    const toggleQuantityVisibility = () => {
+      setIsQuantityVisible(!isQuantityVisible);
+    };
 
     const { t } = useTranslation(['common', 'ingredient']);
     const { currencyISO } = useRestaurantCurrency();
@@ -601,12 +611,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       // Ensure tag_details and supplier_details are always defined
       const supplier_details = editedValues.supplier_details || [];
 
-      const tag_details = (editedValues?.tagUUID || []).map((uuid) => {
-        const tag = tagList.find((tag) => tag.uuid === uuid);
-        return {
-          name: tag?.name,
-          uuid: uuid,
-        };
+      const tag_details = (editedValues?.tag_details || []).map((tag) => {
+        if (tag.uuid === tag.name) {
+          return { name: tag.name, uuid: '' };
+        } else {
+          return { name: tag.name, uuid: tag.uuid };
+        }
       });
 
       const updatedIngredient = {
@@ -1252,6 +1262,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                   </div>
                 </div>
               </div>
+              {/* Tag Section */}
               <div className={styles.inputContainer}>
                 <div className={styles.divider}>
                   <div className={styles.title}>
@@ -1259,6 +1270,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                   </div>
                   {isEditMode ? (
                     <CreatableSelect
+                      isMulti
+                      onInputChange={(newInputValue) => {
+                        console.log('newInputValue', newInputValue);
+                        if (typeof newInputValue === 'string') {
+                          setInputValue(newInputValue);
+                        }
+                      }}
                       inputValue={inputValue}
                       styles={{
                         control: (provided) => ({
@@ -1311,7 +1329,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                           },
                         }),
                       }}
-                      isMulti
                       maxMenuHeight={2}
                       isClearable={false}
                       options={tagList.map((tag) => ({
@@ -1319,11 +1336,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                         value: tag.uuid,
                       }))}
                       value={[
-                        // Existing tags from tagUUID
                         ...(editedValues?.tagUUID || []).map((uuid) => {
                           const tag = tagList.find((tag) => tag.uuid === uuid);
                           return {
-                            label: tag?.name || 'Unknown',
+                            label: tag?.name || '11111',
                             value: uuid,
                           };
                         }),
@@ -1409,6 +1425,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 </div>
               </div>
 
+              {/* Supplier Section */}
               <div className={styles.inputContainer}>
                 <div className={styles.divider}>
                   <div className={styles.supplierContainer}>
@@ -1419,9 +1436,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       </span>
                     </div>
                     {isEditMode && (
-                      <div className={styles.inputContainer}>
+                      <div className={styles.title}>
                         <span
-                          className={styles.value}
+                          className={styles.titleRecipeName}
                           onClick={handleAddSupplierDetail}>
                           {' '}
                           <i
@@ -1479,6 +1496,45 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                           }}
                           className="inputField"
                         />
+                        <Input
+                          type="number"
+                          label={t('conversion_factor')}
+                          value={detail.conversion_factor}
+                          onChange={(value) => {
+                            const updatedDetails = [
+                              ...editedValues.supplier_details,
+                            ];
+                            updatedDetails[index].conversion_factor = value;
+                            setEditedValues({
+                              ...editedValues,
+                              supplier_details: updatedDetails,
+                            });
+                          }}
+                          className="inputField"
+                        />{' '}
+                        {console.log(
+                          'supplier_unit',
+                          detail.supplier_unit,
+                          units
+                        )}
+                        <Dropdown
+                          placeholder={t('supplier_unit')}
+                          options={units}
+                          selectedOption={
+                            units.find(
+                              (unit) => unit.value === detail.supplier_unit
+                            ) || null
+                          }
+                          onOptionChange={(selectedOption) => {
+                            const updatedRecipes = [...editedValues.recipes];
+                            updatedRecipes[index].supplier_unit =
+                              selectedOption.value;
+                            setEditedValues({
+                              ...editedValues,
+                              recipes: updatedRecipes,
+                            });
+                          }}
+                        />
                         <i
                           className="fa-solid fa-trash"
                           data-tooltip-id="inventory-tooltip"
@@ -1512,6 +1568,410 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       </div>
                     </div>
                   )} */}
+                </div>
+              </div>
+
+              {/* Recipe section */}
+              <div className={styles.inputContainer}>
+                <div className={styles.divider}>
+                  <div className={styles.supplierContainer}>
+                    <div className={styles.title}>
+                      {' '}
+                      <span className={styles.titleRecipeName}>
+                        Recipe Details:
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    className={styles.ingredientsToggle}
+                    onClick={toggleIngredientsVisibility}>
+                    <span>
+                      {isIngredientsVisible
+                        ? '▼ Hide Recipes'
+                        : `▶ Show Recipes (${editedValues?.recipe_count})`}
+                    </span>
+                  </div>
+                  {isIngredientsVisible && (
+                    <>
+                      {isEditMode ? (
+                        <div>
+                          <div className={styles.gridContainer4}>
+                            <div>
+                              <span className={styles.values}>
+                                Recipe Name:
+                              </span>
+                            </div>
+                            <div>
+                              <span className={styles.values}>Quantity:</span>
+                            </div>
+                            <div>
+                              <span className={styles.values}>Unit:</span>
+                            </div>
+                            <div>
+                              <span className={styles.values}>
+                                Conversion Factor:
+                              </span>
+                            </div>
+                          </div>
+                          {editedValues?.recipes?.map((recipe, index) => (
+                            <div key={index} className={styles.recipeContainer}>
+                              <div className={styles.gridContainer4}>
+                                {/* Recipe Name */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    <span className={styles.value}>
+                                      {recipe.recipe_name}
+                                    </span>
+                                  ) : (
+                                    // <Input
+                                    //   type="text"
+                                    //   label={t('recipe_name')}
+                                    //   value={recipe.recipe_name}
+                                    //   onChange={(e) => {
+                                    //     const updatedRecipes = [
+                                    //       ...editedValues.recipes,
+                                    //     ];
+                                    //     updatedRecipes[index].recipe_name = e;
+                                    //     setEditedValues({
+                                    //       ...editedValues,
+                                    //       recipes: updatedRecipes,
+                                    //     });
+                                    //   }}
+                                    //   className={styles.inputField}
+                                    // />
+                                    <span className={styles.value}>
+                                      {recipe.recipe_name}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Quantity */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    <span className={styles.value}>
+                                      {recipe.quantity}
+                                    </span>
+                                  ) : (
+                                    // <Input
+                                    //   type="number"
+                                    //   label={t('quantity')}
+                                    //   value={recipe.quantity}
+                                    //   onChange={(e) => {
+                                    //     const updatedRecipes = [
+                                    //       ...editedValues.recipes,
+                                    //     ];
+                                    //     updatedRecipes[index].quantity = e;
+                                    //     setEditedValues({
+                                    //       ...editedValues,
+                                    //       recipes: updatedRecipes,
+                                    //     });
+                                    //   }}
+                                    //   className={styles.inputField}
+                                    // />
+                                    <span className={styles.value}>
+                                      {recipe.quantity}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Unit Dropdown */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    <span className={styles.value}>
+                                      {recipe.unit_name ||
+                                        t('No Unit Selected')}
+                                    </span>
+                                  ) : (
+                                    // <Dropdown
+                                    //   placeholder={t('inventory.selectUnit')}
+                                    //   options={units} // Assuming 'units' is an array of options with { value: 'unit_uuid', label: 'unit_name' }
+                                    //   selectedOption={recipe.unit_uuid}
+                                    //   onOptionChange={(value) => {
+                                    //     const updatedRecipes = [
+                                    //       ...editedValues.recipes,
+                                    //     ];
+                                    //     updatedRecipes[index].unit_uuid = value;
+                                    //     setEditedValues({
+                                    //       ...editedValues,
+                                    //       recipes: updatedRecipes,
+                                    //     });
+                                    //   }}
+                                    // />
+                                    <span className={styles.value}>
+                                      {recipe.unit_name}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Conversion Factor */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    // <Input
+                                    //   type="number"
+                                    //   label={t('conversion_factor')}
+                                    //   value={recipe.conversion_factor}
+                                    //   onChange={(e) => {
+                                    //     const updatedRecipes = [
+                                    //       ...editedValues.recipes,
+                                    //     ];
+                                    //     updatedRecipes[index].conversion_factor = e;
+                                    //     setEditedValues({
+                                    //       ...editedValues,
+                                    //       recipes: updatedRecipes,
+                                    //     });
+                                    //   }}
+                                    //   className={styles.inputField}
+                                    // />
+                                    <span className={styles.value}>
+                                      {recipe.conversion_factor}
+                                    </span>
+                                  ) : (
+                                    <span className={styles.value}>
+                                      {recipe.conversion_factor}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div>
+                          <div className={styles.gridContainer4}>
+                            <span className={styles.title}>Recipe Name:</span>
+                            <span className={styles.title}>Quantity:</span>
+                            <span className={styles.title}>Unit:</span>
+                            <span className={styles.title}>
+                              Conversion Factor:
+                            </span>
+                          </div>
+                          {/* Display mode when not in edit mode */}
+                          {editedValues?.recipes?.map((recipe, index) => (
+                            <div key={index} className={styles.recipeContainer}>
+                              <div className={styles.gridContainer4}>
+                                <div className={styles.inputContainer}>
+                                  <span className={styles.value}>
+                                    {recipe.recipe_name}
+                                  </span>
+                                </div>
+                                <div className={styles.inputContainer}>
+                                  <span className={styles.value}>
+                                    {recipe.quantity}
+                                  </span>
+                                </div>
+                                <div className={styles.inputContainer}>
+                                  <span className={styles.value}>
+                                    {recipe.unit_name}
+                                  </span>
+                                </div>
+                                <div className={styles.inputContainer}>
+                                  <span className={styles.value}>
+                                    {recipe.conversion_factor}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* History section */}
+              <div className={styles.inputContainer}>
+                <div className={styles.divider}>
+                  <div className={styles.supplierContainer}>
+                    <div className={styles.title}>
+                      {' '}
+                      <span className={styles.titleRecipeName}>History:</span>
+                    </div>
+                  </div>
+
+                  <div
+                    className={styles.ingredientsToggle}
+                    onClick={toggleQuantityVisibility}>
+                    <span>
+                      {isQuantityVisible
+                        ? '▼ Hide Quantity'
+                        : `▶ Show Quantity (11)`}
+                    </span>
+                  </div>
+
+                  {isQuantityVisible && (
+                    <>
+                      {isEditMode ? (
+                        <div>
+                          <div className={styles.gridContainer3}>
+                            <div>
+                              <span className={styles.values}>Event Type:</span>
+                            </div>
+                            <div>
+                              <span className={styles.values}>Quantity:</span>
+                            </div>
+                            <div>
+                              <span className={styles.values}>Unit Name:</span>
+                            </div>
+                          </div>
+                          {editedValues?.stock_history?.map((stock, index) => (
+                            <div key={index} className={styles.recipeContainer}>
+                              <div className={styles.gridContainer3}>
+                                {/* Recipe Name */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    <span className={styles.value}>
+                                      {stock.event_type}
+                                    </span>
+                                  ) : (
+                                    // <Input
+                                    //   type="text"
+                                    //   label={t('recipe_name')}
+                                    //   value={recipe.recipe_name}
+                                    //   onChange={(e) => {
+                                    //     const updatedRecipes = [
+                                    //       ...editedValues.recipes,
+                                    //     ];
+                                    //     updatedRecipes[index].recipe_name = e;
+                                    //     setEditedValues({
+                                    //       ...editedValues,
+                                    //       recipes: updatedRecipes,
+                                    //     });
+                                    //   }}
+                                    //   className={styles.inputField}
+                                    // />
+                                    <span className={styles.value}>
+                                      {stock.event_type}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Quantity */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    <span className={styles.value}>
+                                      {stock.quantity}
+                                    </span>
+                                  ) : (
+                                    // <Input
+                                    //   type="number"
+                                    //   label={t('quantity')}
+                                    //   value={recipe.quantity}
+                                    //   onChange={(e) => {
+                                    //     const updatedRecipes = [
+                                    //       ...editedValues.recipes,
+                                    //     ];
+                                    //     updatedRecipes[index].quantity = e;
+                                    //     setEditedValues({
+                                    //       ...editedValues,
+                                    //       recipes: updatedRecipes,
+                                    //     });
+                                    //   }}
+                                    //   className={styles.inputField}
+                                    // />
+                                    <span className={styles.value}>
+                                      {stock.quantity}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Conversion Factor */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    // <Input
+                                    //   type="number"
+                                    //   label={t('conversion_factor')}
+                                    //   value={recipe.conversion_factor}
+                                    //   onChange={(e) => {
+                                    //     const updatedRecipes = [
+                                    //       ...editedValues.recipes,
+                                    //     ];
+                                    //     updatedRecipes[index].conversion_factor = e;
+                                    //     setEditedValues({
+                                    //       ...editedValues,
+                                    //       recipes: updatedRecipes,
+                                    //     });
+                                    //   }}
+                                    //   className={styles.inputField}
+                                    // />
+                                    <span className={styles.value}>
+                                      {stock.unit_name}
+                                    </span>
+                                  ) : (
+                                    <span className={styles.value}>
+                                      {stock.unit_name}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Unit Dropdown
+                                <div className={styles.inputContainer}>
+                                  <div>
+                                    <span>Unit:</span>
+                                  </div>
+                                  {isEditMode ? (
+                                    <span className={styles.value}>
+                                      {recipe.unit_name ||
+                                        t('No Unit Selected')}
+                                    </span>
+                                  ) : (
+                                    // <Dropdown
+                                    //   placeholder={t('inventory.selectUnit')}
+                                    //   options={units} // Assuming 'units' is an array of options with { value: 'unit_uuid', label: 'unit_name' }
+                                    //   selectedOption={recipe.unit_uuid}
+                                    //   onOptionChange={(value) => {
+                                    //     const updatedRecipes = [
+                                    //       ...editedValues.recipes,
+                                    //     ];
+                                    //     updatedRecipes[index].unit_uuid = value;
+                                    //     setEditedValues({
+                                    //       ...editedValues,
+                                    //       recipes: updatedRecipes,
+                                    //     });
+                                    //   }}
+                                    // />
+                                    <span className={styles.value}>
+                                      {recipe.unit_name}
+                                    </span>
+                                  )}
+                                </div> */}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div>
+                          <div className={styles.gridContainer3}>
+                            <span className={styles.title}>Event Name:</span>
+                            <span className={styles.title}>Quantity:</span>
+                            <span className={styles.title}>Unit Name:</span>
+                          </div>
+                          {/* Display mode when not in edit mode */}
+                          {editedValues?.stock_history?.map((stock, index) => (
+                            <div key={index} className={styles.recipeContainer}>
+                              <div className={styles.gridContainer3}>
+                                <div className={styles.inputContainer}>
+                                  <span className={styles.value}>
+                                    {stock.event_type}
+                                  </span>
+                                </div>
+                                <div className={styles.inputContainer}>
+                                  <span className={styles.value}>
+                                    {stock.quantity}
+                                  </span>
+                                </div>
+                                <div className={styles.inputContainer}>
+                                  <span className={styles.value}>
+                                    {stock.unit_name}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             </div>

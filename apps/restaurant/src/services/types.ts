@@ -2,6 +2,24 @@ export type Supplier = {
   supplier_id: string;
   supplier_name: string;
   supplier_cost: number;
+  conversion_factor?: number;
+  supplier_unit: string;
+};
+
+export type Recipe = {
+  conversion_factor: number;
+  quantity: number;
+  recipe_name: string;
+  unit_name: string;
+  unit_uuid: string;
+  from_unit_name: string;
+  to_unit_name: string;
+};
+
+export type Stock = {
+  event_type?: string | null;
+  quantity?: number | null;
+  unit_name?: string | null;
 };
 
 export type Ingredient = {
@@ -19,6 +37,10 @@ export type Ingredient = {
   quantity: number;
   restaurantUUID?: string;
   supplier_details?: Supplier[];
+  recipes?: Recipe[];
+  recipe_count?: number;
+  stock_history?: Stock[];
+  unit_name?: number;
 };
 
 export type Tag = {

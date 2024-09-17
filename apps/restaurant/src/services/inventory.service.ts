@@ -119,6 +119,9 @@ const getIngredientList = async (
     actualStock: res.data[key]['actual_stock'],
     theoriticalStock: res.data[key]['theoritical_stock'],
     unit: res.data[key]['unit'],
+    unit_name: res.data[key]['unit_name'],
+
+    recipe_count: res.data[key]['recipe_count'],
     unitCost: res.data[key]['cost'],
     tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
     supplier_details: res.data[key]['supplier_details'].map(
@@ -126,13 +129,31 @@ const getIngredientList = async (
         supplier_id: supplier['supplier_id'],
         supplier_name: supplier['supplier_name'],
         supplier_cost: supplier['supplier_cost'],
+        supplier_unit: supplier['supplier_unit'],
+        conversion_factor: supplier['conversion_factor'],
       })
     ),
+    stock_history: res.data[key]['stock_history'],
+    recipes: res.data[key]['recipes'].map((recipe: any) => ({
+      conversion_factor: recipe['conversion_factor'],
+      quantity: recipe['quantity'],
+      from_unit_name: recipe['from_unit_name'],
+      to_unit_name: recipe['to_unit_name'],
+      recipe_name: recipe['recipe_name'],
+      unit_name: recipe['unit_name'],
+      unit_uuid: recipe['unit_uuid'],
+    })),
     amount: res.data[key]['amount'],
     type: res.data[key]['type'],
     quantity: res.data[key]['quantity'],
   }));
 };
+
+// stock_history: res.data[key]['stock_history'].map((stock: any) => ({
+//   event_type: stock['event_type'],
+//   quantity: stock['quantity'],
+//   unit_name: stock['unit_name'],
+// })),
 
 const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
   const FormattedIngredient = {
