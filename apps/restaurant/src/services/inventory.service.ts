@@ -108,7 +108,7 @@ const getIngredientList = async (
   console.log('INGREDIENTS');
   console.log(res.data);
 
-  return Object.keys(res.data).map<Ingredient>((key) => ({
+  const ingredients = Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
     name: res.data[key]['name'],
     parLevel: res.data[key]['par_level'],
@@ -127,6 +127,10 @@ const getIngredientList = async (
     amount: res.data[key]['amount'],
     type: res.data[key]['type'],
   }));
+
+  console.log(ingredients);
+
+  return ingredients;
 };
 
 const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
