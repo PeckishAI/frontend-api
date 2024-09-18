@@ -108,25 +108,25 @@ const getIngredientList = async (
   console.log('INGREDIENTS');
   console.log(res.data);
 
-  const ingredients = Object.keys(res.data).map<Ingredient>((key) => ({
-    id: key,
-    name: res.data[key]['name'],
-    parLevel: res.data[key]['par_level'],
-    actualStock: res.data[key]['actual_stock'],
-    theoriticalStock: res.data[key]['theoritical_stock'],
-    unit: res.data[key]['unit'],
-    unitCost: res.data[key]['cost'],
-    tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
-    supplier_details: res.data[key]['supplier_details'].map(
-      (supplier: any) => ({
-        supplier_id: supplier['supplier_id'],
-        supplier_name: supplier['supplier_name'],
-        supplier_cost: supplier['supplier_cost'],
-      })
-    ),
-    amount: res.data[key]['amount'],
-    type: res.data[key]['type'],
-  }));
+  // const ingredients = Object.keys(res.data).map<Ingredient>((key) => ({
+  //   id: key,
+  //   name: res.data[key]['name'],
+  //   parLevel: res.data[key]['par_level'],
+  //   actualStock: res.data[key]['actual_stock'],
+  //   theoriticalStock: res.data[key]['theoritical_stock'],
+  //   unit: res.data[key]['unit'],
+  //   unitCost: res.data[key]['cost'],
+  //   tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
+  //   supplier_details: res.data[key]['supplier_details'].map(
+  //     (supplier: any) => ({
+  //       supplier_id: supplier['supplier_id'],
+  //       supplier_name: supplier['supplier_name'],
+  //       supplier_cost: supplier['supplier_cost'],
+  //     })
+  //   ),
+  //   amount: res.data[key]['amount'],
+  //   type: res.data[key]['type'],
+  // }));
 
   const ingredients = Object.keys(res.data).map<Ingredient>((key) => {
     try {
