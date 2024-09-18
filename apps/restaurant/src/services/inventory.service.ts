@@ -107,7 +107,7 @@ const getIngredientList = async (
   const res = await axiosClient.get('/inventory/' + restaurantUUID);
   console.log('INGREDIENTS');
   console.log(res.data);
-
+  console.log(res.data.length);
   const ingredients = Object.keys(res.data).map<Ingredient>(
     (key) => (
       console.log('key', key),
