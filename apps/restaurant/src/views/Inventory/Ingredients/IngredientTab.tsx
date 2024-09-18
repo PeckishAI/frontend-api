@@ -107,8 +107,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       (state) => state.selectedRestaurantUUID
     );
 
-    console.log(ingredientsList);
-
     const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
 
@@ -365,6 +363,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         );
 
         setIngredientsList(ingredients);
+        console.log(ingredients);
+        console.log(ingredientsList);
         setFilteredIngredients(ingredients);
       } catch (err) {
         if (err instanceof Error) {
