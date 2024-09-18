@@ -107,9 +107,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       (state) => state.selectedRestaurantUUID
     );
 
+    console.log('SEE HERE');
+
     const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
 
+      console.log('SEE RESTAURANT SUPPLIERS');
       supplierService
         .getRestaurantSuppliers(selectedRestaurantUUID)
         .then((res) => {
@@ -133,13 +136,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           const fuse = new Fuse(filteredList, {
             keys: ['name', 'supplier_uuid'],
           });
+          console.log('USE EFFECT 1');
           filteredList = fuse.search(props.searchValue).map((r) => r.item);
+          console.log('could filter and map here');
         }
 
         if (filters.selectedSupplier && filters.selectedSupplier.length > 0) {
+          console.log('USE EFFECT 2');
           const selectedSupplierUuids = filters.selectedSupplier.map(
             (supplier) => supplier.uuid
           );
+          console.log('could filter here and map supplier');
           filteredList = filteredList.filter(
             (ingredient) =>
               ingredient.supplier_details?.some((supplier) =>
@@ -149,6 +156,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         }
 
         if (filters.selectedTag && filters.selectedTag.length > 0) {
+          console.log('USE EFFECT 3 - TAGS');
           const selectedTagUuids = filters.selectedTag.map((tag) => tag.uuid);
           filteredList = filteredList.filter(
             (ingredient) =>
@@ -156,6 +164,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 selectedTagUuids.includes(tagUuid)
               )
           );
+          console.log('Tags checked!');
         }
 
         setFilteredIngredients(filteredList);
@@ -293,6 +302,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       forwardedRef,
       () => {
         props.forceOptionsUpdate();
+        console.log('SEE HERE IMPERATIVE HANDLE');
+        console.log(ingredientsList);
 
         return {
           renderOptions: () => {
