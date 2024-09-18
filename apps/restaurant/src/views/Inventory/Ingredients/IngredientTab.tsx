@@ -98,13 +98,16 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     // Make sure there is no default sorting applied
     const [sortColumn, setSortColumn] = useState<string | null>(null); // No default column
-    const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null); 
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(
+      null
+    );
     const [hoveredColumn, setHoveredColumn] = useState<string | null>(null);
 
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
 
+    console.log(ingredientsList);
 
     const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
@@ -136,19 +139,23 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         }
 
         if (filters.selectedSupplier && filters.selectedSupplier.length > 0) {
-          const selectedSupplierUuids = filters.selectedSupplier.map(supplier => supplier.uuid);
-          filteredList = filteredList.filter(ingredient =>
-              ingredient.supplier_details?.some(supplier =>
-                  selectedSupplierUuids.includes(supplier.supplier_id)
+          const selectedSupplierUuids = filters.selectedSupplier.map(
+            (supplier) => supplier.uuid
+          );
+          filteredList = filteredList.filter(
+            (ingredient) =>
+              ingredient.supplier_details?.some((supplier) =>
+                selectedSupplierUuids.includes(supplier.supplier_id)
               )
           );
         }
 
         if (filters.selectedTag && filters.selectedTag.length > 0) {
-          const selectedTagUuids = filters.selectedTag.map(tag => tag.uuid);
-          filteredList = filteredList.filter(ingredient =>
-              ingredient.tagUUID?.some(tagUuid =>
-                  selectedTagUuids.includes(tagUuid)
+          const selectedTagUuids = filters.selectedTag.map((tag) => tag.uuid);
+          filteredList = filteredList.filter(
+            (ingredient) =>
+              ingredient.tagUUID?.some((tagUuid) =>
+                selectedTagUuids.includes(tagUuid)
               )
           );
         }
@@ -162,20 +169,20 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     // Sorting logic
     const sortIngredients = (ingredients: Ingredient[]) => {
       if (!sortColumn) return ingredients;
-    
+
       const sorted = [...ingredients].sort((a, b) => {
         let aValue = a[sortColumn as keyof Ingredient];
         let bValue = b[sortColumn as keyof Ingredient];
-    
+
         if (typeof aValue === 'string' && typeof bValue === 'string') {
           return aValue.localeCompare(bValue);
         } else if (typeof aValue === 'number' && typeof bValue === 'number') {
           return aValue - bValue;
         }
-    
+
         return 0;
       });
-    
+
       return sortDirection === 'asc' ? sorted : sorted.reverse();
     };
 
@@ -192,7 +199,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const handleMouseEnter = (columnKey: keyof Ingredient) => {
       setHoveredColumn(columnKey);
     };
-    
+
     const handleMouseLeave = () => {
       setHoveredColumn(null);
     };
@@ -223,7 +230,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const renderSortArrow = (columnKey: keyof Ingredient) => {
       const isActiveColumn = sortColumn === columnKey;
       const isHoveredColumn = hoveredColumn === columnKey;
-    
+
       if (isActiveColumn) {
         // If the column is the active one being sorted
         return sortDirection === 'asc' ? (
@@ -239,7 +246,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         return <span style={arrowStyle}>↑</span>;
       }
     };
-    
+
     const sortedIngredients = sortIngredients(filteredIngredients);
     const paginatedIngredients = sortedIngredients.slice(startIndex, endIndex);
 
@@ -254,7 +261,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           rows
             .map((row) => {
               const values = [];
-              values.push(row.name); 
+              values.push(row.name);
               values.push(row.parLevel || '-');
               values.push(row.actualStock || '-');
               values.push(row.theoriticalStock || '-');
@@ -684,8 +691,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             onClick={() => handleSort('name')}
             onMouseEnter={() => handleMouseEnter('name')}
             onMouseLeave={handleMouseLeave}
-            style={columnHeaderStyle}
-          >
+            style={columnHeaderStyle}>
             {t('ingredient:ingredientName')} {renderSortArrow('name')}
           </div>
         ),
@@ -936,7 +942,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             '-' // Fallback if there are no tags
           );
         },
-
       },
       {
         key: 'parLevel',
@@ -945,8 +950,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             onClick={() => handleSort('parLevel')}
             onMouseEnter={() => handleMouseEnter('parLevel')}
             onMouseLeave={handleMouseLeave}
-            style={columnHeaderStyle}
-          >
+            style={columnHeaderStyle}>
             {t('ingredient:parLvel')} {renderSortArrow('parLevel')}
           </div>
         ),
@@ -971,8 +975,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             onClick={() => handleSort('actualStock')}
             onMouseEnter={() => handleMouseEnter('actualStock')}
             onMouseLeave={handleMouseLeave}
-            style={columnHeaderStyle}
-          >
+            style={columnHeaderStyle}>
             {t('ingredient:actualStock')} {renderSortArrow('actualStock')}
           </div>
         ),
@@ -997,8 +1000,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             onClick={() => handleSort('unit')}
             onMouseEnter={() => handleMouseEnter('unit')}
             onMouseLeave={handleMouseLeave}
-            style={columnHeaderStyle}
-          >
+            style={columnHeaderStyle}>
             {t('ingredient:unit')} {renderSortArrow('unit')}
           </div>
         ),
