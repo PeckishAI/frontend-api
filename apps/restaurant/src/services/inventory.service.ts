@@ -116,7 +116,8 @@ const getIngredientList = async (
     theoriticalStock: res.data[key]['theoritical_stock'],
     unit: res.data[key]['unit'],
     unitCost: res.data[key]['cost'],
-    tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
+    // tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
+    tagUUID: [],
     supplier_details: res.data[key]['supplier_details'].map(
       (supplier: any) => ({
         supplier_id: supplier['supplier_id'],
