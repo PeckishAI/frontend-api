@@ -12,6 +12,7 @@ import {
   transferService,
   inventoryService,
 } from '../../../../services'; // import inventoryService to fetch ingredients
+import { useRestaurantStore } from '../../../../store/useRestaurantStore';
 
 type RestaurantOption = {
   id: string;
@@ -189,7 +190,9 @@ const AddTransferPopup: React.FC<AddTransferPopupProps> = (props) => {
     try {
       const uuid = await transferService.createTransfer(data);
       props.onRequestClose();
-      props.onReload();
+      useRestaurantStore
+        .getState()
+        .loadTransferHistory(data.from_restaurant_uuid);
     } catch (error) {
       console.error('Error processing transfer:', error);
     }
@@ -205,67 +208,77 @@ const AddTransferPopup: React.FC<AddTransferPopupProps> = (props) => {
           {/* Restaurant Row (From and To Site on the same line) */}
           <div className={styles.row}>
             <div className={styles.restaurantFields}>
-              <Controller
-                control={control}
-                name="from_restaurant_uuid"
-                render={({ field }) => (
-                  <Select
-                    placeholder="From Site"
-                    options={props.restaurants.map((rest) => ({
-                      value: rest.id,
-                      label: rest.name,
-                    }))}
-                    onChange={(
-                      selectedOption: SingleValue<{
-                        value: string;
-                        label: string;
-                      }>
-                    ) =>
-                      field.onChange(selectedOption ? selectedOption.value : '')
-                    }
-                    value={
-                      props.restaurants
-                        .map((rest) => ({
-                          value: rest.id,
-                          label: rest.name,
-                        }))
-                        .find((option) => option.value === field.value) || null
-                    }
-                  />
-                )}
-              />
+              <div className={styles.controller}>
+                <Controller
+                  control={control}
+                  name="from_restaurant_uuid"
+                  render={({ field }) => (
+                    <Select
+                      placeholder="From Site"
+                      options={props.restaurants.map((rest) => ({
+                        value: rest.id,
+                        label: rest.name,
+                      }))}
+                      onChange={(
+                        selectedOption: SingleValue<{
+                          value: string;
+                          label: string;
+                        }>
+                      ) =>
+                        field.onChange(
+                          selectedOption ? selectedOption.value : ''
+                        )
+                      }
+                      value={
+                        props.restaurants
+                          .map((rest) => ({
+                            value: rest.id,
+                            label: rest.name,
+                          }))
+                          .find((option) => option.value === field.value) ||
+                        null
+                      }
+                    />
+                  )}
+                />
+              </div>
               <div className={styles.arrowContainer}>
                 <i className="fa-solid fa-arrow-right"></i>
               </div>
-              <Controller
-                control={control}
-                name="to_restaurant_uuid"
-                render={({ field }) => (
-                  <Select
-                    placeholder="To Site"
-                    options={props.restaurants.map((rest) => ({
-                      value: rest.id,
-                      label: rest.name,
-                    }))}
-                    onChange={(
-                      selectedOption: SingleValue<{
-                        value: string;
-                        label: string;
-                      }>
-                    ) =>
-                      field.onChange(selectedOption ? selectedOption.value : '')
-                    }
-                    value={
-                      props.restaurants
-                        .map((rest) => ({
-                          value: rest.id,
-                          label: rest.name,
-                        }))
-                        .find((option) => option.value === field.value) || null
-                    }
-                  />
-                )}
-              />
+              <div className={styles.controller}>
+                <Controller
+                  control={control}
+                  name="to_restaurant_uuid"
+                  render={({ field }) => (
+                    <Select
+                      placeholder="To Site"
+                      options={props.restaurants.map((rest) => ({
+                        value: rest.id,
+                        label: rest.name,
+                      }))}
+                      onChange={(
+                        selectedOption: SingleValue<{
+                          value: string;
+                          label: string;
+                        }>
+                      ) =>
+                        field.onChange(
+                          selectedOption ? selectedOption.value : ''
+                        )
+                      }
+                      value={
+                        props.restaurants
+                          .map((rest) => ({
+                            value: rest.id,
+                            label: rest.name,
+                          }))
+                          .find((option) => option.value === field.value) ||
+                        null
+                      }
+                    />
+                  )}
+                />
+              </div>
             </div>
           </div>
 
@@ -274,42 +287,44 @@ const AddTransferPopup: React.FC<AddTransferPopupProps> = (props) => {
             <div key={field.id} className={styles.row}>
               <div className={styles.ingredientFields}>
                 {/* From Ingredient Select */}
-                <Controller
-                  control={control}
-                  name={`ingredients.${index}.from_ingredient_uuid`}
-                  render={({ field }) => (
-                    <Select
-                      placeholder="From Ingredient"
-                      options={fromIngredients.map((ing) => ({
-                        value: ing.id,
-                        label: ing.name,
-                      }))}
-                      onChange={(
-                        selectedOption: SingleValue<{
-                          value: string;
-                          label: string;
-                        }>
-                      ) => {
-                        field.onChange(
-                          selectedOption ? selectedOption.value : ''
-                        );
-                        handleFromIngredientChange(
-                          selectedOption ? selectedOption.value : '',
-                          index
-                        );
-                      }}
-                      value={
-                        fromIngredients
-                          .map((ing) => ({
-                            value: ing.id,
-                            label: ing.name,
-                          }))
-                          .find((option) => option.value === field.value) ||
-                        null
-                      }
-                    />
-                  )}
-                />
+                <div className={styles.controller}>
+                  <Controller
+                    control={control}
+                    name={`ingredients.${index}.from_ingredient_uuid`}
+                    render={({ field }) => (
+                      <Select
+                        placeholder="From Ingredient"
+                        options={fromIngredients.map((ing) => ({
+                          value: ing.id,
+                          label: ing.name,
+                        }))}
+                        onChange={(
+                          selectedOption: SingleValue<{
+                            value: string;
+                            label: string;
+                          }>
+                        ) => {
+                          field.onChange(
+                            selectedOption ? selectedOption.value : ''
+                          );
+                          handleFromIngredientChange(
+                            selectedOption ? selectedOption.value : '',
+                            index
+                          );
+                        }}
+                        value={
+                          fromIngredients
+                            .map((ing) => ({
+                              value: ing.id,
+                              label: ing.name,
+                            }))
+                            .find((option) => option.value === field.value) ||
+                          null
+                        }
+                      />
+                    )}
+                  />
+                </div>
 
                 {/* Quantity and Unit Display */}
                 <div className={styles.quantityUnitGroup}>
@@ -327,47 +342,49 @@ const AddTransferPopup: React.FC<AddTransferPopupProps> = (props) => {
                 </div>
 
                 {/* To Ingredient Select with Creatable */}
-                <Controller
-                  control={control}
-                  name={`ingredients.${index}.to_ingredient_uuid`}
-                  render={({ field }) => (
-                    <CreatableSelect
-                      key={toIngredients.length}
-                      placeholder="To Ingredient"
-                      options={toIngredients.map((ing) => ({
-                        value: ing.id,
-                        label: ing.name,
-                      }))}
-                      isLoading={loading}
-                      onCreateOption={(inputValue) =>
-                        handleCreateIngredient(
-                          inputValue,
-                          selectedToRestaurant,
-                          index
-                        )
-                      }
-                      onChange={(
-                        selectedOption: SingleValue<{
-                          value: string;
-                          label: string;
-                        }>
-                      ) =>
-                        field.onChange(
-                          selectedOption ? selectedOption.value : ''
-                        )
-                      }
-                      value={
-                        toIngredients
-                          .map((ing) => ({
-                            value: ing.id,
-                            label: ing.name,
-                          }))
-                          .find((option) => option.value === field.value) ||
-                        null
-                      }
-                    />
-                  )}
-                />
+                <div className={styles.controller}>
+                  <Controller
+                    control={control}
+                    name={`ingredients.${index}.to_ingredient_uuid`}
+                    render={({ field }) => (
+                      <CreatableSelect
+                        key={toIngredients.length}
+                        placeholder="To Ingredient"
+                        options={toIngredients.map((ing) => ({
+                          value: ing.id,
+                          label: ing.name,
+                        }))}
+                        isLoading={loading}
+                        onCreateOption={(inputValue) =>
+                          handleCreateIngredient(
+                            inputValue,
+                            selectedToRestaurant,
+                            index
+                          )
+                        }
+                        onChange={(
+                          selectedOption: SingleValue<{
+                            value: string;
+                            label: string;
+                          }>
+                        ) =>
+                          field.onChange(
+                            selectedOption ? selectedOption.value : ''
+                          )
+                        }
+                        value={
+                          toIngredients
+                            .map((ing) => ({
+                              value: ing.id,
+                              label: ing.name,
+                            }))
+                            .find((option) => option.value === field.value) ||
+                          null
+                        }
+                      />
+                    )}
+                  />
+                </div>
               </div>
 
               {/* Delete Button */}
