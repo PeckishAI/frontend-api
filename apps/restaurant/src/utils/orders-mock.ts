@@ -195,7 +195,7 @@ export type Order = {
   orderDate: string;
   deliveryDate: string;
   supplier: string;
-  status: 'pending' | 'delivered' | 'cancelled';
+  status: 'pending' | 'received' | 'cancelled';
   price: number;
   products?: Product[];
 };
