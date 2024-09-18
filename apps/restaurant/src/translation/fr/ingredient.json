@@ -20,6 +20,9 @@
   "variance":"Variance",
   "supplierCost":"Coût unitaire",
   "supplierName":"Nom du fournisseur",
+  "conversion_factor":"Facteur de conversion",
+  "recipe_name":"Nom de la recette",
+
 
   "placeholder.ingredientName": "Ex : Salade",
   "placeholder.ingredientQuantity": "Ex : 180",

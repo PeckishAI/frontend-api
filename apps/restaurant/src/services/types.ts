@@ -4,6 +4,7 @@ export type Supplier = {
   supplier_cost: number;
   conversion_factor?: number;
   supplier_unit: string;
+  supplier_unit_name: string;
 };
 
 export type Recipe = {
@@ -41,6 +42,7 @@ export type Ingredient = {
   recipe_count?: number;
   stock_history?: Stock[];
   unit_name?: number;
+  unit_uuid?: string;
 };
 
 export type Tag = {
@@ -76,6 +78,11 @@ export type Invoice = {
   path?: string;
   amount?: number;
   sync_status?: string;
+};
+
+export type Unit = {
+  unit_name: string;
+  unit_uuid: string;
 };
 
 export type TransferForm = {

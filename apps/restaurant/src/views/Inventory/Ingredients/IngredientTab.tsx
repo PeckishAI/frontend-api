@@ -13,6 +13,8 @@ import {
   DialogBox,
   Checkbox,
   SidePanel,
+  LabeledInput,
+  Select,
 } from 'shared-ui';
 import { Ingredient, Tag, inventoryService } from '../../../services';
 import {
@@ -60,6 +62,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [isEditMode, setIsEditMode] = useState(false); // Edit mode toggle state
     const [isIngredientsVisible, setIsIngredientsVisible] = useState(false);
     const [isQuantityVisible, setIsQuantityVisible] = useState(false);
+    const [unitname, setUnitName] = useState([]);
 
     const toggleIngredientsVisibility = () => {
       setIsIngredientsVisible(!isIngredientsVisible);
@@ -78,7 +81,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [ingredientTags, setIngredientTags] = useState<{
       [key: string]: Tag[];
     }>({});
-    const [inputValue, setInputValue] = useState<string>('');
+    const [inputValue, setInputValue] = useState<any>('');
 
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
     const [tagList, setTagList] = useState<Tag[]>([]);
@@ -427,6 +430,26 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setSelectedIngredients([]);
     };
 
+    function reloadUnits() {
+      if (!selectedRestaurantUUID) return;
+
+      inventoryService
+        .getUnits(selectedRestaurantUUID)
+        .then((res) => {
+          setUnitName(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          // setLoadingData(false);
+        });
+    }
+
+    useEffect(() => {
+      reloadUnits();
+    }, [selectedRestaurantUUID]);
+
     // Handle for actions in table
     const handleEditClick = (row) => {
       setEditingRowId(row.id); // Set the row being edited
@@ -605,8 +628,19 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const handleConfirmPopupPreviewEdit = () => {
       props.setLoadingState(true);
+      console.log('supplier_details', editedValues);
       if (!editedValues) return;
-      const { id, name, parLevel, actualStock, unit, unitCost } = editedValues;
+      const {
+        id,
+        name,
+        parLevel,
+        actualStock,
+        unit,
+        unitCost,
+        recipes,
+        unit_name,
+        unit_uuid,
+      } = editedValues;
 
       // Ensure tag_details and supplier_details are always defined
       const supplier_details = editedValues.supplier_details || [];
@@ -626,6 +660,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         parLevel,
         actualStock,
         unit,
+        recipes,
+        unit_name,
+        unit_uuid,
         supplier_details,
         unitCost,
         restaurantUUID: selectedRestaurantUUID,
@@ -1170,7 +1207,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                   <IconButton
                     icon={<i className="fa-solid fa-times"></i>}
                     tooltipMsg={t('cancel')}
-                    onClick={handleCancelEdit}
+                    onClick={() => setIsEditMode(false)}
                     className="iconButton"
                   />
                 </>
@@ -1192,71 +1229,257 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               )}
             </div>
             <div className={styles.inputContainer}>
+              {/* Name Section */}
               <div className={styles.divider}>
                 <div className={styles.inputContainer}>
                   <div className={styles.title}>
                     <span className={styles.titleRecipeName}>
-                      Ingredient Name:
+                      Ingredient name
                     </span>
                   </div>
                   {isEditMode ? (
-                    <Input
-                      label={t('ingredientName')}
-                      value={editedValues?.name || ''}
-                      onChange={(value) =>
-                        setEditedValues({ ...editedValues, name: value })
-                      }
-                      className={styles.inputField}
-                    />
+                    <>
+                      <LabeledInput
+                        label={t('ingredientName')}
+                        placeholder={t('ingredientName')}
+                        type="text"
+                        lighter
+                        value={editedValues?.name} // Same value binding
+                        onChange={
+                          (event) =>
+                            setEditedValues({
+                              ...editedValues,
+                              name: event.target.value,
+                            }) // Extract event.target.value
+                        }
+                        sx={{
+                          '& .MuiFilledInput-root': {
+                            border: '1px solid grey',
+                            borderRadius: 1,
+                            background: 'lightgrey',
+                            height: '40px',
+                            fontSize: '16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            borderColor: 'grey.300',
+                            borderBottom: 'none',
+                          },
+                          '& .MuiFilledInput-root.Mui-disabled': {
+                            backgroundColor: 'lightgrey',
+                          },
+                        }}
+                      />
+                    </>
                   ) : (
                     <span className={styles.value}> {editedValues?.name}</span>
                   )}
                 </div>
-                <div className={styles.gridContainer}>
+                <div className={styles.gridContainer3}>
                   <div className={styles.inputContainer}>
                     <div className={styles.title}>
                       {' '}
-                      <span className={styles.titleRecipeName}>par Level:</span>
+                      <span className={styles.titleRecipeName}>
+                        Actual Stock
+                      </span>
                     </div>
                     {isEditMode ? (
-                      <Input
-                        type="number"
-                        label={t('parLevel')}
-                        value={editedValues?.parLevel || ''}
-                        onChange={(value) =>
-                          setEditedValues({ ...editedValues, parLevel: value })
-                        }
-                        className={styles.inputField}
-                      />
+                      <>
+                        <LabeledInput
+                          label={t('ingredient:actualStock')}
+                          placeholder={t('ingredient:actualStock')}
+                          type="text"
+                          lighter
+                          value={editedValues?.actualStock || ''}
+                          onChange={(event) =>
+                            setEditedValues({
+                              ...editedValues,
+                              actualStock: event.target.value,
+                            })
+                          }
+                          sx={{
+                            '& .MuiFilledInput-root': {
+                              border: '1px solid grey',
+                              borderRadius: 1,
+                              background: 'lightgrey',
+                              height: '40px',
+                              fontSize: '16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              borderColor: 'grey.300',
+                              borderBottom: 'none',
+                            },
+                            '& .MuiFilledInput-root.Mui-disabled': {
+                              backgroundColor: 'lightgrey',
+                            },
+                          }}
+                        />
+                      </>
                     ) : (
                       <span className={styles.value}>
-                        {editedValues?.parLevel}
+                        {editedValues?.actualStock}
                       </span>
                     )}
                   </div>
                   <div className={styles.inputContainer}>
                     <div className={styles.title}>
                       {' '}
-                      <span className={styles.titleRecipeName}>
-                        Actual Stock:
-                      </span>
+                      <span className={styles.titleRecipeName}>Par level</span>
                     </div>
                     {isEditMode ? (
-                      <Input
-                        type="number"
-                        label={t('actualStock')}
-                        value={editedValues?.actualStock || ''}
-                        onChange={(value) =>
-                          setEditedValues({
-                            ...editedValues,
-                            actualStock: value,
-                          })
-                        }
-                        className={styles.inputField}
-                      />
+                      <>
+                        <LabeledInput
+                          label={t('ingredient:parLvel')}
+                          placeholder={t('ingredient:parLvel')}
+                          type="text"
+                          lighter
+                          value={editedValues?.parLevel || ''}
+                          onChange={(event) =>
+                            setEditedValues({
+                              ...editedValues,
+                              parLevel: event.target.value,
+                            })
+                          }
+                          sx={{
+                            '& .MuiFilledInput-root': {
+                              border: '1px solid grey',
+                              borderRadius: 1,
+                              background: 'lightgrey',
+                              height: '40px',
+                              fontSize: '16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              borderColor: 'grey.300',
+                              borderBottom: 'none',
+                            },
+                            '& .MuiFilledInput-root.Mui-disabled': {
+                              backgroundColor: 'lightgrey',
+                            },
+                          }}
+                        />
+                      </>
                     ) : (
                       <span className={styles.value}>
-                        {editedValues?.actualStock}
+                        {editedValues?.parLevel}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className={styles.inputContainer}>
+                    <div className={styles.title}>
+                      {' '}
+                      <span className={styles.titleRecipeName}>Units</span>
+                    </div>
+
+                    {isEditMode ? (
+                      <>
+                        <CreatableSelect
+                          placeholder={
+                            editedValues?.unit_uuid
+                              ? t('unit')
+                              : t('Select a unit') // Show 'Select a unit' if unit_uuid is null
+                          }
+                          options={unitname.map((unit) => ({
+                            label: unit.unit_name,
+                            value: unit.unit_uuid,
+                          }))} // Map options for CreatableSelect
+                          styles={{
+                            menu: (provided) => ({
+                              ...provided,
+                              overflowY: 'auto',
+                            }),
+                            control: (provided, state) => ({
+                              ...provided,
+                              minWidth: '200px',
+                              boxShadow: state.isFocused
+                                ? 'none'
+                                : provided.boxShadow,
+                              borderColor: state.isFocused
+                                ? '#ced4da'
+                                : provided.borderColor,
+                              '&:hover': {
+                                borderColor: 'none',
+                              },
+                            }),
+                            menuList: (provided) => ({
+                              ...provided,
+                              maxHeight: '200px',
+                              overflowY: 'auto',
+                            }),
+                            option: (provided, state) => ({
+                              ...provided,
+                              backgroundColor: state.isSelected
+                                ? '#007BFF'
+                                : state.isFocused
+                                ? '#dbe1df'
+                                : provided.backgroundColor,
+                              color: state.isSelected
+                                ? '#FFFFFF'
+                                : state.isFocused
+                                ? '#000000'
+                                : provided.color,
+                            }),
+                            container: (provided) => ({
+                              ...provided,
+                              overflow: 'visible',
+                            }),
+                            multiValue: (provided) => ({
+                              ...provided,
+                              backgroundColor: '#5E72E4',
+                              color: '#FFFFFF',
+                              borderRadius: '12px',
+                            }),
+                            multiValueLabel: (provided) => ({
+                              ...provided,
+                              color: '#ffffff',
+                              borderRadius: '12px',
+                            }),
+                            multiValueRemove: (provided) => ({
+                              ...provided,
+                              color: '#ffffff',
+                              ':hover': {
+                                backgroundColor: '#b5adad',
+                                borderRadius: '12px',
+                                color: '#ffffff',
+                              },
+                            }),
+                          }}
+                          value={
+                            unitname
+                              .map((unit) => ({
+                                label: unit.unit_name,
+                                value: unit.unit_uuid,
+                              }))
+                              .find(
+                                (unit) => unit.value === editedValues?.unit_uuid
+                              ) || null
+                          } // Find and display the selected unit by unit_uuid or show null if not found
+                          onChange={(selectedOption) => {
+                            if (selectedOption) {
+                              if (selectedOption.__isNew__) {
+                                // If a new unit is created
+                                setEditedValues({
+                                  ...editedValues,
+                                  unit_uuid: '',
+                                  unit_name: selectedOption.label,
+                                });
+                              } else {
+                                // If existing unit is selected
+                                setEditedValues({
+                                  ...editedValues,
+                                  unit_uuid: selectedOption.value,
+                                  unit_name: selectedOption.label,
+                                });
+                              }
+                            }
+                          }}
+                          isCreatable
+                        />
+                      </>
+                    ) : (
+                      <span className={styles.value}>
+                        {unitname.find(
+                          (unit) => unit.value === editedValues.unit_uuid
+                        )?.label || editedValues.unit_name}
                       </span>
                     )}
                   </div>
@@ -1266,31 +1489,36 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               <div className={styles.inputContainer}>
                 <div className={styles.divider}>
                   <div className={styles.title}>
-                    <span className={styles.titleRecipeName}>Tags:</span>
+                    <span className={styles.titleRecipeName}>Tags</span>
                   </div>
                   {isEditMode ? (
                     <CreatableSelect
                       isMulti
                       onInputChange={(newInputValue) => {
-                        console.log('newInputValue', newInputValue);
                         if (typeof newInputValue === 'string') {
-                          setInputValue(newInputValue);
+                          if (newInputValue != '') {
+                            console.log('newInputValue', newInputValue);
+                            setInputValue(newInputValue);
+                          }
                         }
                       }}
-                      inputValue={inputValue}
                       styles={{
-                        control: (provided) => ({
-                          ...provided,
-                          minHeight: '1px',
-                          borderRadius: '12px',
-                          maxHeight: '200px',
-                          overflowY: 'auto',
-                          margin: '5px',
-                          marginBottom: '10px',
-                        }),
                         menu: (provided) => ({
                           ...provided,
-                          zIndex: 9999,
+                          overflowY: 'auto',
+                        }),
+                        control: (provided, state) => ({
+                          ...provided,
+                          minWidth: '200px',
+                          boxShadow: state.isFocused
+                            ? 'none'
+                            : provided.boxShadow, // Remove the box shadow on focus
+                          borderColor: state.isFocused
+                            ? '#ced4da'
+                            : provided.borderColor, // Keep the border color consistent
+                          '&:hover': {
+                            borderColor: 'none', // Prevent border color change on hover
+                          },
                         }),
                         menuList: (provided) => ({
                           ...provided,
@@ -1301,8 +1529,14 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                           ...provided,
                           backgroundColor: state.isSelected
                             ? '#007BFF'
+                            : state.isFocused
+                            ? '#dbe1df'
                             : provided.backgroundColor,
-                          color: state.isSelected ? '#FFFFFF' : provided.color,
+                          color: state.isSelected
+                            ? '#FFFFFF'
+                            : state.isFocused
+                            ? '#000000'
+                            : provided.color,
                         }),
                         container: (provided) => ({
                           ...provided,
@@ -1329,6 +1563,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                           },
                         }),
                       }}
+                      // getNewOptionData={(newInputValue) => {
+                      //   console.log('new', newInputValue);
+                      //   // return newInputValue;
+                      // }}
                       maxMenuHeight={2}
                       isClearable={false}
                       options={tagList.map((tag) => ({
@@ -1338,8 +1576,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       value={[
                         ...(editedValues?.tagUUID || []).map((uuid) => {
                           const tag = tagList.find((tag) => tag.uuid === uuid);
+
                           return {
-                            label: tag?.name || '11111',
+                            label: tag?.name || inputValue,
                             value: uuid,
                           };
                         }),
@@ -1377,6 +1616,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                           tagUUID: updatedTagDetails.map((tag) => tag.uuid),
                         }));
                       }}
+                      // onCreateOption={(createdVal) => {
+                      //   console.log({ createdVal });
+                      //   setEditedValues((prevValues) => ({
+                      //     ...prevValues,
+                      //     tag_details: [{ name: createdVal, uuid: '' }],
+                      //   }));
+                      // }}
                     />
                   ) : (
                     <div className={styles.tagList}>
@@ -1432,20 +1678,19 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                     <div className={styles.title}>
                       {' '}
                       <span className={styles.titleRecipeName}>
-                        Supplier Details:
+                        Supplier Details
                       </span>
                     </div>
                     {isEditMode && (
-                      <div className={styles.title}>
+                      <div className={styles.addSupplierTitle}>
                         <span
-                          className={styles.titleRecipeName}
+                          className={styles.addSupplier}
                           onClick={handleAddSupplierDetail}>
                           {' '}
                           <i
                             className="fa-solid fa-plus"
                             data-tooltip-id="inventory-tooltip"
                             data-tooltip-content={t('validate')}></i>{' '}
-                          Add Supplier
                         </span>
                       </div>
                     )}
@@ -1454,103 +1699,283 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                     <span className={styles.values}>Name</span>
                     <span className={styles.values}>Cost</span>
                   </div> */}
+
                   {isEditMode ? (
                     editedValues?.supplier_details?.map((detail, index) => (
-                      <div
-                        key={index}
-                        className={styles.supplierDetailContainer}>
-                        <Dropdown
-                          options={suppliers}
-                          selectedOption={detail.supplier_id}
-                          onOptionChange={(value) => {
-                            const selectedSupplier = suppliers.find(
-                              (s) => s.value === value
-                            );
+                      <div key={index} className={styles.gridContainer3}>
+                        <div>
+                          <Select
+                            size="large"
+                            isSearchable={true}
+                            placeholder={t('ingredient:supplier')}
+                            options={suppliers.map((supplier) => ({
+                              label: supplier.label,
+                              value: supplier.value,
+                            }))}
+                            value={
+                              suppliers
+                                .map((supplier) => ({
+                                  label: supplier.label,
+                                  value: supplier.value,
+                                }))
+                                .find(
+                                  (supplier) =>
+                                    supplier.value === detail.supplier_id
+                                ) || null
+                            }
+                            onChange={(selectedOption) => {
+                              const updatedDetails = [
+                                ...editedValues.supplier_details,
+                              ];
+                              const selectedSupplier = suppliers.find(
+                                (s) => s.value === selectedOption?.value
+                              );
+
+                              updatedDetails[index] = {
+                                ...updatedDetails[index],
+                                supplier_id: selectedOption?.value || '',
+                                supplier_name: selectedSupplier?.label || '',
+                              };
+
+                              setEditedValues({
+                                ...editedValues,
+                                supplier_details: updatedDetails,
+                              });
+                            }}
+                            // styles={{
+                            //   menu: (provided) => ({
+                            //     ...provided,
+                            //     overflowY: 'auto',
+                            //   }),
+                            //   control: (provided) => ({
+                            //     ...provided,
+                            //     minWidth: '200px',
+                            //   }),
+                            // }}
+                          />
+                        </div>
+                        <LabeledInput
+                          label={t('ingredient:supplierCost')}
+                          placeholder={t('ingredient:supplierCost')}
+                          type="number" // Make sure it's "number" since supplierCost is numeric
+                          lighter
+                          value={detail.supplier_cost} // Same value binding
+                          onChange={(event) => {
                             const updatedDetails = [
                               ...editedValues.supplier_details,
                             ];
-                            updatedDetails[index] = {
-                              ...updatedDetails[index],
-                              supplier_id: value,
-                              supplier_name: selectedSupplier?.label || '',
-                            };
+                            updatedDetails[index].supplier_cost =
+                              event.target.value; // Use event.target.value for numeric input
+
                             setEditedValues({
                               ...editedValues,
                               supplier_details: updatedDetails,
                             });
+                          }}
+                          sx={{
+                            '& .MuiFilledInput-root': {
+                              border: '1px solid grey',
+                              borderRadius: 1,
+                              background: 'lightgrey',
+                              height: '40px',
+                              fontSize: '16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              borderColor: 'grey.300',
+                              borderBottom: 'none',
+                            },
+                            '& .MuiFilledInput-root.Mui-disabled': {
+                              backgroundColor: 'lightgrey',
+                            },
                           }}
                         />
-                        <Input
-                          type="number"
-                          label={t('supplierCost')}
-                          value={detail.supplier_cost}
-                          onChange={(value) => {
-                            const updatedDetails = [
-                              ...editedValues.supplier_details,
-                            ];
-                            updatedDetails[index].supplier_cost = value;
-                            setEditedValues({
-                              ...editedValues,
-                              supplier_details: updatedDetails,
-                            });
+                        <CreatableSelect
+                          placeholder={t('ingredient:Unit')}
+                          options={unitname.map((unit) => ({
+                            label: unit.unit_name,
+                            value: unit.unit_uuid,
+                          }))} // Map unitname to the structure expected by react-select
+                          styles={{
+                            menu: (provided) => ({
+                              ...provided,
+                              overflowY: 'auto',
+                            }),
+                            control: (provided, state) => ({
+                              ...provided,
+                              minWidth: '200px',
+                              boxShadow: state.isFocused
+                                ? 'none'
+                                : provided.boxShadow, // Remove the box shadow on focus
+                              borderColor: state.isFocused
+                                ? '#ced4da'
+                                : provided.borderColor, // Keep the border color consistent
+                              '&:hover': {
+                                borderColor: 'none', // Prevent border color change on hover
+                              },
+                            }),
+                            menuList: (provided) => ({
+                              ...provided,
+                              maxHeight: '200px',
+                              overflowY: 'auto',
+                            }),
+                            option: (provided, state) => ({
+                              ...provided,
+                              backgroundColor: state.isSelected
+                                ? '#007BFF'
+                                : state.isFocused
+                                ? '#dbe1df'
+                                : provided.backgroundColor,
+                              color: state.isSelected
+                                ? '#FFFFFF'
+                                : state.isFocused
+                                ? '#000000'
+                                : provided.color,
+                            }),
+                            container: (provided) => ({
+                              ...provided,
+                              overflow: 'visible',
+                            }),
+                            multiValue: (provided) => ({
+                              ...provided,
+                              backgroundColor: '#5E72E4',
+                              color: '#FFFFFF',
+                              borderRadius: '12px',
+                            }),
+                            multiValueLabel: (provided) => ({
+                              ...provided,
+                              color: '#ffffff',
+                              borderRadius: '12px',
+                            }),
+                            multiValueRemove: (provided) => ({
+                              ...provided,
+                              color: '#ffffff',
+                              ':hover': {
+                                backgroundColor: '#b5adad',
+                                borderRadius: '12px',
+                                color: '#ffffff',
+                              },
+                            }),
                           }}
-                          className="inputField"
-                        />
-                        <Input
-                          type="number"
-                          label={t('conversion_factor')}
-                          value={detail.conversion_factor}
-                          onChange={(value) => {
-                            const updatedDetails = [
-                              ...editedValues.supplier_details,
-                            ];
-                            updatedDetails[index].conversion_factor = value;
-                            setEditedValues({
-                              ...editedValues,
-                              supplier_details: updatedDetails,
-                            });
-                          }}
-                          className="inputField"
-                        />{' '}
-                        {console.log(
-                          'supplier_unit',
-                          detail.supplier_unit,
-                          units
-                        )}
-                        <Dropdown
-                          placeholder={t('supplier_unit')}
-                          options={units}
-                          selectedOption={
-                            units.find(
-                              (unit) => unit.value === detail.supplier_unit
-                            ) || null
+                          value={
+                            unitname
+                              .map((unit) => ({
+                                label: unit.unit_name,
+                                value: unit.unit_uuid,
+                              }))
+                              .find(
+                                (unit) => unit.value === detail.supplier_unit
+                              ) || null
                           }
-                          onOptionChange={(selectedOption) => {
-                            const updatedRecipes = [...editedValues.recipes];
-                            updatedRecipes[index].supplier_unit =
-                              selectedOption.value;
+                          onChange={(selectedOption) => {
+                            const updatedSupplierDetails = [
+                              ...editedValues.supplier_details,
+                            ];
+
+                            if (
+                              index !== undefined &&
+                              index >= 0 &&
+                              updatedSupplierDetails[index]
+                            ) {
+                              if (selectedOption.__isNew__) {
+                                updatedSupplierDetails[index].supplier_unit =
+                                  '';
+                                updatedSupplierDetails[
+                                  index
+                                ].supplier_unit_name = selectedOption.label;
+                              } else {
+                                updatedSupplierDetails[index].supplier_unit =
+                                  selectedOption.value;
+                                updatedSupplierDetails[
+                                  index
+                                ].supplier_unit_name = selectedOption.label;
+                              }
+
+                              setEditedValues({
+                                ...editedValues,
+                                supplier_details: updatedSupplierDetails,
+                              });
+                            } else {
+                              console.error('Index is undefined or invalid');
+                            }
+                          }}
+                          isCreatable
+                        />
+
+                        <LabeledInput
+                          label={t('ingredient:conversion_factor')}
+                          placeholder={t('ingredient:conversion_factor')}
+                          type="number" // Make sure it's "number" since supplierCost is numeric
+                          lighter
+                          value={detail.conversion_factor}
+                          onChange={(event) => {
+                            const updatedDetails = [
+                              ...editedValues.supplier_details,
+                            ];
+                            updatedDetails[index].conversion_factor =
+                              event.target.value; // Use event.target.value for numeric input
+
                             setEditedValues({
                               ...editedValues,
-                              recipes: updatedRecipes,
+                              supplier_details: updatedDetails,
                             });
                           }}
+                          sx={{
+                            '& .MuiFilledInput-root': {
+                              border: '1px solid grey',
+                              borderRadius: 1,
+                              background: 'lightgrey',
+                              height: '40px',
+                              fontSize: '16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              borderColor: 'grey.300',
+                              borderBottom: 'none',
+                            },
+                            '& .MuiFilledInput-root.Mui-disabled': {
+                              backgroundColor: 'lightgrey',
+                            },
+                          }}
                         />
-                        <i
-                          className="fa-solid fa-trash"
-                          data-tooltip-id="inventory-tooltip"
-                          data-tooltip-content={t('delete')}
-                          onClick={() => handleRemoveSupplierDetail(index)}></i>
+
+                        <span className={styles.deleteButton}>
+                          <i
+                            className="fa-solid fa-trash"
+                            data-tooltip-id="inventory-tooltip"
+                            data-tooltip-content={t('delete')}
+                            onClick={() =>
+                              handleRemoveSupplierDetail(index)
+                            }></i>
+                        </span>
                       </div>
                     ))
                   ) : (
                     <div>
+                      <div className={styles.gridContainer4}>
+                        <span className={styles.title}>Supplier Name</span>
+                        <span className={styles.title}>Supplier Cost</span>
+                        <span className={styles.title}>Unit</span>
+                        <span className={styles.title}>Conversion Factor </span>
+                      </div>
                       {editedValues?.supplier_details?.map((detail, index) => (
-                        <div className={styles.gridContainer}>
-                          <span key={index} className={styles.value}>
-                            {detail.supplier_name}
-                          </span>
-                          <span> {detail.supplier_cost}</span>
-                        </div>
+                        <>
+                          <div className={styles.gridContainer4}>
+                            <span key={index} className={styles.value}>
+                              {detail.supplier_name}
+                            </span>
+                            <span> {detail.supplier_cost}</span>
+                            <span>{detail.supplier_unit_name}</span>
+                            <span className={styles.flexContainer}>
+                              {detail.conversion_factor}
+                              <IconButton
+                                icon={
+                                  <i className="fa-solid fa-circle-info"></i>
+                                }
+                                tooltipMsg={`from ${detail.supplier_unit_name} to ${editedValues.unit_name}`}
+                                className={styles.forecastIiconBtn}
+                              />
+                            </span>
+                          </div>
+                        </>
                       ))}
                     </div>
                   )}
@@ -1578,14 +2003,14 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                     <div className={styles.title}>
                       {' '}
                       <span className={styles.titleRecipeName}>
-                        Recipe Details:
+                        Recipe Details
                       </span>
                     </div>
                   </div>
                   <div
                     className={styles.ingredientsToggle}
                     onClick={toggleIngredientsVisibility}>
-                    <span>
+                    <span className={styles.show}>
                       {isIngredientsVisible
                         ? '▼ Hide Recipes'
                         : `▶ Show Recipes (${editedValues?.recipe_count})`}
@@ -1597,19 +2022,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                         <div>
                           <div className={styles.gridContainer4}>
                             <div>
-                              <span className={styles.values}>
-                                Recipe Name:
-                              </span>
+                              <span className={styles.values}>Recipe Name</span>
                             </div>
                             <div>
-                              <span className={styles.values}>Quantity:</span>
+                              <span className={styles.values}>Quantity</span>
                             </div>
                             <div>
-                              <span className={styles.values}>Unit:</span>
+                              <span className={styles.values}>Unit</span>
                             </div>
                             <div>
                               <span className={styles.values}>
-                                Conversion Factor:
+                                Conversion Factor
                               </span>
                             </div>
                           </div>
@@ -1619,26 +2042,51 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                 {/* Recipe Name */}
                                 <div className={styles.inputContainer}>
                                   {isEditMode ? (
-                                    <span className={styles.value}>
-                                      {recipe.recipe_name}
-                                    </span>
+                                    <>
+                                      <LabeledInput
+                                        label={t('ingredient:recipe_name')} // Replace label as needed
+                                        placeholder={t(
+                                          'ingredient:recipe_name'
+                                        )} // Add placeholder for the input field
+                                        type="text"
+                                        lighter
+                                        value={recipe.recipe_name} // Bind value the same way
+                                        onChange={(event) => {
+                                          const updatedRecipes = [
+                                            ...editedValues.recipes,
+                                          ];
+                                          updatedRecipes[index].recipe_name =
+                                            event.target.value; // Extract the value correctly
+                                          setEditedValues({
+                                            ...editedValues,
+                                            recipes: updatedRecipes,
+                                          });
+                                        }}
+                                        sx={{
+                                          '& .MuiFilledInput-root': {
+                                            border: '1px solid grey',
+                                            borderRadius: 1,
+                                            background: 'lightgrey',
+                                            height: '40px',
+                                            fontSize: '16px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            borderColor: 'grey.300',
+                                            borderBottom: 'none',
+                                          },
+                                          '& .MuiFilledInput-root.Mui-disabled':
+                                            {
+                                              backgroundColor: 'lightgrey',
+                                            },
+                                        }}
+                                        className={styles.inputField}
+                                      />
+
+                                      {/* <span className={styles.value}>
+                                        {recipe.recipe_name}
+                                      </span> */}
+                                    </>
                                   ) : (
-                                    // <Input
-                                    //   type="text"
-                                    //   label={t('recipe_name')}
-                                    //   value={recipe.recipe_name}
-                                    //   onChange={(e) => {
-                                    //     const updatedRecipes = [
-                                    //       ...editedValues.recipes,
-                                    //     ];
-                                    //     updatedRecipes[index].recipe_name = e;
-                                    //     setEditedValues({
-                                    //       ...editedValues,
-                                    //       recipes: updatedRecipes,
-                                    //     });
-                                    //   }}
-                                    //   className={styles.inputField}
-                                    // />
                                     <span className={styles.value}>
                                       {recipe.recipe_name}
                                     </span>
@@ -1648,26 +2096,42 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                 {/* Quantity */}
                                 <div className={styles.inputContainer}>
                                   {isEditMode ? (
-                                    <span className={styles.value}>
-                                      {recipe.quantity}
-                                    </span>
+                                    <LabeledInput
+                                      label={t('quantity')} // Label for the input
+                                      placeholder={t('quantity')} // Optional: placeholder text
+                                      type="number" // Number input type
+                                      lighter
+                                      value={recipe.quantity} // Bind the value to recipe.quantity
+                                      onChange={(event) => {
+                                        const updatedRecipes = [
+                                          ...editedValues.recipes,
+                                        ];
+                                        updatedRecipes[index].quantity =
+                                          event.target.value; // Extract the value correctly
+                                        setEditedValues({
+                                          ...editedValues,
+                                          recipes: updatedRecipes,
+                                        });
+                                      }}
+                                      sx={{
+                                        '& .MuiFilledInput-root': {
+                                          border: '1px solid grey',
+                                          borderRadius: 1,
+                                          background: 'lightgrey',
+                                          height: '40px',
+                                          fontSize: '16px',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          borderColor: 'grey.300',
+                                          borderBottom: 'none',
+                                        },
+                                        '& .MuiFilledInput-root.Mui-disabled': {
+                                          backgroundColor: 'lightgrey',
+                                        },
+                                      }}
+                                      className={styles.inputField}
+                                    />
                                   ) : (
-                                    // <Input
-                                    //   type="number"
-                                    //   label={t('quantity')}
-                                    //   value={recipe.quantity}
-                                    //   onChange={(e) => {
-                                    //     const updatedRecipes = [
-                                    //       ...editedValues.recipes,
-                                    //     ];
-                                    //     updatedRecipes[index].quantity = e;
-                                    //     setEditedValues({
-                                    //       ...editedValues,
-                                    //       recipes: updatedRecipes,
-                                    //     });
-                                    //   }}
-                                    //   className={styles.inputField}
-                                    // />
                                     <span className={styles.value}>
                                       {recipe.quantity}
                                     </span>
@@ -1682,21 +2146,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                         t('No Unit Selected')}
                                     </span>
                                   ) : (
-                                    // <Dropdown
-                                    //   placeholder={t('inventory.selectUnit')}
-                                    //   options={units} // Assuming 'units' is an array of options with { value: 'unit_uuid', label: 'unit_name' }
-                                    //   selectedOption={recipe.unit_uuid}
-                                    //   onOptionChange={(value) => {
-                                    //     const updatedRecipes = [
-                                    //       ...editedValues.recipes,
-                                    //     ];
-                                    //     updatedRecipes[index].unit_uuid = value;
-                                    //     setEditedValues({
-                                    //       ...editedValues,
-                                    //       recipes: updatedRecipes,
-                                    //     });
-                                    //   }}
-                                    // />
                                     <span className={styles.value}>
                                       {recipe.unit_name}
                                     </span>
@@ -1706,25 +2155,45 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                 {/* Conversion Factor */}
                                 <div className={styles.inputContainer}>
                                   {isEditMode ? (
-                                    // <Input
-                                    //   type="number"
-                                    //   label={t('conversion_factor')}
-                                    //   value={recipe.conversion_factor}
-                                    //   onChange={(e) => {
-                                    //     const updatedRecipes = [
-                                    //       ...editedValues.recipes,
-                                    //     ];
-                                    //     updatedRecipes[index].conversion_factor = e;
-                                    //     setEditedValues({
-                                    //       ...editedValues,
-                                    //       recipes: updatedRecipes,
-                                    //     });
-                                    //   }}
-                                    //   className={styles.inputField}
-                                    // />
-                                    <span className={styles.value}>
-                                      {recipe.conversion_factor}
-                                    </span>
+                                    <LabeledInput
+                                      label={t('ingredient:conversion_factor')}
+                                      placeholder={t(
+                                        'ingredient:conversion_factor'
+                                      )}
+                                      type="number"
+                                      lighter
+                                      value={recipe.conversion_factor}
+                                      onChange={(event) => {
+                                        const updatedRecipes = [
+                                          ...editedValues.recipes,
+                                        ];
+                                        updatedRecipes[
+                                          index
+                                        ].conversion_factor =
+                                          event.target.value;
+                                        setEditedValues({
+                                          ...editedValues,
+                                          recipes: updatedRecipes,
+                                        });
+                                      }}
+                                      sx={{
+                                        '& .MuiFilledInput-root': {
+                                          border: '1px solid grey',
+                                          borderRadius: 1,
+                                          background: 'lightgrey',
+                                          height: '40px',
+                                          fontSize: '16px',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          borderColor: 'grey.300',
+                                          borderBottom: 'none',
+                                        },
+                                        '& .MuiFilledInput-root.Mui-disabled': {
+                                          backgroundColor: 'lightgrey',
+                                        },
+                                      }}
+                                      className={styles.inputField}
+                                    />
                                   ) : (
                                     <span className={styles.value}>
                                       {recipe.conversion_factor}
@@ -1738,37 +2207,32 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       ) : (
                         <div>
                           <div className={styles.gridContainer4}>
-                            <span className={styles.title}>Recipe Name:</span>
-                            <span className={styles.title}>Quantity:</span>
-                            <span className={styles.title}>Unit:</span>
+                            <span className={styles.title}>Recipe Name</span>
+                            <span className={styles.title}>Quantity</span>
+                            <span className={styles.title}>Unit</span>
                             <span className={styles.title}>
-                              Conversion Factor:
+                              Conversion Factor
                             </span>
                           </div>
                           {/* Display mode when not in edit mode */}
                           {editedValues?.recipes?.map((recipe, index) => (
                             <div key={index} className={styles.recipeContainer}>
                               <div className={styles.gridContainer4}>
-                                <div className={styles.inputContainer}>
-                                  <span className={styles.value}>
-                                    {recipe.recipe_name}
-                                  </span>
-                                </div>
-                                <div className={styles.inputContainer}>
-                                  <span className={styles.value}>
-                                    {recipe.quantity}
-                                  </span>
-                                </div>
-                                <div className={styles.inputContainer}>
-                                  <span className={styles.value}>
-                                    {recipe.unit_name}
-                                  </span>
-                                </div>
-                                <div className={styles.inputContainer}>
-                                  <span className={styles.value}>
-                                    {recipe.conversion_factor}
-                                  </span>
-                                </div>
+                                <span>{recipe.recipe_name}</span>
+                                <span>{recipe.quantity}</span>
+
+                                <span>{recipe.unit_name}</span>
+
+                                <span className={styles.flexContainer}>
+                                  {recipe.conversion_factor}
+                                  <IconButton
+                                    icon={
+                                      <i className="fa-solid fa-circle-info"></i>
+                                    }
+                                    tooltipMsg={`from ${recipe.unit_name} to ${editedValues.unit_name}`}
+                                    className={styles.forecastIiconBtn}
+                                  />
+                                </span>
                               </div>
                             </div>
                           ))}
@@ -1785,17 +2249,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                   <div className={styles.supplierContainer}>
                     <div className={styles.title}>
                       {' '}
-                      <span className={styles.titleRecipeName}>History:</span>
+                      <span className={styles.titleRecipeName}>History</span>
                     </div>
                   </div>
 
                   <div
                     className={styles.ingredientsToggle}
                     onClick={toggleQuantityVisibility}>
-                    <span>
+                    <span className={styles.show}>
                       {isQuantityVisible
                         ? '▼ Hide Quantity'
-                        : `▶ Show Quantity (11)`}
+                        : `▶ Show Quantity`}
                     </span>
                   </div>
 
@@ -1805,13 +2269,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                         <div>
                           <div className={styles.gridContainer3}>
                             <div>
-                              <span className={styles.values}>Event Type:</span>
+                              <span className={styles.values}>Event Type</span>
                             </div>
                             <div>
-                              <span className={styles.values}>Quantity:</span>
+                              <span className={styles.values}>Quantity</span>
                             </div>
                             <div>
-                              <span className={styles.values}>Unit Name:</span>
+                              <span className={styles.values}>Unit</span>
                             </div>
                           </div>
                           {editedValues?.stock_history?.map((stock, index) => (
@@ -1942,9 +2406,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       ) : (
                         <div>
                           <div className={styles.gridContainer3}>
-                            <span className={styles.title}>Event Name:</span>
-                            <span className={styles.title}>Quantity:</span>
-                            <span className={styles.title}>Unit Name:</span>
+                            <span className={styles.title}>Event Name</span>
+                            <span className={styles.title}>Quantity</span>
+                            <span className={styles.title}>Unit</span>
                           </div>
                           {/* Display mode when not in edit mode */}
                           {editedValues?.stock_history?.map((stock, index) => (
