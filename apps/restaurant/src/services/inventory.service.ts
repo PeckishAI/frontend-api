@@ -118,13 +118,14 @@ const getIngredientList = async (
     unitCost: res.data[key]['cost'],
     // tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
     tagUUID: [],
-    supplier_details: res.data[key]['supplier_details'].map(
-      (supplier: any) => ({
-        supplier_id: supplier['supplier_id'],
-        supplier_name: supplier['supplier_name'],
-        supplier_cost: supplier['supplier_cost'],
-      })
-    ),
+    // supplier_details: res.data[key]['supplier_details'].map(
+    //   (supplier: any) => ({
+    //     supplier_id: supplier['supplier_id'],
+    //     supplier_name: supplier['supplier_name'],
+    //     supplier_cost: supplier['supplier_cost'],
+    //   })
+    // ),
+    supplier_details: [],
     amount: res.data[key]['amount'],
     type: res.data[key]['type'],
   }));
