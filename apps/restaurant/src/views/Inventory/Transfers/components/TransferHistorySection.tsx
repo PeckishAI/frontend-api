@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from './TransferHistorySection.module.scss';
 import { useRestaurantStore } from '../../../../store/useRestaurantStore';
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
+
 type Ingredient = {
   name: string;
   quantity: number;
@@ -18,6 +19,7 @@ type TransferEvent = {
   transferredBy: string;
   transferAmount: number;
   transferNumber: number;
+  currency: string;
   ingredients: Ingredient[];
 };
 
@@ -54,13 +56,11 @@ const TransferHistorySection: React.FC<TransferHistorySectionProps> = ({
           {event.transfer_event.fromSiteUUID === selectedRestaurantUUID ? (
             <>
               <FaArrowUp className={styles.sending} />
-
               {`  ${event.transfer_event.toSite}`}
             </>
           ) : event.transfer_event.toSiteUUID === selectedRestaurantUUID ? (
             <>
               <FaArrowDown className={styles.receiving} />
-
               {`  ${event.transfer_event.fromSite}`}
             </>
           ) : (
@@ -91,7 +91,7 @@ const TransferHistorySection: React.FC<TransferHistorySectionProps> = ({
           Total Amount:{' '}
           <b>
             {event?.transfer_event?.transferAmount
-              ? `€ ${event.transfer_event.transferAmount.toFixed(2)}`
+              ? `${event.transfer_event.currency} ${event.transfer_event.transferAmount.toFixed(2)}`
               : '--'}
           </b>
         </p>
@@ -114,7 +114,11 @@ const TransferHistorySection: React.FC<TransferHistorySectionProps> = ({
                     ? `${ingredient.quantity} ${ingredient.unit}s`
                     : `${ingredient.quantity} ${ingredient.unit}`}
                 </span>
-                <span> - €{ingredient.amount.toFixed(2)}</span>
+                <span>
+                  {' '}
+                  - {event.transfer_event.currency}
+                  {ingredient.amount.toFixed(2)}
+                </span>
               </div>
             ))}
           </div>
