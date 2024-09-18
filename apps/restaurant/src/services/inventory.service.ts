@@ -4,6 +4,7 @@ import {
   Ingredient,
   Invoice,
   InvoiceIngredient,
+  Unit,
 } from './index';
 
 const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
@@ -120,7 +121,7 @@ const getIngredientList = async (
     theoriticalStock: res.data[key]['theoritical_stock'],
     unit: res.data[key]['unit'],
     unit_name: res.data[key]['unit_name'],
-
+    unit_uuid: res.data[key]['unit_uuid'],
     recipe_count: res.data[key]['recipe_count'],
     unitCost: res.data[key]['cost'],
     tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
@@ -130,6 +131,7 @@ const getIngredientList = async (
         supplier_name: supplier['supplier_name'],
         supplier_cost: supplier['supplier_cost'],
         supplier_unit: supplier['supplier_unit'],
+        supplier_unit_name: supplier['supplier_unit_name'],
         conversion_factor: supplier['conversion_factor'],
       })
     ),
@@ -154,6 +156,29 @@ const getIngredientList = async (
 //   quantity: stock['quantity'],
 //   unit_name: stock['unit_name'],
 // })),
+
+const getUnits = async (restaurantUUID: string): Promise<Unit[]> => {
+  try {
+    const res = await axiosClient.get(`/units/${restaurantUUID}`);
+
+    // Check if the response data is valid
+    if (!Array.isArray(res.data)) {
+      console.error('Unexpected response format:', res.data);
+      return [];
+    }
+
+    // Map the response data to the Unit array
+    const units: Unit[] = res.data.map((unitData: any) => ({
+      unit_name: unitData.unit_name,
+      unit_uuid: unitData.unit_uuid,
+    }));
+
+    return units;
+  } catch (error) {
+    console.error('Error fetching units:', error);
+    return [];
+  }
+};
 
 const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
   const FormattedIngredient = {
@@ -195,7 +220,10 @@ const updateIngredient = (ingredient: Ingredient) => {
     actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
     supplier_details: ingredient.supplier_details,
+    recipes: ingredient.recipes,
     cost: ingredient.unitCost,
+    unit_name: ingredient.unit_name,
+    unit_uuid: ingredient.unit_uuid,
     restaurant_uuid: ingredient.restaurantUUID,
   };
 
@@ -346,6 +374,7 @@ const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
 
 export const inventoryService = {
   getIngredientList,
+  getUnits,
   getOnlyIngredientList,
   addIngredient,
   updateIngredient,

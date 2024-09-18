@@ -3,12 +3,15 @@
   top: 0;
   right: 0;
   display: flex;
+  margin-top: 5px;
+  margin-right: 5px;
   gap: 5px;
 }
 
 .flexContainer {
   display: flex;
   gap: 20px;
+  align-items: center;
 }
 
 // .divider {
@@ -87,6 +90,14 @@
   margin-top: 10px;
   margin-bottom: 10px;
   width: 100%;
+  align-items: center;
+}
+
+.forecastIiconBtn {
+  color: var(--cardColor);
+}
+.forecastIiconBtn:hover {
+  background-color: var(--backgroundColor);
 }
 .supplierContainer {
   display: flex;
@@ -104,6 +115,13 @@
   overflow: auto;
 }
 
+.ingredientsToggle {
+  margin-bottom: 11px;
+  .show {
+    cursor: pointer;
+  }
+}
+
 .title {
   font-size: 0.9rem;
   display: flex;
@@ -115,6 +133,21 @@
 
   .titleRecipeName {
     color: var(--primaryColor);
+  }
+}
+
+.addSupplierTitle {
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  .addSupplier {
+    color: var(--primaryColor);
+    cursor: pointer;
   }
 }
 .value {
@@ -130,7 +163,7 @@
   display: flex;
   flex-direction: column;
   // max-height: calc(100% - 80px);
-  gap: 15px;
+  gap: 11px;
 }
 
 .tagList {
@@ -171,4 +204,10 @@
   justify-content: flex-end;
   align-items: center;
   gap: 15px;
+}
+
+.deleteButton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 }

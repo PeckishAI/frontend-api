@@ -21,6 +21,9 @@
   "variance_value":"Variance Value",
   "supplierCost":"Unit Cost",
   "supplierName":"Supplier Name",
+  "conversion_factor":"Conversion Factor",
+  "recipe_name":"Recipe Name",
+
 
   "placeholder.ingredientName": "Ex : Salad",
   "placeholder.ingredientQuantity": "Ex : 180",
