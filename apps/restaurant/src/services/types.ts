@@ -11,6 +11,7 @@ export type Recipe = {
   conversion_factor: number;
   quantity: number;
   recipe_name: string;
+  recipe_uuid: string;
   unit_name: string;
   unit_uuid: string;
   from_unit_name: string;
@@ -37,6 +38,7 @@ export type Ingredient = {
   actions?: void;
   quantity: number;
   restaurantUUID?: string;
+  deleted_recipe_ingredient_data?: string[];
   supplier_details?: Supplier[];
   recipes?: Recipe[];
   recipe_count?: number;
