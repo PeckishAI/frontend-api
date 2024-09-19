@@ -191,7 +191,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         return 0;
       });
 
-      return sortDirection === 'asc' ? sorted : sorted.reverse();
+      return sortDirection === 'desc' ? sorted : sorted.reverse();
     };
 
     const handleSort = (columnKey: keyof Ingredient) => {
