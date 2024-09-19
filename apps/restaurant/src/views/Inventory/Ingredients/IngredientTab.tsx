@@ -175,11 +175,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     // Sorting logic
     const sortIngredients = (ingredients: Ingredient[]) => {
-      if (!sortColumn) return ingredients;
+      const defaultSortColumn = 'name'; // default to ingredient_name column
+      const columnToSortBy = sortColumn || defaultSortColumn;
 
       const sorted = [...ingredients].sort((a, b) => {
-        let aValue = a[sortColumn as keyof Ingredient];
-        let bValue = b[sortColumn as keyof Ingredient];
+        let aValue = a[columnToSortBy as keyof Ingredient];
+        let bValue = b[columnToSortBy as keyof Ingredient];
 
         if (typeof aValue === 'string' && typeof bValue === 'string') {
           return aValue.localeCompare(bValue);
