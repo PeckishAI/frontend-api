@@ -91,7 +91,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setPage(NewValue);
     };
 
-    const ITEMS_PER_PAGE = 10; // Define items per page
+    const ITEMS_PER_PAGE = 25; // Define items per page
 
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
