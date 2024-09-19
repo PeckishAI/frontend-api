@@ -93,6 +93,15 @@
   align-items: center;
 }
 
+.gridContainer5 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) 0.5fr; /* Last column is 50% of each other column */
+  gap: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
 .forecastIiconBtn {
   color: var(--cardColor);
 }
