@@ -1223,6 +1223,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           <SidePanel
             isOpen={isSidePanelOpen}
             onRequestClose={handleCancelEdit}
+            width={'900px'}
             className={styles.sidePanel}>
             <div className={styles.optionsButtons}>
               {isEditMode ? (
