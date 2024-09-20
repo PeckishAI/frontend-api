@@ -109,6 +109,19 @@
     },
     "automaticSendCheckbox": "add a new preparation before check the all details"
   },
+  "recipes.addIngredient": {
+    "addIngredientBtn": "Add Ingredient",
+    "addRecipe":"Add Recipe",
+    "title": "Add a new Ingredient",
+    "recipe_title":"Add a new Recipe",
+    "subtitle": "Search your supplier here or create a new one if you don't find it",
+    "select": {
+      "placeholder": "Select a supplier",
+      "createSupplier": "Create supplier \"{{name}}\""
+    },
+    "automaticSendCheckbox": "add a new preparation before check the all details"
+  },
+
 
   "orders.detail": "Detail",
   "orders.detail.tooltip": "View detail",

@@ -40,6 +40,7 @@ import Filters, {
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
 import CreatableSelect from 'react-select/creatable';
 import styles from '../Ingredients/IngredientTab.module.scss';
+import AddIngredientPopup from './AddIngredientPopup';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -68,6 +69,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [isIngredientsVisible, setIsIngredientsVisible] = useState(false);
     const [isQuantityVisible, setIsQuantityVisible] = useState(false);
     const [unitname, setUnitName] = useState([]);
+    const [showAddPopup, setShowAddPopup] = useState(false);
 
     const toggleIngredientsVisibility = () => {
       setIsIngredientsVisible(!isIngredientsVisible);
@@ -116,7 +118,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setPage(NewValue);
     };
 
-    const ITEMS_PER_PAGE = 10; // Define items per page
+    const ITEMS_PER_PAGE = 25; // Define items per page
 
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
@@ -178,6 +180,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           const fuse = new Fuse(filteredList, {
             keys: ['name', 'supplier_uuid'],
           });
+
           filteredList = fuse.search(props.searchValue).map((r) => r.item);
         }
 
@@ -211,11 +214,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     // Sorting logic
     const sortIngredients = (ingredients: Ingredient[]) => {
-      if (!sortColumn) return ingredients;
+      const defaultSortColumn = 'name'; // default to ingredient_name column
+      const columnToSortBy = sortColumn || defaultSortColumn;
 
       const sorted = [...ingredients].sort((a, b) => {
-        let aValue = a[sortColumn as keyof Ingredient];
-        let bValue = b[sortColumn as keyof Ingredient];
+        let aValue = a[columnToSortBy as keyof Ingredient];
+        let bValue = b[columnToSortBy as keyof Ingredient];
 
         if (typeof aValue === 'string' && typeof bValue === 'string') {
           return aValue.localeCompare(bValue);
@@ -226,7 +230,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         return 0;
       });
 
-      return sortDirection === 'asc' ? sorted : sorted.reverse();
+      return sortDirection === 'desc' ? sorted.reverse() : sorted;
     };
 
     const handleSort = (columnKey: keyof Ingredient) => {
@@ -369,7 +373,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       value={t('inventory.addIngredientBtn')}
                       type="primary"
                       className="add"
-                      onClick={!addingRow ? handleAddNewIngredient : undefined}
+                      onClick={() => setShowAddPopup(true)} // Open popup when clicked
                     />
                   </>
                 ) : (
@@ -408,6 +412,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         );
 
         setIngredientsList(ingredients);
+
         setFilteredIngredients(ingredients);
       } catch (err) {
         if (err instanceof Error) {
@@ -607,14 +612,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       }));
     };
 
-    // Handle inputs change
-    const handleValueChange = (field: keyof Ingredient, value: string) => {
-      setEditedValues((prevValues) => ({
-        ...prevValues!,
-        [field]: value,
-      }));
-    };
-
     // Handle for Popups
     const togglePopupDelete = (msg: string[] | undefined) => {
       setPopupDelete(msg);
@@ -655,7 +652,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const handleConfirmPopupPreviewEdit = () => {
       props.setLoadingState(true);
-      console.log('supplier_details', editedValues);
+
       if (!editedValues) return;
       const {
         id,
@@ -716,30 +713,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const togglePopupError = (msg: string) => {
       setPopupError(msg);
-    };
-
-    // Handle for actions above the tab component
-    const handleAddNewIngredient = () => {
-      const newIngredient: Ingredient = {
-        id: '', // New ingredient will have a temporary empty id
-        name: '',
-        tag_details: null,
-        tagUUID: null,
-        parLevel: 0,
-        actualStock: 0,
-        unit: null,
-        supplier_details: [
-          { supplier_id: null, supplier_name: null, supplier_cost: 0 },
-        ],
-        unitCost: 0,
-        actions: undefined,
-      };
-
-      setIngredientsList((list) => [newIngredient, ...list]);
-      setIngredientTags('');
-      setAddingRow(true);
-      setEditingRowId(newIngredient.id);
-      setEditedValues(newIngredient);
     };
 
     const columnHeaderStyle = {
@@ -1546,12 +1519,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                           minWidth: '200px',
                           boxShadow: state.isFocused
                             ? 'none'
-                            : provided.boxShadow, // Remove the box shadow on focus
+                            : provided.boxShadow,
                           borderColor: state.isFocused
                             ? '#ced4da'
-                            : provided.borderColor, // Keep the border color consistent
+                            : provided.borderColor,
                           '&:hover': {
-                            borderColor: 'none', // Prevent border color change on hover
+                            borderColor: 'none',
                           },
                         }),
                         menuList: (provided) => ({
@@ -1900,26 +1873,32 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                             }}
                             isCreatable
                           />
+                          <div className={styles.IconContainer}>
+                            <LabeledInput
+                              label={t('ingredient:conversion_factor')}
+                              placeholder={t('ingredient:conversion_factor')}
+                              type="number"
+                              lighter
+                              value={detail.conversion_factor}
+                              onChange={(event) => {
+                                const updatedDetails = [
+                                  ...editedValues.supplier_details,
+                                ];
+                                updatedDetails[index].conversion_factor =
+                                  event.target.value;
 
-                          <LabeledInput
-                            label={t('ingredient:conversion_factor')}
-                            placeholder={t('ingredient:conversion_factor')}
-                            type="number"
-                            lighter
-                            value={detail.conversion_factor}
-                            onChange={(event) => {
-                              const updatedDetails = [
-                                ...editedValues.supplier_details,
-                              ];
-                              updatedDetails[index].conversion_factor =
-                                event.target.value;
-
-                              setEditedValues({
-                                ...editedValues,
-                                supplier_details: updatedDetails,
-                              });
-                            }}
-                          />
+                                setEditedValues({
+                                  ...editedValues,
+                                  supplier_details: updatedDetails,
+                                });
+                              }}
+                            />
+                            <IconButton
+                              icon={<i className="fa-solid fa-circle-info"></i>}
+                              tooltipMsg={`from  to ${editedValues.unit_name}`}
+                              className={styles.info}
+                            />
+                          </div>
 
                           <span className={styles.deleteButton}>
                             <i
@@ -1970,13 +1949,15 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                             <span>{detail.supplier_unit_name}</span>
                             <span className={styles.flexContainer}>
                               {detail.conversion_factor}
-                              <IconButton
-                                icon={
-                                  <i className="fa-solid fa-circle-info"></i>
-                                }
-                                tooltipMsg={`from ${detail.supplier_unit_name} to ${editedValues.unit_name}`}
-                                className={styles.forecastIiconBtn}
-                              />
+                              <div className={styles.forecastIiconBtn}>
+                                <IconButton
+                                  icon={
+                                    <i className="fa-solid fa-circle-info"></i>
+                                  }
+                                  tooltipMsg={`from ${detail.supplier_unit_name} to ${editedValues.unit_name}`}
+                                  className={styles.forecastIiconBtn}
+                                />
+                              </div>
                             </span>
                           </div>
                         </>
@@ -2053,11 +2034,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                       placeholder={t('ingredient:recipe_name')}
                                       options={Object.entries(recipes).map(
                                         ([recipe_uuid, recipeData]) => ({
-                                          label: recipeData.name, // Recipe name as label
-                                          value: recipeData.uuid, // Recipe UUID as value
+                                          label: recipeData.name,
+                                          value: recipeData.uuid,
                                         })
                                       )}
-                                      // Set the selected value based on recipe.recipe_uuid
                                       value={{
                                         label:
                                           recipes[recipe.recipe_uuid]?.name ||
@@ -2069,35 +2049,29 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                           ...editedValues.recipes,
                                         ];
 
-                                        // Get the previous recipe UUID before updating
                                         const previousRecipeUUID =
                                           updatedRecipes[index]?.recipe_uuid;
 
-                                        // Initialize the deleted recipe data if not already present
                                         let updatedDeletedRecipeData = [
                                           ...(editedValues.deleted_recipe_ingredient_data ||
                                             []),
                                         ];
 
-                                        // Check if the newly selected recipe UUID is the same as a previously deleted one
                                         if (
                                           updatedDeletedRecipeData.includes(
                                             selectedOption?.value
                                           )
                                         ) {
-                                          // If the selected UUID exists in the delete list, remove it
                                           updatedDeletedRecipeData =
                                             updatedDeletedRecipeData.filter(
                                               (uuid) =>
                                                 uuid !== selectedOption?.value
                                             );
                                         } else {
-                                          // Check if the new selected recipe UUID is different from the previous one
                                           if (
                                             selectedOption?.value !==
                                             previousRecipeUUID
                                           ) {
-                                            // If the previous UUID is not already in the deleted list, add it
                                             if (
                                               previousRecipeUUID &&
                                               !updatedDeletedRecipeData.includes(
@@ -2111,33 +2085,21 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                           }
                                         }
 
-                                        // Update the selected recipe's uuid and name in the editedValues
                                         updatedRecipes[index] = {
                                           ...updatedRecipes[index],
-                                          recipe_uuid: selectedOption?.value, // New recipe UUID
-                                          recipe_name: selectedOption?.label, // New recipe name
+                                          recipe_uuid: selectedOption?.value,
+                                          recipe_name: selectedOption?.label,
                                         };
 
-                                        // Update the editedValues with the new recipes and updated deleted recipe data
                                         setEditedValues({
                                           ...editedValues,
                                           recipes: updatedRecipes,
                                           deleted_recipe_ingredient_data:
-                                            updatedDeletedRecipeData, // Update the deleted recipe list
+                                            updatedDeletedRecipeData,
                                         });
 
-                                        // Optionally send the selected recipe_uuid here if needed:
                                         const selectedRecipeUUID =
                                           selectedOption?.value;
-                                        console.log(
-                                          'Selected Recipe UUID:',
-                                          selectedRecipeUUID
-                                        );
-                                        console.log(
-                                          'Updated Deleted Recipe UUIDs:',
-                                          updatedDeletedRecipeData
-                                        );
-                                        // Perform any necessary action with the selectedRecipeUUID (e.g., API call)
                                       }}
                                     />
                                   ) : (
@@ -2243,7 +2205,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                         }),
                                       }}
                                       value={
-                                        // Check if the supplier's unit_uuid exists; if it's blank, show unit_name
                                         recipe.unit_uuid
                                           ? {
                                               label: recipe.unit_name,
@@ -2293,45 +2254,57 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                 {/* Conversion Factor */}
                                 <div className={styles.inputContainer}>
                                   {isEditMode ? (
-                                    <LabeledInput
-                                      label={t('ingredient:conversion_factor')}
-                                      placeholder={t(
-                                        'ingredient:conversion_factor'
-                                      )}
-                                      type="number"
-                                      lighter
-                                      value={recipe.conversion_factor}
-                                      onChange={(event) => {
-                                        const updatedRecipes = [
-                                          ...editedValues.recipes,
-                                        ];
-                                        updatedRecipes[
-                                          index
-                                        ].conversion_factor =
-                                          event.target.value;
-                                        setEditedValues({
-                                          ...editedValues,
-                                          recipes: updatedRecipes,
-                                        });
-                                      }}
-                                      sx={{
-                                        '& .MuiFilledInput-root': {
-                                          border: '1px solid grey',
-                                          borderRadius: 1,
-                                          background: 'lightgrey',
-                                          height: '40px',
-                                          fontSize: '16px',
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          borderColor: 'grey.300',
-                                          borderBottom: 'none',
-                                        },
-                                        '& .MuiFilledInput-root.Mui-disabled': {
-                                          backgroundColor: 'lightgrey',
-                                        },
-                                      }}
-                                      className={styles.inputField}
-                                    />
+                                    <>
+                                      <LabeledInput
+                                        label={t(
+                                          'ingredient:conversion_factor'
+                                        )}
+                                        placeholder={t(
+                                          'ingredient:conversion_factor'
+                                        )}
+                                        type="number"
+                                        lighter
+                                        value={recipe.conversion_factor}
+                                        onChange={(event) => {
+                                          const updatedRecipes = [
+                                            ...editedValues.recipes,
+                                          ];
+                                          updatedRecipes[
+                                            index
+                                          ].conversion_factor =
+                                            event.target.value;
+                                          setEditedValues({
+                                            ...editedValues,
+                                            recipes: updatedRecipes,
+                                          });
+                                        }}
+                                        sx={{
+                                          '& .MuiFilledInput-root': {
+                                            border: '1px solid grey',
+                                            borderRadius: 1,
+                                            background: 'lightgrey',
+                                            height: '40px',
+                                            fontSize: '16px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            borderColor: 'grey.300',
+                                            borderBottom: 'none',
+                                          },
+                                          '& .MuiFilledInput-root.Mui-disabled':
+                                            {
+                                              backgroundColor: 'lightgrey',
+                                            },
+                                        }}
+                                        className={styles.inputField}
+                                      />
+                                      <IconButton
+                                        icon={
+                                          <i className="fa-solid fa-circle-info"></i>
+                                        }
+                                        tooltipMsg={`from ${recipe.unit_name} to ${editedValues.unit_name}`}
+                                        className={styles.forecastIiconBtn}
+                                      />
+                                    </>
                                   ) : (
                                     <span className={styles.value}>
                                       {recipe.conversion_factor}
@@ -2423,22 +2396,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                       {stock.event_type}
                                     </span>
                                   ) : (
-                                    // <Input
-                                    //   type="text"
-                                    //   label={t('recipe_name')}
-                                    //   value={recipe.recipe_name}
-                                    //   onChange={(e) => {
-                                    //     const updatedRecipes = [
-                                    //       ...editedValues.recipes,
-                                    //     ];
-                                    //     updatedRecipes[index].recipe_name = e;
-                                    //     setEditedValues({
-                                    //       ...editedValues,
-                                    //       recipes: updatedRecipes,
-                                    //     });
-                                    //   }}
-                                    //   className={styles.inputField}
-                                    // />
                                     <span className={styles.value}>
                                       {stock.event_type}
                                     </span>
@@ -2452,22 +2409,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                       {stock.quantity}
                                     </span>
                                   ) : (
-                                    // <Input
-                                    //   type="number"
-                                    //   label={t('quantity')}
-                                    //   value={recipe.quantity}
-                                    //   onChange={(e) => {
-                                    //     const updatedRecipes = [
-                                    //       ...editedValues.recipes,
-                                    //     ];
-                                    //     updatedRecipes[index].quantity = e;
-                                    //     setEditedValues({
-                                    //       ...editedValues,
-                                    //       recipes: updatedRecipes,
-                                    //     });
-                                    //   }}
-                                    //   className={styles.inputField}
-                                    // />
                                     <span className={styles.value}>
                                       {stock.quantity}
                                     </span>
@@ -2477,22 +2418,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                 {/* Conversion Factor */}
                                 <div className={styles.inputContainer}>
                                   {isEditMode ? (
-                                    // <Input
-                                    //   type="number"
-                                    //   label={t('conversion_factor')}
-                                    //   value={recipe.conversion_factor}
-                                    //   onChange={(e) => {
-                                    //     const updatedRecipes = [
-                                    //       ...editedValues.recipes,
-                                    //     ];
-                                    //     updatedRecipes[index].conversion_factor = e;
-                                    //     setEditedValues({
-                                    //       ...editedValues,
-                                    //       recipes: updatedRecipes,
-                                    //     });
-                                    //   }}
-                                    //   className={styles.inputField}
-                                    // />
                                     <span className={styles.value}>
                                       {stock.unit_name}
                                     </span>
@@ -2502,38 +2427,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                     </span>
                                   )}
                                 </div>
-
-                                {/* Unit Dropdown
-                                <div className={styles.inputContainer}>
-                                  <div>
-                                    <span>Unit:</span>
-                                  </div>
-                                  {isEditMode ? (
-                                    <span className={styles.value}>
-                                      {recipe.unit_name ||
-                                        t('No Unit Selected')}
-                                    </span>
-                                  ) : (
-                                    // <Dropdown
-                                    //   placeholder={t('inventory.selectUnit')}
-                                    //   options={units} // Assuming 'units' is an array of options with { value: 'unit_uuid', label: 'unit_name' }
-                                    //   selectedOption={recipe.unit_uuid}
-                                    //   onOptionChange={(value) => {
-                                    //     const updatedRecipes = [
-                                    //       ...editedValues.recipes,
-                                    //     ];
-                                    //     updatedRecipes[index].unit_uuid = value;
-                                    //     setEditedValues({
-                                    //       ...editedValues,
-                                    //       recipes: updatedRecipes,
-                                    //     });
-                                    //   }}
-                                    // />
-                                    <span className={styles.value}>
-                                      {recipe.unit_name}
-                                    </span>
-                                  )}
-                                </div> */}
                               </div>
                             </div>
                           ))}
@@ -2648,6 +2541,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           subMsg={popupError}
           isOpen={popupError === '' ? false : true}
           onRequestClose={() => togglePopupError('')}
+        />
+
+        <AddIngredientPopup
+          isVisible={showAddPopup}
+          reloadInventoryData={reloadInventoryData}
+          onRequestClose={() => setShowAddPopup(false)} // Close popup when requested
         />
       </>
     );
