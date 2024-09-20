@@ -1222,12 +1222,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                     onClick={() => setIsEditMode(true)}
                     className="iconButton"
                   />
-                  {/* <IconButton
-                    icon={<i className="fa-solid fa-trash"></i>}
-                    tooltipMsg={t('delete')}
-                    onClick={handleDeleteClick}
-                    className="iconButton"
-                  /> */}
                 </>
               )}
             </div>
@@ -1895,7 +1889,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                             />
                             <IconButton
                               icon={<i className="fa-solid fa-circle-info"></i>}
-                              tooltipMsg={`from  to ${editedValues.unit_name}`}
+                              tooltipMsg={`from ${detail.supplier_unit_name} to ${editedValues.unit_name}`}
                               className={styles.info}
                             />
                           </div>
