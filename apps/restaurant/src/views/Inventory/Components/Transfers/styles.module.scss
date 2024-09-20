@@ -1,33 +1,41 @@
 .inputContainer {
   margin-bottom: 20px;
-  width: 100%; /* Full width for flexibility */
-  min-width: 500px;
+  width: 583px;
 }
 
 .row {
   display: grid;
-  grid-template-columns: 90% 10%; /* 90% for dropdowns/inputs, 10% for delete button */
-  align-items: center; /* Vertically align contents */
+  grid-template-columns: 90% 10%;
+  align-items: center;
   gap: 10px;
   margin-bottom: 10px;
 }
 
 .restaurantFields {
-  display: flex;
-  justify-content: space-between; /* Space out From and To dropdowns */
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+  align-items: center;
+  min-width: 100%;
+  .controller {
+    width: 100%;
+  }
 }
 
 .ingredientFields {
-  display: flex;
-  justify-content: space-between; /* Space out From and To dropdowns */
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+  .controller {
+    width: 100%;
+  }
 }
 
 .quantityUnitGroup {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-items: center;
   align-items: center;
-  gap: 0.5rem;
 }
 
 .quantityUnitGroup input {
@@ -49,7 +57,7 @@
 .addIngredientButton {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 10px;
   cursor: pointer;
   color: var(--primaryColor);

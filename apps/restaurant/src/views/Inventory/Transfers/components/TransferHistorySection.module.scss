@@ -30,26 +30,12 @@
     margin-bottom: 10px;
   }
 
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-
-    .ingredient {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-top: 1px solid #f0f0f0;
-
-      &:first-child {
-        border-top: none;
-      }
-
-      span {
-        font-size: 14px;
-        color: #555555;
-      }
-    }
+  .ingredient {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 8px;
   }
 }
 

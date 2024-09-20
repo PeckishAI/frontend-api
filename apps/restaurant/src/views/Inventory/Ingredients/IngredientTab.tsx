@@ -116,7 +116,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setPage(NewValue);
     };
 
-    const ITEMS_PER_PAGE = 10; // Define items per page
+    const ITEMS_PER_PAGE = 25; // Define items per page
 
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
@@ -135,6 +135,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
 
+      console.log('SEE RESTAURANT SUPPLIERS');
       supplierService
         .getRestaurantSuppliers(selectedRestaurantUUID)
         .then((res) => {
@@ -178,7 +179,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           const fuse = new Fuse(filteredList, {
             keys: ['name', 'supplier_uuid'],
           });
+          console.log('USE EFFECT 1');
           filteredList = fuse.search(props.searchValue).map((r) => r.item);
+          console.log('could filter and map here');
         }
 
         if (filters.selectedSupplier && filters.selectedSupplier.length > 0) {
@@ -201,6 +204,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 selectedTagUuids.includes(tagUuid)
               )
           );
+          console.log('Tags checked!');
         }
 
         setFilteredIngredients(filteredList);
@@ -211,11 +215,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     // Sorting logic
     const sortIngredients = (ingredients: Ingredient[]) => {
-      if (!sortColumn) return ingredients;
+      const defaultSortColumn = 'name'; // default to ingredient_name column
+      const columnToSortBy = sortColumn || defaultSortColumn;
 
       const sorted = [...ingredients].sort((a, b) => {
-        let aValue = a[sortColumn as keyof Ingredient];
-        let bValue = b[sortColumn as keyof Ingredient];
+        let aValue = a[columnToSortBy as keyof Ingredient];
+        let bValue = b[columnToSortBy as keyof Ingredient];
 
         if (typeof aValue === 'string' && typeof bValue === 'string') {
           return aValue.localeCompare(bValue);
@@ -226,7 +231,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         return 0;
       });
 
-      return sortDirection === 'asc' ? sorted : sorted.reverse();
+      return sortDirection === 'desc' ? sorted.reverse() : sorted;
     };
 
     const handleSort = (columnKey: keyof Ingredient) => {
@@ -338,6 +343,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       forwardedRef,
       () => {
         props.forceOptionsUpdate();
+        console.log('SEE HERE IMPERATIVE HANDLE');
+        console.log(ingredientsList);
 
         return {
           renderOptions: () => {
@@ -408,6 +415,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         );
 
         setIngredientsList(ingredients);
+        console.log(ingredients);
+        console.log(ingredientsList);
         setFilteredIngredients(ingredients);
       } catch (err) {
         if (err instanceof Error) {
