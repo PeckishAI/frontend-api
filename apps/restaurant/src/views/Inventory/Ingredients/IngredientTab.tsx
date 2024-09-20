@@ -1232,6 +1232,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           <SidePanel
             isOpen={isSidePanelOpen}
             onRequestClose={handleCancelEdit}
+            width={'900px'}
             className={styles.sidePanel}>
             <div className={styles.optionsButtons}>
               {isEditMode ? (
@@ -1554,12 +1555,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                           minWidth: '200px',
                           boxShadow: state.isFocused
                             ? 'none'
-                            : provided.boxShadow, // Remove the box shadow on focus
+                            : provided.boxShadow,
                           borderColor: state.isFocused
                             ? '#ced4da'
-                            : provided.borderColor, // Keep the border color consistent
+                            : provided.borderColor,
                           '&:hover': {
-                            borderColor: 'none', // Prevent border color change on hover
+                            borderColor: 'none',
                           },
                         }),
                         menuList: (provided) => ({
