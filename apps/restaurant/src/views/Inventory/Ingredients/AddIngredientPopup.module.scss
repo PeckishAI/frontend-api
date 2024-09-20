@@ -103,6 +103,14 @@
   margin-top: 5px;
 }
 
+.IconContainer {
+  position: relative;
+}
+.info {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
 .unitInput {
   align-self: flex-start;
 }

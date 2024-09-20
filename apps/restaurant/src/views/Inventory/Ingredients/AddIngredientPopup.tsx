@@ -1,4 +1,11 @@
-import { Button, Checkbox, LabeledInput, Popup, Select } from 'shared-ui';
+import {
+  Button,
+  Checkbox,
+  IconButton,
+  LabeledInput,
+  Popup,
+  Select,
+} from 'shared-ui';
 import styles from './AddIngredientPopup.module.scss';
 import { useEffect, useState } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
@@ -331,7 +338,7 @@ const AddIngredientPopup = (props: Props) => {
             />
 
             <CreatableSelect
-              placeholder="Select..."
+              placeholder="Select Tags"
               options={tagList.map((tag) => ({
                 label: tag.name || 'Unnamed Tag', // Fallback for missing tag_name
                 value: tag.uuid || 'no-uuid', // Fallback for missing tag_uuid
@@ -508,18 +515,29 @@ const AddIngredientPopup = (props: Props) => {
               />
 
               <div className={styles.flexContainer}>
-                <LabeledInput
-                  label={t('ingredient:conversion_factor')}
-                  placeholder={t('ingredient:conversion_factor')}
-                  type="text"
-                  minWidth="100px"
-                  error={
-                    errors?.supplier_details?.[index]?.conversion_factor
-                      ?.message
-                  }
-                  lighter
-                  {...register(`supplier_details.${index}.conversion_factor`)}
-                />
+                <div>
+                  <div className={styles.IconContainer}>
+                    <LabeledInput
+                      label={t('ingredient:conversion_factor')}
+                      placeholder={t('ingredient:conversion_factor')}
+                      type="text"
+                      minWidth="100px"
+                      error={
+                        errors?.supplier_details?.[index]?.conversion_factor
+                          ?.message
+                      }
+                      lighter
+                      {...register(
+                        `supplier_details.${index}.conversion_factor`
+                      )}
+                    />
+                    <IconButton
+                      icon={<i className="fa-solid fa-circle-info"></i>}
+                      tooltipMsg={`from`}
+                      className={styles.info}
+                    />
+                  </div>
+                </div>
 
                 {/* Add remove functionality */}
                 <span className={styles.deleteButton}>
