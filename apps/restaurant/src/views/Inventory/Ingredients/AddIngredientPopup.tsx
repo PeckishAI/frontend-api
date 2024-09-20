@@ -338,7 +338,7 @@ const AddIngredientPopup = (props: Props) => {
             />
 
             <CreatableSelect
-              placeholder="Select..."
+              placeholder="Select Tags"
               options={tagList.map((tag) => ({
                 label: tag.name || 'Unnamed Tag', // Fallback for missing tag_name
                 value: tag.uuid || 'no-uuid', // Fallback for missing tag_uuid
