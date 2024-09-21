@@ -1773,7 +1773,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                               }),
                             }}
                             value={
-                              // Check if the supplier's unit_uuid exists; if it's blank, show unit_name
                               detail.supplier_unit
                                 ? {
                                     label: detail.supplier_unit_name,
@@ -1821,11 +1820,26 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                               lighter
                               value={detail.conversion_factor}
                               onChange={(event) => {
-                                const updatedDetails = [
-                                  ...editedValues.supplier_details,
-                                ];
-                                updatedDetails[index].conversion_factor =
+                                const updatedConversionFactor =
                                   event.target.value;
+
+                                const updatedDetails =
+                                  editedValues.supplier_details.map(
+                                    (supplierDetail) => {
+                                      // If supplier_unit matches, update the conversion factor for all suppliers with the same unit
+                                      if (
+                                        supplierDetail.supplier_unit ===
+                                        detail.supplier_unit
+                                      ) {
+                                        return {
+                                          ...supplierDetail,
+                                          conversion_factor:
+                                            updatedConversionFactor,
+                                        };
+                                      }
+                                      return supplierDetail;
+                                    }
+                                  );
 
                                 setEditedValues({
                                   ...editedValues,
