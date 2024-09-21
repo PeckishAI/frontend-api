@@ -1,7 +1,7 @@
 {
   "ingredientName": "Nom ingredient",
   "tag": "Tag",
-  "theoreticalStock": "COS théorique",
+  "theoreticalStock": "Cos théorique",
   "safetyStock": "Stock de sécurité",
   "parLevel": "Stock de sécurité",
   "actualStock": "Stock actuel",
@@ -18,8 +18,12 @@
   "closingQty":"Qté de clôture",
   "actualCos":"Cos réel",
   "variance":"Variance",
+  "variance_value":"Valeur de l'écart",
   "supplierCost":"Coût unitaire",
   "supplierName":"Nom du fournisseur",
+  "conversion_factor":"Facteur de conversion",
+  "recipe_name":"Nom de la recette",
+
 
   "placeholder.ingredientName": "Ex : Salade",
   "placeholder.ingredientQuantity": "Ex : 180",

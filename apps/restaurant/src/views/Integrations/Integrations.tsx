@@ -48,7 +48,7 @@ const Integrations = () => {
   const [selectedPOS, setSelectedPOS] = useState<POS | undefined>();
   const [searchTerm, setSearchTerm] = useState('');
   const [integrated, setIntegrated] = useState<Integration[]>([]);
-  const [xeroIntegration, setXeroIntegration] = useState(false);
+  const [integratedProviders, setIntegratedProviders] = useState<string[]>([]);
 
   const { loadRestaurants, restaurants, restaurantUUID } = useRestaurantStore(
     (state) => ({
@@ -66,10 +66,12 @@ const Integrations = () => {
     );
 
     if (selectedRestaurant) {
-      const hasXero = selectedRestaurant.provider.some(
-        (provider) => provider.xero === true
-      );
-      setXeroIntegration(hasXero);
+      const providerNames = selectedRestaurant?.provider
+        .map((provider) =>
+          Object.keys(provider).filter((key) => provider[key] === true)
+        )
+        .reduce((acc, curr) => acc.concat(curr), []);
+      setIntegratedProviders(providerNames);
     }
   }, [restaurantUUID, restaurants]);
 
@@ -79,7 +81,6 @@ const Integrations = () => {
       try {
         setLoadingdata(true);
         const list = await onboardingService.getPOSList();
-
         setPOSList(list.data);
       } catch (error) {
         console.error('Error fetching pos list:', error);
@@ -184,13 +185,17 @@ const Integrations = () => {
                     name={pos.display_name}
                     image={pos.logo_uri}
                     button_display={
-                      pos.display_name === 'Xero' && xeroIntegration
+                      integratedProviders.includes(pos.name.toLowerCase())
                         ? 'Connected'
                         : pos.button_display
                     }
-                    disabled={pos.display_name === 'Xero' && xeroIntegration}
+                    disabled={integratedProviders.includes(
+                      pos.name.toLowerCase()
+                    )}
                     onClick={() => {
-                      if (!(pos.display_name === 'Xero' && xeroIntegration)) {
+                      if (
+                        !integratedProviders.includes(pos.name.toLowerCase())
+                      ) {
                         setLoginModalVisible(true);
                         setSelectedPOS(pos);
                       }
