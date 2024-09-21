@@ -24,7 +24,7 @@ export type Recipe = {
   ingredients: {
     uuid: string;
     name: string;
-    conversion_factor: string;
+    conversion_factor: number;
     unit_name: string;
     unit_uuid: string;
     quantity: number;

@@ -48,7 +48,7 @@ const AddIngredientSchema = z.object({
           .string()
           .min(1, { message: 'Supplier Cost is required' }),
         conversion_factor: z
-          .string()
+          .number()
           .min(1, { message: 'conversion Factor is required' }),
         supplier_unit_uuid: z.string().optional(), // Allow uuid to be optional for new suppliers
         supplier_unit_name: z

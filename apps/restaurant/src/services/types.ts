@@ -45,7 +45,7 @@ export type Ingredient = {
   stock_history?: Stock[];
   unit_name?: string;
   unit_uuid?: string;
-  conversion_factor: string;
+  conversion_factor: number;
 };
 
 export type Tag = {
