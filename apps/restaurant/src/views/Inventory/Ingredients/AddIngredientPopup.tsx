@@ -213,8 +213,8 @@ const AddIngredientPopup = (props: Props) => {
         console.log('err', err);
       })
       .then((res) => {
-        console.log('res', res);
         props.onRequestClose();
+        reloadTagList();
         props.reloadInventoryData();
         reset();
       });
