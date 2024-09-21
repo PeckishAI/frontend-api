@@ -1,0 +1,91 @@
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  backdrop-filter: blur(3px);
+  &.visible {
+    display: block;
+  }
+}
+
+/* Modal Content */
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto; /* Enables vertical scrolling */
+
+  gap: 20px;
+  position: relative;
+
+  .text-error {
+    height: 0;
+    transform: translateY(-10px);
+  }
+
+  .LabeledInput {
+    width: 100%;
+  }
+
+  .input-dropdown-pair {
+    .span {
+      width: 100px;
+    }
+    .select {
+      width: 150px;
+    }
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .button-container {
+    display: flex;
+    gap: 30px;
+  }
+}
+.retrieve-data-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  .loading-info {
+    margin-bottom: 10px;
+    font-weight: var(--light);
+    font-size: 0.9rem;
+  }
+  #bold {
+    font-weight: var(--semiBold);
+    font-size: 1.1rem;
+  }
+  .button {
+    margin-top: 30px;
+    min-width: 60px;
+  }
+  .spinner {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-left-color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-right: 8px; /* Space between spinner and button text */
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}

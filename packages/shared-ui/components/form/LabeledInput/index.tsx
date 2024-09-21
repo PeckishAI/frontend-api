@@ -32,7 +32,7 @@ export const LabeledInput = React.forwardRef<HTMLInputElement, Props>(
           {icon && <div className="icon">{icon}</div>}
 
           <div className="content-wrapper">
-            <div className="input-wrapper">
+            <div className="input-wrapper" style={{ minWidth: props.minWidth }}>
               <input
                 ref={ref}
                 {...props}

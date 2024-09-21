@@ -12,8 +12,16 @@ import {
   Input,
   DialogBox,
   Checkbox,
+  SidePanel,
+  LabeledInput,
+  Select,
 } from 'shared-ui';
-import { Ingredient, Tag, inventoryService } from '../../../services';
+import {
+  Ingredient,
+  Tag,
+  inventoryService,
+  recipesService,
+} from '../../../services';
 import {
   useRestaurantCurrency,
   useRestaurantStore,
@@ -31,6 +39,8 @@ import Filters, {
 } from '../Components/Filters/Filters';
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
 import CreatableSelect from 'react-select/creatable';
+import styles from '../Ingredients/IngredientTab.module.scss';
+import AddIngredientPopup from './AddIngredientPopup';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -53,9 +63,24 @@ type Props = {
 
 export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
   (props, forwardedRef) => {
+    //New  design state
+    const [isSidePanelOpen, setIsSidePanelOpen] = useState(false); // Side panel visibility state
+    const [isEditMode, setIsEditMode] = useState(false); // Edit mode toggle state
+    const [isIngredientsVisible, setIsIngredientsVisible] = useState(false);
+    const [isQuantityVisible, setIsQuantityVisible] = useState(false);
+    const [unitname, setUnitName] = useState([]);
+    const [showAddPopup, setShowAddPopup] = useState(false);
+
+    const toggleIngredientsVisibility = () => {
+      setIsIngredientsVisible(!isIngredientsVisible);
+    };
+
+    const toggleQuantityVisibility = () => {
+      setIsQuantityVisible(!isQuantityVisible);
+    };
+
     const { t } = useTranslation(['common', 'ingredient']);
     const { currencyISO } = useRestaurantCurrency();
-
     const [ingredientsList, setIngredientsList] = useState<Ingredient[]>([]);
     const [filteredIngredients, setFilteredIngredients] = useState<
       Ingredient[]
@@ -63,7 +88,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [ingredientTags, setIngredientTags] = useState<{
       [key: string]: Tag[];
     }>({});
-    const [inputValue, setInputValue] = useState<string>('');
+    const [inputValue, setInputValue] = useState<any>('');
 
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
     const [tagList, setTagList] = useState<Tag[]>([]);
@@ -86,6 +111,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [suppliers, setSuppliers] = useState<DropdownOptionsDefinitionType[]>(
       []
     );
+    const [recipes, setRecipes] = useState([]);
+    const [loadingData, setLoadingData] = useState(false);
     const [page, setPage] = useState(1);
     const handleChange = (NewValue) => {
       setPage(NewValue);
@@ -107,12 +134,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       (state) => state.selectedRestaurantUUID
     );
 
-    console.log('SEE HERE');
-
     const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
 
-      console.log('SEE RESTAURANT SUPPLIERS');
       supplierService
         .getRestaurantSuppliers(selectedRestaurantUUID)
         .then((res) => {
@@ -128,6 +152,26 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         });
     }, [selectedRestaurantUUID]);
 
+    function reloadRecipes() {
+      if (!selectedRestaurantUUID) return;
+      setLoadingData(true);
+      recipesService
+        .getRecipes(selectedRestaurantUUID)
+        .then((res) => {
+          setRecipes(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setLoadingData(false);
+        });
+    }
+
+    useEffect(() => {
+      reloadRecipes();
+    }, [selectedRestaurantUUID]);
+
     useEffect(() => {
       const applyFilters = () => {
         let filteredList = [...ingredientsList];
@@ -136,17 +180,14 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           const fuse = new Fuse(filteredList, {
             keys: ['name', 'supplier_uuid'],
           });
-          console.log('USE EFFECT 1');
+
           filteredList = fuse.search(props.searchValue).map((r) => r.item);
-          console.log('could filter and map here');
         }
 
         if (filters.selectedSupplier && filters.selectedSupplier.length > 0) {
-          console.log('USE EFFECT 2');
           const selectedSupplierUuids = filters.selectedSupplier.map(
             (supplier) => supplier.uuid
           );
-          console.log('could filter here and map supplier');
           filteredList = filteredList.filter(
             (ingredient) =>
               ingredient.supplier_details?.some((supplier) =>
@@ -156,7 +197,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         }
 
         if (filters.selectedTag && filters.selectedTag.length > 0) {
-          console.log('USE EFFECT 3 - TAGS');
           const selectedTagUuids = filters.selectedTag.map((tag) => tag.uuid);
           filteredList = filteredList.filter(
             (ingredient) =>
@@ -164,7 +204,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 selectedTagUuids.includes(tagUuid)
               )
           );
-          console.log('Tags checked!');
         }
 
         setFilteredIngredients(filteredList);
@@ -223,11 +262,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const hoverArrowStyle = {
       ...arrowStyle,
-      color: '#5E72E4',
+      color: '#007BFF', // Blue on hover
     };
 
     const activeArrowStyle = {
-      color: '#5E72E4',
+      color: '#007BFF', // Dark blue when sorted
       fontSize: '22px',
       marginLeft: '5px',
       marginBottom: '0px',
@@ -303,8 +342,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       forwardedRef,
       () => {
         props.forceOptionsUpdate();
-        console.log('SEE HERE IMPERATIVE HANDLE');
-        console.log(ingredientsList);
 
         return {
           renderOptions: () => {
@@ -336,7 +373,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       value={t('inventory.addIngredientBtn')}
                       type="primary"
                       className="add"
-                      onClick={!addingRow ? handleAddNewIngredient : undefined}
+                      onClick={() => setShowAddPopup(true)} // Open popup when clicked
                     />
                   </>
                 ) : (
@@ -375,8 +412,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         );
 
         setIngredientsList(ingredients);
-        console.log(ingredients);
-        console.log(ingredientsList);
+
         setFilteredIngredients(ingredients);
       } catch (err) {
         if (err instanceof Error) {
@@ -426,10 +462,32 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setSelectedIngredients([]);
     };
 
+    function reloadUnits() {
+      if (!selectedRestaurantUUID) return;
+
+      inventoryService
+        .getUnits(selectedRestaurantUUID)
+        .then((res) => {
+          setUnitName(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          // setLoadingData(false);
+        });
+    }
+
+    useEffect(() => {
+      reloadUnits();
+    }, [selectedRestaurantUUID]);
+
     // Handle for actions in table
-    const handleEditClick = (row: Ingredient) => {
-      setEditingRowId(row.id);
-      setEditedValues({ ...row });
+    const handleEditClick = (row) => {
+      setEditingRowId(row.id); // Set the row being edited
+      setEditedValues({ ...row }); // Clone the row's data into state
+      setIsSidePanelOpen(true); // Open the side panel
+      setIsEditMode(false); // Start in view mode
     };
 
     const handleSaveEdit = () => {
@@ -462,16 +520,22 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       }
     };
 
+    // const handleCancelEdit = () => {
+    //   setEditingRowId(null);
+    //   setEditedValues(null);
+    //   if (addingRow) {
+    //     const updatedList = ingredientsList.filter(
+    //       (ingredient) => ingredient.id !== ''
+    //     );
+    //     setIngredientsList(updatedList);
+    //     setAddingRow(false);
+    //   }
+    // };
+
     const handleCancelEdit = () => {
-      setEditingRowId(null);
-      setEditedValues(null);
-      if (addingRow) {
-        const updatedList = ingredientsList.filter(
-          (ingredient) => ingredient.id !== ''
-        );
-        setIngredientsList(updatedList);
-        setAddingRow(false);
-      }
+      setEditedValues(null); // Reset changes
+      setEditingRowId(null); // Clear editing state
+      setIsSidePanelOpen(false); // Close the side panel
     };
 
     const handleDeleteClick = (row: Ingredient) => {
@@ -548,14 +612,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       }));
     };
 
-    // Handle inputs change
-    const handleValueChange = (field: keyof Ingredient, value: string) => {
-      setEditedValues((prevValues) => ({
-        ...prevValues!,
-        [field]: value,
-      }));
-    };
-
     // Handle for Popups
     const togglePopupDelete = (msg: string[] | undefined) => {
       setPopupDelete(msg);
@@ -596,12 +652,31 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const handleConfirmPopupPreviewEdit = () => {
       props.setLoadingState(true);
+
       if (!editedValues) return;
-      const { id, name, parLevel, actualStock, unit, unitCost } = editedValues;
+      const {
+        id,
+        name,
+        parLevel,
+        actualStock,
+        unit,
+        unitCost,
+        deleted_recipe_ingredient_data,
+        recipes,
+        unit_name,
+        unit_uuid,
+      } = editedValues;
 
       // Ensure tag_details and supplier_details are always defined
-      const tag_details = editedValues.tag_details || ingredientTags[id] || [];
       const supplier_details = editedValues.supplier_details || [];
+
+      const tag_details = (editedValues?.tag_details || []).map((tag) => {
+        if (tag.uuid === tag.name) {
+          return { name: tag.name, uuid: '' };
+        } else {
+          return { name: tag.name, uuid: tag.uuid };
+        }
+      });
 
       const updatedIngredient = {
         id,
@@ -610,6 +685,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         parLevel,
         actualStock,
         unit,
+        deleted_recipe_ingredient_data,
+        recipes,
+        unit_name,
+        unit_uuid,
         supplier_details,
         unitCost,
         restaurantUUID: selectedRestaurantUUID,
@@ -624,6 +703,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           reloadTagList();
           reloadInventoryData();
           props.setLoadingState(false);
+          setIsSidePanelOpen(false);
         });
 
       setEditingRowId(null);
@@ -633,30 +713,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const togglePopupError = (msg: string) => {
       setPopupError(msg);
-    };
-
-    // Handle for actions above the tab component
-    const handleAddNewIngredient = () => {
-      const newIngredient: Ingredient = {
-        id: '', // New ingredient will have a temporary empty id
-        name: '',
-        tag_details: null,
-        tagUUID: null,
-        parLevel: 0,
-        actualStock: 0,
-        unit: null,
-        supplier_details: [
-          { supplier_id: null, supplier_name: null, supplier_cost: 0 },
-        ],
-        unitCost: 0,
-        actions: undefined,
-      };
-
-      setIngredientsList((list) => [newIngredient, ...list]);
-      setIngredientTags('');
-      setAddingRow(true);
-      setEditingRowId(newIngredient.id);
-      setEditedValues(newIngredient);
     };
 
     const columnHeaderStyle = {
@@ -710,17 +766,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         width: '15%',
         classname: 'column-bold',
         renderItem: ({ row }) =>
-          editingRowId === row.id ? (
-            <Input
-              type="text"
-              min={0}
-              placeholder={t('name')}
-              onChange={(value) => handleValueChange('name', value)}
-              value={editedValues!.name}
-            />
-          ) : (
-            row.name
-          ),
+          // editingRowId === row.id ? (
+          //   <Input
+          //     type="text"
+          //     min={0}
+          //     placeholder={t('name')}
+          //     onChange={(value) => handleValueChange('name', value)}
+          //     value={editedValues!.name}
+          //   />
+          // ) : (
+          row.name,
+        // ),
       },
       {
         key: 'tagUUID',
@@ -739,95 +795,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           const autocompleteValue =
             ingredientTags[row.id] || initialSelectedTags;
 
-          return editingRowId === row.id ? (
-            <CreatableSelect
-              isMulti
-              maxMenuHeight={2}
-              isClearable={false}
-              options={tagList.map((tag) => ({
-                label: tag.name ? String(tag.name) : 'Unknown', // Ensure name is a string
-                value: tag.uuid,
-              }))}
-              onInputChange={(newInputValue) => {
-                if (typeof newInputValue === 'string') {
-                  setInputValue(newInputValue);
-                }
-              }}
-              value={autocompleteValue.map((tag) => ({
-                label: tag.name || 'Unknown',
-                value: tag.uuid,
-              }))}
-              onChange={(newValue) => {
-                const formattedValue = newValue.map((option) => {
-                  if (!option.value) {
-                    // If value (uuid) is empty, this is a new tag
-                    return {
-                      name: option.label || 'Unknown', // Use the entered name
-                      uuid: '', // Set uuid to empty string or some placeholder
-                    };
-                  } else {
-                    return {
-                      name: option.label || 'Unknown',
-                      uuid: option.value,
-                    };
-                  }
-                });
-                handleSelectedTags(null, formattedValue, row.id);
-              }}
-              inputValue={inputValue}
-              styles={{
-                control: (provided) => ({
-                  ...provided,
-                  minHeight: '1px', // Adjust this if
-                  borderRadius: '12px',
-                  maxHeight: '200px',
-                  overflowY: 'auto',
-                  margin: '5px',
-                }),
-                menu: (provided) => ({
-                  ...provided,
-                  zIndex: 9999, // Ensure dropdown is above other elements
-                }),
-                menuList: (provided) => ({
-                  ...provided,
-                  maxHeight: '200px', // Limit the height of the dropdown list
-                  overflowY: 'auto', // Enable scrolling if the list is
-                }),
-                option: (provided, state) => ({
-                  ...provided,
-                  backgroundColor: state.isSelected
-                    ? '#007BFF'
-                    : provided.backgroundColor,
-                  color: state.isSelected ? '#FFFFFF' : provided.color,
-                }),
-                container: (provided) => ({
-                  ...provided,
-                  overflow: 'visible', // Ensure the dropdown is not clipped
-                }),
-                multiValue: (provided, state) => ({
-                  ...provided,
-                  backgroundColor: '#5E72E4', // Background color for existing tags
-                  color: '#FFFFFF', // Text color for the tags
-                  borderRadius: '12px',
-                }),
-                multiValueLabel: (provided) => ({
-                  ...provided,
-                  color: '#ffffff', // Text color inside the tag
-                  borderRadius: '12px',
-                }),
-                multiValueRemove: (provided) => ({
-                  ...provided,
-                  color: '#ffffff', // Color of the 'X' icon
-                  ':hover': {
-                    backgroundColor: '#b5adad', // Change background color on hover (optional)
-                    borderRadius: '12px',
-                    color: '#ffffff',
-                  },
-                }),
-              }}
-              formatCreateLabel={(inputValue) => `Create "${inputValue}"`}
-            />
-          ) : row.tagUUID &&
+          return row.tagUUID &&
             Array.isArray(row.tagUUID) &&
             row.tagUUID.length > 0 ? (
             <div
@@ -968,17 +936,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         ),
         width: '10%',
         renderItem: ({ row }) =>
-          editingRowId === row.id ? (
-            <Input
-              type="number"
-              min={0}
-              placeholder={t('ingredient:parLvel')}
-              onChange={(value) => handleValueChange('parLevel', value)}
-              value={editedValues!.parLevel}
-            />
-          ) : (
-            row.parLevel
-          ),
+          // editingRowId === row.id ? (
+          //   <Input
+          //     type="number"
+          //     min={0}
+          //     placeholder={t('ingredient:parLvel')}
+          //     onChange={(value) => handleValueChange('parLevel', value)}
+          //     value={editedValues!.parLevel}
+          //   />
+          // ) : (
+          row.parLevel,
+        // ),
       },
       {
         key: 'actualStock',
@@ -993,17 +961,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         ),
         width: '15%',
         renderItem: ({ row }) =>
-          editingRowId === row.id ? (
-            <Input
-              type="number"
-              min={0}
-              placeholder={t('ingredient:actualStock')}
-              onChange={(value) => handleValueChange('actualStock', value)}
-              value={editedValues!.actualStock}
-            />
-          ) : (
-            row.actualStock
-          ),
+          // editingRowId === row.id ? (
+          //   <Input
+          //     type="number"
+          //     min={0}
+          //     placeholder={t('ingredient:actualStock')}
+          //     onChange={(value) => handleValueChange('actualStock', value)}
+          //     value={editedValues!.actualStock}
+          //   />
+          // ) : (
+          row.actualStock,
+        // ),
       },
       {
         key: 'unit',
@@ -1018,84 +986,84 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         ),
         width: '10%',
         renderItem: ({ row }) =>
-          editingRowId === row.id ? (
-            <Dropdown
-              placeholder={t('inventory.selectUnit')}
-              options={units}
-              selectedOption={editedValues!.unit}
-              onOptionChange={(value) => handleValueChange('unit', value)}
-            />
-          ) : (
-            row.unit
-          ),
+          // editingRowId === row.id ? (
+          //   <Dropdown
+          //     placeholder={t('inventory.selectUnit')}
+          //     options={units}
+          //     selectedOption={editedValues!.unit}
+          //     onOptionChange={(value) => handleValueChange('unit', value)}
+          //   />
+          // ) : (
+          row.unit_name,
+        // ),
       },
       {
         key: 'supplier_name',
         header: t('ingredient:supplierName'), // No sorting
         width: '15%',
         renderItem: ({ row, index }) => {
-          if (editingRowId === row.id) {
-            return (
-              <>
-                <div>
-                  {editedValues?.supplier_details.map((detail, detailIndex) => (
-                    <div
-                      key={detailIndex}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '5px',
-                        gap: '10px',
-                      }}>
-                      <Dropdown
-                        placeholder={t('Select a supplier')}
-                        options={suppliers}
-                        selectedOption={detail.supplier_id}
-                        onOptionChange={(value) => {
-                          const selectedSupplier = suppliers.find(
-                            (supplier) => supplier.value === value
-                          );
-                          if (selectedSupplier) {
-                            setEditedValues((prevValues) => {
-                              const newDetails = [
-                                ...prevValues.supplier_details,
-                              ];
-                              newDetails[detailIndex] = {
-                                ...newDetails[detailIndex],
-                                supplier_id: value,
-                                supplier_name: selectedSupplier.label,
-                              };
-                              return {
-                                ...prevValues,
-                                supplier_details: newDetails,
-                              };
-                            });
-                          }
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </>
-            );
-          } else {
-            return (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                  gap: '10px',
-                  padding: '5px',
-                }}>
-                {row.supplier_details.map((detail, detailIndex) => (
-                  <span key={detailIndex}>
-                    {detail.supplier_name || 'Select a supplier'}
-                  </span>
-                ))}
-              </div>
-            );
-          }
+          // if (editingRowId === row.id) {
+          //   return (
+          //     <>
+          //       <div>
+          //         {editedValues?.supplier_details.map((detail, detailIndex) => (
+          //           <div
+          //             key={detailIndex}
+          //             style={{
+          //               display: 'flex',
+          //               alignItems: 'center',
+          //               padding: '5px',
+          //               gap: '10px',
+          //             }}>
+          //             <Dropdown
+          //               placeholder={t('Select a supplier')}
+          //               options={suppliers}
+          //               selectedOption={detail.supplier_id}
+          //               onOptionChange={(value) => {
+          //                 const selectedSupplier = suppliers.find(
+          //                   (supplier) => supplier.value === value
+          //                 );
+          //                 if (selectedSupplier) {
+          //                   setEditedValues((prevValues) => {
+          //                     const newDetails = [
+          //                       ...prevValues.supplier_details,
+          //                     ];
+          //                     newDetails[detailIndex] = {
+          //                       ...newDetails[detailIndex],
+          //                       supplier_id: value,
+          //                       supplier_name: selectedSupplier.label,
+          //                     };
+          //                     return {
+          //                       ...prevValues,
+          //                       supplier_details: newDetails,
+          //                     };
+          //                   });
+          //                 }
+          //               }}
+          //             />
+          //           </div>
+          //         ))}
+          //       </div>
+          //     </>
+          //   );
+          // } else {
+          return (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                gap: '10px',
+                padding: '5px',
+              }}>
+              {row.supplier_details.map((detail, detailIndex) => (
+                <span key={detailIndex}>
+                  {detail.supplier_name || 'Select a supplier'}
+                </span>
+              ))}
+            </div>
+          );
+          // }
         },
       },
       {
@@ -1103,67 +1071,67 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         header: t('ingredient:supplierCost'),
         width: '15%',
         renderItem: ({ row, index }) => {
-          if (editingRowId === row.id) {
-            return (
-              <>
-                {editedValues?.supplier_details.map((detail, detailIndex) => (
-                  <div
-                    key={detailIndex}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: '5px',
-                      gap: '10px',
-                    }}>
-                    <Input
-                      type="number"
-                      min={0}
-                      placeholder={t('Cost')}
-                      value={detail.supplier_cost}
-                      onChange={(e) => {
-                        const cost = e;
-                        setEditedValues((prevValues) => {
-                          const newDetails = [...prevValues.supplier_details];
-                          newDetails[detailIndex] = {
-                            ...newDetails[detailIndex],
-                            supplier_cost: cost,
-                          };
-                          return {
-                            ...prevValues,
-                            supplier_details: newDetails,
-                          };
-                        });
-                      }}
-                    />
-                    <div className="actions">
-                      <i
-                        className="fa-solid fa-trash"
-                        data-tooltip-id="inventory-tooltip"
-                        data-tooltip-content={t('delete')}
-                        onClick={() =>
-                          handleRemoveSupplierDetail(detailIndex)
-                        }></i>
-                    </div>
-                  </div>
-                ))}
-              </>
-            );
-          } else {
-            return (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  flexDirection: 'column',
-                  padding: '5px',
-                }}>
-                {row.supplier_details.map((detail, detailIndex) => (
-                  <span key={detailIndex}>{detail.supplier_cost}</span>
-                ))}
-              </div>
-            );
-          }
+          // if (editingRowId === row.id) {
+          //   return (
+          //     <>
+          //       {editedValues?.supplier_details.map((detail, detailIndex) => (
+          //         <div
+          //           key={detailIndex}
+          //           style={{
+          //             display: 'flex',
+          //             alignItems: 'center',
+          //             padding: '5px',
+          //             gap: '10px',
+          //           }}>
+          //           <Input
+          //             type="number"
+          //             min={0}
+          //             placeholder={t('Cost')}
+          //             value={detail.supplier_cost}
+          //             onChange={(e) => {
+          //               const cost = e;
+          //               setEditedValues((prevValues) => {
+          //                 const newDetails = [...prevValues.supplier_details];
+          //                 newDetails[detailIndex] = {
+          //                   ...newDetails[detailIndex],
+          //                   supplier_cost: cost,
+          //                 };
+          //                 return {
+          //                   ...prevValues,
+          //                   supplier_details: newDetails,
+          //                 };
+          //               });
+          //             }}
+          //           />
+          //           <div className="actions">
+          //             <i
+          //               className="fa-solid fa-trash"
+          //               data-tooltip-id="inventory-tooltip"
+          //               data-tooltip-content={t('delete')}
+          //               onClick={() =>
+          //                 handleRemoveSupplierDetail(detailIndex)
+          //               }></i>
+          //           </div>
+          //         </div>
+          //       ))}
+          //     </>
+          //   );
+          // } else {
+          return (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                flexDirection: 'column',
+                padding: '5px',
+              }}>
+              {row.supplier_details.map((detail, detailIndex) => (
+                <span key={detailIndex}>{detail.supplier_cost}</span>
+              ))}
+            </div>
+          );
+          // }
         },
       },
       {
@@ -1194,6 +1162,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                     data-tooltip-id="inventory-tooltip"
                     data-tooltip-content={t('edit')}
                     onClick={() => handleEditClick(row)}></i>
+                  {/* <i
+                    className="fa-solid fa-pen-to-square"
+                    data-tooltip-id="inventory-tooltip"
+                    data-tooltip-content={t('edit')}
+                    onClick={() => handleEditClick(row)}></i> */}
                 </>
               )}
 
@@ -1219,6 +1192,1277 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     return (
       <>
         <Table data={paginatedIngredients} columns={columns} />
+        {isSidePanelOpen && (
+          <SidePanel
+            isOpen={isSidePanelOpen}
+            onRequestClose={handleCancelEdit}
+            width={'900px'}
+            className={styles.sidePanel}>
+            <div className={styles.optionsButtons}>
+              {isEditMode ? (
+                <>
+                  <IconButton
+                    icon={<i className="fa-solid fa-check"></i>}
+                    tooltipMsg={t('save')}
+                    onClick={handleSaveEdit}
+                    className="iconButton"
+                  />
+                  <IconButton
+                    icon={<i className="fa-solid fa-times"></i>}
+                    tooltipMsg={t('cancel')}
+                    onClick={() => setIsEditMode(false)}
+                    className="iconButton"
+                  />
+                </>
+              ) : (
+                <>
+                  <IconButton
+                    icon={<i className="fa-solid fa-pen-to-square"></i>}
+                    tooltipMsg={t('edit')}
+                    onClick={() => setIsEditMode(true)}
+                    className="iconButton"
+                  />
+                </>
+              )}
+            </div>
+            <div className={styles.inputContainer}>
+              {/* Name Section */}
+              <div className={styles.divider}>
+                <div className={styles.inputContainer}>
+                  <div className={styles.title}>
+                    <span className={styles.titleRecipeName}>
+                      Ingredient name
+                    </span>
+                  </div>
+                  {isEditMode ? (
+                    <>
+                      <LabeledInput
+                        label={t('ingredientName')}
+                        placeholder={t('ingredientName')}
+                        type="text"
+                        lighter
+                        value={editedValues?.name} // Same value binding
+                        onChange={
+                          (event) =>
+                            setEditedValues({
+                              ...editedValues,
+                              name: event.target.value,
+                            }) // Extract event.target.value
+                        }
+                        sx={{
+                          '& .MuiFilledInput-root': {
+                            border: '1px solid grey',
+                            borderRadius: 1,
+                            background: 'lightgrey',
+                            height: '40px',
+                            fontSize: '16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            borderColor: 'grey.300',
+                            borderBottom: 'none',
+                          },
+                          '& .MuiFilledInput-root.Mui-disabled': {
+                            backgroundColor: 'lightgrey',
+                          },
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <span className={styles.value}> {editedValues?.name}</span>
+                  )}
+                </div>
+                <div className={styles.gridContainer3}>
+                  <div className={styles.inputContainer}>
+                    <div className={styles.title}>
+                      {' '}
+                      <span className={styles.titleRecipeName}>
+                        Actual Stock
+                      </span>
+                    </div>
+                    {isEditMode ? (
+                      <>
+                        <LabeledInput
+                          label={t('ingredient:actualStock')}
+                          placeholder={t('ingredient:actualStock')}
+                          type="text"
+                          lighter
+                          value={editedValues?.actualStock || ''}
+                          onChange={(event) =>
+                            setEditedValues({
+                              ...editedValues,
+                              actualStock: event.target.value,
+                            })
+                          }
+                          sx={{
+                            '& .MuiFilledInput-root': {
+                              border: '1px solid grey',
+                              borderRadius: 1,
+                              background: 'lightgrey',
+                              height: '40px',
+                              fontSize: '16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              borderColor: 'grey.300',
+                              borderBottom: 'none',
+                            },
+                            '& .MuiFilledInput-root.Mui-disabled': {
+                              backgroundColor: 'lightgrey',
+                            },
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <span className={styles.value}>
+                        {editedValues?.actualStock}
+                      </span>
+                    )}
+                  </div>
+                  <div className={styles.inputContainer}>
+                    <div className={styles.title}>
+                      {' '}
+                      <span className={styles.titleRecipeName}>Par level</span>
+                    </div>
+                    {isEditMode ? (
+                      <>
+                        <LabeledInput
+                          label={t('ingredient:parLvel')}
+                          placeholder={t('ingredient:parLvel')}
+                          type="text"
+                          lighter
+                          value={editedValues?.parLevel || ''}
+                          onChange={(event) =>
+                            setEditedValues({
+                              ...editedValues,
+                              parLevel: event.target.value,
+                            })
+                          }
+                          sx={{
+                            '& .MuiFilledInput-root': {
+                              border: '1px solid grey',
+                              borderRadius: 1,
+                              background: 'lightgrey',
+                              height: '40px',
+                              fontSize: '16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              borderColor: 'grey.300',
+                              borderBottom: 'none',
+                            },
+                            '& .MuiFilledInput-root.Mui-disabled': {
+                              backgroundColor: 'lightgrey',
+                            },
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <span className={styles.value}>
+                        {editedValues?.parLevel}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className={styles.inputContainer}>
+                    <div className={styles.title}>
+                      {' '}
+                      <span className={styles.titleRecipeName}>Units</span>
+                    </div>
+
+                    {isEditMode ? (
+                      <CreatableSelect
+                        placeholder={
+                          editedValues?.unit_uuid
+                            ? t('unit')
+                            : t('Select a unit') // Show 'Select a unit' if unit_uuid is null
+                        }
+                        options={unitname.map((unit) => ({
+                          label: unit.unit_name,
+                          value: unit.unit_uuid,
+                        }))} // Map options for CreatableSelect
+                        styles={{
+                          menu: (provided) => ({
+                            ...provided,
+                            overflowY: 'auto',
+                          }),
+                          control: (provided, state) => ({
+                            ...provided,
+                            minWidth: '200px',
+                            boxShadow: state.isFocused
+                              ? 'none'
+                              : provided.boxShadow,
+                            borderColor: state.isFocused
+                              ? '#ced4da'
+                              : provided.borderColor,
+                            '&:hover': {
+                              borderColor: 'none',
+                            },
+                          }),
+                          menuList: (provided) => ({
+                            ...provided,
+                            maxHeight: '200px',
+                            overflowY: 'auto',
+                          }),
+                          option: (provided, state) => ({
+                            ...provided,
+                            backgroundColor: state.isSelected
+                              ? '#007BFF'
+                              : state.isFocused
+                              ? '#dbe1df'
+                              : provided.backgroundColor,
+                            color: state.isSelected
+                              ? '#FFFFFF'
+                              : state.isFocused
+                              ? '#000000'
+                              : provided.color,
+                          }),
+                          container: (provided) => ({
+                            ...provided,
+                            overflow: 'visible',
+                          }),
+                          multiValue: (provided) => ({
+                            ...provided,
+                            backgroundColor: '#5E72E4',
+                            color: '#FFFFFF',
+                            borderRadius: '12px',
+                          }),
+                          multiValueLabel: (provided) => ({
+                            ...provided,
+                            color: '#ffffff',
+                            borderRadius: '12px',
+                          }),
+                          multiValueRemove: (provided) => ({
+                            ...provided,
+                            color: '#ffffff',
+                            ':hover': {
+                              backgroundColor: '#b5adad',
+                              borderRadius: '12px',
+                              color: '#ffffff',
+                            },
+                          }),
+                        }}
+                        value={
+                          editedValues?.unit_name
+                            ? {
+                                label: editedValues.unit_name,
+                                value: editedValues.unit_uuid,
+                              }
+                            : unitname
+                                .map((unit) => ({
+                                  label: unit.unit_name,
+                                  value: unit.unit_uuid,
+                                }))
+                                .find(
+                                  (unit) =>
+                                    unit.value === editedValues?.unit_uuid
+                                ) || null
+                        } // Either display the new unit or find and display the selected unit by unit_uuid
+                        onChange={(selectedOption) => {
+                          if (selectedOption) {
+                            if (selectedOption.__isNew__) {
+                              // Do not update the unitname list, just update editedValues with new unit
+                              setEditedValues({
+                                ...editedValues,
+                                unit_uuid: '', // Keep unit_uuid blank
+                                unit_name: selectedOption.label, // Set the new unit_name
+                              });
+                            } else {
+                              // If existing unit is selected
+                              setEditedValues({
+                                ...editedValues,
+                                unit_uuid: selectedOption.value, // Set the selected unit's UUID
+                                unit_name: selectedOption.label, // Set the selected unit's name
+                              });
+                            }
+                          }
+                        }}
+                        isCreatable
+                      />
+                    ) : (
+                      <span className={styles.value}>
+                        {unitname.find(
+                          (unit) => unit.value === editedValues.unit_uuid
+                        )?.label || editedValues.unit_name}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              {/* Tag Section */}
+              <div className={styles.inputContainer}>
+                <div className={styles.divider}>
+                  <div className={styles.title}>
+                    <span className={styles.titleRecipeName}>Tags</span>
+                  </div>
+                  {isEditMode ? (
+                    <CreatableSelect
+                      isMulti
+                      onInputChange={(newInputValue) => {
+                        if (
+                          typeof newInputValue === 'string' &&
+                          newInputValue !== ''
+                        ) {
+                          setInputValue(newInputValue);
+                        }
+                      }}
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          overflowY: 'auto',
+                        }),
+                        control: (provided, state) => ({
+                          ...provided,
+                          minWidth: '200px',
+                          boxShadow: state.isFocused
+                            ? 'none'
+                            : provided.boxShadow,
+                          borderColor: state.isFocused
+                            ? '#ced4da'
+                            : provided.borderColor,
+                          '&:hover': {
+                            borderColor: 'none',
+                          },
+                        }),
+                        menuList: (provided) => ({
+                          ...provided,
+                          maxHeight: '200px',
+                          overflowY: 'auto',
+                        }),
+                        option: (provided, state) => ({
+                          ...provided,
+                          backgroundColor: state.isSelected
+                            ? '#007BFF'
+                            : state.isFocused
+                            ? '#dbe1df'
+                            : provided.backgroundColor,
+                          color: state.isSelected
+                            ? '#FFFFFF'
+                            : state.isFocused
+                            ? '#000000'
+                            : provided.color,
+                        }),
+                        container: (provided) => ({
+                          ...provided,
+                          overflow: 'visible',
+                        }),
+                        multiValue: (provided) => ({
+                          ...provided,
+                          backgroundColor: '#5E72E4',
+                          color: '#FFFFFF',
+                          borderRadius: '12px',
+                        }),
+                        multiValueLabel: (provided) => ({
+                          ...provided,
+                          color: '#ffffff',
+                          borderRadius: '12px',
+                        }),
+                        multiValueRemove: (provided) => ({
+                          ...provided,
+                          color: '#ffffff',
+                          ':hover': {
+                            backgroundColor: '#b5adad',
+                            borderRadius: '12px',
+                            color: '#ffffff',
+                          },
+                        }),
+                      }}
+                      maxMenuHeight={200}
+                      isClearable={false}
+                      options={tagList.map((tag) => ({
+                        label: tag.name || '--',
+                        value: tag.uuid,
+                      }))}
+                      // Ensure existing tags and new tags are preserved
+                      value={[
+                        ...(editedValues?.tag_details || []).map((tag) => ({
+                          label: tag.name || 'New Tag',
+                          value: tag.uuid || '',
+                        })),
+                      ]}
+                      onChange={(newValue) => {
+                        const updatedTagDetails = newValue.map((option) => {
+                          if (!option.value) {
+                            // This is a newly created tag
+                            return {
+                              name: option.label || 'Unknown',
+                              uuid: '', // New tags don't have a UUID yet
+                            };
+                          } else {
+                            // This is an existing tag
+                            const existingTag = tagList.find(
+                              (tag) => tag.uuid === option.value
+                            );
+                            return {
+                              name: existingTag
+                                ? existingTag.name
+                                : option.label,
+                              uuid: option.value,
+                            };
+                          }
+                        });
+
+                        setEditedValues((prevValues) => ({
+                          ...prevValues,
+                          tag_details: updatedTagDetails, // Keep all the tags, not just the newly created one
+                          tagUUID: updatedTagDetails.map((tag) => tag.uuid), // Update the UUIDs list
+                        }));
+                      }}
+                      // onCreateOption={(createdVal) => {
+                      //   const newTag = {
+                      //     name: createdVal,
+                      //     uuid: '', // New tag with no UUID yet
+                      //   };
+
+                      //   // Update the state with the new tag without replacing existing ones
+                      //   setEditedValues((prevValues) => ({
+                      //     ...prevValues,
+                      //     tag_details: [...prevValues?.tag_details, newTag], // Append the new tag to existing tags
+                      //   }));
+                      // }}
+                    />
+                  ) : (
+                    <div className={styles.tagList}>
+                      {editedValues?.tagUUID?.length > 0 ? (
+                        <div className={styles.tagContainer}>
+                          {editedValues?.tagUUID?.map((uuid) => {
+                            const tag = tagList.find(
+                              (tag) => tag.uuid === uuid
+                            );
+                            if (tag) {
+                              const displayName =
+                                tag.name.length > 6
+                                  ? `${tag.name.slice(0, 6)}...`
+                                  : tag.name;
+                              return (
+                                <span
+                                  key={uuid}
+                                  className={styles.tagItem}
+                                  style={{
+                                    backgroundColor: tag.color || '#5E72E4',
+                                    color: '#ffffff',
+                                  }}>
+                                  {displayName}
+                                </span>
+                              );
+                            } else {
+                              return (
+                                <span
+                                  key={uuid}
+                                  className={styles.tagItem}
+                                  style={{
+                                    backgroundColor: '#d3d3d3',
+                                    color: '#333',
+                                  }}>
+                                  -
+                                </span>
+                              );
+                            }
+                          })}
+                        </div>
+                      ) : (
+                        '-'
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Supplier Section */}
+              <div className={styles.inputContainer}>
+                <div className={styles.divider}>
+                  <div className={styles.supplierContainer}>
+                    <div className={styles.title}>
+                      {' '}
+                      <span className={styles.titleRecipeName}>
+                        Supplier Details
+                      </span>
+                    </div>
+                    {isEditMode && (
+                      <div className={styles.addSupplierTitle}>
+                        <span
+                          className={styles.addSupplier}
+                          onClick={handleAddSupplierDetail}>
+                          {' '}
+                          <i
+                            className="fa-solid fa-plus"
+                            data-tooltip-id="inventory-tooltip"
+                            data-tooltip-content={t('validate')}></i>{' '}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  {/* <div className={styles.gridContainer}>
+                    <span className={styles.values}>Name</span>
+                    <span className={styles.values}>Cost</span>
+                  </div> */}
+
+                  {isEditMode ? (
+                    <>
+                      {editedValues?.supplier_details?.map((detail, index) => (
+                        <div key={index} className={styles.gridContainer5}>
+                          {!index && (
+                            <>
+                              <div style={{ fontWeight: 700 }}>
+                                {t('ingredient:Supplier Name')}
+                              </div>
+                              <div style={{ fontWeight: 700 }}>
+                                {t('ingredient:Supplier Cost')}
+                              </div>
+                              <div style={{ fontWeight: 700 }}>
+                                {t('ingredient:Supplier Unit')}
+                              </div>
+                              <div style={{ fontWeight: 700 }}>
+                                {t('ingredient:Conversion Factor')}
+                              </div>
+                              <div style={{ fontWeight: 700 }}>
+                                {t('ingredient:action')}
+                              </div>
+                            </>
+                          )}
+                          <div>
+                            <Select
+                              size="large"
+                              isSearchable={true}
+                              placeholder={t('ingredient:supplier')}
+                              options={suppliers.map((supplier) => ({
+                                label: supplier.label,
+                                value: supplier.value,
+                              }))}
+                              value={
+                                suppliers
+                                  .map((supplier) => ({
+                                    label: supplier.label,
+                                    value: supplier.value,
+                                  }))
+                                  .find(
+                                    (supplier) =>
+                                      supplier.value === detail.supplier_id
+                                  ) || null
+                              }
+                              onChange={(selectedOption) => {
+                                const updatedDetails = [
+                                  ...editedValues.supplier_details,
+                                ];
+                                const selectedSupplier = suppliers.find(
+                                  (s) => s.value === selectedOption?.value
+                                );
+
+                                updatedDetails[index] = {
+                                  ...updatedDetails[index],
+                                  supplier_id: selectedOption?.value || '',
+                                  supplier_name: selectedSupplier?.label || '',
+                                };
+
+                                setEditedValues({
+                                  ...editedValues,
+                                  supplier_details: updatedDetails,
+                                });
+                              }}
+                            />
+                          </div>
+
+                          <LabeledInput
+                            label={t('ingredient:supplierCost')}
+                            placeholder={t('ingredient:supplierCost')}
+                            type="number"
+                            lighter
+                            value={detail.supplier_cost}
+                            onChange={(event) => {
+                              const updatedDetails = [
+                                ...editedValues.supplier_details,
+                              ];
+                              updatedDetails[index].supplier_cost =
+                                event.target.value;
+
+                              setEditedValues({
+                                ...editedValues,
+                                supplier_details: updatedDetails,
+                              });
+                            }}
+                          />
+
+                          <CreatableSelect
+                            placeholder={
+                              detail.supplier_unit
+                                ? t('unit')
+                                : t('Select a unit')
+                            }
+                            options={unitname.map((unit) => ({
+                              label: unit.unit_name,
+                              value: unit.unit_uuid,
+                            }))}
+                            styles={{
+                              menu: (provided) => ({
+                                ...provided,
+                                overflowY: 'auto',
+                              }),
+                              control: (provided, state) => ({
+                                ...provided,
+                                minWidth: '200px',
+                                boxShadow: state.isFocused
+                                  ? 'none'
+                                  : provided.boxShadow,
+                                borderColor: state.isFocused
+                                  ? '#ced4da'
+                                  : provided.borderColor,
+                                '&:hover': {
+                                  borderColor: 'none',
+                                },
+                              }),
+                              menuList: (provided) => ({
+                                ...provided,
+                                maxHeight: '200px',
+                                overflowY: 'auto',
+                              }),
+                              option: (provided, state) => ({
+                                ...provided,
+                                backgroundColor: state.isSelected
+                                  ? '#007BFF'
+                                  : state.isFocused
+                                  ? '#dbe1df'
+                                  : provided.backgroundColor,
+                                color: state.isSelected
+                                  ? '#FFFFFF'
+                                  : state.isFocused
+                                  ? '#000000'
+                                  : provided.color,
+                              }),
+                            }}
+                            value={
+                              // Check if the supplier's unit_uuid exists; if it's blank, show unit_name
+                              detail.supplier_unit
+                                ? {
+                                    label: detail.supplier_unit_name,
+                                    value: detail.supplier_unit,
+                                  }
+                                : {
+                                    label:
+                                      detail.supplier_unit_name ||
+                                      'Select a unit',
+                                    value: detail.supplier_unit,
+                                  }
+                            }
+                            onChange={(selectedOption) => {
+                              const updatedDetails = [
+                                ...editedValues.supplier_details,
+                              ];
+                              if (selectedOption.__isNew__) {
+                                // For newly created unit, keep supplier_unit_uuid blank and set supplier_unit_name
+                                updatedDetails[index] = {
+                                  ...updatedDetails[index],
+                                  supplier_unit: '', // Keep UUID blank for new unit
+                                  supplier_unit_name: selectedOption.label, // Set the new unit name
+                                };
+                              } else {
+                                updatedDetails[index] = {
+                                  ...updatedDetails[index],
+                                  supplier_unit: selectedOption.value, // Set the selected unit UUID
+                                  supplier_unit_name: selectedOption.label, // Set the selected unit name
+                                };
+                              }
+
+                              // Update the state and ensure re-render
+                              setEditedValues({
+                                ...editedValues,
+                                supplier_details: updatedDetails,
+                              });
+                            }}
+                            isCreatable
+                          />
+                          <div className={styles.IconContainer}>
+                            <LabeledInput
+                              label={t('ingredient:conversion_factor')}
+                              placeholder={t('ingredient:conversion_factor')}
+                              type="number"
+                              lighter
+                              value={detail.conversion_factor}
+                              onChange={(event) => {
+                                const updatedDetails = [
+                                  ...editedValues.supplier_details,
+                                ];
+                                updatedDetails[index].conversion_factor =
+                                  event.target.value;
+
+                                setEditedValues({
+                                  ...editedValues,
+                                  supplier_details: updatedDetails,
+                                });
+                              }}
+                            />
+                            <IconButton
+                              icon={<i className="fa-solid fa-circle-info"></i>}
+                              tooltipMsg={`from ${detail.supplier_unit_name} to ${editedValues.unit_name}`}
+                              className={styles.info}
+                            />
+                          </div>
+
+                          <span className={styles.deleteButton}>
+                            <i
+                              className="fa-solid fa-trash"
+                              data-tooltip-id="inventory-tooltip"
+                              data-tooltip-content={t('delete')}
+                              onClick={() =>
+                                handleRemoveSupplierDetail(index)
+                              }></i>
+                          </span>
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <div>
+                      <div className={styles.gridContainer4}>
+                        <span className={styles.title}>Supplier Name</span>
+                        <span className={styles.title}>Supplier Cost</span>
+                        <span className={styles.title}>Unit</span>
+                        <span className={styles.title}>Conversion Factor </span>
+                      </div>
+                      {editedValues?.supplier_details?.map((detail, index) => (
+                        <>
+                          <div className={styles.gridContainer4}>
+                            <span
+                              key={index}
+                              className={styles.value}
+                              style={{
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                display: 'inline-block',
+                                maxWidth: '150px', // Adjust maxWidth as needed
+                                verticalAlign: 'middle',
+                                cursor: 'pointer', // Add pointer cursor for better UX
+                              }}
+                              data-tooltip-id="inventory-tooltip"
+                              data-tooltip-content={detail.supplier_name}>
+                              {detail.supplier_name}
+                            </span>
+
+                            <Tooltip
+                              id="inventory-tooltip"
+                              place="top" // Tooltip will appear above the text
+                              type="dark" // Dark-themed tooltip (can be customized)
+                            />
+                            <span> {detail.supplier_cost}</span>
+                            <span>{detail.supplier_unit_name}</span>
+                            <span className={styles.flexContainer}>
+                              {detail.conversion_factor}
+                              <div className={styles.forecastIiconBtn}>
+                                <IconButton
+                                  icon={
+                                    <i className="fa-solid fa-circle-info"></i>
+                                  }
+                                  tooltipMsg={`from ${detail.supplier_unit_name} to ${editedValues.unit_name}`}
+                                  className={styles.forecastIiconBtn}
+                                />
+                              </div>
+                            </span>
+                          </div>
+                        </>
+                      ))}
+                    </div>
+                  )}
+                  {/* {isEditMode && (
+                    <div className={styles.inputContainer}>
+                      <div
+                        className={styles.value}
+                        onClick={handleAddSupplierDetail}>
+                        {' '}
+                        <i
+                          className="fa-solid fa-plus"
+                          data-tooltip-id="inventory-tooltip"
+                          data-tooltip-content={t('validate')}></i>{' '}
+                        Add Supplier
+                      </div>
+                    </div>
+                  )} */}
+                </div>
+              </div>
+
+              {/* Recipe section */}
+              <div className={styles.inputContainer}>
+                <div className={styles.divider}>
+                  <div className={styles.supplierContainer}>
+                    <div className={styles.title}>
+                      {' '}
+                      <span className={styles.titleRecipeName}>
+                        Recipe Details
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    className={styles.ingredientsToggle}
+                    onClick={toggleIngredientsVisibility}>
+                    <span className={styles.show}>
+                      {isIngredientsVisible
+                        ? '▼ Hide Recipes'
+                        : `▶ Show Recipes (${editedValues?.recipe_count})`}
+                    </span>
+                  </div>
+                  {isIngredientsVisible && (
+                    <>
+                      {isEditMode ? (
+                        <div>
+                          <div className={styles.gridContainer4}>
+                            <div>
+                              <span className={styles.values}>Recipe Name</span>
+                            </div>
+                            <div>
+                              <span className={styles.values}>Quantity</span>
+                            </div>
+                            <div>
+                              <span className={styles.values}>Unit</span>
+                            </div>
+                            <div>
+                              <span className={styles.values}>
+                                Conversion Factor
+                              </span>
+                            </div>
+                          </div>
+
+                          {editedValues?.recipes?.map((recipe, index) => (
+                            <div key={index} className={styles.recipeContainer}>
+                              <div className={styles.gridContainer4}>
+                                {/* Recipe Name as Select dropdown */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    <Select
+                                      size="large"
+                                      isSearchable={true}
+                                      placeholder={t('ingredient:recipe_name')}
+                                      options={Object.entries(recipes).map(
+                                        ([recipe_uuid, recipeData]) => ({
+                                          label: recipeData.name,
+                                          value: recipeData.uuid,
+                                        })
+                                      )}
+                                      value={{
+                                        label:
+                                          recipes[recipe.recipe_uuid]?.name ||
+                                          recipe.recipe_name,
+                                        value: recipe.recipe_uuid,
+                                      }}
+                                      onChange={(selectedOption) => {
+                                        const updatedRecipes = [
+                                          ...editedValues.recipes,
+                                        ];
+
+                                        const previousRecipeUUID =
+                                          updatedRecipes[index]?.recipe_uuid;
+
+                                        let updatedDeletedRecipeData = [
+                                          ...(editedValues.deleted_recipe_ingredient_data ||
+                                            []),
+                                        ];
+
+                                        if (
+                                          updatedDeletedRecipeData.includes(
+                                            selectedOption?.value
+                                          )
+                                        ) {
+                                          updatedDeletedRecipeData =
+                                            updatedDeletedRecipeData.filter(
+                                              (uuid) =>
+                                                uuid !== selectedOption?.value
+                                            );
+                                        } else {
+                                          if (
+                                            selectedOption?.value !==
+                                            previousRecipeUUID
+                                          ) {
+                                            if (
+                                              previousRecipeUUID &&
+                                              !updatedDeletedRecipeData.includes(
+                                                previousRecipeUUID
+                                              )
+                                            ) {
+                                              updatedDeletedRecipeData.push(
+                                                previousRecipeUUID
+                                              );
+                                            }
+                                          }
+                                        }
+
+                                        updatedRecipes[index] = {
+                                          ...updatedRecipes[index],
+                                          recipe_uuid: selectedOption?.value,
+                                          recipe_name: selectedOption?.label,
+                                        };
+
+                                        setEditedValues({
+                                          ...editedValues,
+                                          recipes: updatedRecipes,
+                                          deleted_recipe_ingredient_data:
+                                            updatedDeletedRecipeData,
+                                        });
+
+                                        const selectedRecipeUUID =
+                                          selectedOption?.value;
+                                      }}
+                                    />
+                                  ) : (
+                                    <span className={styles.value}>
+                                      {recipe.recipe_name}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Quantity */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    <LabeledInput
+                                      label={t('quantity')}
+                                      placeholder={t('quantity')}
+                                      type="number"
+                                      lighter
+                                      value={recipe.quantity}
+                                      onChange={(event) => {
+                                        const updatedRecipes = [
+                                          ...editedValues.recipes,
+                                        ];
+                                        updatedRecipes[index].quantity =
+                                          event.target.value;
+                                        setEditedValues({
+                                          ...editedValues,
+                                          recipes: updatedRecipes,
+                                        });
+                                      }}
+                                      sx={{
+                                        '& .MuiFilledInput-root': {
+                                          border: '1px solid grey',
+                                          borderRadius: 1,
+                                          background: 'lightgrey',
+                                          height: '40px',
+                                          fontSize: '16px',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          borderColor: 'grey.300',
+                                          borderBottom: 'none',
+                                        },
+                                        '& .MuiFilledInput-root.Mui-disabled': {
+                                          backgroundColor: 'lightgrey',
+                                        },
+                                      }}
+                                      className={styles.inputField}
+                                    />
+                                  ) : (
+                                    <span className={styles.value}>
+                                      {recipe.quantity}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Unit Dropdown */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    <CreatableSelect
+                                      placeholder={
+                                        recipe.unit_uuid
+                                          ? t('unit')
+                                          : t('Select a unit')
+                                      }
+                                      options={unitname.map((unit) => ({
+                                        label: unit.unit_name,
+                                        value: unit.unit_uuid,
+                                      }))}
+                                      styles={{
+                                        menu: (provided) => ({
+                                          ...provided,
+                                          overflowY: 'auto',
+                                        }),
+                                        control: (provided, state) => ({
+                                          ...provided,
+                                          minWidth: '200px',
+                                          boxShadow: state.isFocused
+                                            ? 'none'
+                                            : provided.boxShadow,
+                                          borderColor: state.isFocused
+                                            ? '#ced4da'
+                                            : provided.borderColor,
+                                          '&:hover': {
+                                            borderColor: 'none',
+                                          },
+                                        }),
+                                        menuList: (provided) => ({
+                                          ...provided,
+                                          maxHeight: '200px',
+                                          overflowY: 'auto',
+                                        }),
+                                        option: (provided, state) => ({
+                                          ...provided,
+                                          backgroundColor: state.isSelected
+                                            ? '#007BFF'
+                                            : state.isFocused
+                                            ? '#dbe1df'
+                                            : provided.backgroundColor,
+                                          color: state.isSelected
+                                            ? '#FFFFFF'
+                                            : state.isFocused
+                                            ? '#000000'
+                                            : provided.color,
+                                        }),
+                                      }}
+                                      value={
+                                        recipe.unit_uuid
+                                          ? {
+                                              label: recipe.unit_name,
+                                              value: recipe.unit_uuid,
+                                            }
+                                          : {
+                                              label:
+                                                recipe.unit_name ||
+                                                'Select a unit',
+                                              value: recipe.unit_uuid,
+                                            }
+                                      }
+                                      onChange={(selectedOption) => {
+                                        const updatedDetails = [
+                                          ...editedValues.recipes,
+                                        ];
+                                        if (selectedOption.__isNew__) {
+                                          // For newly created unit, keep supplier_unit_uuid blank and set supplier_unit_name
+                                          updatedDetails[index] = {
+                                            ...updatedDetails[index],
+                                            unit_uuid: '', // Keep UUID blank for new unit
+                                            unit_name: selectedOption.label, // Set the new unit name
+                                          };
+                                        } else {
+                                          updatedDetails[index] = {
+                                            ...updatedDetails[index],
+                                            unit_uuid: selectedOption.value, // Set the selected unit UUID
+                                            unit_name: selectedOption.label, // Set the selected unit name
+                                          };
+                                        }
+
+                                        // Update the state and ensure re-render
+                                        setEditedValues({
+                                          ...editedValues,
+                                          recipes: updatedDetails,
+                                        });
+                                      }}
+                                      isCreatable
+                                    />
+                                  ) : (
+                                    <span className={styles.value}>
+                                      {recipe.unit_name}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Conversion Factor */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    <>
+                                      <LabeledInput
+                                        label={t(
+                                          'ingredient:conversion_factor'
+                                        )}
+                                        placeholder={t(
+                                          'ingredient:conversion_factor'
+                                        )}
+                                        type="number"
+                                        lighter
+                                        value={recipe.conversion_factor}
+                                        onChange={(event) => {
+                                          const updatedRecipes = [
+                                            ...editedValues.recipes,
+                                          ];
+                                          updatedRecipes[
+                                            index
+                                          ].conversion_factor =
+                                            event.target.value;
+                                          setEditedValues({
+                                            ...editedValues,
+                                            recipes: updatedRecipes,
+                                          });
+                                        }}
+                                        sx={{
+                                          '& .MuiFilledInput-root': {
+                                            border: '1px solid grey',
+                                            borderRadius: 1,
+                                            background: 'lightgrey',
+                                            height: '40px',
+                                            fontSize: '16px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            borderColor: 'grey.300',
+                                            borderBottom: 'none',
+                                          },
+                                          '& .MuiFilledInput-root.Mui-disabled':
+                                            {
+                                              backgroundColor: 'lightgrey',
+                                            },
+                                        }}
+                                        className={styles.inputField}
+                                      />
+                                      <IconButton
+                                        icon={
+                                          <i className="fa-solid fa-circle-info"></i>
+                                        }
+                                        tooltipMsg={`from ${recipe.unit_name} to ${editedValues.unit_name}`}
+                                        className={styles.forecastIiconBtn}
+                                      />
+                                    </>
+                                  ) : (
+                                    <span className={styles.value}>
+                                      {recipe.conversion_factor}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div>
+                          <div className={styles.gridContainer4}>
+                            <span className={styles.title}>Recipe Name</span>
+                            <span className={styles.title}>Quantity</span>
+                            <span className={styles.title}>Unit</span>
+                            <span className={styles.title}>
+                              Conversion Factor
+                            </span>
+                          </div>
+                          {editedValues?.recipes?.map((recipe, index) => (
+                            <div key={index} className={styles.recipeContainer}>
+                              <div className={styles.gridContainer4}>
+                                <span>{recipe.recipe_name}</span>
+                                <span>{recipe.quantity}</span>
+                                <span>{recipe.unit_name}</span>
+                                <span className={styles.flexContainer}>
+                                  {recipe.conversion_factor}
+                                  <IconButton
+                                    icon={
+                                      <i className="fa-solid fa-circle-info"></i>
+                                    }
+                                    tooltipMsg={`from ${recipe.unit_name} to ${editedValues.unit_name}`}
+                                    className={styles.forecastIiconBtn}
+                                  />
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* History section */}
+              <div className={styles.inputContainer}>
+                <div className={styles.divider}>
+                  <div className={styles.supplierContainer}>
+                    <div className={styles.title}>
+                      {' '}
+                      <span className={styles.titleRecipeName}>History</span>
+                    </div>
+                  </div>
+
+                  <div
+                    className={styles.ingredientsToggle}
+                    onClick={toggleQuantityVisibility}>
+                    <span className={styles.show}>
+                      {isQuantityVisible
+                        ? '▼ Hide Quantity'
+                        : `▶ Show Quantity`}
+                    </span>
+                  </div>
+
+                  {isQuantityVisible && (
+                    <>
+                      {isEditMode ? (
+                        <div>
+                          <div className={styles.gridContainer3}>
+                            <div>
+                              <span className={styles.values}>Event Type</span>
+                            </div>
+                            <div>
+                              <span className={styles.values}>Quantity</span>
+                            </div>
+                            <div>
+                              <span className={styles.values}>Unit</span>
+                            </div>
+                          </div>
+                          {editedValues?.stock_history?.map((stock, index) => (
+                            <div key={index} className={styles.recipeContainer}>
+                              <div className={styles.gridContainer3}>
+                                {/* Recipe Name */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    <span className={styles.value}>
+                                      {stock.event_type}
+                                    </span>
+                                  ) : (
+                                    <span className={styles.value}>
+                                      {stock.event_type}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Quantity */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    <span className={styles.value}>
+                                      {stock.quantity}
+                                    </span>
+                                  ) : (
+                                    <span className={styles.value}>
+                                      {stock.quantity}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Conversion Factor */}
+                                <div className={styles.inputContainer}>
+                                  {isEditMode ? (
+                                    <span className={styles.value}>
+                                      {stock.unit_name}
+                                    </span>
+                                  ) : (
+                                    <span className={styles.value}>
+                                      {stock.unit_name}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div>
+                          <div className={styles.gridContainer3}>
+                            <span className={styles.title}>Event Name</span>
+                            <span className={styles.title}>Quantity</span>
+                            <span className={styles.title}>Unit</span>
+                          </div>
+                          {/* Display mode when not in edit mode */}
+                          {editedValues?.stock_history?.map((stock, index) => (
+                            <div key={index} className={styles.recipeContainer}>
+                              <div className={styles.gridContainer3}>
+                                <div className={styles.inputContainer}>
+                                  <span className={styles.value}>
+                                    {stock.event_type}
+                                  </span>
+                                </div>
+                                <div className={styles.inputContainer}>
+                                  <span className={styles.value}>
+                                    {stock.quantity}
+                                  </span>
+                                </div>
+                                <div className={styles.inputContainer}>
+                                  <span className={styles.value}>
+                                    {stock.unit_name}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </SidePanel>
+        )}
         <CustomPagination
           shape="rounded"
           count={Math.ceil((filteredIngredients?.length || 0) / ITEMS_PER_PAGE)}
@@ -1291,6 +2535,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           subMsg={popupError}
           isOpen={popupError === '' ? false : true}
           onRequestClose={() => togglePopupError('')}
+        />
+
+        <AddIngredientPopup
+          isVisible={showAddPopup}
+          reloadInventoryData={reloadInventoryData}
+          onRequestClose={() => setShowAddPopup(false)} // Close popup when requested
         />
       </>
     );
