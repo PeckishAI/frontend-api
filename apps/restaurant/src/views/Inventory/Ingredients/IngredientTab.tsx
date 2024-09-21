@@ -85,9 +85,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [filteredIngredients, setFilteredIngredients] = useState<
       Ingredient[]
     >([]);
-    const [ingredientTags, setIngredientTags] = useState<{
-      [key: string]: Tag[];
-    }>({});
+
     const [inputValue, setInputValue] = useState<any>('');
 
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
@@ -152,6 +150,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         });
     }, [selectedRestaurantUUID]);
 
+    // Recipe Get function
     function reloadRecipes() {
       if (!selectedRestaurantUUID) return;
       setLoadingData(true);
@@ -168,8 +167,26 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         });
     }
 
+    //Units get function
+    function reloadUnits() {
+      if (!selectedRestaurantUUID) return;
+
+      inventoryService
+        .getUnits(selectedRestaurantUUID)
+        .then((res) => {
+          setUnitName(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          // setLoadingData(false);
+        });
+    }
+
     useEffect(() => {
       reloadRecipes();
+      reloadUnits();
     }, [selectedRestaurantUUID]);
 
     useEffect(() => {
@@ -462,26 +479,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setSelectedIngredients([]);
     };
 
-    function reloadUnits() {
-      if (!selectedRestaurantUUID) return;
-
-      inventoryService
-        .getUnits(selectedRestaurantUUID)
-        .then((res) => {
-          setUnitName(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          // setLoadingData(false);
-        });
-    }
-
-    useEffect(() => {
-      reloadUnits();
-    }, [selectedRestaurantUUID]);
-
     // Handle for actions in table
     const handleEditClick = (row) => {
       setEditingRowId(row.id); // Set the row being edited
@@ -519,18 +516,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         setAddingRow(false);
       }
     };
-
-    // const handleCancelEdit = () => {
-    //   setEditingRowId(null);
-    //   setEditedValues(null);
-    //   if (addingRow) {
-    //     const updatedList = ingredientsList.filter(
-    //       (ingredient) => ingredient.id !== ''
-    //     );
-    //     setIngredientsList(updatedList);
-    //     setAddingRow(false);
-    //   }
-    // };
 
     const handleCancelEdit = () => {
       setEditedValues(null); // Reset changes
@@ -578,38 +563,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           supplier_details: updatedSupplierDetails,
         };
       });
-    };
-
-    const handleSelectedTags = (
-      event: React.SyntheticEvent,
-      newValue: (Tag | string)[],
-      rowId: string
-    ) => {
-      // Convert the newValue to an array of tag objects
-      const tags = newValue.map((item) => {
-        if (typeof item === 'string') {
-          // If the item is a string, it's a new tag created by the user
-          return { name: item, uuid: '' }; // Ensure uuid is empty
-        } else if (item.uuid === item.name) {
-          // If the uuid matches the name, it's likely a new tag that needs an empty uuid
-          return { name: item.name, uuid: '' };
-        } else {
-          // If the item is an object, it’s an existing tag
-          return item;
-        }
-      });
-
-      // Update the state only for the specific row (ingredient)
-      setIngredientTags((prevTags) => ({
-        ...prevTags,
-        [rowId]: tags,
-      }));
-
-      // Update the editedValues with the new tags
-      setEditedValues((prevValues) => ({
-        ...prevValues,
-        tag_details: tags,
-      }));
     };
 
     // Handle for Popups
@@ -723,12 +676,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       justifyContent: 'center',
     };
 
-    useEffect(() => {
-      reloadInventoryData();
-      reloadTagList();
-      reloadRestaurantSuppliers();
-    }, [reloadInventoryData, reloadTagList, reloadRestaurantSuppliers]);
-
     const columns: ColumnDefinitionType<Ingredient, keyof Ingredient>[] = [
       {
         key: 'id',
@@ -792,8 +739,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             : [];
 
           // Use the row-specific tags if available, otherwise fall back to initialSelectedTags
-          const autocompleteValue =
-            ingredientTags[row.id] || initialSelectedTags;
+          const autocompleteValue = initialSelectedTags;
 
           return row.tagUUID &&
             Array.isArray(row.tagUUID) &&
@@ -1827,7 +1773,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                               }),
                             }}
                             value={
-                              // Check if the supplier's unit_uuid exists; if it's blank, show unit_name
                               detail.supplier_unit
                                 ? {
                                     label: detail.supplier_unit_name,
@@ -1875,11 +1820,26 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                               lighter
                               value={detail.conversion_factor}
                               onChange={(event) => {
-                                const updatedDetails = [
-                                  ...editedValues.supplier_details,
-                                ];
-                                updatedDetails[index].conversion_factor =
+                                const updatedConversionFactor =
                                   event.target.value;
+
+                                const updatedDetails =
+                                  editedValues.supplier_details.map(
+                                    (supplierDetail) => {
+                                      // If supplier_unit matches, update the conversion factor for all suppliers with the same unit
+                                      if (
+                                        supplierDetail.supplier_unit ===
+                                        detail.supplier_unit
+                                      ) {
+                                        return {
+                                          ...supplierDetail,
+                                          conversion_factor:
+                                            updatedConversionFactor,
+                                        };
+                                      }
+                                      return supplierDetail;
+                                    }
+                                  );
 
                                 setEditedValues({
                                   ...editedValues,
@@ -2463,6 +2423,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             </div>
           </SidePanel>
         )}
+
         <CustomPagination
           shape="rounded"
           count={Math.ceil((filteredIngredients?.length || 0) / ITEMS_PER_PAGE)}
