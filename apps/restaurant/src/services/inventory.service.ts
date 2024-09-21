@@ -213,6 +213,29 @@ const updateIngredient = (ingredient: Ingredient) => {
   );
 };
 
+const getUnits = async (restaurantUUID: string): Promise<Unit[]> => {
+  try {
+    const res = await axiosClient.get(`/units/${restaurantUUID}`);
+
+    // Check if the response data is valid
+    if (!Array.isArray(res.data)) {
+      console.error('Unexpected response format:', res.data);
+      return [];
+    }
+
+    // Map the response data to the Unit array
+    const units: Unit[] = res.data.map((unitData: any) => ({
+      unit_name: unitData.unit_name,
+      unit_uuid: unitData.unit_uuid,
+    }));
+
+    return units;
+  } catch (error) {
+    console.error('Error fetching units:', error);
+    return [];
+  }
+};
+
 const getIngredientPreview = (ingredientId: string) => {
   return axiosClient.get<string[]>('/inventory/' + ingredientId + '/preview');
 };
@@ -361,6 +384,7 @@ export const inventoryService = {
   deleteIngredient,
   uploadCsvFile,
   getPreviewUploadedCsv,
+  getUnits,
   validUploadedCsv,
   uploadImgFile,
   submitInvoice,
