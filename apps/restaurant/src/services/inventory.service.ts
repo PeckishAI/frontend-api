@@ -401,6 +401,7 @@ const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
   return axiosClient.post('/documents/' + restaurantUUID, invoiceData);
 };
 
+
 export const inventoryService = {
   getIngredientList,
   getUnits,
