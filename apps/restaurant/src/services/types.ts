@@ -43,7 +43,7 @@ export type Ingredient = {
   recipes?: Recipe[];
   recipe_count?: number;
   stock_history?: Stock[];
-  unit_name?: number;
+  unit_name?: string;
   unit_uuid?: string;
   conversion_factor: string;
 };

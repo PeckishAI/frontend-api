@@ -39,7 +39,7 @@ const AddPreparationSchema = z.object({
           required_error: 'Quantity is required',
           invalid_type_error: 'Quantity is required',
         }),
-        conversion_factor: z.number().optional(),
+        conversion_factor: z.string().optional(),
         recipe_unit_name: z
           .string()
           .min(1, { message: 'Unit name is required' }),

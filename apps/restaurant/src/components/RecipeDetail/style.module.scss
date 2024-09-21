@@ -29,7 +29,12 @@
     overflow-y: auto;
     max-height: calc(100vh - 226px);
   }
-
+  .conversionFactorCell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Ensure conversion_factor is centered, and icon is on the right */
+    width: 100%; /* Make sure the div takes full width */
+  }
   .metrics {
     display: flex;
     justify-content: space-between;
