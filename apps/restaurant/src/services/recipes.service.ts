@@ -50,9 +50,13 @@ const getRecipes = async (
     ingredients: res.data[key]['ingredients'].map((ingredient: any) => ({
       uuid: ingredient['ingredient_uuid'],
       name: ingredient['ingredient_name'],
+      conversion_factor: ingredient['conversion_factor'],
+      unit_name: ingredient['unit_name'],
+      unit_uuid: ingredient['unit_uuid'],
+      recipe_unit_name: ingredient['recipe_unit_name'],
+      recipe_unit_uuid: ingredient['recipe_unit_uuid'],
       quantity: ingredient['quantity'],
       cost: ingredient['cost'],
-      unit: ingredient['unit'],
     })),
   }));
 
@@ -80,15 +84,18 @@ const updateRecipe = (
   recipeUUID: string,
   data: FormRecipe
 ) => {
-  return axiosClient.post('/recipe/' + recipeUUID + '/update', {
-    restaurant_uuid: restaurantUUID,
-    type: data.type,
-    recipe_name: data.name,
-    category: data.category,
-    portion_price: data.pricePerPortion,
-    portion_count: data.portionsPerBatch,
-    ingredients: data.ingredients,
-  });
+  return axiosClient.post(
+    'http://192.168.1.19:8089/recipe/' + recipeUUID + '/update',
+    {
+      restaurant_uuid: restaurantUUID,
+      type: data.type,
+      recipe_name: data.name,
+      category: data.category,
+      portion_price: data.pricePerPortion,
+      portion_count: data.portionsPerBatch,
+      ingredients: data.ingredients,
+    }
+  );
 };
 
 const createRecipe = async (

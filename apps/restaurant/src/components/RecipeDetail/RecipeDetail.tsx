@@ -91,19 +91,33 @@ const RecipeDetail = (props: Props) => {
                   key: 'cost',
                   header: t('totalCost'),
                   renderItem: ({ row }) =>
-                    row.cost
-                      ? formatCurrency(row.cost * row.quantity, currencyISO)
+                    row.cost && row.conversion_factor && row.quantity
+                      ? formatCurrency(
+                          (row.cost / (row.conversion_factor || 1)) *
+                            row.quantity,
+                          currencyISO
+                        )
                       : '-',
                 },
                 {
                   key: 'units',
                   header: t('units'),
-                  renderItem: ({ row }) => `${row.units || ''} `,
+                  renderItem: ({ row }) => `${row.recipe_unit_name || ''} `,
                 },
                 {
                   key: 'conversion_factor',
                   header: t('conversion_factor'),
-                  renderItem: ({ row }) => `${row.conversion_factor || ''}`,
+                  renderItem: ({ row }) => (
+                    <div className={styles.conversionFactorCell}>
+                      {row.conversion_factor || ''}
+
+                      <IconButton
+                        icon={<i className="fa-solid fa-circle-info"></i>}
+                        tooltipMsg={`from ${row.unit_name} to ${row.recipe_unit_name}`}
+                        className={styles.info}
+                      />
+                    </div>
+                  ),
                 },
               ]}
             />

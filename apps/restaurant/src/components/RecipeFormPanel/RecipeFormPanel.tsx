@@ -46,8 +46,12 @@ const RecipeSchema = z
           .positive('positive-number')
           .nullable()
           .refine((val) => val !== null, 'required'),
-        unit_name: z.string().min(1, { message: 'Unit name is required' }),
-        unit_uuid: z.string().optional(), // Optional if unit is created new
+        unit_name: z.string().optional(),
+        unit_uuid: z.string().optional(),
+        recipe_unit_name: z
+          .string()
+          .min(1, { message: 'recipe Unit name is required' }),
+        recipe_unit_uuid: z.string().optional(),
       })
     ),
   })
@@ -122,6 +126,11 @@ const RecipeFormPanel = (props: Props) => {
           ingredients: (props.recipe?.ingredients ?? []).map((ing) => ({
             selectedUUID: ing.uuid,
             quantity: ing.quantity,
+            unit_name: ing.unit_name || '',
+            unit_uuid: ing.unit_uuid || '',
+            conversion_factor: ing.conversion_factor || '',
+            recipe_unit_name: ing.recipe_unit_name,
+            recipe_unit_uuid: ing.recipe_unit_uuid,
             type: ing.type,
           })),
         });
@@ -191,6 +200,8 @@ const RecipeFormPanel = (props: Props) => {
         ingredient_uuid: ing.selectedUUID,
         unit_name: ing.unit_name || null,
         unit_uuid: ing.unit_uuid || null,
+        recipe_unit_uuid: ing.recipe_unit_uuid,
+        recipe_unit_name: ing.recipe_unit_name,
         conversion_factor: ing.conversion_factor,
         quantity: ing.quantity ?? 0,
         type: ing.type,
@@ -426,6 +437,14 @@ const RecipeFormPanel = (props: Props) => {
                             `ingredients.${i}.type`,
                             selectedIngredient.type
                           );
+                          setValue(
+                            `ingredients.${i}.unit_uuid`,
+                            selectedIngredient.unit_uuid
+                          );
+                          setValue(
+                            `ingredients.${i}.unit_name`,
+                            selectedIngredient.unit_name
+                          );
                         }
                         onChange(selectedOption?.value ?? null);
                       }}
@@ -448,7 +467,7 @@ const RecipeFormPanel = (props: Props) => {
                   error={errors.ingredients?.[i]?.quantity?.message}
                 />
                 <Controller
-                  name={`ingredients.${i}.unit_name`}
+                  name={`ingredients.${i}.recipe_unit_name`}
                   control={control}
                   render={({ field: { onChange, value } }) => (
                     <CreatableSelect
@@ -463,31 +482,35 @@ const RecipeFormPanel = (props: Props) => {
                         if (selectedOption?.__isNew__) {
                           // If a new unit is created, set only unit_name
                           setValue(
-                            `ingredients.${i}.unit_name`,
+                            `ingredients.${i}.recipe_unit_name`,
                             selectedOption.label
                           );
-                          setValue(`ingredients.${i}.unit_uuid`, undefined); // Clear uuid for new units
+                          setValue(
+                            `ingredients.${i}.recipe_unit_uuid`,
+                            undefined
+                          );
                         } else if (selectedOption) {
-                          // For selected units, set both unit_name and unit_uuid
                           setValue(
-                            `ingredients.${i}.unit_name`,
+                            `ingredients.${i}.recipe_unit_name`,
                             selectedOption.label
                           );
                           setValue(
-                            `ingredients.${i}.unit_uuid`,
+                            `ingredients.${i}.recipe_unit_uuid`,
                             selectedOption.value
                           );
                         } else {
-                          // If nothing is selected, clear both unit_name and unit_uuid
-                          setValue(`ingredients.${i}.unit_name`, '');
-                          setValue(`ingredients.${i}.unit_uuid`, undefined);
+                          setValue(`ingredients.${i}.recipe_unit_name`, '');
+                          setValue(
+                            `ingredients.${i}.recipe_unit_uuid`,
+                            undefined
+                          );
                         }
                       }}
                       value={
                         value
                           ? {
                               label: value,
-                              value: watch(`ingredients.${i}.unit_uuid`),
+                              value: watch(`ingredients.${i}.recipe_unit_uuid`),
                             }
                           : null
                       }
@@ -495,15 +518,23 @@ const RecipeFormPanel = (props: Props) => {
                   )}
                 />
 
-                <LabeledInput
-                  placeholder={t('conversion_factor')}
-                  type="number"
-                  lighter
-                  suffix={selectedIngredient?.conversion_factor}
-                  {...register(`ingredients.${i}.conversion_factor`)}
-                  error={errors?.ingredients?.conversion_factor?.message}
-                />
-
+                <div className={styles.IconContainer}>
+                  <LabeledInput
+                    placeholder={t('conversion_factor')}
+                    type="number"
+                    lighter
+                    suffix={selectedIngredient?.conversion_factor}
+                    {...register(`ingredients.${i}.conversion_factor`)}
+                    error={errors?.ingredients?.conversion_factor?.message}
+                  />
+                  <IconButton
+                    icon={<i className="fa-solid fa-circle-info"></i>}
+                    tooltipMsg={`from ${
+                      selectedIngredient?.unit_name || ''
+                    } to ${watch(`ingredients.${i}.recipe_unit_name`) || ''}`}
+                    className={styles.info}
+                  />
+                </div>
                 <p className={styles.ingredientCost}>
                   {formatCurrency(
                     ((selectedIngredient?.cost ?? 0) /
