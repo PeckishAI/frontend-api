@@ -16,7 +16,6 @@ type Props = {
 
 const RecipeDetail = (props: Props) => {
   const { t } = useTranslation();
-
   const [editRecipe, setEditRecipe] = useState<Recipe | null>(null);
   const [deleteRecipe, setDeleteRecipe] = useState<Recipe | null>(null);
   const { currencyISO } = useRestaurantCurrency();
@@ -95,6 +94,16 @@ const RecipeDetail = (props: Props) => {
                     row.cost
                       ? formatCurrency(row.cost * row.quantity, currencyISO)
                       : '-',
+                },
+                {
+                  key: 'units',
+                  header: t('units'),
+                  renderItem: ({ row }) => `${row.units || ''} `,
+                },
+                {
+                  key: 'conversion_factor',
+                  header: t('conversion_factor'),
+                  renderItem: ({ row }) => `${row.conversion_factor || ''}`,
                 },
               ]}
             />
