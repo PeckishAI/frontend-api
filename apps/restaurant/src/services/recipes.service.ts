@@ -85,7 +85,7 @@ const updateRecipe = (
   data: FormRecipe
 ) => {
   return axiosClient.post(
-    'http://192.168.1.19:8089/recipe/' + recipeUUID + '/update',
+    '/recipe/' + recipeUUID + '/update',
     {
       restaurant_uuid: restaurantUUID,
       type: data.type,
