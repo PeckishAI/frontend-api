@@ -523,6 +523,7 @@ const RecipeFormPanel = (props: Props) => {
                     placeholder={t('conversion_factor')}
                     type="number"
                     lighter
+                    style={{ minWidth: '140px' }}
                     suffix={selectedIngredient?.conversion_factor}
                     {...register(`ingredients.${i}.conversion_factor`)}
                     error={errors?.ingredients?.conversion_factor?.message}

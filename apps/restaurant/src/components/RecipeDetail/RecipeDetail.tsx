@@ -109,8 +109,9 @@ const RecipeDetail = (props: Props) => {
                   header: t('conversion_factor'),
                   renderItem: ({ row }) => (
                     <div className={styles.conversionFactorCell}>
-                      {row.conversion_factor || ''}
-
+                      <span style={{ margin: '0 auto' }}>
+                        {row.conversion_factor || ''}
+                      </span>{' '}
                       <IconButton
                         icon={<i className="fa-solid fa-circle-info"></i>}
                         tooltipMsg={`from ${row.unit_name} to ${row.recipe_unit_name}`}
