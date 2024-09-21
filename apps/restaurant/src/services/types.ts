@@ -2,6 +2,26 @@ export type Supplier = {
   supplier_id: string;
   supplier_name: string;
   supplier_cost: number;
+  conversion_factor?: number;
+  supplier_unit: string;
+  supplier_unit_name: string;
+};
+
+export type Recipe = {
+  conversion_factor: number;
+  quantity: number;
+  recipe_name: string;
+  recipe_uuid: string;
+  unit_name: string;
+  unit_uuid: string;
+  from_unit_name: string;
+  to_unit_name: string;
+};
+
+export type Stock = {
+  event_type?: string | null;
+  quantity?: number | null;
+  unit_name?: string | null;
 };
 
 export type Ingredient = {
@@ -18,7 +38,14 @@ export type Ingredient = {
   actions?: void;
   quantity: number;
   restaurantUUID?: string;
+  deleted_recipe_ingredient_data?: string[];
   supplier_details?: Supplier[];
+  recipes?: Recipe[];
+  recipe_count?: number;
+  stock_history?: Stock[];
+  unit_name?: number;
+  unit_uuid?: string;
+  conversion_factor: string;
 };
 
 export type Tag = {
@@ -54,6 +81,11 @@ export type Invoice = {
   path?: string;
   amount?: number;
   sync_status?: string;
+};
+
+export type Unit = {
+  unit_name: string;
+  unit_uuid: string;
 };
 
 export type TransferForm = {

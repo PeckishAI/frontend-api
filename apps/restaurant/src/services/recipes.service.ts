@@ -24,6 +24,9 @@ export type Recipe = {
   ingredients: {
     uuid: string;
     name: string;
+    conversion_factor: string;
+    unit_name: string;
+    unit_uuid: string;
     quantity: number;
     unit: string;
     cost: number | null;
@@ -63,9 +66,12 @@ type FormRecipe = {
   portionsPerBatch: number;
   type: string;
   ingredients: {
-    ingredient_uuid: string;
+    ingredient_unit_uuid: string;
     quantity: number;
     type: string;
+    conversion_factor: number;
+    recipe_unit_name: string;
+    recipe_unit_uuid: string;
   }[];
 };
 
