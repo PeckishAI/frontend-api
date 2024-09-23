@@ -117,27 +117,23 @@
 }
 
 .IconContainer {
-  display: grid;
-  align-items: center;
-  grid-template-columns: repeat(2, 1fr);
-  // position: relative;
-  // background: transparent;
+  position: relative;
+  background: transparent;
 }
 .info {
-  // position: absolute;
-  // top: 65%;
-  // right: 10px;
-  // transform: translateY(-50%);
-  // background-color: transparent;
-  // border: none;
-  // cursor: pointer;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
-  // width: 24px;
-  // height: 24px;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
 }
-
 .info:hover {
   background-color: rgba(0, 0, 0, 0.05);
   border-radius: 50%;
