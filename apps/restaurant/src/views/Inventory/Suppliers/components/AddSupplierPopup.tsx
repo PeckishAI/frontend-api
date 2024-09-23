@@ -68,7 +68,7 @@ const AddSupplierPopup = (props: Props) => {
         name: props.editSupplier.name,
         email: props.editSupplier.email || '',
         phone: props.editSupplier.phone || '',
-        automaticInvitation: true,
+        // automaticInvitation: true,
       });
     } else {
       reset({
@@ -85,11 +85,14 @@ const AddSupplierPopup = (props: Props) => {
 
     if (props.mode === 'add') {
       const uuid = await supplierService
-        .createSupplier({
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-        })
+        .createSupplier(
+          {
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+          },
+          restaurantUUID
+        )
         .then((res) => res.supplier_uuid)
         .catch(() => null);
 
@@ -133,7 +136,7 @@ const AddSupplierPopup = (props: Props) => {
           : t('suppliers.addSupplier.edit_title')
       }
       subtitle={
-        props.mode === 'edit'
+        props.mode === 'add'
           ? t('suppliers.addSupplier.subtitle')
           : t('suppliers.addSupplier.edit_subtitle')
       }>

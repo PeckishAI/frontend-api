@@ -4,6 +4,7 @@ import {
   Ingredient,
   Invoice,
   InvoiceIngredient,
+  Unit,
 } from './index';
 
 const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
@@ -23,6 +24,7 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
       ...documentData,
       documentUUID: key,
       supplier_uuid: documentData.supplier_uuid,
+      supplier: documentData.supplier,
       sync_status: documentData.sync_status,
       ingredients: documentData.ingredients.map((ingredient: any) => ({
         mappedUUID: ingredient['mapping_uuid'],
@@ -63,14 +65,13 @@ const convertToBase64 = (file: File): Promise<string> => {
 const updateDocument = (
   restaurantUUID: string,
   documentUUID: string,
-  supplier_uuid: string,
   data: FormDocument
 ) => {
   return axiosClient.post('/documents/' + documentUUID + '/update', {
     restaurant_uuid: restaurantUUID,
     date: data.date,
+    supplier_uuid: data.supplier_uuid,
     supplier: data.supplier,
-    supplier_uuid: supplier_uuid,
     ingredients: data.ingredients,
     amount: data.amount,
   });
@@ -97,15 +98,20 @@ const sendInvoice = async (restaurantUUID: string, data: DocumentData[]) => {
   }
 };
 
-const deleteDocument = (documentId: string) => {
-  return axiosClient.post('/documents/' + documentId + '/delete');
+const deleteDocument = async (documentId: string) => {
+  try {
+    const response = await axiosClient.post(`/documents/${documentId}/delete`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    throw error;
+  }
 };
 
 const getIngredientList = async (
   restaurantUUID: string
 ): Promise<Ingredient[]> => {
   const res = await axiosClient.get('/inventory/' + restaurantUUID);
-  console.log('INGREDIENTS');
   console.log(res.data);
   console.log(res.data.length);
   const ingredients = Object.keys(res.data).map<Ingredient>((key) =>
@@ -131,36 +137,51 @@ const getIngredientList = async (
     })
   );
 
-  // const ingredients = Object.keys(res.data).map<Ingredient>((key) => {
-  //   try {
-  //     const data = res.data[key];
-  //     return {
-  //       id: key,
-  //       name: data['name'],
-  //       parLevel: data['par_level'],
-  //       actualStock: data['actual_stock'],
-  //       theoriticalStock: data['theoritical_stock'],
-  //       unit: data['unit'],
-  //       unitCost: data['cost'],
-  //       tagUUID: data['tag_uuid']?.map((uuid: string) => uuid) || [],
-  //       supplier_details: data['supplier_details'].map((supplier: any) => ({
-  //         supplier_id: supplier['supplier_id'],
-  //         supplier_name: supplier['supplier_name'],
-  //         supplier_cost: supplier['supplier_cost'],
-  //       })),
-  //       amount: data['amount'],
-  //       type: data['type'],
-  //     };
-  //   } catch (error) {
-  //     console.error(`Error processing key: ${key}`, data);
-  //     return null; // Optionally return null or some default value
-  //   }
-  // });
-
-  console.log(ingredients);
-
-  return ingredients;
+  return Object.keys(res.data).map<Ingredient>((key) => ({
+    id: key,
+    name: res.data[key]['name'],
+    parLevel: res.data[key]['par_level'],
+    actualStock: res.data[key]['actual_stock'],
+    theoriticalStock: res.data[key]['theoritical_stock'],
+    unit: res.data[key]['unit'],
+    unit_name: res.data[key]['unit_name'],
+    unit_uuid: res.data[key]['unit_uuid'],
+    recipe_count: res.data[key]['recipe_count'],
+    unitCost: res.data[key]['cost'],
+    tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
+    supplier_details: res.data[key]['supplier_details'].map(
+      (supplier: any) => ({
+        supplier_id: supplier['supplier_id'],
+        supplier_name: supplier['supplier_name'],
+        supplier_cost: supplier['supplier_cost'],
+        supplier_unit: supplier['supplier_unit'],
+        supplier_unit_name: supplier['supplier_unit_name'],
+        conversion_factor: supplier['conversion_factor'],
+      })
+    ),
+    stock_history: res.data[key]['stock_history'],
+    recipes: res.data[key]['recipes'].map((recipe: any) => ({
+      conversion_factor: recipe['conversion_factor'],
+      quantity: recipe['quantity'],
+      from_unit_name: recipe['from_unit_name'],
+      to_unit_name: recipe['to_unit_name'],
+      recipe_name: recipe['recipe_name'],
+      recipe_uuid: recipe['recipe_uuid'],
+      unit_name: recipe['unit_name'],
+      unit_uuid: recipe['unit_uuid'],
+    })),
+    amount: res.data[key]['amount'],
+    type: res.data[key]['type'],
+    quantity: res.data[key]['quantity'],
+  }));
 };
+
+// stock_history: res.data[key]['stock_history'].map((stock: any) => ({
+//   event_type: stock['event_type'],
+//   quantity: stock['quantity'],
+//   unit_name: stock['unit_name'],
+// })),
+
 
 const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
   const FormattedIngredient = {
@@ -169,9 +190,9 @@ const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
     tag_details: ingredient.tag_details,
     par_level: ingredient.parLevel,
     actual_stock: ingredient.actualStock,
-    unit: ingredient.unit,
+    unit_name: ingredient.unit_name,
+    unit_uuid: ingredient.unit_uuid,
     supplier_details: ingredient.supplier_details,
-    cost: ingredient.unitCost,
   };
 
   return axiosClient.post('/inventory/' + restaurantUUID, FormattedIngredient);
@@ -187,8 +208,10 @@ const getOnlyIngredientList = async (
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
     name: res.data[key]['name'],
-    unit: res.data[key]['unit'],
-    unitCost: res.data[key]['cost'],
+
+    unit_uuid: res.data[key]['unit_uuid'],
+    unit_name: res.data[key]['unit_name'],
+    cost: res.data[key]['cost'],
     type: res.data[key]['type'],
   }));
 };
@@ -202,7 +225,11 @@ const updateIngredient = (ingredient: Ingredient) => {
     actual_stock: ingredient.actualStock,
     unit: ingredient.unit,
     supplier_details: ingredient.supplier_details,
+    deleted_recipe_ingredient_data: ingredient?.deleted_recipe_ingredient_data,
+    recipes: ingredient.recipes,
     cost: ingredient.unitCost,
+    unit_name: ingredient.unit_name,
+    unit_uuid: ingredient.unit_uuid,
     restaurant_uuid: ingredient.restaurantUUID,
   };
 
@@ -210,6 +237,29 @@ const updateIngredient = (ingredient: Ingredient) => {
     '/inventory/' + ingredient.id + '/update',
     ingredientFormated
   );
+};
+
+const getUnits = async (restaurantUUID: string): Promise<Unit[]> => {
+  try {
+    const res = await axiosClient.get(`/units/${restaurantUUID}`);
+
+    // Check if the response data is valid
+    if (!Array.isArray(res.data)) {
+      console.error('Unexpected response format:', res.data);
+      return [];
+    }
+
+    // Map the response data to the Unit array
+    const units: Unit[] = res.data.map((unitData: any) => ({
+      unit_name: unitData.unit_name,
+      unit_uuid: unitData.unit_uuid,
+    }));
+
+    return units;
+  } catch (error) {
+    console.error('Error fetching units:', error);
+    return [];
+  }
 };
 
 const getIngredientPreview = (ingredientId: string) => {
@@ -351,8 +401,10 @@ const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
   return axiosClient.post('/documents/' + restaurantUUID, invoiceData);
 };
 
+
 export const inventoryService = {
   getIngredientList,
+  getUnits,
   getOnlyIngredientList,
   addIngredient,
   updateIngredient,

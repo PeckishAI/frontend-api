@@ -16,7 +16,6 @@ type Props = {
 
 const RecipeDetail = (props: Props) => {
   const { t } = useTranslation();
-
   const [editRecipe, setEditRecipe] = useState<Recipe | null>(null);
   const [deleteRecipe, setDeleteRecipe] = useState<Recipe | null>(null);
   const { currencyISO } = useRestaurantCurrency();
@@ -25,6 +24,7 @@ const RecipeDetail = (props: Props) => {
     <>
       <SidePanel
         isOpen={props.recipe !== null}
+        width="65%"
         onRequestClose={() => props.onRequestClose()}>
         <div className={styles.recipeDetail}>
           <h2 className={styles.name}>{props.recipe?.name}</h2>
@@ -92,9 +92,34 @@ const RecipeDetail = (props: Props) => {
                   key: 'cost',
                   header: t('totalCost'),
                   renderItem: ({ row }) =>
-                    row.cost
-                      ? formatCurrency(row.cost * row.quantity, currencyISO)
+                    row.cost && row.conversion_factor && row.quantity
+                      ? formatCurrency(
+                          (row.cost / (row.conversion_factor || 1)) *
+                            row.quantity,
+                          currencyISO
+                        )
                       : '-',
+                },
+                {
+                  key: 'units',
+                  header: t('units'),
+                  renderItem: ({ row }) => `${row.recipe_unit_name || ''} `,
+                },
+                {
+                  key: 'conversion_factor',
+                  header: t('conversion_factor'),
+                  renderItem: ({ row }) => (
+                    <div className={styles.conversionFactorCell}>
+                      <span style={{ margin: '0 auto' }}>
+                        {row.conversion_factor || ''}
+                      </span>{' '}
+                      <IconButton
+                        icon={<i className="fa-solid fa-circle-info"></i>}
+                        tooltipMsg={`from ${row.recipe_unit_name} to ${row.unit_name}`}
+                        className={styles.info}
+                      />
+                    </div>
+                  ),
                 },
               ]}
             />

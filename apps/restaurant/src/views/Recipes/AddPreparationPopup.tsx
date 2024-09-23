@@ -1,14 +1,22 @@
-import { Button, Checkbox, LabeledInput, Popup, Select } from 'shared-ui';
+import {
+  Button,
+  Checkbox,
+  IconButton,
+  LabeledInput,
+  Popup,
+  Select,
+} from 'shared-ui';
 import styles from './AddPreparationPopup.module.scss';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
-import { Recipe, recipesService } from '../../services';
+import { inventoryService, Recipe, recipesService } from '../../services';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import { useIngredients } from '../../services/hooks';
 import { FaPlus, FaTrash } from 'react-icons/fa';
+import CreatableSelect from 'react-select/creatable';
 
 const AddPreparationSchema = z.object({
   category: z.string({
@@ -24,6 +32,7 @@ const AddPreparationSchema = z.object({
     required_error: 'Price per portion is required',
     invalid_type_error: 'Price per portion is required',
   }),
+
   ingredients: z
     .array(
       z.object({
@@ -37,7 +46,13 @@ const AddPreparationSchema = z.object({
           required_error: 'Quantity is required',
           invalid_type_error: 'Quantity is required',
         }),
+        conversion_factor: z.string().optional(),
+        recipe_unit_name: z
+          .string()
+          .min(1, { message: 'Unit name is required' }),
+        recipe_unit_uuid: z.string().optional(),
         type: z.string().optional(),
+        ingredient_unit_uuid: z.string().optional(),
       })
     )
     .min(1, { message: 'At least one ingredient is required' }),
@@ -61,6 +76,7 @@ const AddPreparationPopup = (props: Props) => {
   const restaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
+  const [unitname, setUnitName] = useState([]);
 
   const {
     register,
@@ -73,7 +89,9 @@ const AddPreparationPopup = (props: Props) => {
   } = useForm<PreparationForm>({
     resolver: zodResolver(AddPreparationSchema),
     defaultValues: {
-      ingredients: [{ ingredient_uuid: '', quantity: 0, type: '' }],
+      ingredients: [
+        { ingredient_uuid: '', quantity: 0, type: '', conversion_factor: 0 },
+      ],
     },
   });
 
@@ -87,6 +105,25 @@ const AddPreparationPopup = (props: Props) => {
     name: 'ingredients',
   });
 
+  function reloadUnits() {
+    if (!restaurantUUID) return;
+
+    inventoryService
+      .getUnits(restaurantUUID)
+      .then((res) => {
+        setUnitName(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        // setLoadingData(false);
+      });
+  }
+  useEffect(() => {
+    reloadUnits();
+  }, [restaurantUUID]);
+
   useEffect(() => {
     if (!props.isVisible) {
       reset();
@@ -99,8 +136,13 @@ const AddPreparationPopup = (props: Props) => {
       const selectedIngredient = props.ingredients.find(
         (ing) => ing.id === ingredient_uuid
       );
+
       if (selectedIngredient) {
         setValue(`ingredients.${index}.type`, selectedIngredient.type || '');
+        setValue(
+          `ingredients.${index}.ingredient_unit_uuid`,
+          selectedIngredient.unit_uuid || ''
+        );
       }
     });
   }, [watch('ingredients'), props.ingredients, setValue]);
@@ -146,24 +188,33 @@ const AddPreparationPopup = (props: Props) => {
     <Popup
       isVisible={props.isVisible}
       onRequestClose={props.onRequestClose}
-      maxWidth={'47%'}
+      maxWidth={'70%'}
       title={
         props.selectedTab === 1
           ? t('recipes.addPreparation.title')
           : t('recipes.addPreparation.recipe_title')
       }>
       <form onSubmit={handleSubmitForm}>
-        <div className={styles.inputContainer}>
-          <Controller
-            control={control}
-            name="category"
-            render={({
-              field: { onChange, name, onBlur, ref, value },
-              fieldState: { error },
-            }) => (
-              <>
-                {' '}
-                <div className={styles.selectContainer}>
+        <div className={styles.form}>
+          <div className={styles.inputContainer}>
+            <div>
+              <LabeledInput
+                lighter
+                placeholder={t('recipes.editPanel.fields.recipeName')}
+                type="text"
+                error={errors.recipe_name?.message}
+                {...register('recipe_name')}
+              />
+            </div>
+            <Controller
+              control={control}
+              name="category"
+              render={({
+                field: { onChange, name, onBlur, ref, value },
+                fieldState: { error },
+              }) => (
+                <>
+                  {' '}
                   <Select
                     size="large"
                     isSearchable={false}
@@ -192,143 +243,241 @@ const AddPreparationPopup = (props: Props) => {
                       {errors.category?.message}
                     </div>
                   )}
-                </div>
-              </>
-            )}
-          />
-          <LabeledInput
-            lighter
-            placeholder={t('recipes.editPanel.fields.recipeName')}
-            type="text"
-            error={errors.recipe_name?.message}
-            {...register('recipe_name')}
-          />
-          <LabeledInput
-            lighter
-            placeholder={t('recipes.editPanel.fields.portionsPerBatch')}
-            type="number"
-            step="any"
-            error={errors.portionsPerBatch?.message}
-            {...register('portionsPerBatch', { valueAsNumber: true })}
-          />
-          <LabeledInput
-            lighter
-            placeholder={t('recipes.editPanel.fields.pricePerPortion')}
-            type="number"
-            step="any"
-            error={errors.pricePerPortion?.message}
-            {...register('pricePerPortion', { valueAsNumber: true })}
-          />
+                </>
+              )}
+            />
+            <LabeledInput
+              lighter
+              placeholder={t('recipes.editPanel.fields.portionsPerBatch')}
+              type="number"
+              step="any"
+              error={errors.portionsPerBatch?.message}
+              {...register('portionsPerBatch', { valueAsNumber: true })}
+            />
+            <LabeledInput
+              lighter
+              placeholder={t('recipes.editPanel.fields.pricePerPortion')}
+              type="number"
+              step="any"
+              error={errors.pricePerPortion?.message}
+              {...register('pricePerPortion', { valueAsNumber: true })}
+            />
+          </div>
+          <div className={styles.ingredientContainer}>
+            {ingredientFields.map((field, index) => {
+              const ingredient_uuid = watch(
+                `ingredients.${index}.ingredient_uuid`
+              );
+              const selectedIngredient = props.ingredients.find(
+                (ing) => ing.id === ingredient_uuid
+              );
 
-          {ingredientFields.map((field, index) => {
-            const ingredient_uuid = watch(
-              `ingredients.${index}.ingredient_uuid`
-            );
-            const selectedIngredient = props.ingredients.find(
-              (ing) => ing.id === ingredient_uuid
-            );
-
-            return (
-              <>
-                <div key={field.id}>
-                  <div>
-                    <Controller
-                      control={control}
-                      name={`ingredients.${index}.ingredient_uuid`}
-                      render={({
-                        field: { onChange, onBlur, ref, value },
-                        fieldState: { error },
-                      }) => (
-                        <Select
-                          size="large"
-                          isSearchable={true} // Enable search functionality
-                          placeholder={t(
-                            'recipes.editPanel.table.ingredientSelect'
-                          )}
-                          options={groupedSelectOptions} // Use grouped options
-                          name={name}
-                          onChange={(selectedOption) => {
-                            onChange(selectedOption?.value ?? '');
-                            const selected = props.ingredients.find(
-                              (ing) => ing.id === selectedOption?.value
-                            );
-                            if (selected) {
-                              setValue(
-                                `ingredients.${index}.type`,
-                                selected.type || ''
+              return (
+                <>
+                  <div key={field.id}>
+                    <div>
+                      <Controller
+                        control={control}
+                        name={`ingredients.${index}.ingredient_uuid`}
+                        render={({
+                          field: { onChange, onBlur, ref, value },
+                        }) => (
+                          <Select
+                            size="large"
+                            isSearchable={true}
+                            placeholder={t(
+                              'recipes.editPanel.table.ingredientSelect'
+                            )}
+                            options={groupedSelectOptions}
+                            onChange={(selectedOption) => {
+                              onChange(selectedOption?.value ?? '');
+                              const selected = props.ingredients.find(
+                                (ing) => ing.id === selectedOption?.value
                               );
+                              if (selected) {
+                                setValue(
+                                  `ingredients.${index}.type`,
+                                  selected.type || ''
+                                );
+                                setValue(
+                                  `ingredients.${index}.ingredient_unit_uuid`,
+                                  selected.unit_uuid || ''
+                                ); // Set unit_uuid here
+                              }
+                            }}
+                            onBlur={onBlur}
+                            value={
+                              Object.values(props.ingredients)
+                                .map((item) => ({
+                                  label: item.name,
+                                  value: item.id,
+                                }))
+                                .find((option) => option.value === value) ??
+                              null
                             }
-                          }}
-                          onBlur={onBlur}
-                          value={
-                            Object.values(props.ingredients)
-                              .map((item) => ({
-                                label: item.name,
-                                value: item.id,
-                              }))
-                              .find((option) => option.value === value) ?? null
+                            styles={{
+                              menu: (provided) => ({
+                                ...provided,
+                                overflowY: 'auto',
+                              }),
+                              control: (provided) => ({
+                                ...provided,
+                                minWidth: '200px',
+                              }),
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <Controller
+                    control={control}
+                    name={`ingredients.${index}.recipe_unit_uuid`}
+                    styles={{
+                      menu: (provided) => ({
+                        ...provided,
+                        overflowY: 'auto',
+                      }),
+                      control: (provided) => ({
+                        ...provided,
+                        minWidth: '200px',
+                      }),
+                      multiValue: (provided) => ({
+                        ...provided,
+                        backgroundColor: '#5E72E4',
+                        color: '#FFFFFF',
+                        borderRadius: '12px',
+                      }),
+                      multiValueLabel: (provided) => ({
+                        ...provided,
+                        color: '#ffffff',
+                        borderRadius: '12px',
+                      }),
+                      multiValueRemove: (provided) => ({
+                        ...provided,
+                        color: '#ffffff',
+                        ':hover': {
+                          backgroundColor: '#b5adad',
+                          borderRadius: '20px',
+                          color: '#ffffff',
+                        },
+                      }),
+                    }}
+                    render={({ field: { onChange } }) => (
+                      <CreatableSelect
+                        placeholder={t('Select a unit')}
+                        options={unitname.map((unit) => ({
+                          label: unit.unit_name,
+                          value: unit.unit_uuid,
+                        }))}
+                        styles={{
+                          menuList: (provided) => ({
+                            ...provided,
+                            maxHeight: '200px',
+                            overflowY: 'auto',
+                          }),
+                          option: (provided, state) => ({
+                            ...provided,
+                            backgroundColor: state.isSelected
+                              ? '#007BFF'
+                              : state.isFocused
+                              ? '#dbe1df'
+                              : provided.backgroundColor,
+                            color: state.isSelected
+                              ? '#FFFFFF'
+                              : state.isFocused
+                              ? '#000000'
+                              : provided.color,
+                          }),
+                          container: (provided) => ({
+                            ...provided,
+                            overflow: 'visible',
+                          }),
+                        }}
+                        className={styles.unitInput}
+                        isCreatable
+                        value={
+                          watch(`ingredients.${index}.recipe_unit_name`)
+                            ? {
+                                label:
+                                  watch(
+                                    `ingredients.${index}.recipe_unit_name`
+                                  ) || 'Select a unit',
+                                value:
+                                  watch(
+                                    `ingredients.${index}.recipe_unit_uuid`
+                                  ) || null,
+                              }
+                            : null
+                        }
+                        onChange={(selectedOption, actionMeta) => {
+                          if (actionMeta.action === 'create-option') {
+                            setValue(
+                              `ingredients.${index}.recipe_unit_name`,
+                              selectedOption.label
+                            );
+                            setValue(
+                              `ingredients.${index}.recipe_unit_uuid`,
+                              ''
+                            );
+                          } else {
+                            setValue(
+                              `ingredients.${index}.recipe_unit_name`,
+                              selectedOption?.label || ''
+                            );
+                            setValue(
+                              `ingredients.${index}.recipe_unit_uuid`,
+                              selectedOption?.value || ''
+                            );
                           }
-                          styles={{
-                            menu: (provided) => ({
-                              ...provided,
-                              overflowY: 'auto',
-                            }),
-                            control: (provided) => ({
-                              ...provided,
-                              minWidth: '200px',
-                            }),
-                          }}
-                        />
-                      )}
+                        }}
+                        isClearable
+                      />
+                    )}
+                  />
+                  <div className={styles.IconContainer}>
+                    <LabeledInput
+                      placeholder={t('conversion_factor')}
+                      type="number"
+                      lighter
+                      {...register(`ingredients.${index}.conversion_factor`)}
+                      error={
+                        errors.ingredients?.[index]?.conversion_factor?.message
+                      }
+                    />
+                    <IconButton
+                      icon={<i className="fa-solid fa-circle-info"></i>}
+                      tooltipMsg={`from ${
+                        selectedIngredient?.unit_name || ''
+                      } to ${
+                        watch(`ingredients.${index}.recipe_unit_name`) || ''
+                      }`}
+                      className={styles.info}
                     />
                   </div>
-                </div>
-                <div className={styles.quantityCss}>
-                  <LabeledInput
-                    placeholder={t('quantity')}
-                    type="number"
-                    step=".00000001"
-                    lighter
-                    {...register(`ingredients.${index}.quantity`, {
-                      valueAsNumber: true,
-                    })}
-                    error={errors.ingredients?.[index]?.quantity?.message}
-                  />
-
-                  <LabeledInput
-                    placeholder={t('unit')}
-                    type="text"
-                    lighter
-                    value={selectedIngredient?.unit || ''}
-                    readOnly
-                    sx={{
-                      '& .MuiFilledInput-root': {
-                        border: '1px solid grey',
-                        borderRadius: 1,
-                        background: 'lightgrey',
-                        height: '40px',
-                        fontSize: '16px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        borderColor: 'grey.300',
-                        borderBottom: 'none',
-                      },
-                      '& .MuiFilledInput-root.Mui-disabled': {
-                        backgroundColor: 'lightgrey',
-                      },
-                    }}
-                  />
-
-                  {index > 0 && (
-                    <FaTrash
-                      className={styles.deleteButton}
-                      onClick={() => removeIngredient(index)}
+                  <div className={styles.quantityCss}>
+                    <LabeledInput
+                      placeholder={t('quantity')}
+                      type="number"
+                      step=".00000001"
+                      lighter
+                      {...register(`ingredients.${index}.quantity`, {
+                        valueAsNumber: true,
+                      })}
+                      error={errors.ingredients?.[index]?.quantity?.message}
                     />
-                  )}
-                </div>
-              </>
-            );
-          })}
+
+                    {index > 0 && (
+                      <FaTrash
+                        className={styles.deleteButton}
+                        onClick={() => removeIngredient(index)}
+                      />
+                    )}
+                  </div>
+                </>
+              );
+            })}
+          </div>
         </div>
         <div
           className={styles.addIngredientButton}

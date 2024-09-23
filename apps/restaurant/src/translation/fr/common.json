@@ -162,7 +162,9 @@
     "fields": {
       "pricePerPortion": "Prix par portion",
       "portionsPerBatch": "Portions par lot",
-      "recipeName":"Nom de la recette"
+      "recipeName":"Nom de la recette",
+      "conversion_factor":"Facteur de conversion"
+
     },
     "table": {
       "title": "Ingrédients :",
