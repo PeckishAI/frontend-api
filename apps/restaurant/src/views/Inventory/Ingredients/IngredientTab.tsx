@@ -517,6 +517,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     };
 
     const handleSaveEdit = () => {
+      setFirstTimeSelected(true);
       if (!selectedRestaurantUUID || !editedValues) return;
       props.setLoadingState(true);
       if (editingRowId && !addingRow) {
