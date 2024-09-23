@@ -94,6 +94,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
     const [addingRow, setAddingRow] = useState(false);
     const [editedValues, setEditedValues] = useState<Ingredient | null>(null);
+    const [firstTimeSelect, setFirstTimeSelected] = useState<any>(true);
     const [selectedIngredients, setSelectedIngredients] = useState<
       Ingredient[]
     >([]);
@@ -131,6 +132,34 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
+
+    useEffect(() => {
+      // Only run on initial mount or when tagList or editedValues change
+      if (editedValues?.tagUUID?.length > 0 && firstTimeSelect) {
+        // Create updateData based on existing tags
+        const updateData = editedValues.tagUUID
+          .map((option) => {
+            const existingTag = tagList.find((tag) => tag.uuid === option);
+            return existingTag
+              ? { name: existingTag.name, uuid: existingTag.uuid }
+              : option
+              ? { name: option, uuid: '' }
+              : null;
+          })
+          .filter(Boolean); // Remove any null values
+        setFirstTimeSelected(false);
+        // Only update state if the tag_details actually changed
+        if (
+          JSON.stringify(updateData) !==
+          JSON.stringify(editedValues.tag_details)
+        ) {
+          setEditedValues((prev) => ({
+            ...prev,
+            tag_details: updateData,
+          }));
+        }
+      }
+    }, [tagList, editedValues]);
 
     const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
@@ -1540,7 +1569,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                               name: existingTag
                                 ? existingTag.name
                                 : option.label,
-                              uuid: option.value,
+                              uuid: existingTag ? option.value : '',
                             };
                           }
                         });
