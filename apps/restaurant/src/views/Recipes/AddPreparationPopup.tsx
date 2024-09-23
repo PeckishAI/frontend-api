@@ -1,4 +1,11 @@
-import { Button, Checkbox, LabeledInput, Popup, Select } from 'shared-ui';
+import {
+  Button,
+  Checkbox,
+  IconButton,
+  LabeledInput,
+  Popup,
+  Select,
+} from 'shared-ui';
 import styles from './AddPreparationPopup.module.scss';
 import { useEffect, useState } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
@@ -428,15 +435,26 @@ const AddPreparationPopup = (props: Props) => {
                       />
                     )}
                   />
-                  <LabeledInput
-                    placeholder={t('conversion_factor')}
-                    type="number"
-                    lighter
-                    {...register(`ingredients.${index}.conversion_factor`)}
-                    error={
-                      errors.ingredients?.[index]?.conversion_factor?.message
-                    }
-                  />
+                  <div className={styles.IconContainer}>
+                    <LabeledInput
+                      placeholder={t('conversion_factor')}
+                      type="number"
+                      lighter
+                      {...register(`ingredients.${index}.conversion_factor`)}
+                      error={
+                        errors.ingredients?.[index]?.conversion_factor?.message
+                      }
+                    />
+                    <IconButton
+                      icon={<i className="fa-solid fa-circle-info"></i>}
+                      tooltipMsg={`from ${
+                        selectedIngredient?.unit_name || ''
+                      } to ${
+                        watch(`ingredients.${index}.recipe_unit_name`) || ''
+                      }`}
+                      className={styles.info}
+                    />
+                  </div>
                   <div className={styles.quantityCss}>
                     <LabeledInput
                       placeholder={t('quantity')}

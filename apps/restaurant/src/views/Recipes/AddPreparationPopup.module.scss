@@ -45,6 +45,25 @@
   font-size: 0.9rem;
 }
 
+.IconContainer {
+  position: relative;
+  background: transparent;
+}
+.info {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+}
+
 .buttonsContainer {
   display: flex;
   gap: 15px;
