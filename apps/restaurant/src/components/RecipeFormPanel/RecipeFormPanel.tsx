@@ -287,6 +287,7 @@ const RecipeFormPanel = (props: Props) => {
     <SidePanel
       className={styles.sidePanel}
       isOpen={props.isOpen}
+      width="50%"
       onRequestClose={props.onRequestClose}>
       <h1 className={styles.title}>
         {props.action === 'create' ? (
@@ -525,7 +526,7 @@ const RecipeFormPanel = (props: Props) => {
                     placeholder={t('conversion_factor')}
                     type="number"
                     lighter
-                    style={{ minWidth: '80px' }}
+                    style={{ minWidth: '175px' }}
                     suffix={selectedIngredient?.conversion_factor}
                     {...register(`ingredients.${i}.conversion_factor`)}
                     error={errors?.ingredients?.conversion_factor?.message}
