@@ -115,7 +115,7 @@ const RecipeDetail = (props: Props) => {
                       </span>{' '}
                       <IconButton
                         icon={<i className="fa-solid fa-circle-info"></i>}
-                        tooltipMsg={`from ${row.unit_name} to ${row.recipe_unit_name}`}
+                        tooltipMsg={`from ${row.recipe_unit_name} to ${row.unit_name}`}
                         className={styles.info}
                       />
                     </div>
