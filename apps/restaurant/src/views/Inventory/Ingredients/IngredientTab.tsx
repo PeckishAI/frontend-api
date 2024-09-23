@@ -2206,7 +2206,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                 </div>
 
                                 {/* Conversion Factor */}
-                                <div className={styles.inputContainer}>
+                                <div className={styles.IconContainer}>
                                   {isEditMode ? (
                                     <>
                                       <LabeledInput
@@ -2256,7 +2256,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                           <i className="fa-solid fa-circle-info"></i>
                                         }
                                         tooltipMsg={`from ${recipe.unit_name} to ${editedValues.unit_name}`}
-                                        className={styles.forecastIiconBtn}
+                                        className={styles.info}
                                       />
                                     </>
                                   ) : (
