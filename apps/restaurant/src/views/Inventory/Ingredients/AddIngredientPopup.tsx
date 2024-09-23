@@ -531,9 +531,14 @@ const AddIngredientPopup = (props: Props) => {
                         `supplier_details.${index}.conversion_factor`
                       )}
                     />
+
                     <IconButton
                       icon={<i className="fa-solid fa-circle-info"></i>}
-                      tooltipMsg={`from`}
+                      tooltipMsg={`from ${watch(
+                        `supplier_details.${index}.supplier_unit_name`
+                      )} to 
+                        ${watch('unit_name')}
+                      `}
                       className={styles.info}
                     />
                   </div>
