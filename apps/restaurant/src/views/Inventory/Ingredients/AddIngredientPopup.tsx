@@ -574,5 +574,4 @@ const AddIngredientPopup = (props: Props) => {
     </Popup>
   );
 };
-
 export default AddIngredientPopup;
