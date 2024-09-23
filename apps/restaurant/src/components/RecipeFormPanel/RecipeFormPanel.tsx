@@ -182,11 +182,13 @@ const RecipeFormPanel = (props: Props) => {
 
   const totalCost = watch('ingredients').reduce((acc, ing) => {
     const ingredient = ingredients.find((i) => i.id === ing.selectedUUID);
-    if (ingredient) {
-      acc += ingredient.unitCost * (ing.quantity ?? 0);
+    if (ingredient && ing.quantity && ing.conversion_factor) {
+      acc +=
+        (ingredient.cost / ing.conversion_factor) * ing.quantity;
     }
     return acc;
   }, 0);
+  
 
   // Benefit per batch
   const priceMargin =
@@ -539,7 +541,7 @@ const RecipeFormPanel = (props: Props) => {
                 <p className={styles.ingredientCost}>
                   {formatCurrency(
                     ((selectedIngredient?.cost ?? 0) /
-                      (rowField?.conversion_factor ?? 0)) *
+                    (rowField?.conversion_factor ?? 1)) *
                       rowField.quantity,
                     currencyISO
                   )}
