@@ -24,6 +24,7 @@ const RecipeDetail = (props: Props) => {
     <>
       <SidePanel
         isOpen={props.recipe !== null}
+        width="50%"
         onRequestClose={() => props.onRequestClose()}>
         <div className={styles.recipeDetail}>
           <h2 className={styles.name}>{props.recipe?.name}</h2>
