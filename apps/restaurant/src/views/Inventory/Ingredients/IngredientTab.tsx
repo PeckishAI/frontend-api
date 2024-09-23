@@ -1936,7 +1936,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                               <div className={styles.forecastIiconBtn}>
                                 <IconButton
                                   icon={
-                                    <i className="fa-solid fa-circle-info"></i>
+                                    <i className="fa-solid fa-circle-info"
+                                        style={{color: '#5e72e4' }}
+                                    ></i>  
                                   }
                                   tooltipMsg={`from ${detail.supplier_unit_name} to ${editedValues.unit_name}`}
                                   className={styles.forecastIiconBtn}
@@ -2319,7 +2321,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                   {recipe.conversion_factor}
                                   <IconButton
                                     icon={
-                                      <i className="fa-solid fa-circle-info"></i>
+                                      <i className="fa-solid fa-circle-info"
+                                      style={{color: '#5e72e4' }}
+                                      ></i>
                                     }
                                     tooltipMsg={`from ${recipe.unit_name} to ${editedValues.unit_name}`}
                                     className={styles.forecastIiconBtn}
