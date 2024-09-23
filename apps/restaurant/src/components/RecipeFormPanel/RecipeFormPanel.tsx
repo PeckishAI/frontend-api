@@ -285,7 +285,7 @@ const RecipeFormPanel = (props: Props) => {
     <SidePanel
       className={styles.sidePanel}
       isOpen={props.isOpen}
-      width="50%"
+      width="65%"
       onRequestClose={props.onRequestClose}>
       <h1 className={styles.title}>
         {props.action === 'create' ? (
