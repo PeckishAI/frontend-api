@@ -5,6 +5,7 @@
   "or": "ou",
 
   "quantity": "Quantité",
+  "conversion_factor":"Facteur de conversion",
   "receivedQty":"Quantité reçue",
   "price": "Prix",
   "cost": "Coût",
