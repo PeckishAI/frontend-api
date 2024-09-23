@@ -1,0 +1,43 @@
+.inputContainer {
+  width: 100%; /* Full width for flexibility */
+  min-width: 500px;
+  display: flex;
+}
+
+.buttonsContainer {
+  gap: 15px;
+  margin-top: 20px;
+
+  button {
+    flex: 1;
+  }
+}
+
+.quantity {
+  margin: 0 5px;
+  max-width: 100px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+}
+
+.fieldsContainer {
+  margin: 15px 50px 0px 7px;
+}
+
+.unitDisplay {
+  margin-top: 10px;
+}
+
+.buttonsContainer {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+
+  button {
+    flex: 1;
+  }
+}
+
+.autoCheckbox {
+  margin-top: 30px;
+}

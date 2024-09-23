@@ -41,6 +41,7 @@ import CustomPagination from '../../Overview/components/Pagination/CustomPaginat
 import CreatableSelect from 'react-select/creatable';
 import styles from '../Ingredients/IngredientTab.module.scss';
 import AddIngredientPopup from './AddIngredientPopup';
+import AddWastingPopup from '../Components/Wastes/Wastes';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -92,6 +93,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [tagList, setTagList] = useState<Tag[]>([]);
     const [editingRowId, setEditingRowId] = useState<string | null>();
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
+    const [wastingRowId, setWastingRowId] = useState<Ingredient>();
     const [addingRow, setAddingRow] = useState(false);
     const [editedValues, setEditedValues] = useState<Ingredient | null>(null);
     const [firstTimeSelect, setFirstTimeSelected] = useState<any>(true);
@@ -115,6 +117,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [page, setPage] = useState(1);
     const handleChange = (NewValue) => {
       setPage(NewValue);
+    };
+
+    const [isWastingPopupVisible, setWastingPopupVisible] = useState(false);
+    const handleWastingClick = (row: Ingredient) => {
+      setWastingRowId(row);
+      setWastingPopupVisible(true);
     };
 
     const ITEMS_PER_PAGE = 25; // Define items per page
@@ -1118,6 +1126,20 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           return (
             <div className="actions">
               {editingRowId === row.id ? (
+                <i
+                  className="fa-solid fa-times"
+                  data-tooltip-id="inventory-tooltip"
+                  data-tooltip-content={t('cancel')}
+                  onClick={handleCancelEdit}></i>
+              ) : (
+                <i
+                  className="fa-solid fa-recycle"
+                  data-tooltip-id="inventory-tooltip"
+                  data-tooltip-content={t('waste')}
+                  onClick={() => handleWastingClick(row)}></i>
+              )}
+
+              {editingRowId === row.id ? (
                 <>
                   {' '}
                   <i
@@ -1936,9 +1958,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                               <div className={styles.forecastIiconBtn}>
                                 <IconButton
                                   icon={
-                                    <i className="fa-solid fa-circle-info"
-                                        style={{color: '#5e72e4' }}
-                                    ></i>  
+                                    <i
+                                      className="fa-solid fa-circle-info"
+                                      style={{ color: '#5e72e4' }}></i>
                                   }
                                   tooltipMsg={`from ${detail.supplier_unit_name} to ${editedValues.unit_name}`}
                                   className={styles.forecastIiconBtn}
@@ -2321,9 +2343,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                   {recipe.conversion_factor}
                                   <IconButton
                                     icon={
-                                      <i className="fa-solid fa-circle-info"
-                                      style={{color: '#5e72e4' }}
-                                      ></i>
+                                      <i
+                                        className="fa-solid fa-circle-info"
+                                        style={{ color: '#5e72e4' }}></i>
                                     }
                                     tooltipMsg={`from ${recipe.unit_name} to ${editedValues.unit_name}`}
                                     className={styles.forecastIiconBtn}
@@ -2536,6 +2558,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           isVisible={showAddPopup}
           reloadInventoryData={reloadInventoryData}
           onRequestClose={() => setShowAddPopup(false)} // Close popup when requested
+        />
+
+        <AddWastingPopup
+          onRequestClose={() => setWastingPopupVisible(false)}
+          isVisible={isWastingPopupVisible}
+          onReload={reloadInventoryData} // Ensure the page reloads after waste is submitted
+          ingredient={wastingRowId} // Pass the ingredient to the popup
         />
       </>
     );
