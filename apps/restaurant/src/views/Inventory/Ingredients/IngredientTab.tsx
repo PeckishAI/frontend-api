@@ -731,7 +731,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         renderItem: ({ row }) => (
           <Checkbox
             checked={
-              selectedIngredients.find((i) => i.id === row.id) ? true : false
+              selectedIngredients?.find((i) => i.id === row.id) ? true : false
             }
             onCheck={() => handleSelectIngredient(row)}
           />
@@ -772,7 +772,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           // Find the initial selected tags based on the tagUUIDs
           const initialSelectedTags = row.tagUUID
             ? row.tagUUID
-                .map((uuid) => tagList.find((tag) => tag.uuid === uuid))
+                .map((uuid) => tagList?.find((tag) => tag.uuid === uuid))
                 .filter(Boolean)
             : [];
 
@@ -791,7 +791,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 overflowY: row.tagUUID.length > 6 ? 'scroll' : 'visible',
               }}>
               {row.tagUUID.map((uuid) => {
-                const tag = tagList.find((tag) => tag.uuid === uuid);
+                const tag = tagList?.find((tag) => tag.uuid === uuid);
                 if (tag) {
                   const displayName =
                     tag.name.length > 6
@@ -852,7 +852,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 overflowY: row.tagUUID.length > 6 ? 'scroll' : 'visible',
               }}>
               {row.tagUUID.map((uuid) => {
-                const tag = tagList.find((tag) => tag.uuid === uuid);
+                const tag = tagList?.find((tag) => tag.uuid === uuid);
                 if (tag) {
                   const displayName =
                     tag.name.length > 6
@@ -1481,7 +1481,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       />
                     ) : (
                       <span className={styles.value}>
-                        {unitname.find(
+                        {unitname?.find(
                           (unit) => unit.value === editedValues.unit_uuid
                         )?.label || editedValues.unit_name}
                       </span>
@@ -1590,7 +1590,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                             };
                           } else {
                             // This is an existing tag
-                            const existingTag = tagList.find(
+                            const existingTag = tagList?.find(
                               (tag) => tag.uuid === option.value
                             );
                             return {
@@ -1626,7 +1626,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       {editedValues?.tagUUID?.length > 0 ? (
                         <div className={styles.tagContainer}>
                           {editedValues?.tagUUID?.map((uuid) => {
-                            const tag = tagList.find(
+                            const tag = tagList?.find(
                               (tag) => tag.uuid === uuid
                             );
                             if (tag) {
