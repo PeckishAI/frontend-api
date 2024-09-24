@@ -41,6 +41,7 @@ import CustomPagination from '../../Overview/components/Pagination/CustomPaginat
 import CreatableSelect from 'react-select/creatable';
 import styles from '../Ingredients/IngredientTab.module.scss';
 import AddIngredientPopup from './AddIngredientPopup';
+import AddWastingPopup from '../Components/Wastes/Wastes';
 
 export const units: DropdownOptionsDefinitionType[] = [
   { label: 'kg', value: 'kg' },
@@ -69,6 +70,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [isIngredientsVisible, setIsIngredientsVisible] = useState(false);
     const [isQuantityVisible, setIsQuantityVisible] = useState(false);
     const [unitname, setUnitName] = useState([]);
+    const [unitError, setUnitError] = useState(false); // Error state for the unit field
+
     const [showAddPopup, setShowAddPopup] = useState(false);
 
     const toggleIngredientsVisibility = () => {
@@ -89,9 +92,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [inputValue, setInputValue] = useState<any>('');
 
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
-    const [tagList, setTagList] = useState<Tag[]>([]);
+    const [tagList, setTagList] = useState<Tag>();
     const [editingRowId, setEditingRowId] = useState<string | null>();
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
+    const [wastingRowId, setWastingRowId] = useState<Ingredient>();
     const [addingRow, setAddingRow] = useState(false);
     const [editedValues, setEditedValues] = useState<Ingredient | null>(null);
     const [firstTimeSelect, setFirstTimeSelected] = useState<any>(true);
@@ -115,6 +119,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [page, setPage] = useState(1);
     const handleChange = (NewValue) => {
       setPage(NewValue);
+    };
+
+    const [isWastingPopupVisible, setWastingPopupVisible] = useState(false);
+    const handleWastingClick = (row: Ingredient) => {
+      setWastingRowId(row);
+      setWastingPopupVisible(true);
     };
 
     const ITEMS_PER_PAGE = 25; // Define items per page
@@ -462,7 +472,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         setFilteredIngredients(ingredients);
       } catch (err) {
         if (err instanceof Error) {
-          togglePopupError(err.message);
+          // togglePopupError(err.message);
         } else {
           console.error('Unexpected error type:', err);
         }
@@ -518,6 +528,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const handleSaveEdit = () => {
       setFirstTimeSelected(true);
+
+      if (!editedValues?.unit_uuid) {
+        setUnitError(true); // Set error if unit is missing
+        return; // Prevent form submission
+      } else {
+        setUnitError(false); // Clear the error if unit is selected
+      }
+      // if (!editedValues?.unit_uuid) {
+      //   togglePopupError('Unit is required before saving.');
+      //   return; // Prevent form submission
+      // }
       if (!selectedRestaurantUUID || !editedValues) return;
       props.setLoadingState(true);
       if (editingRowId && !addingRow) {
@@ -723,7 +744,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         renderItem: ({ row }) => (
           <Checkbox
             checked={
-              selectedIngredients.find((i) => i.id === row.id) ? true : false
+              selectedIngredients?.find((i) => i.id === row.id) ? true : false
             }
             onCheck={() => handleSelectIngredient(row)}
           />
@@ -764,7 +785,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           // Find the initial selected tags based on the tagUUIDs
           const initialSelectedTags = row.tagUUID
             ? row.tagUUID
-                .map((uuid) => tagList.find((tag) => tag.uuid === uuid))
+                .map((uuid) => tagList?.find((tag) => tag.uuid === uuid))
                 .filter(Boolean)
             : [];
 
@@ -783,7 +804,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 overflowY: row.tagUUID.length > 6 ? 'scroll' : 'visible',
               }}>
               {row.tagUUID.map((uuid) => {
-                const tag = tagList.find((tag) => tag.uuid === uuid);
+                const tag = tagList?.find((tag) => tag.uuid === uuid);
                 if (tag) {
                   const displayName =
                     tag.name.length > 6
@@ -844,7 +865,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 overflowY: row.tagUUID.length > 6 ? 'scroll' : 'visible',
               }}>
               {row.tagUUID.map((uuid) => {
-                const tag = tagList.find((tag) => tag.uuid === uuid);
+                const tag = tagList?.find((tag) => tag.uuid === uuid);
                 if (tag) {
                   const displayName =
                     tag.name.length > 6
@@ -1032,11 +1053,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 gap: '10px',
                 padding: '5px',
               }}>
-              {row.supplier_details.map((detail, detailIndex) => (
-                <span key={detailIndex}>
-                  {detail.supplier_name || 'Select a supplier'}
-                </span>
-              ))}
+              {row &&
+              Array.isArray(row.supplier_details) &&
+              row.supplier_details.length > 0 ? (
+                row.supplier_details.map((detail, detailIndex) => (
+                  <span key={detailIndex}>
+                    {detail.supplier_name || 'Select a supplier'}
+                  </span>
+                ))
+              ) : (
+                <span>No supplier details available</span>
+              )}
             </div>
           );
           // }
@@ -1117,6 +1144,20 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         renderItem: ({ row, index }) => {
           return (
             <div className="actions">
+              {editingRowId === row.id ? (
+                <i
+                  className="fa-solid fa-times"
+                  data-tooltip-id="inventory-tooltip"
+                  data-tooltip-content={t('cancel')}
+                  onClick={handleCancelEdit}></i>
+              ) : (
+                <i
+                  className="fa-solid fa-recycle"
+                  data-tooltip-id="inventory-tooltip"
+                  data-tooltip-content={t('waste')}
+                  onClick={() => handleWastingClick(row)}></i>
+              )}
+
               {editingRowId === row.id ? (
                 <>
                   {' '}
@@ -1344,117 +1385,126 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                     </div>
 
                     {isEditMode ? (
-                      <CreatableSelect
-                        placeholder={
-                          editedValues?.unit_uuid
-                            ? t('unit')
-                            : t('Select a unit') // Show 'Select a unit' if unit_uuid is null
-                        }
-                        options={unitname.map((unit) => ({
-                          label: unit.unit_name,
-                          value: unit.unit_uuid,
-                        }))} // Map options for CreatableSelect
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            overflowY: 'auto',
-                          }),
-                          control: (provided, state) => ({
-                            ...provided,
-                            minWidth: '200px',
-                            boxShadow: state.isFocused
-                              ? 'none'
-                              : provided.boxShadow,
-                            borderColor: state.isFocused
-                              ? '#ced4da'
-                              : provided.borderColor,
-                            '&:hover': {
-                              borderColor: 'none',
-                            },
-                          }),
-                          menuList: (provided) => ({
-                            ...provided,
-                            maxHeight: '200px',
-                            overflowY: 'auto',
-                          }),
-                          option: (provided, state) => ({
-                            ...provided,
-                            backgroundColor: state.isSelected
-                              ? '#007BFF'
-                              : state.isFocused
-                              ? '#dbe1df'
-                              : provided.backgroundColor,
-                            color: state.isSelected
-                              ? '#FFFFFF'
-                              : state.isFocused
-                              ? '#000000'
-                              : provided.color,
-                          }),
-                          container: (provided) => ({
-                            ...provided,
-                            overflow: 'visible',
-                          }),
-                          multiValue: (provided) => ({
-                            ...provided,
-                            backgroundColor: '#5E72E4',
-                            color: '#FFFFFF',
-                            borderRadius: '12px',
-                          }),
-                          multiValueLabel: (provided) => ({
-                            ...provided,
-                            color: '#ffffff',
-                            borderRadius: '12px',
-                          }),
-                          multiValueRemove: (provided) => ({
-                            ...provided,
-                            color: '#ffffff',
-                            ':hover': {
-                              backgroundColor: '#b5adad',
-                              borderRadius: '12px',
-                              color: '#ffffff',
-                            },
-                          }),
-                        }}
-                        value={
-                          editedValues?.unit_name
-                            ? {
-                                label: editedValues.unit_name,
-                                value: editedValues.unit_uuid,
-                              }
-                            : unitname
-                                .map((unit) => ({
-                                  label: unit.unit_name,
-                                  value: unit.unit_uuid,
-                                }))
-                                .find(
-                                  (unit) =>
-                                    unit.value === editedValues?.unit_uuid
-                                ) || null
-                        } // Either display the new unit or find and display the selected unit by unit_uuid
-                        onChange={(selectedOption) => {
-                          if (selectedOption) {
-                            if (selectedOption.__isNew__) {
-                              // Do not update the unitname list, just update editedValues with new unit
-                              setEditedValues({
-                                ...editedValues,
-                                unit_uuid: '', // Keep unit_uuid blank
-                                unit_name: selectedOption.label, // Set the new unit_name
-                              });
-                            } else {
-                              // If existing unit is selected
-                              setEditedValues({
-                                ...editedValues,
-                                unit_uuid: selectedOption.value, // Set the selected unit's UUID
-                                unit_name: selectedOption.label, // Set the selected unit's name
-                              });
-                            }
+                      <>
+                        <CreatableSelect
+                          placeholder={
+                            editedValues?.unit_uuid
+                              ? t('unit')
+                              : t('Select a unit') // Show 'Select a unit' if unit_uuid is null
                           }
-                        }}
-                        isCreatable
-                      />
+                          options={unitname.map((unit) => ({
+                            label: unit.unit_name,
+                            value: unit.unit_uuid,
+                          }))} // Map options for CreatableSelect
+                          styles={{
+                            menu: (provided) => ({
+                              ...provided,
+                              overflowY: 'auto',
+                            }),
+                            control: (provided, state) => ({
+                              ...provided,
+                              minWidth: '200px',
+                              boxShadow: state.isFocused
+                                ? 'none'
+                                : provided.boxShadow,
+                              borderColor: state.isFocused
+                                ? '#ced4da'
+                                : provided.borderColor,
+                              '&:hover': {
+                                borderColor: 'none',
+                              },
+                            }),
+                            menuList: (provided) => ({
+                              ...provided,
+                              maxHeight: '200px',
+                              overflowY: 'auto',
+                            }),
+                            option: (provided, state) => ({
+                              ...provided,
+                              backgroundColor: state.isSelected
+                                ? '#007BFF'
+                                : state.isFocused
+                                ? '#dbe1df'
+                                : provided.backgroundColor,
+                              color: state.isSelected
+                                ? '#FFFFFF'
+                                : state.isFocused
+                                ? '#000000'
+                                : provided.color,
+                            }),
+                            container: (provided) => ({
+                              ...provided,
+                              overflow: 'visible',
+                            }),
+                            multiValue: (provided) => ({
+                              ...provided,
+                              backgroundColor: '#5E72E4',
+                              color: '#FFFFFF',
+                              borderRadius: '12px',
+                            }),
+                            multiValueLabel: (provided) => ({
+                              ...provided,
+                              color: '#ffffff',
+                              borderRadius: '12px',
+                            }),
+                            multiValueRemove: (provided) => ({
+                              ...provided,
+                              color: '#ffffff',
+                              ':hover': {
+                                backgroundColor: '#b5adad',
+                                borderRadius: '12px',
+                                color: '#ffffff',
+                              },
+                            }),
+                          }}
+                          value={
+                            editedValues?.unit_name
+                              ? {
+                                  label: editedValues.unit_name,
+                                  value: editedValues.unit_uuid,
+                                }
+                              : unitname
+                                  .map((unit) => ({
+                                    label: unit.unit_name,
+                                    value: unit.unit_uuid,
+                                  }))
+                                  .find(
+                                    (unit) =>
+                                      unit.value === editedValues?.unit_uuid
+                                  ) || null
+                          } // Either display the new unit or find and display the selected unit by unit_uuid
+                          onChange={(selectedOption) => {
+                            if (selectedOption) {
+                              if (selectedOption.__isNew__) {
+                                // Do not update the unitname list, just update editedValues with new unit
+                                setEditedValues({
+                                  ...editedValues,
+                                  unit_uuid: '', // Keep unit_uuid blank
+                                  unit_name: selectedOption.label, // Set the new unit_name
+                                });
+                              } else {
+                                // If existing unit is selected
+                                setEditedValues({
+                                  ...editedValues,
+                                  unit_uuid: selectedOption.value, // Set the selected unit's UUID
+                                  unit_name: selectedOption.label, // Set the selected unit's name
+                                });
+                              }
+                              setUnitError(false); // Clear error on valid selection
+                            }
+                          }}
+                          isCreatable
+                        />
+
+                        {unitError && (
+                          <div style={{ color: 'red', marginTop: '5px' }}>
+                            Unit is required.
+                          </div>
+                        )}
+                      </>
                     ) : (
                       <span className={styles.value}>
-                        {unitname.find(
+                        {unitname?.find(
                           (unit) => unit.value === editedValues.unit_uuid
                         )?.label || editedValues.unit_name}
                       </span>
@@ -1563,7 +1613,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                             };
                           } else {
                             // This is an existing tag
-                            const existingTag = tagList.find(
+                            const existingTag = tagList?.find(
                               (tag) => tag.uuid === option.value
                             );
                             return {
@@ -1599,7 +1649,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       {editedValues?.tagUUID?.length > 0 ? (
                         <div className={styles.tagContainer}>
                           {editedValues?.tagUUID?.map((uuid) => {
-                            const tag = tagList.find(
+                            const tag = tagList?.find(
                               (tag) => tag.uuid === uuid
                             );
                             if (tag) {
@@ -1809,39 +1859,63 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                     value: detail.supplier_unit,
                                   }
                                 : {
-                                    label:
-                                      detail.supplier_unit_name ||
-                                      'Select a unit',
-                                    value: detail.supplier_unit,
+                                    label: 'Select a unit',
+                                    value: null,
                                   }
                             }
                             onChange={(selectedOption) => {
                               const updatedDetails = [
                                 ...editedValues.supplier_details,
                               ];
-                              if (selectedOption.__isNew__) {
-                                // For newly created unit, keep supplier_unit_uuid blank and set supplier_unit_name
-                                updatedDetails[index] = {
-                                  ...updatedDetails[index],
-                                  supplier_unit: '', // Keep UUID blank for new unit
-                                  supplier_unit_name: selectedOption.label, // Set the new unit name
-                                };
-                              } else {
-                                updatedDetails[index] = {
-                                  ...updatedDetails[index],
-                                  supplier_unit: selectedOption.value, // Set the selected unit UUID
-                                  supplier_unit_name: selectedOption.label, // Set the selected unit name
-                                };
-                              }
 
-                              // Update the state and ensure re-render
-                              setEditedValues({
-                                ...editedValues,
-                                supplier_details: updatedDetails,
-                              });
+                              if (selectedOption.__isNew__) {
+                                // Create a new unit for this supplier only
+                                inventoryService
+                                  .createUnit(
+                                    selectedRestaurantUUID,
+                                    selectedOption.label
+                                  )
+                                  .then((newUnit) => {
+                                    const newUnitUUID = newUnit.uuid;
+
+                                    // Update only this specific supplier with the new unit
+                                    updatedDetails[index] = {
+                                      ...updatedDetails[index],
+                                      supplier_unit: newUnitUUID,
+                                      supplier_unit_name: selectedOption.label,
+                                    };
+
+                                    setEditedValues({
+                                      ...editedValues,
+                                      supplier_details: updatedDetails, // Only update this specific supplier
+                                    });
+
+                                    reloadUnits(); // Reload units list if needed
+                                  })
+                                  .catch((error) => {
+                                    console.error(
+                                      'Failed to create new unit:',
+                                      error
+                                    );
+                                  });
+                              } else {
+                                // Update only the selected supplier with the new unit
+                                updatedDetails[index] = {
+                                  ...updatedDetails[index],
+                                  supplier_unit: selectedOption.value,
+                                  supplier_unit_name: selectedOption.label,
+                                };
+
+                                // Do not update other suppliers or recipes with the same unit when selecting an existing unit
+                                setEditedValues({
+                                  ...editedValues,
+                                  supplier_details: updatedDetails, // Only update this specific supplier
+                                });
+                              }
                             }}
                             isCreatable
                           />
+
                           <div className={styles.IconContainer}>
                             <LabeledInput
                               label={t('ingredient:conversion_factor')}
@@ -1856,7 +1930,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                 const updatedDetails =
                                   editedValues.supplier_details.map(
                                     (supplierDetail) => {
-                                      // If supplier_unit matches, update the conversion factor for all suppliers with the same unit
                                       if (
                                         supplierDetail.supplier_unit ===
                                         detail.supplier_unit
@@ -1871,12 +1944,30 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                     }
                                   );
 
+                                // Sync conversion factor with recipes sharing the same unit
+                                const updatedRecipes = editedValues.recipes.map(
+                                  (recipe) => {
+                                    if (
+                                      recipe.unit_uuid === detail.supplier_unit
+                                    ) {
+                                      return {
+                                        ...recipe,
+                                        conversion_factor:
+                                          updatedConversionFactor,
+                                      };
+                                    }
+                                    return recipe;
+                                  }
+                                );
+
                                 setEditedValues({
                                   ...editedValues,
                                   supplier_details: updatedDetails,
+                                  recipes: updatedRecipes, // Sync recipes
                                 });
                               }}
                             />
+
                             <IconButton
                               icon={<i className="fa-solid fa-circle-info"></i>}
                               tooltipMsg={`from ${detail.supplier_unit_name} to ${editedValues.unit_name}`}
@@ -1936,9 +2027,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                               <div className={styles.forecastIiconBtn}>
                                 <IconButton
                                   icon={
-                                    <i className="fa-solid fa-circle-info"
-                                        style={{color: '#5e72e4' }}
-                                    ></i>  
+                                    <i
+                                      className="fa-solid fa-circle-info"
+                                      style={{ color: '#5e72e4' }}></i>
                                   }
                                   tooltipMsg={`from ${detail.supplier_unit_name} to ${editedValues.unit_name}`}
                                   className={styles.forecastIiconBtn}
@@ -2197,36 +2288,68 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                               value: recipe.unit_uuid,
                                             }
                                           : {
-                                              label:
-                                                recipe.unit_name ||
-                                                'Select a unit',
+                                              label: 'Select a unit',
                                               value: recipe.unit_uuid,
                                             }
                                       }
                                       onChange={(selectedOption) => {
-                                        const updatedDetails = [
+                                        const updatedRecipes = [
                                           ...editedValues.recipes,
                                         ];
-                                        if (selectedOption.__isNew__) {
-                                          // For newly created unit, keep supplier_unit_uuid blank and set supplier_unit_name
-                                          updatedDetails[index] = {
-                                            ...updatedDetails[index],
-                                            unit_uuid: '', // Keep UUID blank for new unit
-                                            unit_name: selectedOption.label, // Set the new unit name
-                                          };
-                                        } else {
-                                          updatedDetails[index] = {
-                                            ...updatedDetails[index],
-                                            unit_uuid: selectedOption.value, // Set the selected unit UUID
-                                            unit_name: selectedOption.label, // Set the selected unit name
-                                          };
-                                        }
 
-                                        // Update the state and ensure re-render
-                                        setEditedValues({
-                                          ...editedValues,
-                                          recipes: updatedDetails,
-                                        });
+                                        if (selectedOption.__isNew__) {
+                                          // Create a new unit for this recipe only
+                                          updatedRecipes[index] = {
+                                            ...updatedRecipes[index],
+                                            unit_uuid: '', // Placeholder until unit is created
+                                            unit_name: selectedOption.label,
+                                          };
+
+                                          setEditedValues({
+                                            ...editedValues,
+                                            recipes: updatedRecipes,
+                                          });
+
+                                          inventoryService
+                                            .createUnit(
+                                              selectedRestaurantUUID,
+                                              selectedOption.label
+                                            )
+                                            .then((response) => {
+                                              const newUnitUUID =
+                                                response.data.unit_uuid;
+
+                                              // Update only the current recipe with the new unit
+                                              updatedRecipes[index].unit_uuid =
+                                                newUnitUUID;
+
+                                              setEditedValues({
+                                                ...editedValues,
+                                                recipes: updatedRecipes, // Only update this specific recipe
+                                              });
+
+                                              reloadUnits(); // Reload units list if needed
+                                            })
+                                            .catch((error) => {
+                                              console.error(
+                                                'Failed to create new unit:',
+                                                error
+                                              );
+                                            });
+                                        } else {
+                                          // Update only the selected recipe with the new unit
+                                          updatedRecipes[index] = {
+                                            ...updatedRecipes[index],
+                                            unit_uuid: selectedOption.value,
+                                            unit_name: selectedOption.label,
+                                          };
+
+                                          // Do not update other recipes or suppliers with the same unit when selecting an existing unit
+                                          setEditedValues({
+                                            ...editedValues,
+                                            recipes: updatedRecipes, // Only update this specific recipe
+                                          });
+                                        }
                                       }}
                                       isCreatable
                                     />
@@ -2252,16 +2375,50 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                         lighter
                                         value={recipe.conversion_factor}
                                         onChange={(event) => {
-                                          const updatedRecipes = [
-                                            ...editedValues.recipes,
-                                          ];
-                                          updatedRecipes[
-                                            index
-                                          ].conversion_factor =
+                                          const updatedConversionFactor =
                                             event.target.value;
+
+                                          // Update the conversion factor for the current recipe
+                                          const updatedRecipes =
+                                            editedValues.recipes.map(
+                                              (recipeDetail) => {
+                                                if (
+                                                  recipeDetail.unit_uuid ===
+                                                  recipe.unit_uuid
+                                                ) {
+                                                  return {
+                                                    ...recipeDetail,
+                                                    conversion_factor:
+                                                      updatedConversionFactor,
+                                                  };
+                                                }
+                                                return recipeDetail;
+                                              }
+                                            );
+
+                                          // Update only the supplier that shares the same unit with the current recipe
+                                          const updatedSuppliers =
+                                            editedValues.supplier_details.map(
+                                              (supplierDetail) => {
+                                                if (
+                                                  supplierDetail.supplier_unit ===
+                                                  recipe.unit_uuid
+                                                ) {
+                                                  return {
+                                                    ...supplierDetail,
+                                                    conversion_factor:
+                                                      updatedConversionFactor,
+                                                  };
+                                                }
+                                                return supplierDetail;
+                                              }
+                                            );
+
+                                          // Set updated values for both suppliers and recipes
                                           setEditedValues({
                                             ...editedValues,
-                                            recipes: updatedRecipes,
+                                            recipes: updatedRecipes, // Update the conversion factor in the recipes
+                                            supplier_details: updatedSuppliers, // Update the conversion factor in the related supplier
                                           });
                                         }}
                                         sx={{
@@ -2321,9 +2478,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                   {recipe.conversion_factor}
                                   <IconButton
                                     icon={
-                                      <i className="fa-solid fa-circle-info"
-                                      style={{color: '#5e72e4' }}
-                                      ></i>
+                                      <i
+                                        className="fa-solid fa-circle-info"
+                                        style={{ color: '#5e72e4' }}></i>
                                     }
                                     tooltipMsg={`from ${recipe.unit_name} to ${editedValues.unit_name}`}
                                     className={styles.forecastIiconBtn}
@@ -2536,6 +2693,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           isVisible={showAddPopup}
           reloadInventoryData={reloadInventoryData}
           onRequestClose={() => setShowAddPopup(false)} // Close popup when requested
+        />
+
+        <AddWastingPopup
+          onRequestClose={() => setWastingPopupVisible(false)}
+          isVisible={isWastingPopupVisible}
+          onReload={reloadInventoryData} // Ensure the page reloads after waste is submitted
+          ingredient={wastingRowId} // Pass the ingredient to the popup
         />
       </>
     );

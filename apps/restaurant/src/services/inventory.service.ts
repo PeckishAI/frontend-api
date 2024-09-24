@@ -395,6 +395,14 @@ const uploadImgFile = async (
   };
 };
 
+const createUnit = (restaurantUUID: string, unit_name: string) => {
+  const FormattedIngredient = {
+    unit_name: unit_name,
+  };
+  const res = axiosClient.post(`/units/${restaurantUUID}`, FormattedIngredient);
+  return res;
+};
+
 const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
   console.log('inboiceData: ', invoiceData);
 
@@ -419,4 +427,5 @@ export const inventoryService = {
   updateDocument,
   deleteDocument,
   sendInvoice,
+  createUnit,
 };

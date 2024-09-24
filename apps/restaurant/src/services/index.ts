@@ -25,3 +25,4 @@ export * from './recipes.service';
 export * from './supplier.service';
 export * from './types';
 export * from './transfer.service';
+export * from './waste.service';
