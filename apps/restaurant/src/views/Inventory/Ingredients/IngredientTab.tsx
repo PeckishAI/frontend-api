@@ -90,7 +90,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [inputValue, setInputValue] = useState<any>('');
 
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
-    const [tagList, setTagList] = useState<Tag[]>([]);
+    const [tagList, setTagList] = useState<Tag>();
     const [editingRowId, setEditingRowId] = useState<string | null>();
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
     const [wastingRowId, setWastingRowId] = useState<Ingredient>();
