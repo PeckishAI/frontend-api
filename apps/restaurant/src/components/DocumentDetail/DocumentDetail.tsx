@@ -29,7 +29,6 @@ import CreatableSelect from 'react-select/creatable';
 import { FaCalendarAlt } from 'react-icons/fa';
 import SupplierNew from '../../views/Inventory/Suppliers/components/SupplierNew';
 
-
 type Props = {
   document: Invoice | null;
   isOpen: boolean;
@@ -47,7 +46,8 @@ type IngredientDetails = {
   unitPrice?: number;
   unit?: string;
   totalPrice?: number;
-  received_qty: number;
+  // received_qty: number;
+  // conversion_factor?: number;
 };
 
 const DocumentDetail = (props: Props) => {
@@ -57,7 +57,6 @@ const DocumentDetail = (props: Props) => {
   const [editableDocument, setEditableDocument] = useState<Invoice | null>(
     null
   );
-  console.log('editableDocument', editableDocument);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const { control } = useForm();
@@ -65,6 +64,37 @@ const DocumentDetail = (props: Props) => {
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const datePickerRef = useRef(null);
+
+  const unitOptions = [
+    {
+      unit_name: 'cs',
+      unit_uuid: '9cf8eceb-8bdc-4edf-818a-261329bbec3d',
+    },
+    {
+      unit_name: 'rt',
+      unit_uuid: '495de1e4-4be1-49d5-9dfc-0de1faee5824',
+    },
+    {
+      unit_name: 'kg',
+      unit_uuid: '804ba27e-a7cb-4c39-8ae6-c79aabfab0f4',
+    },
+    {
+      unit_name: 'pack',
+      unit_uuid: 'd577c9c8-0987-42ba-b470-b615b2fa8ef8',
+    },
+    {
+      unit_name: 'g',
+      unit_uuid: 'b82274b6-0c3f-44a7-879e-df479d77b175',
+    },
+    {
+      unit_name: 'BTL',
+      unit_uuid: 'a8fdc7e9-c3ac-4bb5-b02d-aef3fdfa8806',
+    },
+    {
+      unit_name: 'Rink',
+      unit_uuid: '464fd61c-b4df-4bb9-b9f8-d118353ed041',
+    },
+  ];
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -131,7 +161,6 @@ const DocumentDetail = (props: Props) => {
     e: React.ChangeEvent<HTMLInputElement> | { target: { value: any } },
     field: keyof Invoice = 'supplier'
   ) => {
-
     const value = e.target ? e.target.value : e;
 
     console.log('Selected value:', value);
@@ -183,7 +212,6 @@ const DocumentDetail = (props: Props) => {
 
   useEffect(() => {
     fetchSuppliers();
-
   }, [selectedRestaurantUUID]);
 
   const handleSubmit = async (e) => {
@@ -218,8 +246,10 @@ const DocumentDetail = (props: Props) => {
             detectedName: ing.detectedName,
             mappedName: ing.mappedName,
             mappedUUID: ing.mappedUUID,
-            received_qty: ing.received_qty ? +ing.received_qty : null,
+            // received_qty: ing.received_qty ? +ing.received_qty : null,
             unitPrice: +ing.unitPrice,
+            // conversion_factor: +ing.conversion_factor,
+
             quantity: +ing.quantity,
             unit: ing.unit,
             totalPrice: +ing.totalPrice ? +ing.totalPrice : null,
@@ -279,8 +309,9 @@ const DocumentDetail = (props: Props) => {
       quantity: 0,
       unit: '',
       unitPrice: 0,
-      received_qty: 0,
+      // received_qty: 0,
       totalPrice: 0,
+      // conversion_factor: 0,
     };
 
     if (editableDocument && editableDocument.ingredients) {
@@ -347,12 +378,12 @@ const DocumentDetail = (props: Props) => {
       classname: 'column-bold',
       renderItem: ({ row }) => `${row.quantity}`,
     },
-    {
-      key: 'received_qty',
-      header: t('receivedQty'),
-      classname: 'column-bold',
-      renderItem: ({ row }) => `${row.received_qty}`,
-    },
+    // {
+    //   key: 'received_qty',
+    //   header: t('receivedQty'),
+    //   classname: 'column-bold',
+    //   renderItem: ({ row }) => `${row.received_qty}`,
+    // },
     {
       key: 'unit',
       header: t('unit'),
@@ -441,23 +472,76 @@ const DocumentDetail = (props: Props) => {
         />
       ),
     },
-    {
-      key: 'received_qty',
-      header: t('receivedQty'),
-      classname: 'column-bold',
-      renderItem: ({ row, index }) => (
-        <Input
-          type="number"
-          min={0}
-          placeholder={t('receivedQty')}
-          className={styles.quantity}
-          onChange={(value) =>
-            handleIngredientChange(index, 'received_qty', value)
-          }
-          value={editableDocument?.ingredients[index].received_qty || ''}
-        />
-      ),
-    },
+    // {
+    //   key: 'received_qty',
+    //   header: t('receivedQty'),
+    //   classname: 'column-bold',
+    //   renderItem: ({ row, index }) => (
+    //     <Input
+    //       type="number"
+    //       min={0}
+    //       placeholder={t('receivedQty')}
+    //       className={styles.quantity}
+    //       onChange={(value) =>
+    //         handleIngredientChange(index, 'received_qty', value)
+    //       }
+    //       value={editableDocument?.ingredients[index].received_qty || ''}
+    //     />
+    //   ),
+    // },
+    // {
+    //   key: 'unit',
+    //   header: t('unit'),
+    //   classname: 'column-bold',
+    //   renderItem: ({ row, index }) => (
+    //     <CreatableSelect
+    //       isClearable
+    //       placeholder={t('unit')}
+    //       className={styles.quantity}
+    //       options={unitOptions.map((unit) => ({
+    //         value: unit.unit_uuid,
+    //         label: unit.unit_name,
+    //       }))}
+    //       onCreateOption={(newValue) => {
+    //         console.log('New unit created:', newValue);
+
+    //         handleIngredientChange(index, 'unit', newValue);
+    //       }}
+    //       onChange={(selectedOption) => {
+    //         console.log('selectedOption', selectedOption);
+    //         if (selectedOption) {
+    //           handleIngredientChange(index, 'unit', selectedOption.value);
+    //         } else {
+    //           handleIngredientChange(index, 'unit', selectedOption.value);
+    //         }
+    //       }}
+    //       value={
+    //         editableDocument?.ingredients[index].unit_uuid
+    //           ? {
+    //               value: editableDocument?.ingredients[index].unit_uuid,
+    //               label: editableDocument?.ingredients[index].unitName,
+    //             }
+    //           : null
+    //       }
+    //     />
+    //   ),
+    // },
+    // {
+    //   key: 'conversion_factor',
+    //   header: t('conversion_factor'),
+    //   classname: 'column-bold',
+    //   renderItem: ({ row, index }) => (
+    //     <Input
+    //       type="number"
+    //       placeholder={t('conversion_factor')}
+    //       className={styles.quantity}
+    //       onChange={(value) =>
+    //         handleIngredientChange(index, 'conversion_factor', value)
+    //       }
+    //       value={editableDocument?.ingredients[index].conversion_factor || ''}
+    //     />
+    //   ),
+    // },
     {
       key: 'unit',
       header: t('unit'),
@@ -829,10 +913,15 @@ const DocumentDetail = (props: Props) => {
                       header: t('quantity'),
                       renderItem: ({ row }) => `${row.quantity}`,
                     },
+                    // {
+                    //   key: 'received_qty',
+                    //   header: t('receivedQty'),
+                    //   renderItem: ({ row }) => `${row.received_qty}`,
+                    // },
                     {
-                      key: 'received_qty',
-                      header: t('receivedQty'),
-                      renderItem: ({ row }) => `${row.received_qty}`,
+                      key: 'conversion_factor',
+                      header: t('conversion_factor'),
+                      renderItem: ({ row }) => `----`,
                     },
                     { key: 'unit', header: t('unit') },
 
