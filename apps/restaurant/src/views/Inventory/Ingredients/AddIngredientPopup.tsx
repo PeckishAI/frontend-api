@@ -383,13 +383,33 @@ const AddIngredientPopup = (props: Props) => {
                     : provided.backgroundColor,
                   color: state.isSelected ? '#FFFFFF' : provided.color,
                 }),
+                multiValue: (provided) => ({
+                  ...provided,
+                  backgroundColor: '#5E72E4',
+                  color: '#FFFFFF',
+                  borderRadius: '12px',
+                }),
+                multiValueLabel: (provided) => ({
+                  ...provided,
+                  color: '#ffffff',
+                  borderRadius: '12px',
+                }),
+                multiValueRemove: (provided) => ({
+                  ...provided,
+                  color: '#ffffff',
+                  ':hover': {
+                    backgroundColor: '#b5adad',
+                    borderRadius: '12px',
+                    color: '#ffffff',
+                  },
+                }),
               }}
               isClearable
             />
           </div>
 
           {/* Supplier Details Section */}
-          <h3>Supplier Details</h3>
+          <h3>Supplier Details </h3>
 
           {supplierFields.map((field, index) => (
             <div key={field.id} className={styles.SupplierSection}>
