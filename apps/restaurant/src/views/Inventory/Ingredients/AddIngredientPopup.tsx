@@ -80,7 +80,6 @@ const AddIngredientPopup = (props: Props) => {
   const [suppliers, setSuppliers] = useState<DropdownOptionsDefinitionType[]>(
     []
   );
-  console.log('suppliers', suppliers);
 
   const {
     register,
