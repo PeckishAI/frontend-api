@@ -70,6 +70,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [isIngredientsVisible, setIsIngredientsVisible] = useState(false);
     const [isQuantityVisible, setIsQuantityVisible] = useState(false);
     const [unitname, setUnitName] = useState([]);
+
     const [showAddPopup, setShowAddPopup] = useState(false);
 
     const toggleIngredientsVisibility = () => {
@@ -1836,39 +1837,63 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                     value: detail.supplier_unit,
                                   }
                                 : {
-                                    label:
-                                      detail.supplier_unit_name ||
-                                      'Select a unit',
-                                    value: detail.supplier_unit,
+                                    label: 'Select a unit',
+                                    value: null,
                                   }
                             }
                             onChange={(selectedOption) => {
                               const updatedDetails = [
                                 ...editedValues.supplier_details,
                               ];
-                              if (selectedOption.__isNew__) {
-                                // For newly created unit, keep supplier_unit_uuid blank and set supplier_unit_name
-                                updatedDetails[index] = {
-                                  ...updatedDetails[index],
-                                  supplier_unit: '', // Keep UUID blank for new unit
-                                  supplier_unit_name: selectedOption.label, // Set the new unit name
-                                };
-                              } else {
-                                updatedDetails[index] = {
-                                  ...updatedDetails[index],
-                                  supplier_unit: selectedOption.value, // Set the selected unit UUID
-                                  supplier_unit_name: selectedOption.label, // Set the selected unit name
-                                };
-                              }
 
-                              // Update the state and ensure re-render
-                              setEditedValues({
-                                ...editedValues,
-                                supplier_details: updatedDetails,
-                              });
+                              if (selectedOption.__isNew__) {
+                                // Create a new unit for this supplier only
+                                inventoryService
+                                  .createUnit(
+                                    selectedRestaurantUUID,
+                                    selectedOption.label
+                                  )
+                                  .then((newUnit) => {
+                                    const newUnitUUID = newUnit.uuid;
+
+                                    // Update only this specific supplier with the new unit
+                                    updatedDetails[index] = {
+                                      ...updatedDetails[index],
+                                      supplier_unit: newUnitUUID,
+                                      supplier_unit_name: selectedOption.label,
+                                    };
+
+                                    setEditedValues({
+                                      ...editedValues,
+                                      supplier_details: updatedDetails, // Only update this specific supplier
+                                    });
+
+                                    reloadUnits(); // Reload units list if needed
+                                  })
+                                  .catch((error) => {
+                                    console.error(
+                                      'Failed to create new unit:',
+                                      error
+                                    );
+                                  });
+                              } else {
+                                // Update only the selected supplier with the new unit
+                                updatedDetails[index] = {
+                                  ...updatedDetails[index],
+                                  supplier_unit: selectedOption.value,
+                                  supplier_unit_name: selectedOption.label,
+                                };
+
+                                // Do not update other suppliers or recipes with the same unit when selecting an existing unit
+                                setEditedValues({
+                                  ...editedValues,
+                                  supplier_details: updatedDetails, // Only update this specific supplier
+                                });
+                              }
                             }}
                             isCreatable
                           />
+
                           <div className={styles.IconContainer}>
                             <LabeledInput
                               label={t('ingredient:conversion_factor')}
@@ -1883,7 +1908,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                 const updatedDetails =
                                   editedValues.supplier_details.map(
                                     (supplierDetail) => {
-                                      // If supplier_unit matches, update the conversion factor for all suppliers with the same unit
                                       if (
                                         supplierDetail.supplier_unit ===
                                         detail.supplier_unit
@@ -1898,12 +1922,30 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                     }
                                   );
 
+                                // Sync conversion factor with recipes sharing the same unit
+                                const updatedRecipes = editedValues.recipes.map(
+                                  (recipe) => {
+                                    if (
+                                      recipe.unit_uuid === detail.supplier_unit
+                                    ) {
+                                      return {
+                                        ...recipe,
+                                        conversion_factor:
+                                          updatedConversionFactor,
+                                      };
+                                    }
+                                    return recipe;
+                                  }
+                                );
+
                                 setEditedValues({
                                   ...editedValues,
                                   supplier_details: updatedDetails,
+                                  recipes: updatedRecipes, // Sync recipes
                                 });
                               }}
                             />
+
                             <IconButton
                               icon={<i className="fa-solid fa-circle-info"></i>}
                               tooltipMsg={`from ${detail.supplier_unit_name} to ${editedValues.unit_name}`}
@@ -2224,36 +2266,68 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                               value: recipe.unit_uuid,
                                             }
                                           : {
-                                              label:
-                                                recipe.unit_name ||
-                                                'Select a unit',
+                                              label: 'Select a unit',
                                               value: recipe.unit_uuid,
                                             }
                                       }
                                       onChange={(selectedOption) => {
-                                        const updatedDetails = [
+                                        const updatedRecipes = [
                                           ...editedValues.recipes,
                                         ];
-                                        if (selectedOption.__isNew__) {
-                                          // For newly created unit, keep supplier_unit_uuid blank and set supplier_unit_name
-                                          updatedDetails[index] = {
-                                            ...updatedDetails[index],
-                                            unit_uuid: '', // Keep UUID blank for new unit
-                                            unit_name: selectedOption.label, // Set the new unit name
-                                          };
-                                        } else {
-                                          updatedDetails[index] = {
-                                            ...updatedDetails[index],
-                                            unit_uuid: selectedOption.value, // Set the selected unit UUID
-                                            unit_name: selectedOption.label, // Set the selected unit name
-                                          };
-                                        }
 
-                                        // Update the state and ensure re-render
-                                        setEditedValues({
-                                          ...editedValues,
-                                          recipes: updatedDetails,
-                                        });
+                                        if (selectedOption.__isNew__) {
+                                          // Create a new unit for this recipe only
+                                          updatedRecipes[index] = {
+                                            ...updatedRecipes[index],
+                                            unit_uuid: '', // Placeholder until unit is created
+                                            unit_name: selectedOption.label,
+                                          };
+
+                                          setEditedValues({
+                                            ...editedValues,
+                                            recipes: updatedRecipes,
+                                          });
+
+                                          inventoryService
+                                            .createUnit(
+                                              selectedRestaurantUUID,
+                                              selectedOption.label
+                                            )
+                                            .then((response) => {
+                                              const newUnitUUID =
+                                                response.data.unit_uuid;
+
+                                              // Update only the current recipe with the new unit
+                                              updatedRecipes[index].unit_uuid =
+                                                newUnitUUID;
+
+                                              setEditedValues({
+                                                ...editedValues,
+                                                recipes: updatedRecipes, // Only update this specific recipe
+                                              });
+
+                                              reloadUnits(); // Reload units list if needed
+                                            })
+                                            .catch((error) => {
+                                              console.error(
+                                                'Failed to create new unit:',
+                                                error
+                                              );
+                                            });
+                                        } else {
+                                          // Update only the selected recipe with the new unit
+                                          updatedRecipes[index] = {
+                                            ...updatedRecipes[index],
+                                            unit_uuid: selectedOption.value,
+                                            unit_name: selectedOption.label,
+                                          };
+
+                                          // Do not update other recipes or suppliers with the same unit when selecting an existing unit
+                                          setEditedValues({
+                                            ...editedValues,
+                                            recipes: updatedRecipes, // Only update this specific recipe
+                                          });
+                                        }
                                       }}
                                       isCreatable
                                     />
@@ -2279,16 +2353,50 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                         lighter
                                         value={recipe.conversion_factor}
                                         onChange={(event) => {
-                                          const updatedRecipes = [
-                                            ...editedValues.recipes,
-                                          ];
-                                          updatedRecipes[
-                                            index
-                                          ].conversion_factor =
+                                          const updatedConversionFactor =
                                             event.target.value;
+
+                                          // Update the conversion factor for the current recipe
+                                          const updatedRecipes =
+                                            editedValues.recipes.map(
+                                              (recipeDetail) => {
+                                                if (
+                                                  recipeDetail.unit_uuid ===
+                                                  recipe.unit_uuid
+                                                ) {
+                                                  return {
+                                                    ...recipeDetail,
+                                                    conversion_factor:
+                                                      updatedConversionFactor,
+                                                  };
+                                                }
+                                                return recipeDetail;
+                                              }
+                                            );
+
+                                          // Update only the supplier that shares the same unit with the current recipe
+                                          const updatedSuppliers =
+                                            editedValues.supplier_details.map(
+                                              (supplierDetail) => {
+                                                if (
+                                                  supplierDetail.supplier_unit ===
+                                                  recipe.unit_uuid
+                                                ) {
+                                                  return {
+                                                    ...supplierDetail,
+                                                    conversion_factor:
+                                                      updatedConversionFactor,
+                                                  };
+                                                }
+                                                return supplierDetail;
+                                              }
+                                            );
+
+                                          // Set updated values for both suppliers and recipes
                                           setEditedValues({
                                             ...editedValues,
-                                            recipes: updatedRecipes,
+                                            recipes: updatedRecipes, // Update the conversion factor in the recipes
+                                            supplier_details: updatedSuppliers, // Update the conversion factor in the related supplier
                                           });
                                         }}
                                         sx={{
