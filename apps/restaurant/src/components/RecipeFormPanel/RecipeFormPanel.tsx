@@ -580,7 +580,7 @@ const RecipeFormPanel = (props: Props) => {
           />
           <Button
             type="primary"
-            value={t('validate')}
+            value={t('save')}
             actionType="submit"
             loading={isSubmitting}
             disabled={!isDirty}
