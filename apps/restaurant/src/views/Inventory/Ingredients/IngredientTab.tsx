@@ -70,6 +70,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [isIngredientsVisible, setIsIngredientsVisible] = useState(false);
     const [isQuantityVisible, setIsQuantityVisible] = useState(false);
     const [unitname, setUnitName] = useState([]);
+    const [unitError, setUnitError] = useState(false); // Error state for the unit field
 
     const [showAddPopup, setShowAddPopup] = useState(false);
 
@@ -527,6 +528,17 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     const handleSaveEdit = () => {
       setFirstTimeSelected(true);
+
+      if (!editedValues?.unit_uuid) {
+        setUnitError(true); // Set error if unit is missing
+        return; // Prevent form submission
+      } else {
+        setUnitError(false); // Clear the error if unit is selected
+      }
+      // if (!editedValues?.unit_uuid) {
+      //   togglePopupError('Unit is required before saving.');
+      //   return; // Prevent form submission
+      // }
       if (!selectedRestaurantUUID || !editedValues) return;
       props.setLoadingState(true);
       if (editingRowId && !addingRow) {
@@ -1041,8 +1053,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 gap: '10px',
                 padding: '5px',
               }}>
-              
-              {row && Array.isArray(row.supplier_details) && row.supplier_details.length > 0 ? (
+              {row &&
+              Array.isArray(row.supplier_details) &&
+              row.supplier_details.length > 0 ? (
                 row.supplier_details.map((detail, detailIndex) => (
                   <span key={detailIndex}>
                     {detail.supplier_name || 'Select a supplier'}
@@ -1372,114 +1385,123 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                     </div>
 
                     {isEditMode ? (
-                      <CreatableSelect
-                        placeholder={
-                          editedValues?.unit_uuid
-                            ? t('unit')
-                            : t('Select a unit') // Show 'Select a unit' if unit_uuid is null
-                        }
-                        options={unitname.map((unit) => ({
-                          label: unit.unit_name,
-                          value: unit.unit_uuid,
-                        }))} // Map options for CreatableSelect
-                        styles={{
-                          menu: (provided) => ({
-                            ...provided,
-                            overflowY: 'auto',
-                          }),
-                          control: (provided, state) => ({
-                            ...provided,
-                            minWidth: '200px',
-                            boxShadow: state.isFocused
-                              ? 'none'
-                              : provided.boxShadow,
-                            borderColor: state.isFocused
-                              ? '#ced4da'
-                              : provided.borderColor,
-                            '&:hover': {
-                              borderColor: 'none',
-                            },
-                          }),
-                          menuList: (provided) => ({
-                            ...provided,
-                            maxHeight: '200px',
-                            overflowY: 'auto',
-                          }),
-                          option: (provided, state) => ({
-                            ...provided,
-                            backgroundColor: state.isSelected
-                              ? '#007BFF'
-                              : state.isFocused
-                              ? '#dbe1df'
-                              : provided.backgroundColor,
-                            color: state.isSelected
-                              ? '#FFFFFF'
-                              : state.isFocused
-                              ? '#000000'
-                              : provided.color,
-                          }),
-                          container: (provided) => ({
-                            ...provided,
-                            overflow: 'visible',
-                          }),
-                          multiValue: (provided) => ({
-                            ...provided,
-                            backgroundColor: '#5E72E4',
-                            color: '#FFFFFF',
-                            borderRadius: '12px',
-                          }),
-                          multiValueLabel: (provided) => ({
-                            ...provided,
-                            color: '#ffffff',
-                            borderRadius: '12px',
-                          }),
-                          multiValueRemove: (provided) => ({
-                            ...provided,
-                            color: '#ffffff',
-                            ':hover': {
-                              backgroundColor: '#b5adad',
-                              borderRadius: '12px',
-                              color: '#ffffff',
-                            },
-                          }),
-                        }}
-                        value={
-                          editedValues?.unit_name
-                            ? {
-                                label: editedValues.unit_name,
-                                value: editedValues.unit_uuid,
-                              }
-                            : unitname
-                                .map((unit) => ({
-                                  label: unit.unit_name,
-                                  value: unit.unit_uuid,
-                                }))
-                                .find(
-                                  (unit) =>
-                                    unit.value === editedValues?.unit_uuid
-                                ) || null
-                        } // Either display the new unit or find and display the selected unit by unit_uuid
-                        onChange={(selectedOption) => {
-                          if (selectedOption) {
-                            if (selectedOption.__isNew__) {
-                              // Do not update the unitname list, just update editedValues with new unit
-                              setEditedValues({
-                                ...editedValues,
-                                unit_uuid: '', // Keep unit_uuid blank
-                                unit_name: selectedOption.label, // Set the new unit_name
-                              });
-                            } else {
-                              // If existing unit is selected
-                              setEditedValues({
-                                ...editedValues,
-                                unit_uuid: selectedOption.value, // Set the selected unit's UUID
-                                unit_name: selectedOption.label, // Set the selected unit's name
-                              });
-                            }
+                      <>
+                        <CreatableSelect
+                          placeholder={
+                            editedValues?.unit_uuid
+                              ? t('unit')
+                              : t('Select a unit') // Show 'Select a unit' if unit_uuid is null
                           }
-                        }}
-                        isCreatable
-                      />
+                          options={unitname.map((unit) => ({
+                            label: unit.unit_name,
+                            value: unit.unit_uuid,
+                          }))} // Map options for CreatableSelect
+                          styles={{
+                            menu: (provided) => ({
+                              ...provided,
+                              overflowY: 'auto',
+                            }),
+                            control: (provided, state) => ({
+                              ...provided,
+                              minWidth: '200px',
+                              boxShadow: state.isFocused
+                                ? 'none'
+                                : provided.boxShadow,
+                              borderColor: state.isFocused
+                                ? '#ced4da'
+                                : provided.borderColor,
+                              '&:hover': {
+                                borderColor: 'none',
+                              },
+                            }),
+                            menuList: (provided) => ({
+                              ...provided,
+                              maxHeight: '200px',
+                              overflowY: 'auto',
+                            }),
+                            option: (provided, state) => ({
+                              ...provided,
+                              backgroundColor: state.isSelected
+                                ? '#007BFF'
+                                : state.isFocused
+                                ? '#dbe1df'
+                                : provided.backgroundColor,
+                              color: state.isSelected
+                                ? '#FFFFFF'
+                                : state.isFocused
+                                ? '#000000'
+                                : provided.color,
+                            }),
+                            container: (provided) => ({
+                              ...provided,
+                              overflow: 'visible',
+                            }),
+                            multiValue: (provided) => ({
+                              ...provided,
+                              backgroundColor: '#5E72E4',
+                              color: '#FFFFFF',
+                              borderRadius: '12px',
+                            }),
+                            multiValueLabel: (provided) => ({
+                              ...provided,
+                              color: '#ffffff',
+                              borderRadius: '12px',
+                            }),
+                            multiValueRemove: (provided) => ({
+                              ...provided,
+                              color: '#ffffff',
+                              ':hover': {
+                                backgroundColor: '#b5adad',
+                                borderRadius: '12px',
+                                color: '#ffffff',
+                              },
+                            }),
+                          }}
+                          value={
+                            editedValues?.unit_name
+                              ? {
+                                  label: editedValues.unit_name,
+                                  value: editedValues.unit_uuid,
+                                }
+                              : unitname
+                                  .map((unit) => ({
+                                    label: unit.unit_name,
+                                    value: unit.unit_uuid,
+                                  }))
+                                  .find(
+                                    (unit) =>
+                                      unit.value === editedValues?.unit_uuid
+                                  ) || null
+                          } // Either display the new unit or find and display the selected unit by unit_uuid
+                          onChange={(selectedOption) => {
+                            if (selectedOption) {
+                              if (selectedOption.__isNew__) {
+                                // Do not update the unitname list, just update editedValues with new unit
+                                setEditedValues({
+                                  ...editedValues,
+                                  unit_uuid: '', // Keep unit_uuid blank
+                                  unit_name: selectedOption.label, // Set the new unit_name
+                                });
+                              } else {
+                                // If existing unit is selected
+                                setEditedValues({
+                                  ...editedValues,
+                                  unit_uuid: selectedOption.value, // Set the selected unit's UUID
+                                  unit_name: selectedOption.label, // Set the selected unit's name
+                                });
+                              }
+                              setUnitError(false); // Clear error on valid selection
+                            }
+                          }}
+                          isCreatable
+                        />
+
+                        {unitError && (
+                          <div style={{ color: 'red', marginTop: '5px' }}>
+                            Unit is required.
+                          </div>
+                        )}
+                      </>
                     ) : (
                       <span className={styles.value}>
                         {unitname?.find(
