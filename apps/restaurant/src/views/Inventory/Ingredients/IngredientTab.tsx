@@ -1040,11 +1040,16 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 gap: '10px',
                 padding: '5px',
               }}>
-              {row.supplier_details.map((detail, detailIndex) => (
-                <span key={detailIndex}>
-                  {detail.supplier_name || 'Select a supplier'}
-                </span>
-              ))}
+              
+              {Array.isArray(row.supplier_details) && row.supplier_details.length > 0 ? (
+                row.supplier_details.map((detail, detailIndex) => (
+                  <span key={detailIndex}>
+                    {detail.supplier_name || 'Select a supplier'}
+                  </span>
+                ))
+              ) : (
+                <span>No supplier details available</span>
+              )}
             </div>
           );
           // }
