@@ -470,7 +470,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         setFilteredIngredients(ingredients);
       } catch (err) {
         if (err instanceof Error) {
-          togglePopupError(err.message);
+          // togglePopupError(err.message);
         } else {
           console.error('Unexpected error type:', err);
         }
