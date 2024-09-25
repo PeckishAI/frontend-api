@@ -12,8 +12,6 @@ import './translation/i18n';
 import { userService } from '@peckishai/user-management';
 import { GLOBAL_CONFIG } from 'shared-config';
 
-// Seb checker
-
 dayjs.extend(Calendar);
 dayjs.extend(CustomParseFormat);
 

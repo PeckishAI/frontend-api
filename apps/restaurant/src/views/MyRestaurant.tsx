@@ -7,10 +7,11 @@ import { useUserStore } from '@peckishai/user-management';
 import { toast } from 'react-hot-toast';
 
 const MyRestaurant = () => {
+  const navigate = useNavigate();
+
   const { t } = useTranslation();
   useTitle(t('pages.myRestaurants'));
 
-  const navigate = useNavigate();
   const { restaurants, loadRestaurants, setSelectedRestaurantUUID } =
     useRestaurantStore();
   const { user } = useUserStore(); // Get the user from the user store
