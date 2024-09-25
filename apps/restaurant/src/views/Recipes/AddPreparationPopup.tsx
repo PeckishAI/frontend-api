@@ -168,13 +168,21 @@ const AddPreparationPopup = (props: Props) => {
   }));
 
   const handleSubmitForm = handleSubmit(async (data) => {
+    let updateData = {
+      ...data,
+      ingredients: data.ingredients.map((ingredient) => ({
+        ...ingredient,
+        conversion_factor: Number(ingredient.conversion_factor),
+      })),
+    };
+
     if (!restaurantUUID) return;
 
     try {
       const uuid = await recipesService.createRecipe(
         restaurantUUID,
         props.selectedTab === 1 ? 'preparation' : 'recipe',
-        data
+        updateData
       );
       props.onRequestClose();
       props.onReload();
@@ -206,46 +214,48 @@ const AddPreparationPopup = (props: Props) => {
                 {...register('recipe_name')}
               />
             </div>
-            <Controller
-              control={control}
-              name="category"
-              render={({
-                field: { onChange, name, onBlur, ref, value },
-                fieldState: { error },
-              }) => (
-                <>
-                  {' '}
-                  <Select
-                    size="large"
-                    isSearchable={false}
-                    isMulti={false}
-                    placeholder={t('category')}
-                    options={props.categories}
-                    innerRef={ref}
-                    name={name}
-                    onChange={(val) => {
-                      onChange(val?.value ?? null);
-                    }}
-                    onBlur={onBlur}
-                    value={
-                      props.categories.find((cat) => cat.value === value) ??
-                      null
-                    }
-                    styles={{
-                      menu: (provided) => ({
-                        ...provided,
-                        zIndex: 10,
-                      }),
-                    }}
-                  />
-                  {error && (
-                    <div className={styles.errorMessage}>
-                      {errors.category?.message}
-                    </div>
-                  )}
-                </>
-              )}
-            />
+            <div>
+              <Controller
+                control={control}
+                name="category"
+                render={({
+                  field: { onChange, name, onBlur, ref, value },
+                  fieldState: { error },
+                }) => (
+                  <>
+                    {' '}
+                    <Select
+                      size="large"
+                      isSearchable={false}
+                      isMulti={false}
+                      placeholder={t('category')}
+                      options={props.categories}
+                      innerRef={ref}
+                      name={name}
+                      onChange={(val) => {
+                        onChange(val?.value ?? null);
+                      }}
+                      onBlur={onBlur}
+                      value={
+                        props.categories.find((cat) => cat.value === value) ??
+                        null
+                      }
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 10,
+                        }),
+                      }}
+                    />
+                    {error && (
+                      <div className={styles.errorMessage}>
+                        {errors.category?.message}
+                      </div>
+                    )}
+                  </>
+                )}
+              />
+            </div>
             <LabeledInput
               lighter
               placeholder={t('recipes.editPanel.fields.portionsPerBatch')}
