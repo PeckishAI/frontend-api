@@ -24,12 +24,17 @@ export type Stock = {
   unit_name?: string | null;
 };
 
+export type TagDetails = {
+  name: string;
+  uuid: string;
+};
+
 export type Ingredient = {
   type?: string;
   id: string;
   name: string;
   tagUUID?: string[] | null;
-  tag_details?: string[] | null;
+  tag_details?: TagDetails[] | null;
   actualStock: number;
   theoriticalStock?: number;
   parLevel: number;

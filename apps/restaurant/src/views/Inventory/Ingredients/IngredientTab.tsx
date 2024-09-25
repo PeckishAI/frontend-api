@@ -143,33 +143,33 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       (state) => state.selectedRestaurantUUID
     );
 
-    useEffect(() => {
-      // Only run on initial mount or when tagList or editedValues change
-      if (editedValues?.tagUUID?.length > 0 && firstTimeSelect) {
-        // Create updateData based on existing tags
-        const updateData = editedValues.tagUUID
-          .map((option) => {
-            const existingTag = tagList.find((tag) => tag.uuid === option);
-            return existingTag
-              ? { name: existingTag.name, uuid: existingTag.uuid }
-              : option
-              ? { name: option, uuid: '' }
-              : null;
-          })
-          .filter(Boolean); // Remove any null values
-        setFirstTimeSelected(false);
-        // Only update state if the tag_details actually changed
-        if (
-          JSON.stringify(updateData) !==
-          JSON.stringify(editedValues.tag_details)
-        ) {
-          setEditedValues((prev) => ({
-            ...prev,
-            tag_details: updateData,
-          }));
-        }
-      }
-    }, [tagList, editedValues]);
+    // useEffect(() => {
+    //   // Only run on initial mount or when tagList or editedValues change
+    //   if (editedValues?.tagUUID?.length > 0 && firstTimeSelect) {
+    //     // Create updateData based on existing tags
+    //     const updateData = editedValues.tagUUID
+    //       .map((option) => {
+    //         const existingTag = tagList.find((tag) => tag.uuid === option);
+    //         return existingTag
+    //           ? { name: existingTag.name, uuid: existingTag.uuid }
+    //           : option
+    //           ? { name: option, uuid: '' }
+    //           : null;
+    //       })
+    //       .filter(Boolean); // Remove any null values
+    //     setFirstTimeSelected(false);
+    //     // Only update state if the tag_details actually changed
+    //     if (
+    //       JSON.stringify(updateData) !==
+    //       JSON.stringify(editedValues.tag_details)
+    //     ) {
+    //       setEditedValues((prev) => ({
+    //         ...prev,
+    //         tag_details: updateData,
+    //       }));
+    //     }
+    //   }
+    // }, [tagList, editedValues]);
 
     const reloadRestaurantSuppliers = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
@@ -1631,22 +1631,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
                         setEditedValues((prevValues) => ({
                           ...prevValues,
-                          tag_details: updatedTagDetails, // Keep all the tags, not just the newly created one
-                          tagUUID: updatedTagDetails.map((tag) => tag.uuid), // Update the UUIDs list
+                          tag_details: updatedTagDetails,
+                          // tagUUID: updatedTagDetails.map((tag) => tag.uuid),
                         }));
                       }}
-                      // onCreateOption={(createdVal) => {
-                      //   const newTag = {
-                      //     name: createdVal,
-                      //     uuid: '', // New tag with no UUID yet
-                      //   };
-
-                      //   // Update the state with the new tag without replacing existing ones
-                      //   setEditedValues((prevValues) => ({
-                      //     ...prevValues,
-                      //     tag_details: [...prevValues?.tag_details, newTag], // Append the new tag to existing tags
-                      //   }));
-                      // }}
                     />
                   ) : (
                     <div className={styles.tagList}>
