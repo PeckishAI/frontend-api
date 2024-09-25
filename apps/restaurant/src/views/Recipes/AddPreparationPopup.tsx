@@ -46,7 +46,10 @@ const AddPreparationSchema = z.object({
           required_error: 'Quantity is required',
           invalid_type_error: 'Quantity is required',
         }),
-        conversion_factor: z.string().optional(),
+        conversion_factor: z.number({
+          required_error: 'Conversion factor is required',
+          invalid_type_error: 'Conversion factor is required',
+        }),
         recipe_unit_name: z
           .string()
           .min(1, { message: 'Unit name is required' }),
@@ -95,7 +98,6 @@ const AddPreparationPopup = (props: Props) => {
     },
   });
 
-  const { loading: loadingIngredients } = useIngredients();
   const {
     fields: ingredientFields,
     append: addIngredient,
@@ -168,13 +170,21 @@ const AddPreparationPopup = (props: Props) => {
   }));
 
   const handleSubmitForm = handleSubmit(async (data) => {
+    let updateData = {
+      ...data,
+      ingredients: data.ingredients.map((ingredient) => ({
+        ...ingredient,
+        conversion_factor: +ingredient.conversion_factor,
+      })),
+    };
+
     if (!restaurantUUID) return;
 
     try {
       const uuid = await recipesService.createRecipe(
         restaurantUUID,
         props.selectedTab === 1 ? 'preparation' : 'recipe',
-        data
+        updateData
       );
       props.onRequestClose();
       props.onReload();
@@ -197,6 +207,7 @@ const AddPreparationPopup = (props: Props) => {
       <form onSubmit={handleSubmitForm}>
         <div className={styles.form}>
           <div className={styles.inputContainer}>
+            {console.log('errors', errors)}
             <div>
               <LabeledInput
                 lighter
@@ -206,46 +217,48 @@ const AddPreparationPopup = (props: Props) => {
                 {...register('recipe_name')}
               />
             </div>
-            <Controller
-              control={control}
-              name="category"
-              render={({
-                field: { onChange, name, onBlur, ref, value },
-                fieldState: { error },
-              }) => (
-                <>
-                  {' '}
-                  <Select
-                    size="large"
-                    isSearchable={false}
-                    isMulti={false}
-                    placeholder={t('category')}
-                    options={props.categories}
-                    innerRef={ref}
-                    name={name}
-                    onChange={(val) => {
-                      onChange(val?.value ?? null);
-                    }}
-                    onBlur={onBlur}
-                    value={
-                      props.categories.find((cat) => cat.value === value) ??
-                      null
-                    }
-                    styles={{
-                      menu: (provided) => ({
-                        ...provided,
-                        zIndex: 10,
-                      }),
-                    }}
-                  />
-                  {error && (
-                    <div className={styles.errorMessage}>
-                      {errors.category?.message}
-                    </div>
-                  )}
-                </>
-              )}
-            />
+            <div>
+              <Controller
+                control={control}
+                name="category"
+                render={({
+                  field: { onChange, name, onBlur, ref, value },
+                  fieldState: { error },
+                }) => (
+                  <>
+                    {' '}
+                    <Select
+                      size="large"
+                      isSearchable={false}
+                      isMulti={false}
+                      placeholder={t('category')}
+                      options={props.categories}
+                      innerRef={ref}
+                      name={name}
+                      onChange={(val) => {
+                        onChange(val?.value ?? null);
+                      }}
+                      onBlur={onBlur}
+                      value={
+                        props.categories.find((cat) => cat.value === value) ??
+                        null
+                      }
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 10,
+                        }),
+                      }}
+                    />
+                    {error && (
+                      <div className={styles.errorMessage}>
+                        {errors.category?.message}
+                      </div>
+                    )}
+                  </>
+                )}
+              />
+            </div>
             <LabeledInput
               lighter
               placeholder={t('recipes.editPanel.fields.portionsPerBatch')}
@@ -295,6 +308,7 @@ const AddPreparationPopup = (props: Props) => {
                                 (ing) => ing.id === selectedOption?.value
                               );
                               if (selected) {
+                                console.log('selected', selected);
                                 setValue(
                                   `ingredients.${index}.type`,
                                   selected.type || ''
@@ -440,7 +454,9 @@ const AddPreparationPopup = (props: Props) => {
                       placeholder={t('conversion_factor')}
                       type="number"
                       lighter
-                      {...register(`ingredients.${index}.conversion_factor`)}
+                      {...register(`ingredients.${index}.conversion_factor`, {
+                        valueAsNumber: true,
+                      })}
                       error={
                         errors.ingredients?.[index]?.conversion_factor?.message
                       }
