@@ -24,8 +24,8 @@ import toast from 'react-hot-toast';
 
 const AddIngredientSchema = z.object({
   name: z.string().min(1, { message: 'Recipe name is required' }),
-  // actualStock: z.string().min(1, { message: 'Actual Stock name is required' }),
-  // parLevel: z.string().min(1, { message: 'Par Level is required' }),
+  actualStock: z.string().optional(),
+  parLevel: z.string().optional(),
   tag_details: z
     .array(
       z.object({
