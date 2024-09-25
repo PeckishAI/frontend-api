@@ -5,6 +5,7 @@ export type Supplier = {
   conversion_factor?: number;
   supplier_unit: string;
   supplier_unit_name: string;
+  supplier_unit_cost?: string | null;
 };
 
 export type Recipe = {

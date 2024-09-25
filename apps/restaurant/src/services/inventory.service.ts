@@ -134,6 +134,7 @@ const getIngredientList = async (
           supplier_id: supplier['supplier_id'],
           supplier_name: supplier['supplier_name'],
           supplier_cost: supplier['supplier_cost'],
+          supplier_unit_cost: supplier['supplier_unit_cost'],
         })
       ),
       amount: res.data[key]['amount'],
@@ -165,6 +166,7 @@ const getIngredientList = async (
         supplier_unit: supplier['supplier_unit'],
         supplier_unit_name: supplier['supplier_unit_name'],
         conversion_factor: supplier['conversion_factor'],
+        supplier_unit_cost: supplier['supplier_unit_cost'],
       })
     ),
     stock_history: res.data[key]['stock_history'],

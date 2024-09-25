@@ -1131,9 +1131,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               }}>
               {row.supplier_details.map((detail, detailIndex) => (
                 <span key={detailIndex}>
-                  {detail.supplier_cost != null
-                    ? detail.supplier_cost.toFixed(2)
-                    : detail.supplier_cost}
+                  {detail?.supplier_unit_cost != null
+                    ? detail?.supplier_unit_cost?.toFixed(2)
+                    : detail?.supplier_unit_cost}
                 </span>
               ))}
             </div>
