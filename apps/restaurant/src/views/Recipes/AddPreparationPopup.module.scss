@@ -30,7 +30,7 @@
 .quantityCss {
   display: flex;
   gap: 0.5rem;
-  align-items: center;
+  // align-items: center;
 }
 
 .addIngredientButton {
@@ -51,7 +51,7 @@
 }
 .info {
   position: absolute;
-  top: 50%;
+  top: 20px;
   right: 10px;
   transform: translateY(-50%);
   background-color: transparent;
