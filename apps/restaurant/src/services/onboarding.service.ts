@@ -4,6 +4,7 @@ const getPOSList = async () => {
   const res = await axiosClient.get('/integrations');
   console.log('Onboarding request status', res.status);
   return res;
+  console.log('res: ', res);
 };
 
 const login = (
