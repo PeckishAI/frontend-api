@@ -20,6 +20,7 @@ import { inventoryService } from '../../../services';
 import CreatableSelect from 'react-select/creatable';
 import { tagService } from '../../../services/tag.service';
 import supplierService from '../../../services/supplier.service';
+import toast from 'react-hot-toast';
 
 const AddIngredientSchema = z.object({
   name: z.string().min(1, { message: 'Recipe name is required' }),
@@ -206,17 +207,17 @@ const AddIngredientPopup = (props: Props) => {
       })),
     };
 
-    inventoryService
-      .addIngredient(restaurantUUID, formattedData)
-      .catch((err) => {
-        console.log('err', err);
-      })
-      .then((res) => {
-        props.onRequestClose();
-        reloadTagList();
-        props.reloadInventoryData();
-        reset();
-      });
+    try {
+      await inventoryService.addIngredient(restaurantUUID, formattedData);
+
+      props.onRequestClose();
+      reloadTagList();
+      props.reloadInventoryData();
+      reset();
+      toast.success('Ingredient Created Successfully');
+    } catch (error) {
+      console.error('Error adding ingredient:', error);
+    }
   });
 
   return (
