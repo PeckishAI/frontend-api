@@ -23,8 +23,8 @@ import supplierService from '../../../services/supplier.service';
 
 const AddIngredientSchema = z.object({
   name: z.string().min(1, { message: 'Recipe name is required' }),
-  actualStock: z.string().min(1, { message: 'Actual Stock name is required' }),
-  parLevel: z.string().min(1, { message: 'Par Level is required' }),
+  // actualStock: z.string().min(1, { message: 'Actual Stock name is required' }),
+  // parLevel: z.string().min(1, { message: 'Par Level is required' }),
   tag_details: z
     .array(
       z.object({
@@ -245,7 +245,7 @@ const AddIngredientPopup = (props: Props) => {
               placeholder={t('ingredient:actualStock')}
               type="number"
               lighter
-              error={errors.actualStock?.message}
+              // error={errors.actualStock?.message}
               {...register('actualStock')}
               minWidth="100px"
             />
@@ -253,7 +253,7 @@ const AddIngredientPopup = (props: Props) => {
               label={t('ingredient:parLvel')}
               placeholder={t('ingredient:parLvel')}
               type="number"
-              error={errors.parLevel?.message}
+              // error={errors.parLevel?.message}
               lighter
               minWidth="100px"
               {...register('parLevel')}
@@ -446,6 +446,7 @@ const AddIngredientPopup = (props: Props) => {
                 placeholder={t('ingredient:supplierCost')}
                 type="number"
                 minWidth="100px"
+                step="any"
                 error={
                   errors?.supplier_details?.[index]?.supplier_cost?.message
                 }
@@ -458,6 +459,7 @@ const AddIngredientPopup = (props: Props) => {
                   label: unit.unit_name,
                   value: unit.unit_uuid,
                 }))}
+                className={styles.unitInput}
                 isCreatable
                 styles={{
                   menu: (provided) => ({

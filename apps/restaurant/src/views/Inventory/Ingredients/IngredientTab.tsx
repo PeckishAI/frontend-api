@@ -1130,7 +1130,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 padding: '5px',
               }}>
               {row.supplier_details.map((detail, detailIndex) => (
-                <span key={detailIndex}>{detail.supplier_cost}</span>
+                <span key={detailIndex}>{detail.supplier_cost.toFixed(2)}</span>
               ))}
             </div>
           );
