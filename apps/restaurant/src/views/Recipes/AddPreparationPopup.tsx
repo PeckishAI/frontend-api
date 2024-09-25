@@ -145,6 +145,10 @@ const AddPreparationPopup = (props: Props) => {
           `ingredients.${index}.ingredient_unit_uuid`,
           selectedIngredient.unit_uuid || ''
         );
+        setValue(
+          `ingredients.${index}.ingredient_unit_name`,
+          selectedIngredient.unit_name || ''
+        );
       }
     });
   }, [watch('ingredients'), props.ingredients, setValue]);
@@ -317,6 +321,10 @@ const AddPreparationPopup = (props: Props) => {
                                   `ingredients.${index}.ingredient_unit_uuid`,
                                   selected.unit_uuid || ''
                                 ); // Set unit_uuid here
+                                setValue(
+                                  `ingredients.${index}.ingredient_unit_name`,
+                                  selected.unit_name || ''
+                                );
                               }
                             }}
                             onBlur={onBlur}
@@ -463,11 +471,13 @@ const AddPreparationPopup = (props: Props) => {
                     />
                     <IconButton
                       icon={<i className="fa-solid fa-circle-info"></i>}
-                      tooltipMsg={`from ${
-                        selectedIngredient?.unit_name || ''
-                      } to ${
+                      tooltipMsg={`1 ${watch(
+                        `ingredients.${index}.ingredient_unit_name`
+                      )} is ${
+                        watch(`ingredients.${index}.conversion_factor`) || ''
+                      } ${
                         watch(`ingredients.${index}.recipe_unit_name`) || ''
-                      }`}
+                      } `}
                       className={styles.info}
                     />
                   </div>
