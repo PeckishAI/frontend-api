@@ -46,7 +46,10 @@ const AddPreparationSchema = z.object({
           required_error: 'Quantity is required',
           invalid_type_error: 'Quantity is required',
         }),
-        conversion_factor: z.string().optional(),
+        conversion_factor: z.number({
+          required_error: 'Conversion factor is required',
+          invalid_type_error: 'Conversion factor is required',
+        }),
         recipe_unit_name: z
           .string()
           .min(1, { message: 'Unit name is required' }),
@@ -95,7 +98,6 @@ const AddPreparationPopup = (props: Props) => {
     },
   });
 
-  const { loading: loadingIngredients } = useIngredients();
   const {
     fields: ingredientFields,
     append: addIngredient,
@@ -143,6 +145,10 @@ const AddPreparationPopup = (props: Props) => {
           `ingredients.${index}.ingredient_unit_uuid`,
           selectedIngredient.unit_uuid || ''
         );
+        setValue(
+          `ingredients.${index}.ingredient_unit_name`,
+          selectedIngredient.unit_name || ''
+        );
       }
     });
   }, [watch('ingredients'), props.ingredients, setValue]);
@@ -172,7 +178,7 @@ const AddPreparationPopup = (props: Props) => {
       ...data,
       ingredients: data.ingredients.map((ingredient) => ({
         ...ingredient,
-        conversion_factor: Number(ingredient.conversion_factor),
+        conversion_factor: +ingredient.conversion_factor,
       })),
     };
 
@@ -205,6 +211,7 @@ const AddPreparationPopup = (props: Props) => {
       <form onSubmit={handleSubmitForm}>
         <div className={styles.form}>
           <div className={styles.inputContainer}>
+            {console.log('errors', errors)}
             <div>
               <LabeledInput
                 lighter
@@ -305,6 +312,7 @@ const AddPreparationPopup = (props: Props) => {
                                 (ing) => ing.id === selectedOption?.value
                               );
                               if (selected) {
+                                console.log('selected', selected);
                                 setValue(
                                   `ingredients.${index}.type`,
                                   selected.type || ''
@@ -313,6 +321,10 @@ const AddPreparationPopup = (props: Props) => {
                                   `ingredients.${index}.ingredient_unit_uuid`,
                                   selected.unit_uuid || ''
                                 ); // Set unit_uuid here
+                                setValue(
+                                  `ingredients.${index}.ingredient_unit_name`,
+                                  selected.unit_name || ''
+                                );
                               }
                             }}
                             onBlur={onBlur}
@@ -450,18 +462,22 @@ const AddPreparationPopup = (props: Props) => {
                       placeholder={t('conversion_factor')}
                       type="number"
                       lighter
-                      {...register(`ingredients.${index}.conversion_factor`)}
+                      {...register(`ingredients.${index}.conversion_factor`, {
+                        valueAsNumber: true,
+                      })}
                       error={
                         errors.ingredients?.[index]?.conversion_factor?.message
                       }
                     />
                     <IconButton
                       icon={<i className="fa-solid fa-circle-info"></i>}
-                      tooltipMsg={`from ${
-                        selectedIngredient?.unit_name || ''
-                      } to ${
+                      tooltipMsg={`1 ${watch(
+                        `ingredients.${index}.ingredient_unit_name`
+                      )} is ${
+                        watch(`ingredients.${index}.conversion_factor`) || ''
+                      } ${
                         watch(`ingredients.${index}.recipe_unit_name`) || ''
-                      }`}
+                      } `}
                       className={styles.info}
                     />
                   </div>

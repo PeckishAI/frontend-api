@@ -20,11 +20,12 @@ import { inventoryService } from '../../../services';
 import CreatableSelect from 'react-select/creatable';
 import { tagService } from '../../../services/tag.service';
 import supplierService from '../../../services/supplier.service';
+import toast from 'react-hot-toast';
 
 const AddIngredientSchema = z.object({
   name: z.string().min(1, { message: 'Recipe name is required' }),
-  actualStock: z.string().min(1, { message: 'Actual Stock name is required' }),
-  parLevel: z.string().min(1, { message: 'Par Level is required' }),
+  actualStock: z.string().optional(),
+  parLevel: z.string().optional(),
   tag_details: z
     .array(
       z.object({
@@ -206,17 +207,17 @@ const AddIngredientPopup = (props: Props) => {
       })),
     };
 
-    inventoryService
-      .addIngredient(restaurantUUID, formattedData)
-      .catch((err) => {
-        console.log('err', err);
-      })
-      .then((res) => {
-        props.onRequestClose();
-        reloadTagList();
-        props.reloadInventoryData();
-        reset();
-      });
+    try {
+      await inventoryService.addIngredient(restaurantUUID, formattedData);
+
+      props.onRequestClose();
+      reloadTagList();
+      props.reloadInventoryData();
+      reset();
+      toast.success('Ingredient Created Successfully');
+    } catch (error) {
+      console.error('Error adding ingredient:', error);
+    }
   });
 
   return (
@@ -245,7 +246,7 @@ const AddIngredientPopup = (props: Props) => {
               placeholder={t('ingredient:actualStock')}
               type="number"
               lighter
-              error={errors.actualStock?.message}
+              // error={errors.actualStock?.message}
               {...register('actualStock')}
               minWidth="100px"
             />
@@ -253,7 +254,7 @@ const AddIngredientPopup = (props: Props) => {
               label={t('ingredient:parLvel')}
               placeholder={t('ingredient:parLvel')}
               type="number"
-              error={errors.parLevel?.message}
+              // error={errors.parLevel?.message}
               lighter
               minWidth="100px"
               {...register('parLevel')}
@@ -446,6 +447,7 @@ const AddIngredientPopup = (props: Props) => {
                 placeholder={t('ingredient:supplierCost')}
                 type="number"
                 minWidth="100px"
+                step="any"
                 error={
                   errors?.supplier_details?.[index]?.supplier_cost?.message
                 }
@@ -458,6 +460,7 @@ const AddIngredientPopup = (props: Props) => {
                   label: unit.unit_name,
                   value: unit.unit_uuid,
                 }))}
+                className={styles.unitInput}
                 isCreatable
                 styles={{
                   menu: (provided) => ({
@@ -553,9 +556,11 @@ const AddIngredientPopup = (props: Props) => {
 
                     <IconButton
                       icon={<i className="fa-solid fa-circle-info"></i>}
-                      tooltipMsg={`from ${watch(
+                      tooltipMsg={`1 ${watch(
                         `supplier_details.${index}.supplier_unit_name`
-                      )} to 
+                      )} is  ${watch(
+                        `supplier_details.${index}.conversion_factor`
+                      )}
                         ${watch('unit_name')}
                       `}
                       className={styles.info}

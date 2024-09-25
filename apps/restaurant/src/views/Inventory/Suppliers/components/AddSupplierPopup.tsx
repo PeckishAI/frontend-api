@@ -15,6 +15,7 @@ import supplierService, {
   LinkedSupplier,
 } from '../../../../services/supplier.service';
 import { useRestaurantStore } from '../../../../store/useRestaurantStore';
+import toast from 'react-hot-toast';
 
 const AddSupplierSchema = z.object({
   name: z.string().min(1, { message: 'required' }),
@@ -93,7 +94,13 @@ const AddSupplierPopup = (props: Props) => {
           },
           restaurantUUID
         )
-        .then((res) => res.supplier_uuid)
+        .then((res) => {
+          res.supplier_uuid;
+          toast.success('Supplier Created Successfully');
+          props.onRequestClose();
+          props.fetchSuppliersAndSync();
+          reset();
+        })
         .catch(() => null);
 
       if (!uuid) return;
@@ -115,6 +122,8 @@ const AddSupplierPopup = (props: Props) => {
         })
         .then(() => {
           props.onRequestClose();
+          toast.success('Successfully supplier updated');
+          props.fetchSuppliersAndSync();
           if (props.onSupplierUpdated) {
             props.onSupplierUpdated({
               ...props.editSupplier,
