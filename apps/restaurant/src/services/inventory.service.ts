@@ -125,11 +125,16 @@ const getIngredientList = async (
       unit: res.data[key]['unit'],
       unitCost: res.data[key]['cost'],
       tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
+      tag_details: res.data[key]['tag_details'].map((tag: any) => ({
+        uuid: tag['uuid'],
+        name: tag['name'],
+      })),
       supplier_details: res.data[key]['supplier_details'].map(
         (supplier: any) => ({
           supplier_id: supplier['supplier_id'],
           supplier_name: supplier['supplier_name'],
           supplier_cost: supplier['supplier_cost'],
+          supplier_unit_cost: supplier['supplier_unit_cost'],
         })
       ),
       amount: res.data[key]['amount'],
@@ -149,6 +154,10 @@ const getIngredientList = async (
     recipe_count: res.data[key]['recipe_count'],
     unitCost: res.data[key]['cost'],
     tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
+    tag_details: res.data[key]['tag_details'].map((tag: any) => ({
+      uuid: tag['uuid'],
+      name: tag['name'],
+    })),
     supplier_details: res.data[key]['supplier_details'].map(
       (supplier: any) => ({
         supplier_id: supplier['supplier_id'],
@@ -157,6 +166,7 @@ const getIngredientList = async (
         supplier_unit: supplier['supplier_unit'],
         supplier_unit_name: supplier['supplier_unit_name'],
         conversion_factor: supplier['conversion_factor'],
+        supplier_unit_cost: supplier['supplier_unit_cost'],
       })
     ),
     stock_history: res.data[key]['stock_history'],
@@ -181,7 +191,6 @@ const getIngredientList = async (
 //   quantity: stock['quantity'],
 //   unit_name: stock['unit_name'],
 // })),
-
 
 const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
   const FormattedIngredient = {
@@ -408,7 +417,6 @@ const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
 
   return axiosClient.post('/documents/' + restaurantUUID, invoiceData);
 };
-
 
 export const inventoryService = {
   getIngredientList,

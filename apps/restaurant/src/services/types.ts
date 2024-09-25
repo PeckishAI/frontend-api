@@ -5,6 +5,7 @@ export type Supplier = {
   conversion_factor?: number;
   supplier_unit: string;
   supplier_unit_name: string;
+  supplier_unit_cost?: string | null;
 };
 
 export type Recipe = {
@@ -24,12 +25,17 @@ export type Stock = {
   unit_name?: string | null;
 };
 
+export type TagDetails = {
+  name: string;
+  uuid: string;
+};
+
 export type Ingredient = {
   type?: string;
   id: string;
   name: string;
   tagUUID?: string[] | null;
-  tag_details?: string[] | null;
+  tag_details?: TagDetails[] | null;
   actualStock: number;
   theoriticalStock?: number;
   parLevel: number;
