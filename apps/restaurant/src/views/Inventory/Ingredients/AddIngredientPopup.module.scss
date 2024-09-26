@@ -1,5 +1,5 @@
 .formContainer {
-  // padding: 40px;
+  // padding-bottom: 40px;
   max-height: 60vh;
   overflow-y: auto;
 
@@ -129,6 +129,11 @@
 }
 .unitInput {
   align-self: flex-start;
+}
+.errorMessage {
+  color: red;
+  font-size: 13.6px;
+  margin-top: 5px;
 }
 // .errorMessage {
 //   color: red;
