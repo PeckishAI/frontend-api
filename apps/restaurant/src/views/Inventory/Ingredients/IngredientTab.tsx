@@ -2685,6 +2685,11 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           isVisible={showAddPopup}
           reloadInventoryData={reloadInventoryData}
           onRequestClose={() => setShowAddPopup(false)} // Close popup when requested
+          reloadTagLists={reloadTagList}
+          reloadUnits={reloadUnits}
+          unitname={unitname}
+          setTagList={setTagList}
+          tagList={tagList}
         />
 
         <AddWastingPopup
