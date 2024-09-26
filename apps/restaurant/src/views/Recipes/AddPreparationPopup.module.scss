@@ -30,7 +30,7 @@
 .quantityCss {
   display: flex;
   gap: 0.5rem;
-  // align-items: center;
+  align-items: center;
 }
 
 .addIngredientButton {
@@ -81,6 +81,7 @@
   width: 58px;
   height: 21px;
   cursor: pointer;
+  color: var(--primaryColor);
 }
 
 .errorMessage {

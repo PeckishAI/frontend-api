@@ -386,6 +386,21 @@ const AddPreparationPopup = (props: Props) => {
                             maxHeight: '200px',
                             overflowY: 'auto',
                           }),
+                          control: (provided, state) => ({
+                            ...provided,
+                            minWidth: '200px',
+                            borderColor: state.isFocused
+                              ? '#5E72E4'
+                              : provided.borderColor,
+                            boxShadow: state.isFocused
+                              ? '0 0 0 1px #5E72E4'
+                              : provided.boxShadow,
+                            borderRadius: state.isFocused
+                              ? '6px'
+                              : provided.borderRadius,
+                            height: '40px',
+                            overflow: 'visible',
+                          }),
                           option: (provided, state) => ({
                             ...provided,
                             backgroundColor: state.isSelected
@@ -393,15 +408,14 @@ const AddPreparationPopup = (props: Props) => {
                               : state.isFocused
                               ? '#dbe1df'
                               : provided.backgroundColor,
+                            boxShadow: state.isFocused
+                              ? '#000000'
+                              : provided.boxShadow,
                             color: state.isSelected
                               ? '#FFFFFF'
                               : state.isFocused
                               ? '#000000'
                               : provided.color,
-                          }),
-                          container: (provided) => ({
-                            ...provided,
-                            overflow: 'visible',
                           }),
                         }}
                         className={styles.unitInput}
@@ -465,7 +479,7 @@ const AddPreparationPopup = (props: Props) => {
                       className={styles.info}
                     />
                   </div>
-                  <div className={styles.quantityCss}>
+                  <div className={`${index > 0 ? styles.quantityCss : ''}`}>
                     <LabeledInput
                       placeholder={t('quantity')}
                       type="number"
