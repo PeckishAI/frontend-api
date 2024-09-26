@@ -39,7 +39,11 @@ const RecipeSchema = z
     ingredients: z.array(
       z.object({
         selectedUUID: z.string().nonempty('required'),
-        conversion_factor: z.string().optional(),
+        conversion_factor: z.coerce
+          .number()
+          .positive('positive-number')
+          .nullable()
+          .refine((val) => val !== null, 'required'),
         type: z.string().nonempty('required'),
         quantity: z.coerce
           .number()
@@ -183,12 +187,10 @@ const RecipeFormPanel = (props: Props) => {
   const totalCost = watch('ingredients').reduce((acc, ing) => {
     const ingredient = ingredients.find((i) => i.id === ing.selectedUUID);
     if (ingredient && ing.quantity && ing.conversion_factor) {
-      acc +=
-        (ingredient.cost / ing.conversion_factor) * ing.quantity;
+      acc += (ingredient.cost / ing.conversion_factor) * ing.quantity;
     }
     return acc;
   }, 0);
-  
 
   // Benefit per batch
   const priceMargin =
@@ -529,7 +531,7 @@ const RecipeFormPanel = (props: Props) => {
                     style={{ minWidth: '175px' }}
                     suffix={selectedIngredient?.conversion_factor}
                     {...register(`ingredients.${i}.conversion_factor`)}
-                    error={errors?.ingredients?.conversion_factor?.message}
+                    error={errors?.ingredients?.[i]?.conversion_factor?.message}
                   />
                   <IconButton
                     icon={<i className="fa-solid fa-circle-info"></i>}
@@ -542,7 +544,7 @@ const RecipeFormPanel = (props: Props) => {
                 <p className={styles.ingredientCost}>
                   {formatCurrency(
                     ((selectedIngredient?.cost ?? 0) /
-                    (rowField?.conversion_factor ?? 1)) *
+                      (rowField?.conversion_factor ?? 1)) *
                       rowField.quantity,
                     currencyISO
                   )}

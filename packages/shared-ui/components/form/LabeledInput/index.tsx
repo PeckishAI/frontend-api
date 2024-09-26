@@ -13,7 +13,7 @@ type Props = React.DetailedHTMLProps<
   icon?: React.ReactNode;
   error?: string;
   lighter?: boolean;
-  suffix?: string;
+  suffix?: string | number;
 };
 
 export const LabeledInput = React.forwardRef<HTMLInputElement, Props>(
