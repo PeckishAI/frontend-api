@@ -247,6 +247,20 @@ const updateIngredient = (ingredient: Ingredient) => {
     ingredientFormated
   );
 };
+const getUnitNew = async (restaurantUUID: string): Promise<Unit[]> => {
+  if (!restaurantUUID) {
+    throw new Error('Invalid restaurant UUID');
+  }
+
+  try {
+    const res = await axiosClient.get(`/units/new/${restaurantUUID}`);
+    // Rest of the logic
+    return res;
+  } catch (error) {
+    console.error('Error fetching units:', error);
+    return [];
+  }
+};
 
 const getUnits = async (restaurantUUID: string): Promise<Unit[]> => {
   try {
@@ -424,6 +438,7 @@ export const inventoryService = {
   getOnlyIngredientList,
   addIngredient,
   updateIngredient,
+  getUnitNew,
   getIngredientPreview,
   deleteIngredient,
   uploadCsvFile,
