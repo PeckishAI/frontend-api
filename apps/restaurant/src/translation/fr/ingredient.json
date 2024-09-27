@@ -22,6 +22,7 @@
   "supplierCost":"Coût unitaire",
   "supplierName":"Nom du fournisseur",
   "conversion_factor":"Facteur de conversion",
+  "volume":"volume",
   "recipe_name":"Nom de la recette",
 
 

@@ -661,6 +661,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const {
         id,
         name,
+        volume,
         parLevel,
         actualStock,
         unit,
@@ -669,6 +670,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         recipes,
         unit_name,
         unit_uuid,
+        container_name,
+        container_uuid,
       } = editedValues;
 
       // Ensure tag_details and supplier_details are always defined
@@ -685,6 +688,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const updatedIngredient = {
         id,
         name,
+        volume,
         tag_details,
         parLevel,
         actualStock,
@@ -693,6 +697,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         recipes,
         unit_name,
         unit_uuid,
+        container_name,
+        container_uuid,
         supplier_details,
         unitCost,
         restaurantUUID: selectedRestaurantUUID,
@@ -1382,10 +1388,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                     )}
                   </div>
 
+                  <div></div>
+
                   <div className={styles.inputContainer}>
                     <div className={styles.title}>
                       {' '}
-                      <span className={styles.titleRecipeName}>Units</span>
+                      <span className={styles.titleRecipeName}>Container</span>
                     </div>
 
                     {isEditMode ? (
@@ -1394,7 +1402,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                           placeholder={
                             editedValues?.unit_uuid
                               ? t('unit')
-                              : t('Select a unit') // Show 'Select a unit' if unit_uuid is null
+                              : t('Select a Container')
                           }
                           options={unitname.map((unit) => ({
                             label: unit.unit_name,
@@ -1476,25 +1484,198 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                     (unit) =>
                                       unit.value === editedValues?.unit_uuid
                                   ) || null
-                          } // Either display the new unit or find and display the selected unit by unit_uuid
+                          }
                           onChange={(selectedOption) => {
                             if (selectedOption) {
                               if (selectedOption.__isNew__) {
-                                // Do not update the unitname list, just update editedValues with new unit
                                 setEditedValues({
                                   ...editedValues,
-                                  unit_uuid: '', // Keep unit_uuid blank
-                                  unit_name: selectedOption.label, // Set the new unit_name
+                                  unit_uuid: '',
+                                  unit_name: selectedOption.label,
                                 });
                               } else {
-                                // If existing unit is selected
                                 setEditedValues({
                                   ...editedValues,
-                                  unit_uuid: selectedOption.value, // Set the selected unit's UUID
-                                  unit_name: selectedOption.label, // Set the selected unit's name
+                                  unit_uuid: selectedOption.value,
+                                  unit_name: selectedOption.label,
                                 });
                               }
-                              setUnitError(false); // Clear error on valid selection
+                              setUnitError(false);
+                            }
+                          }}
+                          isCreatable
+                        />
+
+                        {unitError && (
+                          <div style={{ color: 'red', marginTop: '5px' }}>
+                            Container is required.
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <span className={styles.value}>
+                        {unitname?.find(
+                          (unit) => unit.value === editedValues.unit_uuid
+                        )?.label || editedValues.unit_name}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className={styles.inputContainer}>
+                    <div className={styles.title}>
+                      <span className={styles.titleRecipeName}>Volume</span>
+                    </div>
+                    {isEditMode ? (
+                      <>
+                        <LabeledInput
+                          label={t('ingredient:volume')}
+                          placeholder={t('ingredient:volume')}
+                          type="text"
+                          lighter
+                          value={editedValues?.volume}
+                          onChange={
+                            (event) =>
+                              setEditedValues({
+                                ...editedValues,
+                                volume: event.target.value,
+                              }) // Extract event.target.value
+                          }
+                          sx={{
+                            '& .MuiFilledInput-root': {
+                              border: '1px solid grey',
+                              borderRadius: 1,
+                              background: 'lightgrey',
+                              height: '40px',
+                              fontSize: '16px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              borderColor: 'grey.300',
+                              borderBottom: 'none',
+                            },
+                            '& .MuiFilledInput-root.Mui-disabled': {
+                              backgroundColor: 'lightgrey',
+                            },
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <span className={styles.value}>
+                        {' '}
+                        {editedValues?.volume}
+                      </span>
+                    )}
+                  </div>
+                  <div className={styles.inputContainer}>
+                    <div className={styles.title}>
+                      {' '}
+                      <span className={styles.titleRecipeName}>Units</span>
+                    </div>
+                    {isEditMode ? (
+                      <>
+                        <CreatableSelect
+                          placeholder={
+                            editedValues?.container_uuid
+                              ? t('unit')
+                              : t('Select a Container') // Show 'Select a unit' if unit_uuid is null
+                          }
+                          options={unitname.map((unit) => ({
+                            label: unit.unit_name,
+                            value: unit.unit_uuid,
+                          }))} // Map options for CreatableSelect
+                          styles={{
+                            menu: (provided) => ({
+                              ...provided,
+                              overflowY: 'auto',
+                            }),
+                            control: (provided, state) => ({
+                              ...provided,
+                              minWidth: '200px',
+                              boxShadow: state.isFocused
+                                ? 'none'
+                                : provided.boxShadow,
+                              borderColor: state.isFocused
+                                ? '#ced4da'
+                                : provided.borderColor,
+                              '&:hover': {
+                                borderColor: 'none',
+                              },
+                            }),
+                            menuList: (provided) => ({
+                              ...provided,
+                              maxHeight: '200px',
+                              overflowY: 'auto',
+                            }),
+                            option: (provided, state) => ({
+                              ...provided,
+                              backgroundColor: state.isSelected
+                                ? '#007BFF'
+                                : state.isFocused
+                                ? '#dbe1df'
+                                : provided.backgroundColor,
+                              color: state.isSelected
+                                ? '#FFFFFF'
+                                : state.isFocused
+                                ? '#000000'
+                                : provided.color,
+                            }),
+                            container: (provided) => ({
+                              ...provided,
+                              overflow: 'visible',
+                            }),
+                            multiValue: (provided) => ({
+                              ...provided,
+                              backgroundColor: '#5E72E4',
+                              color: '#FFFFFF',
+                              borderRadius: '12px',
+                            }),
+                            multiValueLabel: (provided) => ({
+                              ...provided,
+                              color: '#ffffff',
+                              borderRadius: '12px',
+                            }),
+                            multiValueRemove: (provided) => ({
+                              ...provided,
+                              color: '#ffffff',
+                              ':hover': {
+                                backgroundColor: '#b5adad',
+                                borderRadius: '12px',
+                                color: '#ffffff',
+                              },
+                            }),
+                          }}
+                          value={
+                            editedValues?.container_name
+                              ? {
+                                  label: editedValues.container_name,
+                                  value: editedValues.container_uuid,
+                                }
+                              : unitname
+                                  .map((unit) => ({
+                                    label: unit.unit_name,
+                                    value: unit.unit_uuid,
+                                  }))
+                                  .find(
+                                    (unit) =>
+                                      unit.value ===
+                                      editedValues?.container_uuid
+                                  ) || null
+                          }
+                          onChange={(selectedOption) => {
+                            if (selectedOption) {
+                              if (selectedOption.__isNew__) {
+                                setEditedValues({
+                                  ...editedValues,
+                                  container_uuid: '',
+                                  container_name: selectedOption.label,
+                                });
+                              } else {
+                                setEditedValues({
+                                  ...editedValues,
+                                  container_uuid: selectedOption.value,
+                                  container_name: selectedOption.label,
+                                });
+                              }
+                              setUnitError(false);
                             }
                           }}
                           isCreatable
@@ -1509,8 +1690,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                     ) : (
                       <span className={styles.value}>
                         {unitname?.find(
-                          (unit) => unit.value === editedValues.unit_uuid
-                        )?.label || editedValues.unit_name}
+                          (unit) => unit.value === editedValues.container_uuid
+                        )?.label || editedValues.container_name}
                       </span>
                     )}
                   </div>
@@ -1936,7 +2117,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                     }
                                   );
 
-                                // Sync conversion factor with recipes sharing the same unit
                                 const updatedRecipes = editedValues.recipes.map(
                                   (recipe) => {
                                     if (
@@ -1955,7 +2135,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                 setEditedValues({
                                   ...editedValues,
                                   supplier_details: updatedDetails,
-                                  recipes: updatedRecipes, // Sync recipes
+                                  recipes: updatedRecipes,
                                 });
                               }}
                             />
@@ -2014,7 +2194,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                             />
                             <span> {detail.supplier_cost}</span>
                             <span>{detail.supplier_unit_name}</span>
-                            <span className={styles.flexContainer}>
+                            <span className={styles.IconContainerOutside}>
                               {detail.conversion_factor}
                               <div className={styles.forecastIiconBtn}>
                                 <IconButton
