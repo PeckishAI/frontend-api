@@ -704,8 +704,8 @@ const RecipeFormPanel = (props: Props) => {
                   <IconButton
                     icon={<i className="fa-solid fa-circle-info"></i>}
                     tooltipMsg={`from ${
-                      selectedIngredient?.unit_name || ''
-                    } to ${watch(`ingredients.${i}.recipe_unit_name`) || ''}`}
+                      watch(`ingredients.${i}.recipe_unit_name`) || ''
+                    } to ${selectedIngredient?.unit_name || ''} `}
                     className={styles.info}
                   />
                 </div>
