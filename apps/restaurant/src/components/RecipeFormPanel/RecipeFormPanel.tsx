@@ -39,11 +39,11 @@ const RecipeSchema = z
     ingredients: z.array(
       z.object({
         selectedUUID: z.string().nonempty('required'),
-        conversion_factor: z.number({
-          required_error: 'Conversion factor is required',
-          invalid_type_error: 'Invalid conversion factor value',
-        }),
-        // .refine((val) => val !== undefined, 'required'),
+        conversion_factor: z
+          .number()
+          .or(z.string())
+          .pipe(z.coerce.number())
+          .optional(),
         type: z.string().nonempty('required'),
         quantity: z.coerce
           .number()
