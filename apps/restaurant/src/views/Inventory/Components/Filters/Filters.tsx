@@ -86,33 +86,54 @@ const Filters = ({ suppliers, tags, onApplyFilters }: Props) => {
       {isVisible && (
         <div ref={popupRef} className={styles.filters}>
           <p className={styles.title}>{t('filterBy')} :</p>
-          <div className='filter-selection'>
-          <Select
-            placeholder={'Tag'}
-            options={tags}
-            size="small"
-            isClearable
-            isMulti
-            menuPosition="fixed"
-            maxMenuHeight={200}
-            getOptionLabel={(option) => option.name}
-            getOptionValue={(option) => option.uuid}
-            onChange={(value) => handleFiltersChange('selectedTag', value)}
-            value={filters?.selectedTag}
-          />
-          <Select
-            placeholder={t('ingredient:supplier')}
-            options={suppliers}
-            size="small"
-            isClearable
-            isMulti
-            menuPosition="fixed"
-            maxMenuHeight={200}
-            getOptionLabel={(option) => option.name}
-            getOptionValue={(option) => option.uuid}
-            onChange={(value) => handleFiltersChange('selectedSupplier', value)}
-            value={filters?.selectedSupplier}
-          />
+          <div className={styles.gridContainer}>
+            <Select
+              placeholder={'Tag'}
+              options={tags}
+              size="small"
+              isClearable
+              isMulti
+              menuPosition="fixed"
+              maxMenuHeight={500}
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.uuid}
+              onChange={(value) => handleFiltersChange('selectedTag', value)}
+              value={filters?.selectedTag}
+              // styles={{
+              //   multiValue: (base) => ({
+              //     ...base,
+              //     backgroundColor: '#5E72E4', // Set background color of the selected tag
+              //     color: 'white', // Set text color
+              //   }),
+              //   multiValueLabel: (base) => ({
+              //     ...base,
+              //     color: 'white', // Set text color for tag label
+              //   }),
+              //   multiValueRemove: (base) => ({
+              //     ...base,
+              //     color: 'white', // Set close (X) button color
+              //     ':hover': {
+              //       backgroundColor: '#3e56b4', // Optional: Change close button hover color
+              //       color: 'white',
+              //     },
+              //   }),
+              // }}
+            />
+            <Select
+              placeholder={t('ingredient:supplier')}
+              options={suppliers}
+              size="small"
+              isClearable
+              isMulti
+              menuPosition="fixed"
+              maxMenuHeight={200}
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.uuid}
+              onChange={(value) =>
+                handleFiltersChange('selectedSupplier', value)
+              }
+              value={filters?.selectedSupplier}
+            />
           </div>
           <div className={styles.buttons}>
             <Button

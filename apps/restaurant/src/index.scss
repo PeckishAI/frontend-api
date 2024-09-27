@@ -60,3 +60,20 @@
 .react-datepicker-popper {
   z-index: 999 !important;
 }
+
+.css-1p3m7a8-multiValue {
+  background-color: var(--primaryColor);
+  border-radius: 12px !important;
+  height: auto;
+  color: white;
+  .css-1y7rh0y-MultiValueGeneric2 {
+    background-color: var(--primaryColor);
+    color: white;
+    border-radius: 12px 0px 0px 12px;
+  }
+  .css-12a83d4-MultiValueRemove {
+    background-color: var(--primaryColor);
+    color: white;
+    border-radius: 0px 12px 12px 0px;
+  }
+}

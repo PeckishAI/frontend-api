@@ -393,6 +393,23 @@ const AddPreparationPopup = (props: Props) => {
                           value: unit.unit_uuid,
                         }))}
                         styles={{
+                          menu: (provided) => ({
+                            ...provided,
+                            overflowY: 'auto',
+                          }),
+                          control: (provided, state) => ({
+                            ...provided,
+                            minWidth: '200px',
+                            boxShadow: state.isFocused
+                              ? 'none'
+                              : provided.boxShadow,
+                            borderColor: state.isFocused
+                              ? '#ced4da'
+                              : provided.borderColor,
+                            '&:hover': {
+                              borderColor: 'none',
+                            },
+                          }),
                           menuList: (provided) => ({
                             ...provided,
                             maxHeight: '200px',
@@ -410,10 +427,6 @@ const AddPreparationPopup = (props: Props) => {
                               : state.isFocused
                               ? '#000000'
                               : provided.color,
-                          }),
-                          container: (provided) => ({
-                            ...provided,
-                            overflow: 'visible',
                           }),
                         }}
                         className={styles.unitInput}
