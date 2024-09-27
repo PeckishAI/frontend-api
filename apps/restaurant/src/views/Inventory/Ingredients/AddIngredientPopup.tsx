@@ -68,7 +68,14 @@ const AddIngredientSchema = z
     name: z.string().min(1, { message: 'Recipe name is required' }),
     actualStock: z.string().optional(),
     parLevel: z.string().optional(),
-    tag_details: z.string().optional(),
+    tag_details: z
+      .array(
+        z.object({
+          uuid: z.string().optional(), // Allow uuid to be optional if creating a new tag
+          name: z.string().min(1, { message: 'Tag name is required' }),
+        })
+      )
+      .min(1, { message: 'At least one tag is required' }),
 
     // supplier_details as an array of objects
     supplier_details: z
@@ -228,7 +235,6 @@ const AddIngredientPopup = (props: Props) => {
         supplier_unit_name: supplier.supplier_unit_name,
       })),
     };
-    return;
 
     try {
       await inventoryService.addIngredient(restaurantUUID, formattedData);
@@ -506,6 +512,7 @@ const AddIngredientPopup = (props: Props) => {
                     </div>
                   )}
                 </div>
+                {console.log('errorrrr', errors)}
                 <div>
                   <CreatableSelect
                     placeholder="Select a unit"
