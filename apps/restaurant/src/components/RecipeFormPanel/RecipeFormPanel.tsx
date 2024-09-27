@@ -39,7 +39,10 @@ const RecipeSchema = z
     ingredients: z.array(
       z.object({
         selectedUUID: z.string().nonempty('required'),
-        conversion_factor: z.number().optional(),
+        conversion_factor: z.number({
+          required_error: 'Conversion factor is required',
+          invalid_type_error: 'Invalid conversion factor value',
+        }),
         // .refine((val) => val !== undefined, 'required'),
         type: z.string().nonempty('required'),
         quantity: z.coerce
@@ -690,7 +693,8 @@ const RecipeFormPanel = (props: Props) => {
                 <div className={styles.IconContainer}>
                   <LabeledInput
                     placeholder={t('conversion_factor')}
-                    // type="number"
+                    type="number"
+                    step="any"
                     lighter
                     style={{ minWidth: '175px' }}
                     suffix={selectedIngredient?.conversion_factor}
