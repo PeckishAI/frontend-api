@@ -13,8 +13,8 @@ RUN yarn build --filter restaurant
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/configfile.template
 
-COPY --from=react-build /build/apps/restaurant/dist /usr/share/nginx/html
-# COPY --from=react-build /app/dist /usr/share/nginx/html
+# COPY --from=react-build /build/apps/restaurant/dist /usr/share/nginx/html
+COPY --from=react-build /app/dist /usr/share/nginx/html
 
 ENV PORT $PORT
 ENV HOST 0.0.0.0
