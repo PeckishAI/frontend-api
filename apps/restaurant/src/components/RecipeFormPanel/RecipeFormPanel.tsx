@@ -169,8 +169,9 @@ const RecipeFormPanel = (props: Props) => {
     if (!selectedRestaurantUUID) return;
 
     inventoryService
-      .getUnitNew(selectedRestaurantUUID)
+      .getUnits(selectedRestaurantUUID)
       .then((res) => {
+        console.log('Units', res.data);
         setUnitApiData(res.data);
         const genericKeys = Object.keys(res.data.generic);
         const restUnitNames = res.data.rest_units.map((unit) => unit.unit_name);
@@ -436,61 +437,62 @@ const RecipeFormPanel = (props: Props) => {
   // ]);
 
   // Function to handle conversion factor logic
-  const ConversionFactorChange = (i: any) => {
-    selected_ingredients.map((ingredient, i) => {
-      const selectedValue = watch(`ingredients.${i}.recipe_unit_name`);
-      const ingredientUnitName = ingredient.unit_name;
+  // const ConversionFactorChange = (i: any) => {
+  //   selected_ingredients.map((ingredient, i) => {
+  //     const selectedValue = watch(`ingredients.${i}.recipe_unit_name`);
+  //     const ingredientUnitName = ingredient.unit_name;
 
-      console.log('selected_ingredients', selected_ingredients, selectedValue);
+  //     console.log('selected_ingredients', selected_ingredients, selectedValue);
 
-      let matchedPair;
+  //     let matchedPair;
 
-      if (unitNew.length > 0) {
-        if (unitapiData.generic[selectedValue]) {
-          matchedPair = {
-            key: selectedValue,
-            value: unitapiData?.generic[selectedValue],
-          };
-        } else {
-          // Check in 'rest_units'
-          const foundInRestUnits = unitNew?.rest_units?.find(
-            (unit) => unit.unit_name === selectedValue
-          );
-          if (foundInRestUnits) {
-            matchedPair = {
-              key: selectedValue,
-              value: foundInRestUnits.unit_uuid,
-            };
-          }
-        }
-      }
+  //     if (unitNew.length > 0) {
+  //       console.log('UnitNew', unitNew);
+  //       if (unitapiData.generic[selectedValue]) {
+  //         matchedPair = {
+  //           key: selectedValue,
+  //           value: unitapiData?.generic[selectedValue],
+  //         };
+  //       } else {
+  //         // Check in 'rest_units'
+  //         const foundInRestUnits = unitNew?.rest_units?.find(
+  //           (unit) => unit.unit_name === selectedValue
+  //         );
+  //         if (foundInRestUnits) {
+  //           matchedPair = {
+  //             key: selectedValue,
+  //             value: foundInRestUnits.unit_uuid,
+  //           };
+  //         }
+  //       }
+  //     }
 
-      console.log('Matched Pair:', matchedPair);
+  //     console.log('Matched Pair:', matchedPair);
 
-      let foundValue = null;
-      if (matchedPair && matchedPair.value) {
-        foundValue = matchedPair.value.find(
-          (obj) => obj[ingredientUnitName] !== undefined
-        );
-      }
+  //     let foundValue = null;
+  //     if (matchedPair && matchedPair.value) {
+  //       foundValue = matchedPair.value.find(
+  //         (obj) => obj[ingredientUnitName] !== undefined
+  //       );
+  //     }
 
-      if (foundValue) {
-        console.log('foundValue', foundValue);
-        setValue(
-          `ingredients.${i}.conversion_factor`,
-          foundValue[ingredientUnitName]
-        );
-        console.log(
-          'Set conversion factor for ingredients.${i}:',
-          foundValue[ingredientUnitName]
-        );
-      } else {
-        console.log('No match found data');
-      }
+  //     if (foundValue) {
+  //       console.log('foundValue', foundValue);
+  //       setValue(
+  //         `ingredients.${i}.conversion_factor`,
+  //         foundValue[ingredientUnitName]
+  //       );
+  //       console.log(
+  //         'Set conversion factor for ingredients.${i}:',
+  //         foundValue[ingredientUnitName]
+  //       );
+  //     } else {
+  //       console.log('No match found data');
+  //     }
 
-      setValue(`ingredients.${i}.unit_name`, ingredientUnitName);
-    });
-  };
+  //     setValue(`ingredients.${i}.unit_name`, ingredientUnitName);
+  //   });
+  // };
 
   return (
     <SidePanel
@@ -715,7 +717,7 @@ const RecipeFormPanel = (props: Props) => {
                             recipeUnitUUID, // Recipe unit UUID
                             selectedItem.type // Ingredient/preparation type
                           );
-                          ConversionFactorChange(i);
+                          // ConversionFactorChange(i);
                         }
 
                         onChange(selectedOption?.value ?? null);
@@ -745,54 +747,42 @@ const RecipeFormPanel = (props: Props) => {
                   render={({ field: { onChange, value } }) => (
                     <CreatableSelect
                       placeholder="Unit"
-                      options={unitNew}
+                      options={unitname.map((unit) => ({
+                        label: unit.unit_name,
+                        value: unit.unit_uuid,
+                      }))}
                       isClearable
                       isCreatable
-                      onChange={(selectedOption) => {
-                        // Set the new selected value first
+                      onChange={async (selectedOption) => {
                         setValue(
                           `ingredients.${i}.recipe_unit_name`,
-                          selectedOption?.label ?? ''
+                          selectedOption?.label || ''
                         );
-
-                        // Set the unit UUID
                         setValue(
                           `ingredients.${i}.recipe_unit_uuid`,
-                          selectedOption?.value ?? ''
+                          selectedOption?.value || ''
                         );
 
-                        // Call the conversion factor change logic
-                        ConversionFactorChange(i);
+                        const selectedItem =
+                          ingredients.find(
+                            (ing) =>
+                              ing.id === watch(`ingredients.${i}.selectedUUID`)
+                          ) ||
+                          preparations.find(
+                            (prep) =>
+                              prep.uuid ===
+                              watch(`ingredients.${i}.selectedUUID`)
+                          );
 
-                        // Optionally, call the original onChange handler
-                        onChange(selectedOption?.label ?? '');
-
-                        // if (selectedOption?.__isNew__) {
-                        //   // If a new unit is created, set only unit_name
-                        //   setValue(
-                        //     `ingredients.${i}.recipe_unit_name`,
-                        //     selectedOption.label
-                        //   );
-                        //   setValue(
-                        //     `ingredients.${i}.recipe_unit_uuid`,
-                        //     undefined
-                        //   );
-                        // } else if (selectedOption) {
-                        //   setValue(
-                        //     `ingredients.${i}.recipe_unit_name`,
-                        //     selectedOption.label
-                        //   );
-                        //   setValue(
-                        //     `ingredients.${i}.recipe_unit_uuid`,
-                        //     selectedOption.value
-                        //   );
-                        // } else {
-                        //   setValue(`ingredients.${i}.recipe_unit_name`, '');
-                        //   setValue(
-                        //     `ingredients.${i}.recipe_unit_uuid`,
-                        //     undefined
-                        //   );
-                        // }
+                        if (selectedItem) {
+                          const recipeUnitUUID = selectedOption?.value || null;
+                          await fetchAndSetConversionFactor(
+                            i,
+                            selectedItem.id,
+                            recipeUnitUUID,
+                            selectedItem.type
+                          );
+                        }
                       }}
                       value={
                         value
