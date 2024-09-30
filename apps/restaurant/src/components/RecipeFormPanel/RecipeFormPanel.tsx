@@ -200,7 +200,7 @@ const RecipeFormPanel = (props: Props) => {
     reloadUnits();
     getUnitNew();
   }, [selectedRestaurantUUID]);
-
+  console.log('');
   useEffect(() => {
     ingredientFields.forEach((field, index) => {
       const selectedItem =
@@ -817,7 +817,6 @@ const RecipeFormPanel = (props: Props) => {
                     style={{ minWidth: '175px' }}
                     suffix={selectedIngredient?.conversion_factor}
                     {...register(`ingredients.${i}.conversion_factor`)}
-
                     error={errors?.ingredients?.[i]?.conversion_factor?.message}
                   />
                   <IconButton
