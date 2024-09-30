@@ -6,6 +6,7 @@ COPY . .
 ARG VITE_CONFIG_MODE
 
 RUN yarn
+RUN yarn install
 RUN yarn build --filter=restaurant
 
 # server environment
