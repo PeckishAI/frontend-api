@@ -1,7 +1,6 @@
 # Build environment
 FROM node:20-alpine as react-build
 
-# Set working directory
 WORKDIR /build
 
 # Copy the entire project into the container
@@ -13,8 +12,8 @@ RUN yarn install
 # Debugging step: Print directory structure before the build
 RUN echo "Before Build:" && ls -al /build && ls -al /build/apps/restaurant
 
-# Build the project (ensure the proper filtering)
-RUN yarn turbo run build --filter=restaurant --no-cache
+# Build the 'restaurant' workspace
+RUN yarn workspace restaurant build
 
 # Debugging step: Verify the build output
 RUN echo "After Build:" && ls -al /build/apps/restaurant && ls -al /build/apps/restaurant/dist
