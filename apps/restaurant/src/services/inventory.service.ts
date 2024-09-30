@@ -1,3 +1,4 @@
+import { PiCodaLogoLight } from 'react-icons/pi';
 import {
   axiosClient,
   axiosIntegrationClient,
@@ -278,6 +279,7 @@ const getUnits = async (restaurantUUID: string): Promise<Unit[]> => {
       unit_uuid: unitData.unit_uuid,
     }));
 
+    console.log('Units:', units);
     return units;
   } catch (error) {
     console.error('Error fetching units:', error);
@@ -426,6 +428,26 @@ const createUnit = (restaurantUUID: string, unit_name: string) => {
   return res;
 };
 
+const fetchConversionFactor = async (
+  itemUUID: string,
+  fromUnitUUID: string,
+  toUnitUUID: string,
+  type: string
+) => {
+  console.log('itemUUID: ', itemUUID);
+  console.log('fromUnitUUID: ', fromUnitUUID);
+  console.log('toUnitUUID: ', toUnitUUID);
+  console.log('type: ', type);
+  if (type === 'preparation') {
+    return axiosClient.get(
+      `/recipes/${itemUUID}/conversion_factor/${fromUnitUUID}/${toUnitUUID}`
+    );
+  }
+  return axiosClient.get(
+    `/inventory/${itemUUID}/conversion_factor/${fromUnitUUID}/${toUnitUUID}`
+  );
+};
+
 const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
   console.log('inboiceData: ', invoiceData);
 
@@ -451,4 +473,5 @@ export const inventoryService = {
   deleteDocument,
   sendInvoice,
   createUnit,
+  fetchConversionFactor,
 };

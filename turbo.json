@@ -3,7 +3,8 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "storybook-static/**"]
+      "outputs": ["dist/**", "storybook-static/**"],
+      "cache": false // Disable cache for debugging purposes
     },
     "lint": {},
     "dev": {

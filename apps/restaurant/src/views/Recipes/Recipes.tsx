@@ -118,7 +118,10 @@ const Recipes = () => {
           value={t('add Preparation')}
           type="primary"
           className={styles.button}
-          // onClick={!addingRow ? handleAddNewIngredient : undefined}
+          // Update logic for adding new preparation
+          onClick={() => {
+            // Add logic to trigger opening of AddPreparationPopup if needed
+          }}
         />
         <Input
           type="text"

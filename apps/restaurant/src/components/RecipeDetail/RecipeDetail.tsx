@@ -48,14 +48,33 @@ const RecipeDetail = (props: Props) => {
           </p>
 
           <div className={styles.metrics}>
-            {props.recipe?.type !== 'preparation' && (
+            {props.recipe?.type === 'preparation' ? (
               <p className={styles.metric}>
-                <i className={`fa-solid fa-tag ${styles.price}`}></i>
-                {t('price')} :{' '}
+                <i className={`fa-solid fa-box-open ${styles.quantity}`}></i>
+                {t('quantity')} :{' '}
                 <span className={styles.value}>
-                  {formatCurrency(props.recipe?.portion_price, currencyISO)}
+                  {`${props.recipe?.quantity} ${props.recipe?.unit_name}`}
                 </span>
               </p>
+            ) : (
+              <>
+                <p className={styles.metric}>
+                  <i className={`fa-solid fa-tag ${styles.price}`}></i>
+                  {t('price')} :{' '}
+                  <span className={styles.value}>
+                    {formatCurrency(props.recipe?.portion_price, currencyISO)}
+                  </span>
+                </p>
+
+                <p className={styles.metric}>
+                  <i
+                    className={`fa-solid fa-arrow-up-right-dots ${styles.margin}`}></i>
+                  {t('margin')} :{' '}
+                  <span className={styles.value}>
+                    {formatCurrency(props.recipe?.margin, currencyISO)}
+                  </span>
+                </p>
+              </>
             )}
 
             <p className={styles.metric}>
@@ -66,18 +85,8 @@ const RecipeDetail = (props: Props) => {
                 {formatCurrency(props.recipe?.cost, currencyISO)}
               </span>
             </p>
-
-            {props.recipe?.type !== 'preparation' && (
-              <p className={styles.metric}>
-                <i
-                  className={`fa-solid fa-arrow-up-right-dots ${styles.margin}`}></i>
-                {t('margin')} :{' '}
-                <span className={styles.value}>
-                  {formatCurrency(props.recipe?.margin, currencyISO)}
-                </span>
-              </p>
-            )}
           </div>
+
           <div className={styles.scrollDiv}>
             <Table
               data={props.recipe?.ingredients}
@@ -88,6 +97,27 @@ const RecipeDetail = (props: Props) => {
                   header: t('quantity'),
                   renderItem: ({ row }) => `${row.quantity} ${row.unit || ''}`,
                 },
+                {
+                  key: 'units',
+                  header: t('units'),
+                  renderItem: ({ row }) => `${row.recipe_unit_name || ''}`,
+                },
+                // {
+                //   key: 'conversion_factor',
+                //   header: t('conversion_factor'),
+                //   renderItem: ({ row }) => (
+                //     <div className={styles.conversionFactorCell}>
+                //       <span style={{ margin: '0 auto' }}>
+                //         {row.conversion_factor || ''}
+                //       </span>
+                //       <IconButton
+                //         icon={<i className="fa-solid fa-circle-info"></i>}
+                //         tooltipMsg={`from ${row.recipe_unit_name} to ${row.unit_name}`}
+                //         className={styles.info}
+                //       />
+                //     </div>
+                //   ),
+                // },
                 {
                   key: 'cost',
                   header: t('totalCost'),
@@ -100,30 +130,10 @@ const RecipeDetail = (props: Props) => {
                         )
                       : '-',
                 },
-                {
-                  key: 'units',
-                  header: t('units'),
-                  renderItem: ({ row }) => `${row.recipe_unit_name || ''} `,
-                },
-                {
-                  key: 'conversion_factor',
-                  header: t('conversion_factor'),
-                  renderItem: ({ row }) => (
-                    <div className={styles.conversionFactorCell}>
-                      <span style={{ margin: '0 auto' }}>
-                        {row.conversion_factor || ''}
-                      </span>{' '}
-                      <IconButton
-                        icon={<i className="fa-solid fa-circle-info"></i>}
-                        tooltipMsg={`from ${row.recipe_unit_name} to ${row.unit_name}`}
-                        className={styles.info}
-                      />
-                    </div>
-                  ),
-                },
               ]}
             />
           </div>
+
           {props.recipe?.ingredients.length === 0 && (
             <p className={styles.noIngredients}>
               {t('recipes.card.no-ingredients')}

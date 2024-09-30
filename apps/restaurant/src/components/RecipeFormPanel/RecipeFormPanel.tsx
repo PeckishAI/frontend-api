@@ -9,6 +9,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import classNames from 'classnames';
 import { formatCurrency } from '../../utils/helpers';
 import { useIngredients } from '../../services/hooks';
+import { getRecipeCategorie } from '../../views/Recipes/RecipeNew';
 import {
   useRestaurantCurrency,
   useRestaurantStore,
@@ -23,7 +24,6 @@ import {
 } from '../../services';
 import { components, OptionProps } from 'react-select';
 import styles from './RecipeFormPanel.module.scss';
-import { getRecipeCategorie } from '../../views/Recipes/RecipeNew';
 import CreatableSelect from 'react-select/creatable';
 
 const RecipeSchema = z
@@ -35,7 +35,10 @@ const RecipeSchema = z
       .number()
       .positive('positive-number')
       .or(z.undefined()),
-    portionsPerBatch: z.coerce.number().positive('positive-number'),
+    portion_count: z.coerce.number().positive('positive-number').optional(),
+    quantity: z.coerce.number().positive('positive-number').optional(),
+    unit_name: z.string().optional(),
+    unit_uuid: z.string().optional(),
     ingredients: z.array(
       z.object({
         selectedUUID: z.string().nonempty('required'),
@@ -52,9 +55,7 @@ const RecipeSchema = z
           .refine((val) => val !== null, 'required'),
         unit_name: z.string().optional(),
         unit_uuid: z.string().optional(),
-        recipe_unit_name: z
-          .string()
-          .min(1, { message: 'recipe Unit name is required' }),
+        recipe_unit_name: z.string().optional(),
         recipe_unit_uuid: z.string().optional(),
       })
     ),
@@ -84,7 +85,8 @@ const RecipeFormPanel = (props: Props) => {
     (state) => state.selectedRestaurantUUID
   )!;
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const { currencyISO, currencySymbol } = useRestaurantCurrency();
+  const [preparations, setPreparations] = useState<Recipe[]>([]);
+  const { currencyISO } = useRestaurantCurrency();
   const [unitname, setUnitName] = useState([]);
   const [unitNew, setUnitNew] = useState([]);
   const [unitapiData, setUnitApiData] = useState({});
@@ -117,7 +119,6 @@ const RecipeFormPanel = (props: Props) => {
   useEffect(() => {
     if (props.isOpen) {
       if (props.action === 'create') {
-        reset();
         reset({
           type: recipeType,
           ingredients: [],
@@ -127,14 +128,16 @@ const RecipeFormPanel = (props: Props) => {
           name: props.recipe?.name,
           type: recipeType,
           category: props.recipe?.category,
-          pricePerPortion: props.recipe?.portion_price,
-          portionsPerBatch: props.recipe?.portion_count,
+          quantity: props.recipe?.quantity,
+          portion_count: props.recipe?.portion_count ?? undefined,
+          pricePerPortion: props.recipe?.portion_price ?? undefined,
+          unit_name: props.recipe?.unit_name,
           ingredients: (props.recipe?.ingredients ?? []).map((ing) => ({
             selectedUUID: ing.uuid,
             quantity: ing.quantity,
             unit_name: ing.unit_name || '',
             unit_uuid: ing.unit_uuid || '',
-            conversion_factor: ing.conversion_factor || '',
+            conversion_factor: ing.conversion_factor || null,
             recipe_unit_name: ing.recipe_unit_name,
             recipe_unit_uuid: ing.recipe_unit_uuid,
             type: ing.type,
@@ -144,31 +147,25 @@ const RecipeFormPanel = (props: Props) => {
     }
   }, [props.isOpen, props.recipe]);
 
-  const getOnlyIngredient = () => {
+  const getIngredientsAndPreparations = () => {
     if (!selectedRestaurantUUID) return;
     inventoryService
       .getOnlyIngredientList(selectedRestaurantUUID)
       .then(setIngredients)
-      .catch((e) => {
-        console.error('useIngredients error', e);
-      })
-      .finally(() => {});
+      .catch(console.error);
+
+    recipesService
+      .getPreparations(selectedRestaurantUUID)
+      .then(setPreparations)
+      .catch(console.error);
   };
 
   function reloadUnits() {
     if (!selectedRestaurantUUID) return;
-
     inventoryService
       .getUnits(selectedRestaurantUUID)
-      .then((res) => {
-        setUnitName(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        // setLoadingData(false);
-      });
+      .then(setUnitName)
+      .catch(console.error);
   }
 
   function getUnitNew() {
@@ -199,21 +196,80 @@ const RecipeFormPanel = (props: Props) => {
   }
 
   useEffect(() => {
-    getOnlyIngredient();
+    getIngredientsAndPreparations();
     reloadUnits();
     getUnitNew();
   }, [selectedRestaurantUUID]);
 
   useEffect(() => {
     ingredientFields.forEach((field, index) => {
-      const selectedIngredient = ingredients.find(
-        (ing) => ing.id === watch(`ingredients.${index}.selectedUUID`)
-      );
-      if (selectedIngredient) {
-        setValue(`ingredients.${index}.type`, selectedIngredient.type);
+      const selectedItem =
+        ingredients.find(
+          (ing) => ing.id === watch(`ingredients.${index}.selectedUUID`)
+        ) ||
+        preparations.find(
+          (prep) => prep.uuid === watch(`ingredients.${index}.selectedUUID`)
+        );
+
+      if (selectedItem) {
+        setValue(`ingredients.${index}.type`, selectedItem.type);
+        setValue(
+          `ingredients.${index}.unit_name`,
+          selectedItem.unit_name || ''
+        );
+        setValue(
+          `ingredients.${index}.unit_uuid`,
+          selectedItem.unit_uuid || ''
+        );
       }
     });
-  }, [watch('ingredients'), ingredients]);
+  }, [watch('ingredients'), ingredients, preparations]);
+
+  const fetchAndSetConversionFactor = async (
+    index: number,
+    recipeUnitUUID: string | null,
+    type: string
+  ) => {
+    console.log(recipeUnitUUID);
+    try {
+      // Get the selected UUID from the dropdown (it could be either ingredient or preparation)
+      const selectedUUID = watch(`ingredients.${index}.selectedUUID`);
+      const fromUnitUUID = watch(`ingredients.${index}.unit_uuid`);
+      const recipeUnitUUID = watch(`ingredients.${index}.recipe_unit_uuid`);
+      const type = watch(`ingredients.${index}.type`);
+
+      if (!selectedUUID || !fromUnitUUID) {
+        console.warn(
+          `UUIDs are missing: selectedUUID=${selectedUUID}, fromUnitUUID=${fromUnitUUID}`
+        );
+        return;
+      }
+
+      // Fetch the conversion factor using the selected ingredient/preparation UUID and unit UUIDs
+      console.log(selectedUUID, fromUnitUUID, recipeUnitUUID, type);
+      const conversionFactor = await inventoryService.fetchConversionFactor(
+        selectedUUID,
+        fromUnitUUID,
+        recipeUnitUUID || '',
+        type
+      );
+
+      if (conversionFactor?.data) {
+        setValue(
+          `ingredients.${index}.conversion_factor`,
+          conversionFactor.data.data
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching conversion factor:', error);
+    }
+  };
+
+  const categories = getRecipeCategorie(t).map((cat) => ({
+    icon: cat.icon,
+    label: cat.label,
+    value: cat.value,
+  }));
 
   const totalCost = watch('ingredients').reduce((acc, ing) => {
     const ingredient = ingredients.find((i) => i.id === ing.selectedUUID);
@@ -223,11 +279,9 @@ const RecipeFormPanel = (props: Props) => {
     return acc;
   }, 0);
 
-  // Benefit per batch
   const priceMargin =
-    (watch('pricePerPortion') ?? 0) * watch('portionsPerBatch') - totalCost;
+    (watch('pricePerPortion') ?? 0) * (watch('portion_count') ?? 1) - totalCost;
 
-  // handle form submission
   const handleFormSubmit = handleSubmit((data) => {
     const requestData = {
       ...data,
@@ -243,6 +297,8 @@ const RecipeFormPanel = (props: Props) => {
       })),
     };
 
+    console.log('Submitting');
+
     const service =
       props.action === 'create'
         ? recipesService.createRecipe(
@@ -256,6 +312,7 @@ const RecipeFormPanel = (props: Props) => {
             requestData
           );
 
+    console.log('hi', data);
     return service.then((res) => {
       props.onSubmitted({
         ...props.recipe,
@@ -266,15 +323,17 @@ const RecipeFormPanel = (props: Props) => {
         isOnboarded: props.recipe?.isOnboarded ?? true,
         name: data.name,
         category: data.category,
-        portion_price: data.pricePerPortion,
-        portion_count: data.portionsPerBatch,
+        quantity: data.quantity,
+        portion_count: data.portion_count ?? undefined,
+        pricePerPortion: data.pricePerPortion ?? undefined,
+        unit_name: data.unit_name,
+        unit_uuid: data.unit_uuid,
         cost: totalCost,
         margin: priceMargin,
         ingredients: data.ingredients.map((ing) => {
           const ingredient = ingredients.find(
             (i) => i.id === ing.selectedUUID
           )!;
-
           return {
             ...ingredient,
             uuid: ing.selectedUUID,
@@ -286,18 +345,18 @@ const RecipeFormPanel = (props: Props) => {
     });
   });
 
-  // Categories options
-  const categories = getRecipeCategorie(t).map((cat) => ({
-    icon: cat.icon,
-    label: cat.label,
-    value: cat.value,
-  }));
-
-  // Flatten data and add a type field
-  const allItems = ingredients.map((item) => ({
-    ...item,
-    groupBy: item.type === 'ingredient' ? 'Ingredients' : 'Preparations',
-  }));
+  const allItems = [
+    ...ingredients.map((item) => ({
+      ...item,
+      groupBy: 'Ingredients',
+    })),
+    ...preparations.map((prep) => ({
+      ...prep,
+      id: prep.uuid,
+      name: prep.name,
+      groupBy: 'Preparations',
+    })),
+  ];
 
   const groupedOptions = allItems.reduce((groups, item) => {
     const group = item.groupBy || 'Other';
@@ -466,11 +525,7 @@ const RecipeFormPanel = (props: Props) => {
 
       <form className={styles.inputContainer} onSubmit={handleFormSubmit}>
         <LabeledInput
-          placeholder={t(
-            `recipes.editPanel.${
-              recipeType as 'recipe' | 'preparation' | 'modifier'
-            }.fields.name`
-          )}
+          placeholder={t(`recipes.editPanel.${recipeType}.fields.name`)}
           autoComplete="off"
           {...register('name')}
           lighter
@@ -503,27 +558,63 @@ const RecipeFormPanel = (props: Props) => {
         )}
 
         <div className={styles.rowInputs}>
-          {recipeType !== 'preparation' && (
-            <LabeledInput
-              type="number"
-              step=".00000001"
-              placeholder={t('recipes.editPanel.fields.pricePerPortion')}
-              icon={<i className="fa-solid fa-tag" />}
-              {...register('pricePerPortion')}
-              lighter
-              suffix={currencySymbol}
-              error={errors.pricePerPortion?.message}
-            />
+          {recipeType === 'recipe' && (
+            <>
+              <LabeledInput
+                type="number"
+                step=".00000001"
+                placeholder={t('recipes.editPanel.fields.portionsPerBatch')}
+                icon={<i className="fa-solid fa-layer-group" />}
+                {...register('portion_count')}
+                lighter
+                error={errors.portion_count?.message}
+              />
+
+              <LabeledInput
+                type="number"
+                step=".00000001"
+                placeholder={t('recipes.editPanel.fields.pricePerPortion')}
+                icon={<i className="fa-solid fa-dollar-sign" />}
+                {...register('pricePerPortion')}
+                lighter
+                error={errors.pricePerPortion?.message}
+              />
+            </>
           )}
 
-          <LabeledInput
-            type="number"
-            step=".00000001"
-            placeholder={t('recipes.editPanel.fields.portionsPerBatch')}
-            {...register('portionsPerBatch')}
-            lighter
-            error={errors.portionsPerBatch?.message}
-          />
+          {recipeType === 'preparation' && (
+            <>
+              <LabeledInput
+                type="number"
+                step=".00000001"
+                placeholder={t('recipes.editPanel.table.quantity')}
+                {...register('quantity')}
+                lighter
+                error={errors.quantity?.message}
+              />
+              <Controller
+                control={control}
+                name="unit_name"
+                render={({ field: { onChange, value } }) => (
+                  <CreatableSelect
+                    placeholder={t('recipes.editPanel.table.unit')}
+                    options={unitname.map((unit) => ({
+                      label: unit.unit_name,
+                      value: unit.unit_uuid, // Correctly handle unit_uuid here
+                    }))}
+                    onChange={(selectedOption) => {
+                      // Set both unit_name and unit_uuid here
+                      onChange(selectedOption?.label || ''); // Update unit_name in form
+                      setValue('unit_uuid', selectedOption?.value || ''); // Update unit_uuid in form
+                    }}
+                    value={value ? { label: value, value: value } : null}
+                    isClearable
+                    isCreatable
+                  />
+                )}
+              />
+            </>
+          )}
         </div>
 
         <div className={styles.tableTitle}>
@@ -561,13 +652,19 @@ const RecipeFormPanel = (props: Props) => {
             )}
           </div>
         </div>
+
+        {/* Ingredient Fields */}
         <div>
           {ingredientFields.map(({ id }, i) => {
             const rowField = watch(`ingredients.${i}`);
 
             const selectedIngredient =
-              ingredients.find((ing) => ing.id === rowField.selectedUUID) ??
+              ingredients.find((ing) => ing.id === rowField.selectedUUID) ||
+              preparations.find(
+                (prep) => prep.uuid === rowField.selectedUUID
+              ) ||
               null;
+
             return (
               <div key={id} className={styles.rowInputs}>
                 <Controller
@@ -581,25 +678,45 @@ const RecipeFormPanel = (props: Props) => {
                         'recipes.editPanel.table.ingredientSelect'
                       )}
                       isSearchable={true}
-                      onChange={(selectedOption) => {
+                      onChange={async (selectedOption) => {
                         if (!selectedOption?.value) return;
 
                         const selectedIngredient = ingredients.find(
                           (ing) => ing.id === selectedOption.value
                         );
 
-                        if (selectedIngredient && selectedIngredient.type) {
-                          setValue(
-                            `ingredients.${i}.type`,
-                            selectedIngredient.type
+                        // Find the selected item (ingredient or preparation)
+                        const selectedItem =
+                          ingredients.find(
+                            (ing) => ing.id === selectedOption.value
+                          ) ||
+                          preparations.find(
+                            (prep) => prep.uuid === selectedOption.value
                           );
+
+                        if (selectedItem) {
+                          console.log(selectedItem);
+                          // Set the necessary values for the selected ingredient or preparation
+                          setValue(`ingredients.${i}.type`, selectedItem.type);
                           setValue(
                             `ingredients.${i}.unit_uuid`,
-                            selectedIngredient.unit_uuid
+                            selectedItem.unit_uuid
                           );
                           setValue(
                             `ingredients.${i}.unit_name`,
-                            selectedIngredient.unit_name
+                            selectedItem.unit_name
+                          );
+
+                          // Fetch the current recipe unit UUID if available
+                          const recipeUnitUUID = watch(
+                            `ingredients.${i}.recipe_unit_uuid`
+                          );
+
+                          // Call the fetchAndSetConversionFactor function
+                          await fetchAndSetConversionFactor(
+                            i,
+                            recipeUnitUUID, // Recipe unit UUID
+                            selectedItem.type // Ingredient/preparation type
                           );
                           ConversionFactorChange(i);
                         }
@@ -620,10 +737,11 @@ const RecipeFormPanel = (props: Props) => {
                   type="number"
                   step=".00000001"
                   lighter
-                  suffix={selectedIngredient?.unit}
+                  suffix={selectedIngredient?.unit_name || ''}
                   {...register(`ingredients.${i}.quantity`)}
                   error={errors.ingredients?.[i]?.quantity?.message}
                 />
+
                 <Controller
                   name={`ingredients.${i}.recipe_unit_name`}
                   control={control}
@@ -699,6 +817,7 @@ const RecipeFormPanel = (props: Props) => {
                     style={{ minWidth: '175px' }}
                     suffix={selectedIngredient?.conversion_factor}
                     {...register(`ingredients.${i}.conversion_factor`)}
+
                     error={errors?.ingredients?.[i]?.conversion_factor?.message}
                   />
                   <IconButton
@@ -709,6 +828,7 @@ const RecipeFormPanel = (props: Props) => {
                     className={styles.info}
                   />
                 </div>
+
                 <p className={styles.ingredientCost}>
                   {formatCurrency(
                     ((selectedIngredient?.cost ?? 0) /
@@ -717,13 +837,12 @@ const RecipeFormPanel = (props: Props) => {
                     currencyISO
                   )}
                 </p>
+
                 <IconButton
                   className={styles.deleteBtn}
                   icon={<MdDelete />}
                   tooltipMsg={t('delete')}
-                  onClick={() => {
-                    removeIngredient(i);
-                  }}
+                  onClick={() => removeIngredient(i)}
                 />
               </div>
             );
@@ -732,13 +851,13 @@ const RecipeFormPanel = (props: Props) => {
 
         <div
           className={styles.addIngredientButton}
-          onClick={() => {
+          onClick={() =>
             addIngredient({
               selectedUUID: '',
               quantity: 0,
               type: '',
-            });
-          }}>
+            })
+          }>
           <FaPlus />
           <p>{t('recipes.editPanel.table.addIngredient')}</p>
         </div>
