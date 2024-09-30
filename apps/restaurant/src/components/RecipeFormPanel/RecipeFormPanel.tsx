@@ -31,11 +31,8 @@ const RecipeSchema = z
     name: z.string().trim().nonempty('required'),
     type: z.enum(['recipe', 'preparation', 'modifier']),
     category: z.custom<RecipeCategory>().refine((val) => !!val, 'required'),
-    pricePerPortion: z.coerce
-      .number()
-      .positive('positive-number')
-      .or(z.undefined()),
-    portion_count: z.coerce.number().positive('positive-number').optional(),
+    pricePerPortion: z.coerce.number().optional(),
+    portion_count: z.coerce.number().optional(),
     quantity: z.coerce.number().positive('positive-number').optional(),
     unit_name: z.string().optional(),
     unit_uuid: z.string().optional(),
