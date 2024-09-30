@@ -15,7 +15,7 @@ COPY nginx.conf /etc/nginx/conf.d/configfile.template
 
 # RUN ls -al /build/apps/restaurant/dist
 
-COPY --from=react-build /build/dist/apps/restaurant/dist /usr/share/nginx/html
+COPY --from=react-build /build/dist/apps/restaurant /usr/share/nginx/html
 # COPY --from=react-build /app/dist /usr/share/nginx/html
 
 ENV PORT $PORT
