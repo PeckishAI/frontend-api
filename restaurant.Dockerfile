@@ -3,20 +3,17 @@ FROM node:20-alpine as react-build
 WORKDIR /build
 COPY . .
 
-# Given by --build-arg on the cloudbuild task
 ARG VITE_CONFIG_MODE
 
 RUN yarn
-RUN yarn build --filter restaurant
+RUN yarn build --filter=restaurant
 
 # server environment
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/configfile.template
 
-RUN ls -al /build/apps/restaurant/dist
-
+# Make sure this path exists
 COPY --from=react-build /build/apps/restaurant/dist /usr/share/nginx/html
-# COPY --from=react-build /app/dist /usr/share/nginx/html
 
 ENV PORT $PORT
 ENV HOST 0.0.0.0
