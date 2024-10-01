@@ -234,7 +234,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
         if (props.searchValue) {
           const fuse = new Fuse(filteredList, {
-            keys: ['name', 'supplier_uuid'],
+            keys: ['name'],
           });
 
           filteredList = fuse.search(props.searchValue).map((r) => r.item);
@@ -1132,7 +1132,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               {row.supplier_details.map((detail, detailIndex) => (
                 <span key={detailIndex}>
                   {detail?.supplier_unit_cost != null
-                    ? detail?.supplier_unit_cost?.toFixed(2)
+                    ? // ? detail?.supplier_unit_cost?.toFixed(2)
+                      detail?.supplier_unit_cost
                     : detail?.supplier_unit_cost}
                 </span>
               ))}
