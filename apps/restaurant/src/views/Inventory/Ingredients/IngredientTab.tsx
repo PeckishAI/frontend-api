@@ -1133,7 +1133,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 <span key={detailIndex}>
                   {detail?.supplier_unit_cost != null
                     ? // ? detail?.supplier_unit_cost?.toFixed(2)
-                      detail?.supplier_unit_cost
+                      detail?.supplier_unit_cost.toFixed(2)
                     : detail?.supplier_unit_cost}
                 </span>
               ))}
@@ -1251,11 +1251,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               {/* Name Section */}
               <div className={styles.divider}>
                 <div className={styles.inputContainer}>
-                  <div className={styles.title}>
-                    <span className={styles.titleRecipeName}>
-                      Ingredient name
-                    </span>
-                  </div>
                   {isEditMode ? (
                     <>
                       <LabeledInput
@@ -1290,7 +1285,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                       />
                     </>
                   ) : (
-                    <span className={styles.value}> {editedValues?.name}</span>
+                    <div className={styles.title}>
+                      <span className={styles.titleRecipeName}>
+                        {' '}
+                        {editedValues?.name}
+                      </span>
+                    </div>
                   )}
                 </div>
                 <div className={styles.gridContainer3}>
@@ -1514,6 +1514,199 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                         )?.label || editedValues.unit_name}
                       </span>
                     )}
+                  </div>
+                </div>
+              </div>
+              {/* Volume Section */}
+              <div className={styles.inputContainer}>
+                <div className={styles.divider}>
+                  <div className={styles.gridContainer3}>
+                    <div className={styles.inputContainer}>
+                      <div className={styles.title}>
+                        {' '}
+                        <span className={styles.titleRecipeName}>
+                          Volume Unit
+                        </span>
+                      </div>
+
+                      {isEditMode ? (
+                        <>
+                          <CreatableSelect
+                            placeholder={
+                              editedValues?.unit_uuid
+                                ? t('unit')
+                                : t('Select a unit') // Show 'Select a unit' if unit_uuid is null
+                            }
+                            options={unitname.map((unit) => ({
+                              label: unit.unit_name,
+                              value: unit.unit_uuid,
+                            }))} // Map options for CreatableSelect
+                            styles={{
+                              menu: (provided) => ({
+                                ...provided,
+                                overflowY: 'auto',
+                              }),
+                              control: (provided, state) => ({
+                                ...provided,
+                                minWidth: '200px',
+                                boxShadow: state.isFocused
+                                  ? 'none'
+                                  : provided.boxShadow,
+                                borderColor: state.isFocused
+                                  ? '#ced4da'
+                                  : provided.borderColor,
+                                '&:hover': {
+                                  borderColor: 'none',
+                                },
+                              }),
+                              menuList: (provided) => ({
+                                ...provided,
+                                maxHeight: '200px',
+                                overflowY: 'auto',
+                              }),
+                              option: (provided, state) => ({
+                                ...provided,
+                                backgroundColor: state.isSelected
+                                  ? '#007BFF'
+                                  : state.isFocused
+                                  ? '#dbe1df'
+                                  : provided.backgroundColor,
+                                color: state.isSelected
+                                  ? '#FFFFFF'
+                                  : state.isFocused
+                                  ? '#000000'
+                                  : provided.color,
+                              }),
+                              container: (provided) => ({
+                                ...provided,
+                                overflow: 'visible',
+                              }),
+                              multiValue: (provided) => ({
+                                ...provided,
+                                backgroundColor: '#5E72E4',
+                                color: '#FFFFFF',
+                                borderRadius: '12px',
+                              }),
+                              multiValueLabel: (provided) => ({
+                                ...provided,
+                                color: '#ffffff',
+                                borderRadius: '12px',
+                              }),
+                              multiValueRemove: (provided) => ({
+                                ...provided,
+                                color: '#ffffff',
+                                ':hover': {
+                                  backgroundColor: '#b5adad',
+                                  borderRadius: '12px',
+                                  color: '#ffffff',
+                                },
+                              }),
+                            }}
+                            value={
+                              editedValues?.unit_name
+                                ? {
+                                    label: editedValues.unit_name,
+                                    value: editedValues.unit_uuid,
+                                  }
+                                : unitname
+                                    .map((unit) => ({
+                                      label: unit.unit_name,
+                                      value: unit.unit_uuid,
+                                    }))
+                                    .find(
+                                      (unit) =>
+                                        unit.value === editedValues?.unit_uuid
+                                    ) || null
+                            } // Either display the new unit or find and display the selected unit by unit_uuid
+                            onChange={(selectedOption) => {
+                              if (selectedOption) {
+                                if (selectedOption.__isNew__) {
+                                  // Do not update the unitname list, just update editedValues with new unit
+                                  setEditedValues({
+                                    ...editedValues,
+                                    unit_uuid: '', // Keep unit_uuid blank
+                                    unit_name: selectedOption.label, // Set the new unit_name
+                                  });
+                                } else {
+                                  // If existing unit is selected
+                                  setEditedValues({
+                                    ...editedValues,
+                                    unit_uuid: selectedOption.value, // Set the selected unit's UUID
+                                    unit_name: selectedOption.label, // Set the selected unit's name
+                                  });
+                                }
+                                setUnitError(false); // Clear error on valid selection
+                              }
+                            }}
+                            isCreatable
+                          />
+
+                          {unitError && (
+                            <div style={{ color: 'red', marginTop: '5px' }}>
+                              Unit is required.
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <span className={styles.value}>
+                          {unitname?.find(
+                            (unit) => unit.value === editedValues.unit_uuid
+                          )?.label || editedValues.unit_name}
+                        </span>
+                      )}
+                    </div>
+                    <div className={styles.inputContainer}>
+                      <div className={styles.title}>
+                        {' '}
+                        <span className={styles.titleRecipeName}>Volume</span>
+                      </div>
+                      {isEditMode ? (
+                        <>
+                          <LabeledInput
+                            label={t('ingredient:volume')}
+                            placeholder={t('ingredient:volume')}
+                            type="text"
+                            lighter
+                            value={editedValues?.parLevel || ''}
+                            onChange={(event) =>
+                              setEditedValues({
+                                ...editedValues,
+                                parLevel: event.target.value,
+                              })
+                            }
+                            sx={{
+                              '& .MuiFilledInput-root': {
+                                border: '1px solid grey',
+                                borderRadius: 1,
+                                background: 'lightgrey',
+                                height: '40px',
+                                fontSize: '16px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                borderColor: 'grey.300',
+                                borderBottom: 'none',
+                              },
+                              '& .MuiFilledInput-root.Mui-disabled': {
+                                backgroundColor: 'lightgrey',
+                              },
+                            }}
+                          />
+                        </>
+                      ) : (
+                        <span className={styles.value}>
+                          {editedValues?.parLevel}
+                        </span>
+                      )}
+                      <IconButton
+                        icon={<i className="fa-solid fa-circle-info"></i>}
+                        tooltipMsg={
+                          t('ingredient:volumeInfo') +
+                          ' ' +
+                          editedValues?.unit_name
+                        }
+                        className={styles.info}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
