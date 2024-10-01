@@ -1517,7 +1517,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                   </div>
                 </div>
               </div>
-              {/* Volume Section */}
+              {/* Volume Section
               <div className={styles.inputContainer}>
                 <div className={styles.divider}>
                   <div className={styles.gridContainer3}>
@@ -1709,7 +1709,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
               {/* Tag Section */}
               <div className={styles.inputContainer}>
                 <div className={styles.divider}>
