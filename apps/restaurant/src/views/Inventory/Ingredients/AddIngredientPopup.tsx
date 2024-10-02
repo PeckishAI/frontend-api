@@ -584,7 +584,7 @@ const AddIngredientPopup = (props: Props) => {
           className={styles.addIngredientButton}
           onClick={handleAddNewSupplier}>
           <FaPlus />
-          <p>add Supplier</p>
+          <p>Add Supplier</p>
         </div>
         <div className={styles.buttonsContainer}>
           <Button
