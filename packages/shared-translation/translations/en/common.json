@@ -16,6 +16,7 @@
   "actions": "Actions",
   "availability": "Availability",
   "unit": "Unit",
+  "selectUnit": "Select unit",
   "status": "Status",
   "detail": "Detail",
   "customer": "Customer",
@@ -25,6 +26,7 @@
   "shipped": "Shipped",
   "viewDetail": "View detail",
   "services": "Services",
+  "waste": "Waste",
 
   "edit": "Edit",
   "delete": "Delete",
@@ -33,6 +35,7 @@
   "confirm": "Confirm",
   "apply": "Apply",
   "cancel": "Cancel",
+  "save": "Save",
   "add": "Add",
   "select": "Select",
   "selectAll": "Select all",

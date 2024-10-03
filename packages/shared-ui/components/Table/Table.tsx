@@ -7,7 +7,6 @@ import classNames from 'classnames';
 export type ColumnDefinitionType<T, K extends keyof T = keyof T> = {
   key: K;
   header: string | (() => React.ReactNode);
-  // renderItem?: (params: { row: T; value: T[K] }) => React.ReactNode | string;
   renderItem?: (params: {
     row: T;
     value: T[K];
@@ -22,6 +21,7 @@ type Props<T, K extends keyof T> = {
   data?: Array<T>;
   columns: Array<ColumnDefinitionType<T, K>>;
   className?: string;
+  onRowClick?: (row: T, index: number) => void; // Add onRowClick as an optional prop
 };
 
 const Table = <T, K extends keyof T>(props: Props<T, K>) => {
@@ -29,7 +29,8 @@ const Table = <T, K extends keyof T>(props: Props<T, K>) => {
     <div className={classNames('table-container', props.className)}>
       <table>
         <TableHeader columns={props.columns} className="table-header" />
-        <TableRows data={props.data} columns={props.columns} />
+        {/* Pass onRowClick down to TableRows */}
+        <TableRows data={props.data} columns={props.columns} onRowClick={props.onRowClick} />
       </table>
     </div>
   );
