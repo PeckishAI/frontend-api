@@ -140,6 +140,9 @@ const getIngredientList = async (
       ),
       amount: res.data[key]['amount'],
       type: res.data[key]['type'],
+      volume_unit_name: res.data[key]['volume_unit_name'],
+      volume_unit_uuid: res.data[key]['volume_unit_uuid'],
+      volume_quantity: res.data[key]['volume_quantity'],
     })
   );
 
@@ -184,6 +187,9 @@ const getIngredientList = async (
     amount: res.data[key]['amount'],
     type: res.data[key]['type'],
     quantity: res.data[key]['quantity'],
+    volume_unit_uuid: res.data[key]['volume_unit_uuid'],
+    volume_unit_name: res.data[key]['volume_unit_name'],
+    volume_quantity: res.data[key]['volume_quantity'],
   }));
 };
 
@@ -227,6 +233,8 @@ const getOnlyIngredientList = async (
 };
 
 const updateIngredient = (ingredient: Ingredient) => {
+  console.log('ingredient', ingredient);
+  console.log('OK VAlidate');
   const ingredientFormated = {
     id: ingredient.id,
     name: ingredient.name,
@@ -241,8 +249,12 @@ const updateIngredient = (ingredient: Ingredient) => {
     unit_name: ingredient.unit_name,
     unit_uuid: ingredient.unit_uuid,
     restaurant_uuid: ingredient.restaurantUUID,
+    volume_unit_uuid: ingredient.volume_unit_uuid,
+    volume_unit_name: ingredient.volume_unit_name,
+    volume_quantity: ingredient.volume_quantity,
   };
 
+  console.log('ingredientFormated', ingredientFormated);
   return axiosClient.post(
     '/inventory/' + ingredient.id + '/update',
     ingredientFormated

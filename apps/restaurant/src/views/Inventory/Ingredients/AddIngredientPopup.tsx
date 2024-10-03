@@ -13,6 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 
+import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
 import { useIngredients } from '../../../services/hooks';
@@ -33,9 +34,9 @@ const AddIngredientSchema = z.object({
         name: z.string().min(1, { message: 'Tag name is required' }),
       })
     )
-    .min(1, { message: 'At least one tag is required' }),
+    .optional(), // Make tags optional
 
-  // supplier_details as an array of objects
+  // supplier_details as an array of objects, now optional
   supplier_details: z
     .array(
       z.object({
@@ -44,20 +45,20 @@ const AddIngredientSchema = z.object({
           .min(1, { message: 'Supplier Name is required' }),
         supplier_id: z
           .string()
-          .min(1, { message: 'Supplier uuid is required' }), // If new, uuid might be blank
+          .min(1, { message: 'Supplier uuid is required' }),
         supplier_cost: z
           .string()
           .min(1, { message: 'Supplier Cost is required' }),
         conversion_factor: z
           .string()
-          .min(1, { message: 'conversion Factor is required' }),
-        supplier_unit_uuid: z.string().optional(), // Allow uuid to be optional for new suppliers
+          .min(1, { message: 'Conversion Factor is required' }),
+        supplier_unit_uuid: z.string().optional(), // Allow uuid to be optional
         supplier_unit_name: z
           .string()
-          .min(1, { message: 'Supplier Unit name is required' }), // Unit name is required
+          .min(1, { message: 'Supplier Unit name is required' }),
       })
     )
-    .min(1, { message: 'At least one supplier is required' }),
+    .optional(), // Make suppliers optional
 
   unit_name: z.string().min(1, { message: 'Unit name is required' }),
   unit_uuid: z.string().optional(), // Optional if unit is created new
@@ -193,17 +194,17 @@ const AddIngredientPopup = (props: Props) => {
   const handleSubmitForm = handleSubmit(async (data) => {
     const formattedData = {
       ...data,
-      tag_details: data.tag_details.map((tag) => ({
-        uuid: tag.uuid || '', // For new tags without uuid
-        name: tag.name,
+      tag_details: (data.tag_details || []).map((tag) => ({
+        uuid: tag?.uuid || '', // Handle undefined or missing uuid
+        name: tag?.name || '', // Handle undefined or missing name
       })),
-      supplier_details: data.supplier_details.map((supplier) => ({
-        supplier_id: supplier.supplier_id || '', // Changed from supplier_uuid to supplier_id
-        supplier_name: supplier.supplier_name, // Required supplier name
-        supplier_cost: supplier.supplier_cost,
-        conversion_factor: supplier.conversion_factor,
-        supplier_unit_uuid: supplier.supplier_unit_uuid || '',
-        supplier_unit_name: supplier.supplier_unit_name,
+      supplier_details: (data.supplier_details || []).map((supplier) => ({
+        supplier_id: supplier?.supplier_id || '', // Handle undefined or missing supplier_id
+        supplier_name: supplier?.supplier_name || '', // Handle undefined or missing supplier_name
+        supplier_cost: supplier?.supplier_cost || '', // Handle undefined or missing supplier_cost
+        conversion_factor: supplier?.conversion_factor || '', // Handle undefined or missing conversion_factor
+        supplier_unit_uuid: supplier?.supplier_unit_uuid || '', // Handle undefined or missing supplier_unit_uuid
+        supplier_unit_name: supplier?.supplier_unit_name || '', // Handle undefined or missing supplier_unit_name
       })),
     };
 
