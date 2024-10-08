@@ -22,6 +22,7 @@ const stagingConfig = {
 
   apiUrl: 'https://api-gateway-k2w3p2ptza-ew.a.run.app',
   apiUrlIntegration: 'https://integrations-api-k2w3p2ptza-ew.a.run.app',
+
   GOOGLE_CLIENT_ID:
     '167544806451-lhqrqpn83tje89en5n73af3tiu3sm11o.apps.googleusercontent.com',
   APPLE_CLIENT_ID: 'com.peckish.web.dev',
@@ -45,5 +46,5 @@ export const GLOBAL_CONFIG =
   import.meta.env.MODE === 'development'
     ? devConfig
     : import.meta.env.VITE_CONFIG_MODE === 'staging'
-    ? stagingConfig
-    : prodConfig;
+      ? stagingConfig
+      : prodConfig;
