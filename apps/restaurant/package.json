@@ -58,6 +58,6 @@
     "react-multi-carousel": "^2.8.5",
     "tsconfig": "*",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^5.4.8"
   }
 }
