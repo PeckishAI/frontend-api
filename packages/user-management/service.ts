@@ -1,18 +1,21 @@
 import axios, { AxiosInstance } from 'axios';
-import { User } from './types';
-import { useUserStore } from './store';
 import { toast } from 'react-hot-toast';
+import { useUserStore } from './store';
+import { GetMe, Permissions } from './types';
 
 type UserResponse = {
-  client_type: 'supplier' | 'restaurant';
-  created_at: string;
-  data: object;
-  email: string;
-  name: string;
-  onboarded: boolean;
-  premium: boolean;
-  telephone: string;
-  user_uuid: string;
+  user: {
+    client_type: 'supplier' | 'restaurant';
+    created_at: string;
+    data: object;
+    email: string;
+    name: string;
+    onboarded: boolean;
+    premium: boolean;
+    telephone: string;
+    user_uuid: string;
+  };
+  permissions: Permissions;
 };
 
 export const userService = {
@@ -33,7 +36,7 @@ export const userService = {
     });
     applyAxiosInterceptors(this.axiosClient);
   },
-  getMe: function (token: string): Promise<User> {
+  getMe: function (token: string): Promise<GetMe> {
     if (!this.axiosClient) throw new Error('User service not initialized');
 
     return this.axiosClient
@@ -46,8 +49,10 @@ export const userService = {
       .then((res) => {
         return {
           ...res.data,
-          uuid: res.data.user_uuid,
-          created_at: new Date(res.data.created_at),
+          user: {
+            ...res.data.user,
+            created_at: new Date(res.data.user.created_at),
+          },
         };
       });
   },
@@ -91,6 +96,7 @@ export const applyAxiosInterceptors = (instance: AxiosInstance) => {
 
           // For the moment, we just logout the user directly
           useUserStore.getState().logout();
+
           toast.error('Unauthorized. Logging out.');
         } else if (status === 400) {
           toast.error('Bad request');

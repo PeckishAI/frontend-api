@@ -10,7 +10,8 @@ import { Lottie } from 'shared-ui';
 import { useUserStore } from './store';
 import { userSession } from './session';
 import { userService } from './service';
-import { User } from './types';
+import { Permissions, User } from './types';
+
 type Props = {
   clientType: User['client_type'];
 };
@@ -41,14 +42,19 @@ export const ProtectedRoute = (props: Props) => {
     userService
       .getMe(token)
       .then((user) => {
-        if (user?.user.client_type !== props.clientType) {
+        if (
+          !user ||
+          !user.user ||
+          user?.user.client_type !== props.clientType
+        ) {
           logout();
           return;
         }
 
-        const path = location.pathname.slice(1);
-        const basePath = path.split('/')[0];
+        const path = location.pathname.slice(1) as keyof Permissions;
+        const basePath = path.split('/')[0] as keyof Permissions;
 
+        // TODO: move the permissions check to an appropriate place (HOC or Route Wrapper)
         // Check for permissions
         const hasPermission =
           user?.permissions[basePath] === true ||

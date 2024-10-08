@@ -1,13 +1,4 @@
-export type Permissions = {
-  my_restaurants: boolean;
-  overview: boolean;
-  inventory: boolean;
-  recipes: boolean;
-  documents: boolean;
-  integrations: boolean;
-};
-
-export type Users = {
+export type User = {
   created_at: Date;
   data: object | null;
   email: string;
@@ -20,7 +11,17 @@ export type Users = {
   picture?: string;
 };
 
-export type User = {
-  User: Users;
-  Permissions: Permissions;
+// Permissions used to check if user has access to a specific page
+export type Permissions = {
+  my_restaurants: boolean;
+  overview: boolean;
+  inventory: boolean;
+  recipes: boolean;
+  documents: boolean;
+  integrations: boolean;
+};
+
+export type GetMe = {
+  user: User;
+  permissions: Permissions;
 };

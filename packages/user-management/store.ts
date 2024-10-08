@@ -1,14 +1,14 @@
+import { create } from 'zustand';
 import { userService } from './service';
 import { userSession } from './session';
-import { User } from './types';
-import { create } from 'zustand';
+import { GetMe } from './types';
 
 type UserStore = {
   accessToken?: string;
   storeAccessToken: (accessToken: string) => void;
   logout: () => void;
-  user?: User;
-  setUser: (user: User) => void;
+  user?: GetMe;
+  setUser: (user: GetMe) => void;
 };
 
 export const useUserStore = create<UserStore>()((set) => ({
@@ -28,7 +28,7 @@ export const useUserStore = create<UserStore>()((set) => ({
   storeAccessToken: (accessToken: string) => {
     set({ accessToken });
   },
-  setUser: (user: User) => {
+  setUser: (user: GetMe) => {
     set({ user });
   },
   // fetchData: async () => {
