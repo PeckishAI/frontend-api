@@ -1,34 +1,48 @@
-import {
-  IconButton,
-  SidePanel,
-  Input,
-  Select,
-  Table,
-  Button,
-  LabeledInput,
-  DialogBox,
-  Loading,
-} from 'shared-ui';
-import styles from './style.module.scss';
-import { Invoice, inventoryService } from '../../services';
 import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { formatCurrency } from '../../utils/helpers';
-import { useRestaurantCurrency } from '../../store/useRestaurantStore';
-import { useForm, Controller } from 'react-hook-form';
-import { useIngredients } from '../../services/hooks';
-import { useRestaurantStore } from '../../store/useRestaurantStore';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
-import DatePicker from 'react-datepicker';
-import supplierService from '../../services/supplier.service';
+import {
+  Button,
+  DialogBox,
+  IconButton,
+  Input,
+  LabeledInput,
+  Loading,
+  Select,
+  SidePanel,
+  Table,
+  useLockBodyScroll,
+} from 'shared-ui';
+import {
+  FormDocument,
+  Invoice,
+  InvoiceIngredient,
+  Unit,
+  inventoryService,
+} from '../../services';
+import { useIngredients } from '../../services/hooks';
+import supplierService, {
+  LinkedSupplier,
+} from '../../services/supplier.service';
+import {
+  useRestaurantCurrency,
+  useRestaurantStore,
+} from '../../store/useRestaurantStore';
+import { formatCurrency } from '../../utils/helpers';
+import styles from './style.module.scss';
 
-import CreatableSelect from 'react-select/creatable';
 import { FaCalendarAlt } from 'react-icons/fa';
+import CreatableSelect from 'react-select/creatable';
+import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
+import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import SupplierNew from '../../views/Inventory/Suppliers/components/SupplierNew';
-
+import classNames from 'classnames';
+import { Tooltip } from 'react-tooltip';
 
 type Props = {
   document: Invoice | null;
@@ -45,19 +59,23 @@ type IngredientDetails = {
   mappedUUID?: string;
   quantity?: number;
   unitPrice?: number;
-  unit?: string;
+  unit_uuid?: string;
   totalPrice?: number;
   received_qty: number;
 };
 
 const DocumentDetail = (props: Props) => {
+  useLockBodyScroll(props.isOpen);
+
   const { t } = useTranslation(['common', 'ingredient']);
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
   const { currencyISO } = useRestaurantCurrency();
   const [confirmDeletePopup, setConfirmDeletePopup] = useState(false);
   const [editableDocument, setEditableDocument] = useState<Invoice | null>(
     null
   );
-  console.log('editableDocument', editableDocument);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const { control } = useForm();
@@ -101,19 +119,37 @@ const DocumentDetail = (props: Props) => {
   };
 
   const { ingredients, loading: loadingIngredients } = useIngredients();
+  const [units, setUnits] = useState<Unit[]>([]);
   const [showAddPopup, setShowAddPopup] = useState(false);
   const [suppliers, setSuppliers] = useState<LinkedSupplier[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [newInputAdd, setNewInputAdd] = useState('');
+
+  const loadUnits = () => {
+    if (!selectedRestaurantUUID) return;
+
+    inventoryService
+      .getUnits(selectedRestaurantUUID)
+      .then((res) => {
+        setUnits(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        // setLoadingData(false);
+      });
+  };
 
   const ingredientOptions = ingredients.map((ingredient) => ({
     value: ingredient.id,
     label: ingredient.name,
   }));
 
-  const selectedRestaurantUUID = useRestaurantStore(
-    (state) => state.selectedRestaurantUUID
-  );
+  const unitsOptions = units.map((unit) => ({
+    value: unit.unit_uuid,
+    label: unit.unit_name,
+  }));
 
   const handleDocumentChange = (field: keyof Invoice, value: any) => {
     setEditableDocument((prevDocument) => {
@@ -131,7 +167,6 @@ const DocumentDetail = (props: Props) => {
     e: React.ChangeEvent<HTMLInputElement> | { target: { value: any } },
     field: keyof Invoice = 'supplier'
   ) => {
-
     const value = e.target ? e.target.value : e;
 
     console.log('Selected value:', value);
@@ -166,15 +201,7 @@ const DocumentDetail = (props: Props) => {
     supplierService
       .getRestaurantSuppliers(selectedRestaurantUUID)
       .then((res) => {
-        const suppliersList: DropdownOptionsDefinitionType[] = [];
-        res.forEach((supplier) => {
-          suppliersList.push({
-            label: supplier.name,
-            value: supplier.supplier_uuid,
-            supplier_uuid: supplier.supplier_uuid,
-          });
-        });
-        setSuppliers(suppliersList);
+        setSuppliers(res);
       })
       .catch((error) => {
         console.error('Error fetching suppliers:', error);
@@ -183,7 +210,7 @@ const DocumentDetail = (props: Props) => {
 
   useEffect(() => {
     fetchSuppliers();
-
+    loadUnits();
   }, [selectedRestaurantUUID]);
 
   const handleSubmit = async (e) => {
@@ -198,7 +225,7 @@ const DocumentDetail = (props: Props) => {
         !lastRow.detectedName ||
         !lastRow.mappedName ||
         !lastRow.quantity ||
-        !lastRow.unit ||
+        !lastRow.unit_uuid ||
         !lastRow.unitPrice
       ) {
         toast.error('Please fill in all required fields in the last row.');
@@ -221,10 +248,10 @@ const DocumentDetail = (props: Props) => {
             received_qty: ing.received_qty ? +ing.received_qty : null,
             unitPrice: +ing.unitPrice,
             quantity: +ing.quantity,
-            unit: ing.unit,
+            unit_uuid: ing.unit_uuid,
             totalPrice: +ing.totalPrice ? +ing.totalPrice : null,
           })),
-        };
+        } satisfies FormDocument;
 
         setIsLoading(true);
 
@@ -277,7 +304,7 @@ const DocumentDetail = (props: Props) => {
       mappedName: '',
       mappedUUID: '',
       quantity: 0,
-      unit: '',
+      unit_uuid: '',
       unitPrice: 0,
       received_qty: 0,
       totalPrice: 0,
@@ -295,7 +322,7 @@ const DocumentDetail = (props: Props) => {
           lastRow.detectedName &&
           lastRow.mappedName &&
           lastRow.quantity &&
-          lastRow.unit &&
+          lastRow.unit_uuid &&
           lastRow.unitPrice
         ) {
           // Add the new row
@@ -331,60 +358,51 @@ const DocumentDetail = (props: Props) => {
   }, [props.document]);
 
   const viewColumns = [
-    {
-      key: 'detectedName',
-      header: t('document.detectedName'),
-      classname: 'column-bold',
-    },
-    {
-      key: 'mappedName',
-      header: t('document.givenName'),
-      classname: 'column-bold',
-    },
+    { key: 'detectedName', header: t('document.detectedName') },
+    { key: 'mappedName', header: t('document.givenName') },
     {
       key: 'quantity',
       header: t('quantity'),
-      classname: 'column-bold',
       renderItem: ({ row }) => `${row.quantity}`,
     },
     {
       key: 'received_qty',
       header: t('receivedQty'),
-      classname: 'column-bold',
       renderItem: ({ row }) => `${row.received_qty}`,
     },
     {
-      key: 'unit',
+      key: 'unit_uuid',
       header: t('unit'),
-      classname: 'column-bold',
-      renderItem: ({ row }) => `${row.unit}`,
+      renderItem: ({ row }) => {
+        const unit = units.find((unit) => unit.unit_uuid === row.unit_uuid);
+        return unit ? unit.unit_name : '-';
+      },
     },
     {
       key: 'unitPrice',
       header: t('unitCost'),
-      classname: 'column-bold',
-      renderItem: ({ row }) => `${row.unitPrice}`,
+      renderItem: ({ row }) =>
+        row.unitPrice ? formatCurrency(row.unitPrice, currencyISO) : '-',
     },
     {
       key: 'totalPrice',
       header: t('totalCost'),
-      classname: 'column-bold',
       renderItem: ({ row }) =>
         row.totalPrice ? formatCurrency(row.totalPrice, currencyISO) : '-',
     },
-  ];
+  ] as ColumnDefinitionType<InvoiceIngredient, keyof InvoiceIngredient>[];
 
   const editColumns = [
     {
       key: 'detectedName',
       header: t('document.detectedName'),
       classname: 'column-bold',
-      renderItem: ({ row, index }) => (
+      renderItem: ({ index }) => (
         <Input
           type="text"
           min={0}
           placeholder={t('name')}
-          className={styles.detectedNameInput}
+          className={styles.mappedNameInput}
           onChange={(value) =>
             handleIngredientChange(index, 'detectedName', value)
           }
@@ -396,30 +414,20 @@ const DocumentDetail = (props: Props) => {
       key: 'mappedName',
       header: t('document.givenName'),
       classname: 'column-bold',
-      renderItem: ({ row, index }) => (
-        <div style={{ width: 180 }}>
-          <Controller
-            name={`mappedName-${index}`}
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                options={ingredientOptions}
-                className={styles.detectedNameInput}
-                isClearable
-                isSearchable
-                maxMenuHeight={200}
-                onChange={(selectedOption) => {
-                  field.onChange(selectedOption);
-                  handleMappedNameChange(index, selectedOption);
-                }}
-                value={ingredientOptions.find(
-                  (option) =>
-                    option.value ===
-                    (editableDocument?.ingredients[index].mappedUUID ||
-                      field.value)
-                )}
-              />
+      renderItem: ({ index }) => (
+        <div className={styles.detectedNameInput}>
+          <Select
+            options={ingredientOptions}
+            className={styles.detectedNameInput}
+            isClearable
+            isSearchable
+            maxMenuHeight={200}
+            onChange={(selectedOption) => {
+              handleMappedNameChange(index, selectedOption);
+            }}
+            value={ingredientOptions.find(
+              (option) =>
+                option.value === editableDocument?.ingredients[index].mappedUUID
             )}
           />
         </div>
@@ -429,7 +437,7 @@ const DocumentDetail = (props: Props) => {
       key: 'quantity',
       header: t('quantity'),
       classname: 'column-bold',
-      renderItem: ({ row, index }) => (
+      renderItem: ({ index }) => (
         <Input
           type="number"
           min={0}
@@ -445,10 +453,11 @@ const DocumentDetail = (props: Props) => {
       key: 'received_qty',
       header: t('receivedQty'),
       classname: 'column-bold',
-      renderItem: ({ row, index }) => (
+      renderItem: ({ index }) => (
         <Input
           type="number"
           min={0}
+          max={editableDocument?.ingredients[index].quantity}
           placeholder={t('receivedQty')}
           className={styles.quantity}
           onChange={(value) =>
@@ -459,24 +468,43 @@ const DocumentDetail = (props: Props) => {
       ),
     },
     {
-      key: 'unit',
+      key: 'unit_uuid',
       header: t('unit'),
       classname: 'column-bold',
-      renderItem: ({ row, index }) => (
-        <Input
-          type="text"
-          placeholder={t('unit')}
-          className={styles.quantity}
-          onChange={(value) => handleIngredientChange(index, 'unit', value)}
-          value={editableDocument?.ingredients[index].unit || ''}
-        />
+      renderItem: ({ index }) => (
+        <div className={styles.detectedNameInput}>
+          <Select
+            options={unitsOptions}
+            className={styles.detectedNameInput}
+            isClearable
+            isSearchable
+            maxMenuHeight={200}
+            onChange={(selectedOption) => {
+              handleIngredientChange(index, 'unit_uuid', selectedOption?.value);
+            }}
+            value={
+              unitsOptions.find(
+                (option) =>
+                  option.value ===
+                  editableDocument?.ingredients[index].unit_uuid
+              ) || null
+            }
+          />
+        </div>
+        // <Input
+        //   type="text"
+        //   placeholder={t('unit')}
+        //   className={styles.quantity}
+        //   onChange={(value) => handleIngredientChange(index, 'unit', value)}
+        //   value={editableDocument?.ingredients[index].unit || ''}
+        // />
       ),
     },
     {
       key: 'unitPrice',
       header: t('unitCost'),
       classname: 'column-bold',
-      renderItem: ({ row, index }) => (
+      renderItem: ({ index }) => (
         <Input
           type="number"
           min={0}
@@ -487,6 +515,7 @@ const DocumentDetail = (props: Props) => {
             handleIngredientChange(index, 'unitPrice', value)
           }
           value={editableDocument?.ingredients[index].unitPrice || ''}
+          suffix="USD"
         />
       ),
     },
@@ -494,7 +523,7 @@ const DocumentDetail = (props: Props) => {
       key: 'totalPrice',
       header: t('totalCost'),
       classname: 'column-bold',
-      renderItem: ({ row, index }) => (
+      renderItem: ({ index }) => (
         <Input
           type="number"
           step="any"
@@ -507,7 +536,10 @@ const DocumentDetail = (props: Props) => {
         />
       ),
     },
-  ];
+  ] satisfies ColumnDefinitionType<
+    InvoiceIngredient,
+    keyof InvoiceIngredient
+  >[];
 
   const responsive = {
     desktop: {
@@ -525,11 +557,12 @@ const DocumentDetail = (props: Props) => {
   };
 
   const options = suppliers.map((supplier) => ({
-    label: supplier.label,
-    value: supplier.value,
-  }));
+    label: supplier.name || '',
+    value: supplier.uuid || '',
+  })) satisfies DropdownOptionsDefinitionType[];
 
-  const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [selectedSupplier, setSelectedSupplier] =
+    useState<DropdownOptionsDefinitionType | null>(null);
   // This useEffect can be used to set the selected supplier from props if needed
   useEffect(() => {
     if (props.document?.supplier) {
@@ -547,57 +580,61 @@ const DocumentDetail = (props: Props) => {
         scrollable={true}
         width="100%"
         onRequestClose={() => props.onRequestClose()}>
-        {isEditMode ? (
-          <div className={styles.documentDetail}>
-            <form onSubmit={handleSubmit} className={styles.editForm}>
-              {isLoading ? (
-                <div className={styles.loader}>
-                  <Loading size="large" />
-                </div>
-              ) : (
-                <>
-                  <div className={styles.flexContainer}>
-                    {props?.document?.path?.length > 0 && (
-                      <div className={styles.carouselContainer}>
-                        {props.document.path.length === 1 ? (
-                          <div className={styles.imageContainer}>
-                            <img
-                              className={styles.documentImage}
-                              src={props.document.path[0]}
-                              alt="Document image"
-                            />
-                          </div>
-                        ) : (
-                          <Carousel
-                            swipeable={true}
-                            draggable={false}
-                            responsive={responsive}
-                            ssr={true}
-                            infinite={true}
-                            autoPlay={false}
-                            keyBoardControl={true}
-                            containerClass="carousel-container"
-                            dotListClass="custom-dot-list-style"
-                            itemClass="carousel-item-padding-40-px">
-                            {props.document.path.map((image, index) => (
-                              <div
-                                key={index}
-                                className={styles.imageContainer}>
-                                <img
-                                  className={styles.documentImage}
-                                  src={image}
-                                  alt={`Document image ${index + 1}`}
-                                />
-                              </div>
-                            ))}
-                          </Carousel>
-                        )}
-                      </div>
-                    )}
+        <div className={styles.documentDetail}>
+          <form onSubmit={handleSubmit} className={styles.form}>
+            {isLoading ? (
+              <div className={styles.loader}>
+                <Loading size="large" />
+              </div>
+            ) : (
+              <>
+                <div className={styles.flexContainer}>
+                  {props.document?.path && props.document?.path?.length > 0 && (
+                    <div className={styles.carouselContainer}>
+                      {props.document.path.length === 1 ? (
+                        <div className={styles.imageContainer}>
+                          <img
+                            className={styles.documentImage}
+                            src={props.document.path[0]}
+                            alt="Document image"
+                          />
+                        </div>
+                      ) : (
+                        <Carousel
+                          swipeable={true}
+                          draggable={false}
+                          responsive={responsive}
+                          ssr={true}
+                          infinite={true}
+                          autoPlay={false}
+                          keyBoardControl={true}
+                          containerClass="carousel-container"
+                          dotListClass="custom-dot-list-style"
+                          itemClass="carousel-item-padding-40-px">
+                          {props.document.path.map((image, index) => (
+                            <div key={index} className={styles.imageContainer}>
+                              <img
+                                className={styles.documentImage}
+                                src={image}
+                                alt={`Document image ${index + 1}`}
+                              />
+                            </div>
+                          ))}
+                        </Carousel>
+                      )}
+                    </div>
+                  )}
 
+                  <div className={styles.rightPart}>
                     <div className={styles.scrollDiv}>
-                      <div className={styles.headerData}>
-                        {/* <LabeledInput
+                      <div
+                        className={classNames(
+                          styles.header,
+                          isEditMode && styles.editing
+                        )}>
+                        {isEditMode ? (
+                          <>
+                            {/* <LabeledInput
                         
                           type="text"
                           placeholder={t('ingredient:supplier')}
@@ -605,118 +642,175 @@ const DocumentDetail = (props: Props) => {
                           onChange={(e) => handleInputChange(e, 'supplier')}
                           value={editableDocument?.supplier || ''}
                         /> */}
-                        <CreatableSelect
-                          options={options}
-                          className={styles.inputSupplier}
-                          className={styles.input}
-                          inputValue={inputValue}
-                          value={selectedSupplier} // Control the selected value
-                          onInputChange={(newInputValue) => {
-                            setInputValue(newInputValue);
-                          }}
-                          onChange={(selectedOption, actionMeta) => {
-                            if (actionMeta.action === 'create-option') {
-                              // Handle the creation of a new supplier
-                              setShowAddPopup(true); // Show the "Add New Supplier" popup
-                              handleInputChange(
-                                selectedOption.label,
-                                'supplier'
-                              );
-                              setNewInputAdd(selectedOption.label);
-                              setSelectedSupplier(null); // Clear selected value after adding new supplier
-                            } else if (selectedOption) {
-                              handleInputChange(
-                                selectedOption.value,
-                                'supplier'
-                              );
-                              setSelectedSupplier(selectedOption);
-                            } else {
-                              setSelectedSupplier(null);
-                            }
-                          }}
-                          styles={{
-                            control: (provided) => ({
-                              ...provided,
-                              minHeight: '45px',
-                              border: `1px solid grey.300`,
-                            }),
+                            <CreatableSelect
+                              options={options}
+                              className={styles.input}
+                              inputValue={inputValue}
+                              value={selectedSupplier} // Control the selected value
+                              onInputChange={(newInputValue) => {
+                                setInputValue(newInputValue);
+                              }}
+                              onChange={(selectedOption, actionMeta) => {
+                                if (actionMeta.action === 'create-option') {
+                                  // Handle the creation of a new supplier
+                                  setShowAddPopup(true); // Show the "Add New Supplier" popup
+                                  handleInputChange(
+                                    selectedOption.label,
+                                    'supplier'
+                                  );
+                                  setNewInputAdd(selectedOption.label);
+                                  setSelectedSupplier(null); // Clear selected value after adding new supplier
+                                } else if (selectedOption) {
+                                  handleInputChange(
+                                    selectedOption.value,
+                                    'supplier'
+                                  );
+                                  setSelectedSupplier(selectedOption);
+                                } else {
+                                  setSelectedSupplier(null);
+                                }
+                              }}
+                              styles={{
+                                control: (provided) => ({
+                                  ...provided,
+                                  minHeight: '45px',
+                                  border: `1px solid grey.300`,
+                                }),
 
-                            menu: (provided) => ({
-                              ...provided,
-                              zIndex: 9999,
-                            }),
-                            menuList: (provided) => ({
-                              ...provided,
-                              maxHeight: '200px',
-                              overflowY: 'auto',
-                            }),
-                            option: (provided, state) => ({
-                              ...provided,
-                              backgroundColor: state.isSelected
-                                ? '#007BFF'
-                                : provided.backgroundColor,
-                              color: state.isSelected
-                                ? '#FFFFFF'
-                                : provided.color,
-                            }),
-                            container: (provided) => ({
-                              ...provided,
-                              overflow: 'visible',
-                            }),
-                          }}
-                          isClearable
-                          isSearchable
-                          placeholder="Enter or select a supplier"
-                          noOptionsMessage={({ inputValue }) =>
-                            inputValue !== ''
-                              ? `Add "${inputValue}" as new supplier`
-                              : 'No options'
-                          }
-                        />
+                                menu: (provided) => ({
+                                  ...provided,
+                                  zIndex: 9999,
+                                }),
+                                menuList: (provided) => ({
+                                  ...provided,
+                                  maxHeight: '200px',
+                                  overflowY: 'auto',
+                                }),
+                                option: (provided, state) => ({
+                                  ...provided,
+                                  backgroundColor: state.isSelected
+                                    ? '#007BFF'
+                                    : provided.backgroundColor,
+                                  color: state.isSelected
+                                    ? '#FFFFFF'
+                                    : provided.color,
+                                }),
+                                container: (provided) => ({
+                                  ...provided,
+                                  overflow: 'visible',
+                                }),
+                              }}
+                              isClearable
+                              isSearchable
+                              placeholder="Enter or select a supplier"
+                              noOptionsMessage={({ inputValue }) =>
+                                inputValue !== ''
+                                  ? `Add "${inputValue}" as new supplier`
+                                  : 'No options'
+                              }
+                            />
 
-                        <LabeledInput
-                          type="number"
-                          min={0}
-                          step={'any'}
-                          suffix={currencyISO}
-                          className={styles.input}
-                          placeholder={t('price')}
-                          onChange={(e) => handleInputChange(e, 'amount')}
-                          value={editableDocument?.amount}
-                        />
+                            <LabeledInput
+                              type="number"
+                              min={0}
+                              step={'any'}
+                              suffix={currencyISO}
+                              className={styles.input}
+                              placeholder={t('price')}
+                              onChange={(e) => handleInputChange(e, 'amount')}
+                              value={editableDocument?.amount}
+                            />
 
-                        {showDatePicker && (
-                          <DatePicker
-                            ref={datePickerRef}
-                            selected={selectedDate}
-                            onChange={handleDateChange}
-                            dateFormat="yyyy-MM-dd"
-                            placeholderText={'Select a Date'}
-                            className={styles.datePicker}
-                            isClearable
-                            showPopperArrow={false}
-                            onClickOutside={() => setShowDatePicker(false)}
-                          />
-                        )}
-                        {!showDatePicker && (
-                          <FaCalendarAlt
-                            className={styles.calendarIcon}
-                            onClick={handleCalendarIconClick}
-                          />
+                            {showDatePicker && (
+                              <DatePicker
+                                ref={datePickerRef}
+                                selected={selectedDate}
+                                onChange={handleDateChange}
+                                dateFormat="yyyy-MM-dd"
+                                placeholderText={'Select a Date'}
+                                className={styles.datePicker}
+                                isClearable
+                                showPopperArrow={false}
+                                onClickOutside={() => setShowDatePicker(false)}
+                              />
+                            )}
+                            {!showDatePicker && (
+                              <FaCalendarAlt
+                                className={styles.calendarIcon}
+                                onClick={handleCalendarIconClick}
+                              />
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            <div className={styles.supplier}>
+                              <p className={styles.name}>
+                                {t('ingredient:supplier')}:
+                                <span className={styles.value}>
+                                  {' '}
+                                  {props.document?.supplier}
+                                </span>
+                              </p>
+                              <p className={styles.name}>
+                                {t('price')}:
+                                <span className={styles.value}>
+                                  {' '}
+                                  {formatCurrency(
+                                    props.document?.amount,
+                                    currencyISO
+                                  )}
+                                </span>
+                              </p>
+                              <p className={styles.name}>
+                                {t('date')}:
+                                <span className={styles.value}>
+                                  {' '}
+                                  {props.document?.date}
+                                </span>
+                              </p>
+                              <span className={styles.value}></span>
+                            </div>
+                            <div className={styles.flexContainer}>
+                              <IconButton
+                                icon={
+                                  <i className="fa-solid fa-pen-to-square"></i>
+                                }
+                                tooltipMsg={t('edit')}
+                                onClick={toggleEditMode}
+                                tooltipId="documents-side-panel"
+                              />
+                              <IconButton
+                                icon={<i className="fa-solid fa-trash"></i>}
+                                tooltipMsg={t('delete')}
+                                onClick={() => setConfirmDeletePopup(true)}
+                                tooltipId="documents-side-panel"
+                              />
+                            </div>
+                          </>
                         )}
                       </div>
+
                       <div>
                         <Table
-                          data={editableDocument?.ingredients}
+                          data={
+                            isEditMode
+                              ? editableDocument?.ingredients
+                              : props.document?.ingredients
+                          }
                           columns={isEditMode ? editColumns : viewColumns}
                           className={styles.table}
                         />
-                        <p
-                          className={styles.addIngredient}
-                          onClick={handleAddIngredient}>
-                          Add ingredient <i className="fa-solid fa-plus"></i>
-                        </p>
+                        {isEditMode && (
+                          <p
+                            className={styles.addIngredient}
+                            onClick={handleAddIngredient}>
+                            Add ingredient <i className="fa-solid fa-plus"></i>
+                          </p>
+                        )}
                       </div>
+                    </div>
+
+                    {isEditMode && (
                       <div className={styles.buttonsContainer}>
                         <Button
                           type="secondary"
@@ -731,152 +825,35 @@ const DocumentDetail = (props: Props) => {
                           className={styles.button}
                         />
                       </div>
-                    </div>
-                  </div>
-                </>
-              )}
-            </form>
-          </div>
-        ) : (
-          <div className={styles.documentDetail}>
-            <div className={styles.flexContainer}>
-              {props.document?.path?.length > 0 && (
-                <div className={styles.carouselContainer}>
-                  {props?.document?.path.length === 1 ? (
-                    <div className={styles.imageContainer}>
-                      <img
-                        className={styles.documentImage}
-                        src={props.document.path[0]}
-                        alt="Document image"
-                      />
-                    </div>
-                  ) : (
-                    <Carousel
-                      swipeable={true}
-                      draggable={false}
-                      showDots={true}
-                      responsive={responsive}
-                      ssr={true}
-                      infinite={true}
-                      autoPlay={false}
-                      keyBoardControl={true}
-                      containerClass="carousel-container"
-                      removeArrowOnDeviceType={['tablet', 'mobile']}
-                      dotListClass="custom-dot-list-style"
-                      itemClass="carousel-item-padding-40-px">
-                      {props.document.path.map((image, index) => (
-                        <div key={index} className={styles.imageContainer}>
-                          <img
-                            className={styles.documentImage}
-                            src={image}
-                            alt={`Document image ${index + 1}`}
-                          />
-                        </div>
-                      ))}
-                    </Carousel>
-                  )}
-                </div>
-              )}
-
-              <div className={styles.scrollDiv}>
-                <div>
-                  <div className={styles.editButton}>
-                    <div className={styles.supplier}>
-                      <p className={styles.name}>
-                        {t('ingredient:supplier')}:
-                        <span className={styles.value}>
-                          {' '}
-                          {props.document?.supplier}
-                        </span>
-                      </p>
-                      <p className={styles.name}>
-                        {t('price')}:
-                        <span className={styles.value}>
-                          {' '}
-                          {formatCurrency(props.document?.amount, currencyISO)}
-                        </span>
-                      </p>
-                      <p className={styles.name}>
-                        {t('date')}:
-                        <span className={styles.value}>
-                          {' '}
-                          {props.document?.date}
-                        </span>
-                      </p>
-                      <span className={styles.value}></span>
-                    </div>
-                    <div className={styles.flexContainer}>
-                      <IconButton
-                        icon={<i className="fa-solid fa-pen-to-square"></i>}
-                        tooltipMsg={t('edit')}
-                        onClick={toggleEditMode}
-                      />
-                      <IconButton
-                        icon={<i className="fa-solid fa-trash"></i>}
-                        tooltipMsg={t('delete')}
-                        onClick={() => setConfirmDeletePopup(true)}
-                      />
-                    </div>
+                    )}
                   </div>
                 </div>
-                <Table
-                  data={props.document?.ingredients}
-                  columns={[
-                    { key: 'detectedName', header: t('document.detectedName') },
-                    { key: 'mappedName', header: t('document.givenName') },
-                    {
-                      key: 'quantity',
-                      header: t('quantity'),
-                      renderItem: ({ row }) => `${row.quantity}`,
-                    },
-                    {
-                      key: 'received_qty',
-                      header: t('receivedQty'),
-                      renderItem: ({ row }) => `${row.received_qty}`,
-                    },
-                    { key: 'unit', header: t('unit') },
+              </>
+            )}
+          </form>
+        </div>
 
-                    {
-                      key: 'unitPrice',
-                      header: t('unitCost'),
-                      renderItem: ({ row }) =>
-                        row.unitPrice
-                          ? formatCurrency(row.unitPrice, currencyISO)
-                          : '-',
-                    },
-                    {
-                      key: 'totalPrice',
-                      header: t('totalCost'),
-                      renderItem: ({ row }) =>
-                        row.totalPrice
-                          ? formatCurrency(row.totalPrice, currencyISO)
-                          : '-',
-                    },
-                  ]}
-                />
-              </div>
-            </div>
-
-            <DialogBox
-              type="warning"
-              msg="Delete document"
-              subMsg="Do you want to delete this document?"
-              isOpen={confirmDeletePopup}
-              onRequestClose={() => setConfirmDeletePopup(false)}
-              onConfirm={() => {
-                props.onDeleteDocument();
-                setConfirmDeletePopup(false);
-              }}
-            />
-          </div>
-        )}
+        <DialogBox
+          type="warning"
+          msg="Delete document"
+          subMsg="Do you want to delete this document?"
+          isOpen={confirmDeletePopup}
+          onRequestClose={() => setConfirmDeletePopup(false)}
+          onConfirm={() => {
+            props.onDeleteDocument();
+            setConfirmDeletePopup(false);
+          }}
+        />
 
         <SupplierNew
           isVisible={showAddPopup}
           onRequestClose={() => setShowAddPopup(false)}
           onNew={newInputAdd}
+          onSupplierNew={() => {}}
           fetchSuppliers={fetchSuppliers}
         />
+
+        <Tooltip className="tooltip" id="documents-side-panel" />
       </SidePanel>
     </>
   );

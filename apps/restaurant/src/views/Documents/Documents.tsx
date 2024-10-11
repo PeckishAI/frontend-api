@@ -10,6 +10,7 @@ import ImportIngredients from './Components/ImportIngredients/ImportIngredients'
 import { useParams } from 'react-router-dom';
 import ConfirmationPopup from '../ConfirmModal/ConfirmationPopup';
 import toast from 'react-hot-toast';
+import DocumentDetailNew from './Components/DocumentDetail/DocumentDetail';
 
 const Documents = () => {
   const { t } = useTranslation();
@@ -241,6 +242,7 @@ const Documents = () => {
           onDeleteDocument={() => handleDeleteDocument(documentDetail)}
           reloadDocuments={reloadDocuments}
         />
+        {/* <DocumentDetailNew /> */}
         <ConfirmationPopup
           isVisible={isPopupVisible}
           title="Confirm Action"

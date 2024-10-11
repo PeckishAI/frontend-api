@@ -69,7 +69,7 @@ export type InvoiceIngredient = {
   mappedName?: string;
   detectedName?: string;
   quantity?: number;
-  unit?: string;
+  unit_uuid?: string;
   received_qty?: number;
   unitPrice?: number;
   totalPrice?: number;

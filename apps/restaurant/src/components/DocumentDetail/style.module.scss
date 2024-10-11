@@ -12,6 +12,21 @@
   }
 }
 
+.documentDetail,
+.form {
+  height: 100%;
+}
+
+.flexContainer {
+  height: 100%;
+  display: flex;
+  gap: 20px;
+
+  // @media screen and (max-width: 768px) {
+  //   flex-direction: column;
+  // }
+}
+
 .supplier {
   .name {
     font-weight: 600;
@@ -74,20 +89,35 @@
   width: 150px;
 }
 
+.detectedNameInput {
+  text-align: left;
+}
+
 .quantity,
 .price {
   width: 75px;
 }
 
-.headerData {
+// .editButton {
+
+//   position: sticky;
+//   left: 0;
+// }
+
+.header {
   display: flex;
   gap: 10px;
   margin: 10px 0;
-  .inputSupplier {
-    width: 200px;
-    // border: 1px solid var(--borderColor);
-    // border-radius: 4px;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+
+  &.editing {
+    justify-content: flex-start;
   }
+
+  position: sticky;
+  left: 0;
   .input {
     width: 200px;
     border: 1px solid var(--borderColor);
@@ -119,25 +149,22 @@
   }
 }
 
-.flexContainer {
-  display: flex;
-  gap: 20px;
-}
-.editButton {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .carouselContainer {
   width: 40%;
   height: 100%;
 }
 
-.scrollDiv {
+.rightPart {
   flex: 1;
-  overflow-y: auto;
-  max-height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .scrollDiv {
+    overflow-y: auto;
+    overflow-x: auto;
+    height: 100%;
+  }
 }
 
 .addIngredient {

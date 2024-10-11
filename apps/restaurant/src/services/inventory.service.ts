@@ -33,7 +33,7 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
         mappedName: ingredient['mapping_name'],
         quantity: ingredient['quantity'],
         received_qty: ingredient['received_qty'],
-        unit: ingredient['unit'],
+        unit_uuid: ingredient['unit_uuid'],
         unitPrice: ingredient['unit_price'],
         totalPrice: ingredient['total_price'],
       })),
@@ -42,7 +42,7 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
   return convertedData;
 };
 
-type FormDocument = {
+export type FormDocument = {
   date: string;
   supplier: string;
   supplier_uuid: string;
@@ -112,8 +112,7 @@ const getIngredientList = async (
   restaurantUUID: string
 ): Promise<Ingredient[]> => {
   const res = await axiosClient.get('/inventory/' + restaurantUUID);
-  console.log(res.data);
-  console.log(res.data.length);
+
   const ingredients = Object.keys(res.data).map<Ingredient>((key) =>
     // console.log('key', key),
     ({
@@ -402,8 +401,7 @@ const uploadImgFile = async (
       },
     }
   );
-  console.log('invoice res.data : ', res.data);
-  console.log('typeof res.data : ', typeof res.data);
+
   // Check if res.data is xan object
   if (typeof res.data !== 'object' || res.data === null) {
     console.error('res.data is not an object:', res.data);
@@ -427,8 +425,6 @@ const createUnit = (restaurantUUID: string, unit_name: string) => {
 };
 
 const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
-  console.log('inboiceData: ', invoiceData);
-
   return axiosClient.post('/documents/' + restaurantUUID, invoiceData);
 };
 
