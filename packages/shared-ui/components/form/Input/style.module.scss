@@ -1,0 +1,49 @@
+.inputWrapper {
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--borderColor);
+  background-color: var(--backgroundColor);
+  overflow: hidden;
+  transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+
+  display: flex;
+  align-items: center;
+
+  &:focus-within {
+    box-shadow: 0 0 0 2px var(--primaryColor);
+  }
+
+  input {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    font-size: 0.8rem;
+    line-height: 1;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: 7px 15px;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &[type='number'] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    &::placeholder {
+      opacity: 0.4;
+    }
+  }
+
+  .suffix {
+    font-size: 0.8rem;
+    margin-right: 16px;
+    color: var(--textSecondaryColor);
+  }
+}

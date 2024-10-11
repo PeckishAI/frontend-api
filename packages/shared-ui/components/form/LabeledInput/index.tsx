@@ -39,7 +39,9 @@ export const LabeledInput = React.forwardRef<HTMLInputElement, Props>(
                 value={value}
                 placeholder=" " // To use css property :placeholder-shown
               />
-              <label className={value && 'filled'}>{placeholder}</label>
+              <label className={classNames(value && 'filled')}>
+                {placeholder}
+              </label>
             </div>
 
             {suffix && <div className="suffix">{suffix}</div>}

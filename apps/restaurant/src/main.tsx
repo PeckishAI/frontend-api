@@ -1,3 +1,4 @@
+import { userService } from '@peckishai/user-management';
 import dayjs from 'dayjs';
 import Calendar from 'dayjs/plugin/calendar';
 import CustomParseFormat from 'dayjs/plugin/customParseFormat';
@@ -6,11 +7,10 @@ import { Toaster } from 'react-hot-toast';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { RouterProvider } from 'react-router-dom';
+import { GLOBAL_CONFIG } from 'shared-config';
 import './index.scss';
 import { router } from './routes/routes';
 import './translation/i18n';
-import { userService } from '@peckishai/user-management';
-import { GLOBAL_CONFIG } from 'shared-config';
 
 dayjs.extend(Calendar);
 dayjs.extend(CustomParseFormat);
