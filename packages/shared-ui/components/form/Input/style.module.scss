@@ -1,5 +1,5 @@
 .inputWrapper {
-  height: 34px;
+  height: var(--input-small-height);
   border-radius: 10px;
   border: 1px solid var(--borderColor);
   background-color: var(--backgroundColor);
@@ -38,6 +38,12 @@
 
     &::placeholder {
       opacity: 0.4;
+    }
+  }
+
+  &.withSuffix {
+    input {
+      padding-right: 4px;
     }
   }
 

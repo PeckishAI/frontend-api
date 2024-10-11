@@ -25,14 +25,19 @@ const Input = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
   };
 
   return (
-    <div className={styles.inputWrapper}>
+    <div
+      className={classNames(styles.inputWrapper, suffix && styles.withSuffix)}>
       <input
         ref={internalRef}
         {...rest}
         className={classNames(styles.input, className)}
         onChange={(e) => props.onChange(e.target.value)}
         style={
-          width ? { width } : props.type === 'number' ? { width: '70px' } : {}
+          width
+            ? { width }
+            : props.type === 'number'
+              ? { minWidth: '40px' }
+              : {}
         }
       />
       {suffix && (
