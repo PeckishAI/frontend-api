@@ -51,7 +51,7 @@ const Select = <
       <Component
         {...props}
         ref={props.innerRef}
-        className={styles.selectContainer}
+        className={classNames(styles.selectContainer, props.className)}
         classNames={{
           control: (state) =>
             classNames(styles.control, {

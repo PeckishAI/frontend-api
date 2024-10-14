@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker CSS
-import { Controller, useForm } from 'react-hook-form';
+import { DatePicker } from 'shared-ui';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import Carousel from 'react-multi-carousel';
@@ -78,7 +76,6 @@ const DocumentDetail = (props: Props) => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const { control } = useForm();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -88,9 +85,9 @@ const DocumentDetail = (props: Props) => {
     setSelectedDate(date);
     if (date) {
       const formattedDate = date.toLocaleDateString('en-CA');
-      handleInputChange({ target: { value: formattedDate } }, 'date');
+      handleInputChange(formattedDate, 'date');
     } else {
-      handleInputChange({ target: { value: '' } }, 'date');
+      handleInputChange('', 'date');
     }
   };
 
@@ -122,7 +119,6 @@ const DocumentDetail = (props: Props) => {
   const [units, setUnits] = useState<Unit[]>([]);
   const [showAddPopup, setShowAddPopup] = useState(false);
   const [suppliers, setSuppliers] = useState<LinkedSupplier[]>([]);
-  const [inputValue, setInputValue] = useState('');
   const [newInputAdd, setNewInputAdd] = useState('');
 
   const loadUnits = () => {
@@ -151,7 +147,12 @@ const DocumentDetail = (props: Props) => {
     label: unit.unit_name,
   }));
 
-  const handleDocumentChange = (field: keyof Invoice, value: any) => {
+  const handleInputChange = (
+    value: string | number,
+    field: keyof Invoice = 'supplier'
+  ) => {
+    console.log('Selected value:', value);
+
     setEditableDocument((prevDocument) => {
       if (prevDocument === null) return null;
 
@@ -163,31 +164,40 @@ const DocumentDetail = (props: Props) => {
     });
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement> | { target: { value: any } },
-    field: keyof Invoice = 'supplier'
-  ) => {
-    const value = e.target ? e.target.value : e;
-
-    console.log('Selected value:', value);
-
-    handleDocumentChange(field, value);
-  };
-
   const handleIngredientChange = (
     index: number,
     field: keyof IngredientDetails,
-    value: any
+    value?: string | number
   ) => {
     if (!editableDocument || !editableDocument.ingredients) {
       console.error('Editable document or ingredients are undefined');
       return;
     }
 
-    const updatedIngredients: IngredientDetails[] =
+    const updatedIngredients: InvoiceIngredient[] =
       editableDocument.ingredients.map((ing, idx) =>
         idx === index ? { ...ing, [field]: value } : ing
       );
+
+    setEditableDocument({
+      ...editableDocument,
+      ingredients: updatedIngredients,
+    });
+  };
+
+  const handleMappedNameChange = (
+    index: number,
+    name?: string,
+    uuid?: string
+  ) => {
+    if (!editableDocument || !editableDocument.ingredients) {
+      console.error('Editable document or ingredients are undefined');
+      return;
+    }
+
+    const updatedIngredients = [...editableDocument.ingredients];
+    updatedIngredients[index].mappedName = name || '';
+    updatedIngredients[index].mappedUUID = uuid || undefined;
 
     setEditableDocument({
       ...editableDocument,
@@ -276,26 +286,6 @@ const DocumentDetail = (props: Props) => {
         console.error('Failed to update document:', error);
       }
     }
-  };
-
-  const handleMappedNameChange = (index, selectedOption) => {
-    if (!editableDocument || !editableDocument.ingredients) {
-      console.error('Editable document or ingredients are undefined');
-      return;
-    }
-
-    const updatedIngredients = [...editableDocument.ingredients];
-    updatedIngredients[index].mappedName = selectedOption
-      ? selectedOption.label
-      : '';
-    updatedIngredients[index].mappedUUID = selectedOption
-      ? selectedOption.value
-      : null;
-
-    setEditableDocument({
-      ...editableDocument,
-      ingredients: updatedIngredients,
-    });
   };
 
   const handleAddIngredient = () => {
@@ -423,7 +413,11 @@ const DocumentDetail = (props: Props) => {
             isSearchable
             maxMenuHeight={200}
             onChange={(selectedOption) => {
-              handleMappedNameChange(index, selectedOption);
+              handleMappedNameChange(
+                index,
+                selectedOption?.label,
+                selectedOption?.value
+              );
             }}
             value={ingredientOptions.find(
               (option) =>
@@ -491,13 +485,6 @@ const DocumentDetail = (props: Props) => {
             }
           />
         </div>
-        // <Input
-        //   type="text"
-        //   placeholder={t('unit')}
-        //   className={styles.quantity}
-        //   onChange={(value) => handleIngredientChange(index, 'unit', value)}
-        //   value={editableDocument?.ingredients[index].unit || ''}
-        // />
       ),
     },
     {
@@ -634,32 +621,34 @@ const DocumentDetail = (props: Props) => {
                         )}>
                         {isEditMode ? (
                           <>
-                            {/* <LabeledInput
-                        
-                          type="text"
-                          placeholder={t('ingredient:supplier')}
-                          className={styles.input}
-                          onChange={(e) => handleInputChange(e, 'supplier')}
-                          value={editableDocument?.supplier || ''}
-                        /> */}
-                            <CreatableSelect
+                            <Select
+                              size="large"
+                              isCreatable
+                              isClearable
                               options={options}
                               className={styles.input}
-                              inputValue={inputValue}
-                              value={selectedSupplier} // Control the selected value
-                              onInputChange={(newInputValue) => {
-                                setInputValue(newInputValue);
-                              }}
+                              placeholder="Enter or select a supplier"
+                              noOptionsMessage={({ inputValue }) =>
+                                inputValue !== ''
+                                  ? `Add "${inputValue}" as new supplier`
+                                  : 'No options'
+                              }
+                              value={selectedSupplier}
                               onChange={(selectedOption, actionMeta) => {
+                                if (selectedOption === null) {
+                                  handleInputChange('', 'supplier');
+                                  setSelectedSupplier(null);
+                                  return;
+                                }
+
                                 if (actionMeta.action === 'create-option') {
-                                  // Handle the creation of a new supplier
-                                  setShowAddPopup(true); // Show the "Add New Supplier" popup
+                                  setShowAddPopup(true);
                                   handleInputChange(
                                     selectedOption.label,
                                     'supplier'
                                   );
                                   setNewInputAdd(selectedOption.label);
-                                  setSelectedSupplier(null); // Clear selected value after adding new supplier
+                                  setSelectedSupplier(null);
                                 } else if (selectedOption) {
                                   handleInputChange(
                                     selectedOption.value,
@@ -670,54 +659,19 @@ const DocumentDetail = (props: Props) => {
                                   setSelectedSupplier(null);
                                 }
                               }}
-                              styles={{
-                                control: (provided) => ({
-                                  ...provided,
-                                  minHeight: '45px',
-                                  border: `1px solid grey.300`,
-                                }),
-
-                                menu: (provided) => ({
-                                  ...provided,
-                                  zIndex: 9999,
-                                }),
-                                menuList: (provided) => ({
-                                  ...provided,
-                                  maxHeight: '200px',
-                                  overflowY: 'auto',
-                                }),
-                                option: (provided, state) => ({
-                                  ...provided,
-                                  backgroundColor: state.isSelected
-                                    ? '#007BFF'
-                                    : provided.backgroundColor,
-                                  color: state.isSelected
-                                    ? '#FFFFFF'
-                                    : provided.color,
-                                }),
-                                container: (provided) => ({
-                                  ...provided,
-                                  overflow: 'visible',
-                                }),
-                              }}
-                              isClearable
-                              isSearchable
-                              placeholder="Enter or select a supplier"
-                              noOptionsMessage={({ inputValue }) =>
-                                inputValue !== ''
-                                  ? `Add "${inputValue}" as new supplier`
-                                  : 'No options'
-                              }
                             />
 
                             <LabeledInput
+                              lighter
                               type="number"
                               min={0}
                               step={'any'}
                               suffix={currencyISO}
                               className={styles.input}
                               placeholder={t('price')}
-                              onChange={(e) => handleInputChange(e, 'amount')}
+                              onChange={(e) =>
+                                handleInputChange(e.target.value, 'amount')
+                              }
                               value={editableDocument?.amount}
                             />
 
