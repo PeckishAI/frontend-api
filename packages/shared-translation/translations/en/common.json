@@ -5,7 +5,7 @@
   "or": "or",
 
   "quantity": "Quantity",
-  "conversion_factor":"Conversion Factor",
+  "conversion_factor": "Conversion Factor",
   "receivedQty": "Received Qty",
   "price": "Price",
   "cost": "Cost",
@@ -31,7 +31,7 @@
   "validate": "Validate",
   "ok": "Ok",
   "confirm": "Confirm",
-  "save":"Save",
+  "save": "Save",
   "apply": "Apply",
   "cancel": "Cancel",
   "add": "Add",
@@ -67,9 +67,9 @@
 
   "orders.supplier": "Supplier",
   "orders.orderDate": "Order date",
-  "orders.orderNumber":"Order Number",
+  "orders.orderNumber": "Order Number",
   "orders.deliveryDate": "Delivery date",
-  "orders.receivedQtys":"Received Quantity",
+  "orders.receivedQtys": "Received Quantity",
   "orders.status": "Status",
   "orders.statusStates": {
     "pending": "Pending",

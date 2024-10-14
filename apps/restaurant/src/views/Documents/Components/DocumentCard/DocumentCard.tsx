@@ -10,9 +10,8 @@ import { useEffect, useState } from 'react';
 type Props = {
   uuid?: string;
   supplier?: string;
-  date?: string;
+  date?: Date;
   image?: string;
-  path?: string;
   amount?: number;
   onClick: () => void;
   isSelected: boolean;
@@ -60,7 +59,7 @@ const DocumentCard = (props: Props) => {
   return (
     <div className="document-card" onClick={onClick}>
       <div className="logo-container">
-        <img className="logo-integrations" src={image[0]}></img>
+        <img className="logo-integrations" src={image}></img>
       </div>
       <div className="document-info">
         <p className="supplier">{supplier}</p>

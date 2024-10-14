@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { DatePicker } from 'shared-ui';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -41,6 +41,7 @@ import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import SupplierNew from '../../views/Inventory/Suppliers/components/SupplierNew';
 import classNames from 'classnames';
 import { Tooltip } from 'react-tooltip';
+import dayjs from 'dayjs';
 
 type Props = {
   document: Invoice | null;
@@ -69,7 +70,7 @@ const DocumentDetail = (props: Props) => {
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
-  const { currencyISO } = useRestaurantCurrency();
+  const { currencyISO, currencySymbol } = useRestaurantCurrency();
   const [confirmDeletePopup, setConfirmDeletePopup] = useState(false);
   const [editableDocument, setEditableDocument] = useState<Invoice | null>(
     null
@@ -347,6 +348,12 @@ const DocumentDetail = (props: Props) => {
     setEditableDocument(null); // Clear editable document
   }, [props.document]);
 
+  const getUnitLabel = (unitUUID?: string) => {
+    if (!unitUUID) return '';
+    const unit = units.find((unit) => unit.unit_uuid === unitUUID);
+    return unit ? unit.unit_name : '';
+  };
+
   const viewColumns = [
     { key: 'detectedName', header: t('document.detectedName') },
     { key: 'mappedName', header: t('document.givenName') },
@@ -370,7 +377,7 @@ const DocumentDetail = (props: Props) => {
     },
     {
       key: 'unitPrice',
-      header: t('unitCost'),
+      header: t('unit'),
       renderItem: ({ row }) =>
         row.unitPrice ? formatCurrency(row.unitPrice, currencyISO) : '-',
     },
@@ -440,6 +447,7 @@ const DocumentDetail = (props: Props) => {
           className={styles.quantity}
           onChange={(value) => handleIngredientChange(index, 'quantity', value)}
           value={editableDocument?.ingredients[index].quantity || ''}
+          suffix={getUnitLabel(editableDocument?.ingredients[index].unit_uuid)}
         />
       ),
     },
@@ -458,6 +466,7 @@ const DocumentDetail = (props: Props) => {
             handleIngredientChange(index, 'received_qty', value)
           }
           value={editableDocument?.ingredients[index].received_qty || ''}
+          suffix={getUnitLabel(editableDocument?.ingredients[index].unit_uuid)}
         />
       ),
     },
@@ -466,10 +475,9 @@ const DocumentDetail = (props: Props) => {
       header: t('unit'),
       classname: 'column-bold',
       renderItem: ({ index }) => (
-        <div className={styles.detectedNameInput}>
+        <div className={styles.unitInput}>
           <Select
             options={unitsOptions}
-            className={styles.detectedNameInput}
             isClearable
             isSearchable
             maxMenuHeight={200}
@@ -495,14 +503,13 @@ const DocumentDetail = (props: Props) => {
         <Input
           type="number"
           min={0}
-          step="any"
           placeholder={t('unitCost')}
           className={styles.price}
           onChange={(value) =>
             handleIngredientChange(index, 'unitPrice', value)
           }
           value={editableDocument?.ingredients[index].unitPrice || ''}
-          suffix="USD"
+          suffix={currencySymbol}
         />
       ),
     },
@@ -513,13 +520,13 @@ const DocumentDetail = (props: Props) => {
       renderItem: ({ index }) => (
         <Input
           type="number"
-          step="any"
           placeholder={t('totalCost')}
           className={styles.price}
           onChange={(value) =>
             handleIngredientChange(index, 'totalPrice', value)
           }
           value={editableDocument?.ingredients[index].totalPrice || ''}
+          suffix={currencySymbol}
         />
       ),
     },
@@ -559,6 +566,20 @@ const DocumentDetail = (props: Props) => {
       });
     }
   }, [props.document?.supplier]);
+
+  const calculatedTotalCost = useMemo(() => {
+    if (isEditMode) {
+      return editableDocument?.ingredients.reduce(
+        (acc, ing) => acc + +(ing.totalPrice || 0),
+        0
+      );
+    } else {
+      return props.document?.ingredients.reduce(
+        (acc, ing) => acc + +(ing.totalPrice || 0),
+        0
+      );
+    }
+  }, [editableDocument?.ingredients, props.document?.ingredients, isEditMode]);
 
   return (
     <>
@@ -666,9 +687,9 @@ const DocumentDetail = (props: Props) => {
                               type="number"
                               min={0}
                               step={'any'}
-                              suffix={currencyISO}
+                              suffix={currencySymbol}
                               className={styles.input}
-                              placeholder={t('price')}
+                              placeholder={t('document.scannedPrice')}
                               onChange={(e) =>
                                 handleInputChange(e.target.value, 'amount')
                               }
@@ -697,48 +718,59 @@ const DocumentDetail = (props: Props) => {
                           </>
                         ) : (
                           <>
-                            <div className={styles.supplier}>
-                              <p className={styles.name}>
-                                {t('ingredient:supplier')}:
-                                <span className={styles.value}>
-                                  {' '}
-                                  {props.document?.supplier}
-                                </span>
-                              </p>
-                              <p className={styles.name}>
-                                {t('price')}:
-                                <span className={styles.value}>
-                                  {' '}
-                                  {formatCurrency(
-                                    props.document?.amount,
-                                    currencyISO
-                                  )}
-                                </span>
-                              </p>
-                              <p className={styles.name}>
-                                {t('date')}:
-                                <span className={styles.value}>
-                                  {' '}
-                                  {props.document?.date}
-                                </span>
-                              </p>
-                              <span className={styles.value}></span>
-                            </div>
-                            <div className={styles.flexContainer}>
-                              <IconButton
-                                icon={
-                                  <i className="fa-solid fa-pen-to-square"></i>
-                                }
-                                tooltipMsg={t('edit')}
-                                onClick={toggleEditMode}
-                                tooltipId="documents-side-panel"
-                              />
-                              <IconButton
-                                icon={<i className="fa-solid fa-trash"></i>}
-                                tooltipMsg={t('delete')}
-                                onClick={() => setConfirmDeletePopup(true)}
-                                tooltipId="documents-side-panel"
-                              />
+                            <div className={styles.informationsWrapper}>
+                              <div className={styles.headerFirstRow}>
+                                <div>
+                                  <div className={styles.supplier}>
+                                    <i className="fa-solid fa-truck" />
+                                    <p className={styles.value}>
+                                      {props.document?.supplier}
+                                    </p>
+                                  </div>
+                                  <p className={styles.date}>
+                                    {dayjs(props.document?.date).calendar()}
+                                  </p>
+                                </div>
+
+                                <div className={styles.flexContainer}>
+                                  <IconButton
+                                    icon={
+                                      <i className="fa-solid fa-pen-to-square"></i>
+                                    }
+                                    tooltipMsg={t('edit')}
+                                    onClick={toggleEditMode}
+                                    tooltipId="documents-side-panel"
+                                  />
+                                  <IconButton
+                                    icon={<i className="fa-solid fa-trash"></i>}
+                                    tooltipMsg={t('delete')}
+                                    onClick={() => setConfirmDeletePopup(true)}
+                                    tooltipId="documents-side-panel"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className={styles.informations}>
+                                <p className={styles.name}>
+                                  {t('document.scannedPrice')}:
+                                  <span className={styles.value}>
+                                    {' '}
+                                    {formatCurrency(
+                                      props.document?.amount,
+                                      currencyISO
+                                    )}
+                                  </span>
+                                </p>
+                                <p className={styles.name}>
+                                  {t('document.calculatedPrice')}:
+                                  <span className={styles.value}>
+                                    {formatCurrency(
+                                      calculatedTotalCost,
+                                      currencyISO
+                                    )}
+                                  </span>
+                                </p>
+                              </div>
                             </div>
                           </>
                         )}
@@ -765,19 +797,30 @@ const DocumentDetail = (props: Props) => {
                     </div>
 
                     {isEditMode && (
-                      <div className={styles.buttonsContainer}>
-                        <Button
-                          type="secondary"
-                          actionType="button"
-                          value={t('cancel')}
-                          onClick={toggleEditMode}
-                        />
-                        <Button
-                          type="primary"
-                          actionType="submit"
-                          value={t('document.save')}
-                          className={styles.button}
-                        />
+                      <div className={styles.footerContainer}>
+                        <p className={styles.total}>
+                          <i
+                            className={`fa-solid fa-hand-holding-dollar ${styles.cost}`}></i>
+                          {t('document.calculatedPrice')}:{' '}
+                          <span className={styles.value}>
+                            {formatCurrency(calculatedTotalCost, currencyISO)}
+                          </span>
+                        </p>
+
+                        <div className={styles.buttonsContainer}>
+                          <Button
+                            type="secondary"
+                            actionType="button"
+                            value={t('cancel')}
+                            onClick={toggleEditMode}
+                          />
+                          <Button
+                            type="primary"
+                            actionType="submit"
+                            value={t('document.save')}
+                            className={styles.button}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>

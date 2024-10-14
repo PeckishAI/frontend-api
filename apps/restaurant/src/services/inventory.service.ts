@@ -23,6 +23,7 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
     return {
       ...documentData,
       documentUUID: key,
+      date: documentData.date ? new Date(documentData.date) : undefined,
       supplier_uuid: documentData.supplier_uuid,
       supplier: documentData.supplier,
       sync_status: documentData.sync_status,

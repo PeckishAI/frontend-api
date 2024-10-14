@@ -8,8 +8,8 @@
       "orders": "Commandes"
     },
     "recipes": "Recettes",
-    "preparations":"Les préparatifs",
-    "modifiers":"Modificatrices",
+    "preparations": "Les préparatifs",
+    "modifiers": "Modificatrices",
     "onboarding": "Intégrations",
     "onboarding_selectProducts": "Séléctionnez les produits",
     "onboarding_createPreparations": "Créez vos préparations",
@@ -42,7 +42,7 @@
     "starters": "Entrées",
     "mainCourses": "Plats princiaux",
     "desserts": "Desserts",
-    "preparations":"Les préparatifs",
+    "preparations": "Les préparatifs",
     "modifiers": "Modifiers",
     "snacks": "Snacks",
     "others": "Autres"
@@ -68,27 +68,27 @@
   "suppliers.waitLink": "L'invitation est en attente, ou copiez le lien pour en envoyer une nouvelle",
   "suppliers.linkCopied": "Lien d'invitation copié dans le presse-papiers",
   "suppliers.deleteSupplier": "Supprimer le fournisseur",
-  "suppliers.sync":"Synchroniser",
-  "suppliers.synced":"Synchronisée",
+  "suppliers.sync": "Synchroniser",
+  "suppliers.synced": "Synchronisée",
   "suppliers.removeSupplierToast": {
     "loading": "Suppression du fournisseur...",
     "success": "Fournisseur supprimé",
     "error": "Erreur lors de la suppression du fournisseur"
   },
   "suppliers.removeSupplierPopup": {
-  "suppliers.deleteSupplier": "Supprimer le fournisseur",
+    "suppliers.deleteSupplier": "Supprimer le fournisseur",
     "subtitle": "Voulez-vous supprimer l'accès de {{name}} à votre inventaire ?"
   },
   "suppliers.syncSupplierPopup": {
     "title": "Synchroniser l'accès au fournisseur",
     "subtitle": "Synchronisez le fournisseur avec les contacts Xero.",
-    "selectSyncContact":"Sélectionnez Synchroniser le contact",
-    "syncSupplierBtn":"Créer un contact avec Xero"
+    "selectSyncContact": "Sélectionnez Synchroniser le contact",
+    "syncSupplierBtn": "Créer un contact avec Xero"
   },
   "suppliers.addSupplier": {
     "title": "Ajouter un nouveau fournisseur",
-    "edit_title":"Modifier un fournisseur",
-    "addRecipe":"Ajouter la recette",
+    "edit_title": "Modifier un fournisseur",
+    "addRecipe": "Ajouter la recette",
     "subtitle": "Recherchez votre fournisseur ici ou créez-en un nouveau si vous ne le trouvez pas",
     "edit_subtitle": "Modifier et mettre à jour votre fournisseur",
     "select": {
@@ -100,8 +100,8 @@
   "recipes.addPreparation": {
     "addPreparationBtn": "Ajouter une nouvelle préparation",
     "title": "Ajouter une nouvelle préparation",
-    "recipe_title":"Ajouter une nouvelle recette",
-   "subtitle": "Recherchez votre fournisseur ici ou créez-en un nouveau si vous ne le trouvez pas",
+    "recipe_title": "Ajouter une nouvelle recette",
+    "subtitle": "Recherchez votre fournisseur ici ou créez-en un nouveau si vous ne le trouvez pas",
     "select": {
       "placeholder": "Sélectionnez un fournisseur",
       "createSupplier": "Créer le fournisseur \"{{name}}\""
@@ -162,9 +162,8 @@
     "fields": {
       "pricePerPortion": "Prix par portion",
       "portionsPerBatch": "Portions par lot",
-      "recipeName":"Nom de la recette",
-      "conversion_factor":"Facteur de conversion"
-
+      "recipeName": "Nom de la recette",
+      "conversion_factor": "Facteur de conversion"
     },
     "table": {
       "title": "Ingrédients :",
@@ -201,10 +200,13 @@
     }
   },
   "document": {
+    "calculatedPrice": "Prix calculé",
+    "scannedPrice": "Prix scanné",
+
     "givenName": "Nom donné",
     "detectedName": "Nom détecté",
     "save": "Sauvegarder",
     "upload": "Importer",
-    "send":"Envoyer à Xero"
+    "send": "Envoyer à Xero"
   }
 }

@@ -210,8 +210,7 @@ const Documents = () => {
                 uuid={doc.documentUUID}
                 supplier={doc.supplier}
                 date={doc.date}
-                image={doc.path}
-                path={doc.path}
+                image={doc.path?.[0]}
                 amount={doc.amount}
                 onClick={() => handleDocumentClick(doc)}
                 onButtonClick={() => handleButtonClick(doc)}

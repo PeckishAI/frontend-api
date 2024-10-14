@@ -88,7 +88,7 @@
   },
   "suppliers.addSupplier": {
     "title": "Add a new supplier",
-    "edit_title":"Edit a supplier",
+    "edit_title": "Edit a supplier",
     "subtitle": "Search your supplier here or create a new one if you don't find it",
     "edit_subtitle": "Edit and update your supplier",
     "select": {
@@ -99,9 +99,9 @@
   },
   "recipes.addPreparation": {
     "addPreparationBtn": "Add Preparation",
-    "addRecipe":"Add Recipe",
+    "addRecipe": "Add Recipe",
     "title": "Add a new Preparation",
-    "recipe_title":"Add a new Recipe",
+    "recipe_title": "Add a new Recipe",
     "subtitle": "Search your supplier here or create a new one if you don't find it",
     "select": {
       "placeholder": "Select a supplier",
@@ -111,9 +111,9 @@
   },
   "recipes.addIngredient": {
     "addIngredientBtn": "Add Ingredient",
-    "addRecipe":"Add Recipe",
+    "addRecipe": "Add Recipe",
     "title": "Add a new Ingredient",
-    "recipe_title":"Add a new Recipe",
+    "recipe_title": "Add a new Recipe",
     "subtitle": "Search your supplier here or create a new one if you don't find it",
     "select": {
       "placeholder": "Select a supplier",
@@ -121,7 +121,6 @@
     },
     "automaticSendCheckbox": "add a new preparation before check the all details"
   },
-
 
   "orders.detail": "Detail",
   "orders.detail.tooltip": "View detail",
@@ -178,8 +177,8 @@
     "fields": {
       "pricePerPortion": "Price (per portion)",
       "portionsPerBatch": "Portions per batch",
-      "recipeName":"Recipe Name",
-      "conversion_factor":"conversion Factor"
+      "recipeName": "Recipe Name",
+      "conversion_factor": "conversion Factor"
     },
     "table": {
       "title": "Ingredients :",
@@ -216,6 +215,9 @@
     }
   },
   "document": {
+    "calculatedPrice": "Calculated price",
+    "scannedPrice": "Scanned price",
+
     "givenName": "Given name",
     "detectedName": "Detected name",
     "save": "Save",

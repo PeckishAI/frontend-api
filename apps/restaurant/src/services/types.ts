@@ -78,13 +78,13 @@ export type InvoiceIngredient = {
 export type Invoice = {
   documentUUID?: string;
   created_at?: string;
-  date?: string;
+  date?: Date;
   supplier?: string;
   image?: string;
   supplier_uuid: string;
   ingredients: InvoiceIngredient[];
   restaurantUUID?: string;
-  path?: string;
+  path?: string[];
   amount?: number;
   sync_status?: string;
 };

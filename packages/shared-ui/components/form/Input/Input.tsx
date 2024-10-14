@@ -36,7 +36,7 @@ const Input = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
           width
             ? { width }
             : props.type === 'number'
-              ? { minWidth: '40px' }
+              ? { minWidth: '50px' }
               : {}
         }
       />
