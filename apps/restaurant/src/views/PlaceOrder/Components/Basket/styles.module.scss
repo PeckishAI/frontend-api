@@ -26,7 +26,6 @@
     padding-right: 15px;
   }
 
-  .datePicker:focus,
   .quantity:focus {
     border-color: #6c757d; /* Add focus effect */
     box-shadow: 0 0 5px rgba(108, 117, 125, 0.5); /* Add subtle focus shadow */
@@ -39,21 +38,7 @@
       gap: 20px;
       align-items: center;
     }
-    .datePicker {
-      border: 1px solid #ccc;
-      border-radius: 12px;
-      padding: 6px 15px;
-      font-size: 14px;
-      color: #333;
-      width: 100%;
-      box-sizing: border-box;
-      outline: none;
-      transition: border-color 0.3s ease;
-    }
-    .datePicker:focus {
-      border-color: #6c757d;
-      box-shadow: 0 0 5px rgba(108, 117, 125, 0.5);
-    }
+
     .calendarIcon {
       width: 21px;
       height: 20px;

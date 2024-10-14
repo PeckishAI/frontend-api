@@ -120,27 +120,8 @@
   left: 0;
   .input {
     width: 200px;
-    border: 1px solid var(--borderColor);
-    border-radius: 4px;
   }
-  .datePicker {
-    border: 1px solid var(--borderColor);
-    height: 45px;
-    overflow: hidden;
-    border-radius: 4px;
-    padding: 6px 15px;
-    font-size: 14px;
-    color: #333;
-    width: 100%;
-    box-sizing: border-box;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-  .datePicker:focus {
-    border-color: var(--primaryColor);
-    border-radius: 6px;
-    border-width: 2px;
-  }
+
   .calendarIcon {
     width: 20px;
     height: 44px;
@@ -164,6 +145,7 @@
     overflow-y: auto;
     overflow-x: auto;
     height: 100%;
+    padding: 2px; // to avoid cropping the input border
   }
 }
 

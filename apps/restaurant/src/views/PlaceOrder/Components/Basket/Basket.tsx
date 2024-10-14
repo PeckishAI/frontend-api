@@ -1,4 +1,10 @@
-import { Button, DialogBox, Input, useDebounceEffect } from 'shared-ui';
+import {
+  Button,
+  DialogBox,
+  Input,
+  useDebounceEffect,
+  DatePicker,
+} from 'shared-ui';
 import styles from './styles.module.scss';
 import { useRestaurantCurrency } from '../../../../store/useRestaurantStore';
 import { IngredientOption } from '../IngredientsTable/IngredientsTable';
@@ -7,8 +13,6 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { SupplierNote } from '../ShoppingView/ShoppingView';
 import classNames from 'classnames';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt } from 'react-icons/fa';
 
 type Props = {
@@ -183,11 +187,11 @@ const Basket = (props: Props) => {
                     />
                   ) : (
                     <DatePicker
+                      size="small"
                       selected={deliveryDates[supplier] || null}
                       dateFormat="yyyy-MM-dd"
                       onChange={(date) => handleDateChange(supplier, date)}
                       placeholderText={'Select Delivery Date'}
-                      className={styles.datePicker}
                       minDate={new Date()}
                     />
                   )}

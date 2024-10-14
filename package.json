@@ -28,7 +28,6 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-storybook": "^0.6.13",
     "prettier": "^3.0.0",
-    "react-datepicker": "^7.3.0",
     "tsconfig": "*",
     "turbo": "^1.10.12"
   }
