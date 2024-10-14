@@ -2,14 +2,13 @@ import { Menu, MenuItem } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 import { FaEdit, FaPhone, FaSync, FaTrash } from 'react-icons/fa';
-import { FiCopy, FiMoreVertical } from 'react-icons/fi';
+import { FiMoreVertical } from 'react-icons/fi';
 import { MdAlternateEmail } from 'react-icons/md';
 import { LinkedSupplier } from '../../../../services';
 import styles from './SupplierCard.module.scss';
-import dayjs from 'dayjs';
 import Skeleton from 'react-loading-skeleton';
 import { useTranslation } from 'react-i18next';
-import classNames from 'classnames';
+import { prettyDateFormat } from '../../../../utils/helpers';
 
 type Props = {
   supplier: LinkedSupplier;
@@ -69,7 +68,7 @@ export const SupplierCard = ({
         {renderMoreOptions()}
       </div>
       <p className={styles.cardLinkedAt}>
-        {dayjs(supplier.linkedAt).calendar()}
+        {prettyDateFormat(supplier.linkedAt)}
       </p>
       <div className={styles.cardContactContainer}>
         {supplier.phone && (

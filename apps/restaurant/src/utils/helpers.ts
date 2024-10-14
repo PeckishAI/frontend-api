@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import i18n from '../translation/i18n';
 
 // Pretty print big number (e.g. 1000000 -> 1 000 000)
@@ -20,6 +21,16 @@ export const formatCurrency = (
   if (value === undefined || value === null) return '--';
   if (typeof value === 'string') value = parseFloat(value);
 
-  const options = { style: 'currency', currency: currency ?? 'EUR' };
+  const options = {
+    style: 'currency',
+    currency: currency ?? 'EUR',
+  } satisfies Intl.NumberFormatOptions;
   return new Intl.NumberFormat(i18n.language, options).format(value);
+};
+
+export const prettyDateFormat = (date?: Date | string) => {
+  if (!date) return '';
+  console.log(dayjs(date));
+
+  return dayjs(date).calendar();
 };

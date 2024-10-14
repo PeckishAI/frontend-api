@@ -3,7 +3,7 @@ import {
   useRestaurantCurrency,
   useRestaurantStore,
 } from '../../../../store/useRestaurantStore';
-import { formatCurrency } from '../../../../utils/helpers';
+import { formatCurrency, prettyDateFormat } from '../../../../utils/helpers';
 import { FaCheckCircle, FaRegCircle, FaSync } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 
@@ -64,7 +64,7 @@ const DocumentCard = (props: Props) => {
       </div>
       <div className="document-info">
         <p className="supplier">{supplier}</p>
-        <p className="date">{date}</p>
+        <p className="date">{prettyDateFormat(date)}</p>
         <p className="price">{formatCurrency(amount, currencyISO)}</p>
         {connectedIntegrations &&
           (showSyncStatus !== 'true' ? (

@@ -35,7 +35,7 @@ dayjs.updateLocale('fr', {
     nextWeek: 'dddd [prochain]',
     lastDay: '[Hier à] H:mm',
     lastWeek: 'dddd [dernier]',
-    sameElse: 'YYYY-MM-DD',
+    sameElse: 'DD/MM/YYYY',
   },
 });
 
