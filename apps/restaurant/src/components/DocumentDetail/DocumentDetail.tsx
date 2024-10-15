@@ -442,6 +442,7 @@ const DocumentDetail = (props: Props) => {
         <Input
           type="number"
           min={0}
+          step="0.001"
           max={editableDocument?.ingredients[index].quantity}
           placeholder={t('receivedQty')}
           className={styles.quantity}
@@ -476,6 +477,7 @@ const DocumentDetail = (props: Props) => {
         <Input
           type="number"
           min={0}
+          step="0.01"
           placeholder={t('unitCost')}
           className={styles.price}
           onChange={(value) =>
@@ -493,6 +495,7 @@ const DocumentDetail = (props: Props) => {
       renderItem: ({ index }) => (
         <Input
           type="number"
+          step="0.01"
           placeholder={t('totalCost')}
           className={styles.price}
           onChange={(value) =>
