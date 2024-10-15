@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useTitle, Button, Loading, Lottie } from 'shared-ui';
+import { useTitle, Button, Loading, Lottie, LoadingAbsolute } from 'shared-ui';
 import DocumentCard from './Components/DocumentCard/DocumentCard';
 import { useEffect, useState } from 'react';
 import { Invoice, inventoryService } from '../../services';
@@ -21,9 +21,9 @@ const Documents = () => {
   );
 
   const { id } = useParams();
-  const [loadingData, setLoadingData] = useState(false);
+  const [loadingDocuments, setLoadingDocuments] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [document, setDocument] = useState<Invoice[]>([]);
+  const [documents, setDocuments] = useState<Invoice[]>([]);
   const [documentDetail, setDocumentDetail] = useState<Invoice | null>(null);
   const [showImportPopup, setShowImportPopup] = useState(false);
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
@@ -36,17 +36,17 @@ const Documents = () => {
 
   function reloadDocuments() {
     if (!selectedRestaurantUUID) return;
-    setLoadingData(true);
+    setLoadingDocuments(true);
     inventoryService
       .getDocument(selectedRestaurantUUID)
       .then((res) => {
-        setDocument(res);
+        setDocuments(res);
       })
       .catch((err) => {
         console.log(err);
       })
       .finally(() => {
-        setLoadingData(false);
+        setLoadingDocuments(false);
       });
   }
 
@@ -131,8 +131,8 @@ const Documents = () => {
   };
 
   const handleDocumentUpdated = (updatedDocument: Invoice) => {
-    setDocument(
-      document.map((d) =>
+    setDocuments(
+      documents.map((d) =>
         d.documentUUID === updatedDocument.documentUUID ? updatedDocument : d
       )
     );
@@ -149,9 +149,9 @@ const Documents = () => {
         console.log(err);
       })
       .finally(() => {
-        setLoadingData(false);
+        setLoadingDocuments(false);
       });
-    setDocument((prevDoc) =>
+    setDocuments((prevDoc) =>
       prevDoc.filter(
         (doc) => doc.documentUUID !== documentToDelete.documentUUID
       )
@@ -161,19 +161,21 @@ const Documents = () => {
 
   useEffect(() => {
     if (id) {
-      const selectedDocument = document.find((doc) => doc.documentUUID === id);
+      const selectedDocument = documents.find((doc) => doc.documentUUID === id);
       if (selectedDocument) {
         setDocumentDetail(selectedDocument);
       }
     }
-  }, [id, document]);
+  }, [id, documents]);
 
-  const sortedDocuments = [...document].sort((a, b) => {
+  const sortedDocuments = [...documents].sort((a, b) => {
     const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
     const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
 
     return dateB.getTime() - dateA.getTime();
   });
+
+  console.log(documents);
 
   return (
     <div className={styles.documents}>
@@ -202,7 +204,9 @@ const Documents = () => {
         />
       </div>
       <div>
-        {document.length > 0 ? (
+        {loadingDocuments ? (
+          <Loading />
+        ) : documents.length > 0 ? (
           <div className={styles.cardsContainer}>
             {sortedDocuments.map((doc, index) => (
               <DocumentCard
