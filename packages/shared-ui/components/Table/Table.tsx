@@ -16,6 +16,7 @@ export type ColumnDefinitionType<T, K extends keyof T = keyof T> = {
   classname?: string;
   width?: string;
   minWidth?: string;
+  onRowClick?: (row: T, index: number) => void; // Add onRowClick as an optional prop
 };
 
 type Props<T, K extends keyof T> = {
@@ -29,7 +30,12 @@ const Table = <T, K extends keyof T>(props: Props<T, K>) => {
     <div className={classNames('table-container', props.className)}>
       <table>
         <TableHeader columns={props.columns} className="table-header" />
-        <TableRows data={props.data} columns={props.columns} />
+        {/* Pass onRowClick down to TableRows */}
+        <TableRows
+          data={props.data}
+          columns={props.columns}
+          onRowClick={props.onRowClick}
+        />
       </table>
     </div>
   );

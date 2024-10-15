@@ -168,6 +168,12 @@
         "name": "Preparation name"
       }
     },
+    "product": {
+      "title": "Edit <highlight>{{name}}<highlight> preparation",
+      "fields": {
+        "name": "Preparation name"
+      }
+    },
     "modifier": {
       "title": "Edit <highlight>{{name}}<highlight> modifier",
       "fields": {
@@ -183,7 +189,9 @@
     "table": {
       "title": "Ingredients :",
       "ingredientSelect": "Select an ingredient",
-      "addIngredient": "Add an ingredient/preparation"
+      "addIngredient": "Add an ingredient/preparation",
+      "quantity": "Quantity",
+      "unit": "Unit"
     }
   },
   "recipes.delete": {

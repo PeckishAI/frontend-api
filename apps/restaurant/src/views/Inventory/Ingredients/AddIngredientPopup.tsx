@@ -13,6 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 
+import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
 import { useIngredients } from '../../../services/hooks';
@@ -22,102 +23,53 @@ import { tagService } from '../../../services/tag.service';
 import supplierService from '../../../services/supplier.service';
 import toast from 'react-hot-toast';
 
-// const AddIngredientSchema = z.object({
-//   name: z.string().min(1, { message: 'Recipe name is required' }),
-//   actualStock: z.string().optional(),
-//   parLevel: z.string().optional(),
-//   tag_details: z
-//     .array(
-//       z.object({
-//         uuid: z.string().optional(), // Allow uuid to be optional if creating a new tag
-//         name: z.string().min(1, { message: 'Tag name is required' }),
-//       })
-//     )
-//     .min(1, { message: 'At least one tag is required' }),
+const AddIngredientSchema = z.object({
+  name: z.string().min(1, { message: 'Recipe name is required' }),
+  actualStock: z.string().optional(),
+  parLevel: z.string().optional(),
+  tag_details: z
+    .array(
+      z.object({
+        uuid: z.string().optional(), // Allow uuid to be optional if creating a new tag
+        name: z.string().min(1, { message: 'Tag name is required' }),
+      })
+    )
+    .optional(), // Make tags optional
 
-//   // supplier_details as an array of objects
-//   supplier_details: z
-//     .array(
-//       z.object({
-//         supplier_name: z
-//           .string()
-//           .min(1, { message: 'Supplier Name is required' }),
-//         supplier_id: z
-//           .string()
-//           .min(1, { message: 'Supplier uuid is required' }), // If new, uuid might be blank
-//         supplier_cost: z
-//           .string()
-//           .min(1, { message: 'Supplier Cost is required' }),
-//         conversion_factor: z
-//           .string()
-//           .min(1, { message: 'conversion Factor is required' }),
-//         supplier_unit_uuid: z.string().optional(), // Allow uuid to be optional for new suppliers
-//         supplier_unit_name: z
-//           .string()
-//           .min(1, { message: 'Supplier Unit name is required' }), // Unit name is required
-//       })
-//     )
-//     .min(1, { message: 'At least one supplier is required' }),
+  // supplier_details as an array of objects, now optional
+  supplier_details: z
+    .array(
+      z.object({
+        supplier_name: z
+          .string()
+          .min(1, { message: 'Supplier Name is required' }),
+        supplier_id: z
+          .string()
+          .min(1, { message: 'Supplier uuid is required' }),
+        supplier_cost: z
+          .string()
+          .min(1, { message: 'Supplier Cost is required' }),
+        conversion_factor: z
+          .string()
+          .min(1, { message: 'Conversion Factor is required' }),
+        supplier_unit_uuid: z.string().optional(), // Allow uuid to be optional
+        supplier_unit_name: z
+          .string()
+          .min(1, { message: 'Supplier Unit name is required' }),
+      })
+    )
+    .optional(), // Make suppliers optional
 
-//   unit_name: z.string().min(1, { message: 'Unit name is required' }),
-//   unit_uuid: z.string().optional(), // Optional if unit is created new
-// });
-
-const AddIngredientSchema = z
-  .object({
-    name: z.string().min(1, { message: 'Recipe name is required' }),
-    actualStock: z.string().optional(),
-    parLevel: z.string().optional(),
-    tag_details: z.string().optional(),
-
-    // supplier_details as an array of objects
-    supplier_details: z
-      .array(
-        z.object({
-          supplier_name: z.string().optional(),
-          supplier_id: z.string().optional(),
-          supplier_cost: z.string().optional(),
-          conversion_factor: z.string().optional(),
-          supplier_unit_uuid: z.string().optional(),
-          supplier_unit_name: z.string().optional(),
-        })
-      )
-      .min(1, { message: 'At least one supplier is required' }),
-
-    unit_name: z.string().min(1, { message: 'Unit name is required' }),
-    unit_uuid: z.string().optional(),
-  })
-  .refine(
-    (data) => {
-      return data.supplier_details.every((supplier) => {
-        if (supplier.supplier_name) {
-          return (
-            supplier.supplier_cost &&
-            supplier.conversion_factor &&
-            supplier.supplier_unit_name
-          );
-        }
-        return true;
-      });
-    },
-    {
-      message:
-        'When a supplier name is selected, supplier cost, conversion factor, and supplier unit are required',
-      path: ['supplier_details'],
-    }
-  );
+  unit_name: z.string().min(1, { message: 'Unit name is required' }),
+  unit_uuid: z.string().optional(), // Optional if unit is created new
+});
 
 type PreparationForm = z.infer<typeof AddIngredientSchema>;
 
 type Props = {
   isVisible: boolean;
   onRequestClose: () => void;
-  tagList: any;
-  reloadTagLists: () => void;
-  reloadUnits: () => void;
-  unitname: any;
   reloadInventoryData: any;
-  setTagList: () => void;
 };
 
 const AddIngredientPopup = (props: Props) => {
@@ -125,7 +77,8 @@ const AddIngredientPopup = (props: Props) => {
   const restaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
-
+  const [unitname, setUnitName] = useState([]);
+  const [tagList, setTagList] = useState([]);
   const [suppliers, setSuppliers] = useState<DropdownOptionsDefinitionType[]>(
     []
   );
@@ -174,10 +127,34 @@ const AddIngredientPopup = (props: Props) => {
     });
   };
 
+  // Fetch and reload the tag list
+  function reloadTagList() {
+    if (!restaurantUUID) return;
+    tagService.getAll(restaurantUUID).then((tags) => {
+      setTagList(tags || []); // Ensure tags is always an array
+    });
+  }
+
+  function reloadUnits() {
+    if (!restaurantUUID) return;
+
+    inventoryService
+      .getUnits(restaurantUUID)
+      .then((res) => {
+        setUnitName(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        // setLoadingData(false);
+      });
+  }
+
   // Create a new tag and add it to the tagList
   const handleCreateTag = (inputValue) => {
     const newTag = { uuid: '', name: inputValue };
-    props.setTagList((prev) => [...prev, newTag]); // Add the new tag to the tagList
+    setTagList((prev) => [...prev, newTag]); // Add the new tag to the tagList
     setValue('tag_details', [...(watch('tag_details') || []), newTag]); // Add new tag to form state
   };
 
@@ -204,6 +181,8 @@ const AddIngredientPopup = (props: Props) => {
   };
 
   useEffect(() => {
+    reloadUnits();
+    reloadTagList();
     reloadRestaurantSuppliers();
   }, [restaurantUUID]);
 
@@ -215,27 +194,26 @@ const AddIngredientPopup = (props: Props) => {
   const handleSubmitForm = handleSubmit(async (data) => {
     const formattedData = {
       ...data,
-      tag_details: data?.tag_details?.map((tag) => ({
-        uuid: tag.uuid || '', // For new tags without uuid
-        name: tag.name,
+      tag_details: (data.tag_details || []).map((tag) => ({
+        uuid: tag?.uuid || '', // Handle undefined or missing uuid
+        name: tag?.name || '', // Handle undefined or missing name
       })),
-      supplier_details: data.supplier_details.map((supplier) => ({
-        supplier_id: supplier.supplier_id || '', // Changed from supplier_uuid to supplier_id
-        supplier_name: supplier.supplier_name, // Required supplier name
-        supplier_cost: supplier.supplier_cost,
-        conversion_factor: supplier.conversion_factor,
-        supplier_unit_uuid: supplier.supplier_unit_uuid || '',
-        supplier_unit_name: supplier.supplier_unit_name,
+      supplier_details: (data.supplier_details || []).map((supplier) => ({
+        supplier_id: supplier?.supplier_id || '', // Handle undefined or missing supplier_id
+        supplier_name: supplier?.supplier_name || '', // Handle undefined or missing supplier_name
+        supplier_cost: supplier?.supplier_cost || '', // Handle undefined or missing supplier_cost
+        conversion_factor: supplier?.conversion_factor || '', // Handle undefined or missing conversion_factor
+        supplier_unit_uuid: supplier?.supplier_unit_uuid || '', // Handle undefined or missing supplier_unit_uuid
+        supplier_unit_name: supplier?.supplier_unit_name || '', // Handle undefined or missing supplier_unit_name
       })),
     };
-    return;
 
     try {
       await inventoryService.addIngredient(restaurantUUID, formattedData);
 
       props.onRequestClose();
+      reloadTagList();
       props.reloadInventoryData();
-      props.reloadTagLists();
       reset();
       toast.success('Ingredient Created Successfully');
     } catch (error) {
@@ -298,82 +276,71 @@ const AddIngredientPopup = (props: Props) => {
                 },
               }}
             />
-            <div>
-              <CreatableSelect
-                placeholder="Select a unit"
-                options={props?.unitname?.map((unit) => ({
-                  label: unit.unit_name,
-                  value: unit.unit_uuid,
-                }))}
-                className={styles.unitInput}
-                isCreatable
-                styles={{
-                  menu: (provided) => ({
-                    ...provided,
-                    overflowY: 'auto',
-                  }),
-                  control: (provided, state) => ({
-                    ...provided,
-                    minWidth: '200px',
-                    boxShadow: state.isFocused ? 'none' : provided.boxShadow,
-                    borderColor: state.isFocused
-                      ? '#ced4da'
-                      : provided.borderColor,
-                    '&:hover': {
-                      borderColor: 'none',
-                    },
-                  }),
-                  menuList: (provided) => ({
-                    ...provided,
-                    maxHeight: '200px',
-                    overflowY: 'auto',
-                  }),
-                  option: (provided, state) => ({
-                    ...provided,
-                    backgroundColor: state.isSelected
-                      ? '#007BFF'
-                      : state.isFocused
-                      ? '#dbe1df'
-                      : provided.backgroundColor,
-                    color: state.isSelected ? '#FFFFFF' : provided.color,
-                  }),
-                }}
-                value={
-                  watch('unit_name') // Use the unit_name for the select value
-                    ? {
-                        label: watch('unit_name') || 'Select a unit',
-                        value: watch('unit_uuid') || null,
-                      }
-                    : null
-                }
-                onChange={(selectedOption, actionMeta) => {
-                  if (actionMeta.action === 'create-option') {
-                    setValue('unit_name', selectedOption.label, {
-                      shouldValidate: true,
-                    }); // Set unit_name
-                    setValue('unit_uuid', '', { shouldValidate: true });
-                  } else {
-                    setValue('unit_name', selectedOption?.label || '', {
-                      shouldValidate: true,
-                    });
-                    setValue('unit_uuid', selectedOption?.value || '', {
-                      shouldValidate: true,
-                    });
-                  }
-                }}
-                isClearable
-                // // Error handling for unit_name
-                // {...register('unit_name', { required: 'Unit is required' })}
-              />
 
-              {errors.unit_name && (
-                <div className={styles.errorMessage}>Unitname is required</div>
-              )}
-            </div>
+            <CreatableSelect
+              placeholder="Select a unit"
+              options={unitname.map((unit) => ({
+                label: unit.unit_name,
+                value: unit.unit_uuid,
+              }))}
+              className={styles.unitInput}
+              isCreatable
+              styles={{
+                menu: (provided) => ({
+                  ...provided,
+                  overflowY: 'auto',
+                }),
+                control: (provided, state) => ({
+                  ...provided,
+                  minWidth: '200px',
+                  boxShadow: state.isFocused ? 'none' : provided.boxShadow,
+                  borderColor: state.isFocused
+                    ? '#ced4da'
+                    : provided.borderColor,
+                  '&:hover': {
+                    borderColor: 'none',
+                  },
+                }),
+                menuList: (provided) => ({
+                  ...provided,
+                  maxHeight: '200px',
+                  overflowY: 'auto',
+                }),
+                option: (provided, state) => ({
+                  ...provided,
+                  backgroundColor: state.isSelected
+                    ? '#007BFF'
+                    : state.isFocused
+                    ? '#dbe1df'
+                    : provided.backgroundColor,
+                  color: state.isSelected ? '#FFFFFF' : provided.color,
+                }),
+              }}
+              value={
+                watch('unit_name') // Use the unit_name for the select value
+                  ? {
+                      label: watch('unit_name') || 'Select a unit',
+                      value: watch('unit_uuid') || null,
+                    }
+                  : null
+              }
+              onChange={(selectedOption, actionMeta) => {
+                if (actionMeta.action === 'create-option') {
+                  // When a new unit is created, leave unit_uuid blank and only pass unit_name
+                  setValue('unit_name', selectedOption.label); // Set unit_name
+                  setValue('unit_uuid', ''); // Set unit_uuid as blank for new unit
+                } else {
+                  // When an existing unit is selected, pass both unit_uuid and unit_name
+                  setValue('unit_name', selectedOption?.label || ''); // Set unit_name
+                  setValue('unit_uuid', selectedOption?.value || ''); // Set unit_uuid
+                }
+              }}
+              isClearable
+            />
 
             <CreatableSelect
               placeholder="Select Tags"
-              options={props?.tagList?.map((tag) => ({
+              options={tagList.map((tag) => ({
                 label: tag.name || 'Unnamed Tag', // Fallback for missing tag_name
                 value: tag.uuid || 'no-uuid', // Fallback for missing tag_uuid
               }))}
@@ -444,214 +411,181 @@ const AddIngredientPopup = (props: Props) => {
 
           {/* Supplier Details Section */}
           <h3>Supplier Details </h3>
-          {console.log('erorr', errors)}
-          {supplierFields.map((field, index) => {
-            const supplierSelected = !!watch(
-              `supplier_details.${index}.supplier_name`
-            );
-            const isCostMissing =
-              supplierSelected &&
-              !watch(`supplier_details.${index}.supplier_cost`);
-            const isUnitMissing =
-              supplierSelected &&
-              !watch(`supplier_details.${index}.supplier_unit_name`);
-            const isConversionFactorMissing =
-              supplierSelected &&
-              !watch(`supplier_details.${index}.conversion_factor`);
 
-            return (
-              <div key={field.id} className={styles.SupplierSection}>
-                <Select
-                  size="large"
-                  isSearchable={true}
-                  placeholder={t('ingredient:supplier')}
-                  options={suppliers.map((supplier) => ({
-                    label: supplier.label, // supplier name
-                    value: supplier.value, // supplier UUID
-                  }))}
-                  value={
-                    suppliers.find(
-                      (supplier) =>
-                        supplier.value ===
-                        watch(`supplier_details.${index}.supplier_id`)
-                    ) || null
-                  }
-                  onChange={(selectedOption) => {
-                    // Update both supplier_id and supplier_name when a supplier is selected
-                    setValue(
-                      `supplier_details.${index}.supplier_id`,
-                      selectedOption?.value || ''
-                    );
-                    setValue(
-                      `supplier_details.${index}.supplier_name`,
-                      selectedOption?.label || ''
-                    );
-                  }}
-                  isClearable
-                />
+          {supplierFields.map((field, index) => (
+            <div key={field.id} className={styles.SupplierSection}>
+              <Select
+                size="large"
+                isSearchable={true}
+                placeholder={t('ingredient:supplier')}
+                options={suppliers.map((supplier) => ({
+                  label: supplier.label, // supplier name
+                  value: supplier.value, // supplier UUID
+                }))}
+                value={
+                  suppliers.find(
+                    (supplier) =>
+                      supplier.value ===
+                      watch(`supplier_details.${index}.supplier_id`)
+                  ) || null
+                }
+                onChange={(selectedOption) => {
+                  // Update both supplier_id and supplier_name when a supplier is selected
+                  setValue(
+                    `supplier_details.${index}.supplier_id`,
+                    selectedOption?.value || ''
+                  );
+                  setValue(
+                    `supplier_details.${index}.supplier_name`,
+                    selectedOption?.label || ''
+                  );
+                }}
+                isClearable
+              />
 
-                <div className={styles.fieldWrapper}>
-                  <LabeledInput
-                    label={t('ingredient:supplierCost')}
-                    placeholder={t('ingredient:supplierCost')}
-                    type="number"
-                    minWidth="100px"
-                    step="any"
-                    lighter
-                    {...register(`supplier_details.${index}.supplier_cost`)}
-                  />
-                  {isCostMissing && (
-                    <div className={styles.errorMessage}>
-                      Supplier cost is required.
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <CreatableSelect
-                    placeholder="Select a unit"
-                    options={props?.unitname?.map((unit) => ({
-                      label: unit.unit_name,
-                      value: unit.unit_uuid,
-                    }))}
-                    className={styles.unitInput}
-                    isCreatable
-                    styles={{
-                      menu: (provided) => ({
-                        ...provided,
-                        overflowY: 'auto',
-                      }),
-                      control: (provided, state) => ({
-                        ...provided,
-                        minWidth: '200px',
-                        boxShadow: state.isFocused
-                          ? 'none'
-                          : provided.boxShadow,
-                        borderColor: state.isFocused
-                          ? '#ced4da'
-                          : provided.borderColor,
-                        '&:hover': {
-                          borderColor: 'none',
-                        },
-                      }),
-                      menuList: (provided) => ({
-                        ...provided,
-                        maxHeight: '200px',
-                        overflowY: 'auto',
-                      }),
-                      option: (provided, state) => ({
-                        ...provided,
-                        backgroundColor: state.isSelected
-                          ? '#007BFF'
-                          : state.isFocused
-                          ? '#dbe1df'
-                          : provided.backgroundColor,
-                        color: state.isSelected ? '#FFFFFF' : provided.color,
-                      }),
-                    }}
-                    value={
-                      watch(`supplier_details.${index}.supplier_unit_name`) ||
-                      watch(`supplier_details.${index}.supplier_unit_uuid`)
-                        ? {
-                            label:
-                              watch(
-                                `supplier_details.${index}.supplier_unit_name`
-                              ) || 'Select a supplier unit',
-                            value: watch(
-                              `supplier_details.${index}.supplier_unit_uuid`
-                            ),
-                          }
-                        : null
-                    }
-                    onChange={(selectedOption, actionMeta) => {
-                      if (actionMeta.action === 'create-option') {
-                        // When creating a new unit, set supplier_unit_uuid as blank and set supplier_unit_name
-                        setValue(
-                          `supplier_details.${index}.supplier_unit_uuid`,
-                          '',
-                          { shouldValidate: true }
-                        );
-                        setValue(
-                          `supplier_details.${index}.supplier_unit_name`,
-                          selectedOption.label,
-                          { shouldValidate: true }
-                        );
-                      } else {
-                        setValue(
-                          `supplier_details.${index}.supplier_unit_uuid`,
-                          selectedOption?.value || '',
-                          { shouldValidate: true }
-                        );
-                        setValue(
-                          `supplier_details.${index}.supplier_unit_name`,
-                          selectedOption?.label || '',
-                          { shouldValidate: true }
-                        );
+              <LabeledInput
+                label={t('ingredient:supplierCost')}
+                placeholder={t('ingredient:supplierCost')}
+                type="number"
+                minWidth="100px"
+                step="any"
+                error={
+                  errors?.supplier_details?.[index]?.supplier_cost?.message
+                }
+                lighter
+                {...register(`supplier_details.${index}.supplier_cost`)}
+              />
+              <CreatableSelect
+                placeholder="Select a unit"
+                options={unitname.map((unit) => ({
+                  label: unit.unit_name,
+                  value: unit.unit_uuid,
+                }))}
+                className={styles.unitInput}
+                isCreatable
+                styles={{
+                  menu: (provided) => ({
+                    ...provided,
+                    overflowY: 'auto',
+                  }),
+                  control: (provided, state) => ({
+                    ...provided,
+                    minWidth: '200px',
+                    boxShadow: state.isFocused ? 'none' : provided.boxShadow,
+                    borderColor: state.isFocused
+                      ? '#ced4da'
+                      : provided.borderColor,
+                    '&:hover': {
+                      borderColor: 'none',
+                    },
+                  }),
+                  menuList: (provided) => ({
+                    ...provided,
+                    maxHeight: '200px',
+                    overflowY: 'auto',
+                  }),
+                  option: (provided, state) => ({
+                    ...provided,
+                    backgroundColor: state.isSelected
+                      ? '#007BFF'
+                      : state.isFocused
+                      ? '#dbe1df'
+                      : provided.backgroundColor,
+                    color: state.isSelected ? '#FFFFFF' : provided.color,
+                  }),
+                }}
+                value={
+                  watch(`supplier_details.${index}.supplier_unit_name`) ||
+                  watch(`supplier_details.${index}.supplier_unit_uuid`)
+                    ? {
+                        label:
+                          watch(
+                            `supplier_details.${index}.supplier_unit_name`
+                          ) || 'Select a supplier unit',
+                        value: watch(
+                          `supplier_details.${index}.supplier_unit_uuid`
+                        ),
                       }
-                    }}
-                    isClearable
-                  />
-                  {isUnitMissing && (
-                    <div className={styles.errorMessage}>
-                      Supplier unit is required.
-                    </div>
-                  )}
-                </div>
-                <div className={styles.flexContainer}>
-                  <div>
-                    <div className={styles.IconContainer}>
-                      <div>
-                        <LabeledInput
-                          label={t('ingredient:conversion_factor')}
-                          placeholder={t('ingredient:conversion_factor')}
-                          type="text"
-                          minWidth="100px"
-                          error={
-                            errors?.supplier_details?.[index]?.conversion_factor
-                              ?.message
-                          }
-                          lighter
-                          {...register(
-                            `supplier_details.${index}.conversion_factor`
-                          )}
-                        />
-                        {isConversionFactorMissing && (
-                          <div className={styles.errorMessage}>
-                            Conversion factor is required.
-                          </div>
-                        )}
-                      </div>
-                      <IconButton
-                        icon={<i className="fa-solid fa-circle-info"></i>}
-                        tooltipMsg={`1 ${watch(
-                          `supplier_details.${index}.supplier_unit_name`
-                        )} is  ${watch(
-                          `supplier_details.${index}.conversion_factor`
-                        )}
+                    : null
+                }
+                onChange={(selectedOption, actionMeta) => {
+                  if (actionMeta.action === 'create-option') {
+                    // When creating a new unit, set supplier_unit_uuid as blank and set supplier_unit_name
+                    setValue(
+                      `supplier_details.${index}.supplier_unit_uuid`,
+                      '',
+                      { shouldValidate: true }
+                    );
+                    setValue(
+                      `supplier_details.${index}.supplier_unit_name`,
+                      selectedOption.label,
+                      { shouldValidate: true }
+                    );
+                  } else {
+                    setValue(
+                      `supplier_details.${index}.supplier_unit_uuid`,
+                      selectedOption?.value || '',
+                      { shouldValidate: true }
+                    );
+                    setValue(
+                      `supplier_details.${index}.supplier_unit_name`,
+                      selectedOption?.label || '',
+                      { shouldValidate: true }
+                    );
+                  }
+                }}
+                isClearable
+              />
+
+              <div className={styles.flexContainer}>
+                <div>
+                  <div className={styles.IconContainer}>
+                    <LabeledInput
+                      label={t('ingredient:conversion_factor')}
+                      placeholder={t('ingredient:conversion_factor')}
+                      type="text"
+                      minWidth="100px"
+                      error={
+                        errors?.supplier_details?.[index]?.conversion_factor
+                          ?.message
+                      }
+                      lighter
+                      {...register(
+                        `supplier_details.${index}.conversion_factor`
+                      )}
+                    />
+
+                    <IconButton
+                      icon={<i className="fa-solid fa-circle-info"></i>}
+                      tooltipMsg={`1 ${watch(
+                        `supplier_details.${index}.supplier_unit_name`
+                      )} is  ${watch(
+                        `supplier_details.${index}.conversion_factor`
+                      )}
                         ${watch('unit_name')}
                       `}
-                        className={styles.info}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Add remove functionality */}
-                  <span className={styles.deleteButton}>
-                    <FaTrash
-                      className={styles.deleteButton}
-                      onClick={() => removeSupplier(index)}
+                      className={styles.info}
                     />
-                  </span>
+                  </div>
                 </div>
+
+                {/* Add remove functionality */}
+                <span className={styles.deleteButton}>
+                  <FaTrash
+                    className={styles.deleteButton}
+                    onClick={() => removeSupplier(index)}
+                  />
+                </span>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
 
         <div
           className={styles.addIngredientButton}
           onClick={handleAddNewSupplier}>
           <FaPlus />
-          <p>add Supplier</p>
+          <p>Add Supplier</p>
         </div>
         <div className={styles.buttonsContainer}>
           <Button

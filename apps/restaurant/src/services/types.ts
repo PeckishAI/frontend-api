@@ -52,6 +52,9 @@ export type Ingredient = {
   unit_name?: string;
   unit_uuid?: string;
   conversion_factor: number;
+  volume_unit_uuid: string;
+  volume_unit_name: string;
+  volume_quantity: number;
 };
 
 export type Tag = {

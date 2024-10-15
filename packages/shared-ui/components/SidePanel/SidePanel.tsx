@@ -40,7 +40,7 @@ const SidePanel = (props: Props) => {
         })}
         style={{ width: props?.width }}>
         <i
-          className="fa-solid fa-xmark close-icon"
+          className="fa-solid fa-angles-right close-icon"
           data-tooltip-id="customer-tooltip"
           data-tooltip-content={'Close'}
           onClick={() => props.onRequestClose()}></i>

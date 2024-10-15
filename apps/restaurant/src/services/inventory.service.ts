@@ -149,6 +149,9 @@ const getIngredientList = async (
       ),
       amount: res.data[key]['amount'],
       type: res.data[key]['type'],
+      volume_unit_name: res.data[key]['volume_unit_name'],
+      volume_unit_uuid: res.data[key]['volume_unit_uuid'],
+      volume_quantity: res.data[key]['volume_quantity'],
     })
   );
 
@@ -193,6 +196,9 @@ const getIngredientList = async (
     amount: res.data[key]['amount'],
     type: res.data[key]['type'],
     quantity: res.data[key]['quantity'],
+    volume_unit_uuid: res.data[key]['volume_unit_uuid'],
+    volume_unit_name: res.data[key]['volume_unit_name'],
+    volume_quantity: res.data[key]['volume_quantity'],
   }));
 };
 
@@ -250,6 +256,9 @@ const updateIngredient = (ingredient: Ingredient) => {
     unit_name: ingredient.unit_name,
     unit_uuid: ingredient.unit_uuid,
     restaurant_uuid: ingredient.restaurantUUID,
+    volume_unit_uuid: ingredient.volume_unit_uuid,
+    volume_unit_name: ingredient.volume_unit_name,
+    volume_quantity: ingredient.volume_quantity,
   };
 
   return axiosClient.post(
@@ -288,6 +297,31 @@ const getUnits = async (restaurantUUID: string): Promise<Unit[]> => {
       unit_uuid: unitData.unit_uuid,
     }));
 
+    return units;
+  } catch (error) {
+    console.error('Error fetching units:', error);
+    return [];
+  }
+};
+
+const getReferenceUnits = async (): Promise<Unit[]> => {
+  try {
+    const res = await axiosClient.get(`/units_reference`);
+    console.log(res);
+
+    // Check if the response data is valid
+    if (!Array.isArray(res.data)) {
+      console.error('Unexpected response format:', res.data);
+      return [];
+    }
+
+    // Map the response data to the Unit array
+    const units: Unit[] = res.data.map((unitData: any) => ({
+      unit_name: unitData.unit_name,
+      unit_uuid: unitData.unit_uuid,
+    }));
+
+    console.log('Units:', units);
     return units;
   } catch (error) {
     console.error('Error fetching units:', error);
@@ -438,6 +472,26 @@ const createUnit = async (restaurantUUID: string, unit_name: string) => {
   return res.data as Promise<Unit>;
 };
 
+const fetchConversionFactor = async (
+  itemUUID: string,
+  fromUnitUUID: string,
+  toUnitUUID: string,
+  type: string
+) => {
+  console.log('itemUUID: ', itemUUID);
+  console.log('fromUnitUUID: ', fromUnitUUID);
+  console.log('toUnitUUID: ', toUnitUUID);
+  console.log('type: ', type);
+  if (type === 'preparation') {
+    return axiosClient.get(
+      `/recipes/${itemUUID}/conversion_factor/${fromUnitUUID}/${toUnitUUID}`
+    );
+  }
+  return axiosClient.get(
+    `/inventory/${itemUUID}/conversion_factor/${fromUnitUUID}/${toUnitUUID}`
+  );
+};
+
 const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {
   return axiosClient.post('/documents/' + restaurantUUID, invoiceData);
 };
@@ -452,6 +506,7 @@ export const inventoryService = {
   getIngredientPreview,
   deleteIngredient,
   uploadCsvFile,
+  getReferenceUnits,
   getPreviewUploadedCsv,
   validUploadedCsv,
   uploadImgFile,
@@ -461,4 +516,5 @@ export const inventoryService = {
   deleteDocument,
   sendInvoice,
   createUnit,
+  fetchConversionFactor,
 };

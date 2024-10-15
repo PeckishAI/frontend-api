@@ -28,8 +28,11 @@ export type IngredientOption = {
   ingredientQuantity: number;
   ingredientUnitPrice: number;
   ingredientSupplier: {
+    supplier_id: string;
     supplier_name: string;
-    supplier_cost: number;
+    supplier_unit_cost: number;
+    supplier_unit_uuid: string;
+    supplier_unit_name: string;
   }[];
 };
 
@@ -51,7 +54,6 @@ const IngredientsTable = (props: Props) => {
   );
 
   const handleInputChange = (value, field, ingredientUUID) => {
-    console.log('Value', value);
     setInputValues((prev) => ({
       ...prev,
       [ingredientUUID]: value,
@@ -71,7 +73,13 @@ const IngredientsTable = (props: Props) => {
           const firstSupplier =
             ingredient?.supplier_details?.length > 0
               ? ingredient.supplier_details[0]
-              : { supplier_name: '', supplier_cost: 0 };
+              : {
+                  supplier_id: '',
+                  supplier_name: '',
+                  supplier_unit_cost: 0,
+                  supplier_unit_uuid: '',
+                  supplier_unit_name: '',
+                };
 
           // Map over supplier_details and join supplier_names
           const supplierNames = ingredient?.supplier_details
@@ -81,9 +89,10 @@ const IngredientsTable = (props: Props) => {
           return {
             ingredientUUID: ingredient.id,
             ingredientName: ingredient.name,
-            ingredientUnit: ingredient.unit,
+            ingredientUnit: firstSupplier.supplier_unit_name,
+            ingredientUnitUUID: firstSupplier.supplier_unit,
             ingredientQuantity: 0,
-            ingredientUnitPrice: firstSupplier.supplier_cost, // Use the first supplier's cost
+            ingredientUnitPrice: firstSupplier.supplier_unit_cost, // Use the first supplier's cost
             ingredientSupplier: supplierNames, // Use concatenated supplier names
           };
         }

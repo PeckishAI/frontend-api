@@ -49,17 +49,12 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
     const { t } = useTranslation('common');
     const [orderDetail, setOrderDetail] = useState<string>();
     const navigate = useNavigate();
-
-    // const orders = useOrders((state) => state.orders).sort((a, b) => {
-    //   const aDate = dayjs(a.orderDate, 'DD/MM/YYYY');
-    //   const bDate = dayjs(b.orderDate, 'DD/MM/YYYY');
-    //   return bDate.unix() - aDate.unix();
-    // });
     const [orderList, setOrderList] = useState<Order[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(false);
 
     const selectedOrder = orderList.find((order) => order.uuid === orderDetail);
+    console.log('selectedOrder', selectedOrder);
     const { currencyISO } = useRestaurantCurrency();
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
@@ -67,17 +62,6 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [receivedQuantities, setReceivedQuantities] = useState({});
-
-    // Initialize receivedQuantities with default values from the selected order's products
-    useEffect(() => {
-      if (selectedOrder) {
-        const initialQuantities = {};
-        selectedOrder.products.forEach((product) => {
-          initialQuantities[product.id] = product.quantity;
-        });
-        setReceivedQuantities(initialQuantities);
-      }
-    }, [selectedOrder]);
 
     const handleReceivedQuantityChange = (id, value) => {
       setReceivedQuantities((prevState) => ({
@@ -106,6 +90,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
         if (res) {
           setOrderList(res);
           setIsLoading(false);
+          console.log('OOO', orderList);
         }
       } catch (error) {
         console.error('Error fetching orders:', error);
@@ -171,11 +156,6 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
                 onClick={() => navigate('/orders/place-order')}
                 className={styles.orderButton}
               />
-              {/* <Button
-                value={t('orders.showPredictedOrder')}
-                type="primary"
-                onClick={() => navigate('/orders/validation')}
-              /> */}
             </div>
           ),
         };
@@ -196,6 +176,10 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
           key: 'deliveryDate',
           header: t('orders.deliveryDate'),
           renderItem: ({ row }) => {
+            if (!row.deliveryDate) {
+              return null; // Return nothing if deliveryDate is null or undefined
+            }
+
             const formattedDeliveryDate = new Intl.DateTimeFormat('en-GB', {
               weekday: 'short',
               year: 'numeric',
@@ -226,28 +210,14 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
           renderItem: ({ row }) => formatCurrency(row.price, currencyISO),
           classname: 'column-bold',
         },
-        {
-          key: 'uuid',
-          header: t('orders.detail'),
-          renderItem: ({ row }) => {
-            return (
-              <>
-                <i
-                  className={classNames(
-                    'fa-solid fa-arrow-up-right-from-square',
-                    styles.icon
-                  )}
-                  data-tooltip-id="detail-tooltip"
-                  data-tooltip-content={t('orders.detail.tooltip')}
-                  onClick={() => setOrderDetail(row.uuid)}
-                />
-              </>
-            );
-          },
-        },
       ],
       [t, currencyISO]
     );
+
+    const handleRowClick = (row) => {
+      setOrderDetail(row.uuid); // Set the selected order detail based on the clicked row
+      setIsEditMode(false); // Start in view mode
+    };
 
     const OrderFilter = props.searchValue
       ? new Fuse(orderList, {
@@ -265,7 +235,11 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
         ) : orderList.length === 0 ? (
           <p className={styles.noOrder}>There is no order.</p>
         ) : (
-          <Table data={OrderFilter} columns={columns} />
+          <Table
+            data={OrderFilter}
+            columns={columns}
+            onRowClick={handleRowClick} // Use handleRowClick for full row click
+          />
         )}
         <OrderDetail
           isVisible={orderDetail !== undefined}
@@ -328,7 +302,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
             {
               key: 'quantity',
               header: t('quantity'),
-              renderItem: ({ row }) => `${row.quantity} ${row.unit}`,
+              renderItem: ({ row }) => `${row.quantity} ${row.unit_name}`,
             },
             {
               key: 'unitCost',
@@ -359,9 +333,10 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
                   />
                 ) : (
                   `${
-                    receivedQuantities[row.uuid] !== undefined
+                    receivedQuantities[row.uuid] !== undefined ||
+                    row.received_quantity
                       ? receivedQuantities[row.uuid]
-                      : row.received_quantity
+                      : '-'
                   }`
                 ),
             },

@@ -31,8 +31,10 @@ export type OrderResponse = {
   uuid: number;
   products: {
     unit: string;
-    name: string;
     uuid: string;
+    name: string;
+    unit_uuid: string;
+    unit_name: string;
     quantity: number;
     received_quantity: number;
     unitCost: number;
@@ -80,7 +82,8 @@ const getOrders = async (
       uuid: item.uuid,
       supplier_uuid: item.supplier_uuid,
       products: item.products.map((product: any) => ({
-        unit: product.unit,
+        unit_uuid: product.unit_uuid,
+        unit_name: product.unit_name,
         name: product.name,
         quantity: product.quantity,
         received_quantity: product.received_quantity,

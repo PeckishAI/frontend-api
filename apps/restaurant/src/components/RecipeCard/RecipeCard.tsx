@@ -17,6 +17,7 @@ const RecipeCard = (props: Props) => {
 
   return (
     <div className="recipe-card" onClick={props.onClick}>
+      {/* Display a warning if the recipe is not onboarded */}
       {!props.recipe.isOnboarded && (
         <PiWarningCircleBold
           className="not-onboarded"
@@ -24,7 +25,11 @@ const RecipeCard = (props: Props) => {
           data-tooltip-id="recipeCard-tooltip"
         />
       )}
+
+      {/* Recipe Name */}
       <p className="name">{props.recipe.name}</p>
+
+      {/* Ingredient Count */}
       <p className="ingredient-nb">
         {t('recipes.card.ingredients', {
           count: props.recipe.ingredients.length,
@@ -32,16 +37,39 @@ const RecipeCard = (props: Props) => {
       </p>
 
       <div className="metrics">
-        {props.recipe.type !== 'preparation' && (
+        {/* Check if the recipe is a preparation and display quantity + unit if available */}
+        {props.recipe.type === 'preparation' && props.recipe.quantity ? (
           <div className="metric">
             <i
-              className="fa-solid fa-tag price"
-              data-tooltip-content={t('price')}
+              className="fa-solid fa-box-open quantity"
+              data-tooltip-content={t('quantity')}
               data-tooltip-id="recipeCard-tooltip"></i>
-            <p>{formatCurrency(props.recipe.portion_price, currencyISO)}</p>
+            {/* Fallback to a default string if unit_name is missing */}
+            <p>{`${props.recipe.quantity} ${props.recipe.unit_name || ''}`}</p>
           </div>
+        ) : (
+          <>
+            {/* For non-preparations, show the portion price */}
+            <div className="metric">
+              <i
+                className="fa-solid fa-tag price"
+                data-tooltip-content={t('price')}
+                data-tooltip-id="recipeCard-tooltip"></i>
+              <p>{formatCurrency(props.recipe.portion_price, currencyISO)}</p>
+            </div>
+
+            {/* Display margin for non-preparations */}
+            <div className="metric">
+              <i
+                className="fa-solid fa-arrow-up-right-dots margin"
+                data-tooltip-content={t('margin')}
+                data-tooltip-id="recipeCard-tooltip"></i>
+              <p>{formatCurrency(props.recipe.margin, currencyISO)}</p>
+            </div>
+          </>
         )}
 
+        {/* Display cost for all types of recipes */}
         <div className="metric">
           <i
             className="fa-solid fa-hand-holding-dollar cost"
