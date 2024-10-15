@@ -33,9 +33,7 @@ import {
 } from '../../store/useRestaurantStore';
 import { formatCurrency } from '../../utils/helpers';
 import styles from './style.module.scss';
-
 import { FaCalendarAlt } from 'react-icons/fa';
-import CreatableSelect from 'react-select/creatable';
 import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import SupplierNew from '../../views/Inventory/Suppliers/components/SupplierNew';

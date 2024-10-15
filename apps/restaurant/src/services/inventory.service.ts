@@ -27,17 +27,27 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
       supplier_uuid: documentData.supplier_uuid,
       supplier: documentData.supplier,
       sync_status: documentData.sync_status,
-      ingredients: documentData.ingredients.map((ingredient: any) => ({
-        mappedUUID: ingredient['mapping_uuid'],
-        detectedName: ingredient['ingredient_name'],
-        tag_name: ingredient['tag_name'],
-        mappedName: ingredient['mapping_name'],
-        quantity: ingredient['quantity'],
-        received_qty: ingredient['received_qty'],
-        unit_uuid: ingredient['unit_uuid'],
-        unitPrice: ingredient['unit_price'],
-        totalPrice: ingredient['total_price'],
-      })),
+      ingredients: documentData.ingredients
+        .map((ingredient: any) => ({
+          mappedUUID: ingredient['mapping_uuid'],
+          detectedName: ingredient['ingredient_name'],
+          tag_name: ingredient['tag_name'],
+          mappedName: ingredient['mapping_name'],
+          quantity: ingredient['quantity'],
+          received_qty: ingredient['received_qty'],
+          unit_uuid: ingredient['unit_uuid'],
+          unitPrice: ingredient['unit_price'],
+          totalPrice: ingredient['total_price'],
+        }))
+        .sort((a: any, b: any) => {
+          if (a.mappedName < b.mappedName) {
+            return -1;
+          }
+          if (a.mappedName > b.mappedName) {
+            return 1;
+          }
+          return 0;
+        }),
     };
   });
   return convertedData;
