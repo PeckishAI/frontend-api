@@ -30,7 +30,6 @@ export const formatCurrency = (
 
 export const prettyDateFormat = (date?: Date | string) => {
   if (!date) return '';
-  console.log(dayjs(date));
 
   return dayjs(date).calendar();
 };

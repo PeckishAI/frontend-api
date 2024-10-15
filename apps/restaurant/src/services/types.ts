@@ -70,6 +70,7 @@ export type InvoiceIngredient = {
   detectedName?: string;
   quantity?: number;
   unit_uuid?: string;
+  unitName?: string;
   received_qty?: number;
   unitPrice?: number;
   totalPrice?: number;

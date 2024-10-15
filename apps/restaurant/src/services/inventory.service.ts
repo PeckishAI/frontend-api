@@ -427,12 +427,15 @@ const uploadImgFile = async (
   };
 };
 
-const createUnit = (restaurantUUID: string, unit_name: string) => {
+const createUnit = async (restaurantUUID: string, unit_name: string) => {
   const FormattedIngredient = {
     unit_name: unit_name,
   };
-  const res = axiosClient.post(`/units/${restaurantUUID}`, FormattedIngredient);
-  return res;
+  const res = await axiosClient.post(
+    `/units/${restaurantUUID}`,
+    FormattedIngredient
+  );
+  return res.data as Promise<Unit>;
 };
 
 const submitInvoice = (restaurantUUID: string, invoiceData: Invoice) => {

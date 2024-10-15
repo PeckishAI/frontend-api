@@ -244,21 +244,19 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           const selectedSupplierUuids = filters.selectedSupplier.map(
             (supplier) => supplier.uuid
           );
-          filteredList = filteredList.filter(
-            (ingredient) =>
-              ingredient.supplier_details?.some((supplier) =>
-                selectedSupplierUuids.includes(supplier.supplier_id)
-              )
+          filteredList = filteredList.filter((ingredient) =>
+            ingredient.supplier_details?.some((supplier) =>
+              selectedSupplierUuids.includes(supplier.supplier_id)
+            )
           );
         }
 
         if (filters.selectedTag && filters.selectedTag.length > 0) {
           const selectedTagUuids = filters.selectedTag.map((tag) => tag.uuid);
-          filteredList = filteredList.filter(
-            (ingredient) =>
-              ingredient.tagUUID?.some((tagUuid) =>
-                selectedTagUuids.includes(tagUuid)
-              )
+          filteredList = filteredList.filter((ingredient) =>
+            ingredient.tagUUID?.some((tagUuid) =>
+              selectedTagUuids.includes(tagUuid)
+            )
           );
         }
 
@@ -274,8 +272,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const columnToSortBy = sortColumn || defaultSortColumn;
 
       const sorted = [...ingredients].sort((a, b) => {
-        let aValue = a[columnToSortBy as keyof Ingredient];
-        let bValue = b[columnToSortBy as keyof Ingredient];
+        const aValue = a[columnToSortBy as keyof Ingredient];
+        const bValue = b[columnToSortBy as keyof Ingredient];
 
         if (typeof aValue === 'string' && typeof bValue === 'string') {
           return aValue.localeCompare(bValue);
@@ -394,69 +392,70 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       }
     }, [filteredIngredients]);
 
-    useImperativeHandle(
-      forwardedRef,
-      () => {
-        props.forceOptionsUpdate();
+    useImperativeHandle(forwardedRef, () => {
+      props.forceOptionsUpdate();
 
-        return {
-          renderOptions: () => {
-            return (
-              <>
-                {selectedIngredients.length === 0 ? (
-                  <>
-                    <Filters
-                      suppliers={suppliers.map((s) => ({
-                        name: s.label,
-                        uuid: s.value,
-                      }))}
-                      tags={tagList}
-                      onApplyFilters={(newFilters) => setFilters(newFilters)}
-                    />
-                    <IconButton
-                      icon={<i className="fa-solid fa-file-export"></i>}
-                      onClick={handleExportDataClick}
-                      tooltipMsg={t('export')}
-                      tooltipId="inventory-tooltip"
-                    />
-                    <IconButton
-                      icon={<i className="fa-solid fa-file-arrow-down"></i>}
-                      onClick={() => setImportIngredientsPopup(true)}
-                      tooltipMsg={t('inventory.importData')}
-                      tooltipId="inventory-tooltip"
-                    />
-                    <Button
-                      value={t('inventory.addIngredientBtn')}
-                      type="primary"
-                      className="add"
-                      onClick={() => setShowAddPopup(true)} // Open popup when clicked
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      value={t('cancel')}
-                      type="secondary"
-                      onClick={handleCancelSelection}
-                    />
-                    <Button
-                      value={t('ingredient:selectedIngredients.delete', {
-                        count: selectedIngredients.length,
-                      })}
-                      type="primary"
-                      onClick={() =>
-                        setPopupDeleteSelection(selectedIngredients.length)
-                      }
-                    />
-                  </>
-                )}
-              </>
-            );
-          },
-        };
-      },
-      [addingRow, ingredientsList, selectedIngredients, handleExportDataClick]
-    );
+      return {
+        renderOptions: () => {
+          return (
+            <>
+              {selectedIngredients.length === 0 ? (
+                <>
+                  <Filters
+                    suppliers={suppliers.map((s) => ({
+                      name: s.label,
+                      uuid: s.value,
+                    }))}
+                    tags={tagList}
+                    onApplyFilters={(newFilters) => setFilters(newFilters)}
+                  />
+                  <IconButton
+                    icon={<i className="fa-solid fa-file-export"></i>}
+                    onClick={handleExportDataClick}
+                    tooltipMsg={t('export')}
+                    tooltipId="inventory-tooltip"
+                  />
+                  <IconButton
+                    icon={<i className="fa-solid fa-file-arrow-down"></i>}
+                    onClick={() => setImportIngredientsPopup(true)}
+                    tooltipMsg={t('inventory.importData')}
+                    tooltipId="inventory-tooltip"
+                  />
+                  <Button
+                    value={t('inventory.addIngredientBtn')}
+                    type="primary"
+                    className="add"
+                    onClick={() => setShowAddPopup(true)} // Open popup when clicked
+                  />
+                </>
+              ) : (
+                <>
+                  <Button
+                    value={t('cancel')}
+                    type="secondary"
+                    onClick={handleCancelSelection}
+                  />
+                  <Button
+                    value={t('ingredient:selectedIngredients.delete', {
+                      count: selectedIngredients.length,
+                    })}
+                    type="primary"
+                    onClick={() =>
+                      setPopupDeleteSelection(selectedIngredients.length)
+                    }
+                  />
+                </>
+              )}
+            </>
+          );
+        },
+      };
+    }, [
+      addingRow,
+      ingredientsList,
+      selectedIngredients,
+      handleExportDataClick,
+    ]);
 
     const reloadInventoryData = useCallback(async () => {
       if (!selectedRestaurantUUID) return;
@@ -1428,13 +1427,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                               backgroundColor: state.isSelected
                                 ? '#007BFF'
                                 : state.isFocused
-                                ? '#dbe1df'
-                                : provided.backgroundColor,
+                                  ? '#dbe1df'
+                                  : provided.backgroundColor,
                               color: state.isSelected
                                 ? '#FFFFFF'
                                 : state.isFocused
-                                ? '#000000'
-                                : provided.color,
+                                  ? '#000000'
+                                  : provided.color,
                             }),
                             container: (provided) => ({
                               ...provided,
@@ -1561,13 +1560,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                           backgroundColor: state.isSelected
                             ? '#007BFF'
                             : state.isFocused
-                            ? '#dbe1df'
-                            : provided.backgroundColor,
+                              ? '#dbe1df'
+                              : provided.backgroundColor,
                           color: state.isSelected
                             ? '#FFFFFF'
                             : state.isFocused
-                            ? '#000000'
-                            : provided.color,
+                              ? '#000000'
+                              : provided.color,
                         }),
                         container: (provided) => ({
                           ...provided,
@@ -1835,13 +1834,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                 backgroundColor: state.isSelected
                                   ? '#007BFF'
                                   : state.isFocused
-                                  ? '#dbe1df'
-                                  : provided.backgroundColor,
+                                    ? '#dbe1df'
+                                    : provided.backgroundColor,
                                 color: state.isSelected
                                   ? '#FFFFFF'
                                   : state.isFocused
-                                  ? '#000000'
-                                  : provided.color,
+                                    ? '#000000'
+                                    : provided.color,
                               }),
                             }}
                             value={
@@ -2264,13 +2263,13 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                           backgroundColor: state.isSelected
                                             ? '#007BFF'
                                             : state.isFocused
-                                            ? '#dbe1df'
-                                            : provided.backgroundColor,
+                                              ? '#dbe1df'
+                                              : provided.backgroundColor,
                                           color: state.isSelected
                                             ? '#FFFFFF'
                                             : state.isFocused
-                                            ? '#000000'
-                                            : provided.color,
+                                              ? '#000000'
+                                              : provided.color,
                                         }),
                                       }}
                                       value={
@@ -2309,7 +2308,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                             )
                                             .then((response) => {
                                               const newUnitUUID =
-                                                response.data.unit_uuid;
+                                                response.unit_uuid;
 
                                               // Update only the current recipe with the new unit
                                               updatedRecipes[index].unit_uuid =

@@ -40,6 +40,7 @@ import SupplierNew from '../../views/Inventory/Suppliers/components/SupplierNew'
 import classNames from 'classnames';
 import { Tooltip } from 'react-tooltip';
 import dayjs from 'dayjs';
+import UnitSelect from '../UnitSelect/UnitSelect';
 
 type Props = {
   document: Invoice | null;
@@ -48,17 +49,6 @@ type Props = {
   onDocumentChanged: (document: Invoice, action: 'deleted' | 'updated') => void;
   onDeleteDocument: () => void;
   reloadDocuments: () => void;
-};
-
-type IngredientDetails = {
-  detectedName?: string;
-  mappedName?: string;
-  mappedUUID?: string;
-  quantity?: number;
-  unitPrice?: number;
-  unit_uuid?: string;
-  totalPrice?: number;
-  received_qty: number;
 };
 
 const DocumentDetail = (props: Props) => {
@@ -141,11 +131,6 @@ const DocumentDetail = (props: Props) => {
     label: ingredient.name,
   }));
 
-  const unitsOptions = units.map((unit) => ({
-    value: unit.unit_uuid,
-    label: unit.unit_name,
-  }));
-
   const handleInputChange = (
     value: string | number,
     field: keyof Invoice = 'supplier'
@@ -165,7 +150,7 @@ const DocumentDetail = (props: Props) => {
 
   const handleIngredientChange = (
     index: number,
-    field: keyof IngredientDetails,
+    field: keyof InvoiceIngredient,
     value?: string | number
   ) => {
     if (!editableDocument || !editableDocument.ingredients) {
@@ -288,7 +273,7 @@ const DocumentDetail = (props: Props) => {
   };
 
   const handleAddIngredient = () => {
-    const newIngredient: IngredientDetails = {
+    const newIngredient: InvoiceIngredient = {
       detectedName: '',
       mappedName: '',
       mappedUUID: '',
@@ -474,21 +459,11 @@ const DocumentDetail = (props: Props) => {
       classname: 'column-bold',
       renderItem: ({ index }) => (
         <div className={styles.unitInput}>
-          <Select
-            options={unitsOptions}
-            isClearable
-            isSearchable
-            maxMenuHeight={200}
-            onChange={(selectedOption) => {
-              handleIngredientChange(index, 'unit_uuid', selectedOption?.value);
+          <UnitSelect
+            onChange={(unit) => {
+              handleIngredientChange(index, 'unit_uuid', unit?.unit_uuid);
             }}
-            value={
-              unitsOptions.find(
-                (option) =>
-                  option.value ===
-                  editableDocument?.ingredients[index].unit_uuid
-              ) || null
-            }
+            value={editableDocument?.ingredients[index].unit_uuid}
           />
         </div>
       ),
