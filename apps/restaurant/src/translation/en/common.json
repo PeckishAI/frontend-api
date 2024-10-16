@@ -230,6 +230,8 @@
     "detectedName": "Detected name",
     "save": "Save",
     "upload": "Upload",
-    "send": "Send to Xero"
+    "send": "Send to Xero",
+    "emptyIngredients": "No ingredients",
+    "addIngredient": "Add an ingredient"
   }
 }

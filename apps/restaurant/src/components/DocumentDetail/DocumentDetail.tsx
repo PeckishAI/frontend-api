@@ -217,11 +217,12 @@ const DocumentDetail = (props: Props) => {
 
     // Validate the last row before submission
     if (
-      !lastRow.detectedName ||
-      !lastRow.mappedName ||
-      !lastRow.quantity ||
-      !lastRow.unit_uuid ||
-      !lastRow.unitPrice
+      lastRow &&
+      (!lastRow.detectedName ||
+        !lastRow.mappedName ||
+        !lastRow.quantity ||
+        !lastRow.unit_uuid ||
+        !lastRow.unitPrice)
     ) {
       toast.error('Please fill in all required fields in the last row.');
       return;
@@ -506,6 +507,26 @@ const DocumentDetail = (props: Props) => {
         />
       ),
     },
+    {
+      key: 'detectedName',
+      header: '',
+      renderItem: ({ index }) => (
+        <IconButton
+          icon={<i className="fa-solid fa-trash"></i>}
+          tooltipMsg={t('delete')}
+          onClick={() => {
+            const updatedIngredients =
+              editableDocument?.ingredients.filter((_, idx) => idx !== index) ||
+              [];
+            setEditableDocument((prev) => ({
+              ...prev!,
+              ingredients: updatedIngredients,
+            }));
+          }}
+          tooltipId="documents-side-panel"
+        />
+      ),
+    },
   ] satisfies ColumnDefinitionType<
     InvoiceIngredient,
     keyof InvoiceIngredient
@@ -762,11 +783,18 @@ const DocumentDetail = (props: Props) => {
                           columns={isEditMode ? editColumns : viewColumns}
                           className={styles.table}
                         />
+                        {!isEditMode &&
+                          props.document?.ingredients.length === 0 && (
+                            <p className={styles.emptyTable}>
+                              {t('document.emptyIngredients')}
+                            </p>
+                          )}
                         {isEditMode && (
                           <p
                             className={styles.addIngredient}
                             onClick={handleAddIngredient}>
-                            Add ingredient <i className="fa-solid fa-plus"></i>
+                            {t('document.addIngredient')}{' '}
+                            <i className="fa-solid fa-plus"></i>
                           </p>
                         )}
                       </div>
