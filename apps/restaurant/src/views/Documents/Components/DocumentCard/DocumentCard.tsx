@@ -62,8 +62,10 @@ const DocumentCard = (props: Props) => {
         <img className="logo-integrations" src={image}></img>
       </div>
       <div className="document-info">
-        <p className="supplier">{supplier}</p>
-        <p className="date">{prettyDateFormat(date)}</p>
+        <p className="supplier">
+          {supplier}
+          <p className="date">{prettyDateFormat(date)}</p>
+        </p>
         <p className="price">{formatCurrency(amount, currencyISO)}</p>
         {connectedIntegrations &&
           (showSyncStatus !== 'true' ? (

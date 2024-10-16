@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
-import { type SingleValue, type ActionMeta } from 'react-select';
+import { type ActionMeta, type SingleValue } from 'react-select';
 import { Select } from 'shared-ui';
-import { inventoryService, Unit } from '../../services';
-import { useRestaurantStore } from '../../store/useRestaurantStore';
-import toast from 'react-hot-toast';
+import { Unit, useCreateUnit, useUnits } from '../../services';
 
 type SelectOption = { value: string; label: string };
 
@@ -13,76 +11,15 @@ type Props = {
 };
 
 const UnitSelect = (props: Props) => {
-  const selectedRestaurantUUID = useRestaurantStore(
-    (state) => state.selectedRestaurantUUID
-  );
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>();
-  const [units, setUnits] = useState<Unit[]>([]);
   const [selectedUnit, setSelectedUnit] = useState<SingleValue<SelectOption>>();
-
-  useEffect(() => {
-    const loadUnits = () => {
-      if (!selectedRestaurantUUID) return;
-
-      inventoryService
-        .getUnits(selectedRestaurantUUID)
-        .then((res) => {
-          setUnits(res);
-        })
-        .catch((err) => {
-          console.log(err);
-          setError('Failed to load units');
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    };
-
-    loadUnits();
-  }, [selectedRestaurantUUID]);
-
-  const unitsOptions = units.map((unit) => ({
-    value: unit.unit_uuid,
-    label: unit.unit_name,
-  }));
+  const { data: units, isLoading } = useUnits();
+  const createUnit = useCreateUnit();
 
   const updateSelectedUnit = (option?: SingleValue<SelectOption>) => {
     setSelectedUnit(option);
     props.onChange(
       option ? { unit_uuid: option.value, unit_name: option.label } : null
     );
-  };
-
-  const createUnit = (unitName: string) => {
-    if (!selectedRestaurantUUID) return;
-    setIsLoading(true);
-    inventoryService
-      .createUnit(selectedRestaurantUUID, unitName)
-      .then((newUnit) => {
-        const newUnitUUID = newUnit.unit_uuid;
-
-        // Add the new unit locally
-        setUnits([
-          ...units,
-          {
-            unit_uuid: newUnit.unit_uuid,
-            unit_name: unitName,
-          },
-        ]);
-
-        updateSelectedUnit({
-          value: newUnitUUID,
-          label: unitName,
-        });
-      })
-      .catch(() => {
-        toast.error('Failed to create unit');
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
   };
 
   const handleChange = (
@@ -95,7 +32,16 @@ const UnitSelect = (props: Props) => {
     }
 
     if (actionMeta.action === 'create-option') {
-      createUnit(selectedOption.label);
+      createUnit.mutate(selectedOption.label, {
+        onSuccess: (newUnit) => {
+          console.log('New unit created:', newUnit);
+
+          updateSelectedUnit({
+            value: newUnit.unit_uuid,
+            label: newUnit.unit_name,
+          });
+        },
+      });
     } else {
       updateSelectedUnit(selectedOption);
     }
@@ -124,6 +70,11 @@ const UnitSelect = (props: Props) => {
     }
   }, [props.value, units]);
 
+  const unitsOptions = units.map((unit) => ({
+    value: unit.unit_uuid,
+    label: unit.unit_name,
+  }));
+
   return (
     <Select
       options={unitsOptions}
@@ -133,8 +84,7 @@ const UnitSelect = (props: Props) => {
       maxMenuHeight={200}
       onChange={handleChange}
       value={selectedUnit}
-      isLoading={isLoading}
-      error={error}
+      isLoading={isLoading || createUnit.isPending}
     />
   );
 };

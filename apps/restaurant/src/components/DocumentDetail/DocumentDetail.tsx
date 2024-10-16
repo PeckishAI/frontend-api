@@ -207,68 +207,68 @@ const DocumentDetail = (props: Props) => {
     loadUnits();
   }, [selectedRestaurantUUID]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (editableDocument) {
-      const lastRow =
-        editableDocument.ingredients[editableDocument.ingredients.length - 1];
+    if (!selectedRestaurantUUID || !editableDocument) return;
 
-      // Validate the last row before submission
-      if (
-        !lastRow.detectedName ||
-        !lastRow.mappedName ||
-        !lastRow.quantity ||
-        !lastRow.unit_uuid ||
-        !lastRow.unitPrice
-      ) {
-        toast.error('Please fill in all required fields in the last row.');
-        return;
+    const lastRow =
+      editableDocument.ingredients[editableDocument.ingredients.length - 1];
+
+    // Validate the last row before submission
+    if (
+      !lastRow.detectedName ||
+      !lastRow.mappedName ||
+      !lastRow.quantity ||
+      !lastRow.unit_uuid ||
+      !lastRow.unitPrice
+    ) {
+      toast.error('Please fill in all required fields in the last row.');
+      return;
+    }
+
+    try {
+      // Prepare the data for updating
+      const updatedData = {
+        date: editableDocument.date,
+        supplier: selectedSupplier?.label || editableDocument.supplier,
+        supplier_uuid:
+          selectedSupplier?.value || editableDocument.supplier_uuid,
+        amount: +editableDocument.amount,
+        path: editableDocument.path,
+        ingredients: editableDocument.ingredients.map((ing) => ({
+          detectedName: ing.detectedName,
+          mappedName: ing.mappedName,
+          mappedUUID: ing.mappedUUID,
+          received_qty: ing.received_qty ? +ing.received_qty : null,
+          unitPrice: +ing.unitPrice,
+          quantity: +ing.quantity,
+          unit_uuid: ing.unit_uuid,
+          totalPrice: +ing.totalPrice ? +ing.totalPrice : null,
+        })),
+      } satisfies FormDocument;
+
+      setIsLoading(true);
+
+      // Call the update API with the updated data
+      await inventoryService.updateDocument(
+        selectedRestaurantUUID,
+        editableDocument.documentUUID,
+        updatedData
+      );
+
+      setIsLoading(false);
+      toast.success('Document updated successfully');
+      setIsEditMode(false);
+      setEditableDocument(null);
+      props.reloadDocuments();
+
+      if (props.onDocumentChanged) {
+        props.onDocumentChanged(editableDocument, 'updated');
       }
-
-      try {
-        // Prepare the data for updating
-        const updatedData = {
-          date: editableDocument.date,
-          supplier: selectedSupplier?.label || editableDocument.supplier,
-          supplier_uuid:
-            selectedSupplier?.value || editableDocument.supplier_uuid,
-          amount: +editableDocument.amount,
-          path: editableDocument.path,
-          ingredients: editableDocument.ingredients.map((ing) => ({
-            detectedName: ing.detectedName,
-            mappedName: ing.mappedName,
-            mappedUUID: ing.mappedUUID,
-            received_qty: ing.received_qty ? +ing.received_qty : null,
-            unitPrice: +ing.unitPrice,
-            quantity: +ing.quantity,
-            unit_uuid: ing.unit_uuid,
-            totalPrice: +ing.totalPrice ? +ing.totalPrice : null,
-          })),
-        } satisfies FormDocument;
-
-        setIsLoading(true);
-
-        // Call the update API with the updated data
-        await inventoryService.updateDocument(
-          selectedRestaurantUUID,
-          editableDocument.documentUUID,
-          updatedData
-        );
-
-        setIsLoading(false);
-        toast.success('Document updated successfully');
-        setIsEditMode(false);
-        setEditableDocument(null);
-        props.reloadDocuments();
-
-        if (props.onDocumentChanged) {
-          props.onDocumentChanged(editableDocument, 'updated');
-        }
-      } catch (error) {
-        setIsLoading(false);
-        console.error('Failed to update document:', error);
-      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error('Failed to update document:', error);
     }
   };
 
@@ -360,7 +360,7 @@ const DocumentDetail = (props: Props) => {
     },
     {
       key: 'unitPrice',
-      header: t('unit'),
+      header: t('unitCost'),
       renderItem: ({ row }) =>
         row.unitPrice ? formatCurrency(row.unitPrice, currencyISO) : '-',
     },

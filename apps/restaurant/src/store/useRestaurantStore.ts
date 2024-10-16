@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { restaurantService, transferService } from '../services';
 import { User, useUserStore } from '@peckishai/user-management';
 import i18n from '../translation/i18n';
+import toast from 'react-hot-toast';
 
 export type Restaurant = {
   uuid: string;
@@ -18,7 +19,7 @@ export type Restaurant = {
 };
 
 type RestaurantStore = {
-  selectedRestaurantUUID?: string;
+  selectedRestaurantUUID: string;
   restaurants: Restaurant[];
   restaurantsLoading: boolean;
   transferHistory: any[];
@@ -30,7 +31,7 @@ type RestaurantStore = {
 
 export const useRestaurantStore = create<RestaurantStore>()((set) => ({
   restaurants: [],
-  selectedRestaurantUUID: undefined,
+  selectedRestaurantUUID: '',
   restaurantsLoading: false,
   transferHistory: [],
 
@@ -50,6 +51,10 @@ export const useRestaurantStore = create<RestaurantStore>()((set) => ({
     const restaurants = await restaurantService.getUserRestaurants(
       user?.user?.user_uuid
     );
+
+    if (restaurants.length === 0) {
+      toast.error('You have no restaurants, please onboard one first.');
+    }
 
     const storedSelectedRestaurantUUID = localStorage.getItem(
       'selectedRestaurantUUID'
