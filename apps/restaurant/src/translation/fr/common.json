@@ -207,6 +207,8 @@
     "detectedName": "Nom détecté",
     "save": "Sauvegarder",
     "upload": "Importer",
-    "send": "Envoyer à Xero"
+    "send": "Envoyer à Xero",
+    "emptyIngredients": "Aucun ingrédient",
+    "addIngredient": "Ajouter un ingrédient"
   }
 }

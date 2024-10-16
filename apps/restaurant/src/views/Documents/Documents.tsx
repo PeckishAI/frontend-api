@@ -189,12 +189,12 @@ const Documents = () => {
         your saved documents.
       </p>
       <div className={styles.tools}>
-        <Button
+        {/* <Button
           type="primary"
           value={t('document.upload')}
           className={styles.uploadButton}
           onClick={handleUploadClick} // Attach click handler
-        />
+        /> */}
         <Button
           type="primary"
           value={t('document.send')}

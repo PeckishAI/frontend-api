@@ -1,3 +1,5 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRestaurantStore } from '../store/useRestaurantStore';
 import {
   axiosClient,
   axiosIntegrationClient,
@@ -517,4 +519,55 @@ export const inventoryService = {
   sendInvoice,
   createUnit,
   fetchConversionFactor,
+};
+
+/**
+ * React Query hooks
+ */
+
+const unitQueryKeys = {
+  all: ['units'],
+  byRestaurant: (restaurant_uuid: string) => [
+    ...unitQueryKeys.all,
+    restaurant_uuid,
+  ],
+};
+
+/**
+ * Fetch the list of units
+ * @returns The list of units
+ */
+export const useUnits = () => {
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
+
+  return useQuery({
+    queryKey: unitQueryKeys.byRestaurant(selectedRestaurantUUID),
+    queryFn: () => getUnits(selectedRestaurantUUID!),
+    initialData: [],
+  });
+};
+
+/**
+ * Create a new unit
+ * @returns The mutation function
+ */
+export const useCreateUnit = () => {
+  const queryClient = useQueryClient();
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  );
+
+  return useMutation({
+    mutationFn: (unitName: string) =>
+      createUnit(selectedRestaurantUUID!, unitName),
+    onSuccess: (data) => {
+      // Update the unit in the cache with the new data
+      queryClient.setQueryData(
+        unitQueryKeys.byRestaurant(selectedRestaurantUUID),
+        (oldData?: Unit[]) => (oldData ? [...oldData, data] : [data])
+      );
+    },
+  });
 };

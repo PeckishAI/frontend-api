@@ -78,6 +78,7 @@ body {
   font-size: 0.8rem !important;
   border-radius: 5px !important;
   padding: 5px 8px !important;
+  z-index: 9999 !important;
 }
 
 .text-error {

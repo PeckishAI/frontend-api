@@ -191,6 +191,14 @@
     height: 100%;
     padding: 2px; // to avoid cropping the input border
   }
+
+  .emptyTable {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    color: var(--textSecondaryColor);
+  }
 }
 
 .addIngredient {

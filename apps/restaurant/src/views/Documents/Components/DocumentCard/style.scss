@@ -23,16 +23,16 @@
     right: 10px;
     cursor: pointer;
     font-size: 18px;
-    color: #007bff; 
+    color: #007bff;
   }
 
   .sync-icon:hover {
-    color: #0056b3; 
+    color: #0056b3;
   }
   .sync-icon.disabled {
-     opacity: 0.5; 
-     color: rgb(57, 205, 57);; 
-     pointer-events: none;
+    opacity: 0.5;
+    color: rgb(57, 205, 57);
+    pointer-events: none;
   }
 
   &:hover {
@@ -54,6 +54,7 @@
       -webkit-box-orient: vertical;
     }
     .date {
+      margin-top: 0;
       font-size: 0.8rem;
       font-weight: 600;
       color: var(--textSecondaryColor);
