@@ -477,7 +477,6 @@ const DocumentDetail = (props: Props) => {
       renderItem: ({ index }) => (
         <Input
           type="number"
-          min={0}
           step="0.01"
           placeholder={t('unitCost')}
           className={styles.price}
