@@ -480,10 +480,6 @@ const fetchConversionFactor = async (
   toUnitUUID: string,
   type: string
 ) => {
-  console.log('itemUUID: ', itemUUID);
-  console.log('fromUnitUUID: ', fromUnitUUID);
-  console.log('toUnitUUID: ', toUnitUUID);
-  console.log('type: ', type);
   if (type === 'preparation') {
     return axiosClient.get(
       `/recipes/${itemUUID}/conversion_factor/${fromUnitUUID}/${toUnitUUID}`

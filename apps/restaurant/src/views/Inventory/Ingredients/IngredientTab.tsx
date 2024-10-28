@@ -223,7 +223,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           const fuse = new Fuse(filteredList, fuseOptions);
 
           filteredList = fuse.search(props.searchValue).map((r) => r.item);
-          console.log('List after Fuse.js filtering', filteredList);
         }
 
         if (filters.selectedSupplier && filters.selectedSupplier.length > 0) {
@@ -249,7 +248,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         }
 
         setFilteredIngredients(filteredList);
-        console.log('List after filters', filteredList);
       };
 
       applyFilters();
@@ -453,7 +451,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         const ingredients = await inventoryService.getIngredientList(
           selectedRestaurantUUID
         );
-        console.log('Reload Inventory Data', ingredients);
 
         setIngredientsList(ingredients);
 
