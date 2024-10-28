@@ -14,7 +14,7 @@ import { useRestaurantStore } from '../store/useRestaurantStore';
 import { useUserStore } from '@peckishai/user-management';
 import { restaurantService, inventoryService, Ingredient } from '../services';
 import { Tooltip } from 'react-tooltip';
-import { NotificationCenter } from './NotificationCenter/NotificationCenter';
+// import { NotificationCenter } from './NotificationCenter/NotificationCenter';
 import AddTransferPopup from '../views/Inventory/Components/Transfers/Transfers';
 
 type IngredientOption = {
@@ -203,7 +203,7 @@ const Layout = () => {
                 restaurants={transformedRestaurants} // Using the actual restaurant data
                 ingredients={ingredients} // You will replace this with actual ingredients data later
               />
-              <NotificationCenter />
+              {/* <NotificationCenter /> */}
               <IconButton
                 icon={<i className="fa-solid fa-rotate"></i>}
                 onClick={handleRefreshClick}

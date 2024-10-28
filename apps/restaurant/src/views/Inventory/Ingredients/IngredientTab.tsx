@@ -146,9 +146,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       (state) => state.selectedRestaurantUUID
     );
 
-    console.log('editedValues', editedValues);
-    console.log('isEditMode', isEditMode);
-
     const reloadReferenceUnits = useCallback(async () => {
       inventoryService.getReferenceUnits().then((res) => {
         setReferenceUnitName(res);
@@ -516,7 +513,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setEditedValues({ ...row }); // Clone the row's data into state
       setIsSidePanelOpen(true); // Open the side panel
       setIsEditMode(false); // Start in view mode
-      console.log('edit', isEditMode);
       if (reference_units.some((unit) => unit.unit_uuid === row.unit_uuid)) {
         setIsVolumeVisible(false);
       } else {
@@ -528,7 +524,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setFirstTimeSelected(true);
 
       if (!editedValues?.unit_uuid) {
-        console.log('Unit is required before saving.');
         setUnitError(true); // Set error if unit is missing
         return; // Prevent form submission
       } else {
