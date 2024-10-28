@@ -126,36 +126,33 @@ const getIngredientList = async (
 ): Promise<Ingredient[]> => {
   const res = await axiosClient.get('/inventory/' + restaurantUUID);
 
-  const ingredients = Object.keys(res.data).map<Ingredient>((key) =>
-    // console.log('key', key),
-    ({
-      id: key,
-      name: res.data[key]['name'],
-      parLevel: res.data[key]['par_level'],
-      actualStock: res.data[key]['actual_stock'],
-      theoriticalStock: res.data[key]['theoritical_stock'],
-      unit: res.data[key]['unit'],
-      unitCost: res.data[key]['cost'],
-      tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
-      tag_details: res.data[key]['tag_details'].map((tag: any) => ({
-        uuid: tag['uuid'],
-        name: tag['name'],
-      })),
-      supplier_details: res.data[key]['supplier_details'].map(
-        (supplier: any) => ({
-          supplier_id: supplier['supplier_id'],
-          supplier_name: supplier['supplier_name'],
-          supplier_cost: supplier['supplier_cost'],
-          supplier_unit_cost: supplier['supplier_unit_cost'],
-        })
-      ),
-      amount: res.data[key]['amount'],
-      type: res.data[key]['type'],
-      volume_unit_name: res.data[key]['volume_unit_name'],
-      volume_unit_uuid: res.data[key]['volume_unit_uuid'],
-      volume_quantity: res.data[key]['volume_quantity'],
-    })
-  );
+  const ingredients = Object.keys(res.data).map<Ingredient>((key) => ({
+    id: key,
+    name: res.data[key]['name'],
+    parLevel: res.data[key]['par_level'],
+    actualStock: res.data[key]['actual_stock'],
+    theoriticalStock: res.data[key]['theoritical_stock'],
+    unit: res.data[key]['unit'],
+    unitCost: res.data[key]['cost'],
+    tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
+    tag_details: res.data[key]['tag_details'].map((tag: any) => ({
+      uuid: tag['uuid'],
+      name: tag['name'],
+    })),
+    supplier_details: res.data[key]['supplier_details'].map(
+      (supplier: any) => ({
+        supplier_id: supplier['supplier_id'],
+        supplier_name: supplier['supplier_name'],
+        supplier_cost: supplier['supplier_cost'],
+        supplier_unit_cost: supplier['supplier_unit_cost'],
+      })
+    ),
+    amount: res.data[key]['amount'],
+    type: res.data[key]['type'],
+    volume_unit_name: res.data[key]['volume_unit_name'],
+    volume_unit_uuid: res.data[key]['volume_unit_uuid'],
+    volume_quantity: res.data[key]['volume_quantity'],
+  }));
 
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
@@ -309,7 +306,6 @@ const getUnits = async (restaurantUUID: string): Promise<Unit[]> => {
 const getReferenceUnits = async (): Promise<Unit[]> => {
   try {
     const res = await axiosClient.get(`/units_reference`);
-    console.log(res);
 
     // Check if the response data is valid
     if (!Array.isArray(res.data)) {
@@ -323,7 +319,6 @@ const getReferenceUnits = async (): Promise<Unit[]> => {
       unit_uuid: unitData.unit_uuid,
     }));
 
-    console.log('Units:', units);
     return units;
   } catch (error) {
     console.error('Error fetching units:', error);
