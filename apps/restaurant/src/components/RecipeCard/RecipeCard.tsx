@@ -57,15 +57,6 @@ const RecipeCard = (props: Props) => {
                 data-tooltip-id="recipeCard-tooltip"></i>
               <p>{formatCurrency(props.recipe.portion_price, currencyISO)}</p>
             </div>
-
-            {/* Display margin for non-preparations */}
-            <div className="metric">
-              <i
-                className="fa-solid fa-arrow-up-right-dots margin"
-                data-tooltip-content={t('margin')}
-                data-tooltip-id="recipeCard-tooltip"></i>
-              <p>{formatCurrency(props.recipe.margin, currencyISO)}</p>
-            </div>
           </>
         )}
 
