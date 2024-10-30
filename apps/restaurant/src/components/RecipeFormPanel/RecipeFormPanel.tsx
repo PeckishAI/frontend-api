@@ -736,7 +736,7 @@ const RecipeFormPanel = (props: Props) => {
                   type="number"
                   step=".00000001"
                   lighter
-                  suffix={selectedIngredient?.unit_name || ''}
+                  // suffix={selectedIngredient?.unit_name || ''}
                   {...register(`ingredients.${i}.quantity`)}
                   error={errors.ingredients?.[i]?.quantity?.message}
                 />
