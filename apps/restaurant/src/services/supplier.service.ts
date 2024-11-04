@@ -1,33 +1,18 @@
 import { axiosClient, axiosIntegrationClient } from './index';
 
 export type Supplier = {
-  uuid?: string;
-  name?: string;
+  supplierUUID?: string;
+  supplierName?: string;
   email?: string;
   phone?: string;
   created_at?: Date;
 };
 
-export type LinkedSupplier = Supplier & {
-  linked: boolean;
-  linkedAt: Date;
-  invitationKey?: string;
-};
 export type SyncSupplier = {
   contact_id: string;
   email_address?: string;
   name?: string;
 };
-
-// type SupplierResponse = {
-// created_at: 'Mon, 23 Oct 2023 11:33:46 GMT';
-// email: 'contact@rekki.com';
-// invitation_key: 'cyfuvjhguygh';
-// linked: false;
-// name: 'Rekki';
-// phone: null;
-// supplier_uuid: 'abc';
-// };
 
 type RestaurantSuppliersResponse = {
   supplier_uuid: string;
@@ -41,16 +26,16 @@ type RestaurantSuppliersResponse = {
 
 const getRestaurantSuppliers = async (
   restaurantUUID: string
-): Promise<LinkedSupplier[]> => {
+): Promise<Supplier[]> => {
   const res = await axiosClient.get<RestaurantSuppliersResponse>(
     `/suppliers/${restaurantUUID}`
   );
 
   return res.data.map((supplier) => ({
-    ...supplier,
-    uuid: supplier.supplier_uuid,
-    linkedAt: new Date(supplier.linked_at),
-    invitationKey: supplier.invitation_key,
+    supplierUUID: supplier.supplier_uuid,
+    supplierName: supplier.name,
+    email: supplier.email,
+    phone: supplier.phone,
   }));
 };
 
@@ -66,7 +51,7 @@ const getSuppliers = async (restaurantUUID: string): Promise<Supplier[]> => {
 
   return res.data.map((supplier) => ({
     ...supplier,
-    uuid: supplier.supplier_uuid,
+    supplierUUID: supplier.supplier_uuid,
   }));
 };
 

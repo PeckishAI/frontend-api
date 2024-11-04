@@ -1,69 +1,51 @@
-export type Supplier = {
-  supplier_id: string;
-  supplier_name: string;
-  supplier_cost: number;
-  conversion_factor?: number;
-  supplier_unit: string;
-  supplier_unit_name: string;
-  supplier_unit_cost?: string | null;
+export type SupplierIngredient = {
+  supplierUUID?: string;
+  supplierName: string;
+  conversionFactor?: number;
+  supplierUnitUUID: string;
+  supplierUnitName: string;
+  supplierUnitCost?: number | null;
 };
 
-export type Recipe = {
-  conversion_factor: number;
+export type RecipeIngredient = {
+  recipeUUID: string;
+  recipeName: string;
   quantity: number;
-  recipe_name: string;
-  recipe_uuid: string;
-  unit_name: string;
-  unit_uuid: string;
-  from_unit_name: string;
-  to_unit_name: string;
+  unitUUID: string;
+  unitName: string;
+  conversionFactor?: number | 1;
 };
 
-export type Stock = {
-  event_type?: string | null;
+export type RollingStock = {
+  eventType?: string | null;
   quantity?: number | null;
-  unit_name?: string | null;
+  unitName?: string | null;
+  unitUUID?: string | null;
 };
 
 export type TagDetails = {
-  name: string;
-  uuid: string;
+  tagUUID: string;
+  tagName: string;
 };
 
 export type Ingredient = {
   type?: string;
-  id: string;
-  name: string;
-  tagUUID?: string[] | null;
-  tag_details?: TagDetails[] | null;
-  actualStock: number;
-  theoriticalStock?: number;
-  parLevel: number;
-  unit: string;
-  amount: number;
+  ingredientUUID?: string;
+  ingredientName: string;
+  tagDetails?: TagDetails[] | null;
+  parLevel?: number;
   actions?: void;
-  quantity: number;
+  quantity?: number;
   restaurantUUID?: string;
-  deleted_recipe_ingredient_data?: string[];
-  supplier_details?: Supplier[];
-  recipes?: Recipe[];
-  recipe_count?: number;
-  stock_history?: Stock[];
-  unit_name?: string;
-  unit_uuid?: string;
-  conversion_factor: number;
-  volume_unit_uuid: string;
-  volume_unit_name: string;
-  volume_quantity: number;
-};
-
-export type Tag = {
-  uuid: string;
-  name: string;
-};
-
-export type Tags = {
-  name: string;
+  supplierDetails?: SupplierIngredient[];
+  recipeDetails?: RecipeIngredient[];
+  stockHistory?: RollingStock[];
+  unitName?: string;
+  unitUUID?: string;
+  conversionFactor?: number | null;
+  volumeUnitUUID?: string;
+  volumeUnitName?: string;
+  volumeQuantity?: number;
 };
 
 export type InvoiceIngredient = {
@@ -94,8 +76,8 @@ export type Invoice = {
 };
 
 export type Unit = {
-  unit_name: string;
-  unit_uuid: string;
+  unitUUID: string;
+  unitName: string;
 };
 
 export type TransferForm = {

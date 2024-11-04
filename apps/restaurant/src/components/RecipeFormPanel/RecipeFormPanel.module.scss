@@ -88,10 +88,23 @@
   }
 }
 
+.ingredientInputs {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.2fr 0.5fr 0.3fr;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 15px;
+
+  & > div:not(.deleteBtn) {
+    flex: 1;
+  }
+}
+
 .ingredientCost {
   font-size: 0.8rem;
   color: var(--textSecondaryColor);
-  min-width: 70px;
+  min-width: 30px;
   text-align: center;
 }
 

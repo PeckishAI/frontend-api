@@ -1,11 +1,11 @@
-import { Tag } from './types';
+import { TagDetails } from './types';
 import { axiosClient } from '.';
 
-const getAll = async (restaurantUUID: string): Promise<Tag[]> => {
+const getAll = async (restaurantUUID: string): Promise<TagDetails[]> => {
   const res = await axiosClient.get('/tag/' + restaurantUUID);
   return Object.keys(res.data).map((key) => ({
-    uuid: key,
-    name: res.data[key],
+    tagUUID: key,
+    tagName: res.data[key],
   }));
 };
 

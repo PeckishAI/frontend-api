@@ -125,98 +125,62 @@ const getIngredientList = async (
   restaurantUUID: string
 ): Promise<Ingredient[]> => {
   const res = await axiosClient.get('/inventory/' + restaurantUUID);
+  console.log(res.data);
 
   const ingredients = Object.keys(res.data).map<Ingredient>((key) => ({
-    id: key,
-    name: res.data[key]['name'],
+    ingredientUUID: key,
+    ingredientName: res.data[key]['ingredient_name'],
     parLevel: res.data[key]['par_level'],
-    actualStock: res.data[key]['actual_stock'],
-    theoriticalStock: res.data[key]['theoritical_stock'],
-    unit: res.data[key]['unit'],
-    unitCost: res.data[key]['cost'],
-    tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
-    tag_details: res.data[key]['tag_details'].map((tag: any) => ({
-      uuid: tag['uuid'],
-      name: tag['name'],
+    quantity: res.data[key]['stock_history'][0]['quantity'] || 0,
+    unitUUID: res.data[key]['unit_uuid'],
+    unitName: res.data[key]['unit_name'],
+    tagDetails: res.data[key]['tag_details'].map((tag: any) => ({
+      tagUUID: tag['uuid'],
+      tagName: tag['name'],
     })),
-    supplier_details: res.data[key]['supplier_details'].map(
-      (supplier: any) => ({
-        supplier_id: supplier['supplier_id'],
-        supplier_name: supplier['supplier_name'],
-        supplier_cost: supplier['supplier_cost'],
-        supplier_unit_cost: supplier['supplier_unit_cost'],
-      })
-    ),
-    amount: res.data[key]['amount'],
+    supplierDetails: res.data[key]['supplier_details'].map((supplier: any) => ({
+      supplierUUID: supplier['supplier_uuid'],
+      supplierName: supplier['supplier_name'],
+      supplierUnitCost: supplier['supplier_unit_cost'] || 0,
+      supplierUnitName: supplier['supplier_unit_name'] || 0,
+      supplierUnitUUID: supplier['supplier_unit_uuid'] || 0,
+      conversionFactor: supplier['conversion_factor'] || 0,
+    })),
     type: res.data[key]['type'],
-    volume_unit_name: res.data[key]['volume_unit_name'],
-    volume_unit_uuid: res.data[key]['volume_unit_uuid'],
-    volume_quantity: res.data[key]['volume_quantity'],
+    volumeUnitName: res.data[key]['volume_unit_name'],
+    volumeUnitUUID: res.data[key]['volume_unit_uuid'],
+    volumeQuantity: res.data[key]['volume_quantity'],
   }));
 
-  return Object.keys(res.data).map<Ingredient>((key) => ({
-    id: key,
-    name: res.data[key]['name'],
-    parLevel: res.data[key]['par_level'],
-    actualStock: res.data[key]['actual_stock'],
-    theoriticalStock: res.data[key]['theoritical_stock'],
-    unit: res.data[key]['unit'],
-    unit_name: res.data[key]['unit_name'],
-    unit_uuid: res.data[key]['unit_uuid'],
-    recipe_count: res.data[key]['recipe_count'],
-    unitCost: res.data[key]['cost'],
-    tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
-    tag_details: res.data[key]['tag_details'].map((tag: any) => ({
-      uuid: tag['uuid'],
-      name: tag['name'],
-    })),
-    supplier_details: res.data[key]['supplier_details'].map(
-      (supplier: any) => ({
-        supplier_id: supplier['supplier_id'],
-        supplier_name: supplier['supplier_name'],
-        supplier_cost: supplier['supplier_cost'],
-        supplier_unit: supplier['supplier_unit'],
-        supplier_unit_name: supplier['supplier_unit_name'],
-        conversion_factor: supplier['conversion_factor'],
-        supplier_unit_cost: supplier['supplier_unit_cost'],
-      })
-    ),
-    stock_history: res.data[key]['stock_history'],
-    recipes: res.data[key]['recipes'].map((recipe: any) => ({
-      conversion_factor: recipe['conversion_factor'],
-      quantity: recipe['quantity'],
-      from_unit_name: recipe['from_unit_name'],
-      to_unit_name: recipe['to_unit_name'],
-      recipe_name: recipe['recipe_name'],
-      recipe_uuid: recipe['recipe_uuid'],
-      unit_name: recipe['unit_name'],
-      unit_uuid: recipe['unit_uuid'],
-    })),
-    amount: res.data[key]['amount'],
-    type: res.data[key]['type'],
-    quantity: res.data[key]['quantity'],
-    volume_unit_uuid: res.data[key]['volume_unit_uuid'],
-    volume_unit_name: res.data[key]['volume_unit_name'],
-    volume_quantity: res.data[key]['volume_quantity'],
-  }));
+  console.log(ingredients);
+
+  return ingredients;
 };
-
-// stock_history: res.data[key]['stock_history'].map((stock: any) => ({
-//   event_type: stock['event_type'],
-//   quantity: stock['quantity'],
-//   unit_name: stock['unit_name'],
-// })),
 
 const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
   const FormattedIngredient = {
-    id: ingredient.id,
-    name: ingredient.name,
-    tag_details: ingredient.tag_details,
+    ingredient_uuid: ingredient.ingredientUUID,
+    name: ingredient.ingredientName,
+    tag_details:
+      ingredient.tagDetails?.map(
+        (tag: { tagUUID: string; tagName: string }) => ({
+          tag_uuid: tag.tagUUID,
+          tag_name: tag.tagName,
+        })
+      ) || [],
     par_level: ingredient.parLevel,
-    actual_stock: ingredient.actualStock,
-    unit_name: ingredient.unit_name,
-    unit_uuid: ingredient.unit_uuid,
-    supplier_details: ingredient.supplier_details,
+    quantity: ingredient.quantity,
+    unit_name: ingredient.unitName,
+    unit_uuid: ingredient.unitUUID,
+    supplier_details:
+      ingredient.supplierDetails?.map((supplier) => ({
+        supplier_uuid: supplier.supplierUUID,
+        supplier_name: supplier.supplierName,
+        supplier_unit_cost: supplier.supplierUnitCost,
+        supplier_unit_uuid: supplier.supplierUnitUUID,
+        supplier_unit_name: supplier.supplierUnitName,
+        conversion_factor: supplier.conversionFactor,
+      })) || [],
   };
 
   return axiosClient.post('/inventory/' + restaurantUUID, FormattedIngredient);
@@ -230,38 +194,44 @@ const getOnlyIngredientList = async (
   );
 
   return Object.keys(res.data).map<Ingredient>((key) => ({
-    id: key,
-    name: res.data[key]['name'],
-
-    unit_uuid: res.data[key]['unit_uuid'],
-    unit_name: res.data[key]['unit_name'],
-    cost: res.data[key]['cost'],
+    ingredientUUID: key,
+    ingredientName: res.data[key]['name'],
+    unitUUID: res.data[key]['unit_uuid'],
+    unitName: res.data[key]['unit_name'],
     type: res.data[key]['type'],
   }));
 };
 
-const updateIngredient = (ingredient: Ingredient) => {
+const updateIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
   const ingredientFormated = {
-    id: ingredient.id,
-    name: ingredient.name,
-    tag_details: ingredient.tag_details,
+    ingredient_uuid: ingredient.ingredientUUID,
+    ingredient_name: ingredient.ingredientName,
+    tag_details: (ingredient.tagDetails || []).map((tag: any) => ({
+      tag_uuid: tag.tagUUID,
+      tag_name: tag.tagName,
+    })),
     par_level: ingredient.parLevel,
-    actual_stock: ingredient.actualStock,
-    unit: ingredient.unit,
-    supplier_details: ingredient.supplier_details,
-    deleted_recipe_ingredient_data: ingredient?.deleted_recipe_ingredient_data,
-    recipes: ingredient.recipes,
-    cost: ingredient.unitCost,
-    unit_name: ingredient.unit_name,
-    unit_uuid: ingredient.unit_uuid,
-    restaurant_uuid: ingredient.restaurantUUID,
-    volume_unit_uuid: ingredient.volume_unit_uuid,
-    volume_unit_name: ingredient.volume_unit_name,
-    volume_quantity: ingredient.volume_quantity,
+    quantity: ingredient.quantity,
+    unit_uuid: ingredient.unitUUID,
+    unit_name: ingredient.unitName,
+    supplier_details: (ingredient.supplierDetails || []).map(
+      (supplier: any) => ({
+        supplier_uuid: supplier['supplierUUID'] || null,
+        supplier_name: supplier['supplierName'],
+        supplier_unit_cost: supplier['supplierUnitCost'] || 0,
+        supplier_unit_uuid: supplier['supplierUnitUUID'] || null,
+        supplier_unit_name: supplier['supplierUnitName'] || null,
+        conversion_factor: supplier['conversionFactor'] || 0,
+      })
+    ),
+    restaurant_uuid: restaurantUUID,
+    volume_unit_uuid: ingredient.volumeUnitUUID,
+    volume_unit_name: ingredient.volumeUnitName,
+    volume_quantity: ingredient.volumeQuantity,
   };
 
   return axiosClient.post(
-    '/inventory/' + ingredient.id + '/update',
+    '/inventory/' + ingredient.ingredientUUID + '/update',
     ingredientFormated
   );
 };
@@ -292,8 +262,8 @@ const getUnits = async (restaurantUUID: string): Promise<Unit[]> => {
 
     // Map the response data to the Unit array
     const units: Unit[] = res.data.map((unitData: any) => ({
-      unit_name: unitData.unit_name,
-      unit_uuid: unitData.unit_uuid,
+      unitName: unitData.unit_name,
+      unitUUID: unitData.unit_uuid,
     }));
 
     return units;

@@ -27,7 +27,7 @@ const RecipeDetail = (props: Props) => {
         width="65%"
         onRequestClose={() => props.onRequestClose()}>
         <div className={styles.recipeDetail}>
-          <h2 className={styles.name}>{props.recipe?.name}</h2>
+          <h2 className={styles.name}>{props.recipe?.recipeName}</h2>
           <div className={styles.optionsButtons}>
             <IconButton
               icon={<i className="fa-solid fa-pen-to-square"></i>}
@@ -53,7 +53,7 @@ const RecipeDetail = (props: Props) => {
                 <i className={`fa-solid fa-box-open ${styles.quantity}`}></i>
                 {t('quantity')} :{' '}
                 <span className={styles.value}>
-                  {`${props.recipe?.quantity} ${props.recipe?.unit_name}`}
+                  {`${props.recipe?.quantity} ${props.recipe?.unitName}`}
                 </span>
               </p>
             ) : (
@@ -62,7 +62,7 @@ const RecipeDetail = (props: Props) => {
                   <i className={`fa-solid fa-tag ${styles.price}`}></i>
                   {t('price')} :{' '}
                   <span className={styles.value}>
-                    {formatCurrency(props.recipe?.portion_price, currencyISO)}
+                    {formatCurrency(props.recipe?.pricePerPortion, currencyISO)}
                   </span>
                 </p>
 
@@ -71,7 +71,10 @@ const RecipeDetail = (props: Props) => {
                     className={`fa-solid fa-arrow-up-right-dots ${styles.margin}`}></i>
                   {t('margin')} :{' '}
                   <span className={styles.value}>
-                    {formatCurrency(props.recipe?.margin, currencyISO)}
+                    {formatCurrency(
+                      props.recipe?.marginPerPortion,
+                      currencyISO
+                    )}
                   </span>
                 </p>
               </>
@@ -82,7 +85,7 @@ const RecipeDetail = (props: Props) => {
                 className={`fa-solid fa-hand-holding-dollar ${styles.cost}`}></i>
               {t('cost')} :{' '}
               <span className={styles.value}>
-                {formatCurrency(props.recipe?.cost, currencyISO)}
+                {formatCurrency(props.recipe?.costPerPortion, currencyISO)}
               </span>
             </p>
           </div>
@@ -91,17 +94,18 @@ const RecipeDetail = (props: Props) => {
             <Table
               data={props.recipe?.ingredients}
               columns={[
-                { key: 'name', header: t('name') },
+                { key: 'ingredientName', header: t('name') },
                 {
                   key: 'quantity',
                   header: t('quantity'),
-                  renderItem: ({ row }) => `${row.quantity} ${row.unit || ''}`,
+                  renderItem: ({ row }) =>
+                    `${row.quantity} ${row.recipeUnitName || ''}`,
                 },
-                {
-                  key: 'units',
-                  header: t('units'),
-                  renderItem: ({ row }) => `${row.recipe_unit_name || ''}`,
-                },
+                // {
+                //   key: 'recipeUnitName',
+                //   header: t('units'),
+                //   renderItem: ({ row }) => `${row.recipeUnitName || ''}`,
+                // },
                 // {
                 //   key: 'conversion_factor',
                 //   header: t('conversion_factor'),
@@ -122,9 +126,9 @@ const RecipeDetail = (props: Props) => {
                   key: 'cost',
                   header: t('totalCost'),
                   renderItem: ({ row }) =>
-                    row.cost && row.conversion_factor && row.quantity
+                    row.cost && row.conversionFactor && row.quantity
                       ? formatCurrency(
-                          (row.cost / (row.conversion_factor || 1)) *
+                          (row.cost / (row.conversionFactor || 1)) *
                             row.quantity,
                           currencyISO
                         )
@@ -150,7 +154,10 @@ const RecipeDetail = (props: Props) => {
         onRequestClose={() => setDeleteRecipe(null)}
         onConfirm={() =>
           recipesService
-            .deleteRecipe(deleteRecipe?.uuid, deleteRecipe?.category ?? '')
+            .deleteRecipe(
+              deleteRecipe?.recipeUUID,
+              deleteRecipe?.category ?? ''
+            )
             .then(() => {
               props.onRecipeChanged(deleteRecipe!, 'deleted');
               setDeleteRecipe(null);

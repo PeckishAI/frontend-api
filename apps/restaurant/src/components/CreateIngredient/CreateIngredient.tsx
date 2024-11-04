@@ -7,7 +7,6 @@ import {
   useRestaurantCurrency,
   useRestaurantStore,
 } from '../../store/useRestaurantStore';
-import { units } from '../../views/Inventory/Ingredients/IngredientTab';
 import { useTranslation } from 'react-i18next';
 import { useIngredients } from '../../services/hooks';
 import toast from 'react-hot-toast';
@@ -23,21 +22,30 @@ type Props = {
 };
 
 const defaultValue = {
-  name: '',
-  actualStock: 0,
+  ingredientName: '',
+  quantity: 0,
   parLevel: 0,
-  unit: '',
-  supplier: '',
-  unitCost: 0,
+  unitUUID: '',
+  unitName: '',
+  supplierDetails: [],
 };
 
 const ingredientSchemas = z.object({
-  name: z.string().nonempty('required'),
-  actualStock: z.number().positive('positive-number'),
+  ingredientName: z.string().nonempty('required'),
+  quantity: z.number().positive('positive-number'),
   parLevel: z.number().positive('positive-number'),
-  unit: z.string().nonempty('required'),
-  unitCost: z.number().positive('positive-number'),
-  supplier: z.string().nonempty('required'),
+  unitUUID: z.string().nonempty('optional'),
+  unitName: z.string().nonempty('required'),
+  supplierDetails: z.array(
+    z.object({
+      supplierUUID: z.string().nonempty('required'),
+      supplierName: z.string().nonempty('required'),
+      supplierUnitCost: z.number().positive('positive-number'),
+      conversionFactor: z.number().positive('positive-number'),
+      supplierUnitUUID: z.string().nonempty('required'),
+      supplierUnitName: z.string().nonempty('required'),
+    })
+  ),
 });
 
 type Form = z.infer<typeof ingredientSchemas>;
@@ -113,8 +121,7 @@ const CreateIngredient = (props: Props) => {
     if (props.isVisible) {
       setIngredient({
         ...defaultValue,
-        name: props.preFilledName ?? '',
-        supplier: props.preFilledSupplier ?? '',
+        ingredientName: props.preFilledName ?? '',
       });
     }
   }, [props.isVisible, props.preFilledName, props.preFilledSupplier]);
@@ -135,28 +142,28 @@ const CreateIngredient = (props: Props) => {
             <LabeledInput
               placeholder="Name"
               type="text"
-              value={ingredient?.name}
+              value={ingredient?.ingredientName}
               lighter
               onChange={(val) =>
-                handleIngredientChange('name', val.target.value)
+                handleIngredientChange('ingredientName', val.target.value)
               }
               error={errors?.name}
             />
             <Select
               size="large"
               placeholder={t('orders.supplier')}
-              getOptionLabel={(o) => o.name}
-              getOptionValue={(o) => o.uuid}
+              getOptionLabel={(o) => o.supplierName}
+              getOptionValue={(o) => o.supplierUUID}
               options={supplierOptions}
               value={
                 props.preFilledSupplier
                   ? {
-                      name: props.preFilledSupplier,
-                      uuid: '',
+                      supplierName: props.preFilledSupplier,
+                      supplierUUID: '',
                     }
-                  : supplierOptions.find(
-                      (u) => u.name === ingredient?.supplier
-                    ) ?? null
+                  : (supplierOptions.find(
+                      (u) => u.supplierName === ingredient?.supplierDetails[0]?.supplierName
+                    ) ?? null)
               }
               isDisabled={!!props.preFilledSupplier}
               onChange={(val) =>

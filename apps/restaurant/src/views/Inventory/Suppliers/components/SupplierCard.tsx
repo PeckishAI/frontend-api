@@ -63,7 +63,7 @@ export const SupplierCard = ({
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
-        <h3 className={styles.cardTitle}>{supplier.name}</h3>
+        <h3 className={styles.cardTitle}>{supplier.supplierName}</h3>
 
         {renderMoreOptions()}
       </div>

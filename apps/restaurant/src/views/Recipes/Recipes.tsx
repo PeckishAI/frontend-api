@@ -93,7 +93,7 @@ const Recipes = () => {
   }, [selectedRestaurantUUID]);
 
   const filteredRecipes = recipes.filter((recipe) =>
-    recipe.name.toLowerCase().includes(recipeResearch.toLowerCase())
+    recipe.recipeName.toLowerCase().includes(recipeResearch.toLowerCase())
   );
 
   const handleRecipeClick = (recipe: Recipe) => {
@@ -101,13 +101,15 @@ const Recipes = () => {
   };
 
   const handleRecipeUpdated = (recipe: Recipe) => {
-    setRecipes(recipes.map((r) => (r.uuid === recipe.uuid ? recipe : r)));
+    setRecipes(
+      recipes.map((r) => (r.recipeUUID === recipe.recipeUUID ? recipe : r))
+    );
     setRecipeDetail(recipe);
     reloadRecipes();
   };
 
   const handleRecipeDeleted = (recipe: Recipe) => {
-    setRecipes(recipes.filter((r) => r.uuid !== recipe.uuid));
+    setRecipes(recipes.filter((r) => r.recipeUUID !== recipe.recipeUUID));
     setRecipeDetail(null);
   };
 

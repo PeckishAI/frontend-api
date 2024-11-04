@@ -89,23 +89,19 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     };
 
     // Render options for the tab bar
-    useImperativeHandle(
-      forwardedRef,
-      () => {
-        props.forceOptionsUpdate();
+    useImperativeHandle(forwardedRef, () => {
+      props.forceOptionsUpdate();
 
-        return {
-          renderOptions: () => (
-            <Button
-              value={t('inventory.addSupplierBtn')}
-              type="primary"
-              onClick={() => handleAddSupplierClick()}
-            />
-          ),
-        };
-      },
-      []
-    );
+      return {
+        renderOptions: () => (
+          <Button
+            value={t('inventory.addSupplierBtn')}
+            type="primary"
+            onClick={() => handleAddSupplierClick()}
+          />
+        ),
+      };
+    }, []);
 
     useEffect(() => {
       if (!restaurantUUID) return;
@@ -255,18 +251,15 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
             <div className={styles.cardContainer}>
               {suppliersFiltered.map((supplier) => (
                 <SupplierCard
-                  key={supplier.uuid}
+                  key={supplier.supplierUUID}
                   supplier={supplier}
                   onPressDelete={() => {
                     setShowDeleteDialog(true);
-                    setDeletingSupplierUUID(supplier.uuid);
+                    setDeletingSupplierUUID(supplier.supplierUUID);
                   }}
-                  onPressCopy={() =>
-                    handleCopyInvitationLink(supplier.invitationKey)
-                  }
                   onKey={() => {
                     setShowDialog(true);
-                    setSyncingSupplierUUID(supplier?.uuid);
+                    setSyncingSupplierUUID(supplier?.supplierUUID);
                     handleSync();
                   }}
                   onEdit={() => handleEditSupplierClick(supplier)}
@@ -281,7 +274,9 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           type="warning"
           msg={t('suppliers.removeSupplierPopup.title')}
           subMsg={t('suppliers.removeSupplierPopup.subtitle', {
-            name: suppliers.find((s) => s.uuid === deletingSupplierUUID)?.name,
+            supplierName: suppliers.find(
+              (s) => s.supplierUUID === deletingSupplierUUID
+            )?.supplierName,
           })}
           isOpen={showDeleteDialog}
           onRequestClose={() => {
@@ -295,7 +290,9 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           type="warning"
           msg={t('suppliers.syncSupplierPopup.title')}
           subMsg={t('suppliers.syncSupplierPopup.subtitle', {
-            name: suppliers.find((s) => s.uuid === syncingSupplierUUID)?.name,
+            supplierName: suppliers.find(
+              (s) => s.supplierUUID === syncingSupplierUUID
+            )?.supplierName,
           })}
           isOpen={showDialog}
           onRequestClose={() => {

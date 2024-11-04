@@ -27,7 +27,7 @@ const RecipeCard = (props: Props) => {
       )}
 
       {/* Recipe Name */}
-      <p className="name">{props.recipe.name}</p>
+      <p className="name">{props.recipe.recipeName}</p>
 
       {/* Ingredient Count */}
       <p className="ingredient-nb">
@@ -45,7 +45,7 @@ const RecipeCard = (props: Props) => {
               data-tooltip-content={t('quantity')}
               data-tooltip-id="recipeCard-tooltip"></i>
             {/* Fallback to a default string if unit_name is missing */}
-            <p>{`${props.recipe.quantity} ${props.recipe.unit_name || ''}`}</p>
+            <p>{`${props.recipe.quantity} ${props.recipe.unitName || ''}`}</p>
           </div>
         ) : (
           <>
@@ -55,7 +55,7 @@ const RecipeCard = (props: Props) => {
                 className="fa-solid fa-tag price"
                 data-tooltip-content={t('price')}
                 data-tooltip-id="recipeCard-tooltip"></i>
-              <p>{formatCurrency(props.recipe.portion_price, currencyISO)}</p>
+              <p>{formatCurrency(props.recipe.pricePerPortion, currencyISO)}</p>
             </div>
           </>
         )}
@@ -66,7 +66,7 @@ const RecipeCard = (props: Props) => {
             className="fa-solid fa-hand-holding-dollar cost"
             data-tooltip-content={t('cost')}
             data-tooltip-id="recipeCard-tooltip"></i>
-          <p>{formatCurrency(props.recipe.cost, currencyISO)}</p>
+          <p>{formatCurrency(props.recipe.costPerPortion, currencyISO)}</p>
         </div>
 
         {props.recipe.type !== 'preparation' && (
@@ -75,7 +75,7 @@ const RecipeCard = (props: Props) => {
               className="fa-solid fa-arrow-up-right-dots margin"
               data-tooltip-content={t('margin')}
               data-tooltip-id="recipeCard-tooltip"></i>
-            <p>{formatCurrency(props.recipe.margin, currencyISO)}</p>
+            <p>{formatCurrency(props.recipe.marginPerPortion, currencyISO)}</p>
           </div>
         )}
       </div>

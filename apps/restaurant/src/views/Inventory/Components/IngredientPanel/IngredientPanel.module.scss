@@ -1,0 +1,369 @@
+// Layout and Container Styles
+.sidePanel {
+  background-color: white;
+  height: 100vh;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #5e72e4;
+    border-radius: 4px;
+  }
+}
+
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+// Header Styles
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  background-color: white;
+}
+
+.headerButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  color: #6366f1;
+
+  &:hover {
+    background-color: #f3f4f6;
+  }
+
+  i {
+    font-size: 1.25rem;
+  }
+}
+
+// Title and Section Styles
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.section {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+
+  &:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+  }
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionTitle {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #6366f1;
+}
+
+// Form Grid Styles
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.inputBox {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+}
+
+.field {
+  label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+
+    &:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+    }
+  }
+}
+
+// Supplier Details Styles
+.supplierTableHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.supplierDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.supplierRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+.unitCostField {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+
+  .currencyPrefix {
+    position: absolute;
+    left: 0.75rem;
+    color: #6b7280;
+    pointer-events: none;
+  }
+
+  input {
+    padding-left: 1.75rem;
+  }
+}
+
+.conversionFactorField {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+}
+
+// Tag Styles
+.tagContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+}
+
+.tag {
+  background-color: #6366f1;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// Recipe Section Styles
+.recipeSection {
+  margin-top: 1rem;
+}
+
+.recipeToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6366f1;
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+
+  &:hover {
+    background-color: #f3f4f6;
+  }
+}
+
+// Button and Icon Styles
+.addButton {
+  color: #6366f1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #4f46e5;
+  }
+}
+
+.deleteButton {
+  color: #6366f1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #ef4444;
+  }
+}
+
+.infoIcon {
+  color: #6366f1;
+  cursor: help;
+  font-size: 1rem;
+
+  &:hover {
+    color: #4f46e5;
+  }
+}
+
+// React-Select Global Styles
+:global {
+  .select__control {
+    border: 1px solid #e5e7eb !important;
+    min-height: 38px !important;
+    background-color: white !important;
+    box-shadow: none !important;
+
+    &:hover {
+      border-color: #6366f1 !important;
+    }
+
+    &--is-focused {
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 1px #6366f1 !important;
+    }
+  }
+
+  .select__placeholder {
+    color: #9ca3af !important;
+  }
+
+  .select__single-value {
+    color: #111827 !important;
+  }
+
+  .select__menu {
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    z-index: 100 !important;
+  }
+
+  .select__option {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 0.75rem !important;
+
+    &--is-focused {
+      background-color: #f3f4f6 !important;
+    }
+
+    &--is-selected {
+      background-color: #6366f1 !important;
+      color: white !important;
+    }
+  }
+
+  .select__multi-value {
+    background-color: #6366f1 !important;
+    border-radius: 9999px !important;
+
+    &__label {
+      color: white !important;
+      padding-left: 0.5rem !important;
+    }
+
+    &__remove {
+      color: white !important;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+      }
+    }
+  }
+}
+
+// Form Error States
+.error {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+// Utility Classes
+.textCenter {
+  text-align: center;
+}
+.textRight {
+  text-align: right;
+}
+
+// Padding and Margin Utilities
+.p-1 {
+  padding: 0.25rem;
+}
+.p-2 {
+  padding: 0.5rem;
+}
+.p-3 {
+  padding: 0.75rem;
+}
+.p-4 {
+  padding: 1rem;
+}
+
+.m-1 {
+  margin: 0.25rem;
+}
+.m-2 {
+  margin: 0.5rem;
+}
+.m-3 {
+  margin: 0.75rem;
+}
+.m-4 {
+  margin: 1rem;
+}
+
+// Input Placeholder Styles
+::placeholder {
+  color: #9ca3af;
+}
+
+// General Input Focus State
+:focus {
+  outline: none;
+}
