@@ -1,5 +1,5 @@
 export type Supplier = {
-  supplier_id: string;
+  supplier_uuid: string;
   supplier_name: string;
   supplier_cost: number;
   conversion_factor?: number;

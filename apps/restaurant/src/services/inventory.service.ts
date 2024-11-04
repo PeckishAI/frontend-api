@@ -143,10 +143,10 @@ const getIngredientList = async (
       })) || [],
     supplier_details:
       res.data[key]['supplier_details']?.map((supplier: any) => ({
-        supplier_id: supplier['supplier_id'],
+        supplier_uuid: supplier['supplier_uuid'],
         supplier_name: supplier['supplier_name'],
         supplier_cost: supplier['supplier_cost'],
-        supplier_unit: supplier['supplier_unit'],
+        supplier_unit: supplier['supplier_unit_uuid'],
         supplier_unit_name: supplier['supplier_unit_name'],
         conversion_factor: supplier['conversion_factor'],
         supplier_unit_cost: supplier['supplier_unit_cost'],
@@ -203,7 +203,6 @@ const getOnlyIngredientList = async (
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
     name: res.data[key]['name'],
-
     unit_uuid: res.data[key]['unit_uuid'],
     unit_name: res.data[key]['unit_name'],
     cost: res.data[key]['cost'],
@@ -214,20 +213,22 @@ const getOnlyIngredientList = async (
 const updateIngredient = (ingredient: Ingredient) => {
   const ingredientFormated = {
     id: ingredient.id,
-    name: ingredient.name,
-    tag_details: ingredient.tag_details,
+    ingredient_name: ingredient.name,
+    tag_details: ingredient.tag_details?.map((tag) => ({
+      tag_uuid: tag.uuid,
+    })),
     par_level: ingredient.parLevel,
-    actual_stock: ingredient.actualStock,
-    unit: ingredient.unit,
-    supplier_details: ingredient.supplier_details,
+    quantity: ingredient.actualStock.quantity,
+    supplier_details: ingredient.supplier_details?.map((supplier) => ({
+      supplier_uuid: supplier.supplier_uuid,
+      supplier_unit_cost: supplier.supplier_cost,
+      supplier_unit_uuid: supplier.supplier_unit,
+    })),
     deleted_recipe_ingredient_data: ingredient?.deleted_recipe_ingredient_data,
     recipes: ingredient.recipes,
-    cost: ingredient.unitCost,
-    unit_name: ingredient.unit_name,
     unit_uuid: ingredient.unit_uuid,
     restaurant_uuid: ingredient.restaurantUUID,
     volume_unit_uuid: ingredient.volume_unit_uuid,
-    volume_unit_name: ingredient.volume_unit_name,
     volume_quantity: ingredient.volume_quantity,
   };
 

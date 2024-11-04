@@ -233,7 +233,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           filteredList = filteredList.filter(
             (ingredient) =>
               ingredient.supplier_details?.some((supplier) =>
-                selectedSupplierUuids.includes(supplier.supplier_id)
+                selectedSupplierUuids.includes(supplier.supplier_uuid)
               )
           );
         }
@@ -1828,15 +1828,10 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                     value: supplier.value,
                                   }))}
                                   value={
-                                    suppliers
-                                      .map((supplier) => ({
-                                        label: supplier.label,
-                                        value: supplier.value,
-                                      }))
-                                      .find(
-                                        (supplier) =>
-                                          supplier.value === detail.supplier_id
-                                      ) || null
+                                    suppliers.find(
+                                      (supplier) =>
+                                        supplier.value === detail.supplier_uuid
+                                    ) || null
                                   }
                                   onChange={(selectedOption) => {
                                     const updatedDetails = [
@@ -1848,7 +1843,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
                                     updatedDetails[index] = {
                                       ...updatedDetails[index],
-                                      supplier_id: selectedOption?.value || '',
+                                      supplier_uuid:
+                                        selectedOption?.value || '',
                                       supplier_name:
                                         selectedSupplier?.label || '',
                                     };
@@ -1860,7 +1856,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                   }}
                                 />
                               </div>
-
                               <LabeledInput
                                 label={t('ingredient:supplierCost')}
                                 placeholder={t('ingredient:supplierCost')}
@@ -1880,7 +1875,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                   });
                                 }}
                               />
-
                               <CreatableSelect
                                 placeholder={
                                   detail.supplier_unit
@@ -1992,7 +1986,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                 }}
                                 isCreatable
                               />
-
                               <div className={styles.IconContainer}>
                                 <LabeledInput
                                   label={t('ingredient:conversion_factor')}
@@ -2055,7 +2048,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                   className={styles.info}
                                 />
                               </div>
-
                               <span className={styles.deleteButton}>
                                 <i
                                   className="fa-solid fa-trash"
