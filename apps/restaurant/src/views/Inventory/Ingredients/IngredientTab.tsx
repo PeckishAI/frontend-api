@@ -95,7 +95,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [inputValue, setInputValue] = useState<any>('');
 
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
-    const [tagList, setTagList] = useState<Tag>();
+    const [tagList, setTagList] = useState<Tag[]>();
     const [editingRowId, setEditingRowId] = useState<string | null>();
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
     const [wastingRowId, setWastingRowId] = useState<Ingredient>();
@@ -145,9 +145,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
     );
-
-    console.log('editedValues', editedValues);
-    console.log('isEditMode', isEditMode);
 
     const reloadReferenceUnits = useCallback(async () => {
       inventoryService.getReferenceUnits().then((res) => {
@@ -356,7 +353,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
               const values = [];
               values.push(row.name);
               values.push(row.parLevel || '-');
-              values.push(row.actualStock || '-');
+              values.push(row.actualStock.quantity || '-');
               values.push(row.theoriticalStock || '-');
               values.push(row.unit || '-');
               const suppliers =
@@ -452,16 +449,18 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       if (!selectedRestaurantUUID) return;
 
       props.setLoadingState(true);
+
       try {
         const ingredients = await inventoryService.getIngredientList(
           selectedRestaurantUUID
         );
-        console.log('Reload Inventory Data', ingredients);
 
         setIngredientsList(ingredients);
 
         setFilteredIngredients(ingredients);
       } catch (err) {
+        console.log('Error fetching ingredients:', err);
+
         if (err instanceof Error) {
           // togglePopupError(err.message);
         } else {
@@ -777,14 +776,12 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         minWidth: '150px',
         renderItem: ({ row }) => {
           // Find the initial selected tags based on the tagUUIDs
+
           const initialSelectedTags = row.tagUUID
             ? row.tagUUID
                 .map((uuid) => tagList?.find((tag) => tag.uuid === uuid))
                 .filter(Boolean)
             : [];
-
-          // Use the row-specific tags if available, otherwise fall back to initialSelectedTags
-          const autocompleteValue = initialSelectedTags;
 
           return row.tagUUID &&
             Array.isArray(row.tagUUID) &&
@@ -940,7 +937,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           </div>
         ),
         width: '15%',
-        renderItem: ({ row }) => row.actualStock,
+        renderItem: ({ row }) => row.actualStock.quantity,
       },
       {
         key: 'unit',
@@ -1164,12 +1161,19 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                 placeholder={t('ingredient:actualStock')}
                                 type="text"
                                 lighter
-                                value={editedValues?.actualStock || ''}
+                                value={editedValues?.actualStock.quantity || ''}
                                 onChange={(event) =>
-                                  setEditedValues({
-                                    ...editedValues,
-                                    actualStock: event.target.value,
-                                  })
+                                  setEditedValues(
+                                    editedValues
+                                      ? {
+                                          ...editedValues,
+                                          actualStock: {
+                                            ...editedValues.actualStock,
+                                            quantity: +event.target.value,
+                                          },
+                                        }
+                                      : null
+                                  )
                                 }
                                 sx={{
                                   '& .MuiFilledInput-root': {
@@ -1191,7 +1195,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                             </>
                           ) : (
                             <span className={styles.value}>
-                              {editedValues?.actualStock}
+                              {editedValues?.actualStock?.quantity}
                             </span>
                           )}
                         </div>

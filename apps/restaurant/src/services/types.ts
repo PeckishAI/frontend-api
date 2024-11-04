@@ -36,10 +36,8 @@ export type Ingredient = {
   name: string;
   tagUUID?: string[] | null;
   tag_details?: TagDetails[] | null;
-  actualStock: number;
-  theoriticalStock?: number;
+  actualStock: Stock;
   parLevel: number;
-  unit: string;
   amount: number;
   actions?: void;
   quantity: number;
@@ -51,7 +49,6 @@ export type Ingredient = {
   stock_history?: Stock[];
   unit_name?: string;
   unit_uuid?: string;
-  conversion_factor: number;
   volume_unit_uuid: string;
   volume_unit_name: string;
   volume_quantity: number;
