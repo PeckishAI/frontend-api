@@ -126,72 +126,43 @@ const getIngredientList = async (
 ): Promise<Ingredient[]> => {
   const res = await axiosClient.get('/inventory/' + restaurantUUID);
 
-  const ingredients = Object.keys(res.data).map<Ingredient>((key) => ({
-    id: key,
-    name: res.data[key]['name'],
-    parLevel: res.data[key]['par_level'],
-    actualStock: res.data[key]['actual_stock'],
-    theoriticalStock: res.data[key]['theoritical_stock'],
-    unit: res.data[key]['unit'],
-    unitCost: res.data[key]['cost'],
-    tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
-    tag_details: res.data[key]['tag_details'].map((tag: any) => ({
-      uuid: tag['uuid'],
-      name: tag['name'],
-    })),
-    supplier_details: res.data[key]['supplier_details'].map(
-      (supplier: any) => ({
-        supplier_id: supplier['supplier_id'],
-        supplier_name: supplier['supplier_name'],
-        supplier_cost: supplier['supplier_cost'],
-        supplier_unit_cost: supplier['supplier_unit_cost'],
-      })
-    ),
-    amount: res.data[key]['amount'],
-    type: res.data[key]['type'],
-    volume_unit_name: res.data[key]['volume_unit_name'],
-    volume_unit_uuid: res.data[key]['volume_unit_uuid'],
-    volume_quantity: res.data[key]['volume_quantity'],
-  }));
-
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
-    name: res.data[key]['name'],
+    name: res.data[key]['ingredient_name'],
     parLevel: res.data[key]['par_level'],
     actualStock: res.data[key]['actual_stock'],
-    theoriticalStock: res.data[key]['theoritical_stock'],
-    unit: res.data[key]['unit'],
     unit_name: res.data[key]['unit_name'],
     unit_uuid: res.data[key]['unit_uuid'],
     recipe_count: res.data[key]['recipe_count'],
     unitCost: res.data[key]['cost'],
     tagUUID: res.data[key]['tag_uuid']?.map((uuid: string) => uuid) || [],
-    tag_details: res.data[key]['tag_details'].map((tag: any) => ({
-      uuid: tag['uuid'],
-      name: tag['name'],
-    })),
-    supplier_details: res.data[key]['supplier_details'].map(
-      (supplier: any) => ({
-        supplier_id: supplier['supplier_id'],
+    tag_details:
+      res.data[key]['tag_details']?.map((tag: any) => ({
+        uuid: tag['uuid'],
+        name: tag['name'],
+      })) || [],
+    supplier_details:
+      res.data[key]['supplier_details']?.map((supplier: any) => ({
+        supplier_uuid: supplier['supplier_uuid'],
         supplier_name: supplier['supplier_name'],
         supplier_cost: supplier['supplier_cost'],
-        supplier_unit: supplier['supplier_unit'],
+        supplier_unit: supplier['supplier_unit_uuid'],
         supplier_unit_name: supplier['supplier_unit_name'],
         conversion_factor: supplier['conversion_factor'],
         supplier_unit_cost: supplier['supplier_unit_cost'],
-      })
-    ),
+      })) || [],
     stock_history: res.data[key]['stock_history'],
-    recipes: res.data[key]['recipes'].map((recipe: any) => ({
-      conversion_factor: recipe['conversion_factor'],
-      quantity: recipe['quantity'],
-      from_unit_name: recipe['from_unit_name'],
-      to_unit_name: recipe['to_unit_name'],
-      recipe_name: recipe['recipe_name'],
-      recipe_uuid: recipe['recipe_uuid'],
-      unit_name: recipe['unit_name'],
-      unit_uuid: recipe['unit_uuid'],
-    })),
+    recipes:
+      res.data[key]['recipes']?.map((recipe: any) => ({
+        conversion_factor: recipe['conversion_factor'],
+        quantity: recipe['quantity'],
+        from_unit_name: recipe['from_unit_name'],
+        to_unit_name: recipe['to_unit_name'],
+        recipe_name: recipe['recipe_name'],
+        recipe_uuid: recipe['recipe_uuid'],
+        unit_name: recipe['unit_name'],
+        unit_uuid: recipe['unit_uuid'],
+      })) || [],
     amount: res.data[key]['amount'],
     type: res.data[key]['type'],
     quantity: res.data[key]['quantity'],
@@ -232,7 +203,6 @@ const getOnlyIngredientList = async (
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
     name: res.data[key]['name'],
-
     unit_uuid: res.data[key]['unit_uuid'],
     unit_name: res.data[key]['unit_name'],
     cost: res.data[key]['cost'],
@@ -243,20 +213,23 @@ const getOnlyIngredientList = async (
 const updateIngredient = (ingredient: Ingredient) => {
   const ingredientFormated = {
     id: ingredient.id,
-    name: ingredient.name,
-    tag_details: ingredient.tag_details,
+    ingredient_name: ingredient.name,
+    tag_details: ingredient.tag_details?.map((tag) => ({
+      tag_uuid: tag.uuid,
+    })),
     par_level: ingredient.parLevel,
-    actual_stock: ingredient.actualStock,
-    unit: ingredient.unit,
-    supplier_details: ingredient.supplier_details,
+    quantity: ingredient.actualStock.quantity,
+    supplier_details: ingredient.supplier_details?.map((supplier) => ({
+      supplier_uuid: supplier.supplier_uuid,
+      supplier_cost: supplier.supplier_cost,
+      supplier_unit_uuid: supplier.supplier_unit,
+      conversion_factor: supplier.conversion_factor,
+    })),
     deleted_recipe_ingredient_data: ingredient?.deleted_recipe_ingredient_data,
     recipes: ingredient.recipes,
-    cost: ingredient.unitCost,
-    unit_name: ingredient.unit_name,
     unit_uuid: ingredient.unit_uuid,
     restaurant_uuid: ingredient.restaurantUUID,
     volume_unit_uuid: ingredient.volume_unit_uuid,
-    volume_unit_name: ingredient.volume_unit_name,
     volume_quantity: ingredient.volume_quantity,
   };
 
