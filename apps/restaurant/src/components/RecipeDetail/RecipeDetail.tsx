@@ -20,6 +20,8 @@ const RecipeDetail = (props: Props) => {
   const [deleteRecipe, setDeleteRecipe] = useState<Recipe | null>(null);
   const { currencyISO } = useRestaurantCurrency();
 
+  console.log('Props', props);
+
   return (
     <>
       <SidePanel

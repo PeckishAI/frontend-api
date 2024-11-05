@@ -296,6 +296,7 @@ const RecipeFormPanel = (props: Props) => {
     };
 
     console.log('Submitting');
+    console.log(props.action);
 
     const service =
       props.action === 'create'
@@ -817,9 +818,10 @@ const RecipeFormPanel = (props: Props) => {
 
                 <p className={styles.ingredientCost}>
                   {formatCurrency(
-                    ((selectedIngredient?.cost ?? 0) /
+                    (((selectedIngredient?.cost ?? 0) /
                       (rowField?.conversion_factor ?? 1)) *
-                      rowField.quantity,
+                      rowField.quantity) /
+                      (selectedIngredient?.quantity ?? 1),
                     currencyISO
                   )}
                 </p>

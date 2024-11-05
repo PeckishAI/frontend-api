@@ -68,6 +68,7 @@ const getRecipes = async (
     unit_uuid: res.data[key]['unit_uuid'] || undefined, // For preparations
   }));
 
+  console.log('convertedData', convertedData);
   return convertedData;
 };
 
