@@ -221,8 +221,9 @@ const updateIngredient = (ingredient: Ingredient) => {
     quantity: ingredient.actualStock.quantity,
     supplier_details: ingredient.supplier_details?.map((supplier) => ({
       supplier_uuid: supplier.supplier_uuid,
-      supplier_unit_cost: supplier.supplier_cost,
+      supplier_cost: supplier.supplier_cost,
       supplier_unit_uuid: supplier.supplier_unit,
+      conversion_factor: supplier.conversion_factor,
     })),
     deleted_recipe_ingredient_data: ingredient?.deleted_recipe_ingredient_data,
     recipes: ingredient.recipes,

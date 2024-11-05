@@ -2000,7 +2000,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                       event.target.value;
 
                                     const updatedDetails =
-                                      editedValues.supplier_details.map(
+                                      editedValues.supplier_details?.map(
                                         (supplierDetail) => {
                                           if (
                                             supplierDetail.supplier_unit ===
@@ -2009,7 +2009,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                             return {
                                               ...supplierDetail,
                                               conversion_factor:
-                                                updatedConversionFactor,
+                                                +updatedConversionFactor || 1,
                                             };
                                           }
                                           return supplierDetail;
@@ -2018,7 +2018,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
                                     // Sync conversion factor with recipes sharing the same unit
                                     const updatedRecipes =
-                                      editedValues.recipes.map((recipe) => {
+                                      editedValues.recipes?.map((recipe) => {
                                         if (
                                           recipe.unit_uuid ===
                                           detail.supplier_unit
@@ -2026,7 +2026,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                                           return {
                                             ...recipe,
                                             conversion_factor:
-                                              updatedConversionFactor,
+                                              +updatedConversionFactor || 1,
                                           };
                                         }
                                         return recipe;
