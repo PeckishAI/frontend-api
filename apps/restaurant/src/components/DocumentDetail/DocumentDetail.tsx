@@ -425,7 +425,6 @@ const DocumentDetail = (props: Props) => {
       renderItem: ({ index }) => (
         <Input
           type="number"
-          min={0}
           step="0.001"
           placeholder={t('quantity')}
           className={styles.quantity}
@@ -442,7 +441,6 @@ const DocumentDetail = (props: Props) => {
       renderItem: ({ index }) => (
         <Input
           type="number"
-          min={0}
           step="0.001"
           max={editableDocument?.ingredients[index].quantity}
           placeholder={t('receivedQty')}
