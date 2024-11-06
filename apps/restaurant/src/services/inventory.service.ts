@@ -178,9 +178,10 @@ const getIngredientList = async (
 //   unit_name: stock['unit_name'],
 // })),
 
-const addIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
+type NewIngredient = Omit<Ingredient, 'id'>;
+
+const addIngredient = (restaurantUUID: string, ingredient: NewIngredient) => {
   const FormattedIngredient = {
-    id: ingredient.id,
     name: ingredient.name,
     tag_details: ingredient.tag_details,
     par_level: ingredient.parLevel,
