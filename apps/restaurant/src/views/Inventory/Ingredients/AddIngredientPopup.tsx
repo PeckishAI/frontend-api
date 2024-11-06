@@ -192,24 +192,20 @@ const AddIngredientPopup = (props: Props) => {
   });
 
   const handleSubmitForm = handleSubmit(async (data) => {
-    const formattedData = {
-      ...data,
-      tag_details: (data.tag_details || []).map((tag) => ({
-        uuid: tag?.uuid || '', // Handle undefined or missing uuid
-        name: tag?.name || '', // Handle undefined or missing name
-      })),
-      supplier_details: (data.supplier_details || []).map((supplier) => ({
-        supplier_id: supplier?.supplier_id || '', // Handle undefined or missing supplier_id
-        supplier_name: supplier?.supplier_name || '', // Handle undefined or missing supplier_name
-        supplier_cost: supplier?.supplier_cost || '', // Handle undefined or missing supplier_cost
-        conversion_factor: supplier?.conversion_factor || '', // Handle undefined or missing conversion_factor
-        supplier_unit_uuid: supplier?.supplier_unit_uuid || '', // Handle undefined or missing supplier_unit_uuid
-        supplier_unit_name: supplier?.supplier_unit_name || '', // Handle undefined or missing supplier_unit_name
-      })),
-    };
-
     try {
-      await inventoryService.addIngredient(restaurantUUID, formattedData);
+      await inventoryService.addIngredient(restaurantUUID, {
+        ...data,
+        tag_names: (data.tag_details || []).map((tag) => ({
+          tag_uuid: tag?.uuid || '', // Handle undefined or missing uuid
+          tag_name: tag?.name || '', // Handle undefined or missing name
+        })),
+        supplier_details: (data.supplier_details || []).map((supplier) => ({
+          supplier_uuid: supplier?.supplier_id || '', // Handle undefined or missing supplier_id
+          supplier_cost: supplier?.supplier_cost || '', // Handle undefined or missing supplier_cost
+          conversion_factor: supplier?.conversion_factor || '', // Handle undefined or missing conversion_factor
+          supplier_unit_uuid: supplier?.supplier_unit_uuid || '', // Handle undefined or missing supplier_unit_uuid
+        })),
+      });
 
       props.onRequestClose();
       reloadTagList();
