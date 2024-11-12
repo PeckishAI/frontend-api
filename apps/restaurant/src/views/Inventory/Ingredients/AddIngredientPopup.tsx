@@ -370,8 +370,8 @@ const AddIngredientPopup = ({
               <div className={styles.flexContainer}>
                 <div className={styles.IconContainer}>
                   <LabeledInput
-                    label={t('ingredient:conversion_factor')}
-                    placeholder={t('ingredient:conversion_factor')}
+                    label={t('ingredient:size')}
+                    placeholder={t('ingredient:size')}
                     type="text"
                     minWidth="100px"
                     error={

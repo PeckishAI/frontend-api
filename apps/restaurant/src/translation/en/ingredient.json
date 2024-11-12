@@ -25,6 +25,7 @@
   "supplierName": "Supplier Name",
   "supplierUnit": "Supplier Unit",
   "conversion_factor": "Conversion Factor",
+  "size": "Size",
   "recipe_name": "Recipe Name",
 
   "placeholder.ingredientName": "Ex : Salad",
