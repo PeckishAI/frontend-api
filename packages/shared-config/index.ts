@@ -5,7 +5,7 @@ const devConfig = {
 
   cookieDomain: 'localhost',
 
-  apiUrl: 'https://api-gateway-k2w3p2ptza-ew.a.run.app',
+  apiUrl: 'https://api-gateway-zqjpx7oxsq-ew.a.run.app',
   apiUrlIntegration: 'https://integrations-api-k2w3p2ptza-ew.a.run.app',
 
   GOOGLE_CLIENT_ID:
@@ -46,5 +46,5 @@ export const GLOBAL_CONFIG =
   import.meta.env.MODE === 'development'
     ? devConfig
     : import.meta.env.VITE_CONFIG_MODE === 'staging'
-    ? stagingConfig
-    : prodConfig;
+      ? stagingConfig
+      : prodConfig;

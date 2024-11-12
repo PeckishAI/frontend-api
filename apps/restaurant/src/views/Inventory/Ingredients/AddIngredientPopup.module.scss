@@ -1,18 +1,17 @@
 .formContainer {
-  // padding-bottom: 40px;
   height: 60vh;
   overflow-y: auto;
 
   h3 {
     font-size: 1.2rem;
     margin-bottom: 10px;
-    color: var(--primaryColor); // Use a suitable color variable
+    color: var(--primaryColor);
   }
 }
 
 .ingredientSection {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); // Two columns
+  grid-template-columns: repeat(5, 1fr);
   gap: 10px;
   padding: 10px 0;
   max-height: 60vh;
@@ -22,7 +21,7 @@
 
 .SupplierSection {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); // Two columns
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   padding: 10px 0;
   max-height: 60vh;
@@ -30,46 +29,10 @@
   padding-right: 2px;
 }
 
-.autoCheckbox {
-  margin-top: 20px;
-}
-
 .flexContainer {
   display: flex;
   gap: 20px;
   align-items: flex-start;
-}
-
-// .inputContainer {
-//   display: grid;
-//   grid-template-columns: repeat(2, 1fr); // Two columns
-//   gap: 10px;
-//   padding: 10px 0;
-//   max-height: 60vh;
-//   padding-left: 2px;
-//   padding-right: 2px;
-//   overflow-y: auto;
-//   padding-bottom: 100px;
-// }
-
-// .gridContainer3 {
-//   display: grid;
-//   grid-template-columns: repeat(3, 1fr);
-//   gap: 20px;
-//   margin-top: 10px;
-//   margin-bottom: 10px;
-//   width: 100%;
-// }
-
-.rowInputs {
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.quantityCss {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
 }
 
 .addIngredientButton {
@@ -79,7 +42,6 @@
   gap: 10px;
   cursor: pointer;
   height: var(--input-large-height);
-
   color: var(--primaryColor);
   font-size: 0.9rem;
 }
@@ -93,10 +55,7 @@
     flex: 1;
   }
 }
-.selectContainer {
-  position: relative;
-  margin-bottom: 10px;
-}
+
 .deleteButton {
   cursor: pointer;
   color: var(--primaryColor);
@@ -107,6 +66,7 @@
   position: relative;
   background: transparent;
 }
+
 .info {
   position: absolute;
   top: 20px;
@@ -127,19 +87,13 @@
   border-radius: 50%;
   transition: background-color 0.2s ease;
 }
+
 .unitInput {
   align-self: flex-start;
 }
+
 .errorMessage {
   color: red;
   font-size: 13.6px;
   margin-top: 5px;
 }
-// .errorMessage {
-//   color: red;
-//   font-size: 13.6px;
-//   margin-top: 5px;
-// }
-// .autoCheckbox {
-//   margin-top: 20px;
-// }
