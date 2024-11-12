@@ -36,10 +36,9 @@
   padding: 25px 30px;
   border-radius: 10px;
 
-  // min-width: 400px;
-  // max-width: 75%;
-  // min-height: 200px;
-  // max-height: 75%;
+  // Add these lines:
+  position: relative; // Make sure it doesn’t restrict the dropdown
+  overflow: visible; // Allow overflow
 
   transform-origin: 50% 100%;
   animation: 0.4s animateFromTop;

@@ -398,15 +398,9 @@ const AddPreparationPopup = (props: Props) => {
                                 .find((option) => option.value === value) ??
                               null
                             }
+                            menuPosition="fixed" // Use fixed positioning for dropdown
                             styles={{
-                              menu: (provided) => ({
-                                ...provided,
-                                overflowY: 'auto',
-                              }),
-                              control: (provided) => ({
-                                ...provided,
-                                minWidth: '200px',
-                              }),
+                              menuPortal: (base) => ({ ...base, zIndex: 9999 }), // Ensure it's above other elements
                             }}
                           />
                         )}
@@ -481,6 +475,10 @@ const AddPreparationPopup = (props: Props) => {
                                 }
                               : null
                           }
+                          menuPosition="fixed" // Use fixed positioning for dropdown
+                          styles={{
+                            menuPortal: (base) => ({ ...base, zIndex: 9999 }), // Ensure it's above other elements
+                          }}
                         />
                       )}
                     />

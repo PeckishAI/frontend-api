@@ -300,6 +300,10 @@ const AddIngredientPopup = ({
                     selectedOption?.label || ''
                   );
                 }}
+                menuPosition="fixed" // Use fixed positioning for dropdown
+                styles={{
+                  menuPortal: (base) => ({ ...base, zIndex: 9999 }), // Ensure it's above other elements
+                }}
                 isClearable
               />
               <LabeledInput
@@ -357,6 +361,10 @@ const AddIngredientPopup = ({
                       selectedOption?.label || ''
                     );
                   }
+                }}
+                menuPosition="fixed" // Use fixed positioning for dropdown
+                styles={{
+                  menuPortal: (base) => ({ ...base, zIndex: 9999 }), // Ensure it's above other elements
                 }}
               />
               <div className={styles.flexContainer}>
