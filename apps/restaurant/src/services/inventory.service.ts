@@ -264,6 +264,8 @@ const getUnits = async (restaurantUUID: string): Promise<Unit[]> => {
       return [];
     }
 
+    console.log('Units', res.data);
+
     // Map the response data to the Unit array
     const units: Unit[] = res.data.map((unitData: any) => ({
       unit_name: unitData.unit_name,
