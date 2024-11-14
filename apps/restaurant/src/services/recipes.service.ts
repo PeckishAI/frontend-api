@@ -68,7 +68,6 @@ const getRecipes = async (
     unit_uuid: res.data[key]['unit_uuid'] || undefined, // For preparations
   }));
 
-  console.log('convertedData', convertedData);
   return convertedData;
 };
 
@@ -101,6 +100,7 @@ const updateRecipe = (
   recipeUUID: string,
   data: FormRecipe
 ) => {
+  console.log('data', data);
   return axiosClient.post('/recipe/' + recipeUUID + '/update', {
     restaurant_uuid: restaurantUUID,
     type: data.type,

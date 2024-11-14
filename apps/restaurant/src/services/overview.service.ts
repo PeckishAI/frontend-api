@@ -85,8 +85,10 @@ const getCostOfSales = async (
       }
     );
 
+    console.log('data', res.data);
+
     return res.data.map((item) => ({
-      ingredient_name: item.ingredient_name,
+      ingredient_name: item.name,
       tag_name: item.tag_name,
       unit: item.unit,
       cost_per_unit: item.cost_per_unit,
