@@ -150,9 +150,6 @@ const Overview = () => {
                 </ChartCard>
               </div>
             </div> */}
-            <div className={styles.datepicker}>
-              <DateRangePickerComponent setValue={setValue} value={value} />
-            </div>
             <div className={styles.trends}>
               {/* {loadingMetrics &&
                 [1, 2, 3].map((i) => <TrendCardSkeleton key={i} />)} */}
@@ -183,6 +180,9 @@ const Overview = () => {
                   /> */}
                 </>
               )}
+              <div className={styles.datepicker}>
+                <DateRangePickerComponent setValue={setValue} value={value} />
+              </div>
             </div>
 
             {isLoading ? (
