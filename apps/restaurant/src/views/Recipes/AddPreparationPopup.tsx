@@ -94,7 +94,7 @@ const AddPreparationPopup = (props: Props) => {
       unit_uuid: 'each',
       category: 'preparations',
       ingredients: [
-        { ingredient_uuid: '', quantity: 0, type: '', conversion_factor: 0 },
+        { ingredient_uuid: '', quantity: 0, type: '', conversion_factor: 1 },
       ],
     },
   });

@@ -1,0 +1,60 @@
+.chart {
+  width: 100%;
+  position: relative;
+  padding: 16px 0;
+}
+
+.barsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 100%;
+  gap: 24px;
+  padding: 0 16px;
+}
+
+.barContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  min-width: 40px;
+}
+
+.barWrapper {
+  display: flex;
+  align-items: flex-end;
+  height: calc(100% - 24px); // Leave space for label
+  width: 100%;
+}
+
+.bar {
+  width: 100%;
+  background-color: var(--primaryColor);
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease;
+  position: relative;
+  min-height: 4px;
+
+  .value {
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: var(--textPrimaryColor);
+    white-space: nowrap;
+  }
+}
+
+.labelContainer {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.label {
+  font-size: 14px;
+  color: var(--textSecondaryColor);
+  white-space: nowrap;
+}

@@ -17,6 +17,7 @@
   "soldQty": "Sold Qty",
   "openingQty": "Opening Qty",
   "purchasedQty": "Purchased Qty",
+  "purchasedValue": "Purchased Value",
   "closingQty": "Closing Qty",
   "actualCos": "actual Cos",
   "variance": "Variance",

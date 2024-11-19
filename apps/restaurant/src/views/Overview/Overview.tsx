@@ -22,10 +22,21 @@ import {
   defaultFilters,
 } from './components/CostFilter/CostFilters';
 import CustomPagination from './components/Pagination/CustomPagination';
+import { ChartCard } from '../../components/ChartsCard/ChartCard';
+import { BarChart } from 'shared-ui/components/BarChart/BarChart';
+
+const dummyData = [
+  { label: 'January', value: 65 },
+  { label: 'February', value: 45 },
+  { label: 'March', value: 80 },
+  { label: 'April', value: 30 },
+  { label: 'May', value: 55 },
+];
 
 const metricIcon: { [K in keyof ApiResponse]: React.ReactNode } = {
   costofgoodsold: <img src={Vector} />,
   sales: <FaRegMoneyBillAlt />,
+  profits: <FaRegMoneyBillAlt />, // Add this new line
 };
 
 export const metricFormat: {
@@ -132,38 +143,48 @@ const Overview = () => {
       {selectedRestaurantUUID ? (
         <>
           <>
+            {/* <div className={styles.overviewContainer}>
+              <div className={styles.chartsContainer}>
+                <ChartCard title="Monthly Sales">
+                  <BarChart data={dummyData} height={300} />
+                </ChartCard>
+              </div>
+            </div> */}
+            <div className={styles.datepicker}>
+              <DateRangePickerComponent setValue={setValue} value={value} />
+            </div>
             <div className={styles.trends}>
+              {/* {loadingMetrics &&
+                [1, 2, 3].map((i) => <TrendCardSkeleton key={i} />)} */}
               {loadingMetrics &&
                 [1, 2].map((i) => <TrendCardSkeleton key={i} />)}
 
-              {!loadingMetrics &&
-                cost &&
-                Object.keys(cost).map((key) => (
+              {!loadingMetrics && (
+                <>
                   <TrendCard
-                    key={key}
-                    title={
-                      key === 'costofgoodsold' ? 'Cost of Goods Sold' : key
+                    title="Cost of Goods Sold"
+                    value={cost?.costofgoodsold?.value?.toFixed(2) || '0'}
+                    icon={<img src={Vector} />}
+                    percentage={
+                      cost?.costofgoodsold?.percentage?.toFixed(2) || '0'
                     }
-                    value={cost[key]?.value?.toFixed(2) || '0'}
-                    icon={metricIcon[key]}
-                    percentage={cost[key]?.percentage.toFixed(2) || '0'}
                   />
-                ))}
-              {!loadingMetrics &&
-                !cost &&
-                [1, 2].map((key) => (
                   <TrendCard
-                    key={key}
-                    title={key === 1 ? 'Cost of Goods Sold' : 'Sales'}
-                    value="0"
-                    icon={metricIcon[key === 1 ? 'costofgoodsold' : 'sales']}
-                    percentage="0"
+                    title="Sales"
+                    value={cost?.sales?.value?.toFixed(2) || '0'}
+                    icon={<FaRegMoneyBillAlt />}
+                    percentage={cost?.sales?.percentage?.toFixed(2) || '0'}
                   />
-                ))}
-              <div className={styles.datepicker}>
-                <DateRangePickerComponent setValue={setValue} value={value} />
-              </div>
+                  {/* <TrendCard
+                    title="Inventory Value"
+                    value={cost?.sales?.value?.toFixed(2) || '0'} // Using sales data for now
+                    icon={<FaRegMoneyBillAlt />}
+                    percentage={cost?.sales?.percentage?.toFixed(2) || '0'} // Using sales data for now
+                  /> */}
+                </>
+              )}
             </div>
+
             {isLoading ? (
               <Loading size="large" />
             ) : (

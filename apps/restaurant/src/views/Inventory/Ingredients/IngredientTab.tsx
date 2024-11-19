@@ -92,6 +92,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       Ingredient[]
     >([]);
 
+    console.log('hey', ingredientsList);
+
     const [inputValue, setInputValue] = useState<any>('');
 
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);

@@ -13,7 +13,6 @@
     grid-template-columns: repeat(1, 1fr); // One column on even smaller screens
   }
 
-
   & > div {
     flex: 1;
   }
@@ -24,4 +23,16 @@
   justify-content: start;
   align-items: center;
   padding: 20px;
+}
+
+.overviewContainer {
+  position: relative;
+  padding-bottom: 24px;
+}
+
+.chartsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  position: relative;
 }

@@ -200,13 +200,14 @@ const getOnlyIngredientList = async (
   const res = await axiosClient.get(
     '/ingredients-list/' + restaurantUUID + '?fetch_preparations=false'
   );
+  console.log('hiiii', res.data);
 
   return Object.keys(res.data).map<Ingredient>((key) => ({
     id: key,
     name: res.data[key]['name'],
     unit_uuid: res.data[key]['unit_uuid'],
     unit_name: res.data[key]['unit_name'],
-    cost: res.data[key]['cost'],
+    cost: res.data[key]['cost'] || 0,
     type: res.data[key]['type'],
   }));
 };

@@ -10,6 +10,11 @@ import { useTranslation } from 'react-i18next';
 import overviewService from '../../../services/overview.service';
 import { format } from 'date-fns';
 import CostFilters from './CostFilter/CostFilters';
+import {
+  useRestaurantCurrency,
+  useRestaurantStore,
+} from '../../../store/useRestaurantStore';
+import { formatCurrency } from '../../../utils/helpers';
 
 type Props = {
   data?: CostofSales;
@@ -130,6 +135,8 @@ export const CostOfSalesCard: React.FC<Props> = ({
     }
   };
 
+  const { currencyISO } = useRestaurantCurrency();
+
   return (
     <>
       <div className={styles.card}>
@@ -203,8 +210,11 @@ export const CostOfSalesCard: React.FC<Props> = ({
                       key: 'cost_per_unit',
                       renderItem: ({ value }) =>
                         value != null
-                          ? `£${parseFloat(value).toFixed(2)}`
-                          : '£0.00',
+                          ? formatCurrency(
+                              parseFloat(value).toFixed(2),
+                              currencyISO
+                            )
+                          : formatCurrency(0.0, currencyISO),
                     },
                     {
                       header: t('ingredient:soldQty'),
@@ -219,8 +229,11 @@ export const CostOfSalesCard: React.FC<Props> = ({
                       key: 'theoretical_cos',
                       renderItem: ({ value }) =>
                         value != null
-                          ? `£${parseFloat(value).toFixed(2)}`
-                          : '£0.00',
+                          ? formatCurrency(
+                              parseFloat(value).toFixed(2),
+                              currencyISO
+                            )
+                          : formatCurrency(0.0, currencyISO),
                     },
                     {
                       header: t('ingredient:openingQty'),
@@ -251,8 +264,11 @@ export const CostOfSalesCard: React.FC<Props> = ({
                       key: 'actual_cos',
                       renderItem: ({ value }) =>
                         value != null
-                          ? `£${parseFloat(value).toFixed(2)}`
-                          : '£0.00',
+                          ? formatCurrency(
+                              parseFloat(value).toFixed(2),
+                              currencyISO
+                            )
+                          : formatCurrency(0.0, currencyISO),
                     },
                     {
                       header: t('ingredient:variance'),
