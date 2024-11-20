@@ -340,30 +340,37 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       const rows = filteredIngredients;
       if (rows) {
         const header =
-          'Ingredient name, Par level, Actual stock, Theoretical stock, Unit, Suppliers, Cost per unit\n';
+          'Ingredient UUID,Ingredient Name,Unit UUID,Unit Name,Par Level,Quantity,Tags\n';
         const csvContent =
           'data:text/csv;charset=utf-8,' +
           header +
           rows
             .map((row) => {
               const values = [];
-              values.push(row.name);
-              values.push(row.parLevel || '-');
-              values.push(row.actualStock.quantity || '-');
-              values.push(row.theoriticalStock || '-');
-              values.push(row.unit || '-');
-              const suppliers =
-                row?.supplier_details?.length > 0
-                  ? row?.supplier_details
-                      .map(
-                        (supplier) =>
-                          `{${supplier.supplier_name} (${supplier.supplier_cost})}`
-                      )
-                      .join('; ')
-                  : '-';
-              values.push(suppliers);
-              values.push(row.unitCost || '-');
-              return values.join(',');
+              // Ingredient UUID
+              values.push(row.id || '');
+              // Ingredient Name
+              values.push(row.name || '');
+              // Unit UUID
+              values.push(row.unit_uuid || '');
+              // Unit Name
+              values.push(row.unit_name || '');
+              // Par Level
+              values.push(row.parLevel || '');
+              // Quantity
+              values.push(row.actualStock?.quantity || '');
+              // Tags (joined with >)
+              const tags = row.tag_details
+                ? row.tag_details.map((tag) => tag.name).join('>')
+                : '';
+              values.push(tags);
+
+              // Escape any commas in the values and wrap in quotes if needed
+              return values
+                .map((value) =>
+                  value.toString().includes(',') ? `"${value}"` : value
+                )
+                .join(',');
             })
             .join('\n');
 
