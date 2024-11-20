@@ -253,6 +253,7 @@ const RecipeFormPanel = (props: Props) => {
       );
 
       if (conversionFactor?.data) {
+        console.log(conversionFactor?.data);
         setValue(
           `ingredients.${index}.conversion_factor`,
           conversionFactor.data.data
@@ -798,7 +799,7 @@ const RecipeFormPanel = (props: Props) => {
                 />
                 <div className={styles.IconContainer}>
                   <LabeledInput
-                    placeholder={t('conversion_factor')}
+                    placeholder={`${selectedIngredient?.unit_name || 'unit'} → ${watch(`ingredients.${i}.recipe_unit_name`) || 'unit'} `}
                     type="number"
                     step="any"
                     lighter
@@ -809,9 +810,9 @@ const RecipeFormPanel = (props: Props) => {
                   />
                   <IconButton
                     icon={<i className="fa-solid fa-circle-info"></i>}
-                    tooltipMsg={`from ${
+                    tooltipMsg={`How much ${
                       watch(`ingredients.${i}.recipe_unit_name`) || ''
-                    } to ${selectedIngredient?.unit_name || ''} `}
+                    } is 1 ${selectedIngredient?.unit_name || ''} `}
                     className={styles.info}
                   />
                 </div>
