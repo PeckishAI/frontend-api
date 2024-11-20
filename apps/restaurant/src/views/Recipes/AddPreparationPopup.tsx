@@ -239,7 +239,6 @@ const AddPreparationPopup = (props: Props) => {
       <form onSubmit={handleSubmitForm}>
         <div className={styles.form}>
           <div className={styles.inputContainer}>
-            {console.log('errors', errors)}
             <div>
               <LabeledInput
                 lighter

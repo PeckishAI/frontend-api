@@ -92,8 +92,6 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       Ingredient[]
     >([]);
 
-    console.log('hey', ingredientsList);
-
     const [inputValue, setInputValue] = useState<any>('');
 
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
@@ -916,7 +914,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
             onMouseEnter={() => handleMouseEnter('parLevel')}
             onMouseLeave={handleMouseLeave}
             style={columnHeaderStyle}>
-            {t('ingredient:parLvel')} {renderSortArrow('parLevel')}
+            {t('ingredient:parLevel')} {renderSortArrow('parLevel')}
           </div>
         ),
         width: '10%',
@@ -1204,8 +1202,8 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                           {isEditMode ? (
                             <>
                               <LabeledInput
-                                label={t('ingredient:parLvel')}
-                                placeholder={t('ingredient:parLvel')}
+                                label={t('ingredient:parLevel')}
+                                placeholder={t('ingredient:parLevel')}
                                 type="text"
                                 lighter
                                 value={editedValues?.parLevel || ''}
@@ -1695,27 +1693,47 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                             value: tag.uuid || '',
                           })),
                         ]}
-                        onChange={(newValue) => {
-                          const updatedTagDetails = newValue.map((option) => {
-                            if (!option.value) {
-                              // This is a newly created tag
-                              return {
-                                name: option.label || 'Unknown',
-                                uuid: '', // New tags don't have a UUID yet
-                              };
+                        onChange={async (newValue) => {
+                          const updatedTagDetails = [];
+
+                          for (const option of newValue) {
+                            if (option.__isNew__) {
+                              try {
+                                if (selectedRestaurantUUID) {
+                                  const newTag = await tagService.createTag(
+                                    option.label,
+                                    selectedRestaurantUUID
+                                  );
+                                  updatedTagDetails.push({
+                                    name: newTag.name,
+                                    uuid: newTag.uuid,
+                                  });
+                                  // Update the tag list with the new tag
+                                  setTagList((prevTags) =>
+                                    prevTags ? [...prevTags, newTag] : [newTag]
+                                  );
+                                }
+                              } catch (error) {
+                                console.error('Error creating tag:', error);
+                                // If tag creation fails, add it as a pending tag
+                                updatedTagDetails.push({
+                                  name: option.label || 'Unknown',
+                                  uuid: '', // Empty UUID indicates pending/failed creation
+                                });
+                              }
                             } else {
                               // This is an existing tag
                               const existingTag = tagList?.find(
                                 (tag) => tag.uuid === option.value
                               );
-                              return {
+                              updatedTagDetails.push({
                                 name: existingTag
                                   ? existingTag.name
                                   : option.label,
                                 uuid: existingTag ? option.value : '',
-                              };
+                              });
                             }
-                          });
+                          }
 
                           setEditedValues((prevValues) => ({
                             ...prevValues,

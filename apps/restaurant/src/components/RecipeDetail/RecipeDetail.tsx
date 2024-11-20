@@ -99,7 +99,7 @@ const RecipeDetail = (props: Props) => {
                 },
                 {
                   key: 'units',
-                  header: t('units'),
+                  header: t('ingredient:units'),
                   renderItem: ({ row }) => `${row.recipe_unit_name || ''}`,
                 },
                 // {

@@ -67,7 +67,6 @@ const getRecipes = async (
     unit_name: res.data[key]['unit_name'] || undefined, // For preparations
     unit_uuid: res.data[key]['unit_uuid'] || undefined, // For preparations
   }));
-
   return convertedData;
 };
 

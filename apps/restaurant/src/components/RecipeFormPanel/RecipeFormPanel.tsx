@@ -9,7 +9,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import classNames from 'classnames';
 import { formatCurrency } from '../../utils/helpers';
 import { useIngredients } from '../../services/hooks';
-import { getRecipeCategorie } from '../../views/Recipes/RecipeNew';
+import { getRecipeCategorie } from '../../views/Recipes/Recipe';
 import {
   useRestaurantCurrency,
   useRestaurantStore,

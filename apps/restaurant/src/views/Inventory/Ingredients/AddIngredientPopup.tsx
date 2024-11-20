@@ -216,7 +216,7 @@ const AddIngredientPopup = ({
               lighter
               error={errors.name?.message}
               {...register('name')}
-              minWidth="200px"
+              minwidth="200px"
             />
             <LabeledInput
               label={t('ingredient:actualStock')}
@@ -224,14 +224,14 @@ const AddIngredientPopup = ({
               type="number"
               lighter
               {...register('actualStock')}
-              minWidth="100px"
+              minwidth="100px"
             />
             <LabeledInput
               label={t('ingredient:parLevel')}
               placeholder={t('ingredient:parLevel')}
               type="number"
               lighter
-              minWidth="100px"
+              minwidth="100px"
               {...register('parLevel')}
             />
             <CreatableSelect
@@ -310,7 +310,7 @@ const AddIngredientPopup = ({
                 label={t('ingredient:supplierCost')}
                 placeholder={t('ingredient:supplierCost')}
                 type="number"
-                minWidth="100px"
+                minwidth="100px"
                 step="any"
                 error={
                   errors?.supplier_details?.[index]?.supplier_cost?.message
@@ -373,7 +373,7 @@ const AddIngredientPopup = ({
                     label={t('ingredient:size')}
                     placeholder={t('ingredient:size')}
                     type="text"
-                    minWidth="100px"
+                    minwidth="100px"
                     error={
                       errors?.supplier_details?.[index]?.conversion_factor
                         ?.message
