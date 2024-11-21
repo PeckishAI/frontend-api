@@ -1,7 +1,10 @@
 {
   "pages": {
     "myRestaurants": "My restaurants",
-    "overview": "Overview",
+    "overview": {
+      "general": "General",
+      "overview": "Overview"
+    },
     "inventory": {
       "stock": "Inventory",
       "suppliers": "Suppliers",

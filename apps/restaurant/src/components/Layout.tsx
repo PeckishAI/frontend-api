@@ -113,7 +113,7 @@ const Layout = () => {
       disable: !user?.permissions?.my_restaurants,
     },
     {
-      name: t('pages.overview'),
+      name: t('pages.overview.overview'),
       icon: <i className="fa-solid fa-chart-line"></i>,
       navigateTo: '/overview',
       disable: !user?.permissions?.overview,

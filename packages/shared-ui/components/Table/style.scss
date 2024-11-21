@@ -1,16 +1,16 @@
 .table-container {
-  overflow-y: auto;
-  // height: 80vh;
+  width: 100%;
+
   table {
     width: 100%;
     border-collapse: collapse;
 
     thead tr:first-child {
+      position: sticky;
       text-align: left;
       border-radius: 10px;
       background-color: var(--secondaryColor);
-      border-radius: 10px;
-      position: sticky;
+      z-index: 1;
       top: 0;
     }
     th,
@@ -47,5 +47,15 @@
   }
   .column-bold {
     font-weight: var(--semiBold);
+  }
+  &.table-scrollable {
+    position: relative;
+    overflow: auto;
+
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
   }
 }

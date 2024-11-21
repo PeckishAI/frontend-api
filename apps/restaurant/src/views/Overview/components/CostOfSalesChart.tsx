@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { Chart } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { CostofSales, MetricType } from '../../../services/overview.service';
-import { metricFormat } from '../Overview';
+import { metricFormat } from '../General/GeneralTab';
 import { useTranslation } from 'react-i18next';
 
 // Get css variable color

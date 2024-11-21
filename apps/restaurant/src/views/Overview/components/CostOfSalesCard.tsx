@@ -1,13 +1,14 @@
 import styles from './CostOfSalesCard.module.scss';
-import { Dropdown, IconButton, Table, Tabs } from 'shared-ui';
+import { Dropdown, IconButton, Table, Tabs, Input } from 'shared-ui';
 import dayjs from 'dayjs';
 import { Tooltip } from 'react-tooltip';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { CostOfSalesChart } from './CostOfSalesChart';
 import { CostofSales, MetricType } from '../../../services/overview.service';
 import Skeleton from 'react-loading-skeleton';
 import { useTranslation } from 'react-i18next';
 import overviewService from '../../../services/overview.service';
+import { tagService } from '../../../services/tag.service';
 import { format } from 'date-fns';
 import CostFilters from './CostFilter/CostFilters';
 import {
@@ -15,6 +16,8 @@ import {
   useRestaurantStore,
 } from '../../../store/useRestaurantStore';
 import { formatCurrency } from '../../../utils/helpers';
+import Fuse from 'fuse.js';
+import { Tag } from '../../../services/types';
 
 type Props = {
   data?: CostofSales;
@@ -136,6 +139,37 @@ export const CostOfSalesCard: React.FC<Props> = ({
   };
 
   const { currencyISO } = useRestaurantCurrency();
+  const [searchValue, setSearchValue] = useState<string>('');
+
+  const filteredData = useMemo(() => {
+    if (!data || !searchValue) return data;
+
+    const fuseOptions = {
+      keys: ['ingredient_name'],
+      threshold: 0.2, // Lower threshold makes search more strict
+      distance: 100, // Maximum distance between the search term and an entry
+      minMatchCharLength: 2, // Minimum length of search string
+    };
+
+    const fuse = new Fuse(data, fuseOptions);
+    return fuse.search(searchValue).map((result) => result.item);
+  }, [data, searchValue]);
+
+  const [tags, setTags] = useState<Tag[]>([]);
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const fetchedTags = await tagService.getAll(selectedRestaurantUUID);
+        setTags(fetchedTags);
+      } catch (error) {
+        console.error('Error fetching tags:', error);
+        setTags([]);
+      }
+    };
+
+    fetchTags();
+  }, [selectedRestaurantUUID]);
 
   return (
     <>
@@ -161,9 +195,16 @@ export const CostOfSalesCard: React.FC<Props> = ({
               />
             )}
 
+            <Input
+              type="text"
+              value={searchValue}
+              placeholder={t('common:search')}
+              onChange={(value) => setSearchValue(value)}
+              className={styles.searchInput}
+            />
             <CostFilters
-              tag_names={(filterOption || []).map((s) => ({
-                name: s.tag_name,
+              tag_names={tags.map((tag) => ({
+                name: tag.name,
               }))}
               onApplyFilters={(newFilters) => setFilters(newFilters)}
             />
@@ -192,8 +233,8 @@ export const CostOfSalesCard: React.FC<Props> = ({
             ) : (
               <>
                 <Table
-                  style={{ background: 'red' }}
-                  data={data}
+                  scrollable
+                  data={filteredData}
                   columns={[
                     {
                       header: t('ingredient:ingredientName'),

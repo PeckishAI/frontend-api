@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+// DateRangePicker.tsx
+import React, { useEffect } from 'react';
 import { DateRangePicker } from 'rsuite';
 import 'rsuite/dist/rsuite.css';
-import { format, parseISO, sub, subWeeks } from 'date-fns';
+import { format, parseISO, subWeeks } from 'date-fns';
+import styles from './DateRangePicker.module.scss';
 
 interface DateRangePickerComponentProps {
   value: DateRange;
@@ -19,14 +21,30 @@ const DateRangePickerComponent: React.FC<DateRangePickerComponentProps> = ({
     setValue([parseISO(formattedOneWeekAgo), parseISO(formattedToday)]);
   }, []);
 
+  const CustomToggle = React.forwardRef(({ ...props }: any, ref: any) => (
+    <div {...props} ref={ref} className={styles.customToggle}>
+      <i className="fa-solid fa-calendar" />
+      <div className={styles.dateTexts}>
+        <div className={styles.dateRow}>
+          <span>From:</span>
+          <span>{format(value[0], 'yyyy-MM-dd')}</span>
+        </div>
+        <div className={styles.dateRow}>
+          <span>To:</span>
+          <span>{format(value[1], 'yyyy-MM-dd')}</span>
+        </div>
+      </div>
+    </div>
+  ));
+
   return (
-    <div>
+    <div className={styles.datePickerWrapper}>
       <DateRangePicker
         value={value}
         onChange={setValue}
-        placeholder={`${value[0]}~${value[1]}`}
         placement="bottomEnd"
-        defaultValue={value}
+        cleanable={false}
+        toggleAs={CustomToggle}
       />
     </div>
   );

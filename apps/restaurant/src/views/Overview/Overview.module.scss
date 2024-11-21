@@ -1,38 +1,24 @@
-.datepicker {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 20px;
-  margin-bottom: 20px;
-}
+.overview {
+  .tabsAndTools {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 
-.trends {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(3, 1fr);
-  margin-bottom: 20px;
+    .tools {
+      display: flex;
+      align-items: center;
+      gap: 12px;
 
-  @media (max-width: 600px) {
-    grid-template-columns: repeat(2, 1fr);
+      // Style the date picker container
+      :global(.daterangepicker-container) {
+        min-width: 200px;
+      }
+
+      // Style for buttons/icons that come after the date picker
+      > :global(*:not(.daterangepicker-container)) {
+        margin-left: 8px;
+      }
+    }
   }
-
-  @media (max-width: 400px) {
-    grid-template-columns: repeat(1, 1fr);
-  }
-
-  & > div {
-    flex: 1;
-  }
-}
-
-.overviewContainer {
-  position: relative;
-  padding-bottom: 24px;
-}
-
-.chartsContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  position: relative;
 }

@@ -11,6 +11,7 @@ export type ApiResponse = {
     value?: number;
     percentage?: number;
   };
+  
 };
 type MetricsResponses = {
   costofgoodsold: {
@@ -89,8 +90,6 @@ const getCostOfSales = async (
         },
       }
     );
-
-    console.log('data', res.data);
 
     return res.data.map((item) => ({
       ingredient_name: item.name,
@@ -173,8 +172,6 @@ const getInventoryValue = async (
         },
       }
     );
-
-    console.log('data', res.data);
     return res.data;
   } catch (res) {
     console.error('Error fetching data');

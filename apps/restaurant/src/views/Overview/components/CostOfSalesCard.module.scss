@@ -3,9 +3,10 @@
   overflow: hidden;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px;
   background-color: var(--secondaryColor);
+  height: 90vh;
 
   .header {
-    padding: 15px 25px;
+    padding: 5px 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -22,11 +23,11 @@
 
     .rightHeader {
       display: grid;
-      grid-template-columns: repeat(3, 1fr); 
-      gap: 20px; 
-      justify-items: center; 
-      align-items: center; 
-    
+      grid-template-rows: repeat(1fr, 0.3fr);
+      grid-auto-flow: column;
+      gap: 20px;
+      justify-items: center;
+      align-items: center;
 
       .forecastIiconBtn {
         color: var(--cardColor);
@@ -38,5 +39,6 @@
   }
   .content {
     background-color: var(--backgroundColor);
+    height: 100%;
   }
 }

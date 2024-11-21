@@ -1,0 +1,65 @@
+// DateRangePicker.module.scss
+.datePickerWrapper {
+  :global(.rs-picker-toggle-wrapper) {
+    width: auto;
+  }
+
+  :global(.rs-picker-toggle) {
+    padding: 0;
+    border: none;
+    background: none !important;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  :global(.rs-stack-item) {
+    display: none;
+  }
+}
+
+.customToggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  i {
+    font-size: 20px;
+    color: #666;
+  }
+}
+
+.dateTexts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dateRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  span:first-child {
+    font-weight: 500;
+    color: #666;
+    width: 45px;
+  }
+
+  span:last-child {
+    color: #333;
+  }
+}
