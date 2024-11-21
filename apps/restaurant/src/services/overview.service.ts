@@ -23,6 +23,11 @@ type MetricsResponses = {
   };
 };
 
+export type InventoryValue = {
+  total_inventory_value?: number;
+  // Add other properties if needed
+};
+
 const getCostMetric = async (
   restaurantUUID: string,
   weekStart: string,
@@ -153,8 +158,33 @@ const getCsv = async (
   }
 };
 
+const getInventoryValue = async (
+  restaurantUUID: string,
+  weekStart: string,
+  weekEnd: string
+): Promise<InventoryValue> => {
+  try {
+    const res = await axiosClient.get<InventoryValue>(
+      `/overview/${restaurantUUID}/inventory_value`,
+      {
+        params: {
+          start_date: weekStart,
+          end_date: weekEnd,
+        },
+      }
+    );
+
+    console.log('data', res.data);
+    return res.data;
+  } catch (res) {
+    console.error('Error fetching data');
+    return { total_inventory_value: 0 };
+  }
+};
+
 export default {
   getCostOfSales,
   getCostMetric,
   getCsv,
+  getInventoryValue,
 };

@@ -1,28 +1,28 @@
+.datepicker {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
 .trends {
   display: grid;
   gap: 20px;
-  grid-template-columns: repeat(3, 1fr); // Three columns
+  grid-template-columns: repeat(3, 1fr);
   margin-bottom: 20px;
 
-  // Additional media queries for responsiveness
   @media (max-width: 600px) {
-    grid-template-columns: repeat(2, 1fr); // Two columns on smaller screens
+    grid-template-columns: repeat(2, 1fr);
   }
 
   @media (max-width: 400px) {
-    grid-template-columns: repeat(1, 1fr); // One column on even smaller screens
+    grid-template-columns: repeat(1, 1fr);
   }
 
   & > div {
     flex: 1;
   }
-}
-
-.datepicker {
-  display: grid; // Use grid for DatePicker
-  justify-content: start;
-  align-items: center;
-  padding: 20px;
 }
 
 .overviewContainer {

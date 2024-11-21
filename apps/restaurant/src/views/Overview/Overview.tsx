@@ -1,4 +1,4 @@
-import { FaRegMoneyBillAlt } from 'react-icons/fa';
+import { FaRegMoneyBillAlt, FaCubes } from 'react-icons/fa';
 import { TrendCard, TrendCardSkeleton } from './components/TrendCard';
 import { formatCurrency, prettyNumber } from '../../utils/helpers';
 import styles from './Overview.module.scss';
@@ -63,6 +63,7 @@ const Overview = () => {
   const [loadingMetrics, setLoadingMetrics] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [cost, setcost] = useState<ApiResponse>();
+  const [inventoryValue, setInventoryValue] = useState<number>(0);
   const [loadingCostOfSales, setLoadingCostOfSales] = useState(false);
   const [costOfSales, setCostOfSales] = useState<CostofSales>();
 
@@ -85,6 +86,33 @@ const Overview = () => {
   const currentCurrency = restaurants.find(
     (restaurant) => restaurant.uuid === selectedRestaurantUUID
   )?.currency;
+
+  useEffect(() => {
+    if (!selectedRestaurantUUID) return;
+    if (value[0] && value[1]) {
+      setLoadingMetrics(true);
+      overviewService
+        .getInventoryValue(
+          selectedRestaurantUUID,
+          format(value[0], 'yyyy-MM-dd'),
+          format(value[1], 'yyyy-MM-dd')
+        )
+        .then((res) => {
+          if (res) {
+            console.log('res', res);
+            setInventoryValue(res.total_inventory_value || 0);
+            console.log('Updated inventory value:', res.total_inventory_value); // Log here instead
+          }
+        })
+        .finally(() => {
+          setLoadingMetrics(false);
+        });
+    }
+  }, [selectedRestaurantUUID, value[0], value[1]]);
+
+  useEffect(() => {
+    console.log('Inventory value changed:', inventoryValue);
+  }, [inventoryValue]);
 
   useEffect(() => {
     if (!selectedRestaurantUUID) return;
@@ -150,11 +178,14 @@ const Overview = () => {
                 </ChartCard>
               </div>
             </div> */}
+            <div className={styles.datepicker}>
+              <DateRangePickerComponent setValue={setValue} value={value} />
+            </div>
             <div className={styles.trends}>
-              {/* {loadingMetrics &&
-                [1, 2, 3].map((i) => <TrendCardSkeleton key={i} />)} */}
               {loadingMetrics &&
-                [1, 2].map((i) => <TrendCardSkeleton key={i} />)}
+                [1, 2, 3].map((i) => <TrendCardSkeleton key={i} />)}
+              {/* {loadingMetrics &&
+                [1, 2].map((i) => <TrendCardSkeleton key={i} />)} */}
 
               {!loadingMetrics && (
                 <>
@@ -172,17 +203,14 @@ const Overview = () => {
                     icon={<FaRegMoneyBillAlt />}
                     percentage={cost?.sales?.percentage?.toFixed(2) || '0'}
                   />
-                  {/* <TrendCard
+                  <TrendCard
                     title="Inventory Value"
-                    value={cost?.sales?.value?.toFixed(2) || '0'} // Using sales data for now
-                    icon={<FaRegMoneyBillAlt />}
-                    percentage={cost?.sales?.percentage?.toFixed(2) || '0'} // Using sales data for now
-                  /> */}
+                    value={inventoryValue?.toFixed(2) || '0'} // Using sales data for now
+                    icon={<i className="fa-solid fa-cubes-stacked"></i>}
+                    // percentage={cost?.sales?.percentage?.toFixed(2) || '0'} // Using sales data for now
+                  />
                 </>
               )}
-              <div className={styles.datepicker}>
-                <DateRangePickerComponent setValue={setValue} value={value} />
-              </div>
             </div>
 
             {isLoading ? (
