@@ -50,7 +50,7 @@ const RestaurantCard = (props: Props) => {
         type="primary"
         onClick={props.onClick}
         className="cardBtn"
-        value={t('pages.overview')}
+        value={t('pages.overview.overview')}
       />
     </div>
   );

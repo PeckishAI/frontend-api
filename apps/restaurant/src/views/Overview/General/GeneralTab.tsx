@@ -124,12 +124,13 @@ export const GeneralTab = React.forwardRef<GeneralTabRef, Props>(
           .finally(() => {
             setLoadingMetrics(false);
           });
-
+        console.log(props.searchValue);
         overviewService
           .getCostOfSales(
             selectedRestaurantUUID,
             format(dateRange[0], 'yyyy-MM-dd'),
-            format(dateRange[1], 'yyyy-MM-dd')
+            format(dateRange[1], 'yyyy-MM-dd'),
+            props.searchValue
           )
           .then((res) => {
             if (res) {
@@ -148,8 +149,11 @@ export const GeneralTab = React.forwardRef<GeneralTabRef, Props>(
         let filteredList = [...(filterOption || [])];
 
         if (filters.selectedTag) {
-          filteredList = filteredList.filter(
-            (ingredient) => ingredient.tag_name === filters?.selectedTag?.name
+          filteredList = filteredList.filter((ingredient) =>
+            // Check if ingredient.tags exists and is an array
+            ingredient.tags?.some(
+              (tag) => tag.tag_name === filters?.selectedTag?.name
+            )
           );
         }
         setCostOfSales(filteredList);

@@ -11,7 +11,6 @@ export type ApiResponse = {
     value?: number;
     percentage?: number;
   };
-  
 };
 type MetricsResponses = {
   costofgoodsold: {
@@ -63,9 +62,11 @@ const getCostMetric = async (
 
 export type CostofSales = {
   date: Date;
-  ingredient_name?: number;
-  tag_name: string;
-  sales?: number;
+  name: string;
+  unit: string;
+  cost_per_unit: number;
+  tags: string[];
+  sold_qty: number;
   opening_qty: number;
   purchased_qty: number;
   closing_qty: number;
@@ -78,22 +79,25 @@ export type CostofSales = {
 const getCostOfSales = async (
   restaurantUUID: string,
   weekStart: string,
-  weekEnd: string
+  weekEnd: string,
+  tag: string
 ): Promise<CostofSales> => {
   try {
+    console.log(tag);
     const res = await axiosClient.get<CostofSales>(
       `/overview/${restaurantUUID}/fetch_data`,
       {
         params: {
           start_date: weekStart,
           end_date: weekEnd,
+          tag: tag,
         },
       }
     );
 
     return res.data.map((item) => ({
       ingredient_name: item.name,
-      tag_name: item.tag_name,
+      tags: item.tags,
       unit: item.unit,
       cost_per_unit: item.cost_per_unit,
       opening_qty: item.opening_qty,
@@ -103,7 +107,7 @@ const getCostOfSales = async (
       actual_cos: item.actual_cos,
       theoretical_cos: item.theoretical_cos,
       variance: item.variance,
-      varience_value: item.varience_value,
+      varience_value: item.variance_value,
     }));
   } catch (res) {
     console.error('Error fetching data:', res?.data.error);
@@ -136,6 +140,7 @@ const getCsv = async (
   tag: string
 ): Promise<GetCostResponse> => {
   try {
+    console.log(tag);
     const res = await axiosClient.get<Ingredient>(
       `/overview/${restaurantUUID}/fetch_data`,
       {
