@@ -150,6 +150,7 @@ const getIngredientList = async (
         supplier_unit_name: supplier['supplier_unit_name'],
         conversion_factor: supplier['conversion_factor'],
         supplier_unit_cost: supplier['supplier_unit_cost'],
+        product_code: supplier['product_code'],
       })) || [],
     stock_history: res.data[key]['stock_history'],
     recipes:
@@ -190,7 +191,7 @@ const addIngredient = (restaurantUUID: string, ingredient: NewIngredient) => {
     unit_uuid: ingredient.unit_uuid,
     supplier_details: ingredient.supplier_details,
   };
-
+  console.log(FormattedIngredient);
   return axiosClient.post('/inventory/' + restaurantUUID, FormattedIngredient);
 };
 
@@ -211,7 +212,7 @@ const getOnlyIngredientList = async (
   }));
 };
 
-const updateIngredient = (ingredient: Ingredient) => {
+const updateIngredient = (restaurantUUID: string, ingredient: Ingredient) => {
   const ingredientFormated = {
     id: ingredient.id,
     ingredient_name: ingredient.name,
@@ -225,20 +226,21 @@ const updateIngredient = (ingredient: Ingredient) => {
       supplier_cost: supplier.supplier_cost,
       supplier_unit_uuid: supplier.supplier_unit,
       conversion_factor: supplier.conversion_factor,
+      product_code: supplier.product_code,
     })),
     deleted_recipe_ingredient_data: ingredient?.deleted_recipe_ingredient_data,
     recipes: ingredient.recipes,
     unit_uuid: ingredient.unit_uuid,
-    restaurant_uuid: ingredient.restaurantUUID,
     volume_unit_uuid: ingredient.volume_unit_uuid,
     volume_quantity: ingredient.volume_quantity,
   };
 
   return axiosClient.post(
-    '/inventory/' + ingredient.id + '/update',
+    `/inventory/${restaurantUUID}/${ingredient.id}/update`,
     ingredientFormated
   );
 };
+
 const getUnitNew = async (restaurantUUID: string): Promise<Unit[]> => {
   if (!restaurantUUID) {
     throw new Error('Invalid restaurant UUID');

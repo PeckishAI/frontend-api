@@ -134,7 +134,7 @@ const Inventory = () => {
           {selectedTab === 0 && ingredientTabRef.current?.renderOptions()}
           {selectedTab === 1 && supplierTabRef.current?.renderOptions()}
           {selectedTab === 2 && orderTabRef.current?.renderOptions()}
-          {/* {selectedTab === 3 && transferTabRef.current?.renderOptions()} */}
+          {selectedTab === 3 && transferTabRef.current?.renderOptions()}
         </div>
       </div>
 

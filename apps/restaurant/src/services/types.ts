@@ -6,6 +6,7 @@ export type Supplier = {
   supplier_unit: string;
   supplier_unit_name: string;
   supplier_unit_cost?: string | null;
+  product_code?: string;
 };
 
 export type Recipe = {
@@ -23,11 +24,6 @@ export type Stock = {
   event_type?: string | null;
   quantity?: number | null;
   unit_name?: string | null;
-};
-
-export type TagDetails = {
-  name: string;
-  uuid: string;
 };
 
 export type Ingredient = {
@@ -61,6 +57,17 @@ export type Tag = {
 
 export type Tags = {
   name: string;
+};
+
+export type TagOption = {
+  label: string;
+  value: string;
+  __isNew__?: boolean;
+};
+
+export type TagDetails = {
+  name: string;
+  uuid: string;
 };
 
 export type InvoiceIngredient = {

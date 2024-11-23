@@ -73,7 +73,7 @@ const Select = <
             ...baseStyle,
             height: selectHeight,
             minHeight: selectHeight,
-            borderRadius: isSmall ? '10px' : '5px',
+            borderRadius: isSmall ? '5px' : '5px',
             cursor: props.isSearchable ? 'text' : 'pointer',
           }),
           singleValue: (baseStyle) => ({
@@ -96,7 +96,7 @@ const Select = <
           }),
           menu: (baseStyle) => ({
             ...baseStyle,
-            borderRadius: isSmall ? '10px' : '5px',
+            borderRadius: isSmall ? '5px' : '5px',
             overflow: 'hidden',
             zIndex: 100,
           }),

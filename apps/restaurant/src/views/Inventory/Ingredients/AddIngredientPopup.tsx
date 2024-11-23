@@ -1,23 +1,13 @@
-import {
-  Button,
-  Checkbox,
-  IconButton,
-  LabeledInput,
-  Popup,
-  Select,
-} from 'shared-ui';
+import { Button, IconButton, LabeledInput, Popup, Select } from 'shared-ui';
 import styles from './AddIngredientPopup.module.scss';
 import { useEffect, useState } from 'react';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
-
-import { DropdownOptionsDefinitionType } from 'shared-ui/components/Dropdown/Dropdown';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
-import { useIngredients } from '../../../services/hooks';
-import { inventoryService } from '../../../services';
+import { inventoryService, Tag, Unit, Supplier } from '../../../services';
 import CreatableSelect from 'react-select/creatable';
 import { tagService } from '../../../services/tag.service';
 import supplierService from '../../../services/supplier.service';
@@ -25,8 +15,8 @@ import toast from 'react-hot-toast';
 
 const AddIngredientSchema = z.object({
   name: z.string().min(1, { message: 'Recipe name is required' }),
-  actualStock: z.string().optional(),
-  parLevel: z.string().optional(),
+  actualStock: z.string().optional(), // Will be converted to Stock type when sending to API
+  parLevel: z.string().optional(), // Will be converted to number when sending to API
   tag_details: z
     .array(
       z.object({
@@ -54,6 +44,7 @@ const AddIngredientSchema = z.object({
         supplier_unit_name: z
           .string()
           .min(1, { message: 'Supplier Unit name is required' }),
+        product_code: z.string().optional(),
       })
     )
     .optional(),
@@ -78,9 +69,9 @@ const AddIngredientPopup = ({
   const restaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   );
-  const [unitOptions, setUnitOptions] = useState([]);
-  const [tagList, setTagList] = useState([]);
-  const [suppliers, setSuppliers] = useState([]);
+  const [unitOptions, setUnitOptions] = useState<Unit[]>([]);
+  const [tagList, setTagList] = useState<Tag[]>([]);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
 
   const {
     register,
@@ -94,16 +85,8 @@ const AddIngredientPopup = ({
     resolver: zodResolver(AddIngredientSchema),
     defaultValues: {
       name: '',
-      tags: [],
-      supplier_details: [
-        {
-          supplier_name: '',
-          supplier_cost: '',
-          conversion_factor: '',
-          supplier_unit_uuid: '',
-          supplier_unit_name: '',
-        },
-      ],
+      tag_details: [],
+      supplier_details: [], // Empty array by default
     },
   });
 
@@ -118,21 +101,32 @@ const AddIngredientPopup = ({
 
   useEffect(() => {
     if (restaurantUUID) {
-      tagService.getAll(restaurantUUID).then((tags) => setTagList(tags || []));
+      tagService
+        .getAll(restaurantUUID)
+        .then((tags: Tag[]) => setTagList(tags || []));
+
       inventoryService
         .getUnits(restaurantUUID)
         .then(setUnitOptions)
         .catch(console.error);
+
       supplierService.getRestaurantSuppliers(restaurantUUID).then((res) => {
         setSuppliers(
-          res.map(({ name, supplier_uuid }) => ({
-            label: name,
-            value: supplier_uuid,
+          res.map(({ name, uuid }) => ({
+            name: name,
+            uuid: uuid,
           }))
         );
       });
     }
   }, [restaurantUUID]);
+
+  const mapSuppliersToOptions = (suppliers: Supplier[]) =>
+    suppliers.map((supplier) => ({
+      ...supplier,
+      label: supplier.name,
+      value: supplier.uuid,
+    }));
 
   const handleCreateTag = (inputValue: string) => {
     const newTag = { uuid: '', name: inputValue };
@@ -146,15 +140,14 @@ const AddIngredientPopup = ({
         restaurantUUID,
         inputValue
       );
-      const newUnitOption = {
-        label: newUnit.unit_name,
-        value: newUnit.unit_uuid,
+      const newUnitOption: Unit = {
+        unit_name: newUnit.unit_name,
+        unit_uuid: newUnit.unit_uuid,
       };
       setUnitOptions((prev) => [...prev, newUnitOption]);
       setValue('unit_name', newUnit.unit_name);
       setValue('unit_uuid', newUnit.unit_uuid);
 
-      // Refetch units after successfully creating a new unit
       inventoryService
         .getUnits(restaurantUUID)
         .then(setUnitOptions)
@@ -179,15 +172,18 @@ const AddIngredientPopup = ({
     try {
       await inventoryService.addIngredient(restaurantUUID, {
         ...data,
-        tag_names: (data.tag_details || []).map((tag) => ({
+        tag_details: (data.tag_details || []).map((tag) => ({
           tag_uuid: tag?.uuid || '',
           tag_name: tag?.name || '',
         })),
         supplier_details: (data.supplier_details || []).map((supplier) => ({
           supplier_uuid: supplier?.supplier_id || '',
-          supplier_cost: supplier?.supplier_cost || '',
-          conversion_factor: supplier?.conversion_factor || '',
+          supplier_cost: Number(supplier?.supplier_cost) || 0, // Convert to number
+          conversion_factor: Number(supplier?.conversion_factor) || 0, // Convert to number if needed
           supplier_unit_uuid: supplier?.supplier_unit_uuid || '',
+          supplier_name: supplier?.supplier_name || '',
+          supplier_unit: supplier?.supplier_unit_uuid || '',
+          supplier_unit_name: supplier?.supplier_unit_name || '',
         })),
       });
       onRequestClose();
@@ -196,6 +192,7 @@ const AddIngredientPopup = ({
       toast.success('Ingredient Created Successfully');
     } catch (error) {
       console.error('Error adding ingredient:', error);
+      toast.error('Failed to create ingredient');
     }
   });
 
@@ -203,35 +200,28 @@ const AddIngredientPopup = ({
     <Popup
       isVisible={isVisible}
       onRequestClose={onRequestClose}
-      maxWidth={'70%'}
       title={t('recipes.addIngredient.title')}>
       <form onSubmit={handleSubmitForm}>
         <div className={styles.formContainer}>
           <h3>Ingredient</h3>
           <div className={styles.ingredientSection}>
             <LabeledInput
-              label={t('ingredientName')}
               placeholder={t('ingredientName')}
               type="text"
               lighter
               error={errors.name?.message}
               {...register('name')}
-              minwidth="200px"
             />
             <LabeledInput
-              label={t('ingredient:actualStock')}
               placeholder={t('ingredient:actualStock')}
               type="number"
               lighter
               {...register('actualStock')}
-              minwidth="100px"
             />
             <LabeledInput
-              label={t('ingredient:parLevel')}
               placeholder={t('ingredient:parLevel')}
               type="number"
               lighter
-              minwidth="100px"
               {...register('parLevel')}
             />
             <CreatableSelect
@@ -248,69 +238,85 @@ const AddIngredientPopup = ({
                   : null
               }
               onChange={(selectedOption, actionMeta) => {
+                if (!selectedOption) {
+                  // Handle null case by clearing the values
+                  setValue('unit_name', '');
+                  setValue('unit_uuid', '');
+                  return;
+                }
+
                 if (actionMeta.action === 'create-option') {
                   handleCreateUnit(selectedOption.label);
                 } else {
-                  setValue('unit_name', selectedOption?.label || '');
-                  setValue('unit_uuid', selectedOption?.value || '');
+                  setValue('unit_name', selectedOption.label || '');
+                  setValue('unit_uuid', selectedOption.value || '');
                 }
               }}
             />
-            <CreatableSelect
-              placeholder="Select Tags"
-              options={tagList.map(({ name, uuid }) => ({
+          </div>
+
+          <h3>Tag Details</h3>
+          <CreatableSelect
+            placeholder="Select Tags"
+            options={tagList.map(({ name, uuid }) => ({
+              label: name,
+              value: uuid,
+            }))}
+            isMulti
+            onCreateOption={handleCreateTag}
+            onChange={handleSelectChange}
+            className={styles.unitInput}
+            value={
+              watch('tag_details')?.map(({ name, uuid }) => ({
                 label: name,
                 value: uuid,
-              }))}
-              isMulti
-              onCreateOption={handleCreateTag}
-              onChange={handleSelectChange}
-              className={styles.unitInput}
-              value={
-                watch('tag_details')?.map(({ name, uuid }) => ({
-                  label: name,
-                  value: uuid,
-                })) || []
-              }
-              isClearable
-            />
-          </div>
+              })) || []
+            }
+            isClearable
+          />
 
           <h3>Supplier Details</h3>
           {supplierFields.map((field, index) => (
             <div key={field.id} className={styles.SupplierSection}>
+              <LabeledInput
+                placeholder={t('ingredient:productCode')}
+                type="string"
+                lighter
+                {...register(`supplier_details.${index}.product_code`)}
+              />
               <Select
                 size="large"
                 isSearchable
                 placeholder={t('ingredient:supplier')}
                 options={suppliers}
+                getOptionLabel={(supplier) => supplier.name || ''}
+                getOptionValue={(supplier) => supplier.uuid || ''}
                 value={
                   suppliers.find(
-                    ({ value }) =>
-                      value === watch(`supplier_details.${index}.supplier_id`)
+                    (supplier) =>
+                      supplier.uuid ===
+                      watch(`supplier_details.${index}.supplier_id`)
                   ) || null
                 }
                 onChange={(selectedOption) => {
                   setValue(
                     `supplier_details.${index}.supplier_id`,
-                    selectedOption?.value || ''
+                    selectedOption?.uuid || ''
                   );
                   setValue(
                     `supplier_details.${index}.supplier_name`,
-                    selectedOption?.label || ''
+                    selectedOption?.name || ''
                   );
                 }}
-                menuPosition="fixed" // Use fixed positioning for dropdown
+                menuPosition="fixed"
                 styles={{
-                  menuPortal: (base) => ({ ...base, zIndex: 9999 }), // Ensure it's above other elements
+                  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                 }}
                 isClearable
               />
               <LabeledInput
-                label={t('ingredient:supplierCost')}
                 placeholder={t('ingredient:supplierCost')}
                 type="number"
-                minwidth="100px"
                 step="any"
                 error={
                   errors?.supplier_details?.[index]?.supplier_cost?.message
@@ -319,7 +325,7 @@ const AddIngredientPopup = ({
                 {...register(`supplier_details.${index}.supplier_cost`)}
               />
               <CreatableSelect
-                placeholder="Select a unit"
+                placeholder="Pack"
                 options={unitOptions.map(({ unit_name, unit_uuid }) => ({
                   label: unit_name,
                   value: unit_uuid,
@@ -341,6 +347,19 @@ const AddIngredientPopup = ({
                     : null
                 }
                 onChange={(selectedOption, actionMeta) => {
+                  if (!selectedOption) {
+                    // Handle null case by clearing the values
+                    setValue(
+                      `supplier_details.${index}.supplier_unit_uuid`,
+                      ''
+                    );
+                    setValue(
+                      `supplier_details.${index}.supplier_unit_name`,
+                      ''
+                    );
+                    return;
+                  }
+
                   if (actionMeta.action === 'create-option') {
                     handleCreateUnit(selectedOption.label);
                     setValue(
@@ -354,11 +373,11 @@ const AddIngredientPopup = ({
                   } else {
                     setValue(
                       `supplier_details.${index}.supplier_unit_uuid`,
-                      selectedOption?.value || ''
+                      selectedOption.value || ''
                     );
                     setValue(
                       `supplier_details.${index}.supplier_unit_name`,
-                      selectedOption?.label || ''
+                      selectedOption.label || ''
                     );
                   }
                 }}
@@ -370,23 +389,14 @@ const AddIngredientPopup = ({
               <div className={styles.flexContainer}>
                 <div className={styles.IconContainer}>
                   <LabeledInput
-                    label={t('ingredient:size')}
                     placeholder={t('ingredient:size')}
                     type="text"
-                    minwidth="100px"
                     error={
                       errors?.supplier_details?.[index]?.conversion_factor
                         ?.message
                     }
                     lighter
                     {...register(`supplier_details.${index}.conversion_factor`)}
-                  />
-                  <IconButton
-                    icon={<i className="fa-solid fa-circle-info"></i>}
-                    tooltipMsg={`1 ${watch(`supplier_details.${index}.supplier_unit_name`)} is ${watch(
-                      `supplier_details.${index}.conversion_factor`
-                    )} ${watch('unit_name')}`}
-                    className={styles.info}
                   />
                 </div>
                 <FaTrash
@@ -396,20 +406,20 @@ const AddIngredientPopup = ({
               </div>
             </div>
           ))}
-        </div>
-        <div
-          className={styles.addIngredientButton}
-          onClick={() =>
-            addSupplier({
-              supplier_name: '',
-              supplier_cost: '',
-              conversion_factor: '',
-              supplier_unit_uuid: '',
-              supplier_unit_name: '',
-            })
-          }>
-          <FaPlus />
-          <p>Add Supplier</p>
+          <Button
+            type="primary"
+            value={t('ingredient:addSupplier')}
+            onClick={() =>
+              addSupplier({
+                supplier_name: '',
+                supplier_id: '',
+                supplier_cost: '',
+                conversion_factor: '',
+                supplier_unit_uuid: '',
+                supplier_unit_name: '',
+              })
+            }
+          />
         </div>
         <div className={styles.buttonsContainer}>
           <Button

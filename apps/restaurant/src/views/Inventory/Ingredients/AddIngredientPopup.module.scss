@@ -11,7 +11,7 @@
 
 .ingredientSection {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: 1fr 0.5fr 0.5fr 0.6fr;
   gap: 10px;
   padding: 10px 0;
   max-height: 60vh;
@@ -21,7 +21,7 @@
 
 .SupplierSection {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 0.5fr 0.8fr 0.4fr 0.6fr 0.6fr 0.2fr;
   gap: 10px;
   padding: 10px 0;
   max-height: 60vh;
@@ -37,8 +37,6 @@
 
 .addIngredientButton {
   display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 10px;
   cursor: pointer;
   height: var(--input-large-height);
@@ -59,7 +57,11 @@
 .deleteButton {
   cursor: pointer;
   color: var(--primaryColor);
-  margin-top: 5px;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3px;
 }
 
 .IconContainer {

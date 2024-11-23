@@ -1,0 +1,150 @@
+.sidePanel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 900px;
+  background-color: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+
+  overflow: visible;
+
+  .scrollContainer {
+    height: 100%;
+    padding: 20px;
+  }
+
+  // Add this to handle mobile screens
+  @media (max-width: 920px) {
+    width: 100%;
+  }
+}
+
+.optionsButtons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  margin-top: 5px;
+  margin-right: 5px;
+  gap: 5px;
+}
+
+// Add an overlay when the panel is open
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.divider {
+  gap: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .titleRecipeName {
+    font-size: 18px;
+    color: var(--primaryColor);
+  }
+
+  .value {
+    font-size: 16px;
+    color: #666;
+  }
+
+  .gridContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.title {
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+.values {
+  font-weight: 500;
+  color: #666;
+}
+
+.value {
+  gap: 10px;
+  color: #333;
+}
+
+.gridContainer3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.gridContainer4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.gridContainer5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+.gridContainer6 {
+  display: grid;
+  grid-template-columns: 0.25fr 0.4fr 0.2fr 0.3fr 0.3fr 0.05fr;
+  gap: 16px;
+}
+
+.flexContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.IconContainer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+// Add hover effects for interactive elements
+.deleteButton {
+  cursor: pointer;
+  color: var(--primaryColor);
+  padding: 8px;
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.addSupplier {
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.tagItem {
+  background-color: var(--primaryColor);
+}

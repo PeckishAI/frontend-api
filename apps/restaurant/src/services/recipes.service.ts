@@ -107,7 +107,8 @@ const updateRecipe = (
     category: data.category,
     portion_price:
       data.type === 'preparation' ? undefined : data.pricePerPortion,
-    portion_count: data.type === 'preparation' ? undefined : data.portion_count,
+    portion_count:
+      data.type === 'preparation' ? undefined : data.portionsPerBatch,
     // For preparations, include quantity, unit_name, and unit_uuid
     quantity: data.type === 'preparation' ? data.quantity : undefined,
     unit_name: data.type === 'preparation' ? data.unit_name : undefined,
@@ -124,7 +125,7 @@ const createRecipe = async (
   const res = await axiosClient.post('/recipes/' + restaurantUUID, {
     type,
     restaurant_uuid: restaurantUUID,
-    recipe_name: data.recipe_name,
+    recipe_name: data.name,
     category: data.category,
     portion_price: type === 'preparation' ? undefined : data.pricePerPortion,
     portion_count: type === 'preparation' ? undefined : data.quantity,
@@ -142,10 +143,23 @@ const deleteRecipe = (recipeId: string, category: string) => {
   );
 };
 
+const getImpactedRecipes = async (ingredientId: string): Promise<string[]> => {
+  try {
+    const response = await axiosClient.get(
+      `/ingredients/${ingredientId}/impacted-recipes`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error getting impacted recipes:', error);
+    throw error;
+  }
+};
+
 export const recipesService = {
   getRecipes,
   getPreparations,
   createRecipe,
   updateRecipe,
   deleteRecipe,
+  getImpactedRecipes,
 };

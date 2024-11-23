@@ -41,16 +41,14 @@ type RestaurantSuppliersResponse = {
 
 const getRestaurantSuppliers = async (
   restaurantUUID: string
-): Promise<LinkedSupplier[]> => {
+): Promise<Supplier[]> => {
   const res = await axiosClient.get<RestaurantSuppliersResponse>(
     `/suppliers/${restaurantUUID}`
   );
-
+  console.log('supplier', res.data);
   return res.data.map((supplier) => ({
-    ...supplier,
     uuid: supplier.supplier_uuid,
-    linkedAt: new Date(supplier.linked_at),
-    invitationKey: supplier.invitation_key,
+    name: supplier.name,
   }));
 };
 

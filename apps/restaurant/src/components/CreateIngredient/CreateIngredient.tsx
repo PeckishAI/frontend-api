@@ -7,7 +7,6 @@ import {
   useRestaurantCurrency,
   useRestaurantStore,
 } from '../../store/useRestaurantStore';
-import { units } from '../../views/Inventory/Ingredients/IngredientTab';
 import { useTranslation } from 'react-i18next';
 import { useIngredients } from '../../services/hooks';
 import toast from 'react-hot-toast';
@@ -59,6 +58,19 @@ const CreateIngredient = (props: Props) => {
   const [ingredient, setIngredient] = useState<Form>(defaultValue);
   const [supplierOptions, setSupplierOptions] = useState<Supplier[]>([]);
   const [errors, setErrors] = useState<Errors | null>(null);
+
+  console.log('hey');
+  const units = inventoryService.getUnits(selectedRestaurantUUID);
+  console.log('unit', units);
+
+  // const units = [
+  //   { label: 'kg', value: 'kg' },
+  //   { label: 'g', value: 'g' },
+  //   { label: 'tbsp', value: 'tbsp' },
+  //   { label: 'l', value: 'L' },
+  //   { label: 'ml', value: 'ml' },
+  //   { label: 'unit', value: 'unit' },
+  // ];
 
   useEffect(() => {
     if (!props.preFilledSupplier) {
@@ -154,9 +166,9 @@ const CreateIngredient = (props: Props) => {
                       name: props.preFilledSupplier,
                       uuid: '',
                     }
-                  : supplierOptions.find(
+                  : (supplierOptions.find(
                       (u) => u.name === ingredient?.supplier
-                    ) ?? null
+                    ) ?? null)
               }
               isDisabled={!!props.preFilledSupplier}
               onChange={(val) =>

@@ -23,8 +23,9 @@ type Props<T, K extends keyof T> = {
   data?: Array<T>;
   columns: Array<ColumnDefinitionType<T, K>>;
   className?: string;
-  scrollable?: boolean; // New prop for enabling scroll
-  maxHeight?: string; // Optional max height when scrollable
+  scrollable?: boolean;
+  maxHeight?: string;
+  onRowClick?: (row: T) => void;
 };
 
 const Table = <T, K extends keyof T>(props: Props<T, K>) => {
