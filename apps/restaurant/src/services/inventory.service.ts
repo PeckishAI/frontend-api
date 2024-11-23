@@ -191,7 +191,6 @@ const addIngredient = (restaurantUUID: string, ingredient: NewIngredient) => {
     unit_uuid: ingredient.unit_uuid,
     supplier_details: ingredient.supplier_details,
   };
-  console.log(FormattedIngredient);
   return axiosClient.post('/inventory/' + restaurantUUID, FormattedIngredient);
 };
 

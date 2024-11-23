@@ -290,7 +290,6 @@ const AddIngredientPopup = ({
                 placeholder={t('ingredient:supplier')}
                 options={suppliers}
                 getOptionLabel={(supplier) => supplier.name || ''}
-                getOptionValue={(supplier) => supplier.uuid || ''}
                 value={
                   suppliers.find(
                     (supplier) =>

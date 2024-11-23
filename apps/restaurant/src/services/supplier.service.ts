@@ -45,7 +45,6 @@ const getRestaurantSuppliers = async (
   const res = await axiosClient.get<RestaurantSuppliersResponse>(
     `/suppliers/${restaurantUUID}`
   );
-  console.log('supplier', res.data);
   return res.data.map((supplier) => ({
     uuid: supplier.supplier_uuid,
     name: supplier.name,

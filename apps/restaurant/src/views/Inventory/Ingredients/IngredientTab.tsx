@@ -13,21 +13,28 @@ import {
   inventoryService,
   recipesService,
 } from '../../../services';
+import Filters from '../Components/Filters/Filters';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
 import Table, { ColumnDefinitionType } from 'shared-ui/components/Table/Table';
 import { Tooltip } from 'react-tooltip';
 import Fuse from 'fuse.js';
 import { tagService } from '../../../services/tag.service';
-import Filters, {
-  FiltersType,
-  defaultFilters,
-} from '../Components/Filters/Filters';
 import CustomPagination from '../../Overview/components/Pagination/CustomPagination';
 import styles from './IngredientTab.module.scss';
 import AddIngredientPopup from './AddIngredientPopup';
 import AddWastingPopup from '../Components/Wastes/Wastes';
 import IngredientFormPanel from '../../../components/IngredientFormPanel/IngredientFormPanel';
 import supplierService from '../../../services/supplier.service';
+
+export type FiltersType = {
+  selectedSupplier: Array<{ uuid: string; name: string }>;
+  selectedTag: Array<{ uuid: string; name: string }>;
+};
+
+export const defaultFilters: FiltersType = {
+  selectedSupplier: [],
+  selectedTag: [],
+};
 
 export type IngredientTabRef = {
   renderOptions: () => React.ReactNode;
@@ -48,6 +55,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
     const [filteredIngredients, setFilteredIngredients] = useState<
       Ingredient[]
     >([]);
+
     const [filters, setFilters] = useState<FiltersType>(defaultFilters);
     const [tagList, setTagList] = useState<Tag[]>();
     const [deletingRowId, setDeletingRowId] = useState<string | null>();
@@ -112,19 +120,49 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       setSuppliers(res);
     }, [selectedRestaurantUUID]);
 
-    // start
     useEffect(() => {
-      if (props.searchValue) {
-        const fuse = new Fuse(ingredientsList, {
-          keys: ['name', 'unit_name'],
-          threshold: 0.3,
-        });
-        const result = fuse.search(props.searchValue);
-        setFilteredIngredients(result.map((item) => item.item));
-      } else {
-        setFilteredIngredients(ingredientsList);
-      }
-    }, [props.searchValue, ingredientsList]);
+      const applyFilters = () => {
+        let filteredList = [...ingredientsList];
+
+        // Apply search filter
+        if (props.searchValue) {
+          const fuseOptions = {
+            keys: ['name'],
+            threshold: 0.3,
+            distance: 100,
+            minMatchCharLength: 2,
+          };
+          const fuse = new Fuse(filteredList, fuseOptions);
+          filteredList = fuse.search(props.searchValue).map((r) => r.item);
+        }
+
+        // Apply supplier filter
+        if (filters.selectedSupplier && filters.selectedSupplier.length > 0) {
+          const selectedSupplierUuids = filters.selectedSupplier.map(
+            (supplier) => supplier.uuid
+          );
+          filteredList = filteredList.filter((ingredient) =>
+            ingredient.supplier_details?.some((supplier) =>
+              selectedSupplierUuids.includes(supplier.supplier_uuid)
+            )
+          );
+        }
+
+        // Apply tag filter
+        if (filters.selectedTag && filters.selectedTag.length > 0) {
+          const selectedTagUuids = filters.selectedTag.map((tag) => tag.uuid);
+          filteredList = filteredList.filter((ingredient) =>
+            ingredient.tagUUID?.some((tagUuid) =>
+              selectedTagUuids.includes(tagUuid)
+            )
+          );
+        }
+
+        setFilteredIngredients(filteredList);
+      };
+
+      applyFilters();
+    }, [props.searchValue, filters, ingredientsList]);
 
     const handleSort = (column: string) => {
       if (sortColumn === column) {
@@ -430,10 +468,53 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
     ];
 
-    const handleExportDataClick = () => {
-      // Implement export logic here
-      console.log('Exporting data...');
-    };
+    const handleExportDataClick = useCallback(() => {
+      const rows = filteredIngredients;
+      if (rows) {
+        const header =
+          'Ingredient UUID,Ingredient Name,Unit UUID,Unit Name,Par Level,Quantity,Tags\n';
+        const csvContent =
+          'data:text/csv;charset=utf-8,' +
+          header +
+          rows
+            .map((row) => {
+              const values = [];
+              // Ingredient UUID
+              values.push(row.id || '');
+              // Ingredient Name
+              values.push(row.name || '');
+              // Unit UUID
+              values.push(row.unit_uuid || '');
+              // Unit Name
+              values.push(row.unit_name || '');
+              // Par Level
+              values.push(row.parLevel || '');
+              // Quantity
+              values.push(row.actualStock?.quantity || '');
+              // Tags (joined with >)
+              const tags = row.tag_details
+                ? row.tag_details.map((tag) => tag.name).join('>')
+                : '';
+              values.push(tags);
+
+              // Escape any commas in the values and wrap in quotes if needed
+              return values
+                .map((value) =>
+                  value.toString().includes(',') ? `"${value}"` : value
+                )
+                .join(',');
+            })
+            .join('\n');
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'inventory.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }, [filteredIngredients]);
 
     const handleCancelSelection = () => {
       setSelectedIngredients([]);
