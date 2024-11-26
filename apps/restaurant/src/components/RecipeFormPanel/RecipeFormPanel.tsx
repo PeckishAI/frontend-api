@@ -383,12 +383,14 @@ const RecipeFormPanel = (props: Props) => {
         unit_name: data.unit_name,
         unit_uuid: data.unit_uuid,
         ingredients: data.ingredients?.map((ing) => ({
-          ingredient_unit_uuid: ing.item_uuid,
+          item_uuid: ing.item_uuid,
           quantity: ing.quantity ?? 0,
           type: ing.type ?? 'ingredient',
           conversion_factor: ing.conversion_factor ?? 1,
           unit_uuid: ing.unit_uuid ?? undefined,
           unit_name: ing.unit_name ?? undefined,
+          base_unit_uuid: ing.base_unit_uuid ?? undefined,
+          base_unit_name: ing.base_unit_name ?? undefined,
         })),
       };
 
