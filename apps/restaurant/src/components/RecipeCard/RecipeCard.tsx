@@ -15,10 +15,12 @@ const RecipeCard = (props: Props) => {
 
   const { currencyISO } = useRestaurantCurrency();
 
+  console.log(props.recipe);
+
   return (
     <div className="recipe-card" onClick={props.onClick}>
       {/* Display a warning if the recipe is not onboarded */}
-      {!props.recipe.isOnboarded && (
+      {!props.recipe.onboarded && (
         <PiWarningCircleBold
           className="not-onboarded"
           data-tooltip-content="Not onboarded"

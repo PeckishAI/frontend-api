@@ -41,7 +41,7 @@ interface SelectOption {
 
 const RecipeSchema = z.object({
   name: z.string().trim().nonempty('required'),
-  type: z.enum(['recipe', 'preparation', 'modifier']),
+  type: z.enum(['recipe', 'preparation', 'modifier', 'product']),
   category: z.custom<RecipeCategory>().optional(),
   portion_count: z.coerce.number({
     // Add coerce here
@@ -49,47 +49,10 @@ const RecipeSchema = z.object({
     invalid_type_error: 'Portion count is required',
   }),
   portion_price: z.number().optional(),
-  unit_name: z.string().optional(),
+  unit_name: z.string().nullable().optional(),
   unit_uuid: z.string().optional(),
   ingredients: z.custom<RecipeIngredient[]>().optional(),
 });
-
-// const RecipeSchema = z
-//   .object({
-//     recipe_name: z.string().trim().nonempty('required'),
-//     type: z.enum(['recipe', 'preparation', 'modifier']),
-//     category: z.custom<RecipeCategory>().refine((val) => !!val).optional(),
-//     portion_price: z.coerce.number().optional(),
-//     portion_count: z.coerce.number().optional(),
-//     unit_name: z.string().optional(),
-//     unit_uuid: z.string().optional(),
-//     ingredients: z.array(
-//       z.object({
-//         item_uuid: z.string().nonempty('required'),
-//         conversion_factor: z
-//           .number()
-//           .or(z.string())
-//           .pipe(z.coerce.number())
-//           .optional(),
-//         type: z.string().nonempty('required'),
-//         quantity: z.coerce
-//           .number()
-//           .positive('positive-number')
-//           .nullable()
-//           .refine((val) => val !== null, 'required'),
-//         unit_name: z.string().optional(),
-//         unit_uuid: z.string().optional(),
-//         recipe_unit_name: z.string().optional(),
-//         recipe_unit_uuid: z.string().optional(),
-//       })
-//     ),
-//   })
-//   .refine((val) => {
-//     if (val.type !== 'preparation') {
-//       return val.pricePerPortion !== undefined;
-//     }
-//     return true;
-//   }, 'required');
 
 type EditRecipeForm = z.infer<typeof RecipeSchema>;
 
@@ -194,8 +157,8 @@ const RecipeFormPanel = (props: Props) => {
 
   useEffect(() => {
     getIngredientsAndPreparations();
-    reloadUnits(); // Also load units while we're at it
-  }, [selectedRestaurantUUID]); // Add dependency on selectedRestaurantUUID
+    reloadUnits();
+  }, [selectedRestaurantUUID]);
 
   function reloadUnits() {
     if (!selectedRestaurantUUID) return;
@@ -211,7 +174,6 @@ const RecipeFormPanel = (props: Props) => {
     inventoryService
       .getUnits(selectedRestaurantUUID)
       .then((units: Unit[]) => {
-        console.log('Units', units);
         setUnitApiData(units);
 
         const selectOptions: SelectOption[] = units.map(
@@ -236,7 +198,6 @@ const RecipeFormPanel = (props: Props) => {
       const itemUUID = watch(`ingredients.${index}.item_uuid`);
       let selectedItem: RecipeIngredient | null = null;
 
-      // Find the item from either ingredients or preparations
       const foundIngredient = ingredients.find((ing) => ing.id === itemUUID);
       const foundPreparation = preparations.find(
         (prep) => prep.recipe_uuid === itemUUID
@@ -249,8 +210,8 @@ const RecipeFormPanel = (props: Props) => {
           type: foundIngredient.type || 'ingredient',
           unit_name: foundIngredient.unit_name || '',
           unit_uuid: foundIngredient.unit_uuid || '',
-          quantity: 0, // Default value as it's not relevant for this context
-          conversion_factor: 1, // Default value as it's not relevant for this context
+          quantity: 0,
+          conversion_factor: 1,
         };
       } else if (foundPreparation) {
         selectedItem = {
@@ -259,8 +220,8 @@ const RecipeFormPanel = (props: Props) => {
           type: foundPreparation.type || 'preparation',
           unit_name: foundPreparation.unit_name || '',
           unit_uuid: foundPreparation.unit_uuid || '',
-          quantity: 0, // Default value as it's not relevant for this context
-          conversion_factor: 1, // Default value as it's not relevant for this context
+          quantity: 0,
+          conversion_factor: 1,
         };
       }
 
@@ -277,20 +238,12 @@ const RecipeFormPanel = (props: Props) => {
     recipeUnitUUID: string | null,
     type: string
   ) => {
-    // Get all required variables
     const selectedUUID = watch(`ingredients.${index}.item_uuid`);
     const fromUnitUUID = watch(`ingredients.${index}.base_unit_uuid`);
     const toUnitUUID = watch(`ingredients.${index}.unit_uuid`);
     const itemType = watch(`ingredients.${index}.type`);
 
-    // Check if we have all required variables
     if (!selectedUUID || !fromUnitUUID || !toUnitUUID) {
-      console.log('Missing required UUIDs for conversion factor calculation:', {
-        selectedUUID,
-        fromUnitUUID,
-        toUnitUUID,
-      });
-      // Clear the conversion factor if we don't have all required fields
       setValue(`ingredients.${index}.conversion_factor`, 1);
       return;
     }
@@ -337,42 +290,18 @@ const RecipeFormPanel = (props: Props) => {
     return acc;
   }, 0);
 
-  useEffect(() => {
-    console.log('Recipe props:', {
-      action: props.action,
-      recipe: props.recipe,
-      type: props.type,
-      isOpen: props.isOpen,
-    });
-  }, [props]);
-
   const priceMargin =
     (watch('portion_price') ?? 0) * (watch('portion_count') ?? 1) - totalCost;
 
   const handleFormSubmit = handleSubmit(
     (data) => {
-      console.log('handleFormSubmit called with data:', data);
-
-      console.log('props', props.recipe);
-
       if (!props.recipe?.recipe_uuid) {
-        console.error('No recipe UUID - cannot submit');
         return;
       }
 
       if (!selectedRestaurantUUID) {
-        console.error('No restaurant UUID - cannot submit');
         return;
       }
-
-      // Log all required values
-      console.log('Submission prerequisites:', {
-        recipeUUID: props.recipe?.recipe_uuid,
-        restaurantUUID: selectedRestaurantUUID,
-        isDirty,
-        isSubmitting,
-        hasErrors: Object.keys(errors).length > 0,
-      });
 
       const requestData = {
         recipe_name: data.name,
@@ -394,8 +323,6 @@ const RecipeFormPanel = (props: Props) => {
         })),
       };
 
-      console.log('Attempting to update recipe with:', requestData);
-
       return recipesService
         .updateRecipe(
           selectedRestaurantUUID,
@@ -403,7 +330,6 @@ const RecipeFormPanel = (props: Props) => {
           requestData
         )
         .then((response) => {
-          console.log('Update successful:', response);
           props.onSubmitted({
             ...props.recipe,
             ...requestData,
@@ -416,7 +342,6 @@ const RecipeFormPanel = (props: Props) => {
         });
     },
     (errors) => {
-      // Add this error callback
       console.log('Form validation errors:', errors);
       return false;
     }
@@ -454,17 +379,13 @@ const RecipeFormPanel = (props: Props) => {
 
   const handleNewItemCreated =
     (index: number) => (newItem: Recipe | Ingredient) => {
-      // Refresh the lists
       getIngredientsAndPreparations();
-
-      // Select the newly created item with type guard
       const itemId = 'uuid' in newItem ? newItem.uuid : newItem.id;
       setValue(`ingredients.${index}.item_uuid`, itemId);
       setValue(`ingredients.${index}.type`, newItem.type || '');
       setValue(`ingredients.${index}.unit_uuid`, newItem.unit_uuid || '');
       setValue(`ingredients.${index}.unit_name`, newItem.unit_name || '');
 
-      // Close all popups
       setShowAddIngredientPopup(false);
       setShowAddPreparationPopup(false);
       setPendingItemName('');
@@ -502,12 +423,11 @@ const RecipeFormPanel = (props: Props) => {
         <form
           className={styles.inputContainer}
           onSubmit={(e) => {
-            e.preventDefault(); // Add this
+            e.preventDefault();
             console.log('Form submission triggered');
             return handleFormSubmit(e);
           }}
-          noValidate // Add this to prevent browser validation
-        >
+          noValidate>
           <LabeledInput
             placeholder={t(`recipes.editPanel.${recipeType}.fields.name`)}
             autoComplete="off"
@@ -768,7 +688,6 @@ const RecipeFormPanel = (props: Props) => {
                     type="number"
                     step=".00000001"
                     lighter
-                    // suffix={selectedIngredient?.unit_name || ''}
                     {...register(`ingredients.${i}.quantity`)}
                     error={errors.ingredients?.[i]?.quantity?.message}
                   />
@@ -810,12 +729,12 @@ const RecipeFormPanel = (props: Props) => {
                           if (selectedItem) {
                             const recipeUnitUUID =
                               selectedOption?.value || null;
-                            const itemType = selectedItem.type || 'ingredient'; // Provide a default type if undefined
+                            const itemType = selectedItem.type || 'ingredient';
 
                             await fetchAndSetConversionFactor(
                               i,
                               recipeUnitUUID,
-                              itemType // Now we ensure this is always a string
+                              itemType
                             );
                           }
                         }}
@@ -905,10 +824,10 @@ const RecipeFormPanel = (props: Props) => {
             <Button
               type="primary"
               value={t('validate')}
-              actionType="submit" // Verify this is "submit"
+              actionType="submit"
               loading={isSubmitting}
               disabled={!isDirty}
-              onClick={() => console.log('Submit button clicked')} // Add this temporarily
+              onClick={() => console.log('Submit button clicked')}
             />
           </div>
         </form>

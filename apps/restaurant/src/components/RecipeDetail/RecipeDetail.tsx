@@ -20,10 +20,6 @@ const RecipeDetail = (props: Props) => {
   const [deleteRecipe, setDeleteRecipe] = useState<Recipe | null>(null);
   const { currencyISO } = useRestaurantCurrency();
 
-  useEffect(() => {
-    console.log('Recipe Detail props:', props.recipe);
-  }, [props.recipe]);
-
   return (
     <>
       <SidePanel
@@ -37,7 +33,6 @@ const RecipeDetail = (props: Props) => {
               icon={<i className="fa-solid fa-pen-to-square"></i>}
               tooltipMsg={t('edit')}
               onClick={() => {
-                console.log('Setting edit recipe:', props.recipe);
                 setEditRecipe(props.recipe);
               }}
             />
