@@ -18,6 +18,7 @@ export type Recipe = {
   unit_uuid: string;
   from_unit_name: string;
   to_unit_name: string;
+  recipe_uuid: string;
 };
 
 export type Stock = {
@@ -48,6 +49,32 @@ export type Ingredient = {
   volume_unit_uuid: string;
   volume_unit_name: string;
   volume_quantity: number;
+  conversion_factor?: number;
+};
+
+export type IngredientPreparation = {
+  item_uuid: string;
+  item_name: string;
+  quantity: number;
+  unit_name: string;
+  unit_uuid: string;
+  base_unit_uuid?: string;
+  base_unit_name?: string;
+  conversion_factor: number;
+  type: string;
+};
+
+export type RecipeIngredient = {
+  item_uuid: string;
+  item_name: string;
+  base_unit_uuid?: string;
+  base_unit_name?: string;
+  unit_cost?: number;
+  unit_name: string;
+  unit_uuid: string;
+  conversion_factor?: number;
+  quantity?: number;
+  type: string;
 };
 
 export type Tag = {

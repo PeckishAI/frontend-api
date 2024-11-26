@@ -453,14 +453,20 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 className="fa-solid fa-times"
                 data-tooltip-id="inventory-tooltip"
                 data-tooltip-content={t('cancel')}
-                onClick={handleCancelEdit}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCancelEdit();
+                }}
               />
             ) : (
               <i
                 className="fa-solid fa-trash"
                 data-tooltip-id="inventory-tooltip"
                 data-tooltip-content={t('delete')}
-                onClick={() => handleDeleteClick(row)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteClick(row);
+                }}
               />
             )}
           </div>

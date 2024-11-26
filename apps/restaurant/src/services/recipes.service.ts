@@ -8,32 +8,33 @@ export type RecipeCategory =
   | 'modifiers'
   | 'snacks'
   | 'preparations'
-  | 'others';
+  | 'others'
+  | string;
 
 export type RecipeType = 'recipe' | 'preparation' | 'modifier';
 
 export type Recipe = {
-  uuid: string;
+  recipe_uuid: string;
   name: string;
   category: RecipeCategory;
   portion_price?: number;
   portion_count?: number;
-  quantity?: number; // For preparations
-  unit_name?: string; // For preparations
-  cost: number;
-  margin?: number;
+  unit_name?: string;
+  unit_uuid?: string;
+  total_cost: number;
+  total_margin?: number;
   type: RecipeType;
   ingredients: {
-    uuid: string;
-    name: string;
+    item_uuid: string;
+    item_name: string;
     conversion_factor: number;
+    base_unit_name: string;
+    base_unit_uuid: string;
     unit_name: string;
     unit_uuid: string;
-    recipe_unit_name: string;
-    recipe_unit_uuid: string;
     quantity: number;
-    unit: string;
-    cost: number | null;
+    unit_cost?: number | null;
+    type: string;
   }[];
   isOnboarded: boolean;
 };
@@ -49,23 +50,8 @@ const getRecipes = async (
     },
   });
   const convertedData: Recipe[] = Object.keys(res.data).map<Recipe>((key) => ({
+    recipe_uuid: key,
     ...res.data[key],
-    isOnboarded: res.data[key]['onboarded'],
-    uuid: key,
-    ingredients: res.data[key]['ingredients'].map((ingredient: any) => ({
-      uuid: ingredient['ingredient_uuid'],
-      name: ingredient['ingredient_name'],
-      conversion_factor: ingredient['conversion_factor'],
-      unit_name: ingredient['unit_name'],
-      unit_uuid: ingredient['unit_uuid'],
-      recipe_unit_name: ingredient['recipe_unit_name'],
-      recipe_unit_uuid: ingredient['recipe_unit_uuid'],
-      quantity: ingredient['quantity'],
-      cost: ingredient['cost'],
-    })),
-    quantity: res.data[key]['portion_count'] || undefined, // For preparations
-    unit_name: res.data[key]['unit_name'] || undefined, // For preparations
-    unit_uuid: res.data[key]['unit_uuid'] || undefined, // For preparations
   }));
   return convertedData;
 };
@@ -76,64 +62,73 @@ const getPreparations = async (restaurantUUID: string): Promise<Recipe[]> => {
 };
 
 type FormRecipe = {
-  name: string;
+  recipe_name: string;
   category: RecipeCategory;
   pricePerPortion?: number;
   portionsPerBatch?: number;
   quantity?: number; // For preparations
   unit_name?: string; // For preparations
   unit_uuid?: string; // For preparations
-  type: RecipeType;
+  type?: string;
   ingredients: {
-    ingredient_unit_uuid: string;
+    item_uuid: string;
     quantity: number;
-    type: string;
+    type?: string;
     conversion_factor: number;
-    recipe_unit_name?: string;
-    recipe_unit_uuid?: string;
+    unit_uuid?: string;
+    unit_name?: string;
+  }[];
+};
+
+type FormPreparation = {
+  preparation_name: string;
+  portionsPerBatch?: number;
+  quantity?: number;
+  unit_name?: string;
+  unit_uuid?: string;
+  type?: string;
+  ingredients: {
+    item_uuid: string;
+    quantity: number;
+    type?: string;
+    conversion_factor: number;
+    unit_uuid?: string;
+    unit_name?: string;
   }[];
 };
 
 const updateRecipe = (
   restaurantUUID: string,
   recipeUUID: string,
-  data: FormRecipe
+  data: any
 ) => {
-  console.log('data', data);
-  return axiosClient.post('/recipe/' + recipeUUID + '/update', {
-    restaurant_uuid: restaurantUUID,
+  console.log('UpdateRecipe called with:', {
+    restaurantUUID,
+    recipeUUID,
+    data,
+  });
+  return axiosClient.post(`/recipe/${restaurantUUID}/${recipeUUID}/update`, {
     type: data.type,
-    recipe_name: data.name,
+    recipe_name: data.recipe_name,
     category: data.category,
-    portion_price:
-      data.type === 'preparation' ? undefined : data.pricePerPortion,
-    portion_count:
-      data.type === 'preparation' ? undefined : data.portionsPerBatch,
-    // For preparations, include quantity, unit_name, and unit_uuid
-    quantity: data.type === 'preparation' ? data.quantity : undefined,
-    unit_name: data.type === 'preparation' ? data.unit_name : undefined,
-    unit_uuid: data.type === 'preparation' ? data.unit_uuid : undefined,
+    portion_price: data.portion_price,
+    portion_count: data.portion_count,
+    unit_name: data.unit_name,
+    unit_uuid: data.unit_uuid,
     ingredients: data.ingredients,
   });
 };
 
-const createRecipe = async (
-  restaurantUUID: string,
-  type: RecipeType,
-  data: FormRecipe
-) => {
+const createRecipe = async (restaurantUUID: string, data: any) => {
   const res = await axiosClient.post('/recipes/' + restaurantUUID, {
-    type,
+    type: 'recipe',
     restaurant_uuid: restaurantUUID,
-    recipe_name: data.name,
+    recipe_name: data.recipe_name,
     category: data.category,
-    portion_price: type === 'preparation' ? undefined : data.pricePerPortion,
-    portion_count: type === 'preparation' ? undefined : data.quantity,
-    quantity: type === 'preparation' ? data.quantity : undefined,
-    unit_name: type === 'preparation' ? data.unit_name : undefined,
+    portion_price: data.portion_price,
+    portion_count: data.portion_count,
     ingredients: data.ingredients,
   });
-
   return res.data.recipe_uuid as string;
 };
 
@@ -141,6 +136,18 @@ const deleteRecipe = (recipeId: string, category: string) => {
   return axiosClient.post(
     '/recipe/' + recipeId + `/delete?category=${category}`
   );
+};
+
+const createPreparation = async (restaurantUUID: string, data: any) => {
+  const res = await axiosClient.post('/recipes/' + restaurantUUID, {
+    type: 'preparation',
+    restaurant_uuid: restaurantUUID,
+    preparation_name: data.preparation_name,
+    portion_count: data.portion_count,
+    unit_uuid: data.unit_uuid,
+    ingredients: data.ingredients,
+  });
+  return res.data.recipe_uuid as string;
 };
 
 const getImpactedRecipes = async (ingredientId: string): Promise<string[]> => {
@@ -162,4 +169,5 @@ export const recipesService = {
   updateRecipe,
   deleteRecipe,
   getImpactedRecipes,
+  createPreparation,
 };

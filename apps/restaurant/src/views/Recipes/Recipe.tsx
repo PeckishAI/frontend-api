@@ -9,7 +9,8 @@ import {
   Ingredient,
 } from '../../services';
 import RecipeDetail from '../../components/RecipeDetail/RecipeDetail';
-import AddPreparationPopup from '../Recipes/AddPreparationPopup';
+import AddPreparationPopup from './Components/AddPreparationPopup';
+import AddRecipePopup from './Components/AddRecipePopup';
 import { useNavigate, useParams } from 'react-router-dom';
 import RecipeCategory from './Components/RecipeCategory/RecipeCategory';
 import { TFunction } from 'i18next';
@@ -144,7 +145,8 @@ const RecipeNew = () => {
   const [loadingData, setLoadingData] = useState(false);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [recipeDetail, setRecipeDetail] = useState<Recipe | null>(null);
-  const [showAddPopup, setShowAddPopup] = useState(false);
+  const [showAddRecipePopup, setShowAddRecipePopup] = useState(false);
+  const [showAddPreparationPopup, setShowAddPreparationPopup] = useState(false);
   const selectedRestaurantUUID = useRestaurantStore(
     (state) => state.selectedRestaurantUUID
   )!;
@@ -182,9 +184,8 @@ const RecipeNew = () => {
       });
   };
 
-  const filteredRecipes = recipes.filter(
-    (recipe) =>
-      recipe?.name?.toLowerCase().includes(recipeResearch.toLowerCase())
+  const filteredRecipes = recipes.filter((recipe) =>
+    recipe?.name?.toLowerCase().includes(recipeResearch.toLowerCase())
   );
 
   const handleRecipeClick = (recipe: Recipe) => {
@@ -192,13 +193,15 @@ const RecipeNew = () => {
   };
 
   const handleRecipeUpdated = (recipe: Recipe) => {
-    setRecipes(recipes.map((r) => (r.uuid === recipe.uuid ? recipe : r)));
+    setRecipes(
+      recipes.map((r) => (r.recipe_uuid === recipe.recipe_uuid ? recipe : r))
+    );
     setRecipeDetail(recipe);
     reloadRecipes(getTabName(selectedTab));
   };
 
   const handleRecipeDeleted = (recipe: Recipe) => {
-    setRecipes(recipes.filter((r) => r.uuid !== recipe.uuid));
+    setRecipes(recipes.filter((r) => r.recipe_uuid !== recipe.recipe_uuid));
     setRecipeDetail(null);
   };
 
@@ -213,7 +216,7 @@ const RecipeNew = () => {
               recipes={filteredRecipes.filter(
                 (recipe) =>
                   recipe.category === category.value &&
-                  recipe.category !== 'preparations' &&
+                  recipe.type !== 'preparation' &&
                   recipe.category !== 'modifiers'
               )}
               onClickRecipe={handleRecipeClick}
@@ -226,19 +229,14 @@ const RecipeNew = () => {
     if (selectedTab === 1) {
       return (
         <>
-          {getRecipeCategories(t).map((category, i) => (
-            <RecipeCategory
-              key={i}
-              category={category}
-              recipes={filteredRecipes.filter(
-                (recipe) =>
-                  recipe.category === category.value &&
-                  recipe.category === 'preparations'
-              )}
-              onClickRecipe={handleRecipeClick}
-              reloadRecipesRequest={() => reloadRecipes('preparations')}
-            />
-          ))}
+          <RecipeCategory
+            category={['Preparation']}
+            recipes={filteredRecipes.filter(
+              (recipe) => recipe.type === 'preparation'
+            )}
+            onClickRecipe={handleRecipeClick}
+            reloadRecipesRequest={() => reloadRecipes('preparations')}
+          />
         </>
       );
     }
@@ -265,10 +263,16 @@ const RecipeNew = () => {
   };
 
   useEffect(() => {
-    if (showAddPopup) {
+    if (showAddRecipePopup) {
       getOnlyIngredient();
     }
-  }, [showAddPopup]);
+  }, [showAddRecipePopup]);
+
+  useEffect(() => {
+    if (showAddPreparationPopup) {
+      getOnlyIngredient();
+    }
+  }, [showAddPreparationPopup]);
 
   return (
     <div className={styles.recipes}>
@@ -278,7 +282,7 @@ const RecipeNew = () => {
             value={t('recipes.addPreparation.addRecipe')}
             type="primary"
             className={styles.button}
-            onClick={() => setShowAddPopup(true)}
+            onClick={() => setShowAddRecipePopup(true)}
           />
         )}
         {selectedTab === 1 && (
@@ -286,9 +290,10 @@ const RecipeNew = () => {
             value={t('recipes.addPreparation.addPreparationBtn')}
             type="primary"
             className={styles.button}
-            onClick={() => setShowAddPopup(true)}
+            onClick={() => setShowAddPreparationPopup(true)}
           />
         )}
+
         <Input
           type="text"
           placeholder={t('search')}
@@ -332,9 +337,25 @@ const RecipeNew = () => {
       />
 
       <AddPreparationPopup
-        isVisible={showAddPopup}
+        isVisible={showAddPreparationPopup}
         selectedTab={selectedTab}
-        onRequestClose={() => setShowAddPopup(false)}
+        onRequestClose={() => setShowAddPreparationPopup(false)}
+        categories={selectedTab === 1 ? preparationCategories : categories}
+        ingredients={ingredients}
+        onRecipeChanged={(recipe, action) => {
+          if (action === 'deleted') {
+            handleRecipeDeleted(recipe);
+          } else if (action === 'updated') {
+            handleRecipeUpdated(recipe);
+          }
+        }}
+        onReload={() => reloadRecipes(getTabName(selectedTab))}
+      />
+
+      <AddRecipePopup
+        isVisible={showAddRecipePopup}
+        selectedTab={selectedTab}
+        onRequestClose={() => setShowAddRecipePopup(false)}
         categories={selectedTab === 1 ? preparationCategories : categories}
         ingredients={ingredients}
         onRecipeChanged={(recipe, action) => {

@@ -2,7 +2,7 @@ import { DialogBox, IconButton, SidePanel, Table } from 'shared-ui';
 import styles from './style.module.scss';
 import { Recipe, recipesService } from '../../services';
 import RecipeFormPanel from '../RecipeFormPanel/RecipeFormPanel';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatCurrency } from '../../utils/helpers';
 import { useRestaurantCurrency } from '../../store/useRestaurantStore';
@@ -20,6 +20,10 @@ const RecipeDetail = (props: Props) => {
   const [deleteRecipe, setDeleteRecipe] = useState<Recipe | null>(null);
   const { currencyISO } = useRestaurantCurrency();
 
+  useEffect(() => {
+    console.log('Recipe Detail props:', props.recipe);
+  }, [props.recipe]);
+
   return (
     <>
       <SidePanel
@@ -32,7 +36,10 @@ const RecipeDetail = (props: Props) => {
             <IconButton
               icon={<i className="fa-solid fa-pen-to-square"></i>}
               tooltipMsg={t('edit')}
-              onClick={() => setEditRecipe(props.recipe)}
+              onClick={() => {
+                console.log('Setting edit recipe:', props.recipe);
+                setEditRecipe(props.recipe);
+              }}
             />
             <IconButton
               icon={<i className="fa-solid fa-trash"></i>}
@@ -53,7 +60,7 @@ const RecipeDetail = (props: Props) => {
                 <i className={`fa-solid fa-box-open ${styles.quantity}`}></i>
                 {t('quantity')} :{' '}
                 <span className={styles.value}>
-                  {`${props.recipe?.quantity} ${props.recipe?.unit_name}`}
+                  {`${props.recipe?.portion_count} ${props.recipe?.unit_name}`}
                 </span>
               </p>
             ) : (
@@ -71,7 +78,7 @@ const RecipeDetail = (props: Props) => {
                     className={`fa-solid fa-arrow-up-right-dots ${styles.margin}`}></i>
                   {t('margin')} :{' '}
                   <span className={styles.value}>
-                    {formatCurrency(props.recipe?.margin, currencyISO)}
+                    {formatCurrency(props.recipe?.total_margin, currencyISO)}
                   </span>
                 </p>
               </>
@@ -82,7 +89,7 @@ const RecipeDetail = (props: Props) => {
                 className={`fa-solid fa-hand-holding-dollar ${styles.cost}`}></i>
               {t('cost')} :{' '}
               <span className={styles.value}>
-                {formatCurrency(props.recipe?.cost, currencyISO)}
+                {formatCurrency(props.recipe?.total_cost, currencyISO)}
               </span>
             </p>
           </div>
@@ -91,16 +98,17 @@ const RecipeDetail = (props: Props) => {
             <Table
               data={props.recipe?.ingredients}
               columns={[
-                { key: 'name', header: t('name') },
+                { key: 'item_name', header: t('name') },
                 {
                   key: 'quantity',
                   header: t('quantity'),
-                  renderItem: ({ row }) => `${row.quantity} ${row.unit || ''}`,
+                  renderItem: ({ row }) =>
+                    `${row.quantity} ${row.unit_name || ''}`,
                 },
                 {
-                  key: 'units',
+                  key: 'unit_name',
                   header: t('ingredient:units'),
-                  renderItem: ({ row }) => `${row.recipe_unit_name || ''}`,
+                  renderItem: ({ row }) => `${row.unit_name || ''}`,
                 },
                 // {
                 //   key: 'conversion_factor',
@@ -119,12 +127,12 @@ const RecipeDetail = (props: Props) => {
                 //   ),
                 // },
                 {
-                  key: 'cost',
+                  key: 'unit_cost',
                   header: t('totalCost'),
                   renderItem: ({ row }) =>
-                    row.cost && row.conversion_factor && row.quantity
+                    row.unit_cost && row.conversion_factor && row.quantity
                       ? formatCurrency(
-                          (row.cost / (row.conversion_factor || 1)) *
+                          (row.unit_cost / (row.conversion_factor || 1)) *
                             row.quantity,
                           currencyISO
                         )
@@ -150,7 +158,10 @@ const RecipeDetail = (props: Props) => {
         onRequestClose={() => setDeleteRecipe(null)}
         onConfirm={() =>
           recipesService
-            .deleteRecipe(deleteRecipe?.uuid, deleteRecipe?.category ?? '')
+            .deleteRecipe(
+              deleteRecipe?.recipe_uuid,
+              deleteRecipe?.category ?? ''
+            )
             .then(() => {
               props.onRecipeChanged(deleteRecipe!, 'deleted');
               setDeleteRecipe(null);

@@ -125,6 +125,13 @@
     "automaticSendCheckbox": "add a new preparation before check the all details"
   },
 
+  "recipes.typeSelector": {
+    "title": "Create \"{{name}}\" as:",
+    "description": "Choose whether you want to create this as an ingredient or a preparation",
+    "ingredient": "Ingredient",
+    "preparation": "Preparation"
+  },
+
   "orders.detail": "Detail",
   "orders.detail.tooltip": "View detail",
   "orders.showPredictedOrder": "Show predicted order",
