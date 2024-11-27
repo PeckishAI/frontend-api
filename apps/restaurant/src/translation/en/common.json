@@ -194,6 +194,7 @@
       "pricePerPortion": "Price (per portion)",
       "portionsPerBatch": "Portions per batch",
       "recipeName": "Recipe Name",
+      "preparationName": "Preparation Name",
       "conversion_factor": "conversion Factor"
     },
     "table": {

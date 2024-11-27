@@ -18,7 +18,6 @@ export type Recipe = {
   unit_uuid: string;
   from_unit_name: string;
   to_unit_name: string;
-  recipe_uuid: string;
 };
 
 export type Stock = {

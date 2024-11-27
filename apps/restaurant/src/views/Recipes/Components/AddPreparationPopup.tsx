@@ -72,6 +72,7 @@ type Props = {
   onRecipeChanged: (recipe: Recipe, action: 'deleted' | 'updated') => void;
   onReload: () => void;
   ingredients: any;
+  preparations: any;
   selectedTab: number;
   categories: Array<{ value: string; label: string }>;
   initialRecipeName?: string;
@@ -191,29 +192,32 @@ const AddPreparationPopup = (props: Props) => {
     }
   }, [errors]);
 
-  const groupedOptions = Object.values(
-    props.ingredients as any[]
-  ).reduce<GroupedItems>((groups, item: any) => {
-    const group = item.type === 'ingredient' ? 'Ingredients' : 'Preparations';
-    if (!groups[group]) {
-      groups[group] = [];
-    }
-    groups[group].push({
-      label: item.name,
-      value: item.id,
-    });
-    return groups;
-  }, {});
+  const selectOptions = [
+    {
+      label: 'Ingredients',
+      options: (props.ingredients as any[])
+        .filter((item) => item.type === 'ingredient')
+        .map((ing) => ({
+          label: ing.name,
+          value: ing.id,
+        })),
+    },
+    {
+      label: 'Preparations',
+      options: (props.preparations as any[])
+        .filter((item) => item.type === 'preparation')
+        .map((prep) => ({
+          label: prep.name,
+          value: prep.recipe_uuid || prep.id,
+        })),
+    },
+  ].filter((group) => group.options.length > 0);
 
-  const groupedSelectOptions = Object.keys(groupedOptions).map((group) => ({
-    label: group,
-    options: groupedOptions[group],
-  }));
 
   const handleSubmitForm = handleSubmit(async (data) => {
     const updateData = {
       ...data,
-      type: 'preparation', // Add this line to specify the type
+      type: 'preparation',
       ingredients: data.ingredients.map((ingredient) => ({
         ...ingredient,
         conversion_factor: +ingredient.conversion_factor,
@@ -251,7 +255,7 @@ const AddPreparationPopup = (props: Props) => {
             <div>
               <LabeledInput
                 lighter
-                placeholder={t('recipes.editPanel.fields.recipeName')}
+                placeholder={t('recipes.editPanel.fields.preparationName')}
                 type="text"
                 error={errors.preparation_name?.message}
                 {...register('preparation_name')}
@@ -332,7 +336,7 @@ const AddPreparationPopup = (props: Props) => {
                             placeholder={t(
                               'recipes.editPanel.table.ingredientSelect'
                             )}
-                            options={groupedSelectOptions}
+                            options={selectOptions}
                             onChange={(selectedOption) => {
                               onChange(selectedOption?.value ?? '');
                               const selected = props.ingredients.find(

@@ -151,6 +151,7 @@ const RecipeNew = () => {
     (state) => state.selectedRestaurantUUID
   )!;
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [preparations, setPreparations] = useState<Recipe[]>([]);
 
   const getOnlyIngredient = () => {
     if (!selectedRestaurantUUID) return;
@@ -159,6 +160,16 @@ const RecipeNew = () => {
       .then(setIngredients)
       .catch((e) => {
         console.error('useIngredients error', e);
+      });
+  };
+
+  const getPreparations = () => {
+    if (!selectedRestaurantUUID) return;
+    recipesService
+      .getRecipes(selectedRestaurantUUID, 'preparation')
+      .then(setPreparations)
+      .catch((e) => {
+        console.error('getPreparations error', e);
       });
   };
 
@@ -265,12 +276,14 @@ const RecipeNew = () => {
   useEffect(() => {
     if (showAddRecipePopup) {
       getOnlyIngredient();
+      getPreparations();
     }
   }, [showAddRecipePopup]);
 
   useEffect(() => {
     if (showAddPreparationPopup) {
       getOnlyIngredient();
+      getPreparations();
     }
   }, [showAddPreparationPopup]);
 
@@ -342,6 +355,7 @@ const RecipeNew = () => {
         onRequestClose={() => setShowAddPreparationPopup(false)}
         categories={selectedTab === 1 ? preparationCategories : categories}
         ingredients={ingredients}
+        preparations={preparations}
         onRecipeChanged={(recipe, action) => {
           if (action === 'deleted') {
             handleRecipeDeleted(recipe);
@@ -358,6 +372,7 @@ const RecipeNew = () => {
         onRequestClose={() => setShowAddRecipePopup(false)}
         categories={selectedTab === 1 ? preparationCategories : categories}
         ingredients={ingredients}
+        preparations={preparations}
         onRecipeChanged={(recipe, action) => {
           if (action === 'deleted') {
             handleRecipeDeleted(recipe);

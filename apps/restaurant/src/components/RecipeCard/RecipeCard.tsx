@@ -15,8 +15,6 @@ const RecipeCard = (props: Props) => {
 
   const { currencyISO } = useRestaurantCurrency();
 
-  console.log(props.recipe);
-
   return (
     <div className="recipe-card" onClick={props.onClick}>
       {/* Display a warning if the recipe is not onboarded */}

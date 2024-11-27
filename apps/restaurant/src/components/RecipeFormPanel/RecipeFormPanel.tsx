@@ -144,14 +144,19 @@ const RecipeFormPanel = (props: Props) => {
 
   const getIngredientsAndPreparations = () => {
     if (!selectedRestaurantUUID) return;
+
     inventoryService
       .getOnlyIngredientList(selectedRestaurantUUID)
-      .then(setIngredients)
+      .then((response) => {
+        setIngredients(response);
+      })
       .catch(console.error);
 
     recipesService
       .getPreparations(selectedRestaurantUUID)
-      .then(setPreparations)
+      .then((response) => {
+        setPreparations(response);
+      })
       .catch(console.error);
   };
 
@@ -198,16 +203,18 @@ const RecipeFormPanel = (props: Props) => {
       const itemUUID = watch(`ingredients.${index}.item_uuid`);
       let selectedItem: RecipeIngredient | null = null;
 
-      const foundIngredient = ingredients.find((ing) => ing.id === itemUUID);
+      const foundIngredient = ingredients.find(
+        (ing) => ing.id === itemUUID && ing.type === 'ingredient'
+      );
       const foundPreparation = preparations.find(
-        (prep) => prep.recipe_uuid === itemUUID
+        (prep) => prep.recipe_uuid === itemUUID && prep.type === 'preparation'
       );
 
       if (foundIngredient) {
         selectedItem = {
           item_uuid: foundIngredient.id,
           item_name: foundIngredient.name,
-          type: foundIngredient.type || 'ingredient',
+          type: 'ingredient', // Explicitly set type
           unit_name: foundIngredient.unit_name || '',
           unit_uuid: foundIngredient.unit_uuid || '',
           quantity: 0,
@@ -217,7 +224,7 @@ const RecipeFormPanel = (props: Props) => {
         selectedItem = {
           item_uuid: foundPreparation.recipe_uuid,
           item_name: foundPreparation.name,
-          type: foundPreparation.type || 'preparation',
+          type: 'preparation', // Explicitly set type
           unit_name: foundPreparation.unit_name || '',
           unit_uuid: foundPreparation.unit_uuid || '',
           quantity: 0,
@@ -280,13 +287,22 @@ const RecipeFormPanel = (props: Props) => {
   }));
 
   const totalCost = (watch('ingredients') ?? []).reduce((acc, ing) => {
-    const ingredient = ingredients.find((i) => i.id === ing.item_uuid);
+    // Check both ingredients and preparations arrays based on the item type
+    const item =
+      ing.type === 'preparation'
+        ? preparations.find((p) => p.recipe_uuid === ing.item_uuid)
+        : ingredients.find((i) => i.id === ing.item_uuid);
+
     const quantity = ing?.quantity ?? 0;
     const conversionFactor = ing?.conversion_factor ?? 1;
 
-    if (ingredient?.cost) {
-      acc += (ingredient.cost / conversionFactor) * quantity;
+    // Handle cost for both types
+    if (ing.type === 'preparation' && item?.total_cost) {
+      acc += (item.total_cost / conversionFactor) * quantity;
+    } else if (ing.type === 'ingredient' && item?.cost) {
+      acc += (item.cost / conversionFactor) * quantity;
     }
+
     return acc;
   }, 0);
 
@@ -347,33 +363,24 @@ const RecipeFormPanel = (props: Props) => {
     }
   );
 
-  const allItems = [
-    ...ingredients.map((item) => ({
-      ...item,
-      groupBy: 'Ingredients',
-    })),
-    ...preparations.map((prep) => ({
-      ...prep,
-      id: prep.recipe_uuid,
-      name: prep.name,
-      groupBy: 'Preparations',
-    })),
-  ];
-
   const selectOptions = [
     {
       label: 'Ingredients',
-      options: ingredients.map((ing) => ({
-        label: ing.name,
-        value: ing.id,
-      })),
+      options: ingredients
+        .filter((ing) => ing.type === 'ingredient')
+        .map((ing) => ({
+          label: ing.name,
+          value: ing.id,
+        })),
     },
     {
       label: 'Preparations',
-      options: preparations.map((prep) => ({
-        label: prep.name || prep.name,
-        value: prep.recipe_uuid,
-      })),
+      options: preparations
+        .filter((prep) => prep.type === 'preparation')
+        .map((prep) => ({
+          label: prep.name,
+          value: prep.recipe_uuid,
+        })),
     },
   ].filter((group) => group.options.length > 0);
 
@@ -556,7 +563,6 @@ const RecipeFormPanel = (props: Props) => {
           <div>
             {ingredientFields.map(({ id }, i) => {
               const rowField = watch(`ingredients.${i}`);
-
               const selectedIngredient: RecipeIngredient | null =
                 (ingredients.find((ing) => ing.id === rowField.item_uuid) && {
                   item_uuid: ingredients.find(
@@ -602,8 +608,9 @@ const RecipeFormPanel = (props: Props) => {
                       (prep) => prep.recipe_uuid === rowField.item_uuid
                     )!.unit_uuid || '',
                   unit_cost:
-                    ingredients.find((ing) => ing.id === rowField.item_uuid)!
-                      .cost || 0,
+                    preparations.find(
+                      (prep) => prep.recipe_uuid === rowField.item_uuid
+                    )!.total_cost || 0, // Changed this line
                   quantity: 0,
                   conversion_factor: 1,
                 }) ||

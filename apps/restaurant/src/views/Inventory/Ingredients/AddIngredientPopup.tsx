@@ -184,6 +184,7 @@ const AddIngredientPopup = ({
           supplier_name: supplier?.supplier_name || '',
           supplier_unit: supplier?.supplier_unit_uuid || '',
           supplier_unit_name: supplier?.supplier_unit_name || '',
+          product_code: supplier?.product_code || '',
         })),
       });
       onRequestClose();
