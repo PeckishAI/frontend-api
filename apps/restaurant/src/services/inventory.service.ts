@@ -18,6 +18,8 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
     return [];
   }
 
+  console.log('Res', res.data);
+
   const convertedData: Invoice[] = Object.keys(res.data).map<Invoice>((key) => {
     const documentData = res.data[key];
 
@@ -40,6 +42,7 @@ const getDocument = async (restaurantUUID: string): Promise<Invoice[]> => {
           unit_uuid: ingredient['unit_uuid'],
           unitPrice: ingredient['unit_price'],
           totalPrice: ingredient['total_price'],
+          item_uuid: ingredient['item_uuid'],
         }))
         .sort((a: any, b: any) => {
           if (a.mappedName < b.mappedName) {
@@ -80,6 +83,7 @@ const updateDocument = (
   documentUUID: string,
   data: FormDocument
 ) => {
+  console.log('Document', data);
   return axiosClient.post('/documents/' + documentUUID + '/update', {
     restaurant_uuid: restaurantUUID,
     date: data.date,

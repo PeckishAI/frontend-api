@@ -93,7 +93,13 @@ const DocumentDetail = (props: Props) => {
   const toggleEditMode = () => {
     setIsEditMode((prevState) => !prevState);
     if (!isEditMode) {
-      setEditableDocument(props.document);
+      setEditableDocument({
+        ...props.document,
+        ingredients: props.document?.ingredients.map((ing) => ({
+          ...ing,
+          item_uuid: ing.item_uuid, // Explicitly preserve item_uuid
+        })),
+      });
       setShowDatePicker(false);
       setSelectedDate(
         props.document?.date ? new Date(props.document.date) : null
@@ -160,7 +166,12 @@ const DocumentDetail = (props: Props) => {
 
     const updatedIngredients: InvoiceIngredient[] =
       editableDocument.ingredients.map((ing, idx) =>
-        idx === index ? { ...ing, [field]: value } : ing
+        idx === index
+          ? {
+              ...ing, // Preserve all existing fields including item_uuid
+              [field]: value,
+            }
+          : ing
       );
 
     setEditableDocument({
@@ -212,6 +223,14 @@ const DocumentDetail = (props: Props) => {
 
     if (!selectedRestaurantUUID || !editableDocument) return;
 
+    console.log(
+      'Submitting ingredients with item_uuid:',
+      editableDocument.ingredients.map((ing) => ({
+        detectedName: ing.detectedName,
+        item_uuid: ing.item_uuid,
+      }))
+    );
+
     const lastRow =
       editableDocument.ingredients[editableDocument.ingredients.length - 1];
 
@@ -246,6 +265,7 @@ const DocumentDetail = (props: Props) => {
           quantity: +ing.quantity,
           unit_uuid: ing.unit_uuid,
           totalPrice: +ing.totalPrice ? +ing.totalPrice : null,
+          item_uuid: ing.item_uuid,
         })),
       } satisfies FormDocument;
 
@@ -283,6 +303,7 @@ const DocumentDetail = (props: Props) => {
       unitPrice: 0,
       received_qty: 0,
       totalPrice: 0,
+      item_uuid: undefined,
     };
 
     if (editableDocument && editableDocument.ingredients) {
@@ -328,6 +349,7 @@ const DocumentDetail = (props: Props) => {
   };
 
   useEffect(() => {
+    console.log('Document ingredients:', props.document?.ingredients);
     setIsEditMode(false); // Reset edit mode
     setEditableDocument(null); // Clear editable document
   }, [props.document]);
