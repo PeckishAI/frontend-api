@@ -41,6 +41,11 @@ export const getRecipeCategories = (t: TFunction<['common'], undefined>) => [
     icon: <i className="fa-solid fa-martini-glass"></i>,
   },
   {
+    label: t('recipesCategories.cocktails'),
+    value: 'cocktails',
+    icon: <i className="fa-solid fa-cocktail"></i>,
+  },
+  {
     label: t('recipesCategories.starters'),
     value: 'starters',
     icon: <i className="fa-solid fa-bowl-food"></i>,
@@ -82,6 +87,11 @@ export const getRecipeCategorie = (t: TFunction<['common'], undefined>) => [
     label: t('recipesCategories.drinks'),
     value: 'drinks',
     icon: <i className="fa-solid fa-martini-glass"></i>,
+  },
+  {
+    label: t('recipesCategories.cocktails'),
+    value: 'cocktails',
+    icon: <i className="fa-solid fa-cocktail"></i>,
   },
   {
     label: t('recipesCategories.starters'),
@@ -130,6 +140,7 @@ const RecipeNew = () => {
 
   const categories = [
     { value: 'drinks', label: 'Drinks' },
+    { value: 'cocktails', label: 'Cocktails' },
     { value: 'starters', label: 'Starters' },
     { value: 'mainCourses', label: 'MainCourses' },
     { value: 'desserts', label: 'Desserts' },
