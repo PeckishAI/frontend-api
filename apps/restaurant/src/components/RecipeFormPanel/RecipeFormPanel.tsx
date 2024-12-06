@@ -309,6 +309,29 @@ const RecipeFormPanel = (props: Props) => {
   const priceMargin =
     (watch('portion_price') ?? 0) * (watch('portion_count') ?? 1) - totalCost;
 
+  const handleCreateUnit = async (unitName: string) => {
+    if (!selectedRestaurantUUID) return null;
+
+    try {
+      // Assuming inventoryService has a method to create a unit
+      const newUnit = await inventoryService.createUnit(
+        selectedRestaurantUUID,
+        unitName
+      );
+
+      // Refresh the units list
+      reloadUnits();
+
+      return {
+        label: newUnit.unit_name,
+        value: newUnit.unit_uuid,
+      };
+    } catch (error) {
+      console.error('Failed to create unit:', error);
+      return null;
+    }
+  };
+
   const handleFormSubmit = handleSubmit(
     (data) => {
       if (!props.recipe?.recipe_uuid) {
@@ -743,6 +766,41 @@ const RecipeFormPanel = (props: Props) => {
                               recipeUnitUUID,
                               itemType
                             );
+                          }
+                        }}
+                        onCreateOption={async (inputValue) => {
+                          const newUnit = await handleCreateUnit(inputValue);
+                          if (newUnit) {
+                            setValue(
+                              `ingredients.${i}.unit_name`,
+                              newUnit.label
+                            );
+                            setValue(
+                              `ingredients.${i}.unit_uuid`,
+                              newUnit.value
+                            );
+
+                            const selectedItemUUID = watch(
+                              `ingredients.${i}.item_uuid`
+                            );
+                            if (selectedItemUUID) {
+                              const selectedItem =
+                                ingredients.find(
+                                  (ing) => ing.id === selectedItemUUID
+                                ) ||
+                                preparations.find(
+                                  (prep) =>
+                                    prep.recipe_uuid === selectedItemUUID
+                                );
+
+                              if (selectedItem) {
+                                await fetchAndSetConversionFactor(
+                                  i,
+                                  newUnit.value,
+                                  selectedItem.type || 'ingredient'
+                                );
+                              }
+                            }
                           }
                         }}
                         value={
