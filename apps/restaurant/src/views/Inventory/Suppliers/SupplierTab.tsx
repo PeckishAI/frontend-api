@@ -58,6 +58,15 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     };
 
     const handleEditSupplierClick = (supplier: LinkedSupplier) => {
+      if (!supplier?.uuid) {
+        console.error('No supplier UUID provided for edit');
+        toast.error(t('suppliers.errors.invalidSupplier'));
+        return;
+      }
+
+      // Log to verify the data
+      console.log('Editing supplier:', supplier);
+
       setPopupMode('edit');
       setEditSupplier(supplier);
       setShowPopup(true);
@@ -89,23 +98,19 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
     };
 
     // Render options for the tab bar
-    useImperativeHandle(
-      forwardedRef,
-      () => {
-        props.forceOptionsUpdate();
+    useImperativeHandle(forwardedRef, () => {
+      props.forceOptionsUpdate();
 
-        return {
-          renderOptions: () => (
-            <Button
-              value={t('inventory.addSupplierBtn')}
-              type="primary"
-              onClick={() => handleAddSupplierClick()}
-            />
-          ),
-        };
-      },
-      []
-    );
+      return {
+        renderOptions: () => (
+          <Button
+            value={t('inventory.addSupplierBtn')}
+            type="primary"
+            onClick={() => handleAddSupplierClick()}
+          />
+        ),
+      };
+    }, []);
 
     useEffect(() => {
       if (!restaurantUUID) return;
@@ -144,7 +149,7 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
       toast.promise(
         new Promise((resolve, reject) =>
           supplierService
-            .revokeSupplierAccess(restaurantUUID, deletingSupplierUUID!)
+            .deleteSupplier(deletingSupplierUUID!)
             .then(() => {
               setSuppliers((suppliers) =>
                 suppliers.filter((s) => s.uuid !== deletingSupplierUUID)
@@ -192,7 +197,6 @@ export const SupplierTab = React.forwardRef<SupplierTabRef, Props>(
           supplierService
             .addOnlySupplier(restaurantUUID, syncingSupplierUUID)
             .then((res) => {
-              console.log('res', res);
               setShowDialog(false);
               fetchSuppliersAndSync();
               toast.success('Supplier sync with Xero');

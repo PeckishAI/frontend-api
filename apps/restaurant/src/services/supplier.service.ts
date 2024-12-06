@@ -19,16 +19,6 @@ export type SyncSupplier = {
   name?: string;
 };
 
-// type SupplierResponse = {
-// created_at: 'Mon, 23 Oct 2023 11:33:46 GMT';
-// email: 'contact@rekki.com';
-// invitation_key: 'cyfuvjhguygh';
-// linked: false;
-// name: 'Rekki';
-// phone: null;
-// supplier_uuid: 'abc';
-// };
-
 type RestaurantSuppliersResponse = {
   supplier_uuid: string;
   name: string;
@@ -48,6 +38,8 @@ const getRestaurantSuppliers = async (
   return res.data.map((supplier) => ({
     uuid: supplier.supplier_uuid,
     name: supplier.name,
+    email: supplier.email,
+    phone: supplier.phone,
   }));
 };
 
@@ -60,7 +52,6 @@ const getSuppliers = async (restaurantUUID: string): Promise<Supplier[]> => {
   const res = await axiosClient.get<SuppliersResponse>(
     `/suppliers/${restaurantUUID}`
   );
-
   return res.data.map((supplier) => ({
     ...supplier,
     uuid: supplier.supplier_uuid,
@@ -88,13 +79,19 @@ interface UpdateSupplierResponse {
   supplier: Supplier;
 }
 
+// In supplier.service.ts
 const updateSupplier = async (
   supplierUUID: string,
   supplier: Supplier
 ): Promise<UpdateSupplierResponse> => {
+  const updatePayload = {
+    ...supplier,
+    uuid: supplierUUID, // Include the UUID in the payload
+  };
+
   const res = await axiosClient.post<UpdateSupplierResponse>(
     `/suppliers/${supplierUUID}/update`,
-    supplier
+    updatePayload
   );
 
   return res.data;
@@ -145,11 +142,16 @@ const getSync = async (restaurantUUID: string): Promise<SyncSupplier[]> => {
   return res.data;
 };
 
-const revokeSupplierAccess = async (
-  restaurantUUID: string,
-  supplierUUID: string
-): Promise<void> => {
-  await axiosClient.delete(`/suppliers/${restaurantUUID}/${supplierUUID}`);
+// const revokeSupplierAccess = async (
+//   restaurantUUID: string,
+//   supplierUUID: string
+// ): Promise<void> => {
+//   await axiosIntegrationClient.post(`/suppliers/${supplierUUID}/delete`);
+
+// };
+
+const deleteSupplier = (supplierUUID: string) => {
+  return axiosClient.post(`/supplier/${supplierUUID}/delete`);
 };
 
 export default {
@@ -158,7 +160,7 @@ export default {
   createSupplier,
   updateSupplier,
   addSupplierToRestaurant,
-  revokeSupplierAccess,
+  deleteSupplier,
   getSync,
   addSyncSupplier,
   addOnlySupplier,

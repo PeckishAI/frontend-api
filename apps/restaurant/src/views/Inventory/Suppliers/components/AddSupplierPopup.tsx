@@ -113,9 +113,11 @@ const AddSupplierPopup = (props: Props) => {
           props.fetchSuppliersAndSync();
           reset();
         });
+      // In AddSupplierPopup.tsx
     } else if (props.mode === 'edit' && props.editSupplier) {
       return supplierService
-        .updateSupplier(props.editSupplier.supplier_uuid, {
+        .updateSupplier(props.editSupplier.uuid, {
+          // Changed from supplier_uuid to uuid
           name: data.name,
           email: data.email,
           phone: data.phone,
