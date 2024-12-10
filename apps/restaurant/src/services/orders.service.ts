@@ -64,6 +64,23 @@ export type ReceivedQtyChange = {
   }[];
 };
 
+export type UpdateOrderPayload = {
+  order_uuid: number;
+  order_number: string;
+  supplier_uuid: string;
+  delivery_date: string;
+  price: number;
+  status: string;
+  ingredients: {
+    uuid: string;
+    ingredient_uuid: string;
+    unit_uuid: string;
+    unit_name: string;
+    quantity: number;
+    price: number;
+  }[];
+};
+
 const getOrders = async (
   restaurantUUID: string
 ): Promise<OrderResponse[] | null> => {
@@ -76,26 +93,19 @@ const getOrders = async (
       orderDate: item.orderDate,
       orderNumber: item.orderNumber,
       deliveryDate: item.deliveryDate,
-      orderNumber: item.orderNumber,
       status: item.status,
       price: item.price,
       uuid: item.uuid,
       supplier_uuid: item.supplier_uuid,
-      products: item.products.map((product: any) => ({
-        unit_uuid: product.unit_uuid,
-        unit_name: product.unit_name,
-        name: product.name,
-        quantity: product.quantity,
-        received_quantity: product.received_quantity,
-        unitCost: product.price,
-        received_quantity: product.received_quantity,
-        uuid: product.uuid,
-        // actualStock: product.actualStock,
-        // id: product.id,
-        // tagUUID: product.tagUUID,
-        // theoriticalStock: product.theoriticalStock,
-        // parLevel: product.parLevel,
-        // amount: product.amount,
+      products: item.products.map((entry: any) => ({
+        uuid: entry.uuid,
+        ingredient_uuid: entry.ingredient_uuid,
+        name: entry.name,
+        unit_uuid: entry.unit_uuid,
+        unit_name: entry.unit_name,
+        quantity: entry.quantity,
+        received_quantity: entry.received_quantity,
+        price: entry.price,
       })),
     }));
   } catch (error) {
@@ -110,8 +120,6 @@ const getOrderGeneration = async (
   const res = await axiosClient.get<PredictOrderResponse[]>(
     'documents/' + restaurantUUID + '/predict_order'
   );
-
-  console.log('generated order res: ', res);
 
   const order: GeneratedOrder = {
     ingredients: res.data.map((item) => ({
@@ -144,8 +152,27 @@ const updateQuantity = (restaurantUUID: string, payload: ReceivedQtyChange) => {
   );
 };
 
+const updateOrder = async (
+  restaurantUUID: string,
+  orderUUID: string,
+  payload: UpdateOrderPayload
+) => {
+  try {
+    console.log('Payload:', payload);
+    const response = await axiosClient.post(
+      `orders/${restaurantUUID}/update/${orderUUID}`,
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating order:', error);
+    throw error;
+  }
+};
+
 export const ordersService = {
   getOrders,
+  updateOrder,
   getOrderGeneration,
   placeSupplierOrder,
   updateQuantity,

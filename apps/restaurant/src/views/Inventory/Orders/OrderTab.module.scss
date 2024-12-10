@@ -94,3 +94,21 @@
     cursor: pointer;
   }
 }
+
+.footerContent {
+  padding: 16px;
+  border-top: 1px solid #eee;
+}
+
+.addIngredientButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+
+  svg {
+    font-size: 14px;
+  }
+}

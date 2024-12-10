@@ -1,4 +1,4 @@
-import { axiosClient, axiosIntegrationClient } from './index';
+import { Ingredient, axiosClient, axiosIntegrationClient } from './index';
 
 export type Supplier = {
   uuid?: string;
@@ -17,6 +17,30 @@ export type SyncSupplier = {
   contact_id: string;
   email_address?: string;
   name?: string;
+};
+
+export interface SupplierIngredientUnit {
+  unit_uuid: string;
+  unit_name: string;
+  unit_cost: number;
+  product_code: string;
+}
+
+export interface SupplierIngredient {
+  ingredient_uuid: string;
+  name: string;
+  units: SupplierIngredientUnit[];
+}
+
+export type SupplierIngredientResponse = {
+  ingredient_uuid: string;
+  name: string;
+  product_code?: string;
+  units: {
+    unit_uuid: string;
+    unit_name: string;
+    unit_cost: number;
+  };
 };
 
 type RestaurantSuppliersResponse = {
@@ -154,6 +178,50 @@ const deleteSupplier = (supplierUUID: string) => {
   return axiosClient.post(`/supplier/${supplierUUID}/delete`);
 };
 
+export const getSupplierIngredient = async (
+  restaurantUUID: string,
+  supplierUUID: string
+): Promise<SupplierIngredient[] | null> => {
+  try {
+    const res = await axiosClient.get<
+      Record<
+        string,
+        {
+          name: string;
+          units: Array<{
+            unit_uuid: string;
+            unit_name: string;
+            cost: number;
+            product_code: string;
+          }>;
+        }
+      >
+    >(`/inventory/${restaurantUUID}/supplier/${supplierUUID}`);
+
+    // Transform the object response into an array of SupplierIngredient
+    const supplierIngredients: SupplierIngredient[] = Object.entries(
+      res.data
+    ).map(([ingredient_uuid, data]) => ({
+      ingredient_uuid,
+      name: data.name,
+      units: data.units.map((unit) => ({
+        unit_uuid: unit.unit_uuid,
+        unit_name: unit.unit_name,
+        unit_cost: unit.cost,
+        product_code: unit.product_code,
+      })),
+    }));
+    return supplierIngredients;
+  } catch (error) {
+    console.error(
+      `Error fetching supplier ingredients for restaurantUUID: ${restaurantUUID}, supplierUUID: ${supplierUUID}`,
+      error
+    );
+
+    return null;
+  }
+};
+
 export default {
   getRestaurantSuppliers,
   getSuppliers,
@@ -164,4 +232,5 @@ export default {
   getSync,
   addSyncSupplier,
   addOnlySupplier,
+  getSupplierIngredient,
 };

@@ -43,3 +43,12 @@
     }
   }
 }
+
+.buttonContainer {
+  position: absolute; /* Allows positioning relative to the nearest positioned ancestor */
+  bottom: 10px; /* Aligns the div to the bottom */
+  right: 10px; /* Aligns the div to the left */
+  display: flex;
+  margin-top: 5px;
+  gap: 5px;
+}

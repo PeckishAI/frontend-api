@@ -72,6 +72,7 @@
   "orders.orderNumber": "Order Number",
   "orders.deliveryDate": "Delivery date",
   "orders.receivedQtys": "Received Quantity",
+  "orders.addIngredient": "Add Ingredient",
   "orders.status": "Status",
   "orders.statusStates": {
     "pending": "Pending",

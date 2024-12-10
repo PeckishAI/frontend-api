@@ -14,12 +14,17 @@ import { useState } from 'react';
 import { SupplierNote } from '../ShoppingView/ShoppingView';
 import classNames from 'classnames';
 import { FaCalendarAlt } from 'react-icons/fa';
+import { ordersService } from '../../../../services/orders.service';
+import { useRestaurantStore } from '../../../../store/useRestaurantStore';
 
 type Props = {
   cartItems: IngredientOption[];
   setCartItems: React.Dispatch<React.SetStateAction<IngredientOption[]>>;
   setSupplierNotes: React.Dispatch<React.SetStateAction<SupplierNote[]>>;
   onOrderSubmited: (
+    deliveryDates: Record<string, Date | null> // Pass delivery dates in order submit
+  ) => void;
+  onOrderDrafted: (
     deliveryDates: Record<string, Date | null> // Pass delivery dates in order submit
   ) => void;
   showDatePickerForSupplier: Record<string, boolean>;
@@ -37,6 +42,10 @@ const Basket = (props: Props) => {
   const [deliveryDates, setDeliveryDates] = useState<
     Record<string, Date | null>
   >({});
+
+  const selectedRestaurantUUID = useRestaurantStore(
+    (state) => state.selectedRestaurantUUID
+  )!;
 
   const handleCalendarIconClick = (supplierName: string) => {
     props.setShowDatePickerForSupplier((prev) => ({
@@ -153,6 +162,10 @@ const Basket = (props: Props) => {
   const handlePlaceOrder = () => {
     // setNotesValues([]);
     props.onOrderSubmited(deliveryDates);
+  };
+
+  const handlePlaceOrderAsDraft = () => {
+    props.onOrderDrafted(deliveryDates);
   };
 
   return (
@@ -281,6 +294,13 @@ const Basket = (props: Props) => {
           className={styles.submit}
           // disabled={totalAmount === 0}
           onClick={handlePlaceOrder}
+        />
+        <Button
+          type="secondary"
+          value={t('placeOrder:draftOrder.title')}
+          className={styles.submit}
+          // disabled={totalAmount === 0}
+          onClick={handlePlaceOrderAsDraft}
         />
       </div>
       <DialogBox

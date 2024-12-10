@@ -135,7 +135,13 @@ const ShoppingView = (props: Props) => {
     setShowEmailDialog(true);
   };
 
-  const handleOrderAfterConfirmation = (email: boolean) => {
+  const handleOrderDrafted = (deliveryDates: Record<string, Date | null>) => {
+    // Store the delivery dates to be used after confirmation
+    window.deliveryDatesToSubmit = deliveryDates;
+    handleOrderAfterConfirmation(false, true);
+  };
+
+  const handleOrderAfterConfirmation = (email: boolean, draft: boolean) => {
     // Retrieve the delivery dates saved earlier
     const deliveryDates = window.deliveryDatesToSubmit;
 
@@ -153,6 +159,7 @@ const ShoppingView = (props: Props) => {
         note: supplierNotes.find((note) => note.supplierName === supplierName)
           ?.note,
         delivery_date: deliveryDates[supplierName] ?? null, // Add delivery date for each supplier
+        status: draft ? 'draft' : 'pending',
       })
     );
 
@@ -253,7 +260,7 @@ const ShoppingView = (props: Props) => {
           setShowEmailDialog(false);
         }}
         onConfirm={() => {
-          handleOrderAfterConfirmation(sendEmail);
+          handleOrderAfterConfirmation(sendEmail, false);
           setShowEmailDialog(false);
         }}>
         <div className={styles.dropdownSection}>
@@ -276,6 +283,7 @@ const ShoppingView = (props: Props) => {
           setCartItems={setCartItems}
           setSupplierNotes={setSupplierNotes}
           onOrderSubmited={handleOrderSubmited}
+          onOrderDrafted={handleOrderDrafted}
           setShowDatePickerForSupplier={setShowDatePickerForSupplier}
           showDatePickerForSupplier={showDatePickerForSupplier}
         />
