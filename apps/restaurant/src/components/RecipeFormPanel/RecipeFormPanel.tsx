@@ -83,6 +83,8 @@ const RecipeFormPanel = (props: Props) => {
     number | null
   >(null);
 
+  console.log('Recipe View', props.recipe);
+
   const [unitname, setUnitName] = useState<Unit[]>([]);
   const [unitApiData, setUnitApiData] = useState<Unit[]>([]);
   const [unitNew, setUnitNew] = useState<SelectOption[]>([]);
@@ -198,47 +200,48 @@ const RecipeFormPanel = (props: Props) => {
       });
   }
 
-  useEffect(() => {
-    ingredientFields.forEach((field, index) => {
-      const itemUUID = watch(`ingredients.${index}.item_uuid`);
-      let selectedItem: RecipeIngredient | null = null;
+  // useEffect(() => {
+  //   ingredientFields.forEach((field, index) => {
+  //     const itemUUID = watch(`ingredients.${index}.item_uuid`);
+  //     let selectedItem: RecipeIngredient | null = null;
 
-      const foundIngredient = ingredients.find(
-        (ing) => ing.id === itemUUID && ing.type === 'ingredient'
-      );
-      const foundPreparation = preparations.find(
-        (prep) => prep.recipe_uuid === itemUUID && prep.type === 'preparation'
-      );
+  //     const foundIngredient = ingredients.find(
+  //       (ing) => ing.id === itemUUID && ing.type === 'ingredient'
+  //     );
+  //     const foundPreparation = preparations.find(
+  //       (prep) => prep.recipe_uuid === itemUUID && prep.type === 'preparation'
+  //     );
 
-      if (foundIngredient) {
-        selectedItem = {
-          item_uuid: foundIngredient.id,
-          item_name: foundIngredient.name,
-          type: 'ingredient', // Explicitly set type
-          unit_name: foundIngredient.unit_name || '',
-          unit_uuid: foundIngredient.unit_uuid || '',
-          quantity: 0,
-          conversion_factor: 1,
-        };
-      } else if (foundPreparation) {
-        selectedItem = {
-          item_uuid: foundPreparation.recipe_uuid,
-          item_name: foundPreparation.name,
-          type: 'preparation', // Explicitly set type
-          unit_name: foundPreparation.unit_name || '',
-          unit_uuid: foundPreparation.unit_uuid || '',
-          quantity: 0,
-          conversion_factor: 1,
-        };
-      }
+  //     console.log('Found ingredient :', foundIngredient);
+  //     if (foundIngredient) {
+  //       selectedItem = {
+  //         item_uuid: foundIngredient.id,
+  //         item_name: foundIngredient.name,
+  //         type: 'ingredient', // Explicitly set type
+  //         unit_name: foundIngredient.unit_name || '',
+  //         unit_uuid: foundIngredient.unit_uuid || '',
+  //         quantity: 0,
+  //         conversion_factor: 1,
+  //       };
+  //     } else if (foundPreparation) {
+  //       selectedItem = {
+  //         item_uuid: foundPreparation.recipe_uuid,
+  //         item_name: foundPreparation.name,
+  //         type: 'preparation', // Explicitly set type
+  //         unit_name: foundPreparation.unit_name || '',
+  //         unit_uuid: foundPreparation.unit_uuid || '',
+  //         quantity: 0,
+  //         conversion_factor: 1,
+  //       };
+  //     }
 
-      if (selectedItem) {
-        setValue(`ingredients.${index}.type`, selectedItem.type);
-        setValue(`ingredients.${index}.unit_name`, selectedItem.unit_name);
-        setValue(`ingredients.${index}.unit_uuid`, selectedItem.unit_uuid);
-      }
-    });
-  }, [watch('ingredients'), ingredients, preparations]);
+  //     if (selectedItem) {
+  //       setValue(`ingredients.${index}.type`, selectedItem.type);
+  //       setValue(`ingredients.${index}.unit_name`, selectedItem.unit_name);
+  //       setValue(`ingredients.${index}.unit_uuid`, selectedItem.unit_uuid);
+  //     }
+  //   });
+  // }, [watch('ingredients'), ingredients, preparations]);
 
   const fetchAndSetConversionFactor = async (
     index: number,
@@ -816,7 +819,9 @@ const RecipeFormPanel = (props: Props) => {
                   />
                   <div className={styles.IconContainer}>
                     <LabeledInput
-                      placeholder={`${selectedIngredient?.unit_name || 'unit'} → ${watch(`ingredients.${i}.unit_name`) || 'unit'} `}
+                      placeholder={`${
+                        selectedIngredient?.unit_name || 'unit'
+                      } → ${watch(`ingredients.${i}.unit_name`) || 'unit'} `}
                       type="number"
                       step="any"
                       lighter
