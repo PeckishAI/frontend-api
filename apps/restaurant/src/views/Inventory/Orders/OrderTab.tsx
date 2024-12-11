@@ -143,6 +143,7 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
         ingredients: tableData.map((product) => ({
           uuid: product.uuid,
           ingredient_uuid: product.ingredientUUID,
+          name: product.ingredientName,
           unit_uuid: product.unitUUID,
           unit_name: product.unitName,
           quantity: product.quantity,
