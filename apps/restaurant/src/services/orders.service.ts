@@ -66,6 +66,7 @@ export type UpdateOrderPayload = {
   ingredients: {
     uuid: string;
     ingredient_uuid: string;
+    name: string;
     unit_uuid: string;
     unit_name: string;
     quantity: number;
@@ -80,6 +81,7 @@ export type SupplierOrder = {
   deliveryDates?: string | null;
   ingredients: {
     ingredient_uuid: string;
+    name: string;
     unit_uuid: string;
     unit_name: string;
     quantity: number;

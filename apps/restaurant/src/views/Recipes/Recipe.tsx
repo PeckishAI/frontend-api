@@ -71,6 +71,16 @@ export const getRecipeCategories = (t: TFunction<['common'], undefined>) => [
     icon: <i className="fa-solid fa-cookie-bite"></i>,
   },
   {
+    label: t('recipesCategories.catering'),
+    value: 'snacks',
+    icon: <i className="fa-solid fa-kitchen-set"></i>,
+  },
+  {
+    label: t('recipesCategories.delivery'),
+    value: 'snacks',
+    icon: <i className="fa-solid fa-truck"></i>,
+  },
+  {
     label: t('recipesCategories.preparations'),
     value: 'preparations',
     icon: <i className="fa-solid fa-martini-glass"></i>,
@@ -112,6 +122,16 @@ export const getRecipeCategorie = (t: TFunction<['common'], undefined>) => [
     label: t('recipesCategories.snacks'),
     value: 'snacks',
     icon: <i className="fa-solid fa-cookie-bite"></i>,
+  },
+  {
+    label: t('recipesCategories.catering'),
+    value: 'snacks',
+    icon: <i className="fa-solid fa-kitchen-set"></i>,
+  },
+  {
+    label: t('recipesCategories.delivery'),
+    value: 'snacks',
+    icon: <i className="fa-solid fa-truck"></i>,
   },
   {
     label: t('recipesCategories.preparations'),
@@ -206,8 +226,9 @@ const RecipeNew = () => {
       });
   };
 
-  const filteredRecipes = recipes.filter((recipe) =>
-    recipe?.name?.toLowerCase().includes(recipeResearch.toLowerCase())
+  const filteredRecipes = recipes.filter(
+    (recipe) =>
+      recipe?.name?.toLowerCase().includes(recipeResearch.toLowerCase())
   );
 
   const handleRecipeClick = (recipe: Recipe) => {
