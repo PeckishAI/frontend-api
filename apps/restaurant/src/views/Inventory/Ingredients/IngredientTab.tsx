@@ -99,6 +99,7 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
         const ingredients = await inventoryService.getIngredientList(
           selectedRestaurantUUID
         );
+        console.log('Fetched ingredients:', ingredients);
         setIngredientsList(ingredients);
         setFilteredIngredients(ingredients);
       } catch (err) {
@@ -122,10 +123,22 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
 
     useEffect(() => {
       const applyFilters = () => {
+        // If no search value and no filters, use the full list
+        if (
+          !props.searchValue &&
+          filters.selectedSupplier.length === 0 &&
+          filters.selectedTag.length === 0
+        ) {
+          setFilteredIngredients(ingredientsList);
+          return;
+        }
+
         let filteredList = [...ingredientsList];
+        console.log('Initial ingredientsList:', ingredientsList);
 
         // Apply search filter
         if (props.searchValue) {
+          console.log('Applying search filter:', props.searchValue);
           const fuseOptions = {
             keys: ['name'],
             threshold: 0.3,
@@ -134,30 +147,37 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
           };
           const fuse = new Fuse(filteredList, fuseOptions);
           filteredList = fuse.search(props.searchValue).map((r) => r.item);
+          console.log('After search filter:', filteredList);
         }
 
         // Apply supplier filter
-        if (filters.selectedSupplier && filters.selectedSupplier.length > 0) {
+        if (filters.selectedSupplier.length > 0) {
+          console.log('Applying supplier filter:', filters.selectedSupplier);
           const selectedSupplierUuids = filters.selectedSupplier.map(
             (supplier) => supplier.uuid
           );
-          filteredList = filteredList.filter((ingredient) =>
-            ingredient.supplier_details?.some((supplier) =>
-              selectedSupplierUuids.includes(supplier.supplier_uuid)
-            )
+          filteredList = filteredList.filter(
+            (ingredient) =>
+              ingredient.supplier_details?.some((supplier) =>
+                selectedSupplierUuids.includes(supplier.supplier_uuid)
+              )
           );
+          console.log('After supplier filter:', filteredList);
         }
 
         // Apply tag filter
-        if (filters.selectedTag && filters.selectedTag.length > 0) {
+        if (filters.selectedTag.length > 0) {
+          console.log('Applying tag filter:', filters.selectedTag);
           const selectedTagUuids = filters.selectedTag.map((tag) => tag.uuid);
-          filteredList = filteredList.filter((ingredient) =>
-            ingredient.tagUUID?.some((tagUuid) =>
-              selectedTagUuids.includes(tagUuid)
-            )
+          filteredList = filteredList.filter(
+            (ingredient) =>
+              ingredient.tagUUID?.some((tagUuid) =>
+                selectedTagUuids.includes(tagUuid)
+              )
           );
+          console.log('After tag filter:', filteredList);
         }
-
+        console.log('Final filtered list length:', filteredList.length);
         setFilteredIngredients(filteredList);
       };
 
@@ -355,7 +375,9 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
                 return (
                   <span
                     key={uuid}
-                    className={`${styles.tagChip} ${tag ? styles.primary : styles.default}`}>
+                    className={`${styles.tagChip} ${
+                      tag ? styles.primary : styles.default
+                    }`}>
                     {displayName}
                   </span>
                 );
@@ -474,53 +496,60 @@ export const IngredientTab = React.forwardRef<IngredientTabRef, Props>(
       },
     ];
 
-    const handleExportDataClick = useCallback(() => {
-      const rows = filteredIngredients;
-      if (rows) {
-        const header =
-          'Ingredient UUID,Ingredient Name,Unit UUID,Unit Name,Par Level,Quantity,Tags\n';
-        const csvContent =
-          'data:text/csv;charset=utf-8,' +
-          header +
-          rows
-            .map((row) => {
-              const values = [];
-              // Ingredient UUID
-              values.push(row.id || '');
-              // Ingredient Name
-              values.push(row.name || '');
-              // Unit UUID
-              values.push(row.unit_uuid || '');
-              // Unit Name
-              values.push(row.unit_name || '');
-              // Par Level
-              values.push(row.parLevel || '');
-              // Quantity
-              values.push(row.actualStock?.quantity || '');
-              // Tags (joined with >)
-              const tags = row.tag_details
-                ? row.tag_details.map((tag) => tag.name).join('>')
-                : '';
-              values.push(tags);
+    const handleExportDataClick = useCallback(async () => {
+      if (!selectedRestaurantUUID) return;
 
-              // Escape any commas in the values and wrap in quotes if needed
-              return values
-                .map((value) =>
-                  value.toString().includes(',') ? `"${value}"` : value
-                )
-                .join(',');
-            })
-            .join('\n');
+      try {
+        // Fetch the data directly when export is clicked
+        const ingredients = await inventoryService.getIngredientList(
+          selectedRestaurantUUID
+        );
 
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement('a');
-        link.setAttribute('href', encodedUri);
-        link.setAttribute('download', 'inventory.csv');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        console.log(
+          'Export - freshly fetched ingredients:',
+          ingredients.length
+        );
+
+        if (ingredients && ingredients.length > 0) {
+          const header =
+            'Ingredient UUID,Ingredient Name,Unit UUID,Unit Name,Par Level,Quantity,Tags\n';
+          const csvContent =
+            'data:text/csv;charset=utf-8,' +
+            header +
+            ingredients
+              .map((row) => {
+                const values = [];
+                values.push(row.id || '');
+                values.push(row.name || '');
+                values.push(row.unit_uuid || '');
+                values.push(row.unit_name || '');
+                values.push(row.parLevel || '');
+                values.push(row.actualStock?.quantity || '');
+                const tags = row.tag_details
+                  ? row.tag_details.map((tag) => tag.name).join('>')
+                  : '';
+                values.push(tags);
+
+                return values
+                  .map((value) =>
+                    value.toString().includes(',') ? `"${value}"` : value
+                  )
+                  .join(',');
+              })
+              .join('\n');
+
+          const encodedUri = encodeURI(csvContent);
+          const link = document.createElement('a');
+          link.setAttribute('href', encodedUri);
+          link.setAttribute('download', 'inventory.csv');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } catch (error) {
+        console.error('Error exporting data:', error);
       }
-    }, [filteredIngredients]);
+    }, [selectedRestaurantUUID]); // Only depend on the restaurant UUID
 
     const handleCancelSelection = () => {
       setSelectedIngredients([]);
