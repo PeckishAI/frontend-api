@@ -34,14 +34,18 @@ type Props = {
   note?: string;
   footerContent?: React.ReactNode;
   orderStatus: string;
-  onSave: (data: { tableData: OrderItem[]; deliveryDate: Date }) => void;
-  onApprove: () => void;
+  onSave: (data: {
+    tableData: OrderItem[];
+    deliveryDate: Date;
+    status: string;
+  }) => void;
   isLoading: boolean;
 };
 
 export const OrderDetail = (props: Props) => {
   const { t } = useTranslation(['placeOrder']);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isReceiveMode, setIsReceiveMode] = useState(false);
   const [supplierIngredients, setSupplierIngredients] = useState<
     SupplierIngredient[]
   >([]);
@@ -209,7 +213,7 @@ export const OrderDetail = (props: Props) => {
     },
     {
       key: 'quantity',
-      header: t('quantity'),
+      header: isReceiveMode ? t('Ordered QTY') : t('quantity'),
       renderItem: ({ row, index }) =>
         isEditMode ? (
           <Input
@@ -231,6 +235,36 @@ export const OrderDetail = (props: Props) => {
           row.quantity
         ),
     },
+    ...(isReceiveMode
+      ? [
+          {
+            key: 'receivedQuantity' as keyof OrderItem,
+            header: t('Received QTY'),
+            renderItem: ({ row, index }) => {
+              return (
+                <Input
+                  type="number"
+                  width="20px"
+                  value={
+                    row.receivedQuantity !== null
+                      ? row.receivedQuantity
+                      : row.quantity
+                  }
+                  onChange={(value) => {
+                    const newValue = Number(value);
+                    if (!isNaN(newValue)) {
+                      const newData = [...editableTableData];
+                      newData[index].receivedQuantity = newValue;
+                      setEditableTableData(newData);
+                      console.log(editableTableData);
+                    }
+                  }}
+                />
+              );
+            },
+          },
+        ]
+      : []),
     {
       key: 'unitName',
       header: t('unit'),
@@ -344,8 +378,18 @@ export const OrderDetail = (props: Props) => {
           {props.orderStatus === 'pending' && (
             <Button
               type="primary"
-              value={'Receive Stock'}
-              onClick={() => console.log('Receive Stock clicked')}
+              value={!isReceiveMode ? 'Receive Stock' : 'Validate'}
+              onClick={() => {
+                if (!isReceiveMode) {
+                  setIsReceiveMode(true);
+                } else {
+                  props.onSave({
+                    tableData: editableTableData,
+                    deliveryDate,
+                    status: 'received',
+                  });
+                }
+              }}
             />
           )}
           {props.orderStatus !== 'draft' && props.orderStatus !== 'pending' && (
@@ -382,6 +426,7 @@ export const OrderDetail = (props: Props) => {
                   props.onSave({
                     tableData: editableTableData,
                     deliveryDate,
+                    status: 'draft',
                   });
                 }
                 setIsEditMode(!isEditMode);
@@ -391,7 +436,13 @@ export const OrderDetail = (props: Props) => {
               <Button
                 value="Approve"
                 type="primary"
-                onClick={props.onApprove}
+                onClick={() => {
+                  props.onSave({
+                    tableData: editableTableData,
+                    deliveryDate,
+                    status: 'pending',
+                  });
+                }}
               />
             )}
           </>

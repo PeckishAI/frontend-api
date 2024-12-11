@@ -7,14 +7,6 @@ export type PredictOrderResponse = {
   quantity: number;
 };
 
-export type SupplierOrder = {
-  supplier_uuid: string;
-  price: number;
-  ingredients: IngredientOption[];
-  note?: string | null;
-  deliveryDates?: string | null;
-};
-
 // const getOrders = async (restaurantUUID: string) => {
 //   const res = await axiosClient.get(`/order/${restaurantUUID}`);
 //   return res;
@@ -81,6 +73,20 @@ export type UpdateOrderPayload = {
   }[];
 };
 
+export type SupplierOrder = {
+  supplier_uuid: string;
+  price: number;
+  note?: string | null;
+  deliveryDates?: string | null;
+  ingredients: {
+    ingredient_uuid: string;
+    unit_uuid: string;
+    unit_name: string;
+    quantity: number;
+    price: number;
+  }[];
+};
+
 const getOrders = async (
   restaurantUUID: string
 ): Promise<OrderResponse[] | null> => {
@@ -104,7 +110,7 @@ const getOrders = async (
         unit_uuid: entry.unit_uuid,
         unit_name: entry.unit_name,
         quantity: entry.quantity,
-        received_quantity: entry.received_quantity,
+        received_quantity: entry.received_quantity || entry.quantity,
         price: entry.price,
       })),
     }));

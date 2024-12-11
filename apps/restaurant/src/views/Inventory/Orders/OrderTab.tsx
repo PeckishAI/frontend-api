@@ -1,6 +1,13 @@
 import { forwardRef, useImperativeHandle, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Table, OrderDetail, Loading } from 'shared-ui';
+import {
+  Button,
+  Table,
+  OrderDetail,
+  Loading,
+  DialogBox,
+  Checkbox,
+} from 'shared-ui';
 import { useNavigate } from 'react-router-dom';
 import styles from './OrderTab.module.scss';
 import { Order } from '../../../utils/orders-mock';
@@ -29,6 +36,8 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [isEditMode, setIsEditMode] = useState(false);
     const [isReceiveMode, setIsReceiveMode] = useState(false);
+    const [showEmailDialog, setShowEmailDialog] = useState(false);
+    const [sendEmail, setSendEmail] = useState(false);
 
     const selectedRestaurantUUID = useRestaurantStore(
       (state) => state.selectedRestaurantUUID
@@ -108,15 +117,18 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
       }
     };
 
-    const handleSaveOrder = async ({
-      tableData: updatedTableData,
+    const saveOrder = async ({
+      tableData,
       deliveryDate,
+      status,
+      sendEmail,
     }) => {
       setIsLoading(true);
       if (!selectedOrder || !selectedRestaurantUUID) return;
+      console.log('Status', status);
 
       // Calculate the total price from the updated table data
-      const totalPrice = updatedTableData.reduce(
+      const totalPrice = tableData.reduce(
         (total, item) => total + item.price,
         0
       );
@@ -127,16 +139,20 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
         supplier_uuid: selectedOrder.supplier_uuid,
         delivery_date: deliveryDate ? format(deliveryDate, 'yyyy-MM-dd') : '',
         price: totalPrice, // Use the calculated total price
-        status: selectedOrder.status,
-        ingredients: updatedTableData.map((product) => ({
+        status: status,
+        ingredients: tableData.map((product) => ({
           uuid: product.uuid,
           ingredient_uuid: product.ingredientUUID,
           unit_uuid: product.unitUUID,
           unit_name: product.unitName,
           quantity: product.quantity,
           price: product.price,
+          received_quantity: product.received_quantity,
         })),
+        sendEmail,
       };
+
+      console.log('Payload', payload);
 
       try {
         await ordersService.updateOrder(
@@ -153,38 +169,32 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
       }
     };
 
-    const handleApproveOrder = async () => {
+    const handleSaveOrder = async ({
+      tableData: updatedTableData,
+      deliveryDate,
+      status,
+    }) => {
+      if (status === 'pending') {
+        setShowEmailDialog(true);
+      } else {
+        await saveOrder({
+          tableData: updatedTableData,
+          deliveryDate,
+          status,
+          sendEmail,
+        });
+      }
+    };
+
+    const handleReceivedQuantity = async () => {
       setIsLoading(true);
-      if (!selectedOrder || !selectedRestaurantUUID) return;
-
-      const orderDetails = {
-        order_uuid: selectedOrder.uuid,
-        order_number: selectedOrder.orderNumber,
-        supplier_uuid: selectedOrder.supplier_uuid,
-        delivery_date: selectedOrder.deliveryDate,
-        price: selectedOrder.price,
-        status: 'pending',
-        ingredients: selectedOrder.products.map((product) => ({
-          uuid: product.uuid,
-          ingredient_uuid: product.ingredient_uuid,
-          unit_uuid: product.unit_uuid,
-          unit_name: product.unit_name,
-          quantity: product.quantity,
-          price: product.price,
-        })),
-      };
-
       try {
-        await ordersService.updateOrder(
-          selectedRestaurantUUID,
-          selectedOrder.uuid,
-          orderDetails
-        );
-        await refreshOrders();
+        // Implement the logic for updating received quantities here
+        console.log('ORDER : ', selectedOrder);
         setSelectedOrder(null);
-        // Optionally, refresh the orders list or update UI state here
+        await refreshOrders();
       } catch (error) {
-        console.error('Error approving order:', error);
+        console.error('Error updating received quantity:', error);
       } finally {
         setIsLoading(false);
       }
@@ -221,6 +231,33 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
 
     return (
       <div className="orders">
+        <DialogBox
+          type="warning"
+          msg={t('placeOrder:email')}
+          isOpen={showEmailDialog}
+          onRequestClose={() => setShowEmailDialog(false)}
+          onConfirm={async () => {
+            await saveOrder({
+              tableData,
+              deliveryDate: selectedOrder?.deliveryDate,
+              status: 'pending',
+              sendEmail,
+            });
+            setShowEmailDialog(false);
+          }}>
+          <div className={styles.dropdownSection}>
+            <div className={styles.flexContainer}>
+              <Checkbox
+                className={styles.autoCheckbox}
+                checked={sendEmail}
+                onCheck={(checked) => setSendEmail(checked)}
+              />
+              <label htmlFor="sendEmailCheckbox">
+                {t('placeOrder:emailText')}
+              </label>
+            </div>
+          </div>
+        </DialogBox>
         {isLoading ? (
           <Loading size="large" />
         ) : orderList.length === 0 ? (
@@ -256,7 +293,6 @@ export const OrderTab = forwardRef<OrderTabRef, Props>(
             note={selectedOrder?.note}
             orderStatus={selectedOrder?.status || 'N/A'}
             onSave={handleSaveOrder}
-            onApprove={handleApproveOrder}
             isLoading={isLoading}
           />
         )}
