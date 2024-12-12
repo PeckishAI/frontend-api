@@ -49,6 +49,7 @@ const getRecipes = async (
       type,
     },
   });
+  console.log('Recipes : ', res.data);
   const convertedData: Recipe[] = Object.keys(res.data).map<Recipe>((key) => ({
     recipe_uuid: key,
     ...res.data[key],

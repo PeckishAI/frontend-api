@@ -48,6 +48,12 @@ const RecipeDetail = (props: Props) => {
               {t(`recipesCategories.${props.recipe?.category ?? 'others'}`)}
             </span>
           </p>
+          <p className={styles.category}>
+            {t('portion_count')} :{' '}
+            <span className={styles.value}>
+              {props.recipe?.portion_count ?? 1}
+            </span>
+          </p>
 
           <div className={styles.metrics}>
             {props.recipe?.type === 'preparation' ? (
