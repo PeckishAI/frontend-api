@@ -18,10 +18,7 @@ export const TrendCard = ({ icon, title, percentage, value }: Props) => {
       <div className={styles.row}>
         <div>
           <h3 className={styles.title}>{title}</h3>
-          <p className={styles.value}>
-            <FaPoundSign size={18} className={styles.pound} />
-            {value}
-          </p>
+          <p className={styles.value}>{value}</p>
         </div>
         <div className={styles.icon}>{icon}</div>
       </div>

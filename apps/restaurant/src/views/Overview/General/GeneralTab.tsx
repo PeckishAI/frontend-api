@@ -149,11 +149,12 @@ export const GeneralTab = React.forwardRef<GeneralTabRef, Props>(
         let filteredList = [...(filterOption || [])];
 
         if (filters.selectedTag) {
-          filteredList = filteredList.filter((ingredient) =>
-            // Check if ingredient.tags exists and is an array
-            ingredient.tags?.some(
-              (tag) => tag.tag_name === filters?.selectedTag?.name
-            )
+          filteredList = filteredList.filter(
+            (ingredient) =>
+              // Check if ingredient.tags exists and is an array
+              ingredient.tags?.some(
+                (tag) => tag.tag_name === filters?.selectedTag?.name
+              )
           );
         }
         setCostOfSales(filteredList);
@@ -183,7 +184,10 @@ export const GeneralTab = React.forwardRef<GeneralTabRef, Props>(
                 <>
                   <TrendCard
                     title="Cost of Goods Sold"
-                    value={cost?.costofgoodsold?.value?.toFixed(2) || '0'}
+                    value={formatCurrency(
+                      cost?.costofgoodsold?.value?.toFixed(2) || '0',
+                      currentCurrency
+                    )}
                     icon={<img src={Vector} />}
                     percentage={
                       Number(cost?.costofgoodsold?.percentage?.toFixed(2)) || 0
@@ -191,7 +195,10 @@ export const GeneralTab = React.forwardRef<GeneralTabRef, Props>(
                   />
                   <TrendCard
                     title="Sales"
-                    value={cost?.sales?.value?.toFixed(2) || '0'}
+                    value={formatCurrency(
+                      cost?.sales?.value?.toFixed(2) || '0',
+                      currentCurrency
+                    )}
                     icon={<FaRegMoneyBillAlt />}
                     percentage={
                       Number(cost?.sales?.percentage?.toFixed(2)) || 0
@@ -199,7 +206,10 @@ export const GeneralTab = React.forwardRef<GeneralTabRef, Props>(
                   />
                   <TrendCard
                     title="Inventory Value"
-                    value={inventoryValue?.toFixed(2) || '0'}
+                    value={formatCurrency(
+                      inventoryValue?.toFixed(2) || '0',
+                      currentCurrency
+                    )}
                     icon={<i className="fa-solid fa-cubes-stacked"></i>}
                   />
                 </>
