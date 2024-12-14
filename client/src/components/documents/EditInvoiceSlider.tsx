@@ -34,15 +34,15 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
   if (!invoice) return null;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} modal={false}>
+    <Sheet open={open} onOpenChange={onOpenChange} modal={true}>
       <SheetContent
         side="right"
-        className="w-[100vw] border-l-0 p-0"
+        className="w-[100vw] h-screen border-l-0 p-0"
       >
-        <div className="flex h-full">
+        <div className="flex h-full divide-x">
           {/* Left side - Images */}
-          <div className="w-1/2 border-r bg-gray-50 p-6">
-            <div className="relative aspect-[3/2] bg-white rounded-lg overflow-hidden shadow-sm">
+          <div className="w-1/2 bg-gray-50/50 p-6">
+            <div className="relative aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden border shadow-sm">
               {/* Image display */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-gray-400">Image {activeImageIndex + 1}</div>
@@ -75,13 +75,17 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
               )}
             </div>
 
+            {/* Image count indicator */}
+            <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
+              Image {activeImageIndex + 1} of {invoice.images.length}
+            </div>
             {/* Thumbnails */}
             <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
               {invoice.images.map((_, index) => (
                 <button
                   key={index}
-                  className={`relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm ${
-                    index === activeImageIndex ? 'ring-2 ring-primary' : ''
+                  className={`relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm transition-all ${
+                    index === activeImageIndex ? 'ring-2 ring-primary scale-95' : 'hover:scale-105'
                   }`}
                   onClick={() => setActiveImageIndex(index)}
                 >
@@ -94,73 +98,75 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
           </div>
 
           {/* Right side - Form */}
-          <div className="w-1/2 p-6">
-            <h2 className="text-lg font-semibold mb-6">Edit Invoice</h2>
-            <Form {...form}>
-              <form className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="invoiceNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Invoice Number</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="supplier"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Supplier</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Price</FormLabel>
-                      <FormControl>
-                        <Input 
-                          type="number" 
-                          step="0.01"
-                          {...field} 
-                          onChange={e => field.onChange(parseFloat(e.target.value))}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="ingredientCount"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Number of Ingredients</FormLabel>
-                      <FormControl>
-                        <Input 
-                          type="number" 
-                          {...field}
-                          onChange={e => field.onChange(parseInt(e.target.value))}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </form>
-            </Form>
+          <div className="w-1/2 bg-white p-8">
+            <div className="max-w-md mx-auto">
+              <h2 className="text-xl font-semibold mb-6">Edit Invoice</h2>
+              <Form {...form}>
+                <form className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="invoiceNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Invoice Number</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="supplier"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Supplier</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="price"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Price</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            step="0.01"
+                            {...field} 
+                            onChange={e => field.onChange(parseFloat(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="ingredientCount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Number of Ingredients</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            {...field}
+                            onChange={e => field.onChange(parseInt(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </form>
+              </Form>
+            </div>
           </div>
         </div>
       </SheetContent>
