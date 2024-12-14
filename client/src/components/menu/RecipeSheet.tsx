@@ -37,7 +37,7 @@ const recipeSchema = z.object({
   cost: z.number().optional(),
 });
 
-const defaultCategories = [
+export const defaultCategories = [
   { value: 'pizza', label: 'Pizza', emoji: '🍕' },
   { value: 'pasta', label: 'Pasta', emoji: '🍝' },
   { value: 'salad', label: 'Salads', emoji: '🥗' },

@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import RecipeSheet from "@/components/menu/RecipeSheet";
+import RecipeSheet, { defaultCategories } from "@/components/menu/RecipeSheet";
 import { Badge } from "@/components/ui/badge";
 
 type Product = {
