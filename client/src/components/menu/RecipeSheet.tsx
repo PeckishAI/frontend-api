@@ -134,7 +134,7 @@ export default function RecipeSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-[600px]">
+      <SheetContent className="w-[800px] sm:max-w-[800px] h-screen overflow-y-auto">
         <SheetHeader>
           <SheetTitle>{recipe ? "Edit" : "New"} Recipe</SheetTitle>
         </SheetHeader>
@@ -238,7 +238,7 @@ export default function RecipeSheet({
               </div>
 
               {ingredients.map((ingredient, index) => (
-                <div key={index} className="flex gap-2 items-end">
+                <div key={index} className="grid grid-cols-[2fr,1fr,1fr,1fr,auto] gap-4 items-end">
                   <FormField
                     control={form.control}
                     name={`ingredients.${index}.name`}
