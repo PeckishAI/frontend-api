@@ -1,9 +1,9 @@
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import {
   Table,
   TableBody,
@@ -26,16 +26,16 @@ export default function OrderModal({ order, onClose }: OrderModalProps) {
   if (!order) return null;
 
   return (
-    <Dialog open={!!order} onOpenChange={() => onClose()}>
-      <DialogContent className="max-w-3xl">
-        <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
+    <Sheet open={!!order} onOpenChange={() => onClose()}>
+      <SheetContent className="w-[800px] sm:max-w-[800px]">
+        <SheetHeader>
+          <SheetTitle className="flex items-center justify-between">
             <span>Order Details</span>
             <Badge className={getStatusColor(order.status)}>
               {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
             </Badge>
-          </DialogTitle>
-        </DialogHeader>
+          </SheetTitle>
+        </SheetHeader>
 
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
@@ -80,7 +80,7 @@ export default function OrderModal({ order, onClose }: OrderModalProps) {
             </TableBody>
           </Table>
         </div>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }
