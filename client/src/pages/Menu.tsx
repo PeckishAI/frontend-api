@@ -68,22 +68,20 @@ export default function Menu() {
 
   function ProductCard({ product }: { product: Product }) {
     return (
-      <Card className="group hover:shadow-lg transition-shadow duration-200">
+      <Card 
+        className="group hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+        onClick={() => setEditingRecipe(product)}
+      >
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sandwich className="h-5 w-5 text-primary" />
               <CardTitle className="text-lg">{product.name}</CardTitle>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <TagIcon className="h-3 w-3" />
-                {product.category}
-              </Badge>
-              <Button variant="ghost" size="sm" onClick={() => setEditingRecipe(product)}>
-                Edit Recipe
-              </Button>
-            </div>
+            <Badge variant="secondary" className="flex items-center gap-1">
+              <TagIcon className="h-3 w-3" />
+              {product.category}
+            </Badge>
           </div>
         </CardHeader>
         <CardContent>
@@ -180,7 +178,11 @@ export default function Menu() {
                   </TableHeader>
                   <TableBody>
                     {mockProducts.map((product) => (
-                      <TableRow key={product.id}>
+                      <TableRow 
+                        key={product.id} 
+                        className="cursor-pointer hover:bg-gray-50"
+                        onClick={() => setEditingRecipe(product)}
+                      >
                         <TableCell>{product.name}</TableCell>
                         <TableCell>
                           <Badge variant="secondary">{product.category}</Badge>
