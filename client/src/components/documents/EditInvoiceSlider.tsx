@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { ChevronLeft, ChevronRight, ChevronDown, DollarSign, Package2, Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -63,6 +63,7 @@ const editInvoiceSchema = z.object({
   supplier: z.string().min(1, "Supplier is required"),
   date: z.date(),
   ingredients: z.array(extractedIngredientSchema).min(1, "At least one ingredient is required"),
+  price: z.number().min(0).optional(),
 });
 
 type EditInvoiceFormValues = z.infer<typeof editInvoiceSchema>;
@@ -97,6 +98,7 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
         totalCost: 0,
         vat: 0,
       }],
+      price: 0,
     },
   });
 
@@ -106,15 +108,8 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
         invoiceNumber: invoice.invoiceNumber,
         supplier: invoice.supplier,
         date: invoice.date,
-        ingredients: [{
-          detected: "",
-          mapped: "",
-          unit: "",
-          quantity: 0,
-          unitCost: 0,
-          totalCost: 0,
-          vat: 0,
-        }],
+        ingredients: invoice?.ingredients || [],
+        price: invoice?.price || 0,
       });
     }
   }, [invoice, form]);
@@ -221,118 +216,121 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
               <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
                 <div className="border-b">
                   <div className="p-4">
-                    <div className="flex items-center justify-between cursor-pointer hover:bg-gray-50"
-                         onClick={() => setIsDetailsOpen(!isDetailsOpen)}>
+                    <div 
+                      className="flex items-center justify-between cursor-pointer hover:bg-gray-50"
+                      onClick={() => setIsDetailsOpen(!isDetailsOpen)}
+                    >
                       <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                         Invoice Details
                         <ChevronDown className={cn("h-4 w-4 transition-transform", isDetailsOpen ? "transform rotate-180" : "")} />
                       </h2>
                     </div>
-                    <div className="flex items-center gap-4 justify-end mt-8">
-                      <div className="text-sm flex items-center gap-2">
-                        <span className="text-muted-foreground">Extracted Total:</span>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          value={invoice.price}
-                          onChange={(e) => {
-                            // Handle price change
-                            console.log('Price changed:', e.target.value);
-                          }}
-                          className="w-32"
+
+                    <div className={cn("space-y-8 overflow-hidden transition-all mt-6", 
+                      isDetailsOpen ? "opacity-100" : "h-0 opacity-0")}>
+                      <div className="grid grid-cols-2 gap-6">
+                        <FormField
+                          control={form.control}
+                          name="invoiceNumber"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Invoice Number</FormLabel>
+                              <FormControl>
+                                <Input {...field} className="font-mono" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="date"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Date</FormLabel>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      variant={"outline"}
+                                      className={cn(
+                                        "w-full pl-3 text-left font-normal",
+                                        !field.value && "text-muted-foreground"
+                                      )}
+                                    >
+                                      {field.value ? (
+                                        format(field.value, "PPP")
+                                      ) : (
+                                        <span>Pick a date</span>
+                                      )}
+                                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                  <Calendar
+                                    mode="single"
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                    disabled={(date) =>
+                                      date > new Date() || date < new Date("1900-01-01")
+                                    }
+                                    initialFocus
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
                       </div>
-                      <div className="text-sm flex items-center gap-2">
-                        <span className="text-muted-foreground">Calculated Total:</span>
-                        <span className="font-medium">${calculateTotal().toFixed(2)}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={cn("space-y-6 overflow-hidden transition-all", 
-                    isDetailsOpen ? "p-8" : "h-0 p-0")}>
-                    <div className="grid grid-cols-2 gap-6 items-start">
+
                       <FormField
                         control={form.control}
-                        name="invoiceNumber"
+                        name="supplier"
                         render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Invoice Number</FormLabel>
+                          <FormItem className="col-span-2">
+                            <FormLabel>Supplier</FormLabel>
                             <FormControl>
-                              <Input {...field} className="font-mono" />
+                              <CreatableSelect
+                                value={field.value ? [field.value] : []}
+                                onChange={(values) => {
+                                  if (values[0]) {
+                                    field.onChange(values[0]);
+                                  }
+                                }}
+                                options={defaultSuppliers}
+                                onCreateOption={(value) => {
+                                  field.onChange(value);
+                                }}
+                                placeholder="Select or add supplier"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
 
-                      <FormField
-                        control={form.control}
-                        name="date"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-col">
-                            <FormLabel>Date</FormLabel>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <FormControl>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground"
-                                    )}
-                                  >
-                                    {field.value ? (
-                                      format(field.value, "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                  </Button>
-                                </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar
-                                  mode="single"
-                                  selected={field.value}
-                                  onSelect={field.onChange}
-                                  disabled={(date) =>
-                                    date > new Date() || date < new Date("1900-01-01")
-                                  }
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      <div className="col-span-2 flex items-center gap-4 justify-end border-t pt-4">
+                        <div className="text-sm flex items-center gap-2">
+                          <span className="text-muted-foreground">Extracted Total:</span>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            value={form.watch("price")}
+                            onChange={(e) => {
+                              form.setValue("price", parseFloat(e.target.value));
+                            }}
+                            className="w-32"
+                          />
+                        </div>
+                        <div className="text-sm flex items-center gap-2">
+                          <span className="text-muted-foreground">Calculated Total:</span>
+                          <span className="font-medium">${calculateTotal().toFixed(2)}</span>
+                        </div>
+                      </div>
                     </div>
-
-                    <FormField
-                      control={form.control}
-                      name="supplier"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Supplier</FormLabel>
-                          <FormControl>
-                            <CreatableSelect
-                              value={field.value ? [field.value] : []}
-                              onChange={(values) => {
-                                if (values[0]) {
-                                  field.onChange(values[0]);
-                                }
-                              }}
-                              options={defaultSuppliers}
-                              onCreateOption={(value) => {
-                                field.onChange(value);
-                              }}
-                              placeholder="Select or add supplier"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </div>
                 </div>
 
@@ -353,32 +351,33 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                   {form.watch("ingredients").map((ingredient, index) => (
                     <div
                       key={index}
-                      className="border rounded-lg p-4"
+                      className="border rounded-lg p-4 space-y-4"
                     >
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-[2fr,2fr,1fr,1fr] gap-4 items-end">
-                          <FormField
-                            control={form.control}
-                            name={`ingredients.${index}.detected`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className={index !== 0 ? "sr-only" : undefined}>
-                                  Detected
-                                </FormLabel>
-                                <FormControl>
-                                  <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name={`ingredients.${index}.detected`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                Detected
+                              </FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
                         <FormField
                           control={form.control}
                           name={`ingredients.${index}.mapped`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Mapped Ingredient</FormLabel>
+                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                Mapped Ingredient
+                              </FormLabel>
                               <FormControl>
                                 <CreatableSelect
                                   value={field.value ? [field.value] : []}
@@ -400,134 +399,15 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                         />
                       </div>
 
-                      <FormField
-                          control={form.control}
-                          name={`ingredients.${index}.unit`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
-                                Unit
-                              </FormLabel>
-                              <FormControl>
-                                <CreatableSelect
-                                  value={field.value ? [field.value] : []}
-                                  onChange={(values) => {
-                                    if (values[0]) {
-                                      field.onChange(values[0]);
-                                    }
-                                  }}
-                                  options={defaultUnits}
-                                  onCreateOption={(value) => {
-                                    field.onChange(value);
-                                  }}
-                                  placeholder="Unit"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`ingredients.${index}.quantity`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
-                                Qty
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  step="0.01"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`ingredients.${index}.unitCost`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
-                                Unit Cost
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  step="0.01"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`ingredients.${index}.totalCost`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
-                                Total
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  step="0.01"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`ingredients.${index}.vat`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
-                                VAT
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  step="0.01"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeIngredient(index)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                        </div>
-                        <div className="grid grid-cols-[1fr,1fr,1fr,auto] gap-4 items-end">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex gap-2">
                           <FormField
                             control={form.control}
-                            name={`ingredients.${index}.unitCost`}
+                            name={`ingredients.${index}.quantity`}
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="flex-1">
                                 <FormLabel className={index !== 0 ? "sr-only" : undefined}>
-                                  Unit Cost
+                                  Quantity
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -543,11 +423,41 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                           />
                           <FormField
                             control={form.control}
-                            name={`ingredients.${index}.totalCost`}
+                            name={`ingredients.${index}.unit`}
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="w-32">
                                 <FormLabel className={index !== 0 ? "sr-only" : undefined}>
-                                  Total Cost
+                                  Unit
+                                </FormLabel>
+                                <FormControl>
+                                  <CreatableSelect
+                                    value={field.value ? [field.value] : []}
+                                    onChange={(values) => {
+                                      if (values[0]) {
+                                        field.onChange(values[0]);
+                                      }
+                                    }}
+                                    options={defaultUnits}
+                                    onCreateOption={(value) => {
+                                      field.onChange(value);
+                                    }}
+                                    placeholder="Unit"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <FormField
+                            control={form.control}
+                            name={`ingredients.${index}.unitCost`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                  Unit Cost
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -555,6 +465,7 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                                     step="0.01"
                                     {...field}
                                     onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                                    placeholder="Unit Cost"
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -565,25 +476,35 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                             control={form.control}
                             name={`ingredients.${index}.vat`}
                             render={({ field }) => (
-                              <FormItem>
+                              <FormItem className="w-24">
                                 <FormLabel className={index !== 0 ? "sr-only" : undefined}>
-                                  VAT
+                                  VAT %
                                 </FormLabel>
                                 <FormControl>
                                   <Input
                                     type="number"
-                                    step="0.01"
+                                    step="0.1"
                                     {...field}
                                     onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                                    placeholder="VAT %"
                                   />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-                          <div className="w-10" /> {/* Spacer for alignment */}
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="mt-8"
+                            onClick={() => removeIngredient(index)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
+                    </div>
                   ))}
                 </div>
 
