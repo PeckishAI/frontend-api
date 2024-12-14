@@ -221,11 +221,15 @@ export default function Menu() {
         recipe={editingRecipe ? {
           id: editingRecipe.id,
           name: editingRecipe.name,
-          category: editingRecipe.category,
+          category: {
+            value: editingRecipe.category.toLowerCase(),
+            label: editingRecipe.category,
+            emoji: '🍽️' // Default emoji if category not found
+          },
           portionCount: 1,
           ingredients: editingRecipe.ingredients.map(name => ({
             name,
-            quantity: 0,
+            quantity: 1,
             unit: 'g'
           })),
           price: editingRecipe.price,
