@@ -52,8 +52,11 @@ export default function RecipeSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="max-w-[90%] w-[1000px] !p-6">
-        <SheetHeader>
+      <SheetContent 
+        side="right" 
+        className="fixed inset-y-0 right-0 h-full w-[90vw] max-w-3xl border-l bg-background p-6 shadow-lg"
+      >
+        <SheetHeader className="mb-5">
           <SheetTitle>
             {recipe ? "Edit Recipe" : "New Recipe"}
           </SheetTitle>
