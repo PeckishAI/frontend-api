@@ -52,7 +52,7 @@ export default function RecipeSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="!w-[600px] overflow-y-auto">
+      <SheetContent side="right" className="!w-[1000px] overflow-y-auto">
         <SheetHeader>
           <SheetTitle>
             {recipe ? "Edit Recipe" : "New Recipe"}
@@ -60,7 +60,7 @@ export default function RecipeSheet({
         </SheetHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
             <FormField
               control={form.control}
               name="name"
