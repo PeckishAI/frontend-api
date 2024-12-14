@@ -122,26 +122,21 @@ export default function RecipeSheet({
                     <FormLabel>Category</FormLabel>
                     <FormControl>
                       <CreatableSelect
-                        value={[field.value]}
-                        onChange={(value) => {
-                          if (typeof value === 'string') {
-                            // Handle new category creation
-                            const emoji = '🍽️'; // Default emoji for new categories
-                            field.onChange({
-                              value: value.toLowerCase(),
-                              label: value,
-                              emoji,
-                            });
-                          } else {
-                            field.onChange(value[0]);
+                        value={[{ 
+                          value: field.value.value,
+                          label: field.value.label,
+                          emoji: field.value.emoji
+                        }]}
+                        onChange={values => {
+                          if (values[0]) {
+                            field.onChange(values[0]);
                           }
                         }}
                         onCreateOption={(inputValue) => {
-                          const emoji = '🍽️'; // Default emoji for new categories
                           field.onChange({
                             value: inputValue.toLowerCase(),
                             label: inputValue,
-                            emoji,
+                            emoji: '🍽️'
                           });
                         }}
                         options={defaultCategories}
@@ -299,7 +294,7 @@ export default function RecipeSheet({
                     )}
                   />
 
-                  {index > 0 && (
+                  {index !== 0 && (
                     <Button
                       type="button"
                       variant="ghost"
