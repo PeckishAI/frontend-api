@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import { ChartBar, Package2, ShoppingCart, UtensilsCrossed } from "lucide-react";
+import { DateRange } from "react-day-picker";
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import { Card, CardContent } from "@/components/ui/card";
 import { SalesChart, CustomerChart } from "@/components/charts/OverviewCharts";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 
 export default function General() {
   const [activeSection, setActiveSection] = useState('overview');
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(2024, 0, 1),
+    to: new Date()
+  });
 
   const sections = [
     { id: 'overview', label: 'Overview', icon: ChartBar },
@@ -85,6 +91,9 @@ export default function General() {
                 </Card>
               </div>
 
+              <div className="flex justify-end mb-4">
+                <DateRangePicker date={date} onSelect={setDate} />
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card>
                   <CardContent className="p-6">
