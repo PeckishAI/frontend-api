@@ -25,9 +25,9 @@ export default function Orders() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="pl-64 px-8 py-8 w-full">
-        <div className="flex justify-between items-center mb-6">
+    <div className="p-8 ml-64 w-full">
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-semibold text-gray-900">Orders</h1>
           <div className="flex items-center gap-4">
             {activeSection === 'orders' && (
@@ -55,9 +55,9 @@ export default function Orders() {
         />
 
         {activeSection === 'orders' && (
-          <>
+          <div className="bg-white rounded-lg shadow overflow-hidden">
             {viewMode === 'cards' ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {mockOrders.map((order) => (
                   <OrderCard
                     key={order.id}
@@ -72,18 +72,20 @@ export default function Orders() {
                 onOrderClick={(order) => setSelectedOrder(order)}
               />
             )}
-          </>
+          </div>
         )}
 
         {activeSection === 'suppliers' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockSuppliers.map((supplier) => (
-              <SupplierCard
-                key={supplier.id}
-                supplier={supplier}
-                onClick={() => setSelectedSupplier(supplier)}
-              />
-            ))}
+          <div className="bg-white rounded-lg shadow overflow-hidden p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {mockSuppliers.map((supplier) => (
+                <SupplierCard
+                  key={supplier.id}
+                  supplier={supplier}
+                  onClick={() => setSelectedSupplier(supplier)}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
