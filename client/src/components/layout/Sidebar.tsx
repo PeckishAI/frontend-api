@@ -1,10 +1,20 @@
 import { Link } from "wouter";
-import { Package, ClipboardList, MenuSquare } from "lucide-react";
+import { Package, ClipboardList, MenuSquare, FileText, FileBox, ClipboardCheck, Files } from "lucide-react";
 
 const menuItems = [
   { icon: Package, label: "Orders", href: "/" },
   { icon: ClipboardList, label: "Inventory", href: "/inventory" },
   { icon: MenuSquare, label: "Menu", href: "/menu" },
+  {
+    icon: Files,
+    label: "Documents",
+    href: "/documents",
+    subItems: [
+      { icon: FileText, label: "Invoices", href: "/documents/invoices" },
+      { icon: FileBox, label: "Delivery Notes", href: "/documents/delivery-notes" },
+      { icon: ClipboardCheck, label: "Stocktakes", href: "/documents/stocktakes" },
+    ],
+  },
 ];
 
 export default function Sidebar() {
@@ -24,6 +34,21 @@ export default function Sidebar() {
                     <Icon className="h-5 w-5" />
                     {item.label}
                   </Link>
+                  {item.subItems && (
+                    <ul className="ml-6 mt-1 space-y-1">
+                      {item.subItems.map((subItem) => {
+                        const SubIcon = subItem.icon;
+                        return (
+                          <li key={subItem.href}>
+                            <Link href={subItem.href} className="flex items-center gap-3 px-3 py-2 text-gray-600 rounded-md hover:bg-gray-100 hover:text-gray-900 transition-colors">
+                              <SubIcon className="h-4 w-4" />
+                              {subItem.label}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
                 </li>
               );
             })}
