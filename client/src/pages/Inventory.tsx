@@ -11,25 +11,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Download, Plus, Search } from "lucide-react";
 import { mockInventory, getAllTags, getAllSuppliers } from '@/lib/data';
 import type { InventoryItem } from '@/lib/types';
 import EditIngredientForm from '@/components/inventory/EditIngredientForm';
 import NewIngredientDialog from '@/components/inventory/NewIngredientDialog';
+import { FilterPopover, type FilterType } from "@/components/inventory/FilterPopover";
 
 export default function Inventory() {
   const [activeSection, setActiveSection] = useState('ingredients');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTag, setSelectedTag] = useState<string>('all');
-  const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
+  const [selectedFilters, setSelectedFilters] = useState<FilterType[]>([]);
   const [isNewItemOpen, setIsNewItemOpen] = useState(false);
   const [selectedIngredient, setSelectedIngredient] = useState<InventoryItem | undefined>();
   const { toast } = useToast();
@@ -46,13 +39,17 @@ export default function Inventory() {
   const filteredInventory = useMemo(() => {
     return mockInventory.filter(item => {
       const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesTag = selectedTag === "all" || item.tags.includes(selectedTag);
-      const matchesSupplier = selectedSupplier === "all" || 
-        item.suppliers.some(s => s.supplierName === selectedSupplier);
+      const tagFilters = selectedFilters.filter(f => f.type === 'tag').map(f => f.value);
+      const supplierFilters = selectedFilters.filter(f => f.type === 'supplier').map(f => f.value);
       
-      return matchesSearch && matchesTag && matchesSupplier;
+      const matchesTags = tagFilters.length === 0 || 
+        tagFilters.some(tag => item.tags.includes(tag));
+      const matchesSuppliers = supplierFilters.length === 0 || 
+        item.suppliers.some(s => supplierFilters.includes(s.supplierName));
+      
+      return matchesSearch && matchesTags && matchesSuppliers;
     });
-  }, [searchQuery, selectedTag, selectedSupplier]);
+  }, [searchQuery, selectedFilters]);
 
   const exportToCsv = () => {
     const headers = ['Name', 'Tags', 'Par Level', 'Quantity', 'Unit', 'Suppliers'];
@@ -117,28 +114,12 @@ export default function Inventory() {
                 className="pl-9"
               />
             </div>
-            <Select value={selectedTag} onValueChange={setSelectedTag}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by tag" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Tags</SelectItem>
-                {tags.filter(tag => tag.trim()).map(tag => (
-                  <SelectItem key={tag} value={tag}>{tag}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={selectedSupplier} onValueChange={setSelectedSupplier}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by supplier" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Suppliers</SelectItem>
-                {suppliers.filter(supplier => supplier.trim()).map(supplier => (
-                  <SelectItem key={supplier} value={supplier}>{supplier}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <FilterPopover
+              tags={tags}
+              suppliers={suppliers}
+              selectedFilters={selectedFilters}
+              onFilterChange={setSelectedFilters}
+            />
           </div>
         )}
       </div>
