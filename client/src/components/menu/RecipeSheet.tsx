@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { CreatableSelect } from "@/components/ui/creatable-select";
 import { Plus, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -41,6 +42,28 @@ const foodEmojis = [
   '🥪', '🌮', '🌯', '🥙', '🧆', '🥚', '🍳', '🥘', '🍲', '🥣',
 ];
 
+const defaultIngredients = [
+  { value: 'tomatoes', label: 'Tomatoes' },
+  { value: 'flour', label: 'Flour' },
+  { value: 'sugar', label: 'Sugar' },
+  { value: 'salt', label: 'Salt' },
+  { value: 'olive_oil', label: 'Olive Oil' },
+  { value: 'onions', label: 'Onions' },
+  { value: 'garlic', label: 'Garlic' },
+  { value: 'pepper', label: 'Black Pepper' },
+];
+
+const defaultUnits = [
+  { value: 'g', label: 'Grams (g)' },
+  { value: 'kg', label: 'Kilograms (kg)' },
+  { value: 'ml', label: 'Milliliters (ml)' },
+  { value: 'l', label: 'Liters (l)' },
+  { value: 'pcs', label: 'Pieces' },
+  { value: 'cup', label: 'Cups' },
+  { value: 'tbsp', label: 'Tablespoons' },
+  { value: 'tsp', label: 'Teaspoons' },
+];
+
 const recipeSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Name is required"),
@@ -54,6 +77,7 @@ const recipeSchema = z.object({
     name: z.string().min(1, "Ingredient name is required"),
     quantity: z.number().min(0, "Quantity must be positive"),
     unit: z.string().min(1, "Unit is required"),
+    conversionFactor: z.number().optional(),
   })).min(1, "At least one ingredient is required"),
   price: z.number().optional(),
   cost: z.number().optional(),
@@ -80,7 +104,7 @@ export default function RecipeSheet({
       name: "",
       category: defaultCategories[0],
       portionCount: 1,
-      ingredients: [{ name: "", quantity: 0, unit: "g" }],
+      ingredients: [{ name: "", quantity: 0, unit: "g", conversionFactor: 1 }],
     },
   });
 
@@ -96,7 +120,7 @@ export default function RecipeSheet({
     const currentIngredients = form.getValues("ingredients") || [];
     form.setValue("ingredients", [
       ...currentIngredients,
-      { name: "", quantity: 0, unit: "g" },
+      { name: "", quantity: 0, unit: "g", conversionFactor: 1 },
     ]);
   };
 
@@ -224,7 +248,13 @@ export default function RecipeSheet({
                           Name
                         </FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Ingredient name" />
+                          <CreatableSelect
+                            value={field.value ? { label: field.value, value: field.value } : null}
+                            onChange={(newValue: any) => field.onChange(newValue?.value || "")}
+                            onCreateOption={(value) => field.onChange(value)}
+                            options={defaultIngredients}
+                            placeholder="Select or add ingredient"
+                          />
                         </FormControl>
                       </FormItem>
                     )}
@@ -260,22 +290,48 @@ export default function RecipeSheet({
                           Unit
                         </FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="g, ml, etc." />
+                          <CreatableSelect
+                            value={field.value ? { label: field.value, value: field.value } : null}
+                            onChange={(newValue: any) => field.onChange(newValue?.value || "")}
+                            onCreateOption={(value) => field.onChange(value)}
+                            options={defaultUnits}
+                            placeholder="Select unit"
+                          />
                         </FormControl>
                       </FormItem>
                     )}
                   />
 
-                  {ingredients.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeIngredient(index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
+                  <FormField
+                    control={form.control}
+                    name={`ingredients.${index}.conversionFactor`}
+                    render={({ field }) => (
+                      <FormItem className="w-24">
+                        <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                          Factor
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={0}
+                            step="any"
+                            placeholder="Conv. factor"
+                            {...field}
+                            onChange={e => field.onChange(parseFloat(e.target.value))}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeIngredient(index)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               ))}
             </div>
@@ -285,7 +341,7 @@ export default function RecipeSheet({
                 Cancel
               </Button>
               <Button type="submit">
-                {recipe ? "Save Changes" : "Create Recipe"}
+                {recipe ? "Save changes" : "Create recipe"}
               </Button>
             </div>
           </form>
