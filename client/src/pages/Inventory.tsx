@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import SubSectionNav from "@/components/layout/SubSectionNav";
 import {
   Table,
   TableBody,
@@ -25,12 +26,19 @@ import EditIngredientForm from '@/components/inventory/EditIngredientForm';
 import NewIngredientDialog from '@/components/inventory/NewIngredientDialog';
 
 export default function Inventory() {
+  const [activeSection, setActiveSection] = useState('ingredients');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
   const [isNewItemOpen, setIsNewItemOpen] = useState(false);
   const [selectedIngredient, setSelectedIngredient] = useState<InventoryItem | undefined>();
   const { toast } = useToast();
+
+  const sections = [
+    { id: 'ingredients', label: 'Ingredients' },
+    { id: 'suppliers', label: 'Suppliers' },
+    { id: 'categories', label: 'Categories' },
+  ];
 
   const tags = getAllTags();
   const suppliers = getAllSuppliers();
@@ -78,53 +86,65 @@ export default function Inventory() {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-semibold text-gray-900">Inventory</h1>
           <div className="flex gap-4">
-            <Button onClick={exportToCsv} variant="outline">
-              <Download className="mr-2 h-4 w-4" />
-              Export CSV
-            </Button>
-            <Button onClick={() => setIsNewItemOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              New Item
-            </Button>
+            {activeSection === 'ingredients' && (
+              <>
+                <Button onClick={exportToCsv} variant="outline">
+                  <Download className="mr-2 h-4 w-4" />
+                  Export CSV
+                </Button>
+                <Button onClick={() => setIsNewItemOpen(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  New Item
+                </Button>
+              </>
+            )}
           </div>
         </div>
+        <SubSectionNav
+          sections={sections}
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+        />
 
-        <div className="flex gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search ingredients..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
-            />
+        {activeSection === 'ingredients' && (
+          <div className="flex gap-4 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search ingredients..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+            <Select value={selectedTag} onValueChange={setSelectedTag}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by tag" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Tags</SelectItem>
+                {tags.filter(tag => tag.trim()).map(tag => (
+                  <SelectItem key={tag} value={tag}>{tag}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={selectedSupplier} onValueChange={setSelectedSupplier}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by supplier" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Suppliers</SelectItem>
+                {suppliers.filter(supplier => supplier.trim()).map(supplier => (
+                  <SelectItem key={supplier} value={supplier}>{supplier}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <Select value={selectedTag} onValueChange={setSelectedTag}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by tag" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Tags</SelectItem>
-              {tags.filter(tag => tag.trim()).map(tag => (
-                <SelectItem key={tag} value={tag}>{tag}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={selectedSupplier} onValueChange={setSelectedSupplier}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by supplier" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Suppliers</SelectItem>
-              {suppliers.filter(supplier => supplier.trim()).map(supplier => (
-                <SelectItem key={supplier} value={supplier}>{supplier}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        )}
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      {activeSection === 'ingredients' && (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
@@ -168,6 +188,21 @@ export default function Inventory() {
           </TableBody>
         </Table>
       </div>
+      )}
+
+      {activeSection === 'suppliers' && (
+        <div className="bg-white rounded-lg shadow overflow-hidden p-6">
+          <h2 className="text-lg font-medium mb-4">Supplier Management</h2>
+          <p className="text-gray-600">Coming soon: Manage your suppliers, their contact information, and performance metrics.</p>
+        </div>
+      )}
+
+      {activeSection === 'categories' && (
+        <div className="bg-white rounded-lg shadow overflow-hidden p-6">
+          <h2 className="text-lg font-medium mb-4">Category Management</h2>
+          <p className="text-gray-600">Coming soon: Organize your inventory with custom categories and tags.</p>
+        </div>
+      )}
 
       <NewIngredientDialog
         open={isNewItemOpen}
