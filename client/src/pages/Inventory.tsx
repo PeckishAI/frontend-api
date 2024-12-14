@@ -32,8 +32,8 @@ export default function Inventory() {
   const filteredInventory = useMemo(() => {
     return mockInventory.filter(item => {
       const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesTag = !selectedTag || item.tags.includes(selectedTag);
-      const matchesSupplier = !selectedSupplier || 
+      const matchesTag = selectedTag === "all" || item.tags.includes(selectedTag);
+      const matchesSupplier = selectedSupplier === "all" || 
         item.suppliers.some(s => s.supplierName === selectedSupplier);
       
       return matchesSearch && matchesTag && matchesSupplier;
@@ -98,7 +98,7 @@ export default function Inventory() {
               <SelectValue placeholder="Filter by tag" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All tags</SelectItem>
+              <SelectItem value="all">All tags</SelectItem>
               {tags.map(tag => (
                 <SelectItem key={tag} value={tag}>{tag}</SelectItem>
               ))}
@@ -109,7 +109,7 @@ export default function Inventory() {
               <SelectValue placeholder="Filter by supplier" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All suppliers</SelectItem>
+              <SelectItem value="all">All suppliers</SelectItem>
               {suppliers.map(supplier => (
                 <SelectItem key={supplier} value={supplier}>{supplier}</SelectItem>
               ))}
