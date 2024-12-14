@@ -3,6 +3,7 @@ import Orders from "@/pages/Orders";
 import Inventory from "@/pages/Inventory";
 import Menu from "@/pages/Menu";
 import Documents from "@/pages/Documents";
+import General from "@/pages/General";
 import Sidebar from "@/components/layout/Sidebar";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route path="/inventory" component={Inventory} />
         <Route path="/menu" component={Menu} />
         <Route path="/documents" component={Documents} />
+        <Route path="/general" component={General} />
       </Switch>
     </div>
   );
