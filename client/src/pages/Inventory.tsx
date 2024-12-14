@@ -73,7 +73,7 @@ export default function Inventory() {
   };
 
   return (
-    <div className="p-8 ml-64">
+    <div className="p-8 ml-64 w-full">
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-semibold text-gray-900">Inventory</h1>
@@ -159,12 +159,8 @@ export default function Inventory() {
                 </TableCell>
                 <TableCell>{item.unit}</TableCell>
                 <TableCell>
-                  <div className="space-y-1">
-                    {item.suppliers.map(supplier => (
-                      <div key={supplier.supplierId} className="text-sm">
-                        {supplier.supplierName} - ${supplier.unitCost}/{supplier.packSize}
-                      </div>
-                    ))}
+                  <div className="text-sm">
+                    {item.suppliers.length} supplier{item.suppliers.length !== 1 ? 's' : ''}
                   </div>
                 </TableCell>
               </TableRow>
