@@ -105,6 +105,8 @@ export default function RecipeSheet({
       category: defaultCategories[0],
       portionCount: 1,
       ingredients: [{ name: "", quantity: 0, unit: "g", conversionFactor: 1 }],
+      price: 0,
+      cost: 0,
     },
   });
 
@@ -132,6 +134,13 @@ export default function RecipeSheet({
     );
   };
 
+  const getMarginPercentage = () => {
+    const price = form.watch('price') || 0;
+    const cost = form.watch('cost') || 0;
+    if (price === 0) return 0;
+    return ((price - cost) / price * 100).toFixed(2);
+  };
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-[800px] sm:max-w-[800px] h-screen overflow-y-auto">
@@ -153,6 +162,58 @@ export default function RecipeSheet({
                 </FormItem>
               )}
             />
+
+            <div className="grid grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Price</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        placeholder="0.00"
+                        {...field}
+                        onChange={e => field.onChange(parseFloat(e.target.value))}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="cost"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cost</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        placeholder="0.00"
+                        {...field}
+                        onChange={e => field.onChange(parseFloat(e.target.value))}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormItem>
+                <FormLabel>Margin</FormLabel>
+                <div className="relative">
+                  <Input
+                    type="text"
+                    value={`${getMarginPercentage()}%`}
+                    disabled
+                    className="bg-muted"
+                  />
+                </div>
+              </FormItem>
+            </div>
 
             <div className="grid grid-cols-2 gap-4">
               <FormField
@@ -176,7 +237,7 @@ export default function RecipeSheet({
                           const category = defaultCategories.find((c) => c.value === value) || {
                             value,
                             label: value,
-                            emoji: field.value.emoji // Keep current emoji
+                            emoji: field.value.emoji
                           };
                           field.onChange(category);
                         }}
@@ -238,12 +299,12 @@ export default function RecipeSheet({
               </div>
 
               {ingredients.map((ingredient, index) => (
-                <div key={index} className="grid grid-cols-[2fr,1fr,1fr,1fr,auto] gap-4 items-end">
+                <div key={index} className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end">
                   <FormField
                     control={form.control}
                     name={`ingredients.${index}.name`}
                     render={({ field }) => (
-                      <FormItem className="flex-1">
+                      <FormItem>
                         <FormLabel className={index !== 0 ? "sr-only" : undefined}>
                           Name
                         </FormLabel>
@@ -272,7 +333,7 @@ export default function RecipeSheet({
                     control={form.control}
                     name={`ingredients.${index}.quantity`}
                     render={({ field }) => (
-                      <FormItem className="w-24">
+                      <FormItem>
                         <FormLabel className={index !== 0 ? "sr-only" : undefined}>
                           Quantity
                         </FormLabel>
@@ -293,7 +354,7 @@ export default function RecipeSheet({
                     control={form.control}
                     name={`ingredients.${index}.unit`}
                     render={({ field }) => (
-                      <FormItem className="w-24">
+                      <FormItem>
                         <FormLabel className={index !== 0 ? "sr-only" : undefined}>
                           Unit
                         </FormLabel>
@@ -322,7 +383,7 @@ export default function RecipeSheet({
                     control={form.control}
                     name={`ingredients.${index}.conversionFactor`}
                     render={({ field }) => (
-                      <FormItem className="w-24">
+                      <FormItem>
                         <FormLabel className={index !== 0 ? "sr-only" : undefined}>
                           Factor
                         </FormLabel>
@@ -339,6 +400,12 @@ export default function RecipeSheet({
                       </FormItem>
                     )}
                   />
+
+                  <div className="flex items-center">
+                    <span className="text-sm text-muted-foreground">
+                      ${((form.watch(`ingredients.${index}.quantity`) || 0) * (form.watch(`ingredients.${index}.conversionFactor`) || 0)).toFixed(2)}
+                    </span>
+                  </div>
 
                   <Button
                     type="button"
