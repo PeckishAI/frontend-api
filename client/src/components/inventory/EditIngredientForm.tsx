@@ -62,11 +62,7 @@ export default function EditIngredientForm({
 }: EditIngredientFormProps) {
   const form = useForm<EditIngredientFormValues>({
     resolver: zodResolver(editIngredientSchema),
-    defaultValues: ingredient ? {
-      ...ingredient,
-      parLevel: Number(ingredient.parLevel),
-      quantity: Number(ingredient.quantity),
-    } : {
+    defaultValues: {
       name: '',
       tags: [],
       parLevel: 0,
@@ -75,6 +71,16 @@ export default function EditIngredientForm({
       suppliers: [],
     },
   });
+
+  React.useEffect(() => {
+    if (ingredient) {
+      form.reset({
+        ...ingredient,
+        parLevel: Number(ingredient.parLevel),
+        quantity: Number(ingredient.quantity),
+      });
+    }
+  }, [ingredient, form]);
 
   const handleSubmit = (values: EditIngredientFormValues) => {
     onSubmit(values);
