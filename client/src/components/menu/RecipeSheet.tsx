@@ -1,51 +1,63 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { useState } from "react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CreatableSelect } from "@/components/ui/creatable-select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Plus, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const units = ["g", "kg", "ml", "l", "unit", "oz", "lb"] as const;
+export const defaultCategories = [
+  { value: 'mains', label: 'Main Dishes', emoji: '🍽️' },
+  { value: 'starters', label: 'Starters', emoji: '🥗' },
+  { value: 'desserts', label: 'Desserts', emoji: '🍰' },
+  { value: 'drinks', label: 'Drinks', emoji: '🥤' },
+  { value: 'sides', label: 'Side Dishes', emoji: '🥨' },
+];
 
-const ingredientSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, "Ingredient name is required"),
-  quantity: z.number().min(0, "Quantity must be positive"),
-  unit: z.enum(units),
-  conversionFactor: z.number().optional(),
-});
-
-const categorySchema = z.object({
-  value: z.string(),
-  label: z.string(),
-  emoji: z.string(),
-});
+const foodEmojis = [
+  '🍕', '🍔', '🍟', '🌭', '🍿', '🧂', '🥨', '🥪', '🌮', '🌯',
+  '🥙', '🧆', '🥚', '🍳', '🥘', '🍲', '🥣', '🥗', '🍿', '🧈',
+  '🧀', '🥩', '🥓', '🍖', '🍗', '🥞', '🧇', '🥯', '🥖', '🥐',
+  '🥨', '🥯', '🥖', '🫓', '🥨', '🥯', '🥖', '🥐', '🍞', '🥜',
+  '🌰', '🥔', '🥕', '🌽', '🥑', '🥬', '🥒', '🥦', '🧄', '🧅',
+  '🥜', '🍯', '🥫', '🍖', '🍗', '🥩', '🥓', '🍔', '🍟', '🌭',
+  '🥪', '🌮', '🌯', '🥙', '🧆', '🥚', '🍳', '🥘', '🍲', '🥣',
+];
 
 const recipeSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, "Recipe name is required"),
-  category: categorySchema,
-  portionCount: z.number().min(1, "Must have at least 1 portion"),
-  ingredients: z.array(ingredientSchema).min(1, "Must have at least 1 ingredient"),
+  name: z.string().min(1, "Name is required"),
+  category: z.object({
+    value: z.string(),
+    label: z.string(),
+    emoji: z.string(),
+  }),
+  portionCount: z.number().min(1, "Portion count must be at least 1"),
+  ingredients: z.array(z.object({
+    name: z.string().min(1, "Ingredient name is required"),
+    quantity: z.number().min(0, "Quantity must be positive"),
+    unit: z.string().min(1, "Unit is required"),
+  })).min(1, "At least one ingredient is required"),
   price: z.number().optional(),
   cost: z.number().optional(),
 });
-
-export const defaultCategories = [
-  { value: 'pizza', label: 'Pizza', emoji: '🍕' },
-  { value: 'pasta', label: 'Pasta', emoji: '🍝' },
-  { value: 'salad', label: 'Salads', emoji: '🥗' },
-  { value: 'dessert', label: 'Desserts', emoji: '🍰' },
-  { value: 'beverage', label: 'Beverages', emoji: '🥤' },
-  { value: 'main', label: 'Main Course', emoji: '🍖' },
-  { value: 'appetizer', label: 'Appetizers', emoji: '🥪' },
-];
 
 type Recipe = z.infer<typeof recipeSchema>;
 
@@ -60,6 +72,8 @@ export default function RecipeSheet({
   recipe?: Recipe;
   onSubmit: (data: Recipe) => void;
 }) {
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  
   const form = useForm<Recipe>({
     resolver: zodResolver(recipeSchema),
     defaultValues: {
@@ -96,93 +110,98 @@ export default function RecipeSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[800px] sm:max-w-[800px]">
-        <SheetHeader className="mb-5">
-          <SheetTitle>
-            {recipe ? "Edit Recipe" : "New Recipe"}
-          </SheetTitle>
+      <SheetContent className="sm:max-w-[600px]">
+        <SheetHeader>
+          <SheetTitle>{recipe ? "Edit" : "New"} Recipe</SheetTitle>
         </SheetHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Recipe Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-8">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="category"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>
-                    <Select
-                      value={field.value.value}
-                      onValueChange={(value) => {
-                        const category = defaultCategories.find((c) => c.value === value) || {
-                          value,
-                          label: value,
-                          emoji: '🍽️'
-                        };
-                        field.onChange(category);
-                      }}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue>
-                            <div className="flex items-center gap-2">
-                              <span>{field.value.emoji}</span>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-12"
+                        onClick={() => setShowEmojiPicker(true)}
+                      >
+                        {field.value.emoji}
+                      </Button>
+                      <Select
+                        value={field.value.value}
+                        onValueChange={(value) => {
+                          const category = defaultCategories.find((c) => c.value === value) || {
+                            value,
+                            label: value,
+                            emoji: field.value.emoji // Keep current emoji
+                          };
+                          field.onChange(category);
+                        }}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="flex-1">
+                            <SelectValue>
                               <span>{field.value.label}</span>
-                            </div>
-                          </SelectValue>
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {defaultCategories.map((category) => (
-                          <SelectItem key={category.value} value={category.value}>
-                            <div className="flex items-center gap-2">
-                              <span>{category.emoji}</span>
-                              <span>{category.label}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                            </SelectValue>
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {defaultCategories.map((category) => (
+                            <SelectItem key={category.value} value={category.value}>
+                              <div className="flex items-center gap-2">
+                                <span>{category.emoji}</span>
+                                <span>{category.label}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="portionCount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Number of Portions</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min={1}
+                        {...field} 
+                        onChange={e => field.onChange(parseInt(e.target.value))}
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="portionCount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Number of Portions</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="number" 
-                      min={1}
-                      {...field} 
-                      onChange={e => field.onChange(parseInt(e.target.value))}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-medium">Ingredients</h3>
+                <h3 className="text-lg font-medium">Ingredients</h3>
                 <Button
                   type="button"
                   variant="outline"
@@ -240,23 +259,9 @@ export default function RecipeSheet({
                         <FormLabel className={index !== 0 ? "sr-only" : undefined}>
                           Unit
                         </FormLabel>
-                        <Select
-                          value={field.value}
-                          onValueChange={field.onChange}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {units.map(unit => (
-                              <SelectItem key={unit} value={unit}>
-                                {unit}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <FormControl>
+                          <Input {...field} placeholder="g, ml, etc." />
+                        </FormControl>
                       </FormItem>
                     )}
                   />
@@ -275,12 +280,8 @@ export default function RecipeSheet({
               ))}
             </div>
 
-            <div className="flex justify-end gap-2 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
+            <div className="flex justify-end gap-4 pt-6">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
               <Button type="submit">
@@ -289,6 +290,35 @@ export default function RecipeSheet({
             </div>
           </form>
         </Form>
+
+        <Dialog open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Select an Emoji</DialogTitle>
+            </DialogHeader>
+            <ScrollArea className="h-[400px] pr-4">
+              <div className="grid grid-cols-8 gap-2">
+                {foodEmojis.map((emoji, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    className="h-10 w-10 p-0 text-lg"
+                    onClick={() => {
+                      const currentCategory = form.getValues("category");
+                      form.setValue("category", {
+                        ...currentCategory,
+                        emoji,
+                      });
+                      setShowEmojiPicker(false);
+                    }}
+                  >
+                    {emoji}
+                  </Button>
+                ))}
+              </div>
+            </ScrollArea>
+          </DialogContent>
+        </Dialog>
       </SheetContent>
     </Sheet>
   );
