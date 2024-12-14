@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 type Invoice = {
   id: string;
   invoiceNumber: string;
+  date: Date;
   price: number;
   supplier: string;
   ingredientCount: number;
@@ -27,6 +28,7 @@ const mockInvoices: Invoice[] = [
   {
     id: "1",
     invoiceNumber: "INV-2024-001",
+    date: new Date(2024, 0, 15),
     price: 1250.99,
     supplier: "Fresh Produce Co.",
     ingredientCount: 15,
@@ -35,6 +37,7 @@ const mockInvoices: Invoice[] = [
   {
     id: "2",
     invoiceNumber: "INV-2024-002",
+    date: new Date(2024, 0, 14),
     price: 843.50,
     supplier: "Meat Suppliers Inc.",
     ingredientCount: 8,
@@ -43,6 +46,7 @@ const mockInvoices: Invoice[] = [
   {
     id: "3",
     invoiceNumber: "INV-2024-003",
+    date: new Date(2024, 0, 13),
     price: 567.25,
     supplier: "Grocery Wholesale Ltd.",
     ingredientCount: 12,
@@ -66,16 +70,22 @@ export default function Documents() {
 
     return (
       <Card className="group hover:shadow-lg transition-shadow duration-200">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
+        <CardHeader className="relative pb-3">
+          <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
-              <Hash className="h-5 w-5 text-primary" />
-              <CardTitle className="text-lg">{invoice.invoiceNumber}</CardTitle>
+              <Hash className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-lg font-semibold">{invoice.invoiceNumber}</CardTitle>
             </div>
-            <Badge variant="secondary" className="flex items-center gap-1">
-              <Building2 className="h-3 w-3" />
+            <Badge variant="secondary" className="w-fit">
               {invoice.supplier}
             </Badge>
+            <div className="text-sm text-muted-foreground">
+              {invoice.date.toLocaleDateString('en-US', { 
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -169,6 +179,7 @@ export default function Documents() {
                       <TableRow>
                         <TableHead>Images</TableHead>
                         <TableHead>Invoice Number</TableHead>
+                        <TableHead>Date</TableHead>
                         <TableHead>Supplier</TableHead>
                         <TableHead className="text-right">Price</TableHead>
                         <TableHead className="text-right">Ingredients</TableHead>
@@ -186,6 +197,13 @@ export default function Documents() {
                             </div>
                           </TableCell>
                           <TableCell>{invoice.invoiceNumber}</TableCell>
+                          <TableCell>
+                            {invoice.date.toLocaleDateString('en-US', { 
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                          </TableCell>
                           <TableCell>
                             <Badge variant="secondary">{invoice.supplier}</Badge>
                           </TableCell>
