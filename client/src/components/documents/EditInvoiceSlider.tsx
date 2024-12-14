@@ -37,7 +37,7 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
     <Sheet open={open} onOpenChange={onOpenChange} modal={false}>
       <SheetContent
         side="right"
-        className="w-full border-l-0 p-0"
+        className="w-[100vw] border-l-0 p-0"
       >
         <div className="flex h-full">
           {/* Left side - Images */}

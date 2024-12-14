@@ -71,20 +71,15 @@ export default function Documents() {
     const activeImageIndex = activeImageIndexes[invoice.id] || 0;
 
     return (
-      <Card className="group hover:shadow-lg transition-shadow duration-200">
+      <Card 
+        className="group hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+        onClick={() => setEditingInvoice(invoice)}
+      >
         <CardHeader className="relative pb-3">
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <Hash className="h-4 w-4 text-muted-foreground" />
               <CardTitle className="text-lg font-semibold">{invoice.invoiceNumber}</CardTitle>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute right-4 top-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => setEditingInvoice(invoice)}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
             </div>
             <Badge variant="secondary" className="w-fit">
               {invoice.supplier}
@@ -197,7 +192,11 @@ export default function Documents() {
                     </TableHeader>
                     <TableBody>
                       {mockInvoices.map((invoice) => (
-                        <TableRow key={invoice.id}>
+                        <TableRow 
+                          key={invoice.id}
+                          className="cursor-pointer hover:bg-muted/50"
+                          onClick={() => setEditingInvoice(invoice)}
+                        >
                           <TableCell>
                             <div className="flex items-center gap-1">
                               <Images className="h-4 w-4 text-gray-500" />
@@ -219,15 +218,7 @@ export default function Documents() {
                           </TableCell>
                           <TableCell className="text-right">${invoice.price.toFixed(2)}</TableCell>
                           <TableCell className="text-right">{invoice.ingredientCount}</TableCell>
-                          <TableCell className="w-[50px]">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => setEditingInvoice(invoice)}
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
+                          
                         </TableRow>
                       ))}
                     </TableBody>
