@@ -111,7 +111,7 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                 </div>
               </div>
               <Form {...form}>
-                <form className="space-y-8">
+                <div className="space-y-8">
                   {/* Invoice Header Section */}
                   <div className="grid grid-cols-2 gap-6">
                     <FormField
@@ -141,7 +141,7 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                       )}
                     />
                   </div>
-                </form>
+                </div>
               </Form>
             </div>
 
