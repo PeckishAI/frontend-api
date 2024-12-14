@@ -63,12 +63,27 @@ export default function RecipeSheet({
 
   const form = useForm<Recipe>({
     resolver: zodResolver(recipeSchema),
-    defaultValues: recipe || {
+    defaultValues: {
       name: "",
       portionCount: 1,
       ingredients: [{ name: "", quantity: 0, unit: "g" }],
+      category: defaultCategories[0],
     },
   });
+
+  React.useEffect(() => {
+    if (recipe) {
+      form.reset({
+        id: recipe.id,
+        name: recipe.name,
+        category: recipe.category,
+        portionCount: recipe.portionCount || 1,
+        ingredients: recipe.ingredients,
+        price: recipe.price,
+        cost: recipe.cost,
+      });
+    }
+  }, [recipe, form]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

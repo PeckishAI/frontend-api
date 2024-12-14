@@ -224,10 +224,12 @@ export default function Menu() {
           category: {
             value: editingRecipe.category.toLowerCase(),
             label: editingRecipe.category,
-            emoji: '🍽️' // Default emoji if category not found
+            emoji: defaultCategories.find(c => 
+              c.value === editingRecipe.category.toLowerCase())?.emoji || '🍽️'
           },
           portionCount: 1,
           ingredients: editingRecipe.ingredients.map(name => ({
+            id: `${name}-${Math.random()}`,
             name,
             quantity: 1,
             unit: 'g'
