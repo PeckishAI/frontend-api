@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { ChevronLeft, ChevronRight, DollarSign, Package2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ interface EditInvoiceSliderProps {
 
 export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSliderProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  
   const form = useForm({
     defaultValues: {
       invoiceNumber: invoice?.invoiceNumber || "",
@@ -30,6 +32,22 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
       ingredientCount: invoice?.ingredientCount || 0,
     },
   });
+
+  React.useEffect(() => {
+    if (invoice) {
+      form.reset({
+        invoiceNumber: invoice.invoiceNumber,
+        supplier: invoice.supplier,
+        price: invoice.price,
+        ingredientCount: invoice.ingredientCount,
+      });
+    }
+  }, [invoice, form]);
+
+  const onSubmit = (data: any) => {
+    console.log(data);
+    onOpenChange(false);
+  };
 
   if (!invoice) return null;
 
@@ -79,6 +97,7 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
             <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
               Image {activeImageIndex + 1} of {invoice.images.length}
             </div>
+
             {/* Thumbnails */}
             <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
               {invoice.images.map((_, index) => (
@@ -99,20 +118,20 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
 
           {/* Right side - Form */}
           <div className="w-1/2 bg-white">
-            <div className="p-8 border-b">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900">Invoice Details</h2>
-                <div className="text-sm text-muted-foreground">
-                  {invoice.date.toLocaleDateString('en-US', { 
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </div>
-              </div>
-              <Form {...form}>
-                <div className="space-y-8">
-                  {/* Invoice Header Section */}
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
+                <div className="p-8 border-b">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-semibold text-gray-900">Invoice Details</h2>
+                    <div className="text-sm text-muted-foreground">
+                      {invoice.date.toLocaleDateString('en-US', { 
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
@@ -142,67 +161,75 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                     />
                   </div>
                 </div>
-              </Form>
-            </div>
 
-            {/* Summary Section */}
-            <div className="p-8 bg-gray-50/50 border-b">
-              <h3 className="text-sm font-medium text-muted-foreground mb-4">Summary</h3>
-              <div className="grid grid-cols-2 gap-8">
-                {/* Price Card */}
-                <div className="bg-white p-6 rounded-lg border shadow-sm">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="text-sm font-medium text-muted-foreground">Total Amount</div>
-                    <DollarSign className="h-4 w-4 text-green-500" />
+                <div className="p-8 bg-gray-50/50 border-b">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-4">Summary</h3>
+                  <div className="grid grid-cols-2 gap-8">
+                    {/* Price Card */}
+                    <div className="bg-white p-6 rounded-lg border shadow-sm">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="text-sm font-medium text-muted-foreground">Total Amount</div>
+                        <DollarSign className="h-4 w-4 text-green-500" />
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name="price"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                step="0.01"
+                                {...field} 
+                                onChange={e => field.onChange(parseFloat(e.target.value))}
+                                className="text-2xl font-semibold border-0 p-0 h-auto focus-visible:ring-0"
+                                placeholder="0.00"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    {/* Ingredients Card */}
+                    <div className="bg-white p-6 rounded-lg border shadow-sm">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="text-sm font-medium text-muted-foreground">Ingredients</div>
+                        <Package2 className="h-4 w-4 text-gray-500" />
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name="ingredientCount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                {...field}
+                                onChange={e => field.onChange(parseInt(e.target.value))}
+                                className="text-2xl font-semibold border-0 p-0 h-auto focus-visible:ring-0"
+                                placeholder="0"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                  <FormField
-                    control={form.control}
-                    name="price"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input 
-                            type="number" 
-                            step="0.01"
-                            {...field} 
-                            onChange={e => field.onChange(parseFloat(e.target.value))}
-                            className="text-2xl font-semibold border-0 p-0 h-auto focus-visible:ring-0"
-                            placeholder="0.00"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
-                
-                {/* Ingredients Card */}
-                <div className="bg-white p-6 rounded-lg border shadow-sm">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="text-sm font-medium text-muted-foreground">Ingredients</div>
-                    <Package2 className="h-4 w-4 text-gray-500" />
+
+                <div className="mt-auto p-8 bg-gray-50 border-t">
+                  <div className="flex justify-end gap-4">
+                    <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                      Cancel
+                    </Button>
+                    <Button type="submit">Save changes</Button>
                   </div>
-                  <FormField
-                    control={form.control}
-                    name="ingredientCount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input 
-                            type="number" 
-                            {...field}
-                            onChange={e => field.onChange(parseInt(e.target.value))}
-                            className="text-2xl font-semibold border-0 p-0 h-auto focus-visible:ring-0"
-                            placeholder="0"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
-              </div>
-            </div>
+              </form>
+            </Form>
           </div>
         </div>
       </SheetContent>
