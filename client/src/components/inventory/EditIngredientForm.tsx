@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CreatableSelect } from "@/components/ui/creatable-select";
+import { Badge } from "@/components/ui/badge";
 import type { InventoryItem } from "@/lib/types";
 
 const editIngredientSchema = z.object({
@@ -61,6 +62,8 @@ export default function EditIngredientForm({
   ingredient,
   onSubmit,
 }: EditIngredientFormProps) {
+  const [editingSupplier, setEditingSupplier] = React.useState<number | null>(null);
+
   const form = useForm<EditIngredientFormValues>({
     resolver: zodResolver(editIngredientSchema),
     defaultValues: {
@@ -88,6 +91,46 @@ export default function EditIngredientForm({
     onOpenChange(false);
   };
 
+  const addSupplier = () => {
+    const currentSuppliers = form.getValues('suppliers');
+    form.setValue('suppliers', [
+      ...currentSuppliers,
+      {
+        supplierId: `new-${Date.now()}`,
+        supplierName: '',
+        unitCost: 0,
+        packSize: '',
+      },
+    ]);
+    setEditingSupplier(currentSuppliers.length);
+  };
+
+  const removeSupplier = (index: number) => {
+    const currentSuppliers = form.getValues('suppliers');
+    form.setValue(
+      'suppliers',
+      currentSuppliers.filter((_, i) => i !== index)
+    );
+  };
+
+  const updateSupplier = (index: number, field: string, value: string | number) => {
+    const currentSuppliers = form.getValues('suppliers');
+    const updatedSuppliers = [...currentSuppliers];
+    updatedSuppliers[index] = {
+      ...updatedSuppliers[index],
+      [field]: value,
+    };
+    form.setValue('suppliers', updatedSuppliers);
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    const currentTags = form.getValues('tags');
+    form.setValue(
+      'tags',
+      currentTags.filter(tag => tag !== tagToRemove)
+    );
+  };
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="sm:max-w-[600px] h-screen overflow-y-auto">
@@ -112,23 +155,52 @@ export default function EditIngredientForm({
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="tags"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tags</FormLabel>
-                  <FormControl>
-                    <CreatableSelect
-                      value={field.value}
-                      onChange={field.onChange}
-                      options={[]}
-                      onCreateOption={(value) => field.onChange([...field.value, value])}
-                      placeholder="Select or create tags"
-                      multiple={true}
-                    />
-                  </FormControl>
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {field.value.map((tag) => (
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          className="px-2 py-1 text-sm flex items-center gap-1"
+                        >
+                          {tag}
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-4 w-4 p-0 hover:bg-transparent"
+                            onClick={() => removeTag(tag)}
+                          >
+                            ×
+                          </Button>
+                        </Badge>
+                      ))}
+                    </div>
+                    <FormControl>
+                      <CreatableSelect
+                        value={[]}
+                        onChange={(values) => {
+                          if (values[0] && !field.value.includes(values[0])) {
+                            field.onChange([...field.value, values[0]]);
+                          }
+                        }}
+                        options={[]}
+                        onCreateOption={(value) => {
+                          if (!field.value.includes(value)) {
+                            field.onChange([...field.value, value]);
+                          }
+                        }}
+                        placeholder="Add a tag..."
+                      />
+                    </FormControl>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -195,25 +267,86 @@ export default function EditIngredientForm({
             />
 
             <div className="border-t mt-6 pt-6">
-              <h3 className="text-lg font-semibold mb-4">Suppliers</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Suppliers</h3>
+                <Button type="button" variant="outline" size="sm" onClick={addSupplier}>
+                  Add Supplier
+                </Button>
+              </div>
               <div className="space-y-4">
                 {form.watch('suppliers')?.map((supplier, index) => (
                   <div key={supplier.supplierId} className="border border-gray-200 bg-white p-4 rounded-lg shadow-sm">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-base font-medium text-gray-900">{supplier.supplierName}</h4>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                          <div className="text-sm text-gray-500">Unit Cost</div>
-                          <div className="font-medium">${supplier.unitCost.toFixed(2)}</div>
+                    {editingSupplier === index ? (
+                      <div className="space-y-4">
+                        <Input
+                          placeholder="Supplier name"
+                          value={supplier.supplierName}
+                          onChange={(e) => updateSupplier(index, 'supplierName', e.target.value)}
+                        />
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <div className="text-sm text-gray-500">Unit Cost</div>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              value={supplier.unitCost}
+                              onChange={(e) => updateSupplier(index, 'unitCost', parseFloat(e.target.value))}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <div className="text-sm text-gray-500">Pack Size</div>
+                            <Input
+                              value={supplier.packSize}
+                              onChange={(e) => updateSupplier(index, 'packSize', e.target.value)}
+                            />
+                          </div>
                         </div>
-                        <div className="space-y-1">
-                          <div className="text-sm text-gray-500">Pack Size</div>
-                          <div className="font-medium">{supplier.packSize}</div>
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setEditingSupplier(null)}
+                          >
+                            Done
+                          </Button>
                         </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-base font-medium text-gray-900">{supplier.supplierName}</h4>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setEditingSupplier(index)}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeSupplier(index)}
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-1">
+                            <div className="text-sm text-gray-500">Unit Cost</div>
+                            <div className="font-medium">${supplier.unitCost.toFixed(2)}</div>
+                          </div>
+                          <div className="space-y-1">
+                            <div className="text-sm text-gray-500">Pack Size</div>
+                            <div className="font-medium">{supplier.packSize}</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
