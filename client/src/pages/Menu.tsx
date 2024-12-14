@@ -106,7 +106,8 @@ export default function Menu() {
                   <div className="text-sm text-gray-500">Margin</div>
                 </div>
                 <div className="font-semibold text-primary text-base">
-                  {product.margin.toFixed(1)}%
+                  <span className="text-2xl font-bold">{product.margin.toFixed(1)}</span>
+                  <span className="text-sm ml-0.5">%</span>
                 </div>
               </div>
             </div>
