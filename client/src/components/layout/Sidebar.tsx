@@ -5,16 +5,7 @@ const menuItems = [
   { icon: Package, label: "Orders", href: "/" },
   { icon: ClipboardList, label: "Inventory", href: "/inventory" },
   { icon: MenuSquare, label: "Menu", href: "/menu" },
-  {
-    icon: Files,
-    label: "Documents",
-    href: "/documents",
-    subItems: [
-      { icon: FileText, label: "Invoices", href: "/documents/invoices" },
-      { icon: FileBox, label: "Delivery Notes", href: "/documents/delivery-notes" },
-      { icon: ClipboardCheck, label: "Stocktakes", href: "/documents/stocktakes" },
-    ],
-  },
+  { icon: Files, label: "Documents", href: "/documents" },
 ];
 
 export default function Sidebar() {
