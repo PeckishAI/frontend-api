@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { ChevronLeft, ChevronRight, DollarSign, Package2, Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, DollarSign, Package2, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -75,6 +75,12 @@ interface EditInvoiceSliderProps {
 
 export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSliderProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(true);
+
+  const calculateTotal = () => {
+    const ingredients = form.watch("ingredients");
+    return ingredients.reduce((sum, ingredient) => sum + (ingredient.totalCost || 0), 0);
+  };
   
   const form = useForm<EditInvoiceFormValues>({
     resolver: zodResolver(editInvoiceSchema),
@@ -213,9 +219,28 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
           <div className="w-1/2 bg-white">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
-                <div className="p-8 border-b">
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-6">Invoice Details</h2>
-                  <div className="space-y-6">
+                <div className="border-b">
+                  <div 
+                    className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50"
+                    onClick={() => setIsDetailsOpen(!isDetailsOpen)}
+                  >
+                    <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                      Invoice Details
+                      <ChevronDown className={cn("h-4 w-4 transition-transform", isDetailsOpen ? "transform rotate-180" : "")} />
+                    </h2>
+                    <div className="flex items-center gap-4">
+                      <div className="text-sm">
+                        <span className="text-muted-foreground">Extracted Total:</span>
+                        <span className="ml-1 font-medium">${invoice.price.toFixed(2)}</span>
+                      </div>
+                      <div className="text-sm">
+                        <span className="text-muted-foreground">Calculated Total:</span>
+                        <span className="ml-1 font-medium">${calculateTotal().toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={cn("space-y-6 overflow-hidden transition-all", 
+                    isDetailsOpen ? "p-8" : "h-0 p-0")}>
                     <div className="grid grid-cols-2 gap-6">
                       <FormField
                         control={form.control}
@@ -319,21 +344,9 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                   {form.watch("ingredients").map((ingredient, index) => (
                     <div
                       key={index}
-                      className="border rounded-lg p-4 space-y-4"
+                      className="border rounded-lg p-4"
                     >
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-medium">Ingredient {index + 1}</h4>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeIngredient(index)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-[2fr,2fr,1fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end">
                         <FormField
                           control={form.control}
                           name={`ingredients.${index}.detected`}
@@ -375,13 +388,14 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                         />
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
-                        <FormField
+                      <FormField
                           control={form.control}
                           name={`ingredients.${index}.unit`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Unit</FormLabel>
+                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                Unit
+                              </FormLabel>
                               <FormControl>
                                 <CreatableSelect
                                   value={field.value ? [field.value] : []}
@@ -394,7 +408,7 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                                   onCreateOption={(value) => {
                                     field.onChange(value);
                                   }}
-                                  placeholder="Select or add unit"
+                                  placeholder="Unit"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -407,7 +421,9 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                           name={`ingredients.${index}.quantity`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Quantity</FormLabel>
+                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                Qty
+                              </FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
@@ -420,15 +436,15 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                             </FormItem>
                           )}
                         />
-                      </div>
 
-                      <div className="grid grid-cols-3 gap-4">
                         <FormField
                           control={form.control}
                           name={`ingredients.${index}.unitCost`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Unit Cost</FormLabel>
+                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                Unit Cost
+                              </FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
@@ -447,7 +463,9 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                           name={`ingredients.${index}.totalCost`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Total Cost</FormLabel>
+                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                Total
+                              </FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
@@ -466,7 +484,9 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                           name={`ingredients.${index}.vat`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>VAT</FormLabel>
+                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                VAT
+                              </FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
@@ -479,7 +499,15 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                             </FormItem>
                           )}
                         />
-                      </div>
+
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeIngredient(index)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                     </div>
                   ))}
                 </div>
