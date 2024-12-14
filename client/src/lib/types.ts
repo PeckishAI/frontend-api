@@ -40,3 +40,9 @@ export interface InventoryItem {
   unit: string;
   suppliers: InventorySupplierInfo[];
 }
+
+export interface UnitOption {
+  value: string;
+  label: string;
+  category?: string;
+}

@@ -1,4 +1,27 @@
-import { Order, Supplier, InventoryItem } from './types';
+import { Order, Supplier, InventoryItem, UnitOption } from './types';
+
+export const defaultUnits: UnitOption[] = [
+  // Weight
+  { value: 'kg', label: 'Kilogram (kg)', category: 'Weight' },
+  { value: 'g', label: 'Gram (g)', category: 'Weight' },
+  { value: 'lb', label: 'Pound (lb)', category: 'Weight' },
+  { value: 'oz', label: 'Ounce (oz)', category: 'Weight' },
+  
+  // Volume
+  { value: 'l', label: 'Liter (L)', category: 'Volume' },
+  { value: 'ml', label: 'Milliliter (mL)', category: 'Volume' },
+  { value: 'gal', label: 'Gallon (gal)', category: 'Volume' },
+  { value: 'qt', label: 'Quart (qt)', category: 'Volume' },
+  
+  // Count
+  { value: 'pcs', label: 'Pieces', category: 'Count' },
+  { value: 'doz', label: 'Dozen', category: 'Count' },
+  
+  // Container
+  { value: 'box', label: 'Box', category: 'Container' },
+  { value: 'case', label: 'Case', category: 'Container' },
+  { value: 'bag', label: 'Bag', category: 'Container' },
+];
 
 export const mockOrders: Order[] = [
   {
@@ -38,7 +61,11 @@ export const mockOrders: Order[] = [
 export const mockSuppliers: Supplier[] = [
   { id: '1', name: 'Fresh Produce Co', category: 'Vegetables', rating: 4.5 },
   { id: '2', name: 'Meat Masters', category: 'Meat', rating: 4.8 },
-  { id: '3', name: 'Seafood Direct', category: 'Seafood', rating: 4.3 }
+  { id: '3', name: 'Seafood Direct', category: 'Seafood', rating: 4.3 },
+  { id: '4', name: 'Local Farm', category: 'Vegetables', rating: 4.2 },
+  { id: '5', name: 'Global Foods', category: 'Pantry', rating: 4.6 },
+  { id: '6', name: 'Dairy Fresh', category: 'Dairy', rating: 4.4 },
+  { id: '7', name: 'Local Dairy Co', category: 'Dairy', rating: 4.1 }
 ];
 
 export const mockInventory: InventoryItem[] = [
@@ -46,8 +73,8 @@ export const mockInventory: InventoryItem[] = [
     id: '1',
     name: 'Tomatoes',
     tags: ['vegetables', 'fresh produce'],
-    parLevel: 100,
-    quantity: 75,
+    parLevel: 100.5,
+    quantity: 75.2,
     unit: 'kg',
     suppliers: [
       {
@@ -68,8 +95,8 @@ export const mockInventory: InventoryItem[] = [
     id: '2',
     name: 'Chicken Breast',
     tags: ['meat', 'poultry'],
-    parLevel: 80,
-    quantity: 65,
+    parLevel: 80.0,
+    quantity: 65.5,
     unit: 'kg',
     suppliers: [
       {
@@ -84,9 +111,9 @@ export const mockInventory: InventoryItem[] = [
     id: '3',
     name: 'Olive Oil',
     tags: ['pantry', 'oils'],
-    parLevel: 50,
-    quantity: 45,
-    unit: 'L',
+    parLevel: 50.0,
+    quantity: 45.5,
+    unit: 'l',
     suppliers: [
       {
         supplierId: '5',
@@ -100,8 +127,8 @@ export const mockInventory: InventoryItem[] = [
     id: '4',
     name: 'Basmati Rice',
     tags: ['grains', 'pantry'],
-    parLevel: 120,
-    quantity: 85,
+    parLevel: 120.0,
+    quantity: 85.75,
     unit: 'kg',
     suppliers: [
       {
@@ -116,8 +143,8 @@ export const mockInventory: InventoryItem[] = [
     id: '5',
     name: 'Fresh Salmon',
     tags: ['seafood', 'fresh'],
-    parLevel: 40,
-    quantity: 25,
+    parLevel: 40.0,
+    quantity: 25.5,
     unit: 'kg',
     suppliers: [
       {
@@ -132,9 +159,9 @@ export const mockInventory: InventoryItem[] = [
     id: '6',
     name: 'Heavy Cream',
     tags: ['dairy', 'refrigerated'],
-    parLevel: 30,
-    quantity: 12,
-    unit: 'L',
+    parLevel: 30.0,
+    quantity: 12.75,
+    unit: 'l',
     suppliers: [
       {
         supplierId: '6',
@@ -167,7 +194,7 @@ export const getAllTags = () => {
   mockInventory.forEach(item => {
     item.tags.forEach(tag => tagsSet.add(tag));
   });
-  return Array.from(tagsSet);
+  return Array.from(tagsSet).sort();
 };
 
 export const getAllSuppliers = () => {
@@ -175,5 +202,5 @@ export const getAllSuppliers = () => {
   mockInventory.forEach(item => {
     item.suppliers.forEach(supplier => suppliersSet.add(supplier.supplierName));
   });
-  return Array.from(suppliersSet);
+  return Array.from(suppliersSet).sort();
 };
