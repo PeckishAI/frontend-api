@@ -60,34 +60,39 @@ export default function RecipeSheet({
   recipe?: Recipe;
   onSubmit: (data: Recipe) => void;
 }) {
-  const [ingredientCount, setIngredientCount] = useState(1);
-
   const form = useForm<Recipe>({
     resolver: zodResolver(recipeSchema),
     defaultValues: {
       name: "",
+      category: defaultCategories[0],
       portionCount: 1,
       ingredients: [{ name: "", quantity: 0, unit: "g" }],
-      category: defaultCategories[0],
     },
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (recipe) {
-      form.reset({
-        id: recipe.id,
-        name: recipe.name,
-        category: recipe.category,
-        portionCount: recipe.portionCount || 1,
-        ingredients: recipe.ingredients,
-        price: recipe.price,
-        cost: recipe.cost,
-      });
-      setIngredientCount(recipe.ingredients.length);
-    } else {
-      setIngredientCount(1);
+      form.reset(recipe);
     }
   }, [recipe, form]);
+
+  const ingredients = form.watch("ingredients") || [];
+
+  const addIngredient = () => {
+    const currentIngredients = form.getValues("ingredients") || [];
+    form.setValue("ingredients", [
+      ...currentIngredients,
+      { name: "", quantity: 0, unit: "g" },
+    ]);
+  };
+
+  const removeIngredient = (index: number) => {
+    const currentIngredients = form.getValues("ingredients");
+    form.setValue(
+      "ingredients",
+      currentIngredients.filter((_, i) => i !== index)
+    );
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -120,35 +125,38 @@ export default function RecipeSheet({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>
-                    <FormControl>
-                      <CreatableSelect
-                        value={[{ 
-                          value: field.value.value,
-                          label: field.value.label,
-                          emoji: field.value.emoji
-                        }]}
-                        onChange={values => {
-                          if (values[0]) {
-                            field.onChange(values[0]);
-                          }
-                        }}
-                        onCreateOption={(inputValue) => {
-                          field.onChange({
-                            value: inputValue.toLowerCase(),
-                            label: inputValue,
-                            emoji: '🍽️'
-                          });
-                        }}
-                        options={defaultCategories}
-                        formatOptionLabel={(option) => (
-                          <div className="flex items-center gap-2">
-                            <span>{option.emoji}</span>
-                            <span>{option.label}</span>
-                          </div>
-                        )}
-                        placeholder="Select or create category"
-                      />
-                    </FormControl>
+                    <Select
+                      value={field.value.value}
+                      onValueChange={(value) => {
+                        const category = defaultCategories.find((c) => c.value === value) || {
+                          value,
+                          label: value,
+                          emoji: '🍽️'
+                        };
+                        field.onChange(category);
+                      }}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue>
+                            <div className="flex items-center gap-2">
+                              <span>{field.value.emoji}</span>
+                              <span>{field.value.label}</span>
+                            </div>
+                          </SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {defaultCategories.map((category) => (
+                          <SelectItem key={category.value} value={category.value}>
+                            <div className="flex items-center gap-2">
+                              <span>{category.emoji}</span>
+                              <span>{category.label}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormItem>
                 )}
               />
@@ -179,21 +187,14 @@ export default function RecipeSheet({
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => {
-                    const currentIngredients = form.getValues("ingredients") || [];
-                    form.setValue("ingredients", [
-                      ...currentIngredients,
-                      { name: "", quantity: 0, unit: "g" },
-                    ]);
-                    setIngredientCount(prev => prev + 1);
-                  }}
+                  onClick={addIngredient}
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Add Ingredient
                 </Button>
               </div>
 
-              {Array.from({ length: ingredientCount }).map((_, index) => (
+              {ingredients.map((ingredient, index) => (
                 <div key={index} className="flex gap-2 items-end">
                   <FormField
                     control={form.control}
@@ -204,19 +205,7 @@ export default function RecipeSheet({
                           Name
                         </FormLabel>
                         <FormControl>
-                          <CreatableSelect
-                            value={[field.value]}
-                            onChange={values => field.onChange(values[0])}
-                            onCreateOption={field.onChange}
-                            placeholder="Select or add ingredient"
-                            options={[
-                              { value: 'tomatoes', label: 'Tomatoes' },
-                              { value: 'flour', label: 'Flour' },
-                              { value: 'sugar', label: 'Sugar' },
-                              { value: 'salt', label: 'Salt' },
-                              { value: 'olive oil', label: 'Olive Oil' },
-                            ]}
-                          />
+                          <Input {...field} placeholder="Ingredient name" />
                         </FormControl>
                       </FormItem>
                     )}
@@ -272,42 +261,12 @@ export default function RecipeSheet({
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name={`ingredients.${index}.conversionFactor`}
-                    render={({ field }) => (
-                      <FormItem className="w-24">
-                        <FormLabel className={index !== 0 ? "sr-only" : undefined}>
-                          Factor
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min={0}
-                            step="any"
-                            placeholder="Conv. factor"
-                            {...field}
-                            onChange={e => field.onChange(parseFloat(e.target.value))}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-
-                  {index !== 0 && (
+                  {ingredients.length > 1 && (
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="mb-2"
-                      onClick={() => {
-                        const currentIngredients = form.getValues("ingredients");
-                        form.setValue(
-                          "ingredients",
-                          currentIngredients.filter((_, i) => i !== index)
-                        );
-                        setIngredientCount(prev => prev - 1);
-                      }}
+                      onClick={() => removeIngredient(index)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
