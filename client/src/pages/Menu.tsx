@@ -85,32 +85,28 @@ export default function Menu() {
               <Layers className="h-4 w-4" />
               <span>{product.ingredients.length} ingredients</span>
             </div>
-            <div className="grid grid-cols-2 gap-4 p-3 bg-gray-50 rounded-lg">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
+            <div className="grid grid-cols-3 gap-4 border-t pt-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
                   <DollarSign className="h-4 w-4 text-green-600" />
-                  <div>
-                    <div className="text-sm text-gray-500">Price</div>
-                    <div className="font-medium">${product.price.toFixed(2)}</div>
-                  </div>
+                  <div className="text-sm text-gray-500">Price</div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <ScrollText className="h-4 w-4 text-gray-600" />
-                  <div>
-                    <div className="text-sm text-gray-500">Cost</div>
-                    <div className="font-medium">${product.cost.toFixed(2)}</div>
-                  </div>
-                </div>
+                <div className="font-medium">${product.price.toFixed(2)}</div>
               </div>
-              <div className="flex items-center justify-end">
-                <div className="text-center">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <ScrollText className="h-4 w-4 text-gray-600" />
+                  <div className="text-sm text-gray-500">Cost</div>
+                </div>
+                <div className="font-medium">${product.cost.toFixed(2)}</div>
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Percent className="h-4 w-4 text-primary" />
                   <div className="text-sm text-gray-500">Margin</div>
-                  <div className="flex items-center gap-1">
-                    <Percent className="h-4 w-4 text-primary" />
-                    <span className="text-lg font-semibold text-primary">
-                      {product.margin.toFixed(1)}
-                    </span>
-                  </div>
+                </div>
+                <div className="font-semibold text-primary text-base">
+                  {product.margin.toFixed(1)}%
                 </div>
               </div>
             </div>
