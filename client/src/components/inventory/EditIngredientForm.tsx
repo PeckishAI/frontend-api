@@ -187,7 +187,28 @@ export default function EditIngredientForm({
               )}
             />
 
-            <div className="flex justify-end gap-4 pt-4">
+            <div className="border-t mt-6 pt-6">
+              <h3 className="text-sm font-medium mb-4">Suppliers</h3>
+              <div className="space-y-4">
+                {form.watch('suppliers').map((supplier, index) => (
+                  <div key={supplier.supplierId} className="bg-gray-50 p-4 rounded-lg">
+                    <div className="grid gap-4">
+                      <div className="font-medium">{supplier.supplierName}</div>
+                      <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                        <div>
+                          <span className="font-medium">Unit Cost:</span> ${supplier.unitCost}
+                        </div>
+                        <div>
+                          <span className="font-medium">Pack Size:</span> {supplier.packSize}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-4 pt-6">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
