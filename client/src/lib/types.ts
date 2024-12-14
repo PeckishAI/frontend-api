@@ -23,3 +23,20 @@ export interface Supplier {
   category: string;
   rating: number;
 }
+
+export interface InventorySupplierInfo {
+  supplierId: string;
+  supplierName: string;
+  unitCost: number;
+  packSize: string;
+}
+
+export interface InventoryItem {
+  id: string;
+  name: string;
+  tags: string[];
+  parLevel: number;
+  quantity: number;
+  unit: string;
+  suppliers: InventorySupplierInfo[];
+}

@@ -1,4 +1,4 @@
-import { Order, Supplier } from './types';
+import { Order, Supplier, InventoryItem } from './types';
 
 export const mockOrders: Order[] = [
   {
@@ -41,6 +41,63 @@ export const mockSuppliers: Supplier[] = [
   { id: '3', name: 'Seafood Direct', category: 'Seafood', rating: 4.3 }
 ];
 
+export const mockInventory: InventoryItem[] = [
+  {
+    id: '1',
+    name: 'Tomatoes',
+    tags: ['vegetables', 'fresh produce'],
+    parLevel: 100,
+    quantity: 75,
+    unit: 'kg',
+    suppliers: [
+      {
+        supplierId: '1',
+        supplierName: 'Fresh Produce Co',
+        unitCost: 4.99,
+        packSize: '10kg box'
+      },
+      {
+        supplierId: '4',
+        supplierName: 'Local Farm',
+        unitCost: 4.50,
+        packSize: '5kg bag'
+      }
+    ]
+  },
+  {
+    id: '2',
+    name: 'Chicken Breast',
+    tags: ['meat', 'poultry'],
+    parLevel: 80,
+    quantity: 65,
+    unit: 'kg',
+    suppliers: [
+      {
+        supplierId: '2',
+        supplierName: 'Meat Masters',
+        unitCost: 12.99,
+        packSize: '5kg pack'
+      }
+    ]
+  },
+  {
+    id: '3',
+    name: 'Olive Oil',
+    tags: ['pantry', 'oils'],
+    parLevel: 50,
+    quantity: 45,
+    unit: 'L',
+    suppliers: [
+      {
+        supplierId: '5',
+        supplierName: 'Global Foods',
+        unitCost: 24.99,
+        packSize: '5L container'
+      }
+    ]
+  }
+];
+
 export const getStatusColor = (status: string) => {
   const colors = {
     draft: 'bg-gray-200 text-gray-800',
@@ -49,4 +106,20 @@ export const getStatusColor = (status: string) => {
     cancelled: 'bg-red-100 text-red-800'
   };
   return colors[status as keyof typeof colors] || colors.draft;
+};
+
+export const getAllTags = () => {
+  const tagsSet = new Set<string>();
+  mockInventory.forEach(item => {
+    item.tags.forEach(tag => tagsSet.add(tag));
+  });
+  return Array.from(tagsSet);
+};
+
+export const getAllSuppliers = () => {
+  const suppliersSet = new Set<string>();
+  mockInventory.forEach(item => {
+    item.suppliers.forEach(supplier => suppliersSet.add(supplier.supplierName));
+  });
+  return Array.from(suppliersSet);
 };

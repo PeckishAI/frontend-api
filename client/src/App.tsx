@@ -1,11 +1,17 @@
 import { Switch, Route } from "wouter";
 import Orders from "@/pages/Orders";
+import Inventory from "@/pages/Inventory";
+import Sidebar from "@/components/layout/Sidebar";
 
 function App() {
   return (
-    <Switch>
-      <Route path="/" component={Orders} />
-    </Switch>
+    <div className="flex">
+      <Sidebar />
+      <Switch>
+        <Route path="/" component={Orders} />
+        <Route path="/inventory" component={Inventory} />
+      </Switch>
+    </div>
   );
 }
 
