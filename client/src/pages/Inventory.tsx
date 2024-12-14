@@ -21,13 +21,14 @@ import { Badge } from "@/components/ui/badge";
 import { Download, Plus, Search } from "lucide-react";
 import { mockInventory, getAllTags, getAllSuppliers } from '@/lib/data';
 import type { InventoryItem } from '@/lib/types';
-import NewItemForm from '@/components/inventory/NewItemForm';
+import EditIngredientForm from '@/components/inventory/EditIngredientForm';
 
 export default function Inventory() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
   const [isNewItemOpen, setIsNewItemOpen] = useState(false);
+  const [selectedIngredient, setSelectedIngredient] = useState<InventoryItem | undefined>();
   const { toast } = useToast();
 
   const tags = getAllTags();
@@ -136,7 +137,11 @@ export default function Inventory() {
           </TableHeader>
           <TableBody>
             {filteredInventory.map((item) => (
-              <TableRow key={item.id}>
+              <TableRow 
+                key={item.id} 
+                className="cursor-pointer hover:bg-gray-50"
+                onClick={() => setSelectedIngredient(item)}
+              >
                 <TableCell className="font-medium">{item.name}</TableCell>
                 <TableCell>
                   <div className="flex gap-1 flex-wrap">
@@ -167,16 +172,20 @@ export default function Inventory() {
         </Table>
       </div>
 
-      <NewItemForm
-        open={isNewItemOpen}
-        onOpenChange={setIsNewItemOpen}
+      <EditIngredientForm
+        open={isNewItemOpen || !!selectedIngredient}
+        onOpenChange={(open) => {
+          setIsNewItemOpen(open);
+          if (!open) setSelectedIngredient(undefined);
+        }}
+        ingredient={selectedIngredient}
         onSubmit={(data) => {
           toast({
-            title: "Item Added",
-            description: `${data.name} has been added to the inventory.`,
+            title: selectedIngredient ? "Item Updated" : "Item Added",
+            description: `${data.name} has been ${selectedIngredient ? 'updated in' : 'added to'} the inventory.`,
           });
-          // In a real app, we would add the item to the database here
-          console.log('New item:', data);
+          // In a real app, we would update/add the item to the database here
+          console.log(selectedIngredient ? 'Updated item:' : 'New item:', data);
         }}
       />
     </div>
