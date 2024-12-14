@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
@@ -20,11 +21,14 @@ import { Badge } from "@/components/ui/badge";
 import { Download, Plus, Search } from "lucide-react";
 import { mockInventory, getAllTags, getAllSuppliers } from '@/lib/data';
 import type { InventoryItem } from '@/lib/types';
+import NewItemForm from '@/components/inventory/NewItemForm';
 
 export default function Inventory() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTag, setSelectedTag] = useState<string>('');
-  const [selectedSupplier, setSelectedSupplier] = useState<string>('');
+  const [selectedTag, setSelectedTag] = useState<string>('all');
+  const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
+  const [isNewItemOpen, setIsNewItemOpen] = useState(false);
+  const { toast } = useToast();
 
   const tags = getAllTags();
   const suppliers = getAllSuppliers();
@@ -76,7 +80,7 @@ export default function Inventory() {
               <Download className="mr-2 h-4 w-4" />
               Export CSV
             </Button>
-            <Button>
+            <Button onClick={() => setIsNewItemOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               New Item
             </Button>
@@ -98,8 +102,8 @@ export default function Inventory() {
               <SelectValue placeholder="Filter by tag" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All tags</SelectItem>
-              {tags.map(tag => (
+              <SelectItem value="all">All Tags</SelectItem>
+              {tags.filter(tag => tag.trim()).map(tag => (
                 <SelectItem key={tag} value={tag}>{tag}</SelectItem>
               ))}
             </SelectContent>
@@ -109,8 +113,8 @@ export default function Inventory() {
               <SelectValue placeholder="Filter by supplier" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All suppliers</SelectItem>
-              {suppliers.map(supplier => (
+              <SelectItem value="all">All Suppliers</SelectItem>
+              {suppliers.filter(supplier => supplier.trim()).map(supplier => (
                 <SelectItem key={supplier} value={supplier}>{supplier}</SelectItem>
               ))}
             </SelectContent>
@@ -162,6 +166,19 @@ export default function Inventory() {
           </TableBody>
         </Table>
       </div>
+
+      <NewItemForm
+        open={isNewItemOpen}
+        onOpenChange={setIsNewItemOpen}
+        onSubmit={(data) => {
+          toast({
+            title: "Item Added",
+            description: `${data.name} has been added to the inventory.`,
+          });
+          // In a real app, we would add the item to the database here
+          console.log('New item:', data);
+        }}
+      />
     </div>
   );
 }

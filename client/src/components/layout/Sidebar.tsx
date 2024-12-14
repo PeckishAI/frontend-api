@@ -19,11 +19,9 @@ export default function Sidebar() {
               const Icon = item.icon;
               return (
                 <li key={item.href}>
-                  <Link href={item.href}>
-                    <a className="flex items-center gap-3 px-3 py-2 text-gray-700 rounded-md hover:bg-gray-100 hover:text-gray-900 transition-colors">
-                      <Icon className="h-5 w-5" />
-                      {item.label}
-                    </a>
+                  <Link href={item.href} className="flex items-center gap-3 px-3 py-2 text-gray-700 rounded-md hover:bg-gray-100 hover:text-gray-900 transition-colors">
+                    <Icon className="h-5 w-5" />
+                    {item.label}
                   </Link>
                 </li>
               );

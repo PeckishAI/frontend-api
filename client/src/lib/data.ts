@@ -95,6 +95,60 @@ export const mockInventory: InventoryItem[] = [
         packSize: '5L container'
       }
     ]
+  },
+  {
+    id: '4',
+    name: 'Basmati Rice',
+    tags: ['grains', 'pantry'],
+    parLevel: 120,
+    quantity: 85,
+    unit: 'kg',
+    suppliers: [
+      {
+        supplierId: '5',
+        supplierName: 'Global Foods',
+        unitCost: 3.99,
+        packSize: '25kg bag'
+      }
+    ]
+  },
+  {
+    id: '5',
+    name: 'Fresh Salmon',
+    tags: ['seafood', 'fresh'],
+    parLevel: 40,
+    quantity: 25,
+    unit: 'kg',
+    suppliers: [
+      {
+        supplierId: '3',
+        supplierName: 'Seafood Direct',
+        unitCost: 28.99,
+        packSize: '5kg box'
+      }
+    ]
+  },
+  {
+    id: '6',
+    name: 'Heavy Cream',
+    tags: ['dairy', 'refrigerated'],
+    parLevel: 30,
+    quantity: 12,
+    unit: 'L',
+    suppliers: [
+      {
+        supplierId: '6',
+        supplierName: 'Dairy Fresh',
+        unitCost: 5.99,
+        packSize: '2L carton'
+      },
+      {
+        supplierId: '7',
+        supplierName: 'Local Dairy Co',
+        unitCost: 5.50,
+        packSize: '1L bottle'
+      }
+    ]
   }
 ];
 
