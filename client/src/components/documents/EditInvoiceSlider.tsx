@@ -220,28 +220,37 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
                 <div className="border-b">
-                  <div 
-                    className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50"
-                    onClick={() => setIsDetailsOpen(!isDetailsOpen)}
-                  >
-                    <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                      Invoice Details
-                      <ChevronDown className={cn("h-4 w-4 transition-transform", isDetailsOpen ? "transform rotate-180" : "")} />
-                    </h2>
-                    <div className="flex items-center gap-4">
-                      <div className="text-sm">
+                  <div className="p-4">
+                    <div className="flex items-center justify-between cursor-pointer hover:bg-gray-50"
+                         onClick={() => setIsDetailsOpen(!isDetailsOpen)}>
+                      <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                        Invoice Details
+                        <ChevronDown className={cn("h-4 w-4 transition-transform", isDetailsOpen ? "transform rotate-180" : "")} />
+                      </h2>
+                    </div>
+                    <div className="flex items-center gap-4 justify-end mt-8">
+                      <div className="text-sm flex items-center gap-2">
                         <span className="text-muted-foreground">Extracted Total:</span>
-                        <span className="ml-1 font-medium">${invoice.price.toFixed(2)}</span>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          value={invoice.price}
+                          onChange={(e) => {
+                            // Handle price change
+                            console.log('Price changed:', e.target.value);
+                          }}
+                          className="w-32"
+                        />
                       </div>
-                      <div className="text-sm">
+                      <div className="text-sm flex items-center gap-2">
                         <span className="text-muted-foreground">Calculated Total:</span>
-                        <span className="ml-1 font-medium">${calculateTotal().toFixed(2)}</span>
+                        <span className="font-medium">${calculateTotal().toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
                   <div className={cn("space-y-6 overflow-hidden transition-all", 
                     isDetailsOpen ? "p-8" : "h-0 p-0")}>
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-2 gap-6 items-start">
                       <FormField
                         control={form.control}
                         name="invoiceNumber"
@@ -346,20 +355,23 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                       key={index}
                       className="border rounded-lg p-4"
                     >
-                      <div className="grid grid-cols-[2fr,2fr,1fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end">
-                        <FormField
-                          control={form.control}
-                          name={`ingredients.${index}.detected`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Detected</FormLabel>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-[2fr,2fr,1fr,1fr] gap-4 items-end">
+                          <FormField
+                            control={form.control}
+                            name={`ingredients.${index}.detected`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                  Detected
+                                </FormLabel>
+                                <FormControl>
+                                  <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
                         <FormField
                           control={form.control}
@@ -499,7 +511,6 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                             </FormItem>
                           )}
                         />
-
                         <Button
                           type="button"
                           variant="ghost"
@@ -508,7 +519,71 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
-                    </div>
+                        </div>
+                        <div className="grid grid-cols-[1fr,1fr,1fr,auto] gap-4 items-end">
+                          <FormField
+                            control={form.control}
+                            name={`ingredients.${index}.unitCost`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                  Unit Cost
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    step="0.01"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`ingredients.${index}.totalCost`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                  Total Cost
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    step="0.01"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`ingredients.${index}.vat`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                  VAT
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    step="0.01"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="w-10" /> {/* Spacer for alignment */}
+                        </div>
+                      </div>
                   ))}
                 </div>
 
