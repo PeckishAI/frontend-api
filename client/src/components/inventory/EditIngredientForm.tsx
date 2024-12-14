@@ -83,7 +83,7 @@ export default function EditIngredientForm({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-[600px] overflow-y-auto">
+      <SheetContent className="sm:max-w-[600px] h-screen overflow-y-auto">
         <SheetHeader>
           <SheetTitle>{ingredient ? 'Edit' : 'Add'} Ingredient</SheetTitle>
           <SheetDescription>
@@ -188,18 +188,22 @@ export default function EditIngredientForm({
             />
 
             <div className="border-t mt-6 pt-6">
-              <h3 className="text-sm font-medium mb-4">Suppliers</h3>
+              <h3 className="text-lg font-semibold mb-4">Suppliers</h3>
               <div className="space-y-4">
-                {form.watch('suppliers').map((supplier, index) => (
-                  <div key={supplier.supplierId} className="bg-gray-50 p-4 rounded-lg">
-                    <div className="grid gap-4">
-                      <div className="font-medium">{supplier.supplierName}</div>
-                      <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
-                        <div>
-                          <span className="font-medium">Unit Cost:</span> ${supplier.unitCost}
+                {form.watch('suppliers')?.map((supplier, index) => (
+                  <div key={supplier.supplierId} className="border border-gray-200 bg-white p-4 rounded-lg shadow-sm">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-base font-medium text-gray-900">{supplier.supplierName}</h4>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <div className="text-sm text-gray-500">Unit Cost</div>
+                          <div className="font-medium">${supplier.unitCost.toFixed(2)}</div>
                         </div>
-                        <div>
-                          <span className="font-medium">Pack Size:</span> {supplier.packSize}
+                        <div className="space-y-1">
+                          <div className="text-sm text-gray-500">Pack Size</div>
+                          <div className="font-medium">{supplier.packSize}</div>
                         </div>
                       </div>
                     </div>
