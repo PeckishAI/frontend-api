@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { Badge } from "@/components/ui/badge";
-import { Filter, X } from "lucide-react";
+import { Filter, Check, Hash, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type FilterType = {
@@ -20,6 +20,7 @@ interface FilterPopoverProps {
 
 export function FilterPopover({ tags, suppliers, selectedFilters, onFilterChange }: FilterPopoverProps) {
   const [open, setOpen] = useState(false);
+  const [activeGroup, setActiveGroup] = useState<'tags' | 'suppliers' | null>(null);
 
   const toggleFilter = (filter: FilterType) => {
     const exists = selectedFilters.some(
@@ -38,6 +39,7 @@ export function FilterPopover({ tags, suppliers, selectedFilters, onFilterChange
   const clearFilters = () => {
     onFilterChange([]);
     setOpen(false);
+    setActiveGroup(null);
   };
 
   return (
@@ -65,42 +67,85 @@ export function FilterPopover({ tags, suppliers, selectedFilters, onFilterChange
         <Command>
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Filter by Tag">
-              {tags.map((tag) => (
-                <CommandItem
-                  key={`tag-${tag}`}
-                  onSelect={() => toggleFilter({ type: 'tag', value: tag })}
-                >
-                  <div className={cn(
-                    "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                    selectedFilters.some(f => f.type === 'tag' && f.value === tag) 
-                      ? "bg-primary text-primary-foreground"
-                      : "opacity-50 [&_svg]:invisible"
-                  )}>
-                    <X className="h-4 w-4" />
+            <CommandGroup>
+              <div className="px-2 py-1 text-xs font-medium text-muted-foreground">Filter by</div>
+              <CommandItem
+                onSelect={() => setActiveGroup('tags')}
+                className="flex items-center justify-between"
+              >
+                <div className="flex items-center">
+                  <div className="mr-2 h-4 w-4 text-muted-foreground">
+                    <Hash className="h-4 w-4" />
                   </div>
-                  {tag}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-            <CommandGroup heading="Filter by Supplier">
-              {suppliers.map((supplier) => (
-                <CommandItem
-                  key={`supplier-${supplier}`}
-                  onSelect={() => toggleFilter({ type: 'supplier', value: supplier })}
-                >
-                  <div className={cn(
-                    "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                    selectedFilters.some(f => f.type === 'supplier' && f.value === supplier)
-                      ? "bg-primary text-primary-foreground"
-                      : "opacity-50 [&_svg]:invisible"
-                  )}>
-                    <X className="h-4 w-4" />
+                  <span>Tags</span>
+                </div>
+                {selectedFilters.filter(f => f.type === 'tag').length > 0 && (
+                  <Badge variant="secondary" className="ml-auto">
+                    {selectedFilters.filter(f => f.type === 'tag').length}
+                  </Badge>
+                )}
+              </CommandItem>
+              <CommandItem
+                onSelect={() => setActiveGroup('suppliers')}
+                className="flex items-center justify-between"
+              >
+                <div className="flex items-center">
+                  <div className="mr-2 h-4 w-4 text-muted-foreground">
+                    <Building2 className="h-4 w-4" />
                   </div>
-                  {supplier}
-                </CommandItem>
-              ))}
+                  <span>Suppliers</span>
+                </div>
+                {selectedFilters.filter(f => f.type === 'supplier').length > 0 && (
+                  <Badge variant="secondary" className="ml-auto">
+                    {selectedFilters.filter(f => f.type === 'supplier').length}
+                  </Badge>
+                )}
+              </CommandItem>
             </CommandGroup>
+
+            {activeGroup === 'tags' && (
+              <CommandGroup className="pt-0">
+                <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">Select tags</div>
+                {tags.map((tag) => (
+                  <CommandItem
+                    key={`tag-${tag}`}
+                    onSelect={() => toggleFilter({ type: 'tag', value: tag })}
+                  >
+                    <div className={cn(
+                      "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                      selectedFilters.some(f => f.type === 'tag' && f.value === tag)
+                        ? "bg-primary text-primary-foreground"
+                        : "opacity-50 [&_svg]:invisible"
+                    )}>
+                      <Check className="h-3 w-3" />
+                    </div>
+                    {tag}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+
+            {activeGroup === 'suppliers' && (
+              <CommandGroup className="pt-0">
+                <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">Select suppliers</div>
+                {suppliers.map((supplier) => (
+                  <CommandItem
+                    key={`supplier-${supplier}`}
+                    onSelect={() => toggleFilter({ type: 'supplier', value: supplier })}
+                  >
+                    <div className={cn(
+                      "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                      selectedFilters.some(f => f.type === 'supplier' && f.value === supplier)
+                        ? "bg-primary text-primary-foreground"
+                        : "opacity-50 [&_svg]:invisible"
+                    )}>
+                      <Check className="h-3 w-3" />
+                    </div>
+                    {supplier}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
           </CommandList>
         </Command>
         {selectedFilters.length > 0 && (
