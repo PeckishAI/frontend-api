@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, UtensilsCrossed, Sandwich, ScrollText, Layers, TagIcon, DollarSign, Percent } from "lucide-react";
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import ViewToggle from "@/components/orders/ViewToggle";
 import {
@@ -66,23 +66,54 @@ export default function Menu() {
 
   function ProductCard({ product }: { product: Product }) {
     return (
-      <Card>
+      <Card className="group hover:shadow-lg transition-shadow duration-200">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">{product.name}</CardTitle>
-            <Badge variant="secondary">{product.category}</Badge>
+            <div className="flex items-center gap-2">
+              <Sandwich className="h-5 w-5 text-primary" />
+              <CardTitle className="text-lg">{product.name}</CardTitle>
+            </div>
+            <Badge variant="secondary" className="flex items-center gap-1">
+              <TagIcon className="h-3 w-3" />
+              {product.category}
+            </Badge>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            <div className="text-gray-500">Ingredients</div>
-            <div className="text-right font-medium">{product.ingredients.length}</div>
-            <div className="text-gray-500">Price</div>
-            <div className="text-right font-medium">${product.price.toFixed(2)}</div>
-            <div className="text-gray-500">Cost</div>
-            <div className="text-right font-medium">${product.cost.toFixed(2)}</div>
-            <div className="text-gray-500">Margin</div>
-            <div className="text-right font-medium">{product.margin.toFixed(1)}%</div>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Layers className="h-4 w-4" />
+              <span>{product.ingredients.length} ingredients</span>
+            </div>
+            <div className="grid grid-cols-2 gap-4 p-3 bg-gray-50 rounded-lg">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-green-600" />
+                  <div>
+                    <div className="text-sm text-gray-500">Price</div>
+                    <div className="font-medium">${product.price.toFixed(2)}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ScrollText className="h-4 w-4 text-gray-600" />
+                  <div>
+                    <div className="text-sm text-gray-500">Cost</div>
+                    <div className="font-medium">${product.cost.toFixed(2)}</div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center justify-end">
+                <div className="text-center">
+                  <div className="text-sm text-gray-500">Margin</div>
+                  <div className="flex items-center gap-1">
+                    <Percent className="h-4 w-4 text-primary" />
+                    <span className="text-lg font-semibold text-primary">
+                      {product.margin.toFixed(1)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -93,7 +124,10 @@ export default function Menu() {
     <div className="p-8 ml-64 w-full">
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-semibold text-gray-900">Menu</h1>
+          <div className="flex items-center gap-3">
+            <UtensilsCrossed className="h-8 w-8 text-primary" />
+            <h1 className="text-3xl font-semibold text-gray-900">Menu</h1>
+          </div>
           <div className="flex items-center gap-4">
             {activeSection === 'products' && (
               <>
