@@ -1,4 +1,4 @@
-import { useState } from "react";
+import * as React from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -71,7 +71,7 @@ export default function RecipeSheet({
     },
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (recipe) {
       form.reset({
         id: recipe.id,
