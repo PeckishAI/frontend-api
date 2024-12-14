@@ -124,7 +124,19 @@ export default function RecipeSheet({
                           Name
                         </FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Ingredient name" />
+                          <CreatableSelect
+                            value={[field.value]}
+                            onChange={values => field.onChange(values[0])}
+                            onCreateOption={field.onChange}
+                            placeholder="Select or add ingredient"
+                            options={[
+                              { value: 'tomatoes', label: 'Tomatoes' },
+                              { value: 'flour', label: 'Flour' },
+                              { value: 'sugar', label: 'Sugar' },
+                              { value: 'salt', label: 'Salt' },
+                              { value: 'olive oil', label: 'Olive Oil' },
+                            ]}
+                          />
                         </FormControl>
                       </FormItem>
                     )}
