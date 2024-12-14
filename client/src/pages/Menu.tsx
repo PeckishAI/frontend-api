@@ -105,9 +105,9 @@ export default function Menu() {
                   <Percent className="h-4 w-4 text-primary" />
                   <div className="text-sm text-gray-500">Margin</div>
                 </div>
-                <div className="font-semibold text-primary text-base">
-                  <span className="text-2xl font-bold">{product.margin.toFixed(1)}</span>
-                  <span className="text-sm ml-0.5">%</span>
+                <div className="font-semibold text-base">
+                  <span className="text-2xl font-bold text-blue-600">{product.margin.toFixed(1)}</span>
+                  <span className="text-sm ml-0.5 text-blue-600">%</span>
                 </div>
               </div>
             </div>
