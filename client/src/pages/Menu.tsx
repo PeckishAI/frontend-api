@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import RecipeSheet from "@/components/menu/RecipeSheet";
 import { Badge } from "@/components/ui/badge";
 
 type Product = {
@@ -57,6 +58,7 @@ const mockProducts: Product[] = [
 export default function Menu() {
   const [activeSection, setActiveSection] = useState('products');
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  const [editingRecipe, setEditingRecipe] = useState<Product | null>(null);
 
   const sections = [
     { id: 'products', label: 'Products' },
@@ -73,10 +75,15 @@ export default function Menu() {
               <Sandwich className="h-5 w-5 text-primary" />
               <CardTitle className="text-lg">{product.name}</CardTitle>
             </div>
-            <Badge variant="secondary" className="flex items-center gap-1">
-              <TagIcon className="h-3 w-3" />
-              {product.category}
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="flex items-center gap-1">
+                <TagIcon className="h-3 w-3" />
+                {product.category}
+              </Badge>
+              <Button variant="ghost" size="sm" onClick={() => setEditingRecipe(product)}>
+                Edit Recipe
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -203,6 +210,27 @@ export default function Menu() {
           </div>
         )}
       </div>
+
+      <RecipeSheet
+        open={!!editingRecipe}
+        onOpenChange={(open) => {
+          if (!open) setEditingRecipe(null);
+        }}
+        recipe={editingRecipe ? {
+          id: editingRecipe.id,
+          name: editingRecipe.name,
+          portionCount: 1,
+          ingredients: editingRecipe.ingredients.map(name => ({
+            name,
+            quantity: 0,
+            unit: 'g'
+          }))
+        } : undefined}
+        onSubmit={(data) => {
+          console.log('Updated recipe:', data);
+          setEditingRecipe(null);
+        }}
+      />
     </div>
   );
 }
