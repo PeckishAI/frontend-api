@@ -37,6 +37,9 @@ export default function General() {
         <div className="bg-white rounded-lg shadow overflow-hidden">
           {activeSection === 'overview' && (
             <div className="p-6 space-y-6">
+              <div className="flex justify-end mb-4">
+                <DateRangePicker date={date} onSelect={setDate} />
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>
                   <CardContent className="p-6">
@@ -91,9 +94,6 @@ export default function General() {
                 </Card>
               </div>
 
-              <div className="flex justify-end mb-4">
-                <DateRangePicker date={date} onSelect={setDate} />
-              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card>
                   <CardContent className="p-6">
