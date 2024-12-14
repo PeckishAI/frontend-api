@@ -72,7 +72,7 @@ export default function Documents() {
 
     return (
       <Card 
-        className="group hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+        className="group hover:shadow-lg transition-shadow duration-200 cursor-pointer hover:bg-muted/50"
         onClick={() => setEditingInvoice(invoice)}
       >
         <CardHeader className="relative pb-3">
