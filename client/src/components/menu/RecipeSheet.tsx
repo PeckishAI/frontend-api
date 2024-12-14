@@ -83,6 +83,9 @@ export default function RecipeSheet({
         price: recipe.price,
         cost: recipe.cost,
       });
+      setIngredientCount(recipe.ingredients.length);
+    } else {
+      setIngredientCount(1);
     }
   }, [recipe, form]);
 
