@@ -249,10 +249,18 @@ export default function RecipeSheet({
                         </FormLabel>
                         <FormControl>
                           <CreatableSelect
-                            value={field.value ? { label: field.value, value: field.value } : null}
-                            onChange={(newValue: any) => field.onChange(newValue?.value || "")}
-                            onCreateOption={(value) => field.onChange(value)}
+                            value={field.value ? [field.value] : []}
+                            onChange={(values) => {
+                              if (values[0]) {
+                                field.onChange(values[0]);
+                              }
+                            }}
                             options={defaultIngredients}
+                            onCreateOption={(value) => {
+                              if (!field.value.includes(value)) {
+                                field.onChange(value);
+                              }
+                            }}
                             placeholder="Select or add ingredient"
                           />
                         </FormControl>
@@ -291,10 +299,18 @@ export default function RecipeSheet({
                         </FormLabel>
                         <FormControl>
                           <CreatableSelect
-                            value={field.value ? { label: field.value, value: field.value } : null}
-                            onChange={(newValue: any) => field.onChange(newValue?.value || "")}
-                            onCreateOption={(value) => field.onChange(value)}
+                            value={field.value ? [field.value] : []}
+                            onChange={(values) => {
+                              if (values[0]) {
+                                field.onChange(values[0]);
+                              }
+                            }}
                             options={defaultUnits}
+                            onCreateOption={(value) => {
+                              if (!field.value.includes(value)) {
+                                field.onChange(value);
+                              }
+                            }}
                             placeholder="Select unit"
                           />
                         </FormControl>
