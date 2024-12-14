@@ -22,6 +22,7 @@ import { Download, Plus, Search } from "lucide-react";
 import { mockInventory, getAllTags, getAllSuppliers } from '@/lib/data';
 import type { InventoryItem } from '@/lib/types';
 import EditIngredientForm from '@/components/inventory/EditIngredientForm';
+import NewIngredientDialog from '@/components/inventory/NewIngredientDialog';
 
 export default function Inventory() {
   const [searchQuery, setSearchQuery] = useState('');
