@@ -1,6 +1,7 @@
 import { Switch, Route } from "wouter";
 import Orders from "@/pages/Orders";
 import Inventory from "@/pages/Inventory";
+import Menu from "@/pages/Menu";
 import Sidebar from "@/components/layout/Sidebar";
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
       <Switch>
         <Route path="/" component={Orders} />
         <Route path="/inventory" component={Inventory} />
+        <Route path="/menu" component={Menu} />
       </Switch>
     </div>
   );

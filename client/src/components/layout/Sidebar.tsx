@@ -1,9 +1,10 @@
 import { Link } from "wouter";
-import { Package, ClipboardList } from "lucide-react";
+import { Package, ClipboardList, MenuSquare } from "lucide-react";
 
 const menuItems = [
   { icon: Package, label: "Orders", href: "/" },
   { icon: ClipboardList, label: "Inventory", href: "/inventory" },
+  { icon: MenuSquare, label: "Menu", href: "/menu" },
 ];
 
 export default function Sidebar() {
