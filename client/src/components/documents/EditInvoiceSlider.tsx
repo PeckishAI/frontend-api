@@ -34,12 +34,12 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
   if (!invoice) return null;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} modal={true}>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-[100vw] h-screen border-l-0 p-0"
+        className="w-full max-w-none h-screen p-0 border-0"
       >
-        <div className="flex h-full divide-x">
+        <div className="flex h-full divide-x divide-border">
           {/* Left side - Images */}
           <div className="w-1/2 bg-gray-50/50 p-6">
             <div className="relative aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden border shadow-sm">
