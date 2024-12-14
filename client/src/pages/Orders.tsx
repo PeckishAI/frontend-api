@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
 import SupplierCard from '@/components/suppliers/SupplierCard';
 import SupplierDialog from '@/components/suppliers/SupplierDialog';
+import SupplierSheet from '@/components/suppliers/SupplierSheet';
 
 export default function Orders() {
   const [activeSection, setActiveSection] = useState('orders');
@@ -24,8 +25,8 @@ export default function Orders() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="p-8 ml-64 w-full">
+    <div className="min-h-screen bg-white">
+      <div className="ml-64 w-[calc(100%-16rem)] px-8 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-semibold text-gray-900">Orders</h1>
           <div className="flex items-center gap-4">
@@ -103,6 +104,16 @@ export default function Orders() {
           // In a real app, we would add the supplier to the database here
           console.log('New supplier:', data);
         }}
+      />
+
+      <SupplierSheet
+        open={!!selectedSupplier}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedSupplier(null);
+          }
+        }}
+        supplier={selectedSupplier}
       />
     </div>
   );
