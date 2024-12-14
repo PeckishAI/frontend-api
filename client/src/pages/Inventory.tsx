@@ -172,20 +172,32 @@ export default function Inventory() {
         </Table>
       </div>
 
+      <NewIngredientDialog
+        open={isNewItemOpen}
+        onOpenChange={setIsNewItemOpen}
+        onSubmit={(data) => {
+          toast({
+            title: "Item Added",
+            description: `${data.name} has been added to the inventory.`,
+          });
+          // In a real app, we would add the item to the database here
+          console.log('New item:', data);
+        }}
+      />
+
       <EditIngredientForm
-        open={isNewItemOpen || !!selectedIngredient}
+        open={!!selectedIngredient}
         onOpenChange={(open) => {
-          setIsNewItemOpen(open);
           if (!open) setSelectedIngredient(undefined);
         }}
         ingredient={selectedIngredient}
         onSubmit={(data) => {
           toast({
-            title: selectedIngredient ? "Item Updated" : "Item Added",
-            description: `${data.name} has been ${selectedIngredient ? 'updated in' : 'added to'} the inventory.`,
+            title: "Item Updated",
+            description: `${data.name} has been updated in the inventory.`,
           });
-          // In a real app, we would update/add the item to the database here
-          console.log(selectedIngredient ? 'Updated item:' : 'New item:', data);
+          // In a real app, we would update the item in the database here
+          console.log('Updated item:', data);
         }}
       />
     </div>
