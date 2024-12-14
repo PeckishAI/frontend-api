@@ -26,7 +26,7 @@ export default function Orders() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="ml-64 w-[calc(100%-16rem)] px-8 py-8">
+      <div className="pl-64 px-8 py-8 w-full">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-semibold text-gray-900">Orders</h1>
           <div className="flex items-center gap-4">
