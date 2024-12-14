@@ -22,6 +22,10 @@ export interface Supplier {
   name: string;
   category: string;
   rating: number;
+  email?: string;
+  phone?: string;
+  address?: string;
+  notes?: string;
 }
 
 export interface InventorySupplierInfo {
