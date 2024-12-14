@@ -221,12 +221,15 @@ export default function Menu() {
         recipe={editingRecipe ? {
           id: editingRecipe.id,
           name: editingRecipe.name,
+          category: editingRecipe.category,
           portionCount: 1,
           ingredients: editingRecipe.ingredients.map(name => ({
             name,
             quantity: 0,
             unit: 'g'
-          }))
+          })),
+          price: editingRecipe.price,
+          cost: editingRecipe.cost
         } : undefined}
         onSubmit={(data) => {
           console.log('Updated recipe:', data);

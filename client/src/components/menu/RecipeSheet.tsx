@@ -20,12 +20,31 @@ const ingredientSchema = z.object({
   conversionFactor: z.number().optional(),
 });
 
+const categorySchema = z.object({
+  value: z.string(),
+  label: z.string(),
+  emoji: z.string(),
+});
+
 const recipeSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Recipe name is required"),
+  category: categorySchema,
   portionCount: z.number().min(1, "Must have at least 1 portion"),
   ingredients: z.array(ingredientSchema).min(1, "Must have at least 1 ingredient"),
+  price: z.number().optional(),
+  cost: z.number().optional(),
 });
+
+const defaultCategories = [
+  { value: 'pizza', label: 'Pizza', emoji: '🍕' },
+  { value: 'pasta', label: 'Pasta', emoji: '🍝' },
+  { value: 'salad', label: 'Salads', emoji: '🥗' },
+  { value: 'dessert', label: 'Desserts', emoji: '🍰' },
+  { value: 'beverage', label: 'Beverages', emoji: '🥤' },
+  { value: 'main', label: 'Main Course', emoji: '🍖' },
+  { value: 'appetizer', label: 'Appetizers', emoji: '🥪' },
+];
 
 type Recipe = z.infer<typeof recipeSchema>;
 
@@ -62,18 +81,64 @@ export default function RecipeSheet({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Recipe Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Recipe Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <FormControl>
+                      <CreatableSelect
+                        value={[field.value]}
+                        onChange={(value) => {
+                          if (typeof value === 'string') {
+                            // Handle new category creation
+                            const emoji = '🍽️'; // Default emoji for new categories
+                            field.onChange({
+                              value: value.toLowerCase(),
+                              label: value,
+                              emoji,
+                            });
+                          } else {
+                            field.onChange(value[0]);
+                          }
+                        }}
+                        onCreateOption={(inputValue) => {
+                          const emoji = '🍽️'; // Default emoji for new categories
+                          field.onChange({
+                            value: inputValue.toLowerCase(),
+                            label: inputValue,
+                            emoji,
+                          });
+                        }}
+                        options={defaultCategories}
+                        formatOptionLabel={(option) => (
+                          <div className="flex items-center gap-2">
+                            <span>{option.emoji}</span>
+                            <span>{option.label}</span>
+                          </div>
+                        )}
+                        placeholder="Select or create category"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}
