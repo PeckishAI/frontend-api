@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileText, FileBox, ClipboardCheck, Images, ChevronLeft, ChevronRight, Hash, DollarSign, Building2, Package2 } from "lucide-react";
+import { FileText, FileBox, ClipboardCheck, Images, ChevronLeft, ChevronRight, Hash, DollarSign, Building2, Package2, Pencil } from "lucide-react";
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import ViewToggle from "@/components/orders/ViewToggle";
 import {
@@ -12,17 +12,8 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { EditInvoiceSlider } from "@/components/documents/EditInvoiceSlider";
 import { Badge } from "@/components/ui/badge";
-
-type Invoice = {
-  id: string;
-  invoiceNumber: string;
-  date: Date;
-  price: number;
-  supplier: string;
-  ingredientCount: number;
-  images: string[];
-};
 
 const mockInvoices: Invoice[] = [
   {
@@ -54,10 +45,21 @@ const mockInvoices: Invoice[] = [
   },
 ];
 
+export type Invoice = {
+  id: string;
+  invoiceNumber: string;
+  date: Date;
+  price: number;
+  supplier: string;
+  ingredientCount: number;
+  images: string[];
+};
+
 export default function Documents() {
   const [activeSection, setActiveSection] = useState('invoices');
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
   const [activeImageIndexes, setActiveImageIndexes] = useState<Record<string, number>>({});
+  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
 
   const sections = [
     { id: 'invoices', label: 'Invoices', icon: FileText },
@@ -75,6 +77,14 @@ export default function Documents() {
             <div className="flex items-center gap-2">
               <Hash className="h-4 w-4 text-muted-foreground" />
               <CardTitle className="text-lg font-semibold">{invoice.invoiceNumber}</CardTitle>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-4 top-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={() => setEditingInvoice(invoice)}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
             </div>
             <Badge variant="secondary" className="w-fit">
               {invoice.supplier}
@@ -209,12 +219,27 @@ export default function Documents() {
                           </TableCell>
                           <TableCell className="text-right">${invoice.price.toFixed(2)}</TableCell>
                           <TableCell className="text-right">{invoice.ingredientCount}</TableCell>
+                          <TableCell className="w-[50px]">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setEditingInvoice(invoice)}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
                 </div>
               )}
+
+              <EditInvoiceSlider
+                invoice={editingInvoice}
+                open={editingInvoice !== null}
+                onOpenChange={(open) => !open && setEditingInvoice(null)}
+              />
             </>
           )}
 
