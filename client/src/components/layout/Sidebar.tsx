@@ -1,11 +1,12 @@
 import { Link } from "wouter";
-import { Package, ClipboardList, MenuSquare, FileText, FileBox, ClipboardCheck, Files } from "lucide-react";
+import { Package, ClipboardList, MenuSquare, FileText, FileBox, ClipboardCheck, Files, ChartBar } from "lucide-react";
 
 const menuItems = [
   { icon: Package, label: "Orders", href: "/" },
   { icon: ClipboardList, label: "Inventory", href: "/inventory" },
   { icon: MenuSquare, label: "Menu", href: "/menu" },
   { icon: Files, label: "Documents", href: "/documents" },
+  { icon: ChartBar, label: "General", href: "/general" },
 ];
 
 export default function Sidebar() {
