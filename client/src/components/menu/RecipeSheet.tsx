@@ -52,7 +52,7 @@ export default function RecipeSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="!w-[1000px] overflow-y-auto">
+      <SheetContent side="right" className="max-w-[90%] w-[1000px] !p-6">
         <SheetHeader>
           <SheetTitle>
             {recipe ? "Edit Recipe" : "New Recipe"}
