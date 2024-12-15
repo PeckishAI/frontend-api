@@ -21,18 +21,20 @@ export default function General() {
   ];
 
   return (
-    <div className="flex-1 flex flex-col">
-      <SubSectionNav
-        sections={sections}
-        activeSection={activeSection}
-        onSectionChange={setActiveSection}
-      />
+    <div className="w-full">
+      <div className="pt-4">
+        <SubSectionNav
+          sections={sections}
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+        />
 
-      <div className="border-t px-4 py-2 flex justify-end">
-        <DateRangePicker date={date} onSelect={setDate} />
+        <div className="border-t px-4 py-2 flex justify-end">
+          <DateRangePicker date={date} onSelect={setDate} />
+        </div>
       </div>
 
-      <div className="flex-1 bg-white">
+      <div className="bg-white">
         {activeSection === 'overview' && (
           <div className="p-6 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
