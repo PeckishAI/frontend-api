@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus } from "lucide-react";
 import { GridDataInput } from "./GridDataInput";
-import NewIngredientDialog from "./NewIngredientDialog";
 import { useState } from "react";
 
 export function InsertItemDialog() {
@@ -17,53 +16,44 @@ export function InsertItemDialog() {
           Insert
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[600px] h-[80vh]">
-        <Tabs defaultValue="manual" className="h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-2">
+      <DialogContent className="max-w-[600px] max-h-[80vh] p-6">
+        <Tabs defaultValue="manual" className="h-full">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="manual">Manual Insert</TabsTrigger>
             <TabsTrigger value="file">Insert from File</TabsTrigger>
           </TabsList>
-          <TabsContent 
-            value="manual" 
-            className="flex-1 overflow-hidden"
-          >
-            <div className="h-full flex flex-col">
-              <p className="text-sm text-muted-foreground mb-4">
-                Enter data manually or paste from a spreadsheet (one row per ingredient).
-              </p>
-              <div className="flex-1 overflow-hidden">
-                <GridDataInput
-                  onChange={(data) => {
-                    console.log('Grid data:', data);
-                  }}
-                />
-              </div>
-              <div className="border-t pt-4 mt-4">
-                <Button onClick={() => setOpen(false)} className="w-full">
-                  Add Items
-                </Button>
-              </div>
+          <TabsContent value="manual" className="mt-0">
+            <p className="text-sm text-muted-foreground mb-4">
+              Enter data manually or paste from a spreadsheet (one row per ingredient).
+            </p>
+            <div className="h-[calc(60vh-100px)] mb-4">
+              <GridDataInput
+                onChange={(data) => {
+                  console.log('Grid data:', data);
+                }}
+              />
+            </div>
+            <div className="flex justify-end">
+              <Button onClick={() => setOpen(false)}>
+                Add Items
+              </Button>
             </div>
           </TabsContent>
-          <TabsContent value="file" className="flex-1">
-            <div className="h-full flex flex-col">
-              <h3 className="text-lg font-medium mb-4">Import from File</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Upload a CSV file with your inventory items. The file should include columns for name, quantity, unit, and tags.
-              </p>
-              <div className="flex-1 flex items-center justify-center">
-                <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <Plus className="w-8 h-8 mb-2 text-gray-400" />
-                    <p className="mb-2 text-sm text-gray-500">
-                      <span className="font-semibold">Click to upload</span> or drag and drop
-                    </p>
-                    <p className="text-xs text-gray-500">CSV files only</p>
-                  </div>
-                  <input type="file" className="hidden" accept=".csv" />
-                </label>
+          <TabsContent value="file" className="mt-0">
+            <h3 className="text-lg font-medium mb-4">Import from File</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Upload a CSV file with your inventory items. The file should include columns for name, quantity, unit, and tags.
+            </p>
+            <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+              <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                <Plus className="w-8 h-8 mb-2 text-gray-400" />
+                <p className="mb-2 text-sm text-gray-500">
+                  <span className="font-semibold">Click to upload</span> or drag and drop
+                </p>
+                <p className="text-xs text-gray-500">CSV files only</p>
               </div>
-            </div>
+              <input type="file" className="hidden" accept=".csv" />
+            </label>
           </TabsContent>
         </Tabs>
       </DialogContent>

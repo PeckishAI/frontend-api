@@ -91,7 +91,7 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
 
   return (
     <div 
-      className="h-full"
+      className="h-full border rounded-md"
       onPaste={handlePaste}
       tabIndex={0}
     >
@@ -107,7 +107,7 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
           </TableHeader>
           <TableBody>
             {data.map((row, rowIndex) => (
-              <TableRow key={rowIndex} className="border-b">
+              <TableRow key={rowIndex}>
                 <TableCell>
                   <Input
                     value={row.name}
