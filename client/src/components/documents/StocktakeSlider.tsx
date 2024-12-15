@@ -37,7 +37,7 @@ const mockIngredients: Ingredient[] = [
 ];
 
 export default function StocktakeSlider({ stocktake, open, onOpenChange }: StocktakeSliderProps) {
-  const [selectedDocIndex, setSelectedDocIndex] = useState(0);
+  const [selectedDocIndex, setSelectedDocIndex] = useState(-1);
   
   if (!stocktake) return null;
 
@@ -67,17 +67,26 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
             <div className="relative aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden border shadow-sm">
               {/* Image display */}
               <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                {stocktake.documents[selectedDocIndex]?.type === 'video' ? (
-                  <Film className="h-8 w-8" />
+                {selectedDocIndex === -1 ? (
+                  <div className="text-center">
+                    <Images className="h-8 w-8 mx-auto mb-2" />
+                    <span className="text-sm">Select a document to preview</span>
+                  </div>
                 ) : (
-                  <Images className="h-8 w-8" />
+                  stocktake.documents[selectedDocIndex]?.type === 'video' ? (
+                    <Film className="h-8 w-8" />
+                  ) : (
+                    <Images className="h-8 w-8" />
+                  )
                 )}
               </div>
 
               {/* Image count indicator */}
-              <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
-                Document {selectedDocIndex + 1} of {stocktake.documents.length}
-              </div>
+              {selectedDocIndex !== -1 && (
+                <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
+                  Document {selectedDocIndex + 1} of {stocktake.documents.length}
+                </div>
+              )}
             </div>
 
             {/* Thumbnails */}
@@ -142,9 +151,44 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                 </div>
               </div>
               <div className="mb-6">
-                <h3 className="text-lg font-medium">Inventory Items</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-medium">Inventory Items</h3>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setSelectedDocIndex(-1)}
+                      className={`px-3 py-1.5 rounded-full text-sm transition-all ${
+                        selectedDocIndex === -1
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-secondary hover:bg-secondary/80'
+                      }`}
+                    >
+                      Show All
+                    </button>
+                    {stocktake.documents.map((doc, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedDocIndex(index)}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all ${
+                          index === selectedDocIndex
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-secondary hover:bg-secondary/80'
+                        }`}
+                      >
+                        {doc.type === 'video' ? (
+                          <Film className="h-3.5 w-3.5" />
+                        ) : (
+                          <Images className="h-3.5 w-3.5" />
+                        )}
+                        Doc {index + 1}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <p className="text-sm text-muted-foreground">
-                  Total of {(documentIngredients[selectedDocIndex] || []).length} items recorded in document {selectedDocIndex + 1}
+                  {selectedDocIndex === -1 
+                    ? `Total of ${Object.values(documentIngredients).flat().length} items recorded across all documents`
+                    : `Total of ${(documentIngredients[selectedDocIndex] || []).length} items recorded in document ${selectedDocIndex + 1}`
+                  }
                 </p>
               </div>
 
@@ -158,7 +202,10 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {(documentIngredients[selectedDocIndex] || []).map((ingredient) => (
+                    {(selectedDocIndex === -1 
+                      ? Object.values(documentIngredients).flat()
+                      : documentIngredients[selectedDocIndex] || []
+                    ).map((ingredient) => (
                       <TableRow key={ingredient.name}>
                         <TableCell>{ingredient.name}</TableCell>
                         <TableCell className="text-right">{ingredient.quantity}</TableCell>
