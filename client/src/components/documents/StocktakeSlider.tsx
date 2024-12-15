@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Hash, User2, CalendarDays, DollarSign } from "lucide-react";
+import { Hash, User2, CalendarDays, DollarSign, Film, Images } from "lucide-react";
 import { type Stocktake } from "./StocktakeCard";
 
 interface StocktakeSliderProps {
