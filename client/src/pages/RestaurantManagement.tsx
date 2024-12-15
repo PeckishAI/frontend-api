@@ -136,7 +136,7 @@ export default function RestaurantManagement() {
                     {priceBuckets.find(b => b.value === restaurant.priceBucket)?.label}
                   </div>
                   <div className="flex items-center rounded-md bg-secondary/10 px-2 py-1 text-xs font-medium text-secondary-foreground">
-                    {paymentMethods.find(m => m.value === restaurant.paymentMethod)?.label}
+                    {priceBuckets.find(b => b.value === restaurant.priceBucket)?.label}
                   </div>
                 </div>
               </div>
