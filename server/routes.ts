@@ -198,7 +198,7 @@ export function registerRoutes(app: Express): Server {
   app.get("/api/inventory", async (_req, res) => {
     try {
       console.log("Fetching inventory from Go backend...");
-      const response = await fetch("http://localhost:5000/api/inventory");
+      const response = await fetch("http://localhost:3001/api/inventory");
       const data = await response.json();
       
       if (!response.ok) {

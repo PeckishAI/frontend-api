@@ -41,6 +41,15 @@ func main() {
 		c.Next()
 	})
 
+	// Add a test endpoint to verify the server is running
+	r.GET("/health", func(c *gin.Context) {
+		log.Printf("Health check endpoint called")
+		c.JSON(http.StatusOK, gin.H{
+			"status": "ok",
+			"message": "Go backend is running",
+		})
+	})
+
 	// Serve static files for the frontend
 	r.Static("/assets", "./dist/public/assets")
 	r.StaticFile("/", "./dist/public/index.html")
@@ -83,8 +92,11 @@ func main() {
 		})
 	})
 
-	// Use port 5000 to match the frontend server
-	const port = "5000"
+	// Use port from environment variable with fallback to 3001
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3001"
+	}
 
 	// Start server
 	log.Printf("Server starting on port %s", port)
