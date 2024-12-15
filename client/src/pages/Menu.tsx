@@ -125,32 +125,29 @@ export default function Menu() {
   return (
     <div className="p-8 ml-64 w-full">
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          
-          <div className="flex items-center gap-4">
-            {activeSection === 'products' && (
-              <>
-                <ViewToggle current={viewMode} onChange={setViewMode} />
-                <Button>
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  New Product
-                </Button>
-              </>
-            )}
-            {(activeSection === 'modifiers' || activeSection === 'preparations') && (
-              <Button>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                New {activeSection.slice(0, -1)}
-              </Button>
-            )}
-          </div>
-        </div>
-
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
           onSectionChange={setActiveSection}
         />
+
+        <div className="flex items-center gap-4 mb-6">
+          {activeSection === 'products' && (
+            <>
+              <ViewToggle current={viewMode} onChange={setViewMode} />
+              <Button>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                New Product
+              </Button>
+            </>
+          )}
+          {(activeSection === 'modifiers' || activeSection === 'preparations') && (
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              New {activeSection.slice(0, -1)}
+            </Button>
+          )}
+        </div>
 
         {activeSection === 'products' && (
           <div className="bg-white rounded-lg shadow overflow-hidden">

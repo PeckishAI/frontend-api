@@ -152,18 +152,17 @@ export default function Documents() {
   return (
     <div className="p-8 ml-64 w-full">
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          
-          {activeSection === 'invoices' && (
-            <ViewToggle current={viewMode} onChange={setViewMode} />
-          )}
-        </div>
-
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
           onSectionChange={setActiveSection}
         />
+
+        <div className="flex items-center gap-4 mb-6">
+          {activeSection === 'invoices' && (
+            <ViewToggle current={viewMode} onChange={setViewMode} />
+          )}
+        </div>
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
           {activeSection === 'invoices' && (

@@ -27,31 +27,29 @@ export default function Orders() {
   return (
     <div className="p-8 ml-64 w-full">
       <div className="mb-8">
-        <div className="flex items-center justify-end mb-6">
-          <div className="flex items-center gap-4">
-            {activeSection === 'orders' && (
-              <>
-                <ViewToggle current={viewMode} onChange={setViewMode} />
-                <Button>
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  New Order
-                </Button>
-              </>
-            )}
-            {activeSection === 'suppliers' && (
-              <Button onClick={() => setIsNewSupplier(true)}>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                New Supplier
-              </Button>
-            )}
-          </div>
-        </div>
-
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
           onSectionChange={setActiveSection}
         />
+
+        <div className="flex items-center gap-4 mb-6">
+          {activeSection === 'orders' && (
+            <>
+              <ViewToggle current={viewMode} onChange={setViewMode} />
+              <Button>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                New Order
+              </Button>
+            </>
+          )}
+          {activeSection === 'suppliers' && (
+            <Button onClick={() => setIsNewSupplier(true)}>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              New Supplier
+            </Button>
+          )}
+        </div>
 
         {activeSection === 'orders' && (
           <div className="bg-white rounded-lg shadow overflow-hidden">
