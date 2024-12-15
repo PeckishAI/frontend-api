@@ -19,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
 const priceBuckets = [
@@ -46,17 +45,6 @@ const restaurantSchema = z.object({
 });
 
 type RestaurantFormValues = z.infer<typeof restaurantSchema>;
-
-// Mock restaurant data
-const mockRestaurant = {
-  id: 1,
-  name: "Main Restaurant",
-  address: "123 Restaurant Street",
-  phone: "(555) 123-4567",
-  priceBucket: "moderate",
-  paymentMethod: "stripe",
-  paymentDetails: "",
-};
 
 // Mock multiple restaurants data
 const mockRestaurants = [
@@ -101,43 +89,59 @@ export default function RestaurantManagement() {
   };
 
   return (
-    <div className="ml-64 p-8 w-full">
-      <Card className="w-full">
-        <CardHeader className="px-8">
-          <CardTitle>Restaurant Management</CardTitle>
-        </CardHeader>
-        <CardContent className="px-8">
-          <div className="space-y-4">
-            {mockRestaurants.map((restaurant) => (
-              <Card 
-                key={restaurant.id} 
-                className={`hover:bg-accent/50 transition-colors cursor-pointer ${
-                  selectedRestaurant?.id === restaurant.id ? 'border-primary' : ''
-                }`}
-                onClick={() => setSelectedRestaurant(restaurant)}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold">{restaurant.name}</h3>
-                      <p className="text-sm text-muted-foreground">{restaurant.address}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="text-sm text-muted-foreground">
-                        {priceBuckets.find(b => b.value === restaurant.priceBucket)?.label}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {paymentMethods.find(m => m.value === restaurant.paymentMethod)?.label}
-                      </div>
+    <div className="ml-64 p-8 w-full max-w-[1600px]">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-semibold tracking-tight">Restaurants</h1>
+          <Button>Add Restaurant</Button>
+        </div>
+        
+        <div className="space-y-1">
+          <h2 className="text-sm font-medium leading-none text-muted-foreground">All restaurants</h2>
+          <p className="text-sm text-muted-foreground">Manage your restaurant locations and their settings.</p>
+        </div>
+
+        <div className="space-y-4">
+          {mockRestaurants.map((restaurant) => (
+            <div
+              key={restaurant.id}
+              className={`group relative rounded-lg border border-border bg-card p-4 hover:bg-accent/5 transition-colors cursor-pointer ${
+                selectedRestaurant?.id === restaurant.id ? 'border-primary ring-1 ring-primary' : ''
+              }`}
+              onClick={() => setSelectedRestaurant(restaurant)}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="truncate text-base font-medium">{restaurant.name}</h3>
+                    <div className="hidden group-hover:flex items-center gap-2">
+                      <Button variant="ghost" size="sm" className="h-6 px-2">
+                        Edit
+                      </Button>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  <p className="mt-1 truncate text-sm text-muted-foreground">{restaurant.address}</p>
+                </div>
+                <div className="flex shrink-0 items-center gap-3 text-sm">
+                  <div className="flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                    {priceBuckets.find(b => b.value === restaurant.priceBucket)?.label}
+                  </div>
+                  <div className="flex items-center rounded-md bg-secondary/10 px-2 py-1 text-xs font-medium text-secondary-foreground">
+                    {paymentMethods.find(m => m.value === restaurant.paymentMethod)?.label}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
 
-          {selectedRestaurant && (
-            <div className="mt-8 border-t pt-8">
+        {selectedRestaurant && (
+          <div className="mt-8 space-y-6">
+            <div className="space-y-1">
+              <h2 className="text-sm font-medium leading-none text-muted-foreground">Edit Restaurant</h2>
+              <p className="text-sm text-muted-foreground">Update the information for {selectedRestaurant.name}.</p>
+            </div>
+            <div className="rounded-lg border border-border bg-card p-6">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   <FormField
@@ -251,9 +255,9 @@ export default function RestaurantManagement() {
                 </form>
               </Form>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
