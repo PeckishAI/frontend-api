@@ -42,12 +42,14 @@ interface NewIngredientDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: NewIngredientFormValues) => void;
+  embedded?: boolean;
 }
 
 export default function NewIngredientDialog({
   open,
   onOpenChange,
   onSubmit,
+  embedded = false,
 }: NewIngredientDialogProps) {
   const form = useForm<NewIngredientFormValues>({
     resolver: zodResolver(newIngredientSchema),
@@ -66,6 +68,120 @@ export default function NewIngredientDialog({
     onOpenChange(false);
   };
 
+  const formContent = (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 pt-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="tags"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tags</FormLabel>
+              <FormControl>
+                <CreatableSelect
+                  value={field.value}
+                  onChange={field.onChange}
+                  options={[]}
+                  onCreateOption={(value) => field.onChange([...field.value, value])}
+                  placeholder="Select or create tags"
+                  multiple={true}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="parLevel"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Par Level</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    {...field}
+                    onChange={e => field.onChange(parseFloat(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    {...field}
+                    onChange={e => field.onChange(parseFloat(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <FormField
+          control={form.control}
+          name="unit"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Unit</FormLabel>
+              <FormControl>
+                <CreatableSelect
+                  value={[field.value]}
+                  onChange={values => field.onChange(values[0])}
+                  options={defaultUnits}
+                  onCreateOption={field.onChange}
+                  placeholder="Select or create unit"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex justify-end gap-4 pt-4">
+          {!embedded && (
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+          )}
+          <Button type="submit">Create ingredient</Button>
+        </div>
+      </form>
+    </Form>
+  );
+
+  if (embedded) {
+    return formContent;
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[600px]">
@@ -75,111 +191,7 @@ export default function NewIngredientDialog({
             Fill out the form below to add a new ingredient to your inventory.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 pt-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="tags"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tags</FormLabel>
-                  <FormControl>
-                    <CreatableSelect
-                      value={field.value}
-                      onChange={field.onChange}
-                      options={[]}
-                      onCreateOption={(value) => field.onChange([...field.value, value])}
-                      placeholder="Select or create tags"
-                      multiple={true}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="parLevel"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Par Level</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        {...field}
-                        onChange={e => field.onChange(parseFloat(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="quantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quantity</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        {...field}
-                        onChange={e => field.onChange(parseFloat(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="unit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Unit</FormLabel>
-                  <FormControl>
-                    <CreatableSelect
-                      value={[field.value]}
-                      onChange={values => field.onChange(values[0])}
-                      options={defaultUnits}
-                      onCreateOption={field.onChange}
-                      placeholder="Select or create unit"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex justify-end gap-4 pt-4">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                Cancel
-              </Button>
-              <Button type="submit">Create ingredient</Button>
-            </div>
-          </form>
-        </Form>
+        {formContent}
       </DialogContent>
     </Dialog>
   );

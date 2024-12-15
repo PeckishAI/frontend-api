@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Download, Plus, Search } from "lucide-react";
+import { InsertItemDialog } from "@/components/inventory/InsertItemDialog";
 import { mockInventory, getAllTags, getAllSuppliers } from '@/lib/data';
 import type { InventoryItem } from '@/lib/types';
 import EditIngredientForm from '@/components/inventory/EditIngredientForm';
@@ -120,6 +121,7 @@ export default function Inventory() {
               selectedFilters={selectedFilters}
               onFilterChange={setSelectedFilters}
             />
+            <InsertItemDialog />
           </div>
         )}
       </div>
