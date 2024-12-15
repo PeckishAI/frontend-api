@@ -18,14 +18,16 @@ export interface OrderItem {
 }
 
 export interface Supplier {
-  id: string;
+  id: number;
   name: string;
   category: string;
-  rating: number;
   email?: string;
   phone?: string;
   address?: string;
   notes?: string;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface InventorySupplierInfo {
