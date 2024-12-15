@@ -42,16 +42,12 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[90vw] sm:max-w-[1200px] flex gap-8 overflow-y-auto">
-        {/* Left side - Documents and Details */}
-        <div className="flex-1">
-          <SheetHeader className="mb-6">
-            <SheetTitle className="text-2xl">Stocktake Details</SheetTitle>
-          </SheetHeader>
-
-          <div className="space-y-6">
+      <SheetContent className="w-screen flex overflow-y-auto p-0">
+        {/* Left side - Documents */}
+        <div className="w-1/3 border-r">
+          <div className="p-6 space-y-6">
             {/* Documents Grid */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               {stocktake.documents.map((doc, index) => (
                 <div key={index} className="relative aspect-[3/2] bg-gray-100 rounded-md overflow-hidden group">
                   <div className="absolute inset-0 flex items-center justify-center text-gray-400">
@@ -67,69 +63,70 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                 </div>
               ))}
             </div>
-
-            {/* Stocktake Information */}
-            <div className="pt-6 border-t space-y-4">
-              <div className="flex items-center gap-2">
-                <Hash className="h-5 w-5 text-muted-foreground" />
-                <span className="text-lg font-medium">{stocktake.id}</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <User2 className="h-5 w-5 text-muted-foreground" />
-                <span className="text-lg">{stocktake.user.name}</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <CalendarDays className="h-5 w-5 text-muted-foreground" />
-                <span className="text-lg">
-                  {stocktake.date.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-green-600" />
-                <span className="text-lg font-medium">$1,234.56</span>
-                <span className="text-sm text-muted-foreground">estimated value</span>
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* Right side - Ingredients table */}
-        <div className="flex-[2]">
-          <div className="mb-6">
-            <h3 className="text-lg font-medium">Inventory Items</h3>
-            <p className="text-sm text-muted-foreground">
-              Total of {mockIngredients.length} items recorded in this stocktake
-            </p>
-          </div>
+        {/* Right side - Info and Ingredients table */}
+        <div className="flex-1">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Hash className="h-5 w-5 text-muted-foreground" />
+                  <span className="text-lg font-medium">{stocktake.id}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <User2 className="h-5 w-5 text-muted-foreground" />
+                  <span className="text-lg">{stocktake.user.name}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <CalendarDays className="h-5 w-5 text-muted-foreground" />
+                  <span className="text-lg">
+                    {stocktake.date.toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-5 w-5 text-green-600" />
+                  <span className="text-lg font-medium">$1,234.56</span>
+                  <span className="text-sm text-muted-foreground">estimated value</span>
+                </div>
+              </div>
+            </div>
+            <div className="mb-6">
+              <h3 className="text-lg font-medium">Inventory Items</h3>
+              <p className="text-sm text-muted-foreground">
+                Total of {mockIngredients.length} items recorded in this stocktake
+              </p>
+            </div>
 
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Item</TableHead>
-                  <TableHead className="text-right">Quantity</TableHead>
-                  <TableHead className="text-right">Unit</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {mockIngredients.map((ingredient) => (
-                  <TableRow key={ingredient.name}>
-                    <TableCell>{ingredient.name}</TableCell>
-                    <TableCell className="text-right">{ingredient.quantity}</TableCell>
-                    <TableCell className="text-right">
-                      <Badge variant="secondary">{ingredient.unit}</Badge>
-                    </TableCell>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Item</TableHead>
+                    <TableHead className="text-right">Quantity</TableHead>
+                    <TableHead className="text-right">Unit</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {mockIngredients.map((ingredient) => (
+                    <TableRow key={ingredient.name}>
+                      <TableCell>{ingredient.name}</TableCell>
+                      <TableCell className="text-right">{ingredient.quantity}</TableCell>
+                      <TableCell className="text-right">
+                        <Badge variant="secondary">{ingredient.unit}</Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
       </SheetContent>
