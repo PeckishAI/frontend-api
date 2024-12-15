@@ -97,62 +97,64 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
 
   return (
     <div 
-      className="border rounded-md overflow-hidden w-full" 
+      className="border rounded-md w-full h-full"
       onPaste={handlePaste}
       tabIndex={0}
     >
-      <Table ref={tableRef}>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-1/3">Name</TableHead>
-            <TableHead className="w-[15%]">Quantity</TableHead>
-            <TableHead className="w-1/3">Supplier</TableHead>
-            <TableHead className="w-[15%]">Cost</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((row, rowIndex) => (
-            <TableRow key={rowIndex}>
-              <TableCell className="w-1/3">
-                <Input
-                  value={row.name}
-                  onChange={e => handleCellChange(rowIndex, 'name', e.target.value)}
-                  onFocus={() => setActiveCell({ row: rowIndex, col: 0 })}
-                  onKeyDown={e => handleKeyDown(e, rowIndex, 0)}
-                  className="w-full"
-                />
-              </TableCell>
-              <TableCell className="w-[15%]">
-                <Input
-                  value={row.quantity}
-                  onChange={e => handleCellChange(rowIndex, 'quantity', e.target.value)}
-                  onFocus={() => setActiveCell({ row: rowIndex, col: 1 })}
-                  onKeyDown={e => handleKeyDown(e, rowIndex, 1)}
-                  className="w-full"
-                />
-              </TableCell>
-              <TableCell className="w-1/3">
-                <Input
-                  value={row.supplier}
-                  onChange={e => handleCellChange(rowIndex, 'supplier', e.target.value)}
-                  onFocus={() => setActiveCell({ row: rowIndex, col: 2 })}
-                  onKeyDown={e => handleKeyDown(e, rowIndex, 2)}
-                  className="w-full"
-                />
-              </TableCell>
-              <TableCell className="w-[15%]">
-                <Input
-                  value={row.cost}
-                  onChange={e => handleCellChange(rowIndex, 'cost', e.target.value)}
-                  onFocus={() => setActiveCell({ row: rowIndex, col: 3 })}
-                  onKeyDown={e => handleKeyDown(e, rowIndex, 3)}
-                  className="w-full"
-                />
-              </TableCell>
+      <div className="overflow-auto h-full">
+        <Table ref={tableRef}>
+          <TableHeader className="sticky top-0 bg-white">
+            <TableRow>
+              <TableHead className="w-[35%]">Name</TableHead>
+              <TableHead className="w-[15%]">Quantity</TableHead>
+              <TableHead className="w-[35%]">Supplier</TableHead>
+              <TableHead className="w-[15%]">Cost</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {data.map((row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                <TableCell className="w-[35%]">
+                  <Input
+                    value={row.name}
+                    onChange={e => handleCellChange(rowIndex, 'name', e.target.value)}
+                    onFocus={() => setActiveCell({ row: rowIndex, col: 0 })}
+                    onKeyDown={e => handleKeyDown(e, rowIndex, 0)}
+                    className="w-full"
+                  />
+                </TableCell>
+                <TableCell className="w-[15%]">
+                  <Input
+                    value={row.quantity}
+                    onChange={e => handleCellChange(rowIndex, 'quantity', e.target.value)}
+                    onFocus={() => setActiveCell({ row: rowIndex, col: 1 })}
+                    onKeyDown={e => handleKeyDown(e, rowIndex, 1)}
+                    className="w-full"
+                  />
+                </TableCell>
+                <TableCell className="w-[35%]">
+                  <Input
+                    value={row.supplier}
+                    onChange={e => handleCellChange(rowIndex, 'supplier', e.target.value)}
+                    onFocus={() => setActiveCell({ row: rowIndex, col: 2 })}
+                    onKeyDown={e => handleKeyDown(e, rowIndex, 2)}
+                    className="w-full"
+                  />
+                </TableCell>
+                <TableCell className="w-[15%]">
+                  <Input
+                    value={row.cost}
+                    onChange={e => handleCellChange(rowIndex, 'cost', e.target.value)}
+                    onFocus={() => setActiveCell({ row: rowIndex, col: 3 })}
+                    onKeyDown={e => handleKeyDown(e, rowIndex, 3)}
+                    className="w-full"
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
