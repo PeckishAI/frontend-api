@@ -114,8 +114,8 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
           </div>
 
           {/* Right side - Form */}
-          <div className="w-1/2 bg-white">
-            <div className="p-6">
+          <div className="w-1/2 bg-white flex flex-col h-full">
+            <div className="p-6 flex-1 overflow-y-auto">
               <div className="space-y-6 mb-6">
                 {/* ID at the top */}
                 <div className="flex items-center gap-2">
@@ -158,8 +158,8 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                       onClick={() => setSelectedDocIndex(-1)}
                       className={`px-3 py-1.5 rounded-full text-sm transition-all ${
                         selectedDocIndex === -1
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-secondary hover:bg-secondary/80'
+                          ? 'bg-primary text-primary-foreground shadow-md scale-105'
+                          : 'bg-secondary hover:bg-secondary/80 hover:shadow hover:scale-105'
                       }`}
                     >
                       Show All
@@ -170,8 +170,8 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                         onClick={() => setSelectedDocIndex(index)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all ${
                           index === selectedDocIndex
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-secondary hover:bg-secondary/80'
+                            ? 'bg-primary text-primary-foreground shadow-md scale-105'
+                            : 'bg-secondary hover:bg-secondary/80 hover:shadow hover:scale-105'
                         }`}
                       >
                         {doc.type === 'video' ? (
