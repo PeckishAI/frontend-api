@@ -6,6 +6,7 @@ import Documents from "@/pages/Documents";
 import General from "@/pages/General";
 import Profile from "@/pages/Profile";
 import RestaurantManagement from "@/pages/RestaurantManagement";
+import Checkout from "@/pages/Checkout";
 
 import Sidebar from "@/components/layout/Sidebar";
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/documents" component={Documents} />
         <Route path="/profile" component={Profile} />
         <Route path="/restaurant-management" component={RestaurantManagement} />
+        <Route path="/checkout" component={Checkout} />
       </Switch>
     </div>
   );
