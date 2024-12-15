@@ -17,25 +17,25 @@ export function InsertItemDialog() {
           Insert
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] h-[600px] p-0">
-        <Tabs defaultValue="manual" className="w-full h-full flex flex-col">
+      <DialogContent className="sm:max-w-[600px] max-h-[600px] p-0">
+        <Tabs defaultValue="manual" className="flex flex-col h-full">
           <TabsList className="grid w-full grid-cols-2 p-4">
             <TabsTrigger value="manual">Manual Insert</TabsTrigger>
             <TabsTrigger value="file">Insert from File</TabsTrigger>
           </TabsList>
-          <TabsContent value="manual" className="flex-1 min-h-0 p-4 overflow-hidden flex flex-col">
-            <div className="flex flex-col flex-1 min-h-0">
-              <p className="text-sm text-muted-foreground mb-4">
+          <TabsContent value="manual" className="flex-1 p-4 flex flex-col overflow-hidden">
+            <div className="space-y-4 flex flex-col flex-1">
+              <p className="text-sm text-muted-foreground">
                 Enter data manually or paste from a spreadsheet (one row per ingredient).
               </p>
-              <div className="flex-1 min-h-0 overflow-auto">
+              <div className="flex-1 min-h-0">
                 <GridDataInput
                   onChange={(data) => {
                     console.log('Grid data:', data);
                   }}
                 />
               </div>
-              <div className="flex justify-end pt-4">
+              <div className="flex justify-end border-t pt-4">
                 <Button type="submit" onClick={() => {
                   // Handle submission
                   setOpen(false);
