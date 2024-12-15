@@ -21,8 +21,8 @@ export default function General() {
   ];
 
   return (
-    <div className="p-8 ml-64 w-full">
-      <div className="mb-8">
+    <div className="ml-64 w-full">
+      <div className="px-8 pt-8 mb-8">
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
