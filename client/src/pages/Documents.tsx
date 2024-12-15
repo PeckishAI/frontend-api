@@ -189,8 +189,8 @@ const mockStocktakes: Stocktake[] = [
   }
 
   return (
-    <div className="w-full">
-      <div className="pt-4">
+    <div className="p-8">
+      <div>
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}

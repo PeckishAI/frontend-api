@@ -123,8 +123,8 @@ export default function Menu() {
   }
 
   return (
-    <div className="ml-64 w-full">
-      <div className="pt-8">
+    <div className="p-8">
+      <div>
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
