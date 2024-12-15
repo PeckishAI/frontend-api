@@ -39,25 +39,20 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   
   return (
-    <SidebarProvider defaultOpen={true}>
-      <SidebarComponent>
+    <SidebarProvider defaultOpen={!collapsed} open={!collapsed} onOpenChange={(open) => setCollapsed(!open)}>
+      <SidebarComponent variant="sidebar" collapsible="icon">
         <div className="flex flex-col h-full">
-          <SidebarHeader className="border-b border-border p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+          <SidebarHeader className="border-b border-sidebar-border px-2">
+            <div className="flex h-[60px] items-center justify-between px-2">
+              <div className="flex items-center gap-2">
                 <img 
                   src="/images/peckish-logo.jpg" 
                   alt="Peckish Logo" 
-                  className="h-8 w-8 rounded-md object-cover"
+                  className="h-8 w-8 rounded-md object-cover shrink-0"
                 />
-                {!collapsed && <h1 className="font-semibold text-lg">Peckish</h1>}
+                <h1 className="font-semibold text-lg truncate">Peckish</h1>
               </div>
-              <button
-                onClick={() => setCollapsed(!collapsed)}
-                className="p-1 rounded-md hover:bg-gray-100"
-              >
-                {collapsed ? <PanelLeft className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
-              </button>
+              <SidebarTrigger />
             </div>
           </SidebarHeader>
 
@@ -78,8 +73,8 @@ export default function Sidebar() {
               </div>
             )}
             
-            <nav className="py-2">
-              <ul className="flex flex-col">
+            <nav>
+              <ul className="space-y-1 p-2">
                 {menuItems.map((item) => {
                   const Icon = item.icon;
                   const [location] = useLocation();
@@ -89,15 +84,14 @@ export default function Sidebar() {
                     <li key={item.href}>
                       <Link 
                         href={item.href}
-                        data-active={isActive}
                         className={cn(
-                          "flex items-center gap-3 px-6 py-2 text-gray-500 hover:text-gray-900 transition-colors relative",
-                          isActive && "text-gray-900 font-medium hover:text-gray-900",
-                          collapsed && "justify-center px-2"
+                          "flex h-10 w-full items-center rounded-md px-3 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                          isActive && "bg-accent text-accent-foreground",
+                          "gap-3"
                         )}
                       >
-                        <Icon className="h-5 w-5" />
-                        {!collapsed && item.label}
+                        <Icon className="h-5 w-5 shrink-0" />
+                        <span className="truncate">{item.label}</span>
                       </Link>
                     </li>
                   );
