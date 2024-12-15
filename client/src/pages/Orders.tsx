@@ -5,7 +5,9 @@ import OrderTable from '@/components/orders/OrderTable';
 import ViewToggle from '@/components/orders/ViewToggle';
 import OrderModal from '@/components/orders/OrderModal';
 import SubSectionNav from '@/components/layout/SubSectionNav';
-import type { Order, Supplier } from '@db/schema';
+import { type Order, type Supplier } from '@/lib/types';
+import { mockOrders } from '@/mockData/orders';
+import { mockSuppliers } from '@/mockData/suppliers';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
 import SupplierCard from '@/components/suppliers/SupplierCard';
@@ -20,13 +22,11 @@ export default function Orders() {
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
   const [isNewSupplier, setIsNewSupplier] = useState(false);
   
-  const { data: suppliers, isLoading: suppliersLoading } = useQuery<any[]>({
-    queryKey: ["/api/suppliers"],
-  });
-
-  const { data: orders, isLoading: ordersLoading } = useQuery<any[]>({
-    queryKey: ["/api/orders"],
-  });
+  // Use mock data instead of API calls
+  const suppliers = mockSuppliers;
+  const orders = mockOrders;
+  const suppliersLoading = false;
+  const ordersLoading = false;
 
   const sections = [
     { id: 'orders', label: 'Orders' },

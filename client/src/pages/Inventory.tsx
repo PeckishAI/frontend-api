@@ -19,6 +19,7 @@ import type { InventoryItem } from '@/lib/types';
 import EditIngredientForm from '@/components/inventory/EditIngredientForm';
 import NewIngredientDialog from '@/components/inventory/NewIngredientDialog';
 import { FilterPopover, type FilterType } from "@/components/inventory/FilterPopover";
+import { mockInventory } from '@/mockData/inventory';
 
 export default function Inventory() {
   const [activeSection, setActiveSection] = useState('ingredients');
@@ -34,9 +35,8 @@ export default function Inventory() {
     { id: 'waste', label: 'Waste' },
   ];
 
-  const { data: inventory, isLoading } = useQuery({
-    queryKey: ['/api/inventory'],
-  });
+  const inventory = mockInventory;
+  const isLoading = false;
 
   const tags = useMemo(() => {
     if (!inventory) return [];
