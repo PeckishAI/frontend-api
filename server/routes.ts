@@ -40,12 +40,56 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Orders routes
-  app.get("/api/orders", async (req, res) => {
+  app.get("/api/orders", async (_req, res) => {
     try {
-      const allOrders = await db.query.orders.findMany();
-      res.json(allOrders);
+      const allOrders = await db.query.orders.findMany({
+        with: {
+          supplier: true,
+          restaurant: true,
+        },
+      });
+      
+      // Transform the data to match our frontend interface
+      const transformedOrders = allOrders.map(order => ({
+        id: order.id.toString(),
+        supplierName: order.supplier.name,
+        orderDate: order.createdAt,
+        status: order.status,
+        total: 0, // We'll implement this when we add order items
+        items: [], // We'll implement this when we add order items
+      }));
+      
+      res.json(transformedOrders);
     } catch (error) {
       res.status(500).json({ message: "Error fetching orders" });
+    }
+  });
+
+  app.post("/api/orders", async (req, res) => {
+    try {
+      const order = req.body;
+      const newOrder = await db.insert(orders).values(order).returning();
+      res.status(201).json(newOrder[0]);
+    } catch (error) {
+      res.status(500).json({ message: "Error creating order" });
+    }
+  });
+
+  app.get("/api/orders/:id", async (req, res) => {
+    try {
+      const order = await db.query.orders.findFirst({
+        where: eq(orders.id, parseInt(req.params.id)),
+        with: {
+          supplier: true,
+          restaurant: true,
+        },
+      });
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+      res.json(order);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching order" });
     }
   });
 
