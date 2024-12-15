@@ -1,8 +1,6 @@
 module github.com/restaurant-supplier
 
-go 1.22.0
-
-toolchain go1.22.10
+go 1.21
 
 require (
 	github.com/gin-gonic/gin v1.9.1

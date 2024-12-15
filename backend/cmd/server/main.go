@@ -22,7 +22,7 @@ func main() {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
 
-	// Initialize router
+	// Initialize router with logger and recovery middleware
 	r := gin.Default()
 
 	// CORS middleware
@@ -30,13 +30,22 @@ func main() {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		
 		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(http.StatusOK)
+			c.AbortWithStatus(http.StatusNoContent)
 			return
 		}
 		
 		c.Next()
+	})
+
+	// Serve static files for the frontend
+	r.Static("/assets", "./dist/public/assets")
+	r.StaticFile("/", "./dist/public/index.html")
+	r.NoRoute(func(c *gin.Context) {
+		c.File("./dist/public/index.html")
 	})
 
 	// API routes

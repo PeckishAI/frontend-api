@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 
 // Configure the base URL for all API requests
-const API_BASE_URL = "";  // Empty string for same-origin requests
+const API_BASE_URL = "http://localhost:3001";  // Point to Go backend server
 
 export const queryClient = new QueryClient({
   defaultOptions: {
