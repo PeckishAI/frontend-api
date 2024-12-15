@@ -35,9 +35,11 @@ export default function Sidebar() {
         <div className="flex flex-col h-full">
           <div className="p-4 border-b border-gray-200">
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-md bg-blue-600 flex items-center justify-center text-white font-semibold">
-                P
-              </div>
+              <img 
+                src="/images/peckish-logo.jpg" 
+                alt="Peckish Logo" 
+                className="h-8 w-8 rounded-md object-cover"
+              />
               <h1 className="font-semibold text-lg">Peckish</h1>
             </div>
           </div>
