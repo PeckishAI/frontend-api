@@ -35,10 +35,10 @@ export default function Sidebar() {
         <div className="flex flex-col h-full">
           <div className="p-4 border-b border-gray-200">
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-semibold">
-                R
+              <div className="h-8 w-8 rounded-md bg-blue-600 flex items-center justify-center text-white font-semibold">
+                P
               </div>
-              <h1 className="font-semibold text-lg">Restaurant OS</h1>
+              <h1 className="font-semibold text-lg">Peckish</h1>
             </div>
           </div>
           <nav className="flex-1 overflow-y-auto">
