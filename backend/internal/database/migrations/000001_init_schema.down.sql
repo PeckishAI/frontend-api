@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS suppliers;
+DROP TABLE IF EXISTS restaurants;
+DROP EXTENSION IF EXISTS "uuid-ossp";

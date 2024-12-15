@@ -6,12 +6,18 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/restaurant-supplier/internal/database"
 )
 
 func main() {
 	// Load .env file if it exists
 	if err := godotenv.Load(); err != nil {
 		log.Printf("No .env file found")
+	}
+
+	// Initialize database
+	if err := database.InitDB(); err != nil {
+		log.Fatal("Failed to initialize database:", err)
 	}
 
 	// Set up Gin
