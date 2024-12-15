@@ -47,7 +47,7 @@ function SidebarMainContent() {
         <div className="flex h-[60px] items-center px-4">
           <div className="flex items-center gap-3 flex-1">
             <img 
-              src="/images/peckish-logo.jpg" 
+              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAWklEQVR42mL8DwQMOMDp06cZmUAEIyMjHBsqzgQV+A8E6IqgmBHmTXRFTOheZkAXhCmG2YQuzsAAVfj//3+4IphmGL6/fz+GAFwhTBNMHN0PKAJ///5lgPoXAJH7Iy4X4bzQAAAAAElFTkSuQmCC" 
               alt="Peckish Logo" 
               className="h-8 w-8 rounded-md object-cover shrink-0"
             />

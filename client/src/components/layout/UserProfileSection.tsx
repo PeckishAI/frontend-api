@@ -35,11 +35,11 @@ export function UserProfileSection({ user, onSignOut, onViewProfile, onSettings 
               <AvatarFallback>{user.name[0].toUpperCase()}</AvatarFallback>
             )}
           </Avatar>
-          <div className="flex flex-col items-start text-left">
+          <div className="flex-1 flex flex-col items-start text-left group-data-[collapsible=icon]:hidden">
             <span className="text-sm font-medium">{user.name}</span>
             <span className="text-xs text-muted-foreground">{user.role}</span>
           </div>
-          <ChevronUp className="ml-auto h-4 w-4" />
+          <ChevronUp className="ml-2 h-4 w-4 group-data-[collapsible=icon]:hidden" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" alignOffset={-12}>
