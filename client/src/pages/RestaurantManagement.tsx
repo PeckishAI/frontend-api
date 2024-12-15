@@ -28,22 +28,12 @@ const priceBuckets = [
   { value: "luxury", label: "Luxury ($$$$)" },
 ];
 
-const paymentMethods = [
-  { value: "stripe", label: "Stripe", requiresSetup: true },
-  { value: "square", label: "Square", requiresSetup: true },
-  { value: "paypal", label: "PayPal", requiresSetup: true },
-  { value: "manual", label: "Manual Payment", requiresSetup: false },
-];
-
 interface Restaurant {
   id: number;
   name: string;
   address: string;
   phone: string;
   priceBucket: string;
-  paymentMethod: string;
-  paymentDetails: string;
-  stripeAccountId?: string;
 }
 
 const restaurantSchema = z.object({
@@ -233,51 +223,6 @@ export default function RestaurantManagement() {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="paymentMethod"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Payment Method</FormLabel>
-                        <Select 
-                          onValueChange={field.onChange} 
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a payment method" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {paymentMethods.map((method) => (
-                              <SelectItem key={method.value} value={method.value}>
-                                {method.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        {field.value === "stripe" && !selectedRestaurant?.stripeAccountId && (
-                          <div className="mt-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setShowStripeSetup(true)}
-                            >
-                              Configure Stripe
-                            </Button>
-                          </div>
-                        )}
-                        {field.value === "stripe" && selectedRestaurant?.stripeAccountId && (
-                          <div className="mt-2 text-sm text-muted-foreground">
-                            Stripe account connected: {selectedRestaurant.stripeAccountId}
-                          </div>
-                        )}
-                      </FormItem>
-                    )}
-                  />
-
                   <div className="flex justify-end gap-4">
                     <Button 
                       type="button" 
@@ -288,36 +233,6 @@ export default function RestaurantManagement() {
                     </Button>
                     <Button type="submit">Save Changes</Button>
                   </div>
-                  {showStripeSetup && (
-                    <div className="mt-6 p-4 border rounded-lg bg-muted">
-                      {selectedRestaurant?.stripeAccountId ? (
-                        <StripeCheckout
-                          amount={MOCK_ORDER_TOTAL}
-                          onSuccess={() => {
-                            toast({
-                              title: "Payment Successful",
-                              description: "The payment has been processed successfully.",
-                            });
-                            setShowStripeSetup(false);
-                          }}
-                          onCancel={() => setShowStripeSetup(false)}
-                        />
-                      ) : (
-                        <StripeConfig
-                          onSetupComplete={(accountId) => {
-                            setSelectedRestaurant(prev => 
-                              prev ? { ...prev, stripeAccountId: accountId } : null
-                            );
-                            toast({
-                              title: "Stripe Connected",
-                              description: "Successfully connected Stripe to this restaurant.",
-                            });
-                          }}
-                          onCancel={() => setShowStripeSetup(false)}
-                        />
-                      )}
-                    </div>
-                  )}
                 </form>
               </Form>
             </div>
