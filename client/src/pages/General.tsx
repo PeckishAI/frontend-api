@@ -28,7 +28,7 @@ export default function General() {
         onSectionChange={setActiveSection}
       />
 
-      <div className="flex items-center justify-end border-t px-4 py-2">
+      <div className="border-t px-4 py-2 flex justify-end">
         <DateRangePicker date={date} onSelect={setDate} />
       </div>
 
