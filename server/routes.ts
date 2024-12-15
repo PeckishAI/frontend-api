@@ -194,6 +194,21 @@ export function registerRoutes(app: Express): Server {
   app.post("/api/orders", createOrder);
   app.get("/api/orders/:id", getOrder);
 
+  // Inventory routes
+  app.get("/api/inventory", async (_req, res) => {
+    try {
+      const response = await fetch("http://localhost:8080/api/inventory");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+      res.status(500).json({ message: "Error fetching inventory data" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
