@@ -58,13 +58,35 @@ const mockRestaurant = {
   paymentDetails: "",
 };
 
+// Mock multiple restaurants data
+const mockRestaurants = [
+  {
+    id: 1,
+    name: "Main Restaurant",
+    address: "123 Restaurant Street",
+    phone: "(555) 123-4567",
+    priceBucket: "moderate",
+    paymentMethod: "stripe",
+    paymentDetails: "",
+  },
+  {
+    id: 2,
+    name: "Second Location",
+    address: "456 Food Avenue",
+    phone: "(555) 987-6543",
+    priceBucket: "premium",
+    paymentMethod: "square",
+    paymentDetails: "",
+  },
+];
+
 export default function RestaurantManagement() {
   const { toast } = useToast();
-  const [isEditing, setIsEditing] = useState(false);
+  const [selectedRestaurant, setSelectedRestaurant] = useState<typeof mockRestaurants[0] | null>(null);
 
   const form = useForm<RestaurantFormValues>({
     resolver: zodResolver(restaurantSchema),
-    defaultValues: mockRestaurant,
+    defaultValues: selectedRestaurant || mockRestaurants[0],
   });
 
   const onSubmit = (data: RestaurantFormValues) => {
@@ -75,22 +97,161 @@ export default function RestaurantManagement() {
       title: "Restaurant Updated",
       description: "Your restaurant information has been updated successfully.",
     });
-    setIsEditing(false);
+    setSelectedRestaurant(null);
   };
 
   return (
     <div className="ml-64 p-8 w-full">
       <Card className="w-full">
-        <CardHeader className="px-8 flex flex-row items-center justify-between">
+        <CardHeader className="px-8">
           <CardTitle>Restaurant Management</CardTitle>
-          <Button 
-            variant={isEditing ? "outline" : "default"}
-            onClick={() => setIsEditing(!isEditing)}
-          >
-            {isEditing ? "Cancel" : "Edit Restaurant"}
-          </Button>
         </CardHeader>
         <CardContent className="px-8">
+          <div className="space-y-4">
+            {mockRestaurants.map((restaurant) => (
+              <Card 
+                key={restaurant.id} 
+                className={`hover:bg-accent/50 transition-colors cursor-pointer ${
+                  selectedRestaurant?.id === restaurant.id ? 'border-primary' : ''
+                }`}
+                onClick={() => setSelectedRestaurant(restaurant)}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold">{restaurant.name}</h3>
+                      <p className="text-sm text-muted-foreground">{restaurant.address}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="text-sm text-muted-foreground">
+                        {priceBuckets.find(b => b.value === restaurant.priceBucket)?.label}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {paymentMethods.find(m => m.value === restaurant.paymentMethod)?.label}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {selectedRestaurant && (
+            <div className="mt-8 border-t pt-8">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Restaurant Name</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Address</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="priceBucket"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Price Bucket</FormLabel>
+                        <Select 
+                          onValueChange={field.onChange} 
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a price bucket" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {priceBuckets.map((bucket) => (
+                              <SelectItem key={bucket.value} value={bucket.value}>
+                                {bucket.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="paymentMethod"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Payment Method</FormLabel>
+                        <Select 
+                          onValueChange={field.onChange} 
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a payment method" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {paymentMethods.map((method) => (
+                              <SelectItem key={method.value} value={method.value}>
+                                {method.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="flex justify-end gap-4">
+                    <Button 
+                      type="button" 
+                      variant="outline"
+                      onClick={() => setSelectedRestaurant(null)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit">Save Changes</Button>
+                  </div>
+                </form>
+              </Form>
+            </div>
+          )}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
