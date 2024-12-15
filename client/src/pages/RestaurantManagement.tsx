@@ -79,24 +79,11 @@ const mockRestaurants = [
   },
 ];
 
-// Placeholder for Stripe configuration component
-const StripeConfig = ({ onSetupComplete, onCancel }: { onSetupComplete: (accountId: string) => void; onCancel: () => void }) => {
-  // Replace with actual Stripe setup logic
-  const [accountId, setAccountId] = useState('');
-  const handleSetup = () => {
-    // Simulate Stripe setup
-    const simulatedAccountId = 'acct_XXXXXXXXXXXXXXX'; // Replace with actual Stripe account ID generation
-    setAccountId(simulatedAccountId);
-    onSetupComplete(simulatedAccountId);
-  };
-  return (
-    <div>
-      <p>Stripe Configuration Placeholder</p>
-      <Button onClick={handleSetup}>Connect Stripe</Button>
-      <Button variant="ghost" onClick={onCancel}>Cancel</Button>
-    </div>
-  );
-};
+import { StripeConfig } from "@/components/payments/StripeConfig";
+import StripeCheckout from "@/components/payments/StripeCheckout";
+
+// Mock order total for demonstration
+const MOCK_ORDER_TOTAL = 2999; // $29.99
 
 
 export default function RestaurantManagement() {
@@ -303,19 +290,32 @@ export default function RestaurantManagement() {
                   </div>
                   {showStripeSetup && (
                     <div className="mt-6 p-4 border rounded-lg bg-muted">
-                      <StripeConfig
-                        onSetupComplete={(accountId) => {
-                          setSelectedRestaurant(prev => 
-                            prev ? { ...prev, stripeAccountId: accountId } : null
-                          );
-                          setShowStripeSetup(false);
-                          toast({
-                            title: "Stripe Connected",
-                            description: "Successfully connected Stripe to this restaurant.",
-                          });
-                        }}
-                        onCancel={() => setShowStripeSetup(false)}
-                      />
+                      {selectedRestaurant?.stripeAccountId ? (
+                        <StripeCheckout
+                          amount={MOCK_ORDER_TOTAL}
+                          onSuccess={() => {
+                            toast({
+                              title: "Payment Successful",
+                              description: "The payment has been processed successfully.",
+                            });
+                            setShowStripeSetup(false);
+                          }}
+                          onCancel={() => setShowStripeSetup(false)}
+                        />
+                      ) : (
+                        <StripeConfig
+                          onSetupComplete={(accountId) => {
+                            setSelectedRestaurant(prev => 
+                              prev ? { ...prev, stripeAccountId: accountId } : null
+                            );
+                            toast({
+                              title: "Stripe Connected",
+                              description: "Successfully connected Stripe to this restaurant.",
+                            });
+                          }}
+                          onCancel={() => setShowStripeSetup(false)}
+                        />
+                      )}
                     </div>
                   )}
                 </form>
