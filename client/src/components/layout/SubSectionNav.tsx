@@ -17,7 +17,7 @@ export default function SubSectionNav({
   onSectionChange,
 }: SubSectionNavProps) {
   return (
-    <div className="border-b border-t">
+    <div className="border-b">
       <Tabs value={activeSection} onValueChange={onSectionChange}>
         <TabsList className="w-full justify-start bg-transparent border-b-0 px-8 py-2">
           {sections.map((section) => (
