@@ -25,15 +25,15 @@ export default function Orders() {
   ];
 
   return (
-    <div className="p-8 ml-64 w-full">
-      <div className="mb-8">
+    <div className="ml-64 w-full">
+      <div className="pt-8">
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
           onSectionChange={setActiveSection}
         />
 
-        <div className="flex items-center gap-4 mb-6">
+        <div className="px-8 mt-6 mb-6 flex items-center justify-end gap-4">
           {activeSection === 'orders' && (
             <>
               <ViewToggle current={viewMode} onChange={setViewMode} />
