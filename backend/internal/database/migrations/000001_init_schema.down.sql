@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS ingredients;
+DROP TABLE IF EXISTS units;
 DROP TABLE IF EXISTS suppliers;
 DROP TABLE IF EXISTS restaurants;
 DROP EXTENSION IF EXISTS "uuid-ossp";
