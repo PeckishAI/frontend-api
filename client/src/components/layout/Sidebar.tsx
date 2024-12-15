@@ -7,11 +7,11 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 const menuItems = [
-  { icon: Package, label: "Orders", href: "/" },
+  { icon: ChartBar, label: "General", href: "/" },
   { icon: ClipboardList, label: "Inventory", href: "/inventory" },
   { icon: MenuSquare, label: "Menu", href: "/menu" },
+  { icon: Package, label: "Orders", href: "/orders" },
   { icon: Files, label: "Documents", href: "/documents" },
-  { icon: ChartBar, label: "General", href: "/general" },
 ];
 
 const mockRestaurants: Restaurant[] = [
