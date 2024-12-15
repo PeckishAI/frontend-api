@@ -289,9 +289,8 @@ const mockStocktakes: Stocktake[] = [
                         <TableHead>ID</TableHead>
                         <TableHead>Date</TableHead>
                         <TableHead>User</TableHead>
-                        <TableHead>Images</TableHead>
-                        <TableHead>Videos</TableHead>
                         <TableHead>Total Documents</TableHead>
+                        <TableHead className="text-right">Estimated Value</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -312,20 +311,11 @@ const mockStocktakes: Stocktake[] = [
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Badge variant="secondary">
-                              {stocktake.documents.filter(d => d.type === 'image').length}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="secondary">
-                              {stocktake.documents.filter(d => d.type === 'video').length}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
                             <Badge>
                               {stocktake.documents.length}
                             </Badge>
                           </TableCell>
+                          <TableCell className="text-right">$1,234.56</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

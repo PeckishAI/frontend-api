@@ -1,4 +1,4 @@
-import { Hash, User2, Images, Film } from "lucide-react";
+import { Hash, User2, Images, DollarSign } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -46,15 +46,14 @@ export function StocktakeCard({ stocktake }: StocktakeCardProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Images className="h-4 w-4 text-gray-600" />
+              <span className="text-sm text-muted-foreground">Total Documents:</span>
               <Badge variant="secondary">
-                {stocktake.documents.filter(d => d.type === 'image').length}
+                {stocktake.documents.length}
               </Badge>
             </div>
             <div className="flex items-center gap-2">
-              <Film className="h-4 w-4 text-gray-600" />
-              <Badge variant="secondary">
-                {stocktake.documents.filter(d => d.type === 'video').length}
-              </Badge>
+              <DollarSign className="h-4 w-4 text-green-600" />
+              <span className="font-medium">$1,234.56</span>
             </div>
           </div>
         </div>
