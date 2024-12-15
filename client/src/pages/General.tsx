@@ -28,11 +28,11 @@ export default function General() {
         onSectionChange={setActiveSection}
       />
 
-      <div className="px-4 py-2 flex items-center justify-end border-t">
+      <div className="flex items-center justify-end border-t px-4 py-2">
         <DateRangePicker date={date} onSelect={setDate} />
       </div>
 
-      <div className="bg-white">
+      <div className="flex-1 bg-white">
         {activeSection === 'overview' && (
           <div className="p-6 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
