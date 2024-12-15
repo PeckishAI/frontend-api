@@ -12,9 +12,9 @@ import Sidebar from "@/components/layout/Sidebar";
 
 function App() {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen w-full">
       <Sidebar />
-      <div className="flex-1 bg-gray-50">
+      <div className="flex-1 bg-gray-50 w-full">
         <Switch>
           <Route path="/" component={General} />
           <Route path="/inventory" component={Inventory} />

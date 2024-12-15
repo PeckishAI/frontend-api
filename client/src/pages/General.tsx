@@ -21,8 +21,8 @@ export default function General() {
   ];
 
   return (
-    <div className="container mx-auto">
-      <div className="p-6">
+    <div className="w-full">
+      <div className="px-8 py-6">
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
