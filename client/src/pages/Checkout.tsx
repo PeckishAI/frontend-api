@@ -51,7 +51,7 @@ function CheckoutForm() {
     <div className="ml-64 p-8">
       <div className="max-w-md mx-auto">
         <div className="mb-6">
-          <div className="flex gap-2 mb-4">
+          <div className="flex gap-4 mb-6">
             <Button 
               variant="outline" 
               className="flex-1 justify-start border-2 border-[#44a991] focus:ring-0"
@@ -66,7 +66,7 @@ function CheckoutForm() {
             </Button>
           </div>
           
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="rounded-lg border p-4 bg-white shadow-sm">
               <CardElement
                 options={{
@@ -87,13 +87,13 @@ function CheckoutForm() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Country
                 </label>
                 <Select defaultValue="US">
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger>
                     <SelectValue placeholder="Select a country" />
                   </SelectTrigger>
                   <SelectContent>
@@ -102,8 +102,8 @@ function CheckoutForm() {
                 </Select>
               </div>
 
-              <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Postal Code
                 </label>
                 <Input 
@@ -136,6 +136,9 @@ export default function Checkout() {
       theme: 'stripe' as const,
       variables: {
         colorPrimary: '#44a991',
+        fontFamily: 'system-ui, sans-serif',
+        borderRadius: '4px',
+        colorBackground: '#ffffff',
       },
     },
   };
