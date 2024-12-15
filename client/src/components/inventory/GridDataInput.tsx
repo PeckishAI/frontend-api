@@ -97,11 +97,11 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
 
   return (
     <div 
-      className="border rounded-md w-full h-full"
+      className="border rounded-md w-full h-full flex flex-col"
       onPaste={handlePaste}
       tabIndex={0}
     >
-      <div className="overflow-auto h-full">
+      <div className="flex-1 overflow-auto min-h-0">
         <Table ref={tableRef}>
           <TableHeader className="sticky top-0 bg-white">
             <TableRow>

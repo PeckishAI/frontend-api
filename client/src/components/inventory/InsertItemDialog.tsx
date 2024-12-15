@@ -17,13 +17,13 @@ export function InsertItemDialog() {
           Insert
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] h-[600px] flex flex-col">
-        <Tabs defaultValue="manual" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+      <DialogContent className="sm:max-w-[600px] h-[600px] p-0">
+        <Tabs defaultValue="manual" className="w-full h-full flex flex-col">
+          <TabsList className="grid w-full grid-cols-2 p-4">
             <TabsTrigger value="manual">Manual Insert</TabsTrigger>
             <TabsTrigger value="file">Insert from File</TabsTrigger>
           </TabsList>
-          <TabsContent value="manual" className="mt-4 flex-1 flex flex-col min-h-0">
+          <TabsContent value="manual" className="flex-1 min-h-0 p-4 overflow-hidden flex flex-col">
             <div className="flex flex-col flex-1 min-h-0">
               <p className="text-sm text-muted-foreground mb-4">
                 Enter data manually or paste from a spreadsheet (one row per ingredient).
