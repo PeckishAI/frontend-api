@@ -23,19 +23,15 @@ export default function General() {
   return (
     <div className="p-8 ml-64 w-full">
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <ChartBar className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-semibold text-gray-900">General</h1>
-          </div>
-          <DateRangePicker date={date} onSelect={setDate} />
-        </div>
-
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
           onSectionChange={setActiveSection}
         />
+
+        <div className="flex items-center justify-end gap-4 mb-6">
+          <DateRangePicker date={date} onSelect={setDate} />
+        </div>
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
           {activeSection === 'overview' && (
