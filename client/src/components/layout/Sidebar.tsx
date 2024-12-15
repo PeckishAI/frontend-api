@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Package, ClipboardList, MenuSquare, Files, ChartBar } from "lucide-react";
 import { RestaurantSelector, type Restaurant } from "./RestaurantSelector";
 import { UserProfileSection } from "./UserProfileSection";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 const menuItems = [
   { icon: Package, label: "Orders", href: "/" },
@@ -53,23 +54,29 @@ export default function Sidebar() {
               }}
             />
           </div>
-          <div className="p-4">
-          <ul className="space-y-2">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <li key={item.href}>
-                  <Link 
-                    href={item.href}
-                    className="flex items-center gap-3 px-3 py-2 text-gray-700 rounded-md hover:bg-gray-100 hover:text-gray-900 transition-colors"
-                  >
-                    <Icon className="h-5 w-5" />
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="py-2">
+            <ul className="flex flex-col">
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                const [location] = useLocation();
+                const isActive = location === item.href;
+                
+                return (
+                  <li key={item.href}>
+                    <Link 
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-3 px-6 py-2 text-gray-700 hover:bg-gray-100/50 hover:text-gray-900 transition-colors relative",
+                        isActive && "bg-background text-primary font-medium before:absolute before:left-0 before:top-0 before:h-full before:w-[2px] before:bg-primary"
+                      )}
+                    >
+                      <Icon className="h-5 w-5" />
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </nav>
         <div className="border-t border-gray-200 mt-auto">
