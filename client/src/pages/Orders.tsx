@@ -20,11 +20,11 @@ export default function Orders() {
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
   const [isNewSupplier, setIsNewSupplier] = useState(false);
   
-  const { data: suppliers } = useQuery({
+  const { data: suppliers, isLoading: suppliersLoading } = useQuery<any[]>({
     queryKey: ["/api/suppliers"],
   });
 
-  const { data: orders, isLoading: ordersLoading } = useQuery({
+  const { data: orders, isLoading: ordersLoading } = useQuery<any[]>({
     queryKey: ["/api/orders"],
   });
 
@@ -66,7 +66,7 @@ export default function Orders() {
                 <div className="p-6">Loading orders...</div>
               ) : viewMode === 'cards' ? (
                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {orders?.map((order) => (
+                  {(orders || []).map((order) => (
                     <OrderCard
                       key={order.id}
                       order={order}
@@ -85,15 +85,19 @@ export default function Orders() {
 
         {activeSection === 'suppliers' && (
           <div className="bg-white rounded-lg shadow overflow-hidden p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {suppliers?.map((supplier) => (
-                <SupplierCard
-                  key={supplier.id}
-                  supplier={supplier}
-                  onClick={() => setSelectedSupplier(supplier)}
-                />
-              ))}
-            </div>
+            {suppliersLoading ? (
+              <div>Loading suppliers...</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(suppliers || []).map((supplier) => (
+                  <SupplierCard
+                    key={supplier.id}
+                    supplier={supplier}
+                    onClick={() => setSelectedSupplier(supplier)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

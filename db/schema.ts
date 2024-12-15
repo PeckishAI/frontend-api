@@ -64,6 +64,17 @@ export const orders = pgTable("orders", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const orderItems = pgTable("order_items", {
+  id: serial("id").primaryKey(),
+  orderId: integer("order_id").notNull().references(() => orders.id),
+  name: text("name").notNull(),
+  quantity: doublePrecision("quantity").notNull(),
+  unit: text("unit").notNull(),
+  price: doublePrecision("price").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const procurements = pgTable("procurements", {
   id: serial("id").primaryKey(),
   restaurantId: integer("restaurant_id").notNull().references(() => restaurants.id),
@@ -106,7 +117,7 @@ export const suppliersRelations = relations(suppliers, ({ many }) => ({
   procurements: many(procurements),
 }));
 
-export const ordersRelations = relations(orders, ({ one }) => ({
+export const ordersRelations = relations(orders, ({ one, many }) => ({
   restaurant: one(restaurants, {
     fields: [orders.restaurantId],
     references: [restaurants.id],
@@ -114,6 +125,14 @@ export const ordersRelations = relations(orders, ({ one }) => ({
   supplier: one(suppliers, {
     fields: [orders.supplierId],
     references: [suppliers.id],
+  }),
+  items: many(orderItems),
+}));
+
+export const orderItemsRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
   }),
 }));
 
@@ -143,6 +162,8 @@ export const insertOrderSchema = createInsertSchema(orders);
 export const selectOrderSchema = createSelectSchema(orders);
 export const insertProcurementSchema = createInsertSchema(procurements);
 export const selectProcurementSchema = createSelectSchema(procurements);
+export const insertOrderItemSchema = createInsertSchema(orderItems);
+export const selectOrderItemSchema = createSelectSchema(orderItems);
 
 // Types
 export type Restaurant = typeof restaurants.$inferSelect;
@@ -159,3 +180,5 @@ export type Order = typeof orders.$inferSelect;
 export type InsertOrder = typeof orders.$inferInsert;
 export type Procurement = typeof procurements.$inferSelect;
 export type InsertProcurement = typeof procurements.$inferInsert;
+export type OrderItem = typeof orderItems.$inferSelect;
+export type InsertOrderItem = typeof orderItems.$inferInsert;

@@ -46,6 +46,7 @@ export function registerRoutes(app: Express): Server {
         with: {
           supplier: true,
           restaurant: true,
+          items: true,
         },
       });
       
@@ -55,8 +56,14 @@ export function registerRoutes(app: Express): Server {
         supplierName: order.supplier.name,
         orderDate: order.createdAt,
         status: order.status,
-        total: 0, // We'll implement this when we add order items
-        items: [], // We'll implement this when we add order items
+        items: order.items.map(item => ({
+          id: item.id.toString(),
+          name: item.name,
+          quantity: item.quantity,
+          unit: item.unit,
+          price: item.price,
+        })),
+        total: order.items.reduce((sum, item) => sum + (item.quantity * item.price), 0),
       }));
       
       res.json(transformedOrders);
