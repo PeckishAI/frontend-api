@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FileText, FileBox, ClipboardCheck, Images, ChevronLeft, ChevronRight, Hash, DollarSign, Building2, Package2, Pencil, Film, User2 } from "lucide-react";
 import { StocktakeCard, type Stocktake } from '@/components/documents/StocktakeCard';
+import StocktakeSlider from '@/components/documents/StocktakeSlider';
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import ViewToggle from "@/components/orders/ViewToggle";
 import {
@@ -97,6 +98,7 @@ const mockStocktakes: Stocktake[] = [
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
   const [activeImageIndexes, setActiveImageIndexes] = useState<Record<string, number>>({});
   const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
+  const [stocktakeToView, setStocktakeToView] = useState<Stocktake | null>(null);
 
   const sections = [
     { id: 'invoices', label: 'Invoices', icon: FileText },
@@ -279,7 +281,9 @@ const mockStocktakes: Stocktake[] = [
                 {viewMode === 'cards' ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {mockStocktakes.map((stocktake) => (
-                      <StocktakeCard key={stocktake.id} stocktake={stocktake} />
+                      <div key={stocktake.id} onClick={() => setStocktakeToView(stocktake)}>
+                        <StocktakeCard stocktake={stocktake} />
+                      </div>
                     ))}
                   </div>
                 ) : (
@@ -295,7 +299,11 @@ const mockStocktakes: Stocktake[] = [
                     </TableHeader>
                     <TableBody>
                       {mockStocktakes.map((stocktake) => (
-                        <TableRow key={stocktake.id}>
+                        <TableRow 
+                          key={stocktake.id}
+                          className="cursor-pointer hover:bg-muted/50"
+                          onClick={() => setStocktakeToView(stocktake)}
+                        >
                           <TableCell>{stocktake.id}</TableCell>
                           <TableCell>
                             {stocktake.date.toLocaleDateString('en-US', { 
@@ -322,6 +330,12 @@ const mockStocktakes: Stocktake[] = [
                   </Table>
                 )}
               </div>
+              
+              <StocktakeSlider
+                stocktake={stocktakeToView}
+                open={!!stocktakeToView}
+                onOpenChange={(open) => !open && setStocktakeToView(null)}
+              />
             </>
           )}
         </div>
