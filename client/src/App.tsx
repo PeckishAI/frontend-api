@@ -4,7 +4,7 @@ import Inventory from "@/pages/Inventory";
 import Menu from "@/pages/Menu";
 import Documents from "@/pages/Documents";
 import General from "@/pages/General";
-import Suppliers from "@/pages/Suppliers";
+
 import Sidebar from "@/components/layout/Sidebar";
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
         <Route path="/menu" component={Menu} />
         <Route path="/orders" component={Orders} />
         <Route path="/documents" component={Documents} />
-        <Route path="/suppliers" component={Suppliers} />
+        
       </Switch>
     </div>
   );

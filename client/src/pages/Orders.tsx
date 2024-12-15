@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { mockOrders, mockSuppliers } from '@/lib/data';
+import { mockOrders } from '@/lib/data';
 import OrderCard from '@/components/orders/OrderCard';
 import OrderTable from '@/components/orders/OrderTable';
 import ViewToggle from '@/components/orders/ViewToggle';
@@ -18,6 +18,10 @@ export default function Orders() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
   const [isNewSupplier, setIsNewSupplier] = useState(false);
+  
+  const { data: suppliers, isLoading: suppliersLoading } = useQuery({
+    queryKey: ["/api/suppliers"],
+  });
 
   const sections = [
     { id: 'orders', label: 'Orders' },
@@ -75,7 +79,7 @@ export default function Orders() {
         {activeSection === 'suppliers' && (
           <div className="bg-white rounded-lg shadow overflow-hidden p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mockSuppliers.map((supplier) => (
+              {suppliers?.map((supplier) => (
                 <SupplierCard
                   key={supplier.id}
                   supplier={supplier}
