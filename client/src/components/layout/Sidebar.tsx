@@ -22,18 +22,29 @@ export default function Sidebar() {
   return (
     <div className="w-64 h-screen bg-white border-r border-gray-200 fixed left-0 top-0">
       <div className="flex flex-col h-full">
-        <RestaurantSelector
-          restaurants={mockRestaurants}
-          currentRestaurant={currentRestaurant}
-          onRestaurantChange={setCurrentRestaurant}
-          onCreateNew={() => {
-            console.log("Create new restaurant");
-          }}
-          onManageRestaurants={() => {
-            console.log("Manage restaurants");
-          }}
-        />
-        <nav className="flex-1 p-4">
+        <div className="p-4 border-b border-gray-200">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-semibold">
+              R
+            </div>
+            <h1 className="font-semibold text-lg">Restaurant OS</h1>
+          </div>
+        </div>
+        <nav className="flex-1 overflow-y-auto">
+          <div className="p-2 border-b border-gray-200">
+            <RestaurantSelector
+              restaurants={mockRestaurants}
+              currentRestaurant={currentRestaurant}
+              onRestaurantChange={setCurrentRestaurant}
+              onCreateNew={() => {
+                console.log("Create new restaurant");
+              }}
+              onManageRestaurants={() => {
+                console.log("Manage restaurants");
+              }}
+            />
+          </div>
+          <div className="p-4">
           <ul className="space-y-2">
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -50,6 +61,7 @@ export default function Sidebar() {
               );
             })}
           </ul>
+          </div>
         </nav>
       </div>
     </div>
