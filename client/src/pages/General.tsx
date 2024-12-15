@@ -21,19 +21,19 @@ export default function General() {
   ];
 
   return (
-    <div className="w-full">
-      <div className="px-8 py-6">
+    <div className="container mx-auto">
+      <div className="p-6">
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
           onSectionChange={setActiveSection}
         />
 
-        <div className="px-8 mt-6 mb-6 flex items-center justify-end gap-4">
+        <div className="mt-6 mb-6 flex items-center justify-end gap-4">
           <DateRangePicker date={date} onSelect={setDate} />
         </div>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {activeSection === 'overview' && (
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
