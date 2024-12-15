@@ -71,12 +71,12 @@ export default function Profile() {
   };
 
   return (
-    <div className="ml-64 p-8">
-      <Card className="max-w-2xl mx-auto">
-        <CardHeader>
+    <div className="ml-64 p-8 w-full">
+      <Card className="w-full">
+        <CardHeader className="px-8">
           <CardTitle>Profile Settings</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-8">
           <div className="mb-8 flex justify-center">
             <div className="relative">
               <Avatar className="h-32 w-32">
