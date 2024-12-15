@@ -12,22 +12,20 @@ import Sidebar from "@/components/layout/Sidebar";
 
 function App() {
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex h-screen bg-gray-50">
       <Sidebar />
-      <div className="flex-1 overflow-auto">
-        <main>
-          <Switch>
-            <Route path="/" component={General} />
-            <Route path="/inventory" component={Inventory} />
-            <Route path="/menu" component={Menu} />
-            <Route path="/orders" component={Orders} />
-            <Route path="/documents" component={Documents} />
-            <Route path="/profile" component={Profile} />
-            <Route path="/restaurant-management" component={RestaurantManagement} />
-            <Route path="/checkout" component={Checkout} />
-          </Switch>
-        </main>
-      </div>
+      <main className="flex-1 overflow-auto">
+        <Switch>
+          <Route path="/" component={General} />
+          <Route path="/inventory" component={Inventory} />
+          <Route path="/menu" component={Menu} />
+          <Route path="/orders" component={Orders} />
+          <Route path="/documents" component={Documents} />
+          <Route path="/profile" component={Profile} />
+          <Route path="/restaurant-management" component={RestaurantManagement} />
+          <Route path="/checkout" component={Checkout} />
+        </Switch>
+      </main>
     </div>
   );
 }
