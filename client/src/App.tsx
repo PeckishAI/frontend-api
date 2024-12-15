@@ -12,10 +12,10 @@ import Sidebar from "@/components/layout/Sidebar";
 
 function App() {
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto">
-        <div className="container mx-auto p-4">
+      <div className="flex-1">
+        <main className="h-full">
           <Switch>
             <Route path="/" component={General} />
             <Route path="/inventory" component={Inventory} />
@@ -26,8 +26,8 @@ function App() {
             <Route path="/restaurant-management" component={RestaurantManagement} />
             <Route path="/checkout" component={Checkout} />
           </Switch>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
