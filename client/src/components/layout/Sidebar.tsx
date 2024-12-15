@@ -69,7 +69,7 @@ export default function Sidebar() {
                         data-active={isActive}
                         className={cn(
                           "flex items-center gap-3 px-6 py-2 text-gray-500 hover:text-gray-900 transition-colors relative",
-                          isActive && "text-primary font-medium hover:text-primary"
+                          isActive && "text-gray-900 font-medium hover:text-gray-900"
                         )}
                       >
                         <Icon className="h-5 w-5" />
