@@ -69,38 +69,40 @@ export function FilterPopover({ tags, suppliers, selectedFilters, onFilterChange
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               <div className="px-2 py-1 text-xs font-medium text-muted-foreground">Filter by</div>
-              <CommandItem
-                onSelect={() => setActiveGroup('tags')}
-                className="flex items-center justify-between"
-              >
-                <div className="flex items-center">
-                  <div className="mr-2 h-4 w-4 text-muted-foreground">
-                    <Hash className="h-4 w-4" />
+              <div className="grid grid-cols-2 gap-2">
+                <CommandItem
+                  onSelect={() => setActiveGroup('tags')}
+                  className="flex items-center justify-between"
+                >
+                  <div className="flex items-center">
+                    <div className="mr-2 h-4 w-4 text-muted-foreground">
+                      <Hash className="h-4 w-4" />
+                    </div>
+                    <span>Tags</span>
                   </div>
-                  <span>Tags</span>
-                </div>
-                {selectedFilters.filter(f => f.type === 'tag').length > 0 && (
-                  <Badge variant="secondary" className="ml-auto">
-                    {selectedFilters.filter(f => f.type === 'tag').length}
-                  </Badge>
-                )}
-              </CommandItem>
-              <CommandItem
-                onSelect={() => setActiveGroup('suppliers')}
-                className="flex items-center justify-between"
-              >
-                <div className="flex items-center">
-                  <div className="mr-2 h-4 w-4 text-muted-foreground">
-                    <Building2 className="h-4 w-4" />
+                  {selectedFilters.filter(f => f.type === 'tag').length > 0 && (
+                    <Badge variant="secondary" className="ml-auto">
+                      {selectedFilters.filter(f => f.type === 'tag').length}
+                    </Badge>
+                  )}
+                </CommandItem>
+                <CommandItem
+                  onSelect={() => setActiveGroup('suppliers')}
+                  className="flex items-center justify-between"
+                >
+                  <div className="flex items-center">
+                    <div className="mr-2 h-4 w-4 text-muted-foreground">
+                      <Building2 className="h-4 w-4" />
+                    </div>
+                    <span>Suppliers</span>
                   </div>
-                  <span>Suppliers</span>
-                </div>
-                {selectedFilters.filter(f => f.type === 'supplier').length > 0 && (
-                  <Badge variant="secondary" className="ml-auto">
-                    {selectedFilters.filter(f => f.type === 'supplier').length}
-                  </Badge>
-                )}
-              </CommandItem>
+                  {selectedFilters.filter(f => f.type === 'supplier').length > 0 && (
+                    <Badge variant="secondary" className="ml-auto">
+                      {selectedFilters.filter(f => f.type === 'supplier').length}
+                    </Badge>
+                  )}
+                </CommandItem>
+              </div>
             </CommandGroup>
 
             {activeGroup === 'tags' && (
