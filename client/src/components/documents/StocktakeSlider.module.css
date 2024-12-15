@@ -1,0 +1,131 @@
+.sliderContainer {
+  @apply w-full sm:max-w-none h-screen p-0 border-0;
+}
+
+.contentContainer {
+  @apply flex h-full divide-x divide-border;
+}
+
+.imageSection {
+  @apply w-1/2 bg-gray-50/50 p-6;
+}
+
+.imagePreview {
+  @apply relative aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden border shadow-sm;
+}
+
+.emptyPreview {
+  @apply absolute inset-0 flex items-center justify-center text-gray-400;
+}
+
+.emptyPreviewText {
+  @apply text-center;
+}
+
+.emptyPreviewIcon {
+  @apply h-8 w-8 mx-auto mb-2;
+}
+
+.imageCounter {
+  @apply absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm;
+}
+
+.thumbnailsContainer {
+  @apply mt-4 flex gap-2 overflow-x-auto pb-2;
+}
+
+.thumbnailButton {
+  @apply relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm transition-all;
+}
+
+.thumbnailButtonActive {
+  @apply ring-2 ring-primary scale-95;
+}
+
+.thumbnailButtonInactive {
+  @apply hover:scale-105;
+}
+
+.thumbnailIcon {
+  @apply absolute inset-0 flex items-center justify-center text-xs text-gray-400;
+}
+
+.formSection {
+  @apply w-1/2 bg-white flex flex-col h-full;
+}
+
+.formContent {
+  @apply p-6 flex-1 overflow-y-auto;
+}
+
+.headerContent {
+  @apply space-y-6 mb-6;
+}
+
+.idContainer {
+  @apply flex items-center gap-2;
+}
+
+.idText {
+  @apply text-2xl font-medium;
+}
+
+.metaInfo {
+  @apply flex items-center gap-4 text-sm text-muted-foreground;
+}
+
+.metaItem {
+  @apply flex items-center gap-2;
+}
+
+.metaIcon {
+  @apply h-4 w-4;
+}
+
+.valueContainer {
+  @apply flex items-center gap-2;
+}
+
+.valueIcon {
+  @apply h-5 w-5 text-green-600;
+}
+
+.valueText {
+  @apply text-lg font-medium;
+}
+
+.valueLabel {
+  @apply text-sm text-muted-foreground ml-2;
+}
+
+.inventoryHeader {
+  @apply flex items-center justify-between mb-4;
+}
+
+.inventoryTitle {
+  @apply text-lg font-medium;
+}
+
+.documentButtons {
+  @apply flex gap-2;
+}
+
+.documentButton {
+  @apply px-3 py-1.5 rounded-full text-sm transition-all;
+}
+
+.documentButtonActive {
+  @apply bg-primary text-primary-foreground shadow-md scale-105;
+}
+
+.documentButtonInactive {
+  @apply bg-secondary hover:bg-secondary/80 hover:shadow hover:scale-105;
+}
+
+.inventoryCount {
+  @apply text-sm text-muted-foreground;
+}
+
+.tableContainer {
+  @apply rounded-md border;
+}

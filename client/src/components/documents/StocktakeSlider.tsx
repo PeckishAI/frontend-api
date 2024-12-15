@@ -13,12 +13,15 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Hash, User2, Film, Images, CalendarDays, DollarSign } from "lucide-react";
+import { cn } from "@/lib/utils";
+import styles from "./StocktakeSlider.module.css";
 import { type Stocktake } from "./StocktakeCard";
 
 interface StocktakeSliderProps {
   stocktake: Stocktake | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  className?: string;
 }
 
 interface Ingredient {
@@ -59,17 +62,17 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-none h-screen p-0 border-0"
+        className={styles.sliderContainer}
       >
-        <div className="flex h-full divide-x divide-border">
+        <div className={styles.contentContainer}>
           {/* Left side - Images */}
-          <div className="w-1/2 bg-gray-50/50 p-6">
-            <div className="relative aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden border shadow-sm">
+          <div className={styles.imageSection}>
+            <div className={styles.imagePreview}>
               {/* Image display */}
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+              <div className={styles.emptyPreview}>
                 {selectedDocIndex === -1 ? (
-                  <div className="text-center">
-                    <Images className="h-8 w-8 mx-auto mb-2" />
+                  <div className={styles.emptyPreviewText}>
+                    <Images className={styles.emptyPreviewIcon} />
                     <span className="text-sm">Select a document to preview</span>
                   </div>
                 ) : (
@@ -83,25 +86,26 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
 
               {/* Image count indicator */}
               {selectedDocIndex !== -1 && (
-                <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
+                <div className={styles.imageCounter}>
                   Document {selectedDocIndex + 1} of {stocktake.documents.length}
                 </div>
               )}
             </div>
 
             {/* Thumbnails */}
-            <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
+            <div className={styles.thumbnailsContainer}>
               {stocktake.documents.map((doc, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedDocIndex(index)}
-                  className={`relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm transition-all ${
+                  className={cn(
+                    styles.thumbnailButton,
                     index === selectedDocIndex 
-                      ? 'ring-2 ring-primary scale-95' 
-                      : 'hover:scale-105'
-                  }`}
+                      ? styles.thumbnailButtonActive
+                      : styles.thumbnailButtonInactive
+                  )}
                 >
-                  <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-400">
+                  <div className={styles.thumbnailIcon}>
                     {doc.type === 'video' ? (
                       <Film className="h-4 w-4" />
                     ) : (
@@ -114,23 +118,23 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
           </div>
 
           {/* Right side - Form */}
-          <div className="w-1/2 bg-white flex flex-col h-full">
-            <div className="p-6 flex-1 overflow-y-auto">
-              <div className="space-y-6 mb-6">
+          <div className={styles.formSection}>
+            <div className={styles.formContent}>
+              <div className={styles.headerContent}>
                 {/* ID at the top */}
-                <div className="flex items-center gap-2">
+                <div className={styles.idContainer}>
                   <Hash className="h-5 w-5 text-muted-foreground" />
-                  <span className="text-2xl font-medium">{stocktake.id}</span>
+                  <span className={styles.idText}>{stocktake.id}</span>
                 </div>
 
                 {/* User and Date on the same line */}
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <User2 className="h-4 w-4" />
+                <div className={styles.metaInfo}>
+                  <div className={styles.metaItem}>
+                    <User2 className={styles.metaIcon} />
                     <span>{stocktake.user.name}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4" />
+                  <div className={styles.metaItem}>
+                    <CalendarDays className={styles.metaIcon} />
                     <span>
                       {stocktake.date.toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -142,25 +146,26 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                 </div>
 
                 {/* Value at the bottom */}
-                <div className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5 text-green-600" />
+                <div className={styles.valueContainer}>
+                  <DollarSign className={styles.valueIcon} />
                   <div>
-                    <span className="text-lg font-medium">$1,234.56</span>
-                    <span className="text-sm text-muted-foreground ml-2">estimated value</span>
+                    <span className={styles.valueText}>$1,234.56</span>
+                    <span className={styles.valueLabel}>estimated value</span>
                   </div>
                 </div>
               </div>
               <div className="mb-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-medium">Inventory Items</h3>
-                  <div className="flex gap-2">
+                <div className={styles.inventoryHeader}>
+                  <h3 className={styles.inventoryTitle}>Inventory Items</h3>
+                  <div className={styles.documentButtons}>
                     <button
                       onClick={() => setSelectedDocIndex(-1)}
-                      className={`px-3 py-1.5 rounded-full text-sm transition-all ${
+                      className={cn(
+                        styles.documentButton,
                         selectedDocIndex === -1
-                          ? 'bg-primary text-primary-foreground shadow-md scale-105'
-                          : 'bg-secondary hover:bg-secondary/80 hover:shadow hover:scale-105'
-                      }`}
+                          ? styles.documentButtonActive
+                          : styles.documentButtonInactive
+                      )}
                     >
                       Show All
                     </button>
@@ -168,11 +173,12 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                       <button
                         key={index}
                         onClick={() => setSelectedDocIndex(index)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all ${
+                        className={cn(
+                          styles.documentButton,
                           index === selectedDocIndex
-                            ? 'bg-primary text-primary-foreground shadow-md scale-105'
-                            : 'bg-secondary hover:bg-secondary/80 hover:shadow hover:scale-105'
-                        }`}
+                            ? styles.documentButtonActive
+                            : styles.documentButtonInactive
+                        )}
                       >
                         {doc.type === 'video' ? (
                           <Film className="h-3.5 w-3.5" />
@@ -184,7 +190,7 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                     ))}
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className={styles.inventoryCount}>
                   {selectedDocIndex === -1 
                     ? `Total of ${Object.values(documentIngredients).flat().length} items recorded across all documents`
                     : `Total of ${(documentIngredients[selectedDocIndex] || []).length} items recorded in document ${selectedDocIndex + 1}`
@@ -192,7 +198,7 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                 </p>
               </div>
 
-              <div className="rounded-md border">
+              <div className={styles.tableContainer}>
                 <Table>
                   <TableHeader>
                     <TableRow>
