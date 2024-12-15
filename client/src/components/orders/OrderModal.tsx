@@ -16,20 +16,23 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Building2 } from "lucide-react";
 import { type Order } from "@/lib/types";
 import { getStatusColor } from "@/lib/data";
+import { cn } from "@/lib/utils";
+import styles from "./OrderModal.module.css";
 
 interface OrderModalProps {
   order: Order | null;
   onClose: () => void;
+  className?: string;
 }
 
-export default function OrderModal({ order, onClose }: OrderModalProps) {
+export default function OrderModal({ order, onClose, className }: OrderModalProps) {
   if (!order) return null;
 
   return (
     <Sheet open={!!order} onOpenChange={() => onClose()}>
-      <SheetContent className="w-[800px] sm:max-w-[800px]">
+      <SheetContent className={cn(styles.modalContent, className)}>
         <SheetHeader>
-          <SheetTitle className="flex items-center justify-between">
+          <SheetTitle className={styles.header}>
             <span>Order Details</span>
             <Badge className={getStatusColor(order.status)}>
               {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
@@ -37,14 +40,14 @@ export default function OrderModal({ order, onClose }: OrderModalProps) {
           </SheetTitle>
         </SheetHeader>
 
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center text-sm text-gray-600">
-              <Building2 className="mr-2 h-4 w-4" />
+        <div className={styles.contentContainer}>
+          <div className={styles.infoGrid}>
+            <div className={styles.infoItem}>
+              <Building2 className={styles.infoIcon} />
               {order.supplierName}
             </div>
-            <div className="flex items-center text-sm text-gray-600">
-              <Calendar className="mr-2 h-4 w-4" />
+            <div className={styles.infoItem}>
+              <Calendar className={styles.infoIcon} />
               {new Date(order.orderDate).toLocaleDateString()}
             </div>
           </div>
@@ -72,8 +75,8 @@ export default function OrderModal({ order, onClose }: OrderModalProps) {
                 </TableRow>
               ))}
               <TableRow>
-                <TableCell colSpan={4} className="text-right font-semibold">Total</TableCell>
-                <TableCell className="text-right font-semibold">
+                <TableCell colSpan={4} className={styles.totalRow}>Total</TableCell>
+                <TableCell className={styles.totalCell}>
                   ${order.total.toFixed(2)}
                 </TableCell>
               </TableRow>
