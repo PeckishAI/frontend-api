@@ -22,14 +22,14 @@ export default function General() {
 
   return (
     <div className="ml-64 w-full">
-      <div className="pt-8">
+      <div>
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
           onSectionChange={setActiveSection}
         />
 
-        <div className="px-8 mt-6 mb-6 flex items-center justify-end gap-4">
+        <div className="px-8 py-4 flex items-center justify-end gap-4">
           <DateRangePicker date={date} onSelect={setDate} />
         </div>
 
