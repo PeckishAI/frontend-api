@@ -16,7 +16,7 @@ export function InsertItemDialog() {
           Insert
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[600px] max-h-[80vh] p-6">
+      <DialogContent className="max-w-[800px] max-h-[80vh] p-6">
         <Tabs defaultValue="manual" className="h-full">
           <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="manual">Manual Insert</TabsTrigger>
