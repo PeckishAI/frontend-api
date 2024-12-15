@@ -1,0 +1,59 @@
+.wrapper {
+  @apply relative;
+}
+
+.content {
+  @apply overflow-hidden;
+}
+
+.contentInner {
+  @apply flex;
+}
+
+.contentVertical {
+  @apply -mt-4 flex-col;
+}
+
+.contentHorizontal {
+  @apply -ml-4;
+}
+
+.item {
+  @apply min-w-0 shrink-0 grow-0 basis-full;
+}
+
+.itemHorizontal {
+  @apply pl-4;
+}
+
+.itemVertical {
+  @apply pt-4;
+}
+
+.previous {
+  @apply absolute h-8 w-8 rounded-full;
+}
+
+.previousHorizontal {
+  @apply -left-12 top-1/2 -translate-y-1/2;
+}
+
+.previousVertical {
+  @apply -top-12 left-1/2 -translate-x-1/2 rotate-90;
+}
+
+.next {
+  @apply absolute h-8 w-8 rounded-full;
+}
+
+.nextHorizontal {
+  @apply -right-12 top-1/2 -translate-y-1/2;
+}
+
+.nextVertical {
+  @apply -bottom-12 left-1/2 -translate-x-1/2 rotate-90;
+}
+
+.icon {
+  @apply h-4 w-4;
+}

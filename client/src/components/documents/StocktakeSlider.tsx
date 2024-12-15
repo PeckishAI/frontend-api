@@ -39,7 +39,7 @@ const mockIngredients: Ingredient[] = [
   { name: "Salt", quantity: 500, unit: "g" },
 ];
 
-export default function StocktakeSlider({ stocktake, open, onOpenChange }: StocktakeSliderProps) {
+export default function StocktakeSlider({ stocktake, open, onOpenChange, className }: StocktakeSliderProps) {
   const [selectedDocIndex, setSelectedDocIndex] = useState(-1);
   
   if (!stocktake) return null;
@@ -62,7 +62,7 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className={styles.sliderContainer}
+        className={cn(styles.sliderContainer, className)}
       >
         <div className={styles.contentContainer}>
           {/* Left side - Images */}
