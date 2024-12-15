@@ -93,8 +93,8 @@ export default function Inventory() {
   };
 
   return (
-    <div className="w-full">
-      <div className="pt-4">
+    <div className="ml-64 w-full">
+      <div className="pt-8">
           <SubSectionNav
             sections={sections}
             activeSection={activeSection}

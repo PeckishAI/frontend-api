@@ -9,8 +9,8 @@ import {
 
 export default function Invoices() {
   return (
-    <div className="w-full">
-      <div className="pt-4 px-8 mb-4">
+    <div className="ml-64 w-full">
+      <div className="pt-8 px-8 mb-4">
         <h1 className="text-3xl font-semibold text-gray-900">Invoices</h1>
       </div>
       <div className="px-8">
