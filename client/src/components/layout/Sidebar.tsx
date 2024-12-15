@@ -40,19 +40,19 @@ export default function Sidebar() {
   
   return (
     <SidebarProvider defaultOpen={!collapsed} open={!collapsed} onOpenChange={(open) => setCollapsed(!open)}>
-      <SidebarComponent variant="sidebar" collapsible="icon">
+      <SidebarComponent variant="inset" collapsible="icon" className="border-r">
         <div className="flex flex-col h-full">
-          <SidebarHeader className="border-b border-sidebar-border px-2">
-            <div className="flex h-[60px] items-center justify-between px-2">
-              <div className="flex items-center gap-2">
+          <SidebarHeader>
+            <div className="flex h-[60px] items-center justify-between px-4">
+              <div className="flex items-center gap-3">
                 <img 
                   src="/images/peckish-logo.jpg" 
                   alt="Peckish Logo" 
                   className="h-8 w-8 rounded-md object-cover shrink-0"
                 />
-                <h1 className="font-semibold text-lg truncate">Peckish</h1>
+                <h1 className="font-semibold text-lg">Peckish</h1>
               </div>
-              <SidebarTrigger />
+              <SidebarTrigger className="h-8 w-8" />
             </div>
           </SidebarHeader>
 
