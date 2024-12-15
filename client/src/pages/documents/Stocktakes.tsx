@@ -119,7 +119,7 @@ export default function Stocktakes() {
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
 
   return (
-    <div className="w-full">
+    <div className="ml-64 w-full">
       <div className="pt-8">
         <div className="px-8 mb-8">
           <h1 className="text-3xl font-semibold text-gray-900">Stocktakes</h1>
