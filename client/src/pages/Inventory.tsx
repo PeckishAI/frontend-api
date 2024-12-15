@@ -14,7 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Download, Plus, Search } from "lucide-react";
 import { InsertItemDialog } from "@/components/inventory/InsertItemDialog";
-import { mockInventory, getAllTags, getAllSuppliers } from '@/lib/data';
+import { useQuery } from '@tanstack/react-query';
 import type { InventoryItem } from '@/lib/types';
 import EditIngredientForm from '@/components/inventory/EditIngredientForm';
 import NewIngredientDialog from '@/components/inventory/NewIngredientDialog';
@@ -34,11 +34,25 @@ export default function Inventory() {
     { id: 'waste', label: 'Waste' },
   ];
 
-  const tags = getAllTags();
-  const suppliers = getAllSuppliers();
+  const { data: inventory, isLoading } = useQuery({
+    queryKey: ['/api/inventory'],
+  });
+
+  const tags = useMemo(() => {
+    if (!inventory) return [];
+    return Array.from(new Set(inventory.flatMap(item => item.tags)));
+  }, [inventory]);
+
+  const suppliers = useMemo(() => {
+    if (!inventory) return [];
+    return Array.from(new Set(inventory.flatMap(item => 
+      item.suppliers.map(s => s.supplierName)
+    )));
+  }, [inventory]);
 
   const filteredInventory = useMemo(() => {
-    return mockInventory.filter(item => {
+    if (!inventory) return [];
+    return inventory.filter(item => {
       const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
       const tagFilters = selectedFilters.filter(f => f.type === 'tag').map(f => f.value);
       const supplierFilters = selectedFilters.filter(f => f.type === 'supplier').map(f => f.value);
