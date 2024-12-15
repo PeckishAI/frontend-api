@@ -107,8 +107,8 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
           </TableHeader>
           <TableBody>
             {data.map((row, rowIndex) => (
-              <TableRow key={rowIndex}>
-                <TableCell className="p-0">
+              <TableRow key={rowIndex} className="border-b">
+                <TableCell className="px-2 py-1">
                   <Input
                     value={row.name}
                     onChange={e => handleCellChange(rowIndex, 'name', e.target.value)}
@@ -117,7 +117,7 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
                     className="border-0 focus:ring-0"
                   />
                 </TableCell>
-                <TableCell className="p-0">
+                <TableCell className="px-2 py-1">
                   <Input
                     value={row.quantity}
                     onChange={e => handleCellChange(rowIndex, 'quantity', e.target.value)}
@@ -126,7 +126,7 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
                     className="border-0 focus:ring-0"
                   />
                 </TableCell>
-                <TableCell className="p-0">
+                <TableCell className="px-2 py-1">
                   <Input
                     value={row.supplier}
                     onChange={e => handleCellChange(rowIndex, 'supplier', e.target.value)}
@@ -135,7 +135,7 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
                     className="border-0 focus:ring-0"
                   />
                 </TableCell>
-                <TableCell className="p-0">
+                <TableCell className="px-2 py-1">
                   <Input
                     value={row.cost}
                     onChange={e => handleCellChange(rowIndex, 'cost', e.target.value)}
