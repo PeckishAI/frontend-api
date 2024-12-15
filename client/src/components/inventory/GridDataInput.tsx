@@ -27,14 +27,12 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
     const clipboardData = e.clipboardData.getData('text');
     const rows = clipboardData.split('\n').filter(row => row.trim());
 
-    // Parse the clipboard data
     const newData = rows.map(row => {
       const [name = '', quantity = '', supplier = '', cost = ''] = row.split('\t');
       return { name, quantity, supplier, cost };
     });
 
     setData(prevData => {
-      // If we have an active cell, insert at that position
       if (activeCell) {
         const result = [...prevData];
         newData.forEach((newRow, index) => {
@@ -43,7 +41,6 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
             result.push(createEmptyRow());
           }
           const row = result[targetRow];
-          // Update each cell in the row
           if (activeCell.col === 0) row.name = newRow.name;
           if (activeCell.col === 1) row.quantity = newRow.quantity;
           if (activeCell.col === 2) row.supplier = newRow.supplier;
@@ -62,7 +59,6 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
       const newData = [...prevData];
       newData[rowIndex] = { ...newData[rowIndex], [field]: value };
       
-      // Add a new row if we're editing the last row and it's not empty
       if (rowIndex === newData.length - 1 && value !== '') {
         newData.push(createEmptyRow());
       }
@@ -79,12 +75,10 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
       const nextRow = (nextCol > 3 || e.key === 'Enter') ? rowIndex + 1 : rowIndex;
       const finalCol = nextCol > 3 ? 0 : nextCol;
 
-      // Add a new row if needed
       if (nextRow >= data.length) {
         setData(prev => [...prev, createEmptyRow()]);
       }
 
-      // Focus the next input
       const inputs = tableRef.current?.getElementsByTagName('input');
       if (inputs) {
         const nextInput = inputs[nextRow * 4 + finalCol];
@@ -97,57 +91,57 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
 
   return (
     <div 
-      className="h-full flex flex-col border rounded-md"
+      className="h-full flex flex-col"
       onPaste={handlePaste}
       tabIndex={0}
     >
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-auto border rounded-md">
         <Table ref={tableRef}>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[35%] bg-white sticky top-0">Name</TableHead>
-              <TableHead className="w-[15%] bg-white sticky top-0">Quantity</TableHead>
-              <TableHead className="w-[35%] bg-white sticky top-0">Supplier</TableHead>
-              <TableHead className="w-[15%] bg-white sticky top-0">Cost</TableHead>
+              <TableHead className="w-[35%] bg-white sticky top-0 z-20">Name</TableHead>
+              <TableHead className="w-[15%] bg-white sticky top-0 z-20">Quantity</TableHead>
+              <TableHead className="w-[35%] bg-white sticky top-0 z-20">Supplier</TableHead>
+              <TableHead className="w-[15%] bg-white sticky top-0 z-20">Cost</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.map((row, rowIndex) => (
               <TableRow key={rowIndex}>
-                <TableCell className="w-[35%]">
+                <TableCell className="p-0">
                   <Input
                     value={row.name}
                     onChange={e => handleCellChange(rowIndex, 'name', e.target.value)}
                     onFocus={() => setActiveCell({ row: rowIndex, col: 0 })}
                     onKeyDown={e => handleKeyDown(e, rowIndex, 0)}
-                    className="w-full"
+                    className="border-0 focus:ring-0"
                   />
                 </TableCell>
-                <TableCell className="w-[15%]">
+                <TableCell className="p-0">
                   <Input
                     value={row.quantity}
                     onChange={e => handleCellChange(rowIndex, 'quantity', e.target.value)}
                     onFocus={() => setActiveCell({ row: rowIndex, col: 1 })}
                     onKeyDown={e => handleKeyDown(e, rowIndex, 1)}
-                    className="w-full"
+                    className="border-0 focus:ring-0"
                   />
                 </TableCell>
-                <TableCell className="w-[35%]">
+                <TableCell className="p-0">
                   <Input
                     value={row.supplier}
                     onChange={e => handleCellChange(rowIndex, 'supplier', e.target.value)}
                     onFocus={() => setActiveCell({ row: rowIndex, col: 2 })}
                     onKeyDown={e => handleKeyDown(e, rowIndex, 2)}
-                    className="w-full"
+                    className="border-0 focus:ring-0"
                   />
                 </TableCell>
-                <TableCell className="w-[15%]">
+                <TableCell className="p-0">
                   <Input
                     value={row.cost}
                     onChange={e => handleCellChange(rowIndex, 'cost', e.target.value)}
                     onFocus={() => setActiveCell({ row: rowIndex, col: 3 })}
                     onKeyDown={e => handleKeyDown(e, rowIndex, 3)}
-                    className="w-full"
+                    className="border-0 focus:ring-0"
                   />
                 </TableCell>
               </TableRow>
