@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { FileText, FileBox, ClipboardCheck, Images, ChevronLeft, ChevronRight, Hash, DollarSign, Building2, Package2, Pencil, Film, User2 } from "lucide-react";
-import StocktakeCard from './documents/Stocktakes';
-import { mockStocktakes } from './documents/Stocktakes';
+import { StocktakeCard, type Stocktake } from '@/components/documents/StocktakeCard';
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import ViewToggle from "@/components/orders/ViewToggle";
 import {
@@ -58,6 +57,42 @@ export type Invoice = {
 };
 
 export default function Documents() {
+const mockStocktakes: Stocktake[] = [
+  {
+    id: "ST-001",
+    date: new Date(2024, 0, 15),
+    user: {
+      name: "John Doe",
+    },
+    documents: [
+      { type: 'image', url: 'stocktake1-1.jpg' },
+      { type: 'video', url: 'stocktake1-2.mp4' },
+    ],
+  },
+  {
+    id: "ST-002",
+    date: new Date(2024, 0, 14),
+    user: {
+      name: "Jane Smith",
+    },
+    documents: [
+      { type: 'video', url: 'stocktake2-1.mp4' },
+      { type: 'image', url: 'stocktake2-2.jpg' },
+    ],
+  },
+  {
+    id: "ST-003",
+    date: new Date(2024, 0, 13),
+    user: {
+      name: "Mike Johnson",
+    },
+    documents: [
+      { type: 'image', url: 'stocktake3-1.jpg' },
+      { type: 'image', url: 'stocktake3-2.jpg' },
+      { type: 'video', url: 'stocktake3-3.mp4' },
+    ],
+  },
+];
   const [activeSection, setActiveSection] = useState('invoices');
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
   const [activeImageIndexes, setActiveImageIndexes] = useState<Record<string, number>>({});
