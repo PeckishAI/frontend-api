@@ -36,7 +36,23 @@ const mockIngredients: Ingredient[] = [
 ];
 
 export default function StocktakeSlider({ stocktake, open, onOpenChange }: StocktakeSliderProps) {
+  const [selectedDocIndex, setSelectedDocIndex] = useState(0);
+  
   if (!stocktake) return null;
+
+  // Mock data for each document
+  const documentIngredients: Record<number, Ingredient[]> = {
+    0: mockIngredients,
+    1: [
+      { name: "Carrots", quantity: 2.5, unit: "kg" },
+      { name: "Potatoes", quantity: 4, unit: "kg" },
+    ],
+    2: [
+      { name: "Fish", quantity: 3, unit: "kg" },
+      { name: "Lemon", quantity: 1, unit: "kg" },
+      { name: "Herbs", quantity: 200, unit: "g" },
+    ],
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -50,7 +66,7 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
             <div className="relative aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden border shadow-sm">
               {/* Image display */}
               <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                {stocktake.documents[0]?.type === 'video' ? (
+                {stocktake.documents[selectedDocIndex]?.type === 'video' ? (
                   <Film className="h-8 w-8" />
                 ) : (
                   <Images className="h-8 w-8" />
@@ -59,7 +75,7 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
 
               {/* Image count indicator */}
               <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
-                Document 1 of {stocktake.documents.length}
+                Document {selectedDocIndex + 1} of {stocktake.documents.length}
               </div>
             </div>
 
@@ -68,7 +84,12 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
               {stocktake.documents.map((doc, index) => (
                 <button
                   key={index}
-                  className="relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm transition-all hover:scale-105"
+                  onClick={() => setSelectedDocIndex(index)}
+                  className={`relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm transition-all ${
+                    index === selectedDocIndex 
+                      ? 'ring-2 ring-primary scale-95' 
+                      : 'hover:scale-105'
+                  }`}
                 >
                   <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-400">
                     {doc.type === 'video' ? (
@@ -122,7 +143,7 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
               <div className="mb-6">
                 <h3 className="text-lg font-medium">Inventory Items</h3>
                 <p className="text-sm text-muted-foreground">
-                  Total of {mockIngredients.length} items recorded in this stocktake
+                  Total of {(documentIngredients[selectedDocIndex] || []).length} items recorded in document {selectedDocIndex + 1}
                 </p>
               </div>
 
@@ -136,7 +157,7 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {mockIngredients.map((ingredient) => (
+                    {(documentIngredients[selectedDocIndex] || []).map((ingredient) => (
                       <TableRow key={ingredient.name}>
                         <TableCell>{ingredient.name}</TableCell>
                         <TableCell className="text-right">{ingredient.quantity}</TableCell>
