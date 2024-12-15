@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
+	"github.com/restaurant-supplier/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -28,6 +30,26 @@ func InitDB() error {
 	db, err := gorm.Open(postgres.Open(dsn), config)
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %v", err)
+	}
+
+	// Configure connection pool
+	sqlDB, err := db.DB()
+	if err != nil {
+		return fmt.Errorf("failed to get database instance: %v", err)
+	}
+
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	// Auto migrate the schema
+	err = db.AutoMigrate(
+		&models.Supplier{},
+		&models.Order{},
+		&models.OrderItem{},
+	)
+	if err != nil {
+		return fmt.Errorf("failed to migrate database: %v", err)
 	}
 
 	DB = db
