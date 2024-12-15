@@ -11,11 +11,11 @@ function App() {
     <div className="flex">
       <Sidebar />
       <Switch>
-        <Route path="/" component={Orders} />
+        <Route path="/" component={General} />
         <Route path="/inventory" component={Inventory} />
         <Route path="/menu" component={Menu} />
+        <Route path="/orders" component={Orders} />
         <Route path="/documents" component={Documents} />
-        <Route path="/general" component={General} />
       </Switch>
     </div>
   );

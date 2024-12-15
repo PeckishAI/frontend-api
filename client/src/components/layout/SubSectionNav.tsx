@@ -19,7 +19,7 @@ export default function SubSectionNav({
   return (
     <div className="-mt-1">
       <Tabs value={activeSection} onValueChange={onSectionChange}>
-        <TabsList className="w-full justify-start bg-transparent border-b-0 px-8 py-2 mb-4">
+        <TabsList className="w-full justify-start bg-transparent border-b-0 px-8 py-2 mb-2">
           {sections.map((section) => (
             <TabsTrigger
               key={section.id}
