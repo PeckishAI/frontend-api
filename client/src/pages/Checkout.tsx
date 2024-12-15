@@ -6,10 +6,6 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -18,7 +14,6 @@ function CheckoutForm() {
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -40,16 +35,6 @@ function CheckoutForm() {
 
       if (submitError) {
         setError(submitError.message ?? "An error occurred with the payment");
-        toast({
-          title: "Payment Failed",
-          description: submitError.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Payment Successful",
-          description: "Your payment has been processed successfully.",
-        });
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
@@ -60,41 +45,48 @@ function CheckoutForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <PaymentElement
-            className="stripe-element"
-            options={{
-              layout: {
-                type: 'tabs',
-                defaultCollapsed: false,
-              }
-            }}
-          />
+    <form onSubmit={handleSubmit}>
+      <PaymentElement 
+        options={{
+          layout: {
+            type: 'tabs',
+            defaultCollapsed: false,
+          },
+          fields: {
+            billingDetails: {
+              name: 'auto',
+              email: 'auto',
+            },
+          },
+          wallets: {
+            applePay: 'auto',
+            googlePay: 'auto',
+          },
+        }} 
+      />
+      
+      {error && (
+        <div style={{ color: '#df1b41', marginTop: '8px', fontSize: '14px' }}>
+          {error}
         </div>
+      )}
 
-        {error && (
-          <div className="text-sm text-red-500">
-            {error}
-          </div>
-        )}
-      </div>
-
-      <Button 
-        type="submit" 
+      <button 
         disabled={!stripe || isLoading}
-        className="w-full"
+        style={{
+          backgroundColor: '#635BFF',
+          padding: '8px 16px',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          fontSize: '16px',
+          cursor: 'pointer',
+          width: '100%',
+          marginTop: '16px',
+        }}
       >
-        {isLoading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Processing...
-          </>
-        ) : (
-          'Subscribe'
-        )}
-      </Button>
+        {isLoading ? "Processing..." : "Subscribe"}
+      </button>
     </form>
   );
 }
@@ -105,31 +97,45 @@ export default function CheckoutPage() {
     amount: 2000, // $20.00
     currency: 'usd',
     appearance: {
-      theme: 'stripe' as const,
+      theme: 'stripe',
+      labels: 'floating',
       variables: {
-        colorPrimary: '#0A2540',
-        colorBackground: '#ffffff',
-        colorText: '#30313d',
-        colorDanger: '#df1b41',
         fontFamily: 'system-ui, sans-serif',
-        spacingUnit: '4px',
+        fontWeightNormal: '400',
         borderRadius: '4px',
-      },
+        colorBackground: '#ffffff',
+        colorPrimary: '#635BFF',
+        colorPrimaryText: '#ffffff',
+        colorText: '#30313d',
+        colorTextSecondary: '#6b7294',
+        colorTextPlaceholder: '#6b7294',
+        colorIconTab: '#6b7294',
+        colorLogo: '#635BFF'
+      }
     },
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Complete your subscription</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Elements stripe={stripePromise} options={options}>
-            <CheckoutForm />
-          </Elements>
-        </CardContent>
-      </Card>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1rem',
+      backgroundColor: '#f5f5f5'
+    }}>
+      <div style={{
+        width: '100%',
+        maxWidth: '500px',
+        backgroundColor: 'white',
+        padding: '2rem',
+        borderRadius: '8px',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+      }}>
+        <Elements stripe={stripePromise} options={options}>
+          <CheckoutForm />
+        </Elements>
+      </div>
     </div>
   );
 }
