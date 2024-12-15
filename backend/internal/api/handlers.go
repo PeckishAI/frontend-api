@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -12,15 +13,28 @@ import (
 // GetInventory returns all ingredients with their supplier information
 func GetInventory(c *gin.Context) {
 	log.Printf("Getting inventory items")
+	
+	db := database.GetDB()
+	if db == nil {
+		log.Printf("Error: Database connection is nil")
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Database connection not initialized",
+		})
+		return
+	}
+
 	var ingredients []models.Ingredient
-	result := database.GetDB().
+	result := db.Debug().
 		Preload("IngredientSuppliers").
 		Preload("IngredientSuppliers.Supplier").
 		Find(&ingredients)
 	
 	if result.Error != nil {
 		log.Printf("Error fetching inventory: %v", result.Error)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch inventory"})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to fetch inventory",
+			"details": result.Error.Error(),
+		})
 		return
 	}
 	

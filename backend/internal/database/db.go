@@ -18,15 +18,21 @@ func InitDB() error {
 	log.Printf("Initializing database connection")
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
+		log.Printf("DATABASE_URL not found, constructing from individual variables")
+		host := os.Getenv("PGHOST")
+		user := os.Getenv("PGUSER")
+		password := os.Getenv("PGPASSWORD")
+		dbname := os.Getenv("PGDATABASE")
+		port := os.Getenv("PGPORT")
+		
+		if host == "" || user == "" || password == "" || dbname == "" || port == "" {
+			return fmt.Errorf("missing required database environment variables")
+		}
+		
 		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-			os.Getenv("DB_HOST"),
-			os.Getenv("DB_USER"),
-			os.Getenv("DB_PASSWORD"),
-			os.Getenv("DB_NAME"),
-			os.Getenv("DB_PORT"),
-		)
+			host, user, password, dbname, port)
 	}
-	log.Printf("Database connection string configured")
+	log.Printf("Database connection string configured successfully")
 
 	config := &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
@@ -43,21 +49,32 @@ func InitDB() error {
 		return fmt.Errorf("failed to get database instance: %v", err)
 	}
 
+	// Test the connection
+	if err := sqlDB.Ping(); err != nil {
+		return fmt.Errorf("failed to ping database: %v", err)
+	}
+	log.Printf("Successfully connected to database")
+
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	// Auto migrate the schema
-	err = db.AutoMigrate(
+	// Auto migrate the schema with detailed logging
+	log.Printf("Starting database migration...")
+	for _, model := range []interface{}{
 		&models.Supplier{},
 		&models.Order{},
 		&models.OrderItem{},
 		&models.Ingredient{},
 		&models.IngredientSupplier{},
-	)
-	if err != nil {
-		return fmt.Errorf("failed to migrate database: %v", err)
+	} {
+		log.Printf("Migrating model: %T", model)
+		if err := db.AutoMigrate(model); err != nil {
+			return fmt.Errorf("failed to migrate %T: %v", model, err)
+		}
+		log.Printf("Successfully migrated %T", model)
 	}
+	log.Printf("Database migration completed successfully")
 
 	DB = db
 	log.Println("Connected to database successfully")

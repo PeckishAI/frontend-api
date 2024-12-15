@@ -197,12 +197,23 @@ export function registerRoutes(app: Express): Server {
   // Forward these routes to Go backend
   app.get("/api/inventory", async (_req, res) => {
     try {
+      console.log("Fetching inventory from Go backend...");
       const response = await fetch("http://localhost:5000/api/inventory");
       const data = await response.json();
+      
+      if (!response.ok) {
+        console.error("Go backend error:", data);
+        return res.status(response.status).json(data);
+      }
+      
+      console.log("Inventory data received:", data);
       res.json(data);
     } catch (error) {
       console.error("Error fetching inventory:", error);
-      res.status(500).json({ message: "Error fetching inventory data" });
+      res.status(500).json({ 
+        message: "Error fetching inventory data",
+        error: error.message 
+      });
     }
   });
 

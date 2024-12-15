@@ -51,6 +51,13 @@ func main() {
 	// API routes
 	apiGroup := r.Group("/api")
 	{
+		// Test endpoint
+		apiGroup.GET("/test", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{
+				"message": "API is working",
+			})
+		})
+
 		// Suppliers
 		apiGroup.GET("/suppliers", api.GetSuppliers)
 		apiGroup.POST("/suppliers", api.CreateSupplier)
@@ -62,6 +69,11 @@ func main() {
 		// Inventory
 		apiGroup.GET("/inventory", api.GetInventory)
 		apiGroup.POST("/inventory", api.CreateIngredient)
+	}
+
+	// Print all registered routes
+	for _, route := range r.Routes() {
+		log.Printf("Registered route: %s %s", route.Method, route.Path)
 	}
 
 	// Health check
