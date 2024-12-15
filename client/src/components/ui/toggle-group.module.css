@@ -1,0 +1,11 @@
+.root {
+  @apply flex items-center justify-center gap-1;
+}
+
+.item {
+  @apply inherit-base-styles;
+}
+
+.context {
+  @apply variant-default size-default;
+}
