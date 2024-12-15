@@ -82,49 +82,41 @@ export default function Inventory() {
     <div className="p-8 ml-64 w-full">
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-semibold text-gray-900">Inventory</h1>
-          <div className="flex gap-4">
-            {activeSection === 'ingredients' && (
-              <div className="flex items-center gap-3">
-                <Button onClick={() => setIsNewItemOpen(true)} className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  New Item
-                </Button>
-                <div className="flex items-center gap-2">
-                  <Button onClick={exportToCsv} variant="outline" size="icon">
-                    <Download className="h-4 w-4" />
-                  </Button>
-                  <InsertItemDialog />
-                  <FilterPopover
-                    tags={tags}
-                    suppliers={suppliers}
-                    selectedFilters={selectedFilters}
-                    onFilterChange={setSelectedFilters}
-                  />
-                </div>
-              </div>
-            )}
+            <h1 className="text-3xl font-semibold text-gray-900">Inventory</h1>
           </div>
-        </div>
-        <SubSectionNav
-          sections={sections}
-          activeSection={activeSection}
-          onSectionChange={setActiveSection}
-        />
+          <SubSectionNav
+            sections={sections}
+            activeSection={activeSection}
+            onSectionChange={setActiveSection}
+          />
 
-        {activeSection === 'ingredients' && (
-          <div className="mb-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search ingredients..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
+          {activeSection === 'ingredients' && (
+            <div className="flex items-center gap-4 mb-6">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search ingredients..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              <Button onClick={() => setIsNewItemOpen(true)} className="gap-2">
+                <Plus className="h-4 w-4" />
+                New Item
+              </Button>
+              <Button onClick={exportToCsv} variant="outline" size="icon">
+                <Download className="h-4 w-4" />
+              </Button>
+              <InsertItemDialog />
+              <FilterPopover
+                tags={tags}
+                suppliers={suppliers}
+                selectedFilters={selectedFilters}
+                onFilterChange={setSelectedFilters}
               />
             </div>
-          </div>
-        )}
+          )}
       </div>
 
       {activeSection === 'ingredients' && (
