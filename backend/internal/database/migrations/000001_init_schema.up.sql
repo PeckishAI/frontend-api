@@ -97,3 +97,19 @@ CREATE TABLE procurement_ingredients (
     updated_at_utc TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP
 );
+
+CREATE TABLE order_items (
+    uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    order_uuid UUID NOT NULL REFERENCES orders(uuid),
+    ingredient_uuid UUID NOT NULL REFERENCES ingredients(uuid),
+    unit_uuid UUID NOT NULL REFERENCES units(uuid),
+    quantity DOUBLE PRECISION NOT NULL,
+    unit_cost DOUBLE PRECISION NOT NULL,
+    currency VARCHAR,
+    status VARCHAR NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    created_at_utc TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    updated_at_utc TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP
+);
