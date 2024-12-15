@@ -30,71 +30,74 @@ export default function Sidebar() {
   const { toast } = useToast();
 
   return (
-    <div className="w-64 h-screen bg-white border-r border-gray-200 fixed left-0 top-0">
-      <div className="flex flex-col h-full">
-        <div className="p-4 border-b border-gray-200">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-semibold">
-              R
+    <div className="w-64 h-screen bg-white fixed left-0 top-0">
+      <div className="h-full border-r border-gray-200 [&>*:has(a[data-active=true])]:border-r-transparent">
+        <div className="flex flex-col h-full">
+          <div className="p-4 border-b border-gray-200">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-semibold">
+                R
+              </div>
+              <h1 className="font-semibold text-lg">Restaurant OS</h1>
             </div>
-            <h1 className="font-semibold text-lg">Restaurant OS</h1>
           </div>
-        </div>
-        <nav className="flex-1 overflow-y-auto">
-          <div className="p-2 border-b border-gray-200">
-            <RestaurantSelector
-              restaurants={mockRestaurants}
-              currentRestaurant={currentRestaurant}
-              onRestaurantChange={setCurrentRestaurant}
-              onCreateNew={() => {
-                console.log("Create new restaurant");
+          <nav className="flex-1 overflow-y-auto">
+            <div className="p-2 border-b border-gray-200">
+              <RestaurantSelector
+                restaurants={mockRestaurants}
+                currentRestaurant={currentRestaurant}
+                onRestaurantChange={setCurrentRestaurant}
+                onCreateNew={() => {
+                  console.log("Create new restaurant");
+                }}
+                onManageRestaurants={() => {
+                  console.log("Manage restaurants");
+                }}
+              />
+            </div>
+            <div className="py-2">
+              <ul className="flex flex-col">
+                {menuItems.map((item) => {
+                  const Icon = item.icon;
+                  const [location] = useLocation();
+                  const isActive = location === item.href;
+                  
+                  return (
+                    <li key={item.href}>
+                      <Link 
+                        href={item.href}
+                        data-active={isActive}
+                        className={cn(
+                          "flex items-center gap-3 px-6 py-2 text-gray-700 hover:bg-gray-100/50 hover:text-gray-900 transition-colors relative",
+                          isActive && "bg-background text-primary font-medium"
+                        )}
+                      >
+                        <Icon className="h-5 w-5" />
+                        {item.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </nav>
+          <div className="border-t border-gray-200 mt-auto">
+            <UserProfileSection
+              user={mockUser}
+              onSignOut={() => {
+                toast({
+                  title: "Signed out",
+                  description: "You have been signed out of your account",
+                });
               }}
-              onManageRestaurants={() => {
-                console.log("Manage restaurants");
+              onViewProfile={() => {
+                console.log("View profile");
+              }}
+              onSettings={() => {
+                console.log("Settings");
               }}
             />
           </div>
-          <div className="py-2">
-            <ul className="flex flex-col">
-              {menuItems.map((item) => {
-                const Icon = item.icon;
-                const [location] = useLocation();
-                const isActive = location === item.href;
-                
-                return (
-                  <li key={item.href}>
-                    <Link 
-                      href={item.href}
-                      className={cn(
-                        "flex items-center gap-3 px-6 py-2 text-gray-700 hover:bg-gray-100/50 hover:text-gray-900 transition-colors relative",
-                        isActive && "bg-background text-primary font-medium before:absolute before:left-0 before:top-0 before:h-full before:w-[2px] before:bg-primary"
-                      )}
-                    >
-                      <Icon className="h-5 w-5" />
-                      {item.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </nav>
-        <div className="border-t border-gray-200 mt-auto">
-          <UserProfileSection
-            user={mockUser}
-            onSignOut={() => {
-              toast({
-                title: "Signed out",
-                description: "You have been signed out of your account",
-              });
-            }}
-            onViewProfile={() => {
-              console.log("View profile");
-            }}
-            onSettings={() => {
-              console.log("Settings");
-            }}
-          />
         </div>
       </div>
     </div>
