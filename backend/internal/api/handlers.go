@@ -11,6 +11,7 @@ import (
 
 // GetInventory returns all ingredients with their supplier information
 func GetInventory(c *gin.Context) {
+	log.Printf("Getting inventory items")
 	var ingredients []models.Ingredient
 	result := database.GetDB().
 		Preload("IngredientSuppliers").
@@ -18,9 +19,12 @@ func GetInventory(c *gin.Context) {
 		Find(&ingredients)
 	
 	if result.Error != nil {
+		log.Printf("Error fetching inventory: %v", result.Error)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch inventory"})
 		return
 	}
+	
+	log.Printf("Found %d ingredients", len(ingredients))
 
 	type SupplierInfo struct {
 		SupplierID   uint    `json:"supplierId"`
@@ -143,12 +147,15 @@ func CreateIngredient(c *gin.Context) {
 
 // GetSuppliers returns all suppliers
 func GetSuppliers(c *gin.Context) {
+	log.Printf("Getting suppliers")
 	var suppliers []models.Supplier
 	result := database.GetDB().Find(&suppliers)
 	if result.Error != nil {
+		log.Printf("Error fetching suppliers: %v", result.Error)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch suppliers"})
 		return
 	}
+	log.Printf("Found %d suppliers", len(suppliers))
 	c.JSON(http.StatusOK, suppliers)
 }
 
