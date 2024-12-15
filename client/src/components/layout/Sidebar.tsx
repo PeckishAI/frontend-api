@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Package, ClipboardList, MenuSquare, Files, ChartBar, PanelLeftClose, PanelLeft } from "lucide-react";
+import { Package, ClipboardList, MenuSquare, Files, ChartBar } from "lucide-react";
 import { RestaurantSelector, type Restaurant } from "./RestaurantSelector";
 import { UserProfileSection } from "./UserProfileSection";
 import { useToast } from "@/hooks/use-toast";
@@ -12,6 +12,7 @@ import {
   SidebarFooter,
   SidebarProvider,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 const menuItems = [
@@ -33,106 +34,98 @@ const mockUser = {
   avatar: undefined, // Will use fallback
 };
 
-export default function Sidebar() {
+function SidebarMainContent() {
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
+  const [location] = useLocation();
   const [currentRestaurant, setCurrentRestaurant] = useState<Restaurant | undefined>(mockRestaurants[0]);
   const { toast } = useToast();
-  const [collapsed, setCollapsed] = useState(false);
-  
+
   return (
-    <SidebarProvider defaultOpen={!collapsed} open={!collapsed} onOpenChange={(open) => setCollapsed(!open)}>
-      <SidebarComponent variant="inset" collapsible="icon" className="border-r">
-        <div className="flex flex-col h-full">
-          <SidebarHeader>
-            <div className="flex h-[60px] items-center justify-between px-4">
-              <div className="flex items-center gap-3">
-                <img 
-                  src="/images/peckish-logo.jpg" 
-                  alt="Peckish Logo" 
-                  className="h-8 w-8 rounded-md object-cover shrink-0"
-                />
-                <h1 className="font-semibold text-lg">Peckish</h1>
-              </div>
-              <SidebarTrigger className="h-8 w-8" />
-            </div>
-          </SidebarHeader>
-
-          <SidebarContent>
-            {!collapsed && (
-              <div className="p-2 border-b border-gray-200">
-                <RestaurantSelector
-                  restaurants={mockRestaurants}
-                  currentRestaurant={currentRestaurant}
-                  onRestaurantChange={setCurrentRestaurant}
-                  onCreateNew={() => {
-                    console.log("Create new restaurant");
-                  }}
-                  onManageRestaurants={() => {
-                    window.location.href = "/restaurant-management";
-                  }}
-                />
-              </div>
-            )}
-            
-            <nav>
-              <ul className="space-y-1 p-2">
-                {menuItems.map((item) => {
-                  const Icon = item.icon;
-                  const [location] = useLocation();
-                  const isActive = location === item.href;
-                  
-                  return (
-                    <li key={item.href}>
-                      <Link 
-                        href={item.href}
-                        className={cn(
-                          "flex h-10 w-full items-center rounded-md px-3 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                          isActive && "bg-accent text-accent-foreground",
-                          "gap-3"
-                        )}
-                      >
-                        <Icon className="h-5 w-5 shrink-0" />
-                        <span className="truncate">{item.label}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </nav>
-          </SidebarContent>
-
-          <SidebarFooter className="border-t border-gray-200 mt-auto">
-            {!collapsed ? (
-              <UserProfileSection
-                user={mockUser}
-                onSignOut={() => {
-                  toast({
-                    title: "Signed out",
-                    description: "You have been signed out of your account",
-                  });
-                }}
-                onViewProfile={() => {
-                  window.location.href = "/profile";
-                }}
-                onSettings={() => {
-                  console.log("Settings");
-                }}
-              />
-            ) : (
-              <div className="p-2 flex justify-center">
-                <button
-                  onClick={() => window.location.href = "/profile"}
-                  className="p-2 rounded-full hover:bg-gray-100"
-                >
-                  <img
-                    src={mockUser.avatar ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(mockUser.name)}`}
-                    alt={mockUser.name}
-                    className="h-8 w-8 rounded-full"
-                  />
-                </button>
-              </div>
-            )}
-          </SidebarFooter>
+    <div className="flex flex-col h-full bg-white">
+      <SidebarHeader>
+        <div className="flex h-[60px] items-center px-4">
+          <div className="flex items-center gap-3 flex-1">
+            <img 
+              src="/images/peckish-logo.jpg" 
+              alt="Peckish Logo" 
+              className="h-8 w-8 rounded-md object-cover shrink-0"
+            />
+            <h1 className="font-semibold text-lg group-data-[collapsible=icon]:hidden">Peckish</h1>
+          </div>
+          <SidebarTrigger className="h-7 w-7" />
         </div>
+      </SidebarHeader>
+
+      <SidebarContent>
+        {!isCollapsed && (
+          <div className="px-2 pb-2 border-b border-gray-200">
+            <RestaurantSelector
+              restaurants={mockRestaurants}
+              currentRestaurant={currentRestaurant}
+              onRestaurantChange={setCurrentRestaurant}
+              onCreateNew={() => {
+                console.log("Create new restaurant");
+              }}
+              onManageRestaurants={() => {
+                window.location.href = "/restaurant-management";
+              }}
+            />
+          </div>
+        )}
+        
+        <nav>
+          <ul className="space-y-1 p-2">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = location === item.href;
+              
+              return (
+                <li key={item.href}>
+                  <Link 
+                    href={item.href}
+                    className={cn(
+                      "flex h-10 w-full items-center rounded-md px-3 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                      isActive && "bg-accent text-accent-foreground",
+                      "gap-3"
+                    )}
+                  >
+                    <Icon className="h-5 w-5 shrink-0" />
+                    <span className="truncate group-data-[collapsible=icon]:hidden">{item.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </SidebarContent>
+
+      <SidebarFooter className="border-t border-gray-200 mt-auto">
+        <UserProfileSection
+          user={mockUser}
+          onSignOut={() => {
+            toast({
+              title: "Signed out",
+              description: "You have been signed out of your account",
+            });
+          }}
+          onViewProfile={() => {
+            window.location.href = "/profile";
+          }}
+          onSettings={() => {
+            console.log("Settings");
+          }}
+        />
+      </SidebarFooter>
+    </div>
+  );
+}
+
+export default function Sidebar() {
+  return (
+    <SidebarProvider>
+      <SidebarComponent variant="inset" collapsible="icon" className="border-r border-border">
+        <SidebarMainContent />
       </SidebarComponent>
     </SidebarProvider>
   );
