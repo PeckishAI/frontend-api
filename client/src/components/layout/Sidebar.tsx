@@ -53,7 +53,7 @@ export default function Sidebar() {
                   console.log("Create new restaurant");
                 }}
                 onManageRestaurants={() => {
-                  console.log("Manage restaurants");
+                  window.location.href = "/restaurant-management";
                 }}
               />
             </div>
