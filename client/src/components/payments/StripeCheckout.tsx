@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import styles from "./StripeCheckout.module.css";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -18,9 +20,10 @@ interface CheckoutFormProps {
   amount: number;
   onSuccess?: () => void;
   onCancel?: () => void;
+  className?: string;
 }
 
-function CheckoutForm({ amount, onSuccess, onCancel }: CheckoutFormProps) {
+function CheckoutForm({ amount, onSuccess, onCancel, className }: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
@@ -68,16 +71,16 @@ function CheckoutForm({ amount, onSuccess, onCancel }: CheckoutFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
+    <form onSubmit={handleSubmit} className={cn(styles.form, className)}>
+      <div className={styles.amountSection}>
         <div className="space-y-2">
-          <p className="text-sm font-medium">Amount to pay</p>
-          <p className="text-2xl font-bold">${(amount / 100).toFixed(2)}</p>
+          <p className={styles.amountLabel}>Amount to pay</p>
+          <p className={styles.amountValue}>${(amount / 100).toFixed(2)}</p>
         </div>
 
-        <div className="space-y-2">
-          <p className="text-sm font-medium">Card Details</p>
-          <div className="rounded-md border p-4">
+        <div className={styles.cardSection}>
+          <p className={styles.cardLabel}>Card Details</p>
+          <div className={styles.cardInput}>
             <CardElement
               options={{
                 style: {
@@ -98,13 +101,13 @@ function CheckoutForm({ amount, onSuccess, onCancel }: CheckoutFormProps) {
         </div>
 
         {error && (
-          <div className="text-sm text-red-500">
+          <div className={styles.error}>
             {error}
           </div>
         )}
       </div>
 
-      <div className="flex justify-end gap-4">
+      <div className={styles.buttonsContainer}>
         <Button
           type="button"
           variant="outline"
@@ -113,7 +116,11 @@ function CheckoutForm({ amount, onSuccess, onCancel }: CheckoutFormProps) {
         >
           Cancel
         </Button>
-        <Button type="submit" disabled={!stripe || isLoading}>
+        <Button 
+          type="submit" 
+          disabled={!stripe || isLoading}
+          className={styles.submitButton}
+        >
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -128,7 +135,7 @@ function CheckoutForm({ amount, onSuccess, onCancel }: CheckoutFormProps) {
   );
 }
 
-export default function StripeCheckout({ amount, onSuccess, onCancel }: CheckoutFormProps) {
+export default function StripeCheckout({ amount, onSuccess, onCancel, className }: CheckoutFormProps) {
   const options = {
     mode: 'payment' as const,
     amount,
@@ -139,7 +146,7 @@ export default function StripeCheckout({ amount, onSuccess, onCancel }: Checkout
   };
 
   return (
-    <Card>
+    <Card className={cn(styles.checkoutCard, className)}>
       <CardHeader>
         <CardTitle>Checkout</CardTitle>
       </CardHeader>
