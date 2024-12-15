@@ -17,24 +17,26 @@ export function InsertItemDialog() {
           Insert
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] h-[600px] flex flex-col">
         <Tabs defaultValue="manual" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="manual">Manual Insert</TabsTrigger>
             <TabsTrigger value="file">Insert from File</TabsTrigger>
           </TabsList>
-          <TabsContent value="manual" className="mt-4">
+          <TabsContent value="manual" className="mt-4 flex-1 flex flex-col min-h-0">
             <h3 className="mb-4 text-lg font-medium">Add New Ingredient</h3>
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
+            <div className="flex flex-col flex-1 min-h-0">
+              <p className="text-sm text-muted-foreground mb-4">
                 Enter data manually or paste from a spreadsheet (one row per ingredient).
               </p>
-              <GridDataInput
-                onChange={(data) => {
-                  console.log('Grid data:', data);
-                }}
-              />
-              <div className="flex justify-end">
+              <div className="flex-1 min-h-0 overflow-auto">
+                <GridDataInput
+                  onChange={(data) => {
+                    console.log('Grid data:', data);
+                  }}
+                />
+              </div>
+              <div className="flex justify-end pt-4">
                 <Button type="submit" onClick={() => {
                   // Handle submission
                   setOpen(false);
@@ -44,7 +46,7 @@ export function InsertItemDialog() {
               </div>
             </div>
           </TabsContent>
-          <TabsContent value="file" className="mt-4">
+          <TabsContent value="file" className="mt-4 flex-1 flex flex-col min-h-0">
             <h3 className="mb-4 text-lg font-medium">Import from File</h3>
             <p className="text-sm text-muted-foreground mb-4">
               Upload a CSV file with your inventory items. The file should include columns for name, quantity, unit, and tags.
