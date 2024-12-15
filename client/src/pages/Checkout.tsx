@@ -6,7 +6,9 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+// Initialize Stripe with your publishable key
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 function CheckoutForm() {
@@ -45,26 +47,16 @@ function CheckoutForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-6">
       <PaymentElement />
       {error && (
-        <div style={{ color: '#df1b41', marginTop: '8px', fontSize: '14px' }}>
+        <div className="text-sm text-red-500">
           {error}
         </div>
       )}
       <button
         disabled={!stripe || isLoading}
-        style={{
-          backgroundColor: '#635BFF',
-          padding: '8px 16px',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          fontSize: '16px',
-          cursor: 'pointer',
-          width: '100%',
-          marginTop: '16px',
-        }}
+        className="w-full py-2 px-4 bg-[#635BFF] text-white rounded-md hover:bg-[#635BFF]/90 disabled:opacity-50"
       >
         {isLoading ? "Processing..." : "Pay now"}
       </button>
@@ -73,36 +65,27 @@ function CheckoutForm() {
 }
 
 export default function Checkout() {
+  const [clientSecret] = useState("test_secret"); // In a real app, this would come from your server
+
   const options = {
-    mode: 'subscription' as const,
-    amount: 2000,
-    currency: 'usd',
+    clientSecret,
     appearance: {
       theme: 'stripe' as const,
     },
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '1rem',
-      backgroundColor: '#f5f5f5'
-    }}>
-      <div style={{
-        width: '100%',
-        maxWidth: '500px',
-        backgroundColor: 'white',
-        padding: '2rem',
-        borderRadius: '8px',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-      }}>
-        <Elements stripe={stripePromise} options={options}>
-          <CheckoutForm />
-        </Elements>
-      </div>
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Complete your payment</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Elements stripe={stripePromise} options={options}>
+            <CheckoutForm />
+          </Elements>
+        </CardContent>
+      </Card>
     </div>
   );
 }
