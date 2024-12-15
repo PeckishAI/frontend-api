@@ -27,8 +27,7 @@ export default function Orders() {
   return (
     <div className="p-8 ml-64 w-full">
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-semibold text-gray-900">Orders</h1>
+        <div className="flex items-center justify-end mb-6">
           <div className="flex items-center gap-4">
             {activeSection === 'orders' && (
               <>
