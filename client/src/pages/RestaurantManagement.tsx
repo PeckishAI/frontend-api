@@ -29,11 +29,22 @@ const priceBuckets = [
 ];
 
 const paymentMethods = [
-  { value: "stripe", label: "Stripe" },
-  { value: "square", label: "Square" },
-  { value: "paypal", label: "PayPal" },
-  { value: "manual", label: "Manual Payment" },
+  { value: "stripe", label: "Stripe", requiresSetup: true },
+  { value: "square", label: "Square", requiresSetup: true },
+  { value: "paypal", label: "PayPal", requiresSetup: true },
+  { value: "manual", label: "Manual Payment", requiresSetup: false },
 ];
+
+interface Restaurant {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+  priceBucket: string;
+  paymentMethod: string;
+  paymentDetails: string;
+  stripeAccountId?: string;
+}
 
 const restaurantSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -68,9 +79,30 @@ const mockRestaurants = [
   },
 ];
 
+// Placeholder for Stripe configuration component
+const StripeConfig = ({ onSetupComplete, onCancel }: { onSetupComplete: (accountId: string) => void; onCancel: () => void }) => {
+  // Replace with actual Stripe setup logic
+  const [accountId, setAccountId] = useState('');
+  const handleSetup = () => {
+    // Simulate Stripe setup
+    const simulatedAccountId = 'acct_XXXXXXXXXXXXXXX'; // Replace with actual Stripe account ID generation
+    setAccountId(simulatedAccountId);
+    onSetupComplete(simulatedAccountId);
+  };
+  return (
+    <div>
+      <p>Stripe Configuration Placeholder</p>
+      <Button onClick={handleSetup}>Connect Stripe</Button>
+      <Button variant="ghost" onClick={onCancel}>Cancel</Button>
+    </div>
+  );
+};
+
+
 export default function RestaurantManagement() {
   const { toast } = useToast();
-  const [selectedRestaurant, setSelectedRestaurant] = useState<typeof mockRestaurants[0] | null>(null);
+  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
+  const [showStripeSetup, setShowStripeSetup] = useState(false);
 
   const form = useForm<RestaurantFormValues>({
     resolver: zodResolver(restaurantSchema),
@@ -238,6 +270,23 @@ export default function RestaurantManagement() {
                           </SelectContent>
                         </Select>
                         <FormMessage />
+                        {field.value === "stripe" && !selectedRestaurant?.stripeAccountId && (
+                          <div className="mt-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setShowStripeSetup(true)}
+                            >
+                              Configure Stripe
+                            </Button>
+                          </div>
+                        )}
+                        {field.value === "stripe" && selectedRestaurant?.stripeAccountId && (
+                          <div className="mt-2 text-sm text-muted-foreground">
+                            Stripe account connected: {selectedRestaurant.stripeAccountId}
+                          </div>
+                        )}
                       </FormItem>
                     )}
                   />
@@ -252,6 +301,23 @@ export default function RestaurantManagement() {
                     </Button>
                     <Button type="submit">Save Changes</Button>
                   </div>
+                  {showStripeSetup && (
+                    <div className="mt-6 p-4 border rounded-lg bg-muted">
+                      <StripeConfig
+                        onSetupComplete={(accountId) => {
+                          setSelectedRestaurant(prev => 
+                            prev ? { ...prev, stripeAccountId: accountId } : null
+                          );
+                          setShowStripeSetup(false);
+                          toast({
+                            title: "Stripe Connected",
+                            description: "Successfully connected Stripe to this restaurant.",
+                          });
+                        }}
+                        onCancel={() => setShowStripeSetup(false)}
+                      />
+                    </div>
+                  )}
                 </form>
               </Form>
             </div>
