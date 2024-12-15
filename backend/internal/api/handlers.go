@@ -12,41 +12,57 @@ import (
 // GetInventory returns all ingredients with their supplier information
 func GetInventory(c *gin.Context) {
 	var ingredients []models.Ingredient
-	result := database.GetDB().Find(&ingredients)
+	result := database.GetDB().
+		Preload("IngredientSuppliers").
+		Preload("IngredientSuppliers.Supplier").
+		Find(&ingredients)
+	
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch inventory"})
 		return
 	}
 
-	// For each ingredient, get its suppliers
-	type IngredientResponse struct {
-		models.Ingredient
-		Suppliers []struct {
-			SupplierID   uint    `json:"supplierId"`
-			SupplierName string  `json:"supplierName"`
-			UnitCost     float64 `json:"unitCost"`
-			PackSize     string  `json:"packSize"`
-		} `json:"suppliers"`
+	type SupplierInfo struct {
+		SupplierID   uint    `json:"supplierId"`
+		SupplierName string  `json:"supplierName"`
+		UnitCost     float64 `json:"unitCost"`
+		PackSize     string  `json:"packSize"`
 	}
 
-	var response []IngredientResponse
+	type InventoryResponse struct {
+		ID          uint          `json:"id"`
+		Name        string        `json:"name"`
+		Description *string       `json:"description"`
+		Tags        []string      `json:"tags"`
+		ParLevel    float64      `json:"parLevel"`
+		Quantity    float64      `json:"quantity"`
+		Unit        string       `json:"unit"`
+		Active      bool         `json:"active"`
+		Suppliers   []SupplierInfo `json:"suppliers"`
+	}
+
+	response := make([]InventoryResponse, 0)
 	for _, ingredient := range ingredients {
-		var supplierInfo []struct {
-			SupplierID   uint    `json:"supplierId"`
-			SupplierName string  `json:"supplierName"`
-			UnitCost     float64 `json:"unitCost"`
-			PackSize     string  `json:"packSize"`
+		suppliers := make([]SupplierInfo, 0)
+		for _, is := range ingredient.IngredientSuppliers {
+			suppliers = append(suppliers, SupplierInfo{
+				SupplierID:   is.Supplier.ID,
+				SupplierName: is.Supplier.Name,
+				UnitCost:     is.UnitCost,
+				PackSize:     is.PackSize,
+			})
 		}
 
-		database.GetDB().Table("ingredient_suppliers").
-			Select("ingredient_suppliers.supplier_id, suppliers.name as supplier_name, ingredient_suppliers.unit_cost, ingredient_suppliers.pack_size").
-			Joins("LEFT JOIN suppliers ON suppliers.id = ingredient_suppliers.supplier_id").
-			Where("ingredient_suppliers.ingredient_id = ?", ingredient.ID).
-			Scan(&supplierInfo)
-
-		response = append(response, IngredientResponse{
-			Ingredient: ingredient,
-			Suppliers: supplierInfo,
+		response = append(response, InventoryResponse{
+			ID:          ingredient.ID,
+			Name:        ingredient.Name,
+			Description: ingredient.Description,
+			Tags:        ingredient.Tags,
+			ParLevel:    ingredient.ParLevel,
+			Quantity:    ingredient.Quantity,
+			Unit:        ingredient.Unit,
+			Active:      ingredient.Active,
+			Suppliers:   suppliers,
 		})
 	}
 

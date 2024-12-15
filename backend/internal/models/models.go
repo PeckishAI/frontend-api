@@ -38,16 +38,17 @@ type OrderItem struct {
 }
 
 type Ingredient struct {
-	ID          uint      `json:"id" gorm:"primaryKey"`
-	Name        string    `json:"name" gorm:"not null"`
-	Description *string   `json:"description"`
-	Tags        []string  `json:"tags" gorm:"type:text[]"`
-	ParLevel    float64   `json:"parLevel" gorm:"not null"`
-	Quantity    float64   `json:"quantity" gorm:"not null"`
-	Unit        string    `json:"unit" gorm:"not null"`
-	Active      bool      `json:"active" gorm:"not null;default:true"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	ID                  uint                `json:"id" gorm:"primaryKey"`
+	Name                string              `json:"name" gorm:"not null"`
+	Description         *string             `json:"description"`
+	Tags                []string            `json:"tags" gorm:"type:text[]"`
+	ParLevel            float64             `json:"parLevel" gorm:"not null"`
+	Quantity            float64             `json:"quantity" gorm:"not null"`
+	Unit                string              `json:"unit" gorm:"not null"`
+	Active              bool                `json:"active" gorm:"not null;default:true"`
+	CreatedAt           time.Time           `json:"createdAt"`
+	UpdatedAt           time.Time           `json:"updatedAt"`
+	IngredientSuppliers []IngredientSupplier `json:"ingredientSuppliers" gorm:"foreignKey:IngredientID"`
 }
 
 type IngredientSupplier struct {
