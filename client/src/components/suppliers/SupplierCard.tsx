@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Mail, Phone, Star } from "lucide-react";
+import { Building2, Mail, Phone, MapPin } from "lucide-react";
 import { type Supplier } from "@/lib/types";
 
 interface SupplierCardProps {
@@ -36,10 +36,12 @@ export default function SupplierCard({ supplier, onClick }: SupplierCardProps) {
               {supplier.phone}
             </div>
           )}
-          <div className="flex items-center text-sm text-gray-600">
-            <Star className="mr-2 h-4 w-4 text-yellow-400" />
-            {supplier.rating.toFixed(1)} / 5.0
-          </div>
+          {supplier.address && (
+            <div className="flex items-center text-sm text-gray-600">
+              <MapPin className="mr-2 h-4 w-4" />
+              {supplier.address}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
