@@ -85,21 +85,16 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
           {/* Right side - Form */}
           <div className="w-1/2 bg-white">
             <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
+              <div className="grid grid-cols-2 gap-6 mb-6">
+                {/* Left Column - Reference and Date */}
+                <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Hash className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-lg font-medium">{stocktake.id}</span>
+                    <span className="text-lg font-medium">Ref: {stocktake.id}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <User2 className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-lg">{stocktake.user.name}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
                     <CalendarDays className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-lg">
+                    <span className="text-lg text-muted-foreground">
                       {stocktake.date.toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -107,10 +102,19 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                       })}
                     </span>
                   </div>
+                </div>
+                {/* Right Column - User and Value */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <User2 className="h-5 w-5 text-muted-foreground" />
+                    <span className="text-lg">By {stocktake.user.name}</span>
+                  </div>
                   <div className="flex items-center gap-2">
                     <DollarSign className="h-5 w-5 text-green-600" />
-                    <span className="text-lg font-medium">$1,234.56</span>
-                    <span className="text-sm text-muted-foreground">estimated value</span>
+                    <div>
+                      <span className="text-lg font-medium">$1,234.56</span>
+                      <span className="text-sm text-muted-foreground ml-2">estimated value</span>
+                    </div>
                   </div>
                 </div>
               </div>
