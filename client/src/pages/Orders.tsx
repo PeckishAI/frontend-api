@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { mockOrders } from '@/lib/data';
 import OrderCard from '@/components/orders/OrderCard';
 import OrderTable from '@/components/orders/OrderTable';
 import ViewToggle from '@/components/orders/ViewToggle';
 import OrderModal from '@/components/orders/OrderModal';
 import SubSectionNav from '@/components/layout/SubSectionNav';
-import { type Order, type Supplier } from '@/lib/types';
+import type { Order, Supplier } from '@db/schema';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
 import SupplierCard from '@/components/suppliers/SupplierCard';
 import SupplierDialog from '@/components/suppliers/SupplierDialog';
 import SupplierSheet from '@/components/suppliers/SupplierSheet';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Orders() {
   const [activeSection, setActiveSection] = useState('orders');
