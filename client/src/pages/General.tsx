@@ -21,15 +21,15 @@ export default function General() {
   ];
 
   return (
-    <div className="w-full">
-      <div className="px-8 py-6">
+    <div className="flex-1">
+      <div className="p-6">
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
           onSectionChange={setActiveSection}
         />
 
-        <div className="mt-6 mb-6 flex items-center justify-end gap-4">
+        <div className="mt-6 mb-6 flex items-center justify-end">
           <DateRangePicker date={date} onSelect={setDate} />
         </div>
 
