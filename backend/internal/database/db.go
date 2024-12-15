@@ -47,6 +47,8 @@ func InitDB() error {
 		&models.Supplier{},
 		&models.Order{},
 		&models.OrderItem{},
+		&models.Ingredient{},
+		&models.IngredientSupplier{},
 	)
 	if err != nil {
 		return fmt.Errorf("failed to migrate database: %v", err)

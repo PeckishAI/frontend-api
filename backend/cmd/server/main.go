@@ -49,6 +49,10 @@ func main() {
 		// Orders
 		apiGroup.GET("/orders", api.GetOrders)
 		apiGroup.POST("/orders", api.CreateOrder)
+
+		// Inventory
+		apiGroup.GET("/inventory", api.GetInventory)
+		apiGroup.POST("/inventory", api.CreateIngredient)
 	}
 
 	// Health check

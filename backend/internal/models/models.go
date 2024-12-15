@@ -36,3 +36,27 @@ type OrderItem struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
+
+type Ingredient struct {
+	ID          uint      `json:"id" gorm:"primaryKey"`
+	Name        string    `json:"name" gorm:"not null"`
+	Description *string   `json:"description"`
+	Tags        []string  `json:"tags" gorm:"type:text[]"`
+	ParLevel    float64   `json:"parLevel" gorm:"not null"`
+	Quantity    float64   `json:"quantity" gorm:"not null"`
+	Unit        string    `json:"unit" gorm:"not null"`
+	Active      bool      `json:"active" gorm:"not null;default:true"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+}
+
+type IngredientSupplier struct {
+	ID          uint      `json:"id" gorm:"primaryKey"`
+	IngredientID uint     `json:"ingredientId" gorm:"not null"`
+	SupplierID  uint      `json:"supplierId" gorm:"not null"`
+	UnitCost    float64   `json:"unitCost" gorm:"not null"`
+	PackSize    string    `json:"packSize" gorm:"not null"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+	Supplier    Supplier  `json:"supplier" gorm:"foreignKey:SupplierID"`
+}

@@ -9,6 +9,122 @@ import (
 	"github.com/restaurant-supplier/internal/models"
 )
 
+// GetInventory returns all ingredients with their supplier information
+func GetInventory(c *gin.Context) {
+	var ingredients []models.Ingredient
+	result := database.GetDB().Find(&ingredients)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch inventory"})
+		return
+	}
+
+	// For each ingredient, get its suppliers
+	type IngredientResponse struct {
+		models.Ingredient
+		Suppliers []struct {
+			SupplierID   uint    `json:"supplierId"`
+			SupplierName string  `json:"supplierName"`
+			UnitCost     float64 `json:"unitCost"`
+			PackSize     string  `json:"packSize"`
+		} `json:"suppliers"`
+	}
+
+	var response []IngredientResponse
+	for _, ingredient := range ingredients {
+		var supplierInfo []struct {
+			SupplierID   uint    `json:"supplierId"`
+			SupplierName string  `json:"supplierName"`
+			UnitCost     float64 `json:"unitCost"`
+			PackSize     string  `json:"packSize"`
+		}
+
+		database.GetDB().Table("ingredient_suppliers").
+			Select("ingredient_suppliers.supplier_id, suppliers.name as supplier_name, ingredient_suppliers.unit_cost, ingredient_suppliers.pack_size").
+			Joins("LEFT JOIN suppliers ON suppliers.id = ingredient_suppliers.supplier_id").
+			Where("ingredient_suppliers.ingredient_id = ?", ingredient.ID).
+			Scan(&supplierInfo)
+
+		response = append(response, IngredientResponse{
+			Ingredient: ingredient,
+			Suppliers: supplierInfo,
+		})
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+// CreateIngredient creates a new ingredient
+func CreateIngredient(c *gin.Context) {
+	type IngredientInput struct {
+		Name        string    `json:"name" binding:"required"`
+		Description string    `json:"description"`
+		Tags        []string  `json:"tags" binding:"required"`
+		ParLevel    float64   `json:"parLevel" binding:"required"`
+		Quantity    float64   `json:"quantity" binding:"required"`
+		Unit        string    `json:"unit" binding:"required"`
+		Suppliers   []struct {
+			SupplierID uint    `json:"supplierId"`
+			UnitCost   float64 `json:"unitCost"`
+			PackSize   string  `json:"packSize"`
+		} `json:"suppliers"`
+	}
+
+	var input IngredientInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Start a transaction
+	tx := database.GetDB().Begin()
+	if tx.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to start transaction"})
+		return
+	}
+
+	// Create ingredient
+	ingredient := models.Ingredient{
+		Name:        input.Name,
+		Description: &input.Description,
+		Tags:        input.Tags,
+		ParLevel:    input.ParLevel,
+		Quantity:    input.Quantity,
+		Unit:        input.Unit,
+		Active:      true,
+	}
+
+	if err := tx.Create(&ingredient).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create ingredient"})
+		return
+	}
+
+	// Create supplier associations
+	for _, supplier := range input.Suppliers {
+		ingredientSupplier := models.IngredientSupplier{
+			IngredientID: ingredient.ID,
+			SupplierID:   supplier.SupplierID,
+			UnitCost:     supplier.UnitCost,
+			PackSize:     supplier.PackSize,
+		}
+
+		if err := tx.Create(&ingredientSupplier).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create ingredient supplier association"})
+			return
+		}
+	}
+
+	// Commit transaction
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to commit transaction"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, ingredient)
+}
+
 // GetSuppliers returns all suppliers
 func GetSuppliers(c *gin.Context) {
 	var suppliers []models.Supplier
