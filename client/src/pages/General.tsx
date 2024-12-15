@@ -22,7 +22,7 @@ export default function General() {
 
   return (
     <div className="w-full">
-      <div className="pt-4">
+      <div className="px-8 py-6">
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
