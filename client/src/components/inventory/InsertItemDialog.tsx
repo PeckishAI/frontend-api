@@ -17,36 +17,38 @@ export function InsertItemDialog() {
           Insert
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[600px] h-[80vh] p-0 flex flex-col">
-        <Tabs defaultValue="manual" className="flex-1 flex flex-col">
-          <TabsList className="flex-none grid w-full grid-cols-2 p-4">
+      <DialogContent className="max-w-[600px] h-[80vh]">
+        <Tabs defaultValue="manual" className="h-full flex flex-col">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="manual">Manual Insert</TabsTrigger>
             <TabsTrigger value="file">Insert from File</TabsTrigger>
           </TabsList>
           <TabsContent 
             value="manual" 
-            className="flex-1 flex flex-col overflow-hidden p-4"
+            className="flex-1 overflow-hidden"
           >
-            <p className="flex-none text-sm text-muted-foreground mb-4">
-              Enter data manually or paste from a spreadsheet (one row per ingredient).
-            </p>
-            <div className="flex-1 min-h-0">
-              <GridDataInput
-                onChange={(data) => {
-                  console.log('Grid data:', data);
-                }}
-              />
-            </div>
-            <div className="flex-none flex justify-end border-t pt-4 mt-4">
-              <Button onClick={() => setOpen(false)}>
-                Add Items
-              </Button>
+            <div className="h-full flex flex-col">
+              <p className="text-sm text-muted-foreground mb-4">
+                Enter data manually or paste from a spreadsheet (one row per ingredient).
+              </p>
+              <div className="flex-1 overflow-hidden">
+                <GridDataInput
+                  onChange={(data) => {
+                    console.log('Grid data:', data);
+                  }}
+                />
+              </div>
+              <div className="border-t pt-4 mt-4">
+                <Button onClick={() => setOpen(false)} className="w-full">
+                  Add Items
+                </Button>
+              </div>
             </div>
           </TabsContent>
-          <TabsContent value="file" className="flex-1 p-4">
+          <TabsContent value="file" className="flex-1">
             <div className="h-full flex flex-col">
-              <h3 className="flex-none text-lg font-medium mb-4">Import from File</h3>
-              <p className="flex-none text-sm text-muted-foreground mb-4">
+              <h3 className="text-lg font-medium mb-4">Import from File</h3>
+              <p className="text-sm text-muted-foreground mb-4">
                 Upload a CSV file with your inventory items. The file should include columns for name, quantity, unit, and tags.
               </p>
               <div className="flex-1 flex items-center justify-center">
