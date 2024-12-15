@@ -1,7 +1,0 @@
-.root {
-  @apply relative;
-}
-
-.content {
-  @apply absolute h-full w-full;
-}

@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import styles from "./Inventory.module.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -94,8 +93,8 @@ export default function Inventory() {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
+    <div className="ml-64 w-full">
+      <div className="pt-8">
           <SubSectionNav
             sections={sections}
             activeSection={activeSection}
@@ -103,39 +102,37 @@ export default function Inventory() {
           />
 
           {activeSection === 'ingredients' && (
-            <div className={styles.toolbar}>
-              <div className={styles.searchContainer}>
-                <Search className={styles.searchIcon} />
+            <div className="px-8 mt-6 mb-6 flex items-center gap-4">
+              <div className="relative w-96">
+                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Search ingredients..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className={styles.searchInput}
+                  className="pl-9"
                 />
               </div>
-              <div className={styles.spacer} />
-              <div className={styles.actionButtons}>
-                <Button onClick={() => setIsNewItemOpen(true)} className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  New Item
-                </Button>
-                <Button onClick={exportToCsv} variant="outline" size="icon">
-                  <Download className="h-4 w-4" />
-                </Button>
-                <InsertItemDialog />
-                <FilterPopover
-                  tags={tags}
-                  suppliers={suppliers}
-                  selectedFilters={selectedFilters}
-                  onFilterChange={setSelectedFilters}
-                />
-              </div>
+              <div className="flex-1" />
+              <Button onClick={() => setIsNewItemOpen(true)} className="gap-2">
+                <Plus className="h-4 w-4" />
+                New Item
+              </Button>
+              <Button onClick={exportToCsv} variant="outline" size="icon">
+                <Download className="h-4 w-4" />
+              </Button>
+              <InsertItemDialog />
+              <FilterPopover
+                tags={tags}
+                suppliers={suppliers}
+                selectedFilters={selectedFilters}
+                onFilterChange={setSelectedFilters}
+              />
             </div>
           )}
       </div>
 
       {activeSection === 'ingredients' && (
-        <div className={styles.tableContainer}>
+        <div className="bg-white rounded-lg shadow overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>

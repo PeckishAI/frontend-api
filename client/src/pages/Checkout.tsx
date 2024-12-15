@@ -15,20 +15,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import styles from "./Checkout.module.css";
-import { cn } from "@/lib/utils";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-interface CheckoutFormProps {
-  className?: string;
-}
-
-function CheckoutForm({ className }: CheckoutFormProps) {
+function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
-  const [activeMethod, setActiveMethod] = useState<'card' | 'bank'>('card');
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -55,34 +48,26 @@ function CheckoutForm({ className }: CheckoutFormProps) {
   };
 
   return (
-    <div className={cn(styles.checkoutContainer, className)}>
-      <div className={styles.formContainer}>
-        <div className={styles.formSection}>
-          <div className={styles.paymentMethodsContainer}>
+    <div className="ml-64 p-8">
+      <div className="max-w-md mx-auto">
+        <div className="mb-6">
+          <div className="flex gap-2 mb-4">
             <Button 
               variant="outline" 
-              className={cn(
-                styles.paymentMethod,
-                activeMethod === 'card' && styles.paymentMethodActive
-              )}
-              onClick={() => setActiveMethod('card')}
+              className="flex-1 justify-start border-2 border-[#44a991] focus:ring-0"
             >
               💳 Card
             </Button>
             <Button 
               variant="outline" 
-              className={cn(
-                styles.paymentMethod,
-                activeMethod === 'bank' && styles.paymentMethodActive
-              )}
-              onClick={() => setActiveMethod('bank')}
+              className="flex-1 justify-start"
             >
               🏦 US Bank Account
             </Button>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className={styles.cardElementContainer}>
+            <div className="rounded-lg border p-4 bg-white shadow-sm">
               <CardElement
                 options={{
                   style: {
@@ -102,9 +87,9 @@ function CheckoutForm({ className }: CheckoutFormProps) {
               />
             </div>
 
-            <div className={styles.formGrid}>
-              <div className={styles.formField}>
-                <label className={styles.label}>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Country
                 </label>
                 <Select defaultValue="US">
@@ -117,8 +102,8 @@ function CheckoutForm({ className }: CheckoutFormProps) {
                 </Select>
               </div>
 
-              <div className={styles.formField}>
-                <label className={styles.label}>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Postal Code
                 </label>
                 <Input 
@@ -130,7 +115,7 @@ function CheckoutForm({ className }: CheckoutFormProps) {
 
             <Button 
               type="submit" 
-              className={cn("text-white", styles.subscribeButton)}
+              className="w-full bg-[#44a991] hover:bg-[#44a991]/90 text-white"
               disabled={!stripe || isLoading}
             >
               {isLoading ? "Processing..." : "Subscribe"}
@@ -142,11 +127,7 @@ function CheckoutForm({ className }: CheckoutFormProps) {
   );
 }
 
-interface CheckoutPageProps {
-  className?: string;
-}
-
-export default function CheckoutPage({ className }: CheckoutPageProps) {
+export default function Checkout() {
   const options = {
     mode: 'subscription' as const,
     amount: 2000,
@@ -161,7 +142,7 @@ export default function CheckoutPage({ className }: CheckoutPageProps) {
 
   return (
     <Elements stripe={stripePromise} options={options}>
-      <CheckoutForm className={className} />
+      <CheckoutForm />
     </Elements>
   );
 }

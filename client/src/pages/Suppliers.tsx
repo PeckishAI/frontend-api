@@ -9,13 +9,9 @@ export default function Suppliers() {
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  // Use mock data instead of API calls
-  const suppliers = [
-    { id: 1, name: "Fresh Produce Co.", category: "Vegetables & Fruits" },
-    { id: 2, name: "Meat Suppliers Inc.", category: "Meat & Poultry" },
-    { id: 3, name: "Grocery Wholesale Ltd.", category: "Dry Goods" },
-  ];
-  const isLoading = false;
+  const { data: suppliers, isLoading } = useQuery({
+    queryKey: ["/api/suppliers"],
+  });
 
   if (isLoading) {
     return (

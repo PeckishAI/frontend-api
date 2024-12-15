@@ -6,16 +6,10 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { cn } from "@/lib/utils";
-import styles from "./PaymentForm.module.css";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-interface PaymentFormProps {
-  className?: string;
-}
-
-function PaymentForm({ className }: PaymentFormProps) {
+function PaymentForm() {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
@@ -48,37 +42,45 @@ function PaymentForm({ className }: PaymentFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={cn(styles.form, className)}>
-      <div className={styles.paymentElement}>
-        <PaymentElement 
-          options={{
-            layout: {
-              type: 'tabs',
-              defaultCollapsed: false,
+    <form onSubmit={handleSubmit}>
+      <PaymentElement 
+        options={{
+          layout: {
+            type: 'tabs',
+            defaultCollapsed: false,
+          },
+          fields: {
+            billingDetails: {
+              name: 'auto',
+              email: 'auto',
             },
-            fields: {
-              billingDetails: {
-                name: 'auto',
-                email: 'auto',
-              },
-            },
-            wallets: {
-              applePay: 'auto',
-              googlePay: 'auto',
-            },
-          }}
-        />
-      </div>
+          },
+          wallets: {
+            applePay: 'auto',
+            googlePay: 'auto',
+          },
+        }}
+      />
       
       {error && (
-        <div className={styles.errorMessage}>
+        <div style={{ color: '#df1b41', marginTop: '8px', fontSize: '14px' }}>
           {error}
         </div>
       )}
 
       <button 
         disabled={!stripe || isLoading}
-        className={styles.submitButton}
+        style={{
+          backgroundColor: '#635BFF',
+          padding: '8px 16px',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          fontSize: '16px',
+          cursor: 'pointer',
+          width: '100%',
+          marginTop: '16px',
+        }}
       >
         {isLoading ? "Processing..." : "Subscribe"}
       </button>
@@ -111,8 +113,22 @@ export function StripePaymentForm() {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1rem',
+      backgroundColor: '#f5f5f5'
+    }}>
+      <div style={{
+        width: '100%',
+        maxWidth: '500px',
+        backgroundColor: 'white',
+        padding: '2rem',
+        borderRadius: '8px',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+      }}>
         <Elements stripe={stripePromise} options={options}>
           <PaymentForm />
         </Elements>

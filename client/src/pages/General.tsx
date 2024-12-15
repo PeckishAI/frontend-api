@@ -5,43 +5,6 @@ import SubSectionNav from "@/components/layout/SubSectionNav";
 import { Card, CardContent } from "@/components/ui/card";
 import { SalesChart, CustomerChart } from "@/components/charts/OverviewCharts";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { cn } from "@/lib/utils";
-import styles from "./General.module.css";
-
-interface StatCardProps {
-  label: string;
-  value: string;
-  trend?: {
-    value: string;
-    direction: 'up' | 'down' | 'neutral';
-  };
-  comparison: string;
-}
-
-function StatCard({ label, value, trend, comparison }: StatCardProps) {
-  return (
-    <Card>
-      <CardContent className="p-6">
-        <div className={styles.statCard}>
-          <span className={styles.statLabel}>{label}</span>
-          <div className={styles.statValue}>
-            <span className={styles.statNumber}>{value}</span>
-            {trend && (
-              <span className={cn(styles.statTrend, {
-                [styles.statTrendUp]: trend.direction === 'up',
-                [styles.statTrendDown]: trend.direction === 'down',
-                [styles.statTrendNeutral]: trend.direction === 'neutral',
-              })}>
-                {trend.direction === 'up' ? '↑' : trend.direction === 'down' ? '↓' : '-'}{trend.value}
-              </span>
-            )}
-          </div>
-          <span className={styles.statCompare}>{comparison}</span>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
 
 export default function General() {
   const [activeSection, setActiveSection] = useState('overview');
@@ -58,59 +21,86 @@ export default function General() {
   ];
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
+    <div className="ml-64 w-full">
+      <div className="pt-8">
         <SubSectionNav
           sections={sections}
           activeSection={activeSection}
           onSectionChange={setActiveSection}
         />
 
-        <div className={styles.datePickerContainer}>
+        <div className="px-8 mt-6 mb-6 flex items-center justify-end gap-4">
           <DateRangePicker date={date} onSelect={setDate} />
         </div>
 
-        <div className={styles.mainContent}>
+        <div className="bg-white rounded-lg shadow overflow-hidden">
           {activeSection === 'overview' && (
-            <div className={styles.overviewSection}>
-              <div className={styles.statsGrid}>
-                <StatCard
-                  label="Total Sales"
-                  value="$252.25"
-                  trend={{ value: "20%", direction: "down" }}
-                  comparison="Compared to Jan 1-Dec 31, 2020"
-                />
-                <StatCard
-                  label="Online Store Sessions"
-                  value="14"
-                  trend={{ value: "600%", direction: "up" }}
-                  comparison="Compared to previous period"
-                />
-                <StatCard
-                  label="Returning Customer Rate"
-                  value="16.67%"
-                  trend={{ value: "-", direction: "neutral" }}
-                  comparison="First time vs returning"
-                />
-                <StatCard
-                  label="Total Orders"
-                  value="13"
-                  trend={{ value: "225%", direction: "up" }}
-                  comparison="Last 30 days"
-                />
-              </div>
-
-              <div className={styles.chartsGrid}>
+            <div className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className={styles.chartTitle}>Sales Over Time</h3>
+                    <div className="flex flex-col space-y-1">
+                      <span className="text-sm text-muted-foreground">Total Sales</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold">$252.25</span>
+                        <span className="text-sm text-red-500">↓20%</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">Compared to Jan 1-Dec 31, 2020</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex flex-col space-y-1">
+                      <span className="text-sm text-muted-foreground">Online Store Sessions</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold">14</span>
+                        <span className="text-sm text-green-500">↑600%</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">Compared to previous period</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex flex-col space-y-1">
+                      <span className="text-sm text-muted-foreground">Returning Customer Rate</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold">16.67%</span>
+                        <span className="text-sm text-neutral-500">-</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">First time vs returning</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex flex-col space-y-1">
+                      <span className="text-sm text-muted-foreground">Total Orders</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold">13</span>
+                        <span className="text-sm text-green-500">↑225%</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">Last 30 days</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-medium mb-4">Sales Over Time</h3>
                     <SalesChart />
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className={styles.chartTitle}>Customer Analytics</h3>
+                    <h3 className="text-lg font-medium mb-4">Customer Analytics</h3>
                     <CustomerChart />
                   </CardContent>
                 </Card>
@@ -119,20 +109,20 @@ export default function General() {
           )}
 
           {activeSection === 'inventory' && (
-            <div className={styles.sectionContent}>
-              <p className={styles.sectionMessage}>Inventory section coming soon...</p>
+            <div className="p-6">
+              <p className="text-gray-600">Inventory section coming soon...</p>
             </div>
           )}
 
           {activeSection === 'procurement' && (
-            <div className={styles.sectionContent}>
-              <p className={styles.sectionMessage}>Procurement section coming soon...</p>
+            <div className="p-6">
+              <p className="text-gray-600">Procurement section coming soon...</p>
             </div>
           )}
 
           {activeSection === 'menu' && (
-            <div className={styles.sectionContent}>
-              <p className={styles.sectionMessage}>Menu section coming soon...</p>
+            <div className="p-6">
+              <p className="text-gray-600">Menu section coming soon...</p>
             </div>
           )}
         </div>
