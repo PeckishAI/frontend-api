@@ -76,6 +76,7 @@ func main() {
 		apiGroup.POST("/orders", api.CreateOrder)
 
 		// Inventory
+		apiGroup.GET("/inventory/test", api.TestInventory)
 		apiGroup.GET("/inventory", api.GetInventory)
 		apiGroup.POST("/inventory", api.CreateIngredient)
 	}

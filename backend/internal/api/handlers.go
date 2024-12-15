@@ -10,6 +10,15 @@ import (
 	"github.com/restaurant-supplier/internal/models"
 )
 
+// TestInventory is a test endpoint
+func TestInventory(c *gin.Context) {
+	log.Printf("Test inventory endpoint called")
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Test endpoint working",
+		"status": "success",
+	})
+}
+
 // GetInventory returns all ingredients with their supplier information
 func GetInventory(c *gin.Context) {
 	log.Printf("Getting inventory items")
