@@ -89,7 +89,7 @@ export default function Inventory() {
 
           {activeSection === 'ingredients' && (
             <div className="px-8 mt-6 mb-6 flex items-center gap-4">
-              <div className="relative flex-1">
+              <div className="relative w-96">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Search ingredients..."
@@ -98,6 +98,7 @@ export default function Inventory() {
                   className="pl-9"
                 />
               </div>
+              <div className="flex-1" />
               <Button onClick={() => setIsNewItemOpen(true)} className="gap-2">
                 <Plus className="h-4 w-4" />
                 New Item

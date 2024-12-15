@@ -158,7 +158,7 @@ export default function Documents() {
           onSectionChange={setActiveSection}
         />
 
-        <div className="px-8 mt-6 mb-6 flex items-center gap-4">
+        <div className="px-8 mt-6 mb-6 flex items-center justify-end gap-4">
           {activeSection === 'invoices' && (
             <ViewToggle current={viewMode} onChange={setViewMode} />
           )}
