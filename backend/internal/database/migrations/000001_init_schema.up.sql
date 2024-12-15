@@ -51,3 +51,33 @@ CREATE TABLE ingredients (
     updated_at_utc TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP
 );
+
+CREATE TABLE orders (
+    uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    restaurant_uuid UUID NOT NULL REFERENCES restaurants(uuid),
+    supplier_uuid UUID NOT NULL REFERENCES suppliers(uuid),
+    status VARCHAR NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    created_at_utc TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    updated_at_utc TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP
+);
+
+CREATE TABLE procurements (
+    uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    restaurant_uuid UUID NOT NULL REFERENCES restaurants(uuid),
+    supplier_uuid UUID NOT NULL REFERENCES suppliers(uuid),
+    price DOUBLE PRECISION,
+    currency VARCHAR,
+    status VARCHAR NOT NULL,
+    note VARCHAR,
+    date VARCHAR,
+    delivery_date VARCHAR,
+    expected_date VARCHAR,
+    created_at TIMESTAMP NOT NULL,
+    created_at_utc TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    updated_at_utc TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP
+);

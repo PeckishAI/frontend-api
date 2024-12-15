@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS procurements;
+DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS ingredients;
 DROP TABLE IF EXISTS units;
 DROP TABLE IF EXISTS suppliers;
