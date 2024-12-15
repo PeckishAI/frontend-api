@@ -7,14 +7,13 @@ import General from "@/pages/General";
 import Profile from "@/pages/Profile";
 import RestaurantManagement from "@/pages/RestaurantManagement";
 import Checkout from "@/pages/Checkout";
-
 import Sidebar from "@/components/layout/Sidebar";
 
 function App() {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex-1 bg-gray-50">
+      <main className="flex-1">
         <Switch>
           <Route path="/" component={General} />
           <Route path="/inventory" component={Inventory} />
@@ -25,7 +24,7 @@ function App() {
           <Route path="/restaurant-management" component={RestaurantManagement} />
           <Route path="/checkout" component={Checkout} />
         </Switch>
-      </div>
+      </main>
     </div>
   );
 }

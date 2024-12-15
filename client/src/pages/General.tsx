@@ -21,7 +21,7 @@ export default function General() {
   ];
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 flex flex-col">
       <SubSectionNav
         sections={sections}
         activeSection={activeSection}
