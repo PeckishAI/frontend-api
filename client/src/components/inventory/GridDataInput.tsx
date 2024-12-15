@@ -97,23 +97,23 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
 
   return (
     <div 
-      className="border rounded-md overflow-hidden" 
+      className="border rounded-md overflow-hidden w-full" 
       onPaste={handlePaste}
       tabIndex={0}
     >
       <Table ref={tableRef}>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Quantity</TableHead>
-            <TableHead>Supplier</TableHead>
-            <TableHead>Cost</TableHead>
+            <TableHead className="w-1/3">Name</TableHead>
+            <TableHead className="w-[15%]">Quantity</TableHead>
+            <TableHead className="w-1/3">Supplier</TableHead>
+            <TableHead className="w-[15%]">Cost</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data.map((row, rowIndex) => (
             <TableRow key={rowIndex}>
-              <TableCell>
+              <TableCell className="w-1/3">
                 <Input
                   value={row.name}
                   onChange={e => handleCellChange(rowIndex, 'name', e.target.value)}
@@ -122,7 +122,7 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
                   className="w-full"
                 />
               </TableCell>
-              <TableCell>
+              <TableCell className="w-[15%]">
                 <Input
                   value={row.quantity}
                   onChange={e => handleCellChange(rowIndex, 'quantity', e.target.value)}
@@ -131,7 +131,7 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
                   className="w-full"
                 />
               </TableCell>
-              <TableCell>
+              <TableCell className="w-1/3">
                 <Input
                   value={row.supplier}
                   onChange={e => handleCellChange(rowIndex, 'supplier', e.target.value)}
@@ -140,7 +140,7 @@ export function GridDataInput({ onChange }: GridDataInputProps) {
                   className="w-full"
                 />
               </TableCell>
-              <TableCell>
+              <TableCell className="w-[15%]">
                 <Input
                   value={row.cost}
                   onChange={e => handleCellChange(rowIndex, 'cost', e.target.value)}
