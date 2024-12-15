@@ -1,70 +1,95 @@
+import type { InventorySupplierInfo } from '@/lib/types';
+
 export interface InventoryItem {
-  id: number;
+  id: string;
   name: string;
-  category: string;
+  tags: string[];
+  parLevel: number;
   quantity: number;
   unit: string;
-  reorderPoint: number;
-  lastRestocked: string;
-  supplierId: number;
-  unitPrice: number;
+  suppliers: InventorySupplierInfo[];
 }
 
 export const mockInventory: InventoryItem[] = [
   {
-    id: 1,
+    id: "1",
     name: "Fresh Tomatoes",
-    category: "Produce",
+    tags: ["Produce", "Fresh"],
     quantity: 145,
     unit: "kg",
-    reorderPoint: 50,
-    lastRestocked: "2024-01-15T14:30:00Z",
-    supplierId: 1,
-    unitPrice: 2.99
+    parLevel: 50,
+    suppliers: [
+      {
+        supplierId: "1",
+        supplierName: "Fresh Produce Co.",
+        unitCost: 2.99,
+        packSize: "10kg box"
+      }
+    ]
   },
   {
-    id: 2,
+    id: "2",
     name: "Lettuce",
-    category: "Produce",
+    tags: ["Produce", "Fresh"],
     quantity: 85,
     unit: "heads",
-    reorderPoint: 30,
-    lastRestocked: "2024-01-15T14:30:00Z",
-    supplierId: 1,
-    unitPrice: 1.99
+    parLevel: 30,
+    suppliers: [
+      {
+        supplierId: "1",
+        supplierName: "Fresh Produce Co.",
+        unitCost: 1.99,
+        packSize: "12 heads"
+      }
+    ]
   },
   {
-    id: 3,
+    id: "3",
     name: "Premium Salmon",
-    category: "Seafood",
+    tags: ["Seafood", "Fresh"],
     quantity: 45,
     unit: "kg",
-    reorderPoint: 20,
-    lastRestocked: "2024-01-14T11:15:00Z",
-    supplierId: 2,
-    unitPrice: 29.99
+    parLevel: 20,
+    suppliers: [
+      {
+        supplierId: "2",
+        supplierName: "Premium Meats & Seafood",
+        unitCost: 29.99,
+        packSize: "5kg box"
+      }
+    ]
   },
   {
-    id: 4,
+    id: "4",
     name: "Ribeye Steak",
-    category: "Meat",
+    tags: ["Meat", "Premium"],
     quantity: 38,
     unit: "kg",
-    reorderPoint: 15,
-    lastRestocked: "2024-01-14T11:15:00Z",
-    supplierId: 2,
-    unitPrice: 39.99
+    parLevel: 15,
+    suppliers: [
+      {
+        supplierId: "2",
+        supplierName: "Premium Meats & Seafood",
+        unitCost: 39.99,
+        packSize: "2kg pack"
+      }
+    ]
   },
   {
-    id: 5,
+    id: "5",
     name: "Black Peppercorns",
-    category: "Spices",
+    tags: ["Spices", "Dry Goods"],
     quantity: 25,
     unit: "kg",
-    reorderPoint: 10,
-    lastRestocked: "2024-01-13T16:30:00Z",
-    supplierId: 3,
-    unitPrice: 15.99
+    parLevel: 10,
+    suppliers: [
+      {
+        supplierId: "3",
+        supplierName: "Global Spice Traders",
+        unitCost: 15.99,
+        packSize: "1kg bag"
+      }
+    ]
   }
 ];
 
