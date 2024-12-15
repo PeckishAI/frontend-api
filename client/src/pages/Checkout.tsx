@@ -54,20 +54,20 @@ function CheckoutForm() {
           <div className="flex gap-2 mb-4">
             <Button 
               variant="outline" 
-              className="flex-1 justify-start border-2 border-[#44a991]"
+              className="flex-1 justify-start border-2 border-[#44a991] focus:ring-0"
             >
-              Card
+              💳 Card
             </Button>
             <Button 
               variant="outline" 
               className="flex-1 justify-start"
             >
-              US Bank Account
+              🏦 US Bank Account
             </Button>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="rounded-md border p-3 bg-white">
+            <div className="rounded-lg border p-4 bg-white shadow-sm">
               <CardElement
                 options={{
                   style: {
@@ -77,6 +77,7 @@ function CheckoutForm() {
                       '::placeholder': {
                         color: '#aab7c4',
                       },
+                      iconColor: '#666EE8',
                     },
                     invalid: {
                       color: '#9e2146',
@@ -86,12 +87,14 @@ function CheckoutForm() {
               />
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm text-gray-600">Country</label>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Country
+                </label>
                 <Select defaultValue="US">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select country" />
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a country" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="US">United States</SelectItem>
@@ -99,15 +102,20 @@ function CheckoutForm() {
                 </Select>
               </div>
 
-              <div>
-                <label className="text-sm text-gray-600">Postal Code</label>
-                <Input placeholder="Enter postal code" />
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Postal Code
+                </label>
+                <Input 
+                  placeholder="Enter postal code"
+                  className="w-full"
+                />
               </div>
             </div>
 
             <Button 
               type="submit" 
-              className="w-full bg-[#44a991] hover:bg-[#44a991]/90"
+              className="w-full bg-[#44a991] hover:bg-[#44a991]/90 text-white"
               disabled={!stripe || isLoading}
             >
               {isLoading ? "Processing..." : "Subscribe"}
