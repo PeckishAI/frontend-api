@@ -47,20 +47,12 @@ export function FilterPopover({ tags, suppliers, selectedFilters, onFilterChange
       <PopoverTrigger asChild>
         <Button 
           variant="outline" 
-          size="sm"
+          size="icon"
           className={cn(
-            "h-9 border-dashed",
             selectedFilters.length > 0 && "border-solid"
           )}
         >
-          <Filter className="mr-2 h-4 w-4" />
-          {selectedFilters.length === 0 ? (
-            "Filter"
-          ) : (
-            <>
-              {selectedFilters.length} filter{selectedFilters.length === 1 ? '' : 's'}
-            </>
-          )}
+          <Filter className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0" align="start">

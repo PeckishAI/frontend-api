@@ -85,16 +85,24 @@ export default function Inventory() {
           <h1 className="text-3xl font-semibold text-gray-900">Inventory</h1>
           <div className="flex gap-4">
             {activeSection === 'ingredients' && (
-              <>
-                <Button onClick={exportToCsv} variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Export CSV
-                </Button>
-                <Button onClick={() => setIsNewItemOpen(true)}>
-                  <Plus className="mr-2 h-4 w-4" />
+              <div className="flex items-center gap-3">
+                <Button onClick={() => setIsNewItemOpen(true)} className="gap-2">
+                  <Plus className="h-4 w-4" />
                   New Item
                 </Button>
-              </>
+                <div className="flex items-center gap-2">
+                  <Button onClick={exportToCsv} variant="outline" size="icon">
+                    <Download className="h-4 w-4" />
+                  </Button>
+                  <InsertItemDialog />
+                  <FilterPopover
+                    tags={tags}
+                    suppliers={suppliers}
+                    selectedFilters={selectedFilters}
+                    onFilterChange={setSelectedFilters}
+                  />
+                </div>
+              </div>
             )}
           </div>
         </div>
@@ -105,8 +113,8 @@ export default function Inventory() {
         />
 
         {activeSection === 'ingredients' && (
-          <div className="flex gap-4 mb-6">
-            <div className="relative flex-1">
+          <div className="mb-6">
+            <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search ingredients..."
@@ -115,13 +123,6 @@ export default function Inventory() {
                 className="pl-9"
               />
             </div>
-            <FilterPopover
-              tags={tags}
-              suppliers={suppliers}
-              selectedFilters={selectedFilters}
-              onFilterChange={setSelectedFilters}
-            />
-            <InsertItemDialog />
           </div>
         )}
       </div>

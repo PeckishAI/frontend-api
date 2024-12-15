@@ -11,9 +11,8 @@ export function InsertItemDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="h-9">
-          <Plus className="mr-2 h-4 w-4" />
-          Insert
+        <Button variant="outline" size="icon">
+          <Plus className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[800px] max-h-[80vh] p-6">
