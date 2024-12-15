@@ -30,8 +30,8 @@ export default function Inventory() {
 
   const sections = [
     { id: 'ingredients', label: 'Ingredients' },
-    { id: 'suppliers', label: 'Suppliers' },
-    { id: 'categories', label: 'Categories' },
+    { id: 'transfers', label: 'Transfers' },
+    { id: 'waste', label: 'Waste' },
   ];
 
   const tags = getAllTags();
@@ -166,17 +166,17 @@ export default function Inventory() {
       </div>
       )}
 
-      {activeSection === 'suppliers' && (
+      {activeSection === 'transfers' && (
         <div className="bg-white rounded-lg shadow overflow-hidden p-6">
-          <h2 className="text-lg font-medium mb-4">Supplier Management</h2>
-          <p className="text-gray-600">Coming soon: Manage your suppliers, their contact information, and performance metrics.</p>
+          <h2 className="text-lg font-medium mb-4">Transfer Management</h2>
+          <p className="text-gray-600">Coming soon: Track and manage inventory transfers between locations or departments.</p>
         </div>
       )}
 
-      {activeSection === 'categories' && (
+      {activeSection === 'waste' && (
         <div className="bg-white rounded-lg shadow overflow-hidden p-6">
-          <h2 className="text-lg font-medium mb-4">Category Management</h2>
-          <p className="text-gray-600">Coming soon: Organize your inventory with custom categories and tags.</p>
+          <h2 className="text-lg font-medium mb-4">Waste Management</h2>
+          <p className="text-gray-600">Coming soon: Monitor and track inventory waste, reasons, and optimization opportunities.</p>
         </div>
       )}
 
