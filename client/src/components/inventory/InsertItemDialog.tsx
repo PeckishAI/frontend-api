@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus } from "lucide-react";
+import { GridDataInput } from "./GridDataInput";
 import NewIngredientDialog from "./NewIngredientDialog";
 import { useState } from "react";
 
@@ -24,16 +25,24 @@ export function InsertItemDialog() {
           </TabsList>
           <TabsContent value="manual" className="mt-4">
             <h3 className="mb-4 text-lg font-medium">Add New Ingredient</h3>
-            {/* We'll reuse the existing NewIngredientDialog form here */}
-            <NewIngredientDialog
-              open={true}
-              onOpenChange={() => setOpen(false)}
-              onSubmit={(data) => {
-                console.log('New item:', data);
-                setOpen(false);
-              }}
-              embedded={true}
-            />
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Enter data manually or paste from a spreadsheet (one row per ingredient).
+              </p>
+              <GridDataInput
+                onChange={(data) => {
+                  console.log('Grid data:', data);
+                }}
+              />
+              <div className="flex justify-end">
+                <Button type="submit" onClick={() => {
+                  // Handle submission
+                  setOpen(false);
+                }}>
+                  Add Items
+                </Button>
+              </div>
+            </div>
           </TabsContent>
           <TabsContent value="file" className="mt-4">
             <h3 className="mb-4 text-lg font-medium">Import from File</h3>
