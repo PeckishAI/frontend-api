@@ -34,11 +34,11 @@ function CheckoutForm() {
       });
 
       if (submitError) {
-        setError(submitError.message ?? "An error occurred with the payment");
+        setError(submitError.message ?? "An error occurred");
       }
     } catch (err) {
-      setError("An unexpected error occurred. Please try again.");
-      console.error("Payment error:", err);
+      setError("An unexpected error occurred");
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -46,32 +46,13 @@ function CheckoutForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <PaymentElement 
-        options={{
-          layout: {
-            type: 'tabs',
-            defaultCollapsed: false,
-          },
-          fields: {
-            billingDetails: {
-              name: 'auto',
-              email: 'auto',
-            },
-          },
-          wallets: {
-            applePay: 'auto',
-            googlePay: 'auto',
-          },
-        }} 
-      />
-      
+      <PaymentElement />
       {error && (
         <div style={{ color: '#df1b41', marginTop: '8px', fontSize: '14px' }}>
           {error}
         </div>
       )}
-
-      <button 
+      <button
         disabled={!stripe || isLoading}
         style={{
           backgroundColor: '#635BFF',
@@ -85,33 +66,19 @@ function CheckoutForm() {
           marginTop: '16px',
         }}
       >
-        {isLoading ? "Processing..." : "Subscribe"}
+        {isLoading ? "Processing..." : "Pay now"}
       </button>
     </form>
   );
 }
 
-export default function CheckoutPage() {
+export default function Checkout() {
   const options = {
     mode: 'subscription' as const,
-    amount: 2000, // $20.00
+    amount: 2000,
     currency: 'usd',
     appearance: {
-      theme: 'stripe',
-      labels: 'floating',
-      variables: {
-        fontFamily: 'system-ui, sans-serif',
-        fontWeightNormal: '400',
-        borderRadius: '4px',
-        colorBackground: '#ffffff',
-        colorPrimary: '#635BFF',
-        colorPrimaryText: '#ffffff',
-        colorText: '#30313d',
-        colorTextSecondary: '#6b7294',
-        colorTextPlaceholder: '#6b7294',
-        colorIconTab: '#6b7294',
-        colorLogo: '#635BFF'
-      }
+      theme: 'stripe' as const,
     },
   };
 
