@@ -15,13 +15,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import styles from "./Checkout.module.css";
+import { cn } from "@/lib/utils";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-function CheckoutForm() {
+interface CheckoutFormProps {
+  className?: string;
+}
+
+function CheckoutForm({ className }: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
+  const [activeMethod, setActiveMethod] = useState<'card' | 'bank'>('card');
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -48,26 +55,34 @@ function CheckoutForm() {
   };
 
   return (
-    <div className="ml-64 p-8">
-      <div className="max-w-md mx-auto">
-        <div className="mb-6">
-          <div className="flex gap-2 mb-4">
+    <div className={cn(styles.checkoutContainer, className)}>
+      <div className={styles.formContainer}>
+        <div className={styles.formSection}>
+          <div className={styles.paymentMethodsContainer}>
             <Button 
               variant="outline" 
-              className="flex-1 justify-start border-2 border-[#44a991] focus:ring-0"
+              className={cn(
+                styles.paymentMethod,
+                activeMethod === 'card' && styles.paymentMethodActive
+              )}
+              onClick={() => setActiveMethod('card')}
             >
               💳 Card
             </Button>
             <Button 
               variant="outline" 
-              className="flex-1 justify-start"
+              className={cn(
+                styles.paymentMethod,
+                activeMethod === 'bank' && styles.paymentMethodActive
+              )}
+              onClick={() => setActiveMethod('bank')}
             >
               🏦 US Bank Account
             </Button>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="rounded-lg border p-4 bg-white shadow-sm">
+            <div className={styles.cardElementContainer}>
               <CardElement
                 options={{
                   style: {
@@ -87,9 +102,9 @@ function CheckoutForm() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className={styles.formGrid}>
+              <div className={styles.formField}>
+                <label className={styles.label}>
                   Country
                 </label>
                 <Select defaultValue="US">
@@ -102,8 +117,8 @@ function CheckoutForm() {
                 </Select>
               </div>
 
-              <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+              <div className={styles.formField}>
+                <label className={styles.label}>
                   Postal Code
                 </label>
                 <Input 
@@ -115,7 +130,7 @@ function CheckoutForm() {
 
             <Button 
               type="submit" 
-              className="w-full bg-[#44a991] hover:bg-[#44a991]/90 text-white"
+              className={cn("text-white", styles.subscribeButton)}
               disabled={!stripe || isLoading}
             >
               {isLoading ? "Processing..." : "Subscribe"}
@@ -127,7 +142,11 @@ function CheckoutForm() {
   );
 }
 
-export default function Checkout() {
+interface CheckoutPageProps {
+  className?: string;
+}
+
+export default function CheckoutPage({ className }: CheckoutPageProps) {
   const options = {
     mode: 'subscription' as const,
     amount: 2000,
@@ -142,7 +161,7 @@ export default function Checkout() {
 
   return (
     <Elements stripe={stripePromise} options={options}>
-      <CheckoutForm />
+      <CheckoutForm className={className} />
     </Elements>
   );
 }
