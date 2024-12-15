@@ -2,7 +2,7 @@ import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
-  PaymentElement,
+  CardElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
@@ -54,7 +54,7 @@ function CheckoutForm() {
           <div className="flex gap-2 mb-4">
             <Button 
               variant="outline" 
-              className="flex-1 justify-start border-2 border-primary"
+              className="flex-1 justify-start border-2 border-[#44a991]"
             >
               Card
             </Button>
@@ -67,16 +67,21 @@ function CheckoutForm() {
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <PaymentElement
+            <div className="rounded-md border p-3 bg-white">
+              <CardElement
                 options={{
-                  layout: {
-                    type: 'tabs',
-                    defaultCollapsed: false,
+                  style: {
+                    base: {
+                      fontSize: '16px',
+                      color: '#424770',
+                      '::placeholder': {
+                        color: '#aab7c4',
+                      },
+                    },
+                    invalid: {
+                      color: '#9e2146',
+                    },
                   },
-                  fields: {
-                    billingDetails: 'never'
-                  }
                 }}
               />
             </div>
@@ -116,7 +121,7 @@ function CheckoutForm() {
 
 export default function Checkout() {
   const options = {
-    mode: 'payment' as const,
+    mode: 'subscription' as const,
     amount: 2000,
     currency: 'usd',
     appearance: {
