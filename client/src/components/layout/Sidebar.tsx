@@ -93,7 +93,7 @@ export default function Sidebar() {
                 });
               }}
               onViewProfile={() => {
-                console.log("View profile");
+                window.location.href = "/profile";
               }}
               onSettings={() => {
                 console.log("Settings");
