@@ -71,15 +71,12 @@ func main() {
 		})
 	})
 
-	// Get port from environment variable or use default
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+	// Use port 5000 to match the frontend server
+	const port = "5000"
 
 	// Start server
 	log.Printf("Server starting on port %s", port)
-	if err := r.Run(":" + port); err != nil {
+	if err := r.Run("0.0.0.0:" + port); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
