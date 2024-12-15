@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS procurement_ingredients;
 DROP TABLE IF EXISTS procurements;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS ingredients;
