@@ -22,18 +22,21 @@ export default function General() {
 
   return (
     <div className="flex-1">
-      <div className="p-6">
-        <SubSectionNav
-          sections={sections}
-          activeSection={activeSection}
-          onSectionChange={setActiveSection}
-        />
+      <div>
+        <div className="px-6 py-4 border-b">
+          <SubSectionNav
+            sections={sections}
+            activeSection={activeSection}
+            onSectionChange={setActiveSection}
+          />
+        </div>
 
-        <div className="mt-6 mb-6 flex items-center justify-end">
+        <div className="px-6 pt-4 flex items-center justify-end">
           <DateRangePicker date={date} onSelect={setDate} />
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="p-6">
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {activeSection === 'overview' && (
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -125,6 +128,7 @@ export default function General() {
               <p className="text-gray-600">Menu section coming soon...</p>
             </div>
           )}
+          </div>
         </div>
       </div>
     </div>
