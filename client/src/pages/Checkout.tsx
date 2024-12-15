@@ -6,86 +6,130 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
-// Initialize Stripe with your publishable key
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
-  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    if (!stripe || !elements) {
-      return;
-    }
+    if (!stripe || !elements) return;
 
     setIsLoading(true);
-    setError(null);
 
     try {
-      const { error: submitError } = await stripe.confirmPayment({
+      const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
           return_url: `${window.location.origin}/payment-success`,
         },
       });
 
-      if (submitError) {
-        setError(submitError.message ?? "An error occurred");
+      if (error) {
+        console.error("Payment error:", error);
       }
     } catch (err) {
-      setError("An unexpected error occurred");
-      console.error(err);
+      console.error("Unexpected error:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <PaymentElement />
-      {error && (
-        <div className="text-sm text-red-500">
-          {error}
+    <div className="ml-64 p-8">
+      <div className="max-w-md mx-auto">
+        <div className="mb-6">
+          <div className="flex gap-2 mb-4">
+            <Button 
+              variant="outline" 
+              className="flex-1 justify-start border-2 border-primary"
+            >
+              Card
+            </Button>
+            <Button 
+              variant="outline" 
+              className="flex-1 justify-start"
+            >
+              US Bank Account
+            </Button>
+          </div>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <PaymentElement
+                options={{
+                  layout: {
+                    type: 'tabs',
+                    defaultCollapsed: false,
+                  },
+                  fields: {
+                    billingDetails: 'never'
+                  }
+                }}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm text-gray-600">Country</label>
+                <Select defaultValue="US">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="US">United States</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="text-sm text-gray-600">Postal Code</label>
+                <Input placeholder="Enter postal code" />
+              </div>
+            </div>
+
+            <Button 
+              type="submit" 
+              className="w-full bg-[#44a991] hover:bg-[#44a991]/90"
+              disabled={!stripe || isLoading}
+            >
+              {isLoading ? "Processing..." : "Subscribe"}
+            </Button>
+          </form>
         </div>
-      )}
-      <button
-        disabled={!stripe || isLoading}
-        className="w-full py-2 px-4 bg-[#635BFF] text-white rounded-md hover:bg-[#635BFF]/90 disabled:opacity-50"
-      >
-        {isLoading ? "Processing..." : "Pay now"}
-      </button>
-    </form>
+      </div>
+    </div>
   );
 }
 
 export default function Checkout() {
-  const [clientSecret] = useState("test_secret"); // In a real app, this would come from your server
-
   const options = {
-    clientSecret,
+    mode: 'payment' as const,
+    amount: 2000,
+    currency: 'usd',
     appearance: {
       theme: 'stripe' as const,
+      variables: {
+        colorPrimary: '#44a991',
+      },
     },
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Complete your payment</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Elements stripe={stripePromise} options={options}>
-            <CheckoutForm />
-          </Elements>
-        </CardContent>
-      </Card>
-    </div>
+    <Elements stripe={stripePromise} options={options}>
+      <CheckoutForm />
+    </Elements>
   );
 }
