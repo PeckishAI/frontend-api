@@ -43,38 +43,59 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-[90vw] sm:max-w-[1200px] flex gap-8 overflow-y-auto">
-        {/* Left side - Stocktake details */}
+        {/* Left side - Documents and Details */}
         <div className="flex-1">
           <SheetHeader className="mb-6">
             <SheetTitle className="text-2xl">Stocktake Details</SheetTitle>
           </SheetHeader>
 
           <div className="space-y-6">
-            <div className="flex items-center gap-2">
-              <Hash className="h-5 w-5 text-muted-foreground" />
-              <span className="text-lg font-medium">{stocktake.id}</span>
+            {/* Documents Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              {stocktake.documents.map((doc, index) => (
+                <div key={index} className="relative aspect-[3/2] bg-gray-100 rounded-md overflow-hidden group">
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                    {doc.type === 'video' ? (
+                      <Film className="h-8 w-8" />
+                    ) : (
+                      <Images className="h-8 w-8" />
+                    )}
+                  </div>
+                  <div className="absolute inset-x-0 bottom-0 bg-black/50 p-2 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                    <p className="text-sm truncate">{doc.url}</p>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <div className="flex items-center gap-2">
-              <User2 className="h-5 w-5 text-muted-foreground" />
-              <span className="text-lg">{stocktake.user.name}</span>
-            </div>
+            {/* Stocktake Information */}
+            <div className="pt-6 border-t space-y-4">
+              <div className="flex items-center gap-2">
+                <Hash className="h-5 w-5 text-muted-foreground" />
+                <span className="text-lg font-medium">{stocktake.id}</span>
+              </div>
 
-            <div className="flex items-center gap-2">
-              <CalendarDays className="h-5 w-5 text-muted-foreground" />
-              <span className="text-lg">
-                {stocktake.date.toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </span>
-            </div>
+              <div className="flex items-center gap-2">
+                <User2 className="h-5 w-5 text-muted-foreground" />
+                <span className="text-lg">{stocktake.user.name}</span>
+              </div>
 
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-green-600" />
-              <span className="text-lg font-medium">$1,234.56</span>
-              <span className="text-sm text-muted-foreground">estimated value</span>
+              <div className="flex items-center gap-2">
+                <CalendarDays className="h-5 w-5 text-muted-foreground" />
+                <span className="text-lg">
+                  {stocktake.date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5 text-green-600" />
+                <span className="text-lg font-medium">$1,234.56</span>
+                <span className="text-sm text-muted-foreground">estimated value</span>
+              </div>
             </div>
           </div>
         </div>
