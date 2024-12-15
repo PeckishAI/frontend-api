@@ -122,7 +122,7 @@ function SidebarMainContent() {
 export default function Sidebar() {
   return (
     <SidebarProvider>
-      <SidebarComponent variant="inset" collapsible="icon" className="h-screen border-r border-border">
+      <SidebarComponent variant="inset" collapsible="icon" className="h-full border-r border-border">
         <SidebarMainContent />
       </SidebarComponent>
     </SidebarProvider>
