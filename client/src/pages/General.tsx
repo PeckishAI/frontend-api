@@ -22,112 +22,108 @@ export default function General() {
 
   return (
     <div className="flex-1">
-      <div className="border-b">
-        <SubSectionNav
-          sections={sections}
-          activeSection={activeSection}
-          onSectionChange={setActiveSection}
-        />
-      </div>
+      <SubSectionNav
+        sections={sections}
+        activeSection={activeSection}
+        onSectionChange={setActiveSection}
+      />
 
-      <div className="px-4 py-2 flex items-center justify-end">
+      <div className="px-4 py-2 flex items-center justify-end border-t">
         <DateRangePicker date={date} onSelect={setDate} />
       </div>
 
-      <div className="px-4">
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          {activeSection === 'overview' && (
-            <div className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex flex-col space-y-1">
-                      <span className="text-sm text-muted-foreground">Total Sales</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold">$252.25</span>
-                        <span className="text-sm text-red-500">↓20%</span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">Compared to Jan 1-Dec 31, 2020</span>
+      <div className="bg-white">
+        {activeSection === 'overview' && (
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-sm text-muted-foreground">Total Sales</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl font-bold">$252.25</span>
+                      <span className="text-sm text-red-500">↓20%</span>
                     </div>
-                  </CardContent>
-                </Card>
+                    <span className="text-xs text-muted-foreground">Compared to Jan 1-Dec 31, 2020</span>
+                  </div>
+                </CardContent>
+              </Card>
 
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex flex-col space-y-1">
-                      <span className="text-sm text-muted-foreground">Online Store Sessions</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold">14</span>
-                        <span className="text-sm text-green-500">↑600%</span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">Compared to previous period</span>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-sm text-muted-foreground">Online Store Sessions</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl font-bold">14</span>
+                      <span className="text-sm text-green-500">↑600%</span>
                     </div>
-                  </CardContent>
-                </Card>
+                    <span className="text-xs text-muted-foreground">Compared to previous period</span>
+                  </div>
+                </CardContent>
+              </Card>
 
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex flex-col space-y-1">
-                      <span className="text-sm text-muted-foreground">Returning Customer Rate</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold">16.67%</span>
-                        <span className="text-sm text-neutral-500">-</span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">First time vs returning</span>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-sm text-muted-foreground">Returning Customer Rate</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl font-bold">16.67%</span>
+                      <span className="text-sm text-neutral-500">-</span>
                     </div>
-                  </CardContent>
-                </Card>
+                    <span className="text-xs text-muted-foreground">First time vs returning</span>
+                  </div>
+                </CardContent>
+              </Card>
 
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex flex-col space-y-1">
-                      <span className="text-sm text-muted-foreground">Total Orders</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold">13</span>
-                        <span className="text-sm text-green-500">↑225%</span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">Last 30 days</span>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-sm text-muted-foreground">Total Orders</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl font-bold">13</span>
+                      <span className="text-sm text-green-500">↑225%</span>
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card>
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-medium mb-4">Sales Over Time</h3>
-                    <SalesChart />
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-medium mb-4">Customer Analytics</h3>
-                    <CustomerChart />
-                  </CardContent>
-                </Card>
-              </div>
+                    <span className="text-xs text-muted-foreground">Last 30 days</span>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          )}
 
-          {activeSection === 'inventory' && (
-            <div className="p-6">
-              <p className="text-gray-600">Inventory section coming soon...</p>
-            </div>
-          )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-medium mb-4">Sales Over Time</h3>
+                  <SalesChart />
+                </CardContent>
+              </Card>
 
-          {activeSection === 'procurement' && (
-            <div className="p-6">
-              <p className="text-gray-600">Procurement section coming soon...</p>
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-medium mb-4">Customer Analytics</h3>
+                  <CustomerChart />
+                </CardContent>
+              </Card>
             </div>
-          )}
+          </div>
+        )}
 
-          {activeSection === 'menu' && (
-            <div className="p-6">
-              <p className="text-gray-600">Menu section coming soon...</p>
-            </div>
-          )}
-        </div>
+        {activeSection === 'inventory' && (
+          <div className="p-6">
+            <p className="text-gray-600">Inventory section coming soon...</p>
+          </div>
+        )}
+
+        {activeSection === 'procurement' && (
+          <div className="p-6">
+            <p className="text-gray-600">Procurement section coming soon...</p>
+          </div>
+        )}
+
+        {activeSection === 'menu' && (
+          <div className="p-6">
+            <p className="text-gray-600">Menu section coming soon...</p>
+          </div>
+        )}
       </div>
     </div>
   );
