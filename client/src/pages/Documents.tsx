@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { FileText, FileBox, ClipboardCheck, Images, ChevronLeft, ChevronRight, Hash, DollarSign, Building2, Package2, Pencil } from "lucide-react";
+import { FileText, FileBox, ClipboardCheck, Images, ChevronLeft, ChevronRight, Hash, DollarSign, Building2, Package2, Pencil, Film, User2 } from "lucide-react";
+import StocktakeCard from './documents/Stocktakes';
+import { mockStocktakes } from './documents/Stocktakes';
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import ViewToggle from "@/components/orders/ViewToggle";
 import {
@@ -238,7 +240,11 @@ export default function Documents() {
 
           {activeSection === 'stocktakes' && (
             <div className="p-6">
-              <p className="text-gray-600">Stocktakes section coming soon...</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {mockStocktakes.map((stocktake) => (
+                  <StocktakeCard key={stocktake.id} stocktake={stocktake} />
+                ))}
+              </div>
             </div>
           )}
         </div>

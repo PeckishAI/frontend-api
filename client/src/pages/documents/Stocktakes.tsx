@@ -13,12 +13,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-type Document = {
+export type Document = {
   type: 'image' | 'video';
   url: string;
 };
 
-type Stocktake = {
+export type Stocktake = {
   id: string;
   date: Date;
   user: {
@@ -28,7 +28,7 @@ type Stocktake = {
   documents: Document[];
 };
 
-const mockStocktakes: Stocktake[] = [
+export const mockStocktakes: Stocktake[] = [
   {
     id: "ST-001",
     date: new Date(2024, 0, 15),
@@ -68,7 +68,7 @@ const mockStocktakes: Stocktake[] = [
   },
 ];
 
-function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
+export function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
   return (
     <Card className="group hover:shadow-lg transition-shadow duration-200">
       <CardHeader className="pb-3">
