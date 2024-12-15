@@ -161,7 +161,7 @@ export default function Documents() {
         />
 
         <div className="px-8 mt-6 mb-6 flex items-center justify-end gap-4">
-          {activeSection === 'invoices' && (
+          {(activeSection === 'invoices' || activeSection === 'stocktakes') && (
             <ViewToggle current={viewMode} onChange={setViewMode} />
           )}
         </div>
@@ -239,13 +239,65 @@ export default function Documents() {
           )}
 
           {activeSection === 'stocktakes' && (
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockStocktakes.map((stocktake) => (
-                  <StocktakeCard key={stocktake.id} stocktake={stocktake} />
-                ))}
+            <>
+              <div className="p-6">
+                {viewMode === 'cards' ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {mockStocktakes.map((stocktake) => (
+                      <StocktakeCard key={stocktake.id} stocktake={stocktake} />
+                    ))}
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>User</TableHead>
+                        <TableHead>Images</TableHead>
+                        <TableHead>Videos</TableHead>
+                        <TableHead>Total Documents</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {mockStocktakes.map((stocktake) => (
+                        <TableRow key={stocktake.id}>
+                          <TableCell>{stocktake.id}</TableCell>
+                          <TableCell>
+                            {stocktake.date.toLocaleDateString('en-US', { 
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <User2 className="h-4 w-4 text-gray-500" />
+                              <span>{stocktake.user.name}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">
+                              {stocktake.documents.filter(d => d.type === 'image').length}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">
+                              {stocktake.documents.filter(d => d.type === 'video').length}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge>
+                              {stocktake.documents.length}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>
