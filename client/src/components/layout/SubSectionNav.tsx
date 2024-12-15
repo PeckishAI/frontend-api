@@ -18,8 +18,8 @@ export default function SubSectionNav({
 }: SubSectionNavProps) {
   return (
     <div className="border-b">
-      <Tabs value={activeSection} onValueChange={onSectionChange} className="px-8">
-        <TabsList className="w-full justify-start bg-transparent border-b-0 p-0">
+      <Tabs value={activeSection} onValueChange={onSectionChange}>
+        <TabsList className="w-full justify-start bg-transparent border-b-0 px-8 py-0">
           {sections.map((section) => (
             <TabsTrigger
               key={section.id}
