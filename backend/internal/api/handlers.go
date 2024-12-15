@@ -250,7 +250,7 @@ func CreateOrder(c *gin.Context) {
 		input.Items[i].OrderID = order.ID
 	}
 
-	if err := tx.CreateInBatch(&input.Items, len(input.Items)).Error; err != nil {
+	if err := tx.Create(&input.Items).Error; err != nil {
 		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create order items"})
 		return

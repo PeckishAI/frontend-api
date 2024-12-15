@@ -2,30 +2,32 @@ package models
 
 import "time"
 
+// Supplier represents a supplier entity
 type Supplier struct {
-	ID          uint      `json:"id" gorm:"primaryKey"`
-	Name        string    `json:"name" gorm:"not null"`
-	Category    string    `json:"category" gorm:"not null"`
-	Email       *string   `json:"email"`
-	Phone       *string   `json:"phone"`
-	Address     *string   `json:"address"`
-	Notes       *string   `json:"notes"`
-	Active      bool      `json:"active" gorm:"not null;default:true"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	ID        uint      `json:"id" gorm:"primaryKey"`
+	Name      string    `json:"name" gorm:"not null"`
+	Category  string    `json:"category" gorm:"not null"`
+	Email     *string   `json:"email"`
+	Phone     *string   `json:"phone"`
+	Address   *string   `json:"address"`
+	Notes     *string   `json:"notes"`
+	Active    bool      `json:"active" gorm:"not null;default:true"`
+	CreatedAt time.Time `json:"createdAt" gorm:"autoCreateTime"`
+	UpdatedAt time.Time `json:"updatedAt" gorm:"autoUpdateTime"`
 }
 
+// Order represents an order entity
 type Order struct {
-	ID           uint        `json:"id" gorm:"primaryKey"`
-	RestaurantID uint        `json:"restaurantId" gorm:"not null"`
-	SupplierID   uint        `json:"supplierId" gorm:"not null"`
-	Status       string      `json:"status" gorm:"not null"`
-	CreatedAt    time.Time   `json:"createdAt"`
-	UpdatedAt    time.Time   `json:"updatedAt"`
-	Supplier     Supplier    `json:"supplier" gorm:"foreignKey:SupplierID"`
-	Items        []OrderItem `json:"items"`
+	ID         uint        `json:"id" gorm:"primaryKey"`
+	SupplierID uint        `json:"supplierId" gorm:"not null"`
+	Status     string      `json:"status" gorm:"not null"`
+	CreatedAt  time.Time   `json:"createdAt" gorm:"autoCreateTime"`
+	UpdatedAt  time.Time   `json:"updatedAt" gorm:"autoUpdateTime"`
+	Supplier   Supplier    `json:"supplier" gorm:"foreignKey:SupplierID"`
+	Items      []OrderItem `json:"items" gorm:"foreignKey:OrderID"`
 }
 
+// OrderItem represents an item within an order
 type OrderItem struct {
 	ID        uint      `json:"id" gorm:"primaryKey"`
 	OrderID   uint      `json:"orderId" gorm:"not null"`
@@ -33,10 +35,11 @@ type OrderItem struct {
 	Quantity  float64   `json:"quantity" gorm:"not null"`
 	Unit      string    `json:"unit" gorm:"not null"`
 	Price     float64   `json:"price" gorm:"not null"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	CreatedAt time.Time `json:"createdAt" gorm:"autoCreateTime"`
+	UpdatedAt time.Time `json:"updatedAt" gorm:"autoUpdateTime"`
 }
 
+// Ingredient represents an ingredient in inventory
 type Ingredient struct {
 	ID                  uint                `json:"id" gorm:"primaryKey"`
 	Name                string              `json:"name" gorm:"not null"`
@@ -46,18 +49,19 @@ type Ingredient struct {
 	Quantity            float64             `json:"quantity" gorm:"not null"`
 	Unit                string              `json:"unit" gorm:"not null"`
 	Active              bool                `json:"active" gorm:"not null;default:true"`
-	CreatedAt           time.Time           `json:"createdAt"`
-	UpdatedAt           time.Time           `json:"updatedAt"`
+	CreatedAt           time.Time           `json:"createdAt" gorm:"autoCreateTime"`
+	UpdatedAt           time.Time           `json:"updatedAt" gorm:"autoUpdateTime"`
 	IngredientSuppliers []IngredientSupplier `json:"ingredientSuppliers" gorm:"foreignKey:IngredientID"`
 }
 
+// IngredientSupplier represents the relationship between ingredients and suppliers
 type IngredientSupplier struct {
-	ID          uint      `json:"id" gorm:"primaryKey"`
-	IngredientID uint     `json:"ingredientId" gorm:"not null"`
-	SupplierID  uint      `json:"supplierId" gorm:"not null"`
-	UnitCost    float64   `json:"unitCost" gorm:"not null"`
-	PackSize    string    `json:"packSize" gorm:"not null"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
-	Supplier    Supplier  `json:"supplier" gorm:"foreignKey:SupplierID"`
+	ID           uint      `json:"id" gorm:"primaryKey"`
+	IngredientID uint      `json:"ingredientId" gorm:"not null"`
+	SupplierID   uint      `json:"supplierId" gorm:"not null"`
+	UnitCost     float64   `json:"unitCost" gorm:"not null"`
+	PackSize     string    `json:"packSize" gorm:"not null"`
+	CreatedAt    time.Time `json:"createdAt" gorm:"autoCreateTime"`
+	UpdatedAt    time.Time `json:"updatedAt" gorm:"autoUpdateTime"`
+	Supplier     Supplier  `json:"supplier" gorm:"foreignKey:SupplierID"`
 }
