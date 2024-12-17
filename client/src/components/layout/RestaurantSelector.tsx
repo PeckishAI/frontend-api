@@ -28,6 +28,17 @@ export function RestaurantSelector({
   const { data: restaurants = [], isLoading, error } = useQuery({
     queryKey: ['/api/restaurants/v2'],
     queryFn: restaurantService.getRestaurants,
+    onSuccess: (data) => {
+      const storedId = localStorage.getItem('selectedRestaurantId');
+      if (!currentRestaurant) {
+        const restaurant = storedId 
+          ? data.find(r => r.restaurant_uuid === storedId)
+          : data[0];
+        if (restaurant) {
+          onRestaurantChange(restaurant);
+        }
+      }
+    }
   });
 
   return (
@@ -70,6 +81,7 @@ export function RestaurantSelector({
                     <CommandItem
                       key={restaurant.restaurant_uuid}
                       onSelect={() => {
+                        localStorage.setItem('selectedRestaurantId', restaurant.restaurant_uuid);
                         onRestaurantChange(restaurant);
                         setOpen(false);
                       }}
