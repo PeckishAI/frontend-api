@@ -43,16 +43,14 @@ export default function Inventory() {
     { id: "waste", label: "Waste" },
   ];
 
+  const { currentRestaurant } = useRestaurantContext();
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     if (currentRestaurant?.restaurant_uuid) {
       queryClient.invalidateQueries({ queryKey: ["inventory", currentRestaurant.restaurant_uuid] });
     }
   }, [currentRestaurant?.restaurant_uuid, queryClient]);
-
-
-
-  const { currentRestaurant } = useRestaurantContext();
-  const queryClient = useQueryClient();
   const { data: inventory = [], isLoading } = useQuery({
     queryKey: ["inventory", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
