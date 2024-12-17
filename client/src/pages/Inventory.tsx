@@ -55,8 +55,11 @@ export default function Inventory() {
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
     select: (data) => {
-      if (!data?.data?.data) return [];
-      return Object.values(data.data.data).map((item: any) => ({
+      if (!data?.data) return [];
+      console.log("Raw data in select:", data);
+      const inventoryItems = Object.values(data.data);
+      console.log("Transformed items:", inventoryItems);
+      return inventoryItems.map((item: any) => ({
         id: item.ingredient_uuid,
         name: item.ingredient_name,
         tags: item.tags || [],
