@@ -56,11 +56,12 @@ export default function Inventory() {
       );
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
-    staleTime: 0,
     cacheTime: 0,
-    refetchOnMount: "always",
-    refetchOnWindowFocus: true,
+    gcTime: 0,
+    staleTime: 0,
+    refetchOnMount: true,
     refetchOnReconnect: true,
+    refetchOnWindowFocus: true,
     select: (data) => {
       if (!data?.data) return [];
       console.log("Raw data in select:", data);
