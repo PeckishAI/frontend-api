@@ -29,7 +29,7 @@ export function RestaurantSelector({
     queryKey: ['restaurants'],
     queryFn: restaurantService.getRestaurants,
     onSuccess: (data) => {
-      if (!currentRestaurant && data.length > 0) {
+      if (data.length > 0 && !currentRestaurant?.restaurant_uuid) {
         onRestaurantChange(data[0]);
       }
     }
