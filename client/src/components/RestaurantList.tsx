@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 
 export function RestaurantList() {
   const { data: restaurants, isLoading, error } = useQuery({
-    queryKey: ['/restaurants'],
+    queryKey: ['/api/restaurants/v2'],
     queryFn: restaurantService.getRestaurants,
   });
 
