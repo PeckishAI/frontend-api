@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -20,67 +21,34 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-
-const priceBuckets = [
-  { value: "budget", label: "Budget ($)" },
-  { value: "moderate", label: "Moderate ($$)" },
-  { value: "premium", label: "Premium ($$$)" },
-  { value: "luxury", label: "Luxury ($$$$)" },
-];
-
-interface Restaurant {
-  id: number;
-  name: string;
-  address: string;
-  phone: string;
-  priceBucket: string;
-}
+import { Restaurant } from "@/types/restaurant";
+import { restaurantService } from "@/services/restaurantService";
 
 const restaurantSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  address: z.string().min(5, "Address must be at least 5 characters"),
-  phone: z.string().min(10, "Please enter a valid phone number"),
-  priceBucket: z.string(),
+  address: z.string().nullable(),
+  city: z.string().nullable(),
+  country: z.string().nullable(),
+  phone: z.string().nullable(),
+  email: z.string().nullable(),
 });
-
-type RestaurantFormValues = z.infer<typeof restaurantSchema>;
-
-// Mock multiple restaurants data
-const mockRestaurants = [
-  {
-    id: 1,
-    name: "Main Restaurant",
-    address: "123 Restaurant Street",
-    phone: "(555) 123-4567",
-    priceBucket: "moderate",
-  },
-  {
-    id: 2,
-    name: "Second Location",
-    address: "456 Food Avenue",
-    phone: "(555) 987-6543",
-    priceBucket: "premium",
-  },
-];
-
-// Mock order total for demonstration
-const MOCK_ORDER_TOTAL = 2999; // $29.99
 
 export default function RestaurantManagement() {
   const { toast } = useToast();
-  const [selectedRestaurant, setSelectedRestaurant] =
-    useState<Restaurant | null>(null);
-  const [showStripeSetup, setShowStripeSetup] = useState(false);
+  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
 
-  const form = useForm<RestaurantFormValues>({
-    resolver: zodResolver(restaurantSchema),
-    defaultValues: selectedRestaurant || mockRestaurants[0],
+  const { data: restaurants, isLoading, error } = useQuery({
+    queryKey: ['/api/restaurants/v2'],
+    queryFn: restaurantService.getRestaurants,
   });
 
-  const onSubmit = (data: RestaurantFormValues) => {
-    // In a real app, we would save the restaurant data here
-    console.log("Restaurant data:", data);
+  const form = useForm<z.infer<typeof restaurantSchema>>({
+    resolver: zodResolver(restaurantSchema),
+    defaultValues: selectedRestaurant || undefined,
+  });
 
+  const onSubmit = (data: z.infer<typeof restaurantSchema>) => {
+    console.log("Restaurant data:", data);
     toast({
       title: "Restaurant Updated",
       description: "Your restaurant information has been updated successfully.",
@@ -88,173 +56,126 @@ export default function RestaurantManagement() {
     setSelectedRestaurant(null);
   };
 
+  if (error) {
+    return <div className="text-red-500">Error loading restaurants: {error.message}</div>;
+  }
+
   return (
-    <div className="ml-64 p-8 w-full max-w-[1600px]">
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-semibold tracking-tight">Restaurants</h1>
-          <Button>Add Restaurant</Button>
-        </div>
+    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold tracking-tight">Restaurant Management</h1>
+      </div>
 
-        <div className="space-y-1">
-          <h2 className="text-sm font-medium leading-none text-muted-foreground">
-            All restaurants
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Manage your restaurant locations and their settings.
-          </p>
-        </div>
+      <div className="space-y-4">
+        <div className="rounded-lg border bg-card">
+          <div className="p-6">
+            <h3 className="text-lg font-medium">Select Restaurant</h3>
+            <p className="text-sm text-muted-foreground">
+              Choose a restaurant to manage its details
+            </p>
 
-        <div className="space-y-4">
-          {mockRestaurants.map((restaurant) => (
-            <div
-              key={restaurant.id}
-              className={`group relative rounded-lg border border-border bg-card p-4 hover:bg-accent/5 transition-colors cursor-pointer ${
-                selectedRestaurant?.id === restaurant.id
-                  ? "border-primary ring-1 ring-primary"
-                  : ""
-              }`}
-              onClick={() => setSelectedRestaurant(restaurant)}
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="truncate text-base font-medium">
+            <div className="mt-4">
+              <Select
+                onValueChange={(value) => {
+                  const restaurant = restaurants?.find(r => r.restaurant_uuid === value);
+                  setSelectedRestaurant(restaurant || null);
+                }}
+                value={selectedRestaurant?.restaurant_uuid}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a restaurant" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {restaurants?.map((restaurant) => (
+                    <SelectItem
+                      key={restaurant.restaurant_uuid}
+                      value={restaurant.restaurant_uuid}
+                    >
                       {restaurant.name}
-                    </h3>
-                    <div className="hidden group-hover:flex items-center gap-2">
-                      <Button variant="ghost" size="sm" className="h-6 px-2">
-                        Edit
-                      </Button>
-                    </div>
-                  </div>
-                  <p className="mt-1 truncate text-sm text-muted-foreground">
-                    {restaurant.address}
-                  </p>
-                </div>
-                <div className="flex shrink-0 items-center gap-3 text-sm">
-                  <div className="flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
-                    {
-                      priceBuckets.find(
-                        (b) => b.value === restaurant.priceBucket,
-                      )?.label
-                    }
-                  </div>
-                  <div className="flex items-center rounded-md bg-secondary/10 px-2 py-1 text-xs font-medium text-secondary-foreground">
-                    {
-                      priceBuckets.find(
-                        (b) => b.value === restaurant.priceBucket,
-                      )?.label
-                    }
-                  </div>
-                </div>
-              </div>
+                      {restaurant.city && ` - ${restaurant.city}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          ))}
+          </div>
         </div>
 
         {selectedRestaurant && (
-          <div className="mt-8 space-y-6">
-            <div className="space-y-1">
-              <h2 className="text-sm font-medium leading-none text-muted-foreground">
-                Edit Restaurant
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Update the information for {selectedRestaurant.name}.
-              </p>
-            </div>
-            <div className="rounded-lg border border-border bg-card p-6">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-6"
-                >
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Restaurant Name</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+          <div className="rounded-lg border bg-card p-6">
+            <h3 className="text-lg font-medium mb-4">Restaurant Details</h3>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Restaurant Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Address</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>City</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <FormField
-                    control={form.control}
-                    name="priceBucket"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Price Bucket</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a price bucket" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {priceBuckets.map((bucket) => (
-                              <SelectItem
-                                key={bucket.value}
-                                value={bucket.value}
-                              >
-                                {bucket.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <FormField
+                  control={form.control}
+                  name="country"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Country</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  <div className="flex justify-end gap-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setSelectedRestaurant(null)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button type="submit">Save Changes</Button>
-                  </div>
-                </form>
-              </Form>
-            </div>
+                <div className="flex justify-end gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setSelectedRestaurant(null)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit">Save Changes</Button>
+                </div>
+              </form>
+            </Form>
           </div>
         )}
       </div>
