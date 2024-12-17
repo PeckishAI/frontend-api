@@ -38,11 +38,11 @@ export default function Inventory() {
 
   const { currentRestaurant } = useRestaurantContext();
   const { data: inventory = [], isLoading } = useQuery({
-    queryKey: ['/api/inventory/v2/restaurant', currentRestaurant?.restaurant_uuid],
+    queryKey: ['inventory', currentRestaurant?.restaurant_uuid],
     queryFn: () => inventoryService.getRestaurantInventory(currentRestaurant?.restaurant_uuid!),
     enabled: !!currentRestaurant,
-    select: (data) => Object.entries(data).map(([id, item]: [string, any]) => ({
-      id,
+    select: (data) => data.map((item: any) => ({
+      id: item.id,
       name: item.ingredient_name,
       tags: item.tags || [],
       parLevel: item.par_level,
