@@ -1,4 +1,7 @@
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import { tagService } from "@/services/tagService";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -46,6 +49,19 @@ interface NewIngredientDialogProps {
 }
 
 export default function NewIngredientDialog({
+  const { currentRestaurant } = useRestaurantContext();
+  
+  const { data: tagsData } = useQuery({
+    queryKey: ["tags", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      return tagService.getRestaurantTags(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+    select: (data) => data.data,
+  });
   open,
   onOpenChange,
   onSubmit,
