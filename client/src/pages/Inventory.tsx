@@ -24,7 +24,6 @@ import {
   FilterPopover,
   type FilterType,
 } from "@/components/inventory/FilterPopover";
-import { mockInventory } from "@/mockData/inventory";
 import { inventoryService } from "@/services/inventoryService";
 
 export default function Inventory() {
@@ -46,7 +45,7 @@ export default function Inventory() {
   const { currentRestaurant } = useRestaurantContext();
   const queryClient = useQueryClient();
 
-  const { data: inventory = [], isLoading, refetch } = useQuery({
+  const { data: inventory = [], isLoading } = useQuery({
     queryKey: ["inventory", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
@@ -59,7 +58,7 @@ export default function Inventory() {
     enabled: !!currentRestaurant?.restaurant_uuid,
     staleTime: 0,
     cacheTime: 0,
-    refetchOnMount: true,
+    refetchOnMount: "always",
     refetchOnWindowFocus: true,
     refetchOnReconnect: true,
     select: (data) => {

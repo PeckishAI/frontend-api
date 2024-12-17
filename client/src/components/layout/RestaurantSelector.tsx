@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { restaurantService } from "@/services/restaurantService";
 import { ChevronDown, Plus, Settings } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
@@ -22,6 +21,12 @@ export function RestaurantSelector({
 }: RestaurantSelectorProps) {
   const [open, setOpen] = useState(false);
   const { currentRestaurant, setCurrentRestaurant, setIsLoading } = useRestaurantContext();
+  const queryClient = useQueryClient();
+
+  const handleRestaurantChange = (restaurant: Restaurant) => {
+    setCurrentRestaurant(restaurant);
+    queryClient.invalidateQueries({ queryKey: ["inventory"] });
+  };
 
   const { data: restaurants = [], isLoading } = useQuery({
     queryKey: ["restaurants"],
@@ -78,7 +83,7 @@ export function RestaurantSelector({
                 <CommandItem
                   key={restaurant.restaurant_uuid}
                   onSelect={() => {
-                    setCurrentRestaurant(restaurant);
+                    handleRestaurantChange(restaurant);
                     setOpen(false);
                   }}
                   className="flex items-center gap-2 px-4 py-2"
