@@ -1,12 +1,13 @@
 
 import { Restaurant } from "../types/restaurant";
 
-const BASE_URL = "https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev";
+import { config } from '../config/config';
+const BASE_URL = config.apiBaseUrl;
 
 export const restaurantService = {
   async getRestaurants(): Promise<Restaurant[]> {
     try {
-      const response = await fetch(`${BASE_URL}/restaurants/v2`, {
+      const response = await fetch(`${BASE_URL}/restaurants/v2/user/7d5844cc-74f1-4f50-b63e-7324fdedf57c`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

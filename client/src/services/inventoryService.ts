@@ -1,14 +1,13 @@
 import { InventoryItem } from "../lib/types";
 
-const BASE_URL =
-  "https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev";
+import { config } from '../config/config';
+const BASE_URL = config.apiBaseUrl;
 
 export const inventoryService = {
   async getRestaurantInventory(restaurantUuid: string): Promise<any> {
-    console.log('Fetching inventory for restaurant:', restaurantUuid);
     try {
       const response = await fetch(
-        `${BASE_URL}/inventory/v2/restaurant/${restaurantUuid}`,
+        `${BASE_URL}/ingredients/v2/restaurant/${restaurantUuid}`,
         {
           method: "GET",
           headers: {
@@ -22,7 +21,6 @@ export const inventoryService = {
       }
 
       const data = await response.json();
-      console.log("API Response:", JSON.stringify(data, null, 2));
       if (!data.success) {
         throw new Error("Failed to fetch inventory");
       }
@@ -40,7 +38,7 @@ export const inventoryService = {
   ): Promise<any> {
     try {
       const response = await fetch(
-        `${BASE_URL}/inventory/v2/restaurant/${restaurantUuid}/item/${itemId}`,
+        `${BASE_URL}/ingredients/v2/restaurant/${restaurantUuid}/item/${itemId}`,
         {
           method: "PUT",
           headers: {
@@ -68,7 +66,7 @@ export const inventoryService = {
   ): Promise<any> {
     try {
       const response = await fetch(
-        `${BASE_URL}/inventory/v2/restaurant/${restaurantUuid}/item`,
+        `${BASE_URL}/ingredients/v2/restaurant/${restaurantUuid}/item`,
         {
           method: "POST",
           headers: {

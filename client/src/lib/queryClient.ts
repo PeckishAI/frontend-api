@@ -1,8 +1,8 @@
 import { QueryClient } from "@tanstack/react-query";
 
 // Configure the base URL for all API requests
-const API_BASE_URL =
-  "https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev/"; // Empty string for same-origin requests
+import { config } from '../config/config';
+const API_BASE_URL = `${config.apiBaseUrl}/`; // Empty string for same-origin requests
 
 export const queryClient = new QueryClient({
   defaultOptions: {
