@@ -83,19 +83,12 @@ export default function Inventory() {
   });
   console.log("inventory", inventory);
 
-  const tags = useMemo(() => {
-    if (!inventory) return [];
-    return Array.from(new Set(inventory.flatMap((item) => item.tags)));
-  }, [inventory]);
-
-  const suppliers = useMemo(() => {
-    if (!inventory) return [];
-    return Array.from(
-      new Set(
-        inventory.flatMap((item) => item.suppliers.map((s) => s.supplierName)),
-      ),
-    );
-  }, [inventory]);
+  const tags = !inventory ? [] : Array.from(new Set(inventory.flatMap((item) => item.tags)));
+  const suppliers = !inventory ? [] : Array.from(
+    new Set(
+      inventory.flatMap((item) => item.suppliers.map((s) => s.supplierName)),
+    ),
+  );
 
   useEffect(() => {
     if (currentRestaurant?.restaurant_uuid) {
@@ -103,9 +96,7 @@ export default function Inventory() {
     }
   }, [currentRestaurant?.restaurant_uuid, refetch]);
 
-  const filteredInventory = useMemo(() => {
-    if (!inventory) return [];
-    return inventory.filter((item) => {
+  const filteredInventory = !inventory ? [] : inventory.filter((item) => {
       const matchesSearch = item.name
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
