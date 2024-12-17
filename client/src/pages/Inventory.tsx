@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,16 @@ export default function Inventory() {
     { id: "waste", label: "Waste" },
   ];
 
+  useEffect(() => {
+    if (currentRestaurant?.restaurant_uuid) {
+      queryClient.invalidateQueries({ queryKey: ["inventory", currentRestaurant.restaurant_uuid] });
+    }
+  }, [currentRestaurant?.restaurant_uuid, queryClient]);
+
+
+
   const { currentRestaurant } = useRestaurantContext();
+  const queryClient = useQueryClient();
   const { data: inventory = [], isLoading } = useQuery({
     queryKey: ["inventory", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
