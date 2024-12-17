@@ -1,42 +1,43 @@
 
-import { useState } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { restaurantService } from "@/services/restaurantService";
-import { ChevronDown, Plus, Settings } from 'lucide-react';
+import { ChevronDown, Plus, Settings } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Restaurant } from "@/types/restaurant";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
 
 interface RestaurantSelectorProps {
-  currentRestaurant?: Restaurant | null;
-  onRestaurantChange: (restaurant: Restaurant) => void;
   onCreateNew: () => void;
   onManageRestaurants: () => void;
 }
 
 export function RestaurantSelector({
-  currentRestaurant,
-  onRestaurantChange,
   onCreateNew,
   onManageRestaurants,
 }: RestaurantSelectorProps) {
   const [open, setOpen] = useState(false);
-  
+  const { currentRestaurant, setCurrentRestaurant, setIsLoading } = useRestaurantContext();
+
   const { data: restaurants = [], isLoading } = useQuery({
-    queryKey: ['restaurants'],
+    queryKey: ["restaurants"],
     queryFn: restaurantService.getRestaurants,
-    onSuccess: (data) => {
-      if (data.length > 0 && !currentRestaurant?.restaurant_uuid) {
-        onRestaurantChange(data[0]);
+    onSuccess: (fetchedData) => {
+      if (fetchedData.length > 0 && !currentRestaurant?.restaurant_uuid) {
+        setCurrentRestaurant(fetchedData[0]);
       }
+      setIsLoading(false);
+    },
+    onError: () => {
+      setIsLoading(false);
     }
   });
 
-  if (isLoading || (!currentRestaurant?.restaurant_uuid && restaurants.length === 0)) {
-    return null;
+  if (isLoading) {
+    return <div>Loading restaurants...</div>;
   }
 
   return (
@@ -54,11 +55,13 @@ export function RestaurantSelector({
               {currentRestaurant?.logo_url ? (
                 <AvatarImage src={currentRestaurant.logo_url} alt={currentRestaurant.name} />
               ) : (
-                <AvatarFallback>{currentRestaurant?.name?.[0]?.toUpperCase() || ''}</AvatarFallback>
+                <AvatarFallback>
+                  {currentRestaurant?.name?.[0]?.toUpperCase() || ""}
+                </AvatarFallback>
               )}
             </Avatar>
             <span className="flex-1 text-left font-medium">
-              {currentRestaurant?.name || 'Select a restaurant'}
+              {currentRestaurant?.name || "Select a restaurant"}
             </span>
           </div>
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -74,7 +77,7 @@ export function RestaurantSelector({
                 <CommandItem
                   key={restaurant.restaurant_uuid}
                   onSelect={() => {
-                    onRestaurantChange(restaurant);
+                    setCurrentRestaurant(restaurant);
                     setOpen(false);
                   }}
                   className="flex items-center gap-2 px-4 py-2"
@@ -87,10 +90,12 @@ export function RestaurantSelector({
                     )}
                   </Avatar>
                   <span>{restaurant.name}</span>
-                  <span 
+                  <span
                     className={cn(
                       "ml-auto",
-                      restaurant.restaurant_uuid === currentRestaurant?.restaurant_uuid ? "opacity-100" : "opacity-0"
+                      restaurant.restaurant_uuid === currentRestaurant?.restaurant_uuid
+                        ? "opacity-100"
+                        : "opacity-0"
                     )}
                   >
                     ✓
