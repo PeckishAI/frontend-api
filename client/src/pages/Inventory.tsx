@@ -45,7 +45,7 @@ export default function Inventory() {
   const { currentRestaurant } = useRestaurantContext();
   const queryClient = useQueryClient();
 
-  const { data: inventory = [], isLoading } = useQuery({
+  const { data: inventory = [], isLoading, refetch } = useQuery({
     queryKey: ["inventory", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
