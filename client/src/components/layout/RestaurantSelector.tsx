@@ -28,9 +28,13 @@ export function RestaurantSelector({
   const { data: restaurants = [], isLoading, error } = useQuery({
     queryKey: ['restaurants'],
     queryFn: restaurantService.getRestaurants,
+    enabled: true,
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
     onSuccess: (data) => {
       if (data.length > 0 && !currentRestaurant?.restaurant_uuid) {
-        onRestaurantChange(data[0]);
+        setTimeout(() => {
+          onRestaurantChange(data[0]);
+        }, 0);
       }
     }
   });

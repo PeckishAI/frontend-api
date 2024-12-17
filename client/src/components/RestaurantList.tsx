@@ -4,10 +4,12 @@ import { RestaurantSelector } from '@/components/layout/RestaurantSelector';
 import { Restaurant } from '@/types/restaurant';
 
 export function RestaurantList() {
+  const { setCurrentRestaurant } = useRestaurantContext();
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
 
   const handleRestaurantChange = (restaurant: Restaurant) => {
     setSelectedRestaurant(restaurant);
+    setCurrentRestaurant(restaurant);
   };
 
   return (
