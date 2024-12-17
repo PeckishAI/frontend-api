@@ -26,17 +26,11 @@ export function RestaurantSelector({
   const [open, setOpen] = useState(false);
   
   const { data: restaurants = [], isLoading, error } = useQuery({
-    queryKey: ['/api/restaurants/v2'],
+    queryKey: ['restaurants'],
     queryFn: restaurantService.getRestaurants,
     onSuccess: (data) => {
-      const storedId = localStorage.getItem('selectedRestaurantId');
-      if (!currentRestaurant) {
-        const restaurant = storedId 
-          ? data.find(r => r.restaurant_uuid === storedId)
-          : data[0];
-        if (restaurant) {
-          onRestaurantChange(restaurant);
-        }
+      if (!currentRestaurant && data.length > 0) {
+        onRestaurantChange(data[0]);
       }
     }
   });
