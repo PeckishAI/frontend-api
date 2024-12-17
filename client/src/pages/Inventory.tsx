@@ -96,7 +96,7 @@ export default function Inventory() {
     }
   }, [currentRestaurant?.restaurant_uuid, refetch]);
 
-  const filteredInventory = !inventory ? [] : inventory.filter((item) => {
+  const filteredInventory = (!inventory ? [] : inventory.filter((item) => {
       const matchesSearch = item.name
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
@@ -115,8 +115,7 @@ export default function Inventory() {
         item.suppliers.some((s) => supplierFilters.includes(s.supplierName));
 
       return matchesSearch && matchesTags && matchesSuppliers;
-    });
-  }, [searchQuery, selectedFilters]);
+    }));
 
   const exportToCsv = () => {
     const headers = [
