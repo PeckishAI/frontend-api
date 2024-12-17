@@ -1,10 +1,12 @@
+
 import { Restaurant } from "../types/restaurant";
 
-// Using relative URL since backend is served through the same Express server
+const BASE_URL = "https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev";
+
 export const restaurantService = {
   async getRestaurants(): Promise<Restaurant[]> {
     try {
-      const response = await fetch("/api/restaurants/v2", {
+      const response = await fetch(`${BASE_URL}/restaurants/v2`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -12,8 +14,6 @@ export const restaurantService = {
       });
 
       if (!response.ok) {
-        const errorData = await response.text();
-        console.error('Error response:', errorData);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -25,15 +25,19 @@ export const restaurantService = {
     }
   },
 };
+
 export const inventoryService = {
   async getRestaurantInventory(restaurantUuid: string): Promise<any> {
     try {
-      const response = await fetch(`/api/inventory/v2/restaurant/${restaurantUuid}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${BASE_URL}/inventory/v2/restaurant/${restaurantUuid}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
