@@ -82,6 +82,7 @@ export default function EditIngredientForm({
         ...ingredient,
         parLevel: Number(ingredient.parLevel),
         quantity: Number(ingredient.quantity),
+        tags: ingredient.tags || [],
       });
     }
   }, [ingredient, form]);
