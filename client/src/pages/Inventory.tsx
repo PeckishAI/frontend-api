@@ -35,8 +35,21 @@ export default function Inventory() {
     { id: 'waste', label: 'Waste' },
   ];
 
-  const inventory = mockInventory;
-  const isLoading = false;
+  const { currentRestaurant } = useRestaurantContext();
+  const { data: inventory = [], isLoading } = useQuery({
+    queryKey: ['/api/inventory/v2/restaurant', currentRestaurant?.restaurant_uuid],
+    queryFn: () => inventoryService.getRestaurantInventory(currentRestaurant?.restaurant_uuid!),
+    enabled: !!currentRestaurant,
+    select: (data) => Object.entries(data).map(([id, item]: [string, any]) => ({
+      id,
+      name: item.ingredient_name,
+      tags: item.tags || [],
+      parLevel: item.par_level,
+      quantity: item.quantity,
+      unit: item.unit_name,
+      suppliers: item.suppliers || []
+    }))
+  });
 
   const tags = useMemo(() => {
     if (!inventory) return [];
@@ -133,6 +146,9 @@ export default function Inventory() {
 
       {activeSection === 'ingredients' && (
         <div className="bg-white rounded-lg shadow overflow-hidden">
+          {isLoading ? (
+            <div className="p-8 text-center">Loading inventory...</div>
+          ) : (
         <Table>
           <TableHeader>
             <TableRow>
@@ -175,6 +191,7 @@ export default function Inventory() {
             ))}
           </TableBody>
         </Table>
+      )}
       </div>
       )}
 
