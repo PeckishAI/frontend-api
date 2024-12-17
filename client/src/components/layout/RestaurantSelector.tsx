@@ -25,17 +25,17 @@ export function RestaurantSelector({
 }: RestaurantSelectorProps) {
   const [open, setOpen] = useState(false);
   
-  const { data: restaurants = [] } = useQuery({
+  const { data: restaurants = [], isLoading } = useQuery({
     queryKey: ['restaurants'],
     queryFn: restaurantService.getRestaurants,
     onSuccess: (data) => {
-      if (data.length > 0 && !currentRestaurant) {
+      if (data.length > 0 && !currentRestaurant?.restaurant_uuid) {
         onRestaurantChange(data[0]);
       }
     }
   });
 
-  if (!currentRestaurant && restaurants.length === 0) {
+  if (isLoading || (!currentRestaurant?.restaurant_uuid && restaurants.length === 0)) {
     return null;
   }
 
@@ -58,7 +58,7 @@ export function RestaurantSelector({
               )}
             </Avatar>
             <span className="flex-1 text-left font-medium">
-              {currentRestaurant?.name}
+              {currentRestaurant?.name || 'Select a restaurant'}
             </span>
           </div>
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
