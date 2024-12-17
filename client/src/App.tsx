@@ -7,6 +7,7 @@ import General from "@/pages/General";
 import Profile from "@/pages/Profile";
 import RestaurantManagement from "@/pages/RestaurantManagement";
 import Checkout from "@/pages/Checkout";
+import { Home } from "@/pages/Home";
 
 import Sidebar from "@/components/layout/Sidebar";
 
@@ -15,7 +16,7 @@ function App() {
     <div className="flex">
       <Sidebar />
       <Switch>
-        <Route path="/" component={General} />
+        <Route path="/" component={Home} />
         <Route path="/inventory" component={Inventory} />
         <Route path="/menu" component={Menu} />
         <Route path="/orders" component={Orders} />
