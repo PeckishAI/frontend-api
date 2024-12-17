@@ -111,15 +111,17 @@ export default function NewIngredientDialog({
               <FormLabel>Tags</FormLabel>
               <FormControl>
                 <CreatableSelect
-                  value={field.value}
+                  value={field.value || []}
                   onChange={field.onChange}
                   options={tagsData?.map(tag => ({ 
                     label: tag.tag_name, 
-                    value: tag.tag_uuid 
+                    value: tag.tag_uuid,
+                    category: "Existing Tags"
                   })) || []}
-                  onCreateOption={(value) => field.onChange([...field.value, value])}
+                  onCreateOption={(value) => field.onChange([...field.value || [], value])}
                   placeholder="Select or create tags"
                   multiple={true}
+                  className="max-h-[200px] overflow-y-auto"
                 />
               </FormControl>
               <FormMessage />

@@ -186,13 +186,13 @@ export default function EditIngredientForm({
                     </div>
                     <FormControl>
                       <CreatableSelect
-                        value={[]}
-                        onChange={(values) => {
-                          if (values[0] && !field.value.includes(values[0])) {
-                            field.onChange([...field.value, values[0]]);
-                          }
-                        }}
-                        options={[]}
+                        value={field.value || []}
+                        onChange={(values) => field.onChange(values)}
+                        options={ingredient?.tags?.map(tag => ({
+                          label: tag,
+                          value: tag,
+                          category: "Existing Tags"
+                        })) || []}
                         onCreateOption={(value) => {
                           if (!field.value.includes(value)) {
                             field.onChange([...field.value, value]);
