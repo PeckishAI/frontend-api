@@ -39,8 +39,13 @@ export default function Inventory() {
   const { currentRestaurant } = useRestaurantContext();
   const { data: inventory = [], isLoading } = useQuery({
     queryKey: ['inventory', currentRestaurant?.restaurant_uuid],
-    queryFn: () => inventoryService.getRestaurantInventory(currentRestaurant?.restaurant_uuid!),
-    enabled: !!currentRestaurant,
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error('No restaurant selected');
+      }
+      return inventoryService.getRestaurantInventory(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
     select: (data) => data.map((item: any) => ({
       id: item.id,
       name: item.ingredient_name,

@@ -1,10 +1,11 @@
+import { InventoryItem } from "../lib/types";
 
-import { InventoryItem } from '../lib/types';
-
-const BASE_URL = "https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev";
+const BASE_URL =
+  "https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev";
 
 export const inventoryService = {
   async getRestaurantInventory(restaurantUuid: string): Promise<any> {
+    console.log('Fetching inventory for restaurant:', restaurantUuid);
     try {
       const response = await fetch(
         `${BASE_URL}/inventory/v2/restaurant/${restaurantUuid}`,
@@ -13,7 +14,7 @@ export const inventoryService = {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (!response.ok) {
@@ -21,6 +22,7 @@ export const inventoryService = {
       }
 
       const data = await response.json();
+      console.log(data);
       return data.data;
     } catch (error) {
       console.error("Failed to fetch restaurant inventory:", error);
@@ -28,7 +30,11 @@ export const inventoryService = {
     }
   },
 
-  async updateInventoryItem(restaurantUuid: string, itemId: string, itemData: Partial<InventoryItem>): Promise<any> {
+  async updateInventoryItem(
+    restaurantUuid: string,
+    itemId: string,
+    itemData: Partial<InventoryItem>,
+  ): Promise<any> {
     try {
       const response = await fetch(
         `${BASE_URL}/inventory/v2/restaurant/${restaurantUuid}/item/${itemId}`,
@@ -38,7 +44,7 @@ export const inventoryService = {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(itemData),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -53,7 +59,10 @@ export const inventoryService = {
     }
   },
 
-  async createInventoryItem(restaurantUuid: string, itemData: Omit<InventoryItem, 'id'>): Promise<any> {
+  async createInventoryItem(
+    restaurantUuid: string,
+    itemData: Omit<InventoryItem, "id">,
+  ): Promise<any> {
     try {
       const response = await fetch(
         `${BASE_URL}/inventory/v2/restaurant/${restaurantUuid}/item`,
@@ -63,7 +72,7 @@ export const inventoryService = {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(itemData),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -76,5 +85,5 @@ export const inventoryService = {
       console.error("Failed to create inventory item:", error);
       throw error;
     }
-  }
+  },
 };
