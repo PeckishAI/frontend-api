@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useRestaurantContext } from '@/contexts/RestaurantContext';
 import OrderCard from '@/components/orders/OrderCard';
 import OrderTable from '@/components/orders/OrderTable';
 import ViewToggle from '@/components/orders/ViewToggle';
