@@ -58,8 +58,10 @@ export default function Inventory() {
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
     staleTime: 0,
+    cacheTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
     select: (data) => {
       if (!data?.data) return [];
       console.log("Raw data in select:", data);
