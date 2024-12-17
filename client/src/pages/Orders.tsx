@@ -1,65 +1,87 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useRestaurantContext } from '@/contexts/RestaurantContext';
-import OrderCard from '@/components/orders/OrderCard';
-import OrderTable from '@/components/orders/OrderTable';
-import ViewToggle from '@/components/orders/ViewToggle';
-import OrderModal from '@/components/orders/OrderModal';
-import SubSectionNav from '@/components/layout/SubSectionNav';
-import { type Order, type Supplier } from '@/lib/types';
-import { mockOrders } from '@/mockData/orders';
-import { mockSuppliers } from '@/mockData/suppliers';
-import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
-import SupplierCard from '@/components/suppliers/SupplierCard';
-import SupplierDialog from '@/components/suppliers/SupplierDialog';
-import SupplierSheet from '@/components/suppliers/SupplierSheet';
-import { useToast } from '@/hooks/use-toast';
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import OrderCard from "@/components/orders/OrderCard";
+import OrderTable from "@/components/orders/OrderTable";
+import ViewToggle from "@/components/orders/ViewToggle";
+import OrderModal from "@/components/orders/OrderModal";
+import SubSectionNav from "@/components/layout/SubSectionNav";
+import { type Order, type Supplier } from "@/lib/types";
+import { mockOrders } from "@/mockData/orders";
+import { mockSuppliers } from "@/mockData/suppliers";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
+import SupplierCard from "@/components/suppliers/SupplierCard";
+import SupplierDialog from "@/components/suppliers/SupplierDialog";
+import SupplierSheet from "@/components/suppliers/SupplierSheet";
+import { useToast } from "@/hooks/use-toast";
+import { orderService } from "@/services/orderService";
+import { supplierService } from "@/services/supplierService";
 
 export default function Orders() {
-  const [activeSection, setActiveSection] = useState('orders');
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  const [activeSection, setActiveSection] = useState("orders");
+  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
+  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
+    null,
+  );
   const [isNewSupplier, setIsNewSupplier] = useState(false);
-  
+
   const { currentRestaurant } = useRestaurantContext();
 
-const { data: orders = [], isLoading: ordersLoading } = useQuery({
-  queryKey: ["orders", currentRestaurant?.restaurant_uuid],
-  queryFn: () => {
-    if (!currentRestaurant?.restaurant_uuid) {
-      throw new Error("No restaurant selected");
-    }
-    return orderService.getRestaurantOrders(currentRestaurant.restaurant_uuid);
-  },
-  enabled: !!currentRestaurant?.restaurant_uuid,
-  select: (data) => {
-    if (!data?.data) return [];
-    return data.data.map((order: any) => ({
-      id: order.order_uuid,
-      supplierName: order.supplier_name,
-      orderDate: order.created_at,
-      status: order.status,
-      total: order.price || 0,
-      items: order.items.map((item: any) => ({
-        id: item.ingredient_uuid,
-        name: "Item", // You may want to fetch ingredient names separately
-        quantity: item.quantity || 0,
-        unit: item.unit_name || '',
-        price: item.price || 0
-      }))
-    }));
-  }
-});
+  const { data: orders = [], isLoading: ordersLoading } = useQuery({
+    queryKey: ["orders", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      return orderService.getRestaurantOrders(
+        currentRestaurant.restaurant_uuid,
+      );
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+    select: (data) => {
+      if (!data?.data) return [];
+      return data.data.map((order: any) => ({
+        id: order.order_uuid,
+        supplierName: order.supplier_name,
+        orderDate: order.created_at,
+        status: order.status,
+        total: order.price || 0,
+        items: order.items.map((item: any) => ({
+          id: item.ingredient_uuid,
+          name: item.name,
+          quantity: item.quantity || 0,
+          unit: item.unit_name || "",
+          price: item.price || 0,
+        })),
+      }));
+    },
+  });
 
-// Still using mock suppliers for now
-const suppliers = mockSuppliers;
-const suppliersLoading = false;
+  const { data: suppliers = [], isLoading: suppliersLoading } = useQuery({
+    queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      return supplierService.getRestaurantSuppliers(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+    select: (data) => {
+      if (!data?.data) return [];
+      return data.data.map((supplier: any) => ({
+        id: supplier.supplier_uuid,
+        name: supplier.name,
+        email: supplier.email || "",
+        phone: supplier.phone || "",
+      }));
+    },
+  });
 
   const sections = [
-    { id: 'orders', label: 'Orders' },
-    { id: 'suppliers', label: 'Suppliers' },
+    { id: "orders", label: "Orders" },
+    { id: "suppliers", label: "Suppliers" },
   ];
 
   return (
@@ -72,7 +94,7 @@ const suppliersLoading = false;
         />
 
         <div className="px-8 mt-6 mb-6 flex items-center justify-end gap-4">
-          {activeSection === 'orders' && (
+          {activeSection === "orders" && (
             <>
               <ViewToggle current={viewMode} onChange={setViewMode} />
               <Button>
@@ -81,7 +103,7 @@ const suppliersLoading = false;
               </Button>
             </>
           )}
-          {activeSection === 'suppliers' && (
+          {activeSection === "suppliers" && (
             <Button onClick={() => setIsNewSupplier(true)}>
               <PlusCircle className="mr-2 h-4 w-4" />
               New Supplier
@@ -89,30 +111,30 @@ const suppliersLoading = false;
           )}
         </div>
 
-        {activeSection === 'orders' && (
+        {activeSection === "orders" && (
           <div className="bg-white rounded-lg shadow overflow-hidden">
             {ordersLoading ? (
-                <div className="p-6">Loading orders...</div>
-              ) : viewMode === 'cards' ? (
-                <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {(orders || []).map((order) => (
-                    <OrderCard
-                      key={order.id}
-                      order={order}
-                      onClick={() => setSelectedOrder(order)}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <OrderTable
-                  orders={orders || []}
-                  onOrderClick={(order) => setSelectedOrder(order)}
-                />
-              )}
+              <div className="p-6">Loading orders...</div>
+            ) : viewMode === "cards" ? (
+              <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(orders || []).map((order) => (
+                  <OrderCard
+                    key={order.id}
+                    order={order}
+                    onClick={() => setSelectedOrder(order)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <OrderTable
+                orders={orders || []}
+                onOrderClick={(order) => setSelectedOrder(order)}
+              />
+            )}
           </div>
         )}
 
-        {activeSection === 'suppliers' && (
+        {activeSection === "suppliers" && (
           <div className="bg-white rounded-lg shadow overflow-hidden p-6">
             {suppliersLoading ? (
               <div>Loading suppliers...</div>
@@ -145,7 +167,7 @@ const suppliersLoading = false;
         }}
         onSubmit={(data) => {
           // In a real app, we would add the supplier to the database here
-          console.log('New supplier:', data);
+          console.log("New supplier:", data);
         }}
       />
 
