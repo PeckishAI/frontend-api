@@ -41,8 +41,6 @@ const restaurantSchema = z.object({
   address: z.string().min(5, "Address must be at least 5 characters"),
   phone: z.string().min(10, "Please enter a valid phone number"),
   priceBucket: z.string(),
-  paymentMethod: z.string(),
-  paymentDetails: z.string().optional(),
 });
 
 type RestaurantFormValues = z.infer<typeof restaurantSchema>;
@@ -55,8 +53,6 @@ const mockRestaurants = [
     address: "123 Restaurant Street",
     phone: "(555) 123-4567",
     priceBucket: "moderate",
-    paymentMethod: "stripe",
-    paymentDetails: "",
   },
   {
     id: 2,
@@ -64,21 +60,16 @@ const mockRestaurants = [
     address: "456 Food Avenue",
     phone: "(555) 987-6543",
     priceBucket: "premium",
-    paymentMethod: "square",
-    paymentDetails: "",
   },
 ];
-
-import { StripeConfig } from "@/components/payments/StripeConfig";
-import StripeCheckout from "@/components/payments/StripeCheckout";
 
 // Mock order total for demonstration
 const MOCK_ORDER_TOTAL = 2999; // $29.99
 
-
 export default function RestaurantManagement() {
   const { toast } = useToast();
-  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
+  const [selectedRestaurant, setSelectedRestaurant] =
+    useState<Restaurant | null>(null);
   const [showStripeSetup, setShowStripeSetup] = useState(false);
 
   const form = useForm<RestaurantFormValues>({
@@ -89,7 +80,7 @@ export default function RestaurantManagement() {
   const onSubmit = (data: RestaurantFormValues) => {
     // In a real app, we would save the restaurant data here
     console.log("Restaurant data:", data);
-    
+
     toast({
       title: "Restaurant Updated",
       description: "Your restaurant information has been updated successfully.",
@@ -104,10 +95,14 @@ export default function RestaurantManagement() {
           <h1 className="text-3xl font-semibold tracking-tight">Restaurants</h1>
           <Button>Add Restaurant</Button>
         </div>
-        
+
         <div className="space-y-1">
-          <h2 className="text-sm font-medium leading-none text-muted-foreground">All restaurants</h2>
-          <p className="text-sm text-muted-foreground">Manage your restaurant locations and their settings.</p>
+          <h2 className="text-sm font-medium leading-none text-muted-foreground">
+            All restaurants
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Manage your restaurant locations and their settings.
+          </p>
         </div>
 
         <div className="space-y-4">
@@ -115,28 +110,42 @@ export default function RestaurantManagement() {
             <div
               key={restaurant.id}
               className={`group relative rounded-lg border border-border bg-card p-4 hover:bg-accent/5 transition-colors cursor-pointer ${
-                selectedRestaurant?.id === restaurant.id ? 'border-primary ring-1 ring-primary' : ''
+                selectedRestaurant?.id === restaurant.id
+                  ? "border-primary ring-1 ring-primary"
+                  : ""
               }`}
               onClick={() => setSelectedRestaurant(restaurant)}
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="truncate text-base font-medium">{restaurant.name}</h3>
+                    <h3 className="truncate text-base font-medium">
+                      {restaurant.name}
+                    </h3>
                     <div className="hidden group-hover:flex items-center gap-2">
                       <Button variant="ghost" size="sm" className="h-6 px-2">
                         Edit
                       </Button>
                     </div>
                   </div>
-                  <p className="mt-1 truncate text-sm text-muted-foreground">{restaurant.address}</p>
+                  <p className="mt-1 truncate text-sm text-muted-foreground">
+                    {restaurant.address}
+                  </p>
                 </div>
                 <div className="flex shrink-0 items-center gap-3 text-sm">
                   <div className="flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
-                    {priceBuckets.find(b => b.value === restaurant.priceBucket)?.label}
+                    {
+                      priceBuckets.find(
+                        (b) => b.value === restaurant.priceBucket,
+                      )?.label
+                    }
                   </div>
                   <div className="flex items-center rounded-md bg-secondary/10 px-2 py-1 text-xs font-medium text-secondary-foreground">
-                    {priceBuckets.find(b => b.value === restaurant.priceBucket)?.label}
+                    {
+                      priceBuckets.find(
+                        (b) => b.value === restaurant.priceBucket,
+                      )?.label
+                    }
                   </div>
                 </div>
               </div>
@@ -147,12 +156,19 @@ export default function RestaurantManagement() {
         {selectedRestaurant && (
           <div className="mt-8 space-y-6">
             <div className="space-y-1">
-              <h2 className="text-sm font-medium leading-none text-muted-foreground">Edit Restaurant</h2>
-              <p className="text-sm text-muted-foreground">Update the information for {selectedRestaurant.name}.</p>
+              <h2 className="text-sm font-medium leading-none text-muted-foreground">
+                Edit Restaurant
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Update the information for {selectedRestaurant.name}.
+              </p>
             </div>
             <div className="rounded-lg border border-border bg-card p-6">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6"
+                >
                   <FormField
                     control={form.control}
                     name="name"
@@ -201,8 +217,8 @@ export default function RestaurantManagement() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Price Bucket</FormLabel>
-                        <Select 
-                          onValueChange={field.onChange} 
+                        <Select
+                          onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
                           <FormControl>
@@ -212,7 +228,10 @@ export default function RestaurantManagement() {
                           </FormControl>
                           <SelectContent>
                             {priceBuckets.map((bucket) => (
-                              <SelectItem key={bucket.value} value={bucket.value}>
+                              <SelectItem
+                                key={bucket.value}
+                                value={bucket.value}
+                              >
                                 {bucket.label}
                               </SelectItem>
                             ))}
@@ -224,8 +243,8 @@ export default function RestaurantManagement() {
                   />
 
                   <div className="flex justify-end gap-4">
-                    <Button 
-                      type="button" 
+                    <Button
+                      type="button"
                       variant="outline"
                       onClick={() => setSelectedRestaurant(null)}
                     >

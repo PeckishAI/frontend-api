@@ -1,7 +1,8 @@
 import { QueryClient } from "@tanstack/react-query";
 
 // Configure the base URL for all API requests
-const API_BASE_URL = "";  // Empty string for same-origin requests
+const API_BASE_URL =
+  "https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev/"; // Empty string for same-origin requests
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -10,7 +11,7 @@ export const queryClient = new QueryClient({
         const url = `${API_BASE_URL}${queryKey[0]}`;
         const res = await fetch(url, {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
 
@@ -34,7 +35,7 @@ export const queryClient = new QueryClient({
         const res = await fetch(`${API_BASE_URL}${url}`, {
           method,
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         });
@@ -47,6 +48,6 @@ export const queryClient = new QueryClient({
         return res.json();
       },
       retry: false,
-    }
+    },
   },
 });

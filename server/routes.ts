@@ -1,38 +1,20 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
+import { readFile } from "fs/promises";
+import { join } from "path";
 
 export function registerRoutes(app: Express): Server {
   // Add restaurant API routes
-  app.get('/api/restaurants/v2', async (req: Request, res: Response) => {
+  app.get('/api/restaurants/v2', async (_req: Request, res: Response) => {
     try {
-      console.log('Attempting to fetch restaurants from backend...');
-      console.log('Backend URL:', 'http://172.31.196.92:8080/restaurants/v2');
-      
-      const response = await fetch('http://172.31.196.92:8080/restaurants/v2');
-      console.log('Backend response status:', response.status);
-      console.log('Backend response headers:', Object.fromEntries(response.headers.entries()));
-      
-      const data = await response.json();
-      console.log('Backend response data:', JSON.stringify(data, null, 2));
-      
-      if (!response.ok) {
-        console.error('Backend error response:', data);
-        throw new Error(data.message || `Backend responded with status: ${response.status}`);
-      }
-
-      res.json(data);
+      const filePath = join(process.cwd(), 'Pasted--data-address-Elandsgracht-36-city-Amsterdam-country--1734454370941.txt');
+      const fileContent = await readFile(filePath, 'utf-8');
+      const restaurantData = JSON.parse(fileContent);
+      res.json(restaurantData);
     } catch (error) {
-      console.error('Error fetching restaurants:', error);
-      if (error instanceof Error) {
-        console.error('Error details:', {
-          name: error.name,
-          message: error.message,
-          stack: error.stack,
-          cause: error.cause
-        });
-      }
+      console.error('Error serving restaurant data:', error);
       res.status(500).json({ 
-        message: 'Failed to fetch restaurants from backend',
+        message: 'Failed to serve restaurant data',
         error: error instanceof Error ? error.message : String(error)
       });
     }
