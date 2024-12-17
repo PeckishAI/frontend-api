@@ -46,12 +46,7 @@ export default function Inventory() {
   const { currentRestaurant } = useRestaurantContext();
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (currentRestaurant?.restaurant_uuid) {
-      queryClient.invalidateQueries({ queryKey: ["inventory", currentRestaurant.restaurant_uuid] });
-    }
-  }, [currentRestaurant?.restaurant_uuid, queryClient]);
-  const { data: inventory = [], isLoading } = useQuery({
+  const { data: inventory = [], isLoading, refetch } = useQuery({
     queryKey: ["inventory", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
@@ -96,6 +91,12 @@ export default function Inventory() {
       ),
     );
   }, [inventory]);
+
+  useEffect(() => {
+    if (currentRestaurant?.restaurant_uuid) {
+      refetch();
+    }
+  }, [currentRestaurant?.restaurant_uuid, refetch]);
 
   const filteredInventory = useMemo(() => {
     if (!inventory) return [];
