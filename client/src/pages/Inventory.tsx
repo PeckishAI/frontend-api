@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useRestaurantContext } from '@/contexts/RestaurantContext';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";

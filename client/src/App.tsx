@@ -10,12 +10,15 @@ import { Home } from "@/pages/Home";
 
 import Sidebar from "@/components/layout/Sidebar";
 
+import { RestaurantProvider } from "@/contexts/RestaurantContext";
+
 function App() {
   return (
-    <div className="flex">
+    <RestaurantProvider>
+      <div className="flex">
       <Sidebar />
       <Switch>
-        <Route path="/" component={Home} />
+        <Route path="/" component={General} />
         <Route path="/inventory" component={Inventory} />
         <Route path="/menu" component={Menu} />
         <Route path="/orders" component={Orders} />
@@ -24,6 +27,7 @@ function App() {
         <Route path="/restaurant-management" component={RestaurantManagement} />
       </Switch>
     </div>
+    </RestaurantProvider>
   );
 }
 
