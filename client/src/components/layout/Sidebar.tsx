@@ -1,7 +1,12 @@
-import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Package, ClipboardList, MenuSquare, Files, ChartBar } from "lucide-react";
-import { RestaurantSelector, type Restaurant } from "./RestaurantSelector";
+import {
+  Package,
+  ClipboardList,
+  MenuSquare,
+  Files,
+  ChartBar,
+} from "lucide-react";
+import { RestaurantSelector } from "./RestaurantSelector";
 import { UserProfileSection } from "./UserProfileSection";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -14,11 +19,6 @@ const menuItems = [
   { icon: Files, label: "Documents", href: "/documents" },
 ];
 
-const mockRestaurants: Restaurant[] = [
-  { id: 1, name: "Main Restaurant" },
-  { id: 2, name: "Second Location" },
-];
-
 const mockUser = {
   name: "John Doe",
   role: "Restaurant Manager",
@@ -26,7 +26,6 @@ const mockUser = {
 };
 
 export default function Sidebar() {
-  const [currentRestaurant, setCurrentRestaurant] = useState<Restaurant | undefined>(mockRestaurants[0]);
   const { toast } = useToast();
 
   return (
@@ -35,9 +34,9 @@ export default function Sidebar() {
         <div className="flex flex-col h-full">
           <div className="p-4 border-b border-gray-200">
             <div className="flex items-center gap-3">
-              <img 
-                src="/images/peckish-logo.jpg" 
-                alt="Peckish Logo" 
+              <img
+                src="/images/peckish-logo.jpg"
+                alt="Peckish Logo"
                 className="h-8 w-8 rounded-md object-cover"
               />
               <h1 className="font-semibold text-lg">Peckish</h1>
@@ -46,9 +45,6 @@ export default function Sidebar() {
           <nav className="flex-1 overflow-y-auto">
             <div className="p-2 border-b border-gray-200">
               <RestaurantSelector
-                restaurants={mockRestaurants}
-                currentRestaurant={currentRestaurant}
-                onRestaurantChange={setCurrentRestaurant}
                 onCreateNew={() => {
                   console.log("Create new restaurant");
                 }}
@@ -63,15 +59,16 @@ export default function Sidebar() {
                   const Icon = item.icon;
                   const [location] = useLocation();
                   const isActive = location === item.href;
-                  
+
                   return (
                     <li key={item.href}>
-                      <Link 
+                      <Link
                         href={item.href}
                         data-active={isActive}
                         className={cn(
                           "flex items-center gap-3 px-6 py-2 text-gray-500 hover:text-gray-900 transition-colors relative",
-                          isActive && "text-gray-900 font-medium hover:text-gray-900"
+                          isActive &&
+                            "text-gray-900 font-medium hover:text-gray-900",
                         )}
                       >
                         <Icon className="h-5 w-5" />
