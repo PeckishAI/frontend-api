@@ -1,3 +1,4 @@
+
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
@@ -49,6 +50,11 @@ interface NewIngredientDialogProps {
 }
 
 export default function NewIngredientDialog({
+  open,
+  onOpenChange,
+  onSubmit,
+  embedded = false,
+}: NewIngredientDialogProps) {
   const { currentRestaurant } = useRestaurantContext();
   
   const { data: tagsData } = useQuery({
@@ -62,11 +68,7 @@ export default function NewIngredientDialog({
     enabled: !!currentRestaurant?.restaurant_uuid,
     select: (data) => data.data,
   });
-  open,
-  onOpenChange,
-  onSubmit,
-  embedded = false,
-}: NewIngredientDialogProps) {
+
   const form = useForm<NewIngredientFormValues>({
     resolver: zodResolver(newIngredientSchema),
     defaultValues: {
@@ -111,7 +113,10 @@ export default function NewIngredientDialog({
                 <CreatableSelect
                   value={field.value}
                   onChange={field.onChange}
-                  options={[]}
+                  options={tagsData?.map(tag => ({ 
+                    label: tag.tag_name, 
+                    value: tag.tag_uuid 
+                  })) || []}
                   onCreateOption={(value) => field.onChange([...field.value, value])}
                   placeholder="Select or create tags"
                   multiple={true}
