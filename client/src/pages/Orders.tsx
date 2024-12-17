@@ -22,11 +22,39 @@ export default function Orders() {
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
   const [isNewSupplier, setIsNewSupplier] = useState(false);
   
-  // Use mock data instead of API calls
-  const suppliers = mockSuppliers;
-  const orders = mockOrders;
-  const suppliersLoading = false;
-  const ordersLoading = false;
+  const { currentRestaurant } = useRestaurantContext();
+
+const { data: orders = [], isLoading: ordersLoading } = useQuery({
+  queryKey: ["orders", currentRestaurant?.restaurant_uuid],
+  queryFn: () => {
+    if (!currentRestaurant?.restaurant_uuid) {
+      throw new Error("No restaurant selected");
+    }
+    return orderService.getRestaurantOrders(currentRestaurant.restaurant_uuid);
+  },
+  enabled: !!currentRestaurant?.restaurant_uuid,
+  select: (data) => {
+    if (!data?.data) return [];
+    return data.data.map((order: any) => ({
+      id: order.order_uuid,
+      supplierName: order.supplier_name,
+      orderDate: order.created_at,
+      status: order.status,
+      total: order.price || 0,
+      items: order.items.map((item: any) => ({
+        id: item.ingredient_uuid,
+        name: "Item", // You may want to fetch ingredient names separately
+        quantity: item.quantity || 0,
+        unit: item.unit_name || '',
+        price: item.price || 0
+      }))
+    }));
+  }
+});
+
+// Still using mock suppliers for now
+const suppliers = mockSuppliers;
+const suppliersLoading = false;
 
   const sections = [
     { id: 'orders', label: 'Orders' },
