@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useQuery } from "@tanstack/react-query";
+import { restaurantService } from "@/services/restaurantService";
 import { ChevronDown, Plus, Settings, Search } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -6,14 +8,9 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-export type Restaurant = {
-  id: number;
-  name: string;
-  logo?: string;
-};
+import { Restaurant } from "@/types/restaurant";
 
 interface RestaurantSelectorProps {
-  restaurants: Restaurant[];
   currentRestaurant?: Restaurant;
   onRestaurantChange: (restaurant: Restaurant) => void;
   onCreateNew: () => void;
@@ -21,13 +18,17 @@ interface RestaurantSelectorProps {
 }
 
 export function RestaurantSelector({
-  restaurants,
   currentRestaurant,
   onRestaurantChange,
   onCreateNew,
   onManageRestaurants,
-}: RestaurantSelectorProps) {
+}: Omit<RestaurantSelectorProps, 'restaurants'>) {
   const [open, setOpen] = useState(false);
+  
+  const { data: restaurants = [], isLoading, error } = useQuery({
+    queryKey: ['/api/restaurants/v2'],
+    queryFn: restaurantService.getRestaurants,
+  });
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -41,12 +42,12 @@ export function RestaurantSelector({
         >
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8">
-              {currentRestaurant?.logo ? (
-                <AvatarImage src={currentRestaurant.logo} alt={currentRestaurant.name} />
-              ) : (
-                <AvatarFallback>{currentRestaurant?.name?.[0]?.toUpperCase() || '?'}</AvatarFallback>
-              )}
-            </Avatar>
+                {currentRestaurant?.logo_url ? (
+                  <AvatarImage src={currentRestaurant.logo_url} alt={currentRestaurant.name} />
+                ) : (
+                  <AvatarFallback>{currentRestaurant?.name?.[0]?.toUpperCase() || '?'}</AvatarFallback>
+                )}
+              </Avatar>
             <span className="flex-1 text-left font-medium">
               {currentRestaurant?.name || "Select a restaurant"}
             </span>
@@ -60,33 +61,39 @@ export function RestaurantSelector({
             <CommandInput placeholder="Search restaurants..." />
             <CommandEmpty>No restaurants found.</CommandEmpty>
             <CommandGroup heading="Your restaurants">
-              {restaurants.map((restaurant) => (
-                <CommandItem
-                  key={restaurant.id}
-                  onSelect={() => {
-                    onRestaurantChange(restaurant);
-                    setOpen(false);
-                  }}
-                  className="flex items-center gap-2 px-4 py-2"
-                >
-                  <Avatar className="h-8 w-8">
-                    {restaurant.logo ? (
-                      <AvatarImage src={restaurant.logo} alt={restaurant.name} />
-                    ) : (
-                      <AvatarFallback>{restaurant.name[0].toUpperCase()}</AvatarFallback>
-                    )}
-                  </Avatar>
-                  <span>{restaurant.name}</span>
-                  <span 
-                    className={cn(
-                      "ml-auto",
-                      restaurant.id === currentRestaurant?.id ? "opacity-100" : "opacity-0"
-                    )}
-                  >
-                    ✓
-                  </span>
-                </CommandItem>
-              ))}
+              {isLoading ? (
+                  <CommandItem>Loading restaurants...</CommandItem>
+                ) : error ? (
+                  <CommandItem className="text-red-500">Error loading restaurants</CommandItem>
+                ) : (
+                  restaurants.map((restaurant) => (
+                    <CommandItem
+                      key={restaurant.restaurant_uuid}
+                      onSelect={() => {
+                        onRestaurantChange(restaurant);
+                        setOpen(false);
+                      }}
+                      className="flex items-center gap-2 px-4 py-2"
+                    >
+                      <Avatar className="h-8 w-8">
+                        {restaurant.logo_url ? (
+                          <AvatarImage src={restaurant.logo_url} alt={restaurant.name} />
+                        ) : (
+                          <AvatarFallback>{restaurant.name[0].toUpperCase()}</AvatarFallback>
+                        )}
+                      </Avatar>
+                      <span>{restaurant.name}</span>
+                      <span 
+                        className={cn(
+                          "ml-auto",
+                          restaurant.restaurant_uuid === currentRestaurant?.restaurant_uuid ? "opacity-100" : "opacity-0"
+                        )}
+                      >
+                        ✓
+                      </span>
+                    </CommandItem>
+                  ))
+                )}
             </CommandGroup>
           </CommandList>
           <div className="border-t p-2 flex flex-col gap-2">
