@@ -23,7 +23,7 @@ export const inventoryService = {
 
       const data = await response.json();
       console.log(data);
-      return data.data;
+      return data;
     } catch (error) {
       console.error("Failed to fetch restaurant inventory:", error);
       throw error;
