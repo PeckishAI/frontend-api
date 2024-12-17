@@ -44,7 +44,14 @@ export default function RestaurantManagement() {
 
   const form = useForm<z.infer<typeof restaurantSchema>>({
     resolver: zodResolver(restaurantSchema),
-    defaultValues: selectedRestaurant || undefined,
+    defaultValues: {
+      name: selectedRestaurant?.name || "",
+      address: selectedRestaurant?.address || "",
+      city: selectedRestaurant?.city || "",
+      country: selectedRestaurant?.country || "",
+      phone: selectedRestaurant?.phone || "",
+      email: selectedRestaurant?.email || "",
+    }
   });
 
   const onSubmit = (data: z.infer<typeof restaurantSchema>) => {
@@ -61,7 +68,7 @@ export default function RestaurantManagement() {
   }
 
   return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+    <div className="flex-1 space-y-4 p-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Restaurant Management</h1>
       </div>
