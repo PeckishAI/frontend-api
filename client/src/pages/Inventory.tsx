@@ -58,15 +58,18 @@ export default function Inventory() {
       if (!data?.data) return [];
       console.log("Raw data in select:", data);
       const inventoryItems = Object.values(data.data);
-      console.log("Transformed items:", inventoryItems);
       return inventoryItems.map((item: any) => ({
         id: item.ingredient_uuid,
         name: item.ingredient_name,
-        tags: item.tags || [],
-        parLevel: item.par_level,
-        quantity: item.quantity,
-        unit: item.unit_name,
-        suppliers: item.suppliers || [],
+        tags: Array.isArray(item.tags) ? item.tags : [],
+        parLevel: item.par_level || 0,
+        quantity: item.quantity || 0,
+        unit: item.unit_name || '',
+        suppliers: Array.isArray(item.suppliers) ? item.suppliers.map((s: any) => ({
+          supplierName: s.supplier_name || '',
+          unitCost: s.unit_cost || 0,
+          packSize: s.pack_size || ''
+        })) : []
       }));
     },
   });
