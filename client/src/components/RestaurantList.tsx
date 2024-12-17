@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useRestaurantContext } from '@/contexts/RestaurantContext';
 import { RestaurantSelector } from '@/components/layout/RestaurantSelector';
 import { Restaurant } from '@/types/restaurant';
 
