@@ -61,7 +61,7 @@ export default function Inventory() {
       return inventoryItems.map((item: any) => ({
         id: item.ingredient_uuid,
         name: item.ingredient_name,
-        tags: Array.isArray(item.tags) ? item.tags : [],
+        tags: Array.isArray(item.tags) ? item.tags.map((tag: any) => tag.tag_name) : [],
         parLevel: item.par_level || 0,
         quantity: item.quantity || 0,
         unit: item.unit_name || '',
