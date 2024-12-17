@@ -206,7 +206,7 @@ export default function Inventory() {
           {isLoading ? (
             <div className="p-8 text-center">Loading inventory...</div>
           ) : (
-            <Table>
+            <Table key={currentRestaurant?.restaurant_uuid}>
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
