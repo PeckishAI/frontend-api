@@ -455,11 +455,11 @@ export default function EditIngredientForm({
                                         ? [field.value.supplier_name]
                                         : []
                                     }
-                                    onChange={(newValue) => {
-                                      if (newValue) {
+                                    onChange={(values) => {
+                                      if (values && values.length > 0) {
                                         field.onChange({
-                                          supplier_uuid: newValue.value,
-                                          supplier_name: newValue.label,
+                                          supplier_uuid: values[0],
+                                          supplier_name: suppliersData?.find(s => s.supplier_uuid === values[0])?.supplier_name || values[0],
                                         });
                                       }
                                     }}
