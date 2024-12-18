@@ -156,7 +156,7 @@ export function CreatableSelect({
                       <Check
                         className={cn(
                           "mr-2 h-4 w-4",
-                          value.includes(option.value)
+                          Array.isArray(value) && value.includes(option.value)
                             ? "opacity-100"
                             : "opacity-0"
                         )}
