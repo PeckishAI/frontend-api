@@ -27,6 +27,7 @@ import { Badge } from "@/components/ui/badge";
 import type { InventoryItem } from "@/lib/types";
 import { unitService } from "@/services/unitService";
 import { supplierService } from "@/services/supplierService";
+import { type Supplier } from "@/lib/types";
 
 const editIngredientSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -34,11 +35,13 @@ const editIngredientSchema = z.object({
   parLevel: z.number().min(0, "Par level must be positive"),
   quantity: z.number().min(0, "Quantity must be positive"),
   unit: z.string().min(1, "Unit is required"),
-  suppliers: z
+  ingredientSuppliers: z
     .array(
       z.object({
-        supplierId: z.string(),
-        supplierName: z.string(),
+        supplier: z.object({
+          supplier_uuid: z.string().optional(),
+          supplier_name: z.string().optional(),
+        }),
         unitCost: z.number().min(0),
         packSize: z.string(),
       }),
@@ -115,7 +118,7 @@ export default function EditIngredientForm({
       parLevel: 0,
       quantity: 0,
       unit: "",
-      suppliers: [],
+      ingredientSuppliers: [],
     },
   });
 
@@ -136,12 +139,11 @@ export default function EditIngredientForm({
   };
 
   const addSupplier = () => {
-    const currentSuppliers = form.getValues("suppliers");
-    form.setValue("suppliers", [
+    const currentSuppliers = form.getValues("ingredientSuppliers");
+    form.setValue("ingredientSuppliers", [
       ...currentSuppliers,
       {
-        supplierId: `new-${Date.now()}`,
-        supplierName: "",
+        supplier: {},
         unitCost: 0,
         packSize: "",
       },
@@ -150,9 +152,9 @@ export default function EditIngredientForm({
   };
 
   const removeSupplier = (index: number) => {
-    const currentSuppliers = form.getValues("suppliers");
+    const currentSuppliers = form.getValues("ingredientSuppliers");
     form.setValue(
-      "suppliers",
+      "ingredientSuppliers",
       currentSuppliers.filter((_, i) => i !== index),
     );
   };
@@ -160,15 +162,15 @@ export default function EditIngredientForm({
   const updateSupplier = (
     index: number,
     field: string,
-    value: string | number,
+    value: string | object,
   ) => {
-    const currentSuppliers = form.getValues("suppliers");
+    const currentSuppliers = form.getValues("ingredientSuppliers");
     const updatedSuppliers = [...currentSuppliers];
     updatedSuppliers[index] = {
       ...updatedSuppliers[index],
       [field]: value,
     };
-    form.setValue("suppliers", updatedSuppliers);
+    form.setValue("ingredientSuppliers", updatedSuppliers);
   };
 
   const removeTag = (tagToRemove: string) => {
@@ -359,154 +361,178 @@ export default function EditIngredientForm({
                 </Button>
               </div>
               <div className="space-y-4">
-                {form.watch("suppliers")?.map((supplier, index) => (
-                  <div
-                    key={supplier.supplierId}
-                    className="border border-gray-200 bg-white p-4 rounded-lg shadow-sm"
-                  >
-                    {editingSupplier === index ? (
-                      <div className="space-y-4">
-                        <FormField
-                          control={form.control}
-                          name={`suppliers.${index}.supplierName`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <CreatableSelect
-                                  value={
-                                    supplier.supplierName ? {
-                                      label: supplier.supplierName,
-                                      value: supplier.supplierId
-                                    } : null
-                                  }
-                                  onChange={(newValue) => {
-                                    if (newValue) {
-                                      updateSupplier(index, "supplierName", newValue.label);
-                                      updateSupplier(index, "supplierId", newValue.value);
+                {form
+                  .watch("ingredientSuppliers")
+                  ?.map((ingredientSupplier, index) => (
+                    <div
+                      key={ingredientSupplier.supplier.supplier_uuid}
+                      className="border border-gray-200 bg-white p-4 rounded-lg shadow-sm"
+                    >
+                      {editingSupplier === index ? (
+                        <div className="space-y-4">
+                          <FormField
+                            control={form.control}
+                            name={`ingredientSuppliers.${index}.supplier`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <CreatableSelect
+                                    value={
+                                      field.value?.supplier_uuid
+                                        ? {
+                                            value: field.value.supplier_uuid,
+                                            label: field.value.supplier_name,
+                                          }
+                                        : null
                                     }
-                                  }}
-                                  options={
-                                    suppliersData?.map((s) => ({
-                                      value: s.supplier_uuid,
-                                      label: s.supplier_name,
-                                    })) || []
-                                  }
-                                  onCreateOption={async (inputValue) => {
-                                    try {
-                                      if (!currentRestaurant?.restaurant_uuid) {
-                                        throw new Error("No restaurant selected");
+                                    onChange={(newValue) => {
+                                      if (newValue) {
+                                        field.onChange({
+                                          supplier_uuid: newValue.value,
+                                          supplier_name: newValue.label,
+                                        });
                                       }
-                                      const newSupplier = await supplierService.createSupplier(
-                                        { supplier_name: inputValue },
-                                        currentRestaurant.restaurant_uuid
-                                      );
-                                      if (newSupplier?.supplier_uuid && newSupplier?.supplier_name) {
-                                        updateSupplier(index, "supplierName", newSupplier.supplier_name);
-                                        updateSupplier(index, "supplierId", newSupplier.supplier_uuid);
-                                      }
-                                    } catch (error) {
-                                      console.error("Failed to create supplier:", error);
+                                    }}
+                                    options={
+                                      suppliersData?.map((s) => ({
+                                        value: s.supplier_uuid,
+                                        label: s.supplier_name,
+                                      })) || []
                                     }
-                                  }}
-                                  placeholder="Select or create supplier"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <div className="text-sm text-gray-500">
-                              Unit Cost
-                            </div>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              value={supplier.unitCost}
-                              onChange={(e) =>
-                                updateSupplier(
-                                  index,
-                                  "unitCost",
-                                  parseFloat(e.target.value),
-                                )
-                              }
+                                    onCreateOption={async (inputValue) => {
+                                      try {
+                                        if (!currentRestaurant?.restaurant_uuid) {
+                                          throw new Error("No restaurant selected");
+                                        }
+                                        const newSupplier =
+                                          await supplierService.createSupplier(
+                                            { supplier_name: inputValue },
+                                            currentRestaurant.restaurant_uuid,
+                                          );
+                                        if (
+                                          newSupplier?.supplier_uuid &&
+                                          newSupplier?.supplier_name
+                                        ) {
+                                          field.onChange({
+                                            supplier_uuid: newSupplier.supplier_uuid,
+                                            supplier_name: newSupplier.supplier_name,
+                                          });
+                                        }
+                                      } catch (error) {
+                                        console.error(
+                                          "Failed to create supplier:",
+                                          error,
+                                        );
+                                      }
+                                    }}
+                                    placeholder="Select or create supplier"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                              control={form.control}
+                              name={`ingredientSuppliers.${index}.unitCost`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <div className="space-y-2">
+                                      <div className="text-sm text-gray-500">
+                                        Unit Cost
+                                      </div>
+                                      <Input
+                                        type="number"
+                                        step="0.01"
+                                        {...field}
+                                        onChange={(e) =>
+                                          field.onChange(parseFloat(e.target.value))
+                                        }
+                                      />
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`ingredientSuppliers.${index}.packSize`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <div className="space-y-2">
+                                      <div className="text-sm text-gray-500">
+                                        Pack Size
+                                      </div>
+                                      <Input {...field} />
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
                             />
                           </div>
-                          <div className="space-y-2">
-                            <div className="text-sm text-gray-500">
-                              Pack Size
-                            </div>
-                            <Input
-                              value={supplier.packSize}
-                              onChange={(e) =>
-                                updateSupplier(
-                                  index,
-                                  "packSize",
-                                  e.target.value,
-                                )
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setEditingSupplier(null)}
-                          >
-                            Done
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-base font-medium text-gray-900">
-                            {supplier.supplierName}
-                          </h4>
-                          <div className="flex items-center gap-2">
+                          <div className="flex justify-end gap-2">
                             <Button
                               type="button"
-                              variant="ghost"
+                              variant="outline"
                               size="sm"
-                              onClick={() => setEditingSupplier(index)}
+                              onClick={() => setEditingSupplier(null)}
                             >
-                              Edit
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => removeSupplier(index)}
-                            >
-                              Delete
+                              Done
                             </Button>
                           </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-1">
-                            <div className="text-sm text-gray-500">
-                              Unit Cost
-                            </div>
-                            <div className="font-medium">
-                              ${supplier.unitCost.toFixed(2)}
+                      ) : (
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-base font-medium text-gray-900">
+                              {supplier.supplierName}
+                            </h4>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setEditingSupplier(index)}
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeSupplier(index)}
+                              >
+                                Delete
+                              </Button>
                             </div>
                           </div>
-                          <div className="space-y-1">
-                            <div className="text-sm text-gray-500">
-                              Pack Size
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                              <div className="text-sm text-gray-500">
+                                Unit Cost
+                              </div>
+                              <div className="font-medium">
+                                ${supplier.unitCost.toFixed(2)}
+                              </div>
                             </div>
-                            <div className="font-medium">
-                              {supplier.packSize}
+                            <div className="space-y-1">
+                              <div className="text-sm text-gray-500">
+                                Pack Size
+                              </div>
+                              <div className="font-medium">
+                                {supplier.packSize}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                      )}
+                    </div>
+                  ))}
               </div>
             </div>
 
