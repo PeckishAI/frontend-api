@@ -424,7 +424,7 @@ export default function EditIngredientForm({
                   .watch("ingredient_suppliers")
                   ?.map((ingredientSupplier, index) => (
                     <div
-                      key={ingredientSupplier.supplier.supplier_uuid}
+                      key={ingredientSupplier.uuid}
                       className="border border-gray-200 bg-white p-4 rounded-lg shadow-sm"
                     >
                       {editingSupplier === index ? (
@@ -530,7 +530,7 @@ export default function EditIngredientForm({
                                   <FormControl>
                                     <CreatableSelect
                                       value={
-                                        field.value?.unit_name 
+                                        field.value?.unit_name
                                           ? [field.value.unit_name]
                                           : []
                                       }
@@ -615,7 +615,13 @@ export default function EditIngredientForm({
                               type="button"
                               variant="outline"
                               size="sm"
-                              onClick={() => setEditingSupplier(null)}
+                              onClick={() => {
+                                setEditingSupplier(null);
+                                const values = form.getValues();
+                                if (form.formState.isValid) {
+                                  handleSubmit(values);
+                                }
+                              }}
                             >
                               Done
                             </Button>
@@ -662,7 +668,7 @@ export default function EditIngredientForm({
                               </div>
                               <div className="font-medium">
                                 {ingredientSupplier.pack_size}
-                              </div> 
+                              </div>
                             </div>
                           </div>
                         </div>
