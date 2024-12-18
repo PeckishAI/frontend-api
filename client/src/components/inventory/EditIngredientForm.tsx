@@ -1,5 +1,8 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import { tagService } from "@/services/tagService";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -22,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import { Badge } from "@/components/ui/badge";
 import type { InventoryItem } from "@/lib/types";
+import { unitService } from "@/services/unitService";
 
 const editIngredientSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -29,12 +33,16 @@ const editIngredientSchema = z.object({
   parLevel: z.number().min(0, "Par level must be positive"),
   quantity: z.number().min(0, "Quantity must be positive"),
   unit: z.string().min(1, "Unit is required"),
-  suppliers: z.array(z.object({
-    supplierId: z.string(),
-    supplierName: z.string(),
-    unitCost: z.number().min(0),
-    packSize: z.string(),
-  })).min(1, "At least one supplier is required"),
+  suppliers: z
+    .array(
+      z.object({
+        supplierId: z.string(),
+        supplierName: z.string(),
+        unitCost: z.number().min(0),
+        packSize: z.string(),
+      }),
+    )
+    .min(1, "At least one supplier is required"),
 });
 
 type EditIngredientFormValues = z.infer<typeof editIngredientSchema>;
@@ -46,32 +54,52 @@ interface EditIngredientFormProps {
   onSubmit: (data: EditIngredientFormValues) => void;
 }
 
-const defaultUnits = [
-  { value: 'kg', label: 'Kilogram (kg)', category: 'Weight' },
-  { value: 'g', label: 'Gram (g)', category: 'Weight' },
-  { value: 'l', label: 'Liter (L)', category: 'Volume' },
-  { value: 'ml', label: 'Milliliter (mL)', category: 'Volume' },
-  { value: 'pcs', label: 'Pieces', category: 'Count' },
-  { value: 'box', label: 'Box', category: 'Container' },
-  { value: 'case', label: 'Case', category: 'Container' },
-];
-
 export default function EditIngredientForm({
   open,
   onOpenChange,
   ingredient,
   onSubmit,
 }: EditIngredientFormProps) {
-  const [editingSupplier, setEditingSupplier] = React.useState<number | null>(null);
+  const [editingSupplier, setEditingSupplier] = React.useState<number | null>(
+    null,
+  );
+  const { currentRestaurant } = useRestaurantContext();
+
+  const { data: unitsData } = useQuery({
+    queryKey: ["units", currentRestaurant?.restaurant_uuid],
+    queryFn: async () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      const restaurantUnits = await unitService.getRestaurantUnit(
+        currentRestaurant.restaurant_uuid,
+      );
+      return restaurantUnits;
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+  });
+  console.log("Unit data : ", unitsData);
+
+  const { data: tagsData } = useQuery({
+    queryKey: ["tags", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      return tagService.getRestaurantTags(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+    select: (data) => data.data,
+  });
 
   const form = useForm<EditIngredientFormValues>({
     resolver: zodResolver(editIngredientSchema),
     defaultValues: {
-      name: '',
+      name: "",
       tags: [],
       parLevel: 0,
       quantity: 0,
-      unit: '',
+      unit: "",
       suppliers: [],
     },
   });
@@ -93,42 +121,46 @@ export default function EditIngredientForm({
   };
 
   const addSupplier = () => {
-    const currentSuppliers = form.getValues('suppliers');
-    form.setValue('suppliers', [
+    const currentSuppliers = form.getValues("suppliers");
+    form.setValue("suppliers", [
       ...currentSuppliers,
       {
         supplierId: `new-${Date.now()}`,
-        supplierName: '',
+        supplierName: "",
         unitCost: 0,
-        packSize: '',
+        packSize: "",
       },
     ]);
     setEditingSupplier(currentSuppliers.length);
   };
 
   const removeSupplier = (index: number) => {
-    const currentSuppliers = form.getValues('suppliers');
+    const currentSuppliers = form.getValues("suppliers");
     form.setValue(
-      'suppliers',
-      currentSuppliers.filter((_, i) => i !== index)
+      "suppliers",
+      currentSuppliers.filter((_, i) => i !== index),
     );
   };
 
-  const updateSupplier = (index: number, field: string, value: string | number) => {
-    const currentSuppliers = form.getValues('suppliers');
+  const updateSupplier = (
+    index: number,
+    field: string,
+    value: string | number,
+  ) => {
+    const currentSuppliers = form.getValues("suppliers");
     const updatedSuppliers = [...currentSuppliers];
     updatedSuppliers[index] = {
       ...updatedSuppliers[index],
       [field]: value,
     };
-    form.setValue('suppliers', updatedSuppliers);
+    form.setValue("suppliers", updatedSuppliers);
   };
 
   const removeTag = (tagToRemove: string) => {
-    const currentTags = form.getValues('tags');
+    const currentTags = form.getValues("tags");
     form.setValue(
-      'tags',
-      currentTags.filter(tag => tag !== tagToRemove)
+      "tags",
+      currentTags.filter((tag) => tag !== tagToRemove),
     );
   };
 
@@ -136,13 +168,16 @@ export default function EditIngredientForm({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="sm:max-w-[600px] h-screen overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>{ingredient ? 'Edit' : 'Add'} Ingredient</SheetTitle>
+          <SheetTitle>{ingredient ? "Edit" : "Add"} Ingredient</SheetTitle>
           <SheetDescription>
             Make changes to the ingredient here. Click save when you're done.
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 pt-8">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6 pt-8"
+          >
             <FormField
               control={form.control}
               name="name"
@@ -188,14 +223,33 @@ export default function EditIngredientForm({
                       <CreatableSelect
                         value={field.value || []}
                         onChange={(values) => field.onChange(values)}
-                        options={ingredient?.tags?.map(tag => ({
-                          label: tag,
-                          value: tag,
-                          category: "Existing Tags"
-                        })) || []}
-                        onCreateOption={(value) => {
-                          if (!field.value.includes(value)) {
-                            field.onChange([...field.value, value]);
+                        options={
+                          tagsData?.map((tag) => ({
+                            label: tag.tag_name,
+                            value: tag.tag_uuid,
+                            category: "Existing Tags",
+                          })) || []
+                        }
+                        onCreateOption={async (value) => {
+                          try {
+                            if (!currentRestaurant?.restaurant_uuid) {
+                              throw new Error("No restaurant selected");
+                            }
+                            const newTag = await tagService.createTag(
+                              {
+                                tag_name: value,
+                              },
+                              currentRestaurant?.restaurant_uuid,
+                            );
+                            if (newTag?.tag_uuid && newTag?.tag_name) {
+                              const updatedValue = [
+                                ...(field.value || []),
+                                newTag.tag_name,
+                              ];
+                              field.onChange(updatedValue);
+                            }
+                          } catch (error) {
+                            console.error("Failed to create tag:", error);
                           }
                         }}
                         placeholder="Add a tag..."
@@ -219,7 +273,9 @@ export default function EditIngredientForm({
                         type="number"
                         step="0.01"
                         {...field}
-                        onChange={e => field.onChange(parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value))
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -238,7 +294,9 @@ export default function EditIngredientForm({
                         type="number"
                         step="0.01"
                         {...field}
-                        onChange={e => field.onChange(parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value))
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -256,8 +314,14 @@ export default function EditIngredientForm({
                   <FormControl>
                     <CreatableSelect
                       value={[field.value]}
-                      onChange={values => field.onChange(values[0])}
-                      options={defaultUnits}
+                      onChange={(values) => field.onChange(values[0])}
+                      options={
+                        unitsData?.map((unit) => ({
+                          label: unit.unit_name,
+                          value: unit.unit_name,
+                          category: unit.category,
+                        })) || []
+                      }
                       onCreateOption={field.onChange}
                       placeholder="Select or create unit"
                     />
@@ -270,35 +334,65 @@ export default function EditIngredientForm({
             <div className="border-t mt-6 pt-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Suppliers</h3>
-                <Button type="button" variant="outline" size="sm" onClick={addSupplier}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addSupplier}
+                >
                   Add Supplier
                 </Button>
               </div>
               <div className="space-y-4">
-                {form.watch('suppliers')?.map((supplier, index) => (
-                  <div key={supplier.supplierId} className="border border-gray-200 bg-white p-4 rounded-lg shadow-sm">
+                {form.watch("suppliers")?.map((supplier, index) => (
+                  <div
+                    key={supplier.supplierId}
+                    className="border border-gray-200 bg-white p-4 rounded-lg shadow-sm"
+                  >
                     {editingSupplier === index ? (
                       <div className="space-y-4">
                         <Input
                           placeholder="Supplier name"
                           value={supplier.supplierName}
-                          onChange={(e) => updateSupplier(index, 'supplierName', e.target.value)}
+                          onChange={(e) =>
+                            updateSupplier(
+                              index,
+                              "supplierName",
+                              e.target.value,
+                            )
+                          }
                         />
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <div className="text-sm text-gray-500">Unit Cost</div>
+                            <div className="text-sm text-gray-500">
+                              Unit Cost
+                            </div>
                             <Input
                               type="number"
                               step="0.01"
                               value={supplier.unitCost}
-                              onChange={(e) => updateSupplier(index, 'unitCost', parseFloat(e.target.value))}
+                              onChange={(e) =>
+                                updateSupplier(
+                                  index,
+                                  "unitCost",
+                                  parseFloat(e.target.value),
+                                )
+                              }
                             />
                           </div>
                           <div className="space-y-2">
-                            <div className="text-sm text-gray-500">Pack Size</div>
+                            <div className="text-sm text-gray-500">
+                              Pack Size
+                            </div>
                             <Input
                               value={supplier.packSize}
-                              onChange={(e) => updateSupplier(index, 'packSize', e.target.value)}
+                              onChange={(e) =>
+                                updateSupplier(
+                                  index,
+                                  "packSize",
+                                  e.target.value,
+                                )
+                              }
                             />
                           </div>
                         </div>
@@ -316,7 +410,9 @@ export default function EditIngredientForm({
                     ) : (
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-base font-medium text-gray-900">{supplier.supplierName}</h4>
+                          <h4 className="text-base font-medium text-gray-900">
+                            {supplier.supplierName}
+                          </h4>
                           <div className="flex items-center gap-2">
                             <Button
                               type="button"
@@ -338,12 +434,20 @@ export default function EditIngredientForm({
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-1">
-                            <div className="text-sm text-gray-500">Unit Cost</div>
-                            <div className="font-medium">${supplier.unitCost.toFixed(2)}</div>
+                            <div className="text-sm text-gray-500">
+                              Unit Cost
+                            </div>
+                            <div className="font-medium">
+                              ${supplier.unitCost.toFixed(2)}
+                            </div>
                           </div>
                           <div className="space-y-1">
-                            <div className="text-sm text-gray-500">Pack Size</div>
-                            <div className="font-medium">{supplier.packSize}</div>
+                            <div className="text-sm text-gray-500">
+                              Pack Size
+                            </div>
+                            <div className="font-medium">
+                              {supplier.packSize}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -354,7 +458,11 @@ export default function EditIngredientForm({
             </div>
 
             <div className="flex justify-end gap-4 pt-6">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
                 Cancel
               </Button>
               <Button type="submit">Save changes</Button>
