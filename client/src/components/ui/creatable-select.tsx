@@ -128,7 +128,7 @@ export function CreatableSelect({
             value={search}
             onValueChange={setSearch}
           />
-          <CommandList className="max-h-[200px] overflow-y-auto">
+          <CommandList className="max-h-[200px] overflow-y-auto overflow-x-hidden touch-auto">
             <CommandEmpty className="p-2">
               {search.trim() !== "" && onCreateOption ? (
                 <Button
