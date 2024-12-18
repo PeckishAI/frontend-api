@@ -333,16 +333,20 @@ export default function EditIngredientForm({
                   <FormLabel>Unit</FormLabel>
                   <FormControl>
                     <CreatableSelect
-                      value={field.value.unit_name ? [field.value.unit_name] : []}
+                      value={
+                        field.value.unit_name ? [field.value.unit_name] : []
+                      }
                       onChange={(values) => {
                         if (values[0]) {
-                          const selectedUnit = unitsData?.find(u => u.unit_uuid === values[0]) || {
+                          const selectedUnit = unitsData?.find(
+                            (u) => u.unit_uuid === values[0],
+                          ) || {
                             unit_uuid: values[0],
-                            unit_name: values[0]
+                            unit_name: values[0],
                           };
                           field.onChange({
                             unit_uuid: selectedUnit.unit_uuid,
-                            unit_name: selectedUnit.unit_name
+                            unit_name: selectedUnit.unit_name,
                           });
                         }
                       }}
@@ -353,11 +357,24 @@ export default function EditIngredientForm({
                           category: unit.category,
                         })) || []
                       }
-                      onCreateOption={(value) => {
-                        field.onChange({
-                          unit_uuid: value,
-                          unit_name: value
-                        });
+                      onCreateOption={async (value) => {
+                        try {
+                          if (!currentRestaurant?.restaurant_uuid) {
+                            throw new Error("No restaurant selected");
+                          }
+                          const newUnit = await unitService.createUnit(
+                            { unit_name: value },
+                            currentRestaurant.restaurant_uuid
+                          );
+                          if (newUnit?.unit_uuid && newUnit?.unit_name) {
+                            field.onChange({
+                              unit_uuid: newUnit.unit_uuid,
+                              unit_name: newUnit.unit_name,
+                            });
+                          }
+                        } catch (error) {
+                          console.error("Failed to create unit:", error);
+                        }
                       }}
                       placeholder="Select or create unit"
                     />
