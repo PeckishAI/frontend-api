@@ -141,8 +141,17 @@ export default function NewIngredientDialog({
               <FormLabel>Tags</FormLabel>
               <FormControl>
                 <CreatableSelect
-                  value={field.value || []}
-                  onChange={field.onChange}
+                  value={field.value?.map(tag => ({
+                    label: tag.tag_name,
+                    value: tag.tag_uuid
+                  })) || []}
+                  onChange={(newValue) => {
+                    const formattedTags = newValue.map(item => ({
+                      tag_uuid: item.value,
+                      tag_name: item.label
+                    }));
+                    field.onChange(formattedTags);
+                  }}
                   options={
                     tagsData?.map((tag) => ({
                       label: tag.tag_name,
@@ -164,7 +173,10 @@ export default function NewIngredientDialog({
                       if (newTag?.tag_uuid && newTag?.tag_name) {
                         const updatedValue = [
                           ...(field.value || []),
-                          newTag.tag_name,
+                          {
+                            tag_uuid: newTag.tag_uuid,
+                            tag_name: newTag.tag_name
+                          }
                         ];
                         field.onChange(updatedValue);
                       }
