@@ -368,23 +368,45 @@ export default function EditIngredientForm({
                       <div className="space-y-4">
                         <FormField
                           control={form.control}
-                          name="unit"
+                          name={`suppliers.${index}.supplierName`}
                           render={({ field }) => (
                             <FormItem>
                               <FormControl>
                                 <CreatableSelect
-                                  value={field.value ? [field.value] : []}
-                                  onChange={(values) => {
-                                    field.onChange(values[0] || "");
+                                  value={
+                                    supplier.supplierName ? {
+                                      label: supplier.supplierName,
+                                      value: supplier.supplierId
+                                    } : null
+                                  }
+                                  onChange={(newValue) => {
+                                    if (newValue) {
+                                      updateSupplier(index, "supplierName", newValue.label);
+                                      updateSupplier(index, "supplierId", newValue.value);
+                                    }
                                   }}
                                   options={
-                                    suppliersData?.map((supplier) => ({
-                                      value: supplier.supplier_uuid,
-                                      label: supplier.name,
+                                    suppliersData?.map((s) => ({
+                                      value: s.supplier_uuid,
+                                      label: s.supplier_name,
                                     })) || []
                                   }
-                                  onCreateOption={(inputValue) => {
-                                    field.onChange(inputValue);
+                                  onCreateOption={async (inputValue) => {
+                                    try {
+                                      if (!currentRestaurant?.restaurant_uuid) {
+                                        throw new Error("No restaurant selected");
+                                      }
+                                      const newSupplier = await supplierService.createSupplier(
+                                        { supplier_name: inputValue },
+                                        currentRestaurant.restaurant_uuid
+                                      );
+                                      if (newSupplier?.supplier_uuid && newSupplier?.supplier_name) {
+                                        updateSupplier(index, "supplierName", newSupplier.supplier_name);
+                                        updateSupplier(index, "supplierId", newSupplier.supplier_uuid);
+                                      }
+                                    } catch (error) {
+                                      console.error("Failed to create supplier:", error);
+                                    }
                                   }}
                                   placeholder="Select or create supplier"
                                 />
