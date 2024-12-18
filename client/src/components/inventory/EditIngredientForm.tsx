@@ -381,8 +381,8 @@ export default function EditIngredientForm({
                                 <FormControl>
                                   <CreatableSelect
                                     value={
-                                      field.value?.supplier_uuid
-                                        ? [field.value.supplier_name || '']
+                                      field.value?.supplier_name
+                                        ? [field.value.supplier_name]
                                         : []
                                     }
                                     onChange={(newValue) => {
