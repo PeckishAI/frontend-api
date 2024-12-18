@@ -616,11 +616,15 @@ export default function EditIngredientForm({
                               variant="outline"
                               size="sm"
                               onClick={() => {
+                                console.log(
+                                  "Supplier editing state before close:",
+                                  editingSupplier,
+                                );
+                                console.log(
+                                  "Current form values:",
+                                  form.getValues(),
+                                );
                                 setEditingSupplier(null);
-                                const values = form.getValues();
-                                if (form.formState.isValid) {
-                                  handleSubmit(values);
-                                }
                               }}
                             >
                               Done
