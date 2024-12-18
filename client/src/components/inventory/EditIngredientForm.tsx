@@ -26,6 +26,7 @@ import { CreatableSelect } from "@/components/ui/creatable-select";
 import { Badge } from "@/components/ui/badge";
 import type { InventoryItem } from "@/lib/types";
 import { unitService } from "@/services/unitService";
+import { supplierService } from "@/services/supplierService";
 
 const editIngredientSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -78,7 +79,6 @@ export default function EditIngredientForm({
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
-  console.log("Unit data : ", unitsData);
 
   const { data: tagsData } = useQuery({
     queryKey: ["tags", currentRestaurant?.restaurant_uuid],
@@ -91,6 +91,21 @@ export default function EditIngredientForm({
     enabled: !!currentRestaurant?.restaurant_uuid,
     select: (data) => data.data,
   });
+
+  const { data: suppliersData } = useQuery({
+    queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      return supplierService.getRestaurantSuppliers(
+        currentRestaurant.restaurant_uuid,
+      );
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+    select: (data) => data.data,
+  });
+  console.log("Supplier data : ", suppliersData);
 
   const form = useForm<EditIngredientFormValues>({
     resolver: zodResolver(editIngredientSchema),
@@ -351,16 +366,32 @@ export default function EditIngredientForm({
                   >
                     {editingSupplier === index ? (
                       <div className="space-y-4">
-                        <Input
-                          placeholder="Supplier name"
-                          value={supplier.supplierName}
-                          onChange={(e) =>
-                            updateSupplier(
-                              index,
-                              "supplierName",
-                              e.target.value,
-                            )
-                          }
+                        <FormField
+                          control={form.control}
+                          name="unit"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <CreatableSelect
+                                  value={field.value ? [field.value] : []}
+                                  onChange={(values) => {
+                                    field.onChange(values[0] || "");
+                                  }}
+                                  options={
+                                    suppliersData?.map((supplier) => ({
+                                      value: supplier.supplier_uuid,
+                                      label: supplier.name,
+                                    })) || []
+                                  }
+                                  onCreateOption={(inputValue) => {
+                                    field.onChange(inputValue);
+                                  }}
+                                  placeholder="Select or create supplier"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
