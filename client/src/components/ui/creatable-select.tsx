@@ -132,9 +132,9 @@ export function CreatableSelect({
           />
           <ScrollArea className="h-[300px]">
             <CommandList className="p-1">
-            <CommandEmpty className="p-2">
-              {search.trim() !== "" && onCreateOption ? (
-                <Button
+              <CommandEmpty className="p-2">
+                {search.trim() !== "" && onCreateOption ? (
+                  <Button
                   variant="outline"
                   className="w-full justify-start"
                   onClick={handleCreate}
@@ -173,8 +173,8 @@ export function CreatableSelect({
               </React.Fragment>
             ))}
             </CommandList>
+            <ScrollBar orientation="vertical" />
           </ScrollArea>
-          <ScrollBar orientation="vertical" />
         </Command>
       </PopoverContent>
     </Popover>
