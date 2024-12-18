@@ -79,7 +79,7 @@ export function CreatableSelect({
       const matchingOpts = opts.filter(
         (opt) =>
           opt.label.toLowerCase().includes(searchLower) ||
-          opt.value.toLowerCase().includes(searchLower)
+          opt.value.toLowerCase().includes(searchLower),
       );
       if (matchingOpts.length > 0) {
         filtered[category] = matchingOpts;
@@ -94,7 +94,7 @@ export function CreatableSelect({
       onChange(
         value.includes(selectedValue)
           ? value.filter((v) => v !== selectedValue)
-          : [...value, selectedValue]
+          : [...value, selectedValue],
       );
     } else {
       onChange([selectedValue]);
@@ -118,18 +118,18 @@ export function CreatableSelect({
           aria-expanded={open}
           className={cn("w-full justify-between", className)}
         >
-          {(value && value.length > 0) ? selectedLabels : placeholder}
+          {value && value.length > 0 ? selectedLabels : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full min-w-[var(--radix-popover-trigger-width)] p-0">
-        <Command>
+      <PopoverContent className="w-full min-w-[var(--radix-popover-trigger-width)] p-0 max-h-[300px]">
+        <Command className="max-h-[300px]">
           <CommandInput
             placeholder={searchPlaceholder}
             value={search}
             onValueChange={setSearch}
           />
-          <CommandList style={{ maxHeight: "200px", overflowY: "scroll", overflowX: "hidden" }} className="scrollbar">
+          <CommandList className="max-h-[200px] overflow-y-auto overflow-x-hidden touch-pan-y">
             <CommandEmpty className="p-2">
               {search.trim() !== "" && onCreateOption ? (
                 <Button
@@ -146,7 +146,9 @@ export function CreatableSelect({
             </CommandEmpty>
             {Object.entries(filteredOptions).map(([category, opts]) => (
               <React.Fragment key={category}>
-                <CommandGroup heading={category === "Default" ? undefined : category}>
+                <CommandGroup
+                  heading={category === "Default" ? undefined : category}
+                >
                   {opts.map((option) => (
                     <CommandItem
                       key={option.value}
@@ -158,7 +160,7 @@ export function CreatableSelect({
                           "mr-2 h-4 w-4",
                           Array.isArray(value) && value.includes(option.value)
                             ? "opacity-100"
-                            : "opacity-0"
+                            : "opacity-0",
                         )}
                       />
                       {option.label}
