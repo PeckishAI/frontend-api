@@ -21,21 +21,27 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import type { InventoryItem } from "@/lib/types";
 import { unitService } from "@/services/unitService";
 
 const newIngredientSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  ingredient_name: z.string().min(1, "Name is required"),
   tags: z.array(z.string()).min(1, "At least one tag is required"),
-  parLevel: z.number().min(0, "Par level must be positive"),
+  par_level: z.number().min(0, "Par level must be positive"),
   quantity: z.number().min(0, "Quantity must be positive"),
-  unit: z.string().min(1, "Unit is required"),
-  suppliers: z
+  unit: z.object({
+    unit_uuid: z.string(),
+    unit_name: z.string(),
+  }),
+  ingredient_suppliers: z
     .array(
       z.object({
-        supplierId: z.string(),
-        supplierName: z.string(),
+        supplier: z.object({
+          supplier_uuid: z.string().optional(),
+          supplier_name: z.string().optional(),
+        }),
         unitCost: z.number().min(0),
         packSize: z.string(),
       }),
@@ -66,11 +72,10 @@ export default function NewIngredientDialog({
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      const [referenceUnits, restaurantUnits] = await Promise.all([
-        unitService.getReferenceUnit(),
-        unitService.getRestaurantUnit(currentRestaurant.restaurant_uuid)
-      ]);
-      return [...referenceUnits, ...restaurantUnits];
+      const restaurantUnits = await unitService.getRestaurantUnit(
+        currentRestaurant.restaurant_uuid,
+      );
+      return restaurantUnits;
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
@@ -90,16 +95,25 @@ export default function NewIngredientDialog({
   const form = useForm<NewIngredientFormValues>({
     resolver: zodResolver(newIngredientSchema),
     defaultValues: {
-      name: "",
+      ingredient_name: "",
       tags: [],
-      parLevel: 0,
+      par_level: 0,
       quantity: 0,
-      unit: "",
-      suppliers: [],
+      unit: {},
+      ingredient_suppliers: [],
     },
   });
 
+  const removeTag = (tagToRemove: string) => {
+    const currentTags = form.getValues("tags");
+    form.setValue(
+      "tags",
+      currentTags.filter((tag) => tag !== tagToRemove),
+    );
+  };
+
   const handleSubmit = (values: NewIngredientFormValues) => {
+    console.log("Form payload:", values);
     onSubmit(values);
     onOpenChange(false);
   };
@@ -112,7 +126,7 @@ export default function NewIngredientDialog({
       >
         <FormField
           control={form.control}
-          name="name"
+          name="ingredient_name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
@@ -130,44 +144,64 @@ export default function NewIngredientDialog({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tags</FormLabel>
-              <FormControl>
-                <CreatableSelect
-                  value={field.value || []}
-                  onChange={field.onChange}
-                  options={
-                    tagsData?.map((tag) => ({
-                      label: tag.tag_name,
-                      value: tag.tag_uuid,
-                      category: "Existing Tags",
-                    })) || []
-                  }
-                  onCreateOption={async (value) => {
-                    try {
-                      if (!currentRestaurant?.restaurant_uuid) {
-                        throw new Error("No restaurant selected");
-                      }
-                      const newTag = await tagService.createTag(
-                        {
-                          tag_name: value,
-                        },
-                        currentRestaurant?.restaurant_uuid,
-                      );
-                      if (newTag?.tag_uuid && newTag?.tag_name) {
-                        const updatedValue = [
-                          ...(field.value || []),
-                          newTag.tag_name,
-                        ];
-                        field.onChange(updatedValue);
-                      }
-                    } catch (error) {
-                      console.error("Failed to create tag:", error);
+              <div className="space-y-2">
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {field.value.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant="secondary"
+                      className="px-2 py-1 text-sm flex items-center gap-1"
+                    >
+                      {tag}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-4 w-4 p-0 hover:bg-transparent"
+                        onClick={() => removeTag(tag)}
+                      >
+                        ×
+                      </Button>
+                    </Badge>
+                  ))}
+                </div>
+                <FormControl>
+                  <CreatableSelect
+                    value={field.value || []}
+                    onChange={(values) => field.onChange(values)}
+                    options={
+                      tagsData?.map((tag) => ({
+                        label: tag.tag_name,
+                        value: tag.tag_uuid,
+                        category: "Existing Tags",
+                      })) || []
                     }
-                  }}
-                  placeholder="Select or create tags"
-                  multiple={true}
-                  className="max-h-[200px] overflow-y-auto"
-                />
-              </FormControl>
+                    onCreateOption={async (value) => {
+                      try {
+                        if (!currentRestaurant?.restaurant_uuid) {
+                          throw new Error("No restaurant selected");
+                        }
+                        const newTag = await tagService.createTag(
+                          {
+                            tag_name: value,
+                          },
+                          currentRestaurant?.restaurant_uuid,
+                        );
+                        if (newTag?.tag_uuid && newTag?.tag_name) {
+                          const updatedValue = [
+                            ...(field.value || []),
+                            newTag.tag_name,
+                          ];
+                          field.onChange(updatedValue);
+                        }
+                      } catch (error) {
+                        console.error("Failed to create tag:", error);
+                      }
+                    }}
+                    placeholder="Add a tag..."
+                  />
+                </FormControl>
+              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -176,7 +210,7 @@ export default function NewIngredientDialog({
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="parLevel"
+            name="par_level"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Par Level</FormLabel>
@@ -221,14 +255,47 @@ export default function NewIngredientDialog({
               <FormLabel>Unit</FormLabel>
               <FormControl>
                 <CreatableSelect
-                  value={[field.value]}
-                  onChange={(values) => field.onChange(values[0])}
-                  options={unitsData?.map(unit => ({
-                    value: unit.unit_name,
-                    label: unit.unit_name,
-                    category: unit.category
-                  })) || []}
-                  onCreateOption={field.onChange}
+                  value={field.value.unit_name ? [field.value.unit_name] : []}
+                  onChange={(values) => {
+                    if (values[0]) {
+                      const selectedUnit = unitsData?.find(
+                        (u) => u.unit_uuid === values[0],
+                      ) || {
+                        unit_uuid: values[0],
+                        unit_name: values[0],
+                      };
+                      field.onChange({
+                        unit_uuid: selectedUnit.unit_uuid,
+                        unit_name: selectedUnit.unit_name,
+                      });
+                    }
+                  }}
+                  options={
+                    unitsData?.map((unit) => ({
+                      label: unit.unit_name,
+                      value: unit.unit_uuid,
+                      category: unit.category,
+                    })) || []
+                  }
+                  onCreateOption={async (value) => {
+                    try {
+                      if (!currentRestaurant?.restaurant_uuid) {
+                        throw new Error("No restaurant selected");
+                      }
+                      const newUnit = await unitService.createUnit(
+                        { unit_name: value },
+                        currentRestaurant.restaurant_uuid,
+                      );
+                      if (newUnit?.unit_uuid && newUnit?.unit_name) {
+                        field.onChange({
+                          unit_uuid: newUnit.unit_uuid,
+                          unit_name: newUnit.unit_name,
+                        });
+                      }
+                    } catch (error) {
+                      console.error("Failed to create unit:", error);
+                    }
+                  }}
                   placeholder="Select or create unit"
                 />
               </FormControl>
