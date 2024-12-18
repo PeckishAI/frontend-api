@@ -45,12 +45,18 @@ const editIngredientSchema = z.object({
   }),
   ingredient_suppliers: z.array(
     z.object({
+      uuid: z.string().optional(),
       supplier: z.object({
         supplier_uuid: z.string().optional(),
         supplier_name: z.string().optional(),
       }),
       unit_cost: z.number().min(0),
-      pack_size: z.string(),
+      unit: z.object({
+        unit_uuid: z.string().optional(),
+        unit_name: z.string().optional(),
+      }),
+      pack_size: z.number().min(0),
+      product_code: z.string().optional(),
     }),
   ),
 });
@@ -139,6 +145,7 @@ export default function EditIngredientForm({
   }, [ingredient, form]);
 
   const handleSubmit = (values: EditIngredientFormValues) => {
+    console.log("Form completed : ", values);
     onSubmit(values);
     onOpenChange(false);
   };
@@ -150,7 +157,8 @@ export default function EditIngredientForm({
       {
         supplier: {},
         unit_cost: 0,
-        pack_size: "",
+        unit: {},
+        pack_size: 1,
       },
     ]);
     setEditingSupplier(currentSuppliers.length);
@@ -489,7 +497,7 @@ export default function EditIngredientForm({
                           <div className="grid grid-cols-2 gap-4">
                             <FormField
                               control={form.control}
-                              name={`ingredient_suppliers.${index}.unitCost`}
+                              name={`ingredient_suppliers.${index}.unit_cost`}
                               render={({ field }) => (
                                 <FormItem>
                                   <FormControl>
@@ -515,7 +523,78 @@ export default function EditIngredientForm({
                             />
                             <FormField
                               control={form.control}
-                              name={`ingredient_suppliers.${index}.packSize`}
+                              name={`ingredient_suppliers.${index}.unit.unit_uuid`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Unit</FormLabel>
+                                  <FormControl>
+                                    <CreatableSelect
+                                      value={
+                                        field.value?.unit_name 
+                                          ? [field.value.unit_name]
+                                          : []
+                                      }
+                                      onChange={(values) => {
+                                        if (values[0]) {
+                                          const selectedUnit = unitsData?.find(
+                                            (u) => u.unit_uuid === values[0],
+                                          ) || {
+                                            unit_uuid: values[0],
+                                            unit_name: values[0],
+                                          };
+                                          field.onChange({
+                                            unit_uuid: selectedUnit.unit_uuid,
+                                            unit_name: selectedUnit.unit_name,
+                                          });
+                                        }
+                                      }}
+                                      options={
+                                        unitsData?.map((unit) => ({
+                                          label: unit.unit_name,
+                                          value: unit.unit_uuid,
+                                          category: unit.category,
+                                        })) || []
+                                      }
+                                      onCreateOption={async (value) => {
+                                        try {
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          ) {
+                                            throw new Error(
+                                              "No restaurant selected",
+                                            );
+                                          }
+                                          const newUnit =
+                                            await unitService.createUnit(
+                                              { unit_name: value },
+                                              currentRestaurant.restaurant_uuid,
+                                            );
+                                          if (
+                                            newUnit?.unit_uuid &&
+                                            newUnit?.unit_name
+                                          ) {
+                                            field.onChange({
+                                              unit_uuid: newUnit.unit_uuid,
+                                              unit_name: newUnit.unit_name,
+                                            });
+                                          }
+                                        } catch (error) {
+                                          console.error(
+                                            "Failed to create unit:",
+                                            error,
+                                          );
+                                        }
+                                      }}
+                                      placeholder="Select or create unit"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`ingredient_suppliers.${index}.pack_size`}
                               render={({ field }) => (
                                 <FormItem>
                                   <FormControl>
@@ -573,8 +652,8 @@ export default function EditIngredientForm({
                                 Unit Cost
                               </div>
                               <div className="font-medium">
-                                $
-                                {(ingredientSupplier.unit_cost || 0).toFixed(2)}
+                                {(ingredientSupplier.unit_cost || 0).toFixed(2)}{" "}
+                                / {ingredientSupplier.unit.unit_name}
                               </div>
                             </div>
                             <div className="space-y-1">
@@ -583,7 +662,7 @@ export default function EditIngredientForm({
                               </div>
                               <div className="font-medium">
                                 {ingredientSupplier.pack_size}
-                              </div>
+                              </div> 
                             </div>
                           </div>
                         </div>
