@@ -130,8 +130,8 @@ export function CreatableSelect({
             value={search}
             onValueChange={setSearch}
           />
-          <ScrollArea className="h-[300px] overflow-y-auto">
-            <CommandList>
+          <ScrollArea className="h-[300px]">
+            <CommandList className="p-1">
             <CommandEmpty className="p-2">
               {search.trim() !== "" && onCreateOption ? (
                 <Button
@@ -174,6 +174,7 @@ export function CreatableSelect({
             ))}
             </CommandList>
           </ScrollArea>
+          <ScrollBar orientation="vertical" />
         </Command>
       </PopoverContent>
     </Popover>
