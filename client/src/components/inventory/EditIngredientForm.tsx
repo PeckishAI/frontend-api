@@ -2,7 +2,6 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
-import { tagService } from "@/services/tagService";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -26,6 +25,7 @@ import { CreatableSelect } from "@/components/ui/creatable-select";
 import { Badge } from "@/components/ui/badge";
 import type { InventoryItem } from "@/lib/types";
 import { unitService } from "@/services/unitService";
+import { tagService } from "@/services/tagService";
 import { supplierService } from "@/services/supplierService";
 import { type Supplier } from "@/lib/types";
 
@@ -364,7 +364,7 @@ export default function EditIngredientForm({
                           }
                           const newUnit = await unitService.createUnit(
                             { unit_name: value },
-                            currentRestaurant.restaurant_uuid
+                            currentRestaurant.restaurant_uuid,
                           );
                           if (newUnit?.unit_uuid && newUnit?.unit_name) {
                             field.onChange({

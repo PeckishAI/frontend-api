@@ -43,9 +43,12 @@ export default function Inventory() {
   ];
 
   const { currentRestaurant } = useRestaurantContext();
-  const queryClient = useQueryClient();
 
-  const { data: inventory = [], isLoading, refetch } = useQuery({
+  const {
+    data: inventory = [],
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["inventory", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
@@ -67,28 +70,32 @@ export default function Inventory() {
       console.log("Raw data in select:", data);
       const inventoryItems = Object.values(data.data);
       return inventoryItems.map((item: any) => ({
-        id: item.ingredient_uuid,
-        name: item.ingredient_name,
-        tags: Array.isArray(item.tags) ? item.tags.map((tag: any) => tag.tag_name) : [],
-        parLevel: item.par_level || 0,
+        ingredient_uuid: item.ingredient_uuid,
+        ingredient_name: item.ingredient_name,
+        tags: Array.isArray(item.tags)
+          ? item.tags.map((tag: any) => tag.tag_name)
+          : [],
+        par_level: item.par_level || 0,
         quantity: item.quantity || 0,
-        unit: item.unit_name || '',
-        suppliers: Array.isArray(item.suppliers) ? item.suppliers.map((s: any) => ({
-          supplierName: s.supplier_name || '',
-          unitCost: s.unit_cost || 0,
-          packSize: s.pack_size || ''
-        })) : []
+        unit: item.unit_name || "",
+        ingredient_suppliers: item.ingredient_suppliers || [],
       }));
     },
   });
   console.log("inventory", inventory);
 
-  const tags = !inventory ? [] : Array.from(new Set(inventory.flatMap((item) => item.tags)));
-  const suppliers = !inventory ? [] : Array.from(
-    new Set(
-      inventory.flatMap((item) => item.suppliers.map((s) => s.supplierName)),
-    ),
-  );
+  const tags = !inventory
+    ? []
+    : Array.from(new Set(inventory.flatMap((item) => item.tags)));
+  const suppliers = !inventory
+    ? []
+    : Array.from(
+        new Set(
+          inventory.flatMap((item) =>
+            item.ingredient_suppliers.map((s) => s.supplier.supplier_name),
+          ),
+        ),
+      );
 
   useEffect(() => {
     if (currentRestaurant?.restaurant_uuid) {
@@ -96,26 +103,30 @@ export default function Inventory() {
     }
   }, [currentRestaurant?.restaurant_uuid, refetch]);
 
-  const filteredInventory = (!inventory ? [] : inventory.filter((item) => {
-      const matchesSearch = item.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      const tagFilters = selectedFilters
-        .filter((f) => f.type === "tag")
-        .map((f) => f.value);
-      const supplierFilters = selectedFilters
-        .filter((f) => f.type === "supplier")
-        .map((f) => f.value);
+  const filteredInventory = !inventory
+    ? []
+    : inventory.filter((item) => {
+        const matchesSearch = item.ingredient_name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+        const tagFilters = selectedFilters
+          .filter((f) => f.type === "tag")
+          .map((f) => f.value);
+        const supplierFilters = selectedFilters
+          .filter((f) => f.type === "supplier")
+          .map((f) => f.value);
 
-      const matchesTags =
-        tagFilters.length === 0 ||
-        tagFilters.some((tag) => item.tags.includes(tag));
-      const matchesSuppliers =
-        supplierFilters.length === 0 ||
-        item.suppliers.some((s) => supplierFilters.includes(s.supplierName));
+        const matchesTags =
+          tagFilters.length === 0 ||
+          tagFilters.some((tag) => item.tags.includes(tag));
+        const matchesSuppliers =
+          supplierFilters.length === 0 ||
+          item.suppliers.some((s) =>
+            supplierFilters.includes(s.supplier.supplier_name),
+          );
 
-      return matchesSearch && matchesTags && matchesSuppliers;
-    }));
+        return matchesSearch && matchesTags && matchesSuppliers;
+      });
 
   const exportToCsv = () => {
     const headers = [
@@ -127,13 +138,15 @@ export default function Inventory() {
       "Suppliers",
     ];
     const csvData = filteredInventory.map((item) => [
-      item.name,
+      item.ingredient,
       item.tags.join(", "),
-      item.parLevel,
+      item.par_level,
       item.quantity,
       item.unit,
-      item.suppliers
-        .map((s) => `${s.supplierName} ($${s.unitCost}/${s.packSize})`)
+      item.ingredient_suppliers
+        .map(
+          (s) => `${s.supplier.supplier_name} ($${s.unit_cost}/${s.pack_size})`,
+        )
         .join("; "),
     ]);
 
@@ -214,7 +227,9 @@ export default function Inventory() {
                     className="cursor-pointer hover:bg-gray-50"
                     onClick={() => setSelectedIngredient(item)}
                   >
-                    <TableCell className="font-medium">{item.name}</TableCell>
+                    <TableCell className="font-medium">
+                      {item.ingredient_name}
+                    </TableCell>
                     <TableCell>
                       <div className="flex gap-1 flex-wrap">
                         {item.tags.map((tag) => (
@@ -224,11 +239,11 @@ export default function Inventory() {
                         ))}
                       </div>
                     </TableCell>
-                    <TableCell>{item.parLevel}</TableCell>
+                    <TableCell>{item.par_level}</TableCell>
                     <TableCell>
                       <span
                         className={
-                          item.quantity < item.parLevel
+                          item.quantity < item.par_level
                             ? "text-red-600 font-medium"
                             : ""
                         }
@@ -239,8 +254,8 @@ export default function Inventory() {
                     <TableCell>{item.unit}</TableCell>
                     <TableCell>
                       <div className="text-sm">
-                        {item.suppliers.length} supplier
-                        {item.suppliers.length !== 1 ? "s" : ""}
+                        {item.ingredient_suppliers.length > 0 &&
+                          `${item.ingredient_suppliers.length} supplier${item.ingredient_suppliers.length > 1 ? "s" : ""}`}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -277,7 +292,7 @@ export default function Inventory() {
         onSubmit={(data) => {
           toast({
             title: "Item Added",
-            description: `${data.name} has been added to the inventory.`,
+            description: `${data.ingredient_name} has been added to the inventory.`,
           });
           // In a real app, we would add the item to the database here
           console.log("New item:", data);
@@ -293,7 +308,7 @@ export default function Inventory() {
         onSubmit={(data) => {
           toast({
             title: "Item Updated",
-            description: `${data.name} has been updated in the inventory.`,
+            description: `${data.ingredient_name} has been updated in the inventory.`,
           });
           // In a real app, we would update the item in the database here
           console.log("Updated item:", data);

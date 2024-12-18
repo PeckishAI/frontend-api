@@ -1,0 +1,146 @@
+{
+  "data": [
+    {
+      "tag_name": "BEVERAGE",
+      "tag_uuid": "fd97cadf-f3e2-4197-afac-b418f6a1b088"
+    },
+    {
+      "tag_name": "WHITE WINE",
+      "tag_uuid": "6673fa60-3050-4b21-badc-3d44b0f159c5"
+    },
+    {
+      "tag_name": "WINE",
+      "tag_uuid": "671ca8df-3749-4629-b354-d03626da9017"
+    },
+    {
+      "tag_name": "asdasd",
+      "tag_uuid": "da05c9ba-4610-4974-a5ba-1365609fafc8"
+    },
+    {
+      "tag_name": "asdf",
+      "tag_uuid": "f107ec42-471c-4195-8aed-cda87649a4a3"
+    },
+    {
+      "tag_name": "back bar",
+      "tag_uuid": "2eb56566-2b3e-4f52-bfbd-6552ccd28eb5"
+    },
+    {
+      "tag_name": "ch5",
+      "tag_uuid": "d00cfd8e-0238-48cf-8bf2-92c0b2caba7f"
+    },
+    {
+      "tag_name": "ch5",
+      "tag_uuid": "d158fa08-1477-43d1-8db2-b6dfd56de4d6"
+    },
+    {
+      "tag_name": "ch55",
+      "tag_uuid": "9b875d42-5686-4aa4-91b7-7c931b922bba"
+    },
+    {
+      "tag_name": "ch55",
+      "tag_uuid": "c715e16b-fc88-480b-ae0f-d360ceb939c8"
+    },
+    {
+      "tag_name": "dddd",
+      "tag_uuid": "39ae653c-a92f-441b-801c-8aeb0471a3a4"
+    },
+    {
+      "tag_name": "des",
+      "tag_uuid": "7ad96b27-bb21-4f05-9cb0-a3e57f9912d4"
+    },
+    {
+      "tag_name": "drinks",
+      "tag_uuid": "023aecae-f8b1-4ee9-8f0c-05af7798ea40"
+    },
+    {
+      "tag_name": "dry food",
+      "tag_uuid": "0b9a9286-a985-4d8e-b717-5c818c54ebee"
+    },
+    {
+      "tag_name": "dry food",
+      "tag_uuid": "54f1821c-0cc5-4986-a24d-44e1c297ae9b"
+    },
+    {
+      "tag_name": "eeee",
+      "tag_uuid": "947dbf56-cb12-4a11-95e1-39f51157ce9b"
+    },
+    {
+      "tag_name": "eew",
+      "tag_uuid": "c58e930d-43cd-435f-857a-eb17e4ad215f"
+    },
+    {
+      "tag_name": "eew",
+      "tag_uuid": "3462dfa6-c863-46c0-b72e-8c6ab4ecfa45"
+    },
+    {
+      "tag_name": "fridge",
+      "tag_uuid": "d510ef51-4be1-4db9-bd04-7b756b152589"
+    },
+    {
+      "tag_name": "fruits",
+      "tag_uuid": "1991c943-825d-4bff-9732-dd82ffac7e15"
+    },
+    {
+      "tag_name": "hello",
+      "tag_uuid": "5a71a53b-3f39-4493-8790-ba01a6cdc489"
+    },
+    {
+      "tag_name": "iiii",
+      "tag_uuid": "d36bba96-e6a7-48a7-9193-7a3324299e01"
+    },
+    {
+      "tag_name": "iiiiiiiiiiii",
+      "tag_uuid": "f69bbaa1-2baf-402b-bb34-181f13e23676"
+    },
+    {
+      "tag_name": "ing2",
+      "tag_uuid": "bcb4c3e3-4df7-4c6a-8c23-3999ee7bca2f"
+    },
+    {
+      "tag_name": "kitchen",
+      "tag_uuid": "8c8f6aba-926f-4f18-9255-7d38d596c013"
+    },
+    {
+      "tag_name": "new test tag",
+      "tag_uuid": "2314383f-8484-4d0f-92ae-e7521744f0d7"
+    },
+    {
+      "tag_name": "ooooo",
+      "tag_uuid": "fb605d26-99c5-4ece-ac5b-fa729e4f5e68"
+    },
+    {
+      "tag_name": "rrrr",
+      "tag_uuid": "416ab424-4e84-4169-bd5b-cc0d04782fd3"
+    },
+    {
+      "tag_name": "rrrrr",
+      "tag_uuid": "4147d652-e016-46af-ab90-9ba9de2d77c8"
+    },
+    {
+      "tag_name": "rrrrrr",
+      "tag_uuid": "8154e80c-319f-4207-a324-ef462b56fb39"
+    },
+    {
+      "tag_name": "sads",
+      "tag_uuid": "ff8ec527-fdeb-4f72-95e3-5f523f9fa03d"
+    },
+    {
+      "tag_name": "se",
+      "tag_uuid": "fffe4fb9-c7b8-488a-a61e-ac721a4a9a6b"
+    },
+    {
+      "tag_name": "stock take",
+      "tag_uuid": "28424ea9-4537-41e7-a047-42e888ed36ae"
+    },
+    {
+      "tag_name": "test",
+      "tag_uuid": "94f7b8f1-1ccd-45b2-915c-36b4d05de7f6"
+    },
+    {
+      "tag_name": "test tag",
+      "tag_uuid": "b6d613f8-3bf1-4d4c-8da3-f24d0d0e2488"
+    }
+  ],
+  "message": "Success",
+  "success": true
+}

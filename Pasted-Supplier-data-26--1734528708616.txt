@@ -1,0 +1,83 @@
+Supplier data :  
+(26) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+0
+: 
+{email: null, name: 'Nice to Meat', phone: null, supplier_uuid: '1e985124-2c90-4a6b-8a8e-a4b3f595a6bc'}
+1
+: 
+{email: 'test@test.com', name: 'Testing Supplier 25_sept', phone: '+1234567899', supplier_uuid: '19cee887-9fcb-44f7-b1c2-c697dbdec40b'}
+2
+: 
+{email: 'test@test.com', name: 'Test supplier26_sep', phone: '+454646454474', supplier_uuid: '65fd8b10-05d6-4552-a149-1de6176d78ee'}
+3
+: 
+{email: null, name: 'Live Test Supplier', phone: null, supplier_uuid: '7c817ac4-2514-4ca5-88e3-06bcddbfda90'}
+4
+: 
+{email: null, name: 'MVR Cash and Carry', phone: null, supplier_uuid: '89c69b00-83b7-4efd-a4c0-d0b3071f0efa'}
+5
+: 
+{email: null, name: 'Nur Food Centre Ltd', phone: null, supplier_uuid: '8854f4cd-8b68-4e90-859c-08baed463de3'}
+6
+: 
+{email: 'harpreet@iampeckish.com', name: 'Sumafrut', phone: '33603035121', supplier_uuid: '25d3e6b2-dc62-441c-aa91-59ea76a5b3b0'}
+7
+: 
+{email: null, name: 'Drink Warehouse UK', phone: null, supplier_uuid: '4f463cb3-c889-46ab-a11b-67bd1902ac51'}
+8
+: 
+{email: null, name: 'Testing supplier for xero', phone: null, supplier_uuid: 'e06eb457-b88c-417e-b9f5-b5a928e95e59'}
+9
+: 
+{email: 'testsupplier2aug@example.com', name: 'Test SUpplier 2aug', phone: '+132324334', supplier_uuid: '7eb54442-29fa-4d68-b421-fb43466a0e13'}
+10
+: 
+{email: 'testsupplier1aug@example.com', name: 'Test SUpplier 1aug', phone: '+2321341234', supplier_uuid: '11572ac5-3882-406d-9ba9-ac853cc3f2cf'}
+11
+: 
+{email: 'test@gmail.com', name: 'test', phone: '+4545', supplier_uuid: '27f83f61-bd6f-4156-8787-5c28fa1a953b'}
+12
+: 
+{email: null, name: 'xeroxero', phone: null, supplier_uuid: '322e6f69-63ae-4561-b42f-859e6b85b03e'}
+13
+: 
+{email: null, name: 'Boom FM', phone: null, supplier_uuid: 'fee2ab98-51bc-4b1f-b477-1d286f4abc79'}
+14
+: 
+{email: 'expert@gmail.com', name: 'Expert ', phone: '+717278473637', supplier_uuid: '2a29f7b0-98e6-4d50-bbb0-7e0f1b978368'}
+15
+: 
+{email: 'harpreet@iampeckish.com', name: 'Harpreet', phone: null, supplier_uuid: '01cba27c-90f4-4142-95e9-6bd3de688252'}
+16
+: 
+{email: 'harpreet@iampeckish.com', name: 'Harpreet', phone: null, supplier_uuid: '6d0aabfa-61f6-4469-ba45-efdcb554d1ee'}
+17
+: 
+{email: null, name: 'Tazaki Foods Ltd', phone: null, supplier_uuid: '2fb92fae-ff76-4e47-96e5-4a950909e303'}
+18
+: 
+{email: null, name: 'JJ Food Service', phone: null, supplier_uuid: 'af5eb20b-cd5c-4931-944b-7035f73e8f05'}
+19
+: 
+{email: 'qwerty@gmail.com', name: 'qwerty', phone: '+1234432156', supplier_uuid: '6dfa416f-9e5c-4d11-9b4a-5c9fdc98663e'}
+20
+: 
+{email: 'xyz@supplier.com', name: 'xyz supplier', phone: '+3623423', supplier_uuid: '84c542d8-dc9f-428d-b25d-caf6167a3d07'}
+21
+: 
+{email: 'mrsebastienpradier@gmail.com', name: 'Random Test Supplier', phone: '+33603035121', supplier_uuid: 'e1e17ca9-1c50-4744-b82b-f2618c43102f'}
+22
+: 
+{email: 'brakes1@example.com', name: 'Brakes 1', phone: '+2321341234', supplier_uuid: 'c9c05eb1-1f4a-458a-8c21-23010b02bd62'}
+23
+: 
+{email: null, name: 'Tawakal Foods Limited', phone: null, supplier_uuid: 'fa7e7be9-9fb9-4bcd-846c-bf84ccef0f6f'}
+24
+: 
+{email: 'mayur.karmur@iampeckish.com', name: 'Chirag testing supplier', phone: '+319484646461', supplier_uuid: 'efe8d070-cbe2-4d24-b159-2883b5cf7759'}
+25
+: 
+{email: '', name: 'Gp test', phone: '31657706435', supplier_uuid: '0dca8ce7-cfd9-4abe-b752-6b2b554582a4'}
+length
+: 
+26
