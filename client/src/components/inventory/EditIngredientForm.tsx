@@ -31,25 +31,28 @@ import { type Supplier } from "@/lib/types";
 
 const editIngredientSchema = z.object({
   ingredient_name: z.string().min(1, "Name is required"),
-  tags: z.array(z.string()).min(1, "At least one tag is required"),
+  tags: z.array(
+    z.object({
+      tag_uuid: z.string(),
+      tag_name: z.string(),
+    }),
+  ),
   par_level: z.number().min(0, "Par level must be positive"),
   quantity: z.number().min(0, "Quantity must be positive"),
   unit: z.object({
     unit_uuid: z.string(),
     unit_name: z.string(),
   }),
-  ingredient_suppliers: z
-    .array(
-      z.object({
-        supplier: z.object({
-          supplier_uuid: z.string().optional(),
-          supplier_name: z.string().optional(),
-        }),
-        unit_cost: z.number().min(0),
-        pack_size: z.string(),
+  ingredient_suppliers: z.array(
+    z.object({
+      supplier: z.object({
+        supplier_uuid: z.string().optional(),
+        supplier_name: z.string().optional(),
       }),
-    )
-    .min(1, "At least one supplier is required"),
+      unit_cost: z.number().min(0),
+      pack_size: z.string(),
+    }),
+  ),
 });
 
 type EditIngredientFormValues = z.infer<typeof editIngredientSchema>;
@@ -180,7 +183,7 @@ export default function EditIngredientForm({
     const currentTags = form.getValues("tags");
     form.setValue(
       "tags",
-      currentTags.filter((tag) => tag !== tagToRemove),
+      currentTags.filter((tag) => tag.tag_uuid !== tagToRemove),
     );
   };
 
@@ -222,17 +225,17 @@ export default function EditIngredientForm({
                     <div className="flex flex-wrap gap-2 mb-2">
                       {field.value.map((tag) => (
                         <Badge
-                          key={tag}
+                          key={tag.tag_uuid}
                           variant="secondary"
                           className="px-2 py-1 text-sm flex items-center gap-1"
                         >
-                          {tag}
+                          {tag.tag_name}
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
                             className="h-4 w-4 p-0 hover:bg-transparent"
-                            onClick={() => removeTag(tag)}
+                            onClick={() => removeTag(tag.tag_uuid)}
                           >
                             ×
                           </Button>
@@ -558,7 +561,7 @@ export default function EditIngredientForm({
                                 Unit Cost
                               </div>
                               <div className="font-medium">
-                                ${ingredientSupplier.unit_cost.toFixed(2)}
+                                ${(ingredientSupplier.unit_cost || 0).toFixed(2)}
                               </div>
                             </div>
                             <div className="space-y-1">
