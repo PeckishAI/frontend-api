@@ -333,16 +333,32 @@ export default function EditIngredientForm({
                   <FormLabel>Unit</FormLabel>
                   <FormControl>
                     <CreatableSelect
-                      value={[field.value]}
-                      onChange={(values) => field.onChange(values[0])}
+                      value={field.value.unit_name ? [field.value.unit_name] : []}
+                      onChange={(values) => {
+                        if (values[0]) {
+                          const selectedUnit = unitsData?.find(u => u.unit_uuid === values[0]) || {
+                            unit_uuid: values[0],
+                            unit_name: values[0]
+                          };
+                          field.onChange({
+                            unit_uuid: selectedUnit.unit_uuid,
+                            unit_name: selectedUnit.unit_name
+                          });
+                        }
+                      }}
                       options={
                         unitsData?.map((unit) => ({
                           label: unit.unit_name,
-                          value: unit.unit_name,
+                          value: unit.unit_uuid,
                           category: unit.category,
                         })) || []
                       }
-                      onCreateOption={field.onChange}
+                      onCreateOption={(value) => {
+                        field.onChange({
+                          unit_uuid: value,
+                          unit_name: value
+                        });
+                      }}
                       placeholder="Select or create unit"
                     />
                   </FormControl>
