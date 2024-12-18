@@ -1,4 +1,3 @@
-
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
@@ -24,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import type { InventoryItem } from "@/lib/types";
-import { defaultUnits } from "@/lib/data";
+import { unitService } from "@/services/unitService";
 
 const newIngredientSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -32,12 +31,16 @@ const newIngredientSchema = z.object({
   parLevel: z.number().min(0, "Par level must be positive"),
   quantity: z.number().min(0, "Quantity must be positive"),
   unit: z.string().min(1, "Unit is required"),
-  suppliers: z.array(z.object({
-    supplierId: z.string(),
-    supplierName: z.string(),
-    unitCost: z.number().min(0),
-    packSize: z.string(),
-  })).min(1, "At least one supplier is required"),
+  suppliers: z
+    .array(
+      z.object({
+        supplierId: z.string(),
+        supplierName: z.string(),
+        unitCost: z.number().min(0),
+        packSize: z.string(),
+      }),
+    )
+    .min(1, "At least one supplier is required"),
 });
 
 type NewIngredientFormValues = z.infer<typeof newIngredientSchema>;
@@ -56,7 +59,22 @@ export default function NewIngredientDialog({
   embedded = false,
 }: NewIngredientDialogProps) {
   const { currentRestaurant } = useRestaurantContext();
-  
+
+  const { data: unitsData } = useQuery({
+    queryKey: ["units", currentRestaurant?.restaurant_uuid],
+    queryFn: async () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      const [referenceUnits, restaurantUnits] = await Promise.all([
+        unitService.getReferenceUnit(),
+        unitService.getRestaurantUnit(currentRestaurant.restaurant_uuid)
+      ]);
+      return [...referenceUnits, ...restaurantUnits];
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+  });
+
   const { data: tagsData } = useQuery({
     queryKey: ["tags", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
@@ -72,11 +90,11 @@ export default function NewIngredientDialog({
   const form = useForm<NewIngredientFormValues>({
     resolver: zodResolver(newIngredientSchema),
     defaultValues: {
-      name: '',
+      name: "",
       tags: [],
       parLevel: 0,
       quantity: 0,
-      unit: '',
+      unit: "",
       suppliers: [],
     },
   });
@@ -88,7 +106,10 @@ export default function NewIngredientDialog({
 
   const formContent = (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 pt-4">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="space-y-6 pt-4"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -102,7 +123,7 @@ export default function NewIngredientDialog({
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="tags"
@@ -113,12 +134,35 @@ export default function NewIngredientDialog({
                 <CreatableSelect
                   value={field.value || []}
                   onChange={field.onChange}
-                  options={tagsData?.map(tag => ({ 
-                    label: tag.tag_name, 
-                    value: tag.tag_uuid,
-                    category: "Existing Tags"
-                  })) || []}
-                  onCreateOption={(value) => field.onChange([...field.value || [], value])}
+                  options={
+                    tagsData?.map((tag) => ({
+                      label: tag.tag_name,
+                      value: tag.tag_uuid,
+                      category: "Existing Tags",
+                    })) || []
+                  }
+                  onCreateOption={async (value) => {
+                    try {
+                      if (!currentRestaurant?.restaurant_uuid) {
+                        throw new Error("No restaurant selected");
+                      }
+                      const newTag = await tagService.createTag(
+                        {
+                          tag_name: value,
+                        },
+                        currentRestaurant?.restaurant_uuid,
+                      );
+                      if (newTag?.tag_uuid && newTag?.tag_name) {
+                        const updatedValue = [
+                          ...(field.value || []),
+                          newTag.tag_name,
+                        ];
+                        field.onChange(updatedValue);
+                      }
+                    } catch (error) {
+                      console.error("Failed to create tag:", error);
+                    }
+                  }}
                   placeholder="Select or create tags"
                   multiple={true}
                   className="max-h-[200px] overflow-y-auto"
@@ -141,7 +185,7 @@ export default function NewIngredientDialog({
                     type="number"
                     step="0.01"
                     {...field}
-                    onChange={e => field.onChange(parseFloat(e.target.value))}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
                   />
                 </FormControl>
                 <FormMessage />
@@ -160,7 +204,7 @@ export default function NewIngredientDialog({
                     type="number"
                     step="0.01"
                     {...field}
-                    onChange={e => field.onChange(parseFloat(e.target.value))}
+                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
                   />
                 </FormControl>
                 <FormMessage />
@@ -178,8 +222,12 @@ export default function NewIngredientDialog({
               <FormControl>
                 <CreatableSelect
                   value={[field.value]}
-                  onChange={values => field.onChange(values[0])}
-                  options={defaultUnits}
+                  onChange={(values) => field.onChange(values[0])}
+                  options={unitsData?.map(unit => ({
+                    value: unit.unit_name,
+                    label: unit.unit_name,
+                    category: unit.category
+                  })) || []}
                   onCreateOption={field.onChange}
                   placeholder="Select or create unit"
                 />
@@ -191,7 +239,11 @@ export default function NewIngredientDialog({
 
         <div className="flex justify-end gap-4 pt-4">
           {!embedded && (
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
               Cancel
             </Button>
           )}
