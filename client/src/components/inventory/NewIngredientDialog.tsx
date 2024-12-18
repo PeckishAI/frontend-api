@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import type { InventoryItem } from "@/lib/types";
 import { unitService } from "@/services/unitService";
@@ -139,56 +140,77 @@ export default function NewIngredientDialog({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tags</FormLabel>
-              <FormControl>
-                <CreatableSelect
-                  value={field.value?.map(tag => ({
-                    label: tag.tag_name,
-                    value: tag.tag_uuid
-                  })) || []}
-                  onChange={(newValue) => {
-                    const formattedTags = newValue.map(item => ({
-                      tag_uuid: item.value,
-                      tag_name: item.label
-                    }));
-                    field.onChange(formattedTags);
-                  }}
-                  options={
-                    tagsData?.map((tag) => ({
+              <div className="space-y-2">
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {field.value.map((tag) => (
+                    <Badge
+                      key={tag.tag_uuid}
+                      variant="secondary"
+                      className="px-2 py-1 text-sm flex items-center gap-1"
+                    >
+                      {tag.tag_name}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-4 w-4 p-0 hover:bg-transparent"
+                        onClick={() => {
+                          const newTags = field.value.filter(t => t.tag_uuid !== tag.tag_uuid);
+                          field.onChange(newTags);
+                        }}
+                      >
+                        ×
+                      </Button>
+                    </Badge>
+                  ))}
+                </div>
+                <FormControl>
+                  <CreatableSelect
+                    isMulti
+                    value={field.value.map(tag => ({
                       label: tag.tag_name,
-                      value: tag.tag_uuid,
-                      category: "Existing Tags",
-                    })) || []
-                  }
-                  onCreateOption={async (value) => {
-                    try {
-                      if (!currentRestaurant?.restaurant_uuid) {
-                        throw new Error("No restaurant selected");
-                      }
-                      const newTag = await tagService.createTag(
-                        {
-                          tag_name: value,
-                        },
-                        currentRestaurant?.restaurant_uuid,
-                      );
-                      if (newTag?.tag_uuid && newTag?.tag_name) {
-                        const updatedValue = [
-                          ...(field.value || []),
-                          {
-                            tag_uuid: newTag.tag_uuid,
-                            tag_name: newTag.tag_name
-                          }
-                        ];
-                        field.onChange(updatedValue);
-                      }
-                    } catch (error) {
-                      console.error("Failed to create tag:", error);
+                      value: tag.tag_uuid
+                    }))}
+                    onChange={(values) => {
+                      const selectedTags = values.map(v => ({
+                        tag_uuid: v.value,
+                        tag_name: v.label
+                      }));
+                      field.onChange(selectedTags);
+                    }}
+                    options={
+                      tagsData?.map((tag) => ({
+                        label: tag.tag_name,
+                        value: tag.tag_uuid,
+                        category: "Existing Tags",
+                      })) || []
                     }
-                  }}
-                  placeholder="Select or create tags"
-                  multiple={true}
-                  className="max-h-[200px] overflow-y-auto"
-                />
-              </FormControl>
+                    onCreateOption={async (value) => {
+                      try {
+                        if (!currentRestaurant?.restaurant_uuid) {
+                          throw new Error("No restaurant selected");
+                        }
+                        const newTag = await tagService.createTag(
+                          {
+                            tag_name: value,
+                          },
+                          currentRestaurant?.restaurant_uuid,
+                        );
+                        if (newTag?.tag_uuid && newTag?.tag_name) {
+                          const updatedValue = [
+                            ...(field.value || []),
+                            newTag.tag_name,
+                          ];
+                          field.onChange(updatedValue);
+                        }
+                      } catch (error) {
+                        console.error("Failed to create tag:", error);
+                      }
+                    }}
+                    placeholder="Add a tag..."
+                  />
+                </FormControl>
+              </div>
               <FormMessage />
             </FormItem>
           )}
