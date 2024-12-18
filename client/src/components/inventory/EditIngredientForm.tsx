@@ -47,8 +47,8 @@ const editIngredientSchema = z.object({
     z.object({
       uuid: z.string().optional(),
       supplier: z.object({
-        supplier_uuid: z.string().optional(),
-        supplier_name: z.string().optional(),
+        supplier_uuid: z.string(),
+        supplier_name: z.string(),
       }),
       unit_cost: z.number().min(0),
       unit: z.object({
@@ -56,7 +56,7 @@ const editIngredientSchema = z.object({
         unit_name: z.string(),
       }),
       pack_size: z.number().min(0),
-      product_code: z.string().optional(),
+      product_code: z.string().nullish(),
     }),
   ),
 });
