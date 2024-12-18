@@ -28,6 +28,7 @@ import { unitService } from "@/services/unitService";
 import { tagService } from "@/services/tagService";
 import { supplierService } from "@/services/supplierService";
 import { type Supplier } from "@/lib/types";
+import { inventoryService } from "@/services/inventoryService";
 
 const editIngredientSchema = z.object({
   ingredient_name: z.string().min(1, "Name is required"),
@@ -46,17 +47,21 @@ const editIngredientSchema = z.object({
   ingredient_suppliers: z.array(
     z.object({
       uuid: z.string().optional(),
-      supplier: z.object({
-        supplier_uuid: z.string(),
-        supplier_name: z.string(),
-      }),
-      unit_cost: z.number().min(0),
-      unit: z.object({
-        unit_uuid: z.string(),
-        unit_name: z.string(),
-      }),
-      pack_size: z.number().min(0),
-      product_code: z.string().nullish(),
+      supplier: z
+        .object({
+          supplier_uuid: z.string(),
+          supplier_name: z.string(),
+        })
+        .optional(),
+      unit_cost: z.number().min(0).optional(),
+      unit: z
+        .object({
+          unit_uuid: z.string(),
+          unit_name: z.string(),
+        })
+        .optional(),
+      pack_size: z.number().min(0).optional(),
+      product_code: z.string().optional(),
     }),
   ),
 });
@@ -146,6 +151,17 @@ export default function EditIngredientForm({
 
   const handleSubmit = (values: EditIngredientFormValues) => {
     console.log("Form completed : ", values);
+    if (!currentRestaurant?.restaurant_uuid) {
+      throw new Error("No restaurant selected");
+    }
+    if (!ingredient?.ingredient_uuid) {
+      throw new Error("No ingredient selected");
+    }
+    inventoryService.updateIngredient(
+      currentRestaurant?.restaurant_uuid,
+      ingredient.ingredient_uuid,
+      values,
+    );
     onSubmit(values);
     onOpenChange(false);
   };
@@ -155,9 +171,7 @@ export default function EditIngredientForm({
     form.setValue("ingredient_suppliers", [
       ...currentSuppliers,
       {
-        supplier: {},
         unit_cost: 0,
-        unit: {},
         pack_size: 1,
       },
     ]);
@@ -530,7 +544,7 @@ export default function EditIngredientForm({
                                   <FormControl>
                                     <CreatableSelect
                                       value={
-                                        field.value.unit_name
+                                        field.value?.unit_name
                                           ? [field.value.unit_name]
                                           : []
                                       }
