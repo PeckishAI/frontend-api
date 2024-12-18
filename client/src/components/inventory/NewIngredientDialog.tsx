@@ -144,11 +144,11 @@ export default function NewIngredientDialog({
                 <div className="flex flex-wrap gap-2 mb-2">
                   {field.value.map((tag) => (
                     <Badge
-                      key={tag.value}
+                      key={tag.tag_uuid}
                       variant="secondary"
                       className="px-2 py-1 text-sm flex items-center gap-1"
                     >
-                      {tag.label}
+                      {tag.tag_name}
                       <Button
                         type="button"
                         variant="ghost"
@@ -168,9 +168,13 @@ export default function NewIngredientDialog({
                   <CreatableSelect
                     isMulti
                     placeholder="Add a tag..."
-                    onChange={(values) => {
-                      console.log('Selected values:', values);
-                      field.onChange(values || []);
+                    onChange={(newValue: any) => {
+                      console.log('Selected values:', newValue);
+                      const selectedTags = newValue.map((item: any) => ({
+                        tag_uuid: item.value,
+                        tag_name: item.label
+                      }));
+                      field.onChange(selectedTags);
                     }}
                     options={
                       tagsData?.map((tag) => ({
