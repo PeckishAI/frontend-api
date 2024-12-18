@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 
@@ -10,10 +9,10 @@ const ScrollArea = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <ScrollAreaPrimitive.Root
     ref={ref}
-    className={cn("relative", className)}
+    className={cn("relative overflow-hidden", className)}
     {...props}
   >
-    <ScrollAreaPrimitive.Viewport className="w-full h-full">
+    <ScrollAreaPrimitive.Viewport className="w-full h-full scrollbar-hide">
       {children}
     </ScrollAreaPrimitive.Viewport>
     <ScrollBar />
