@@ -602,7 +602,16 @@ export default function EditIngredientForm({
                                       <div className="text-sm text-gray-500">
                                         Pack Size
                                       </div>
-                                      <Input {...field} />
+                                      <Input
+                                        type="number"
+                                        step="0.01"
+                                        {...field}
+                                        onChange={(e) =>
+                                          field.onChange(
+                                            parseFloat(e.target.value),
+                                          )
+                                        }
+                                      />
                                     </div>
                                   </FormControl>
                                   <FormMessage />
