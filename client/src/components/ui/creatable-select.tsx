@@ -24,7 +24,7 @@ export type SelectOption = {
 };
 
 interface CreatableSelectProps {
-  value: string[];
+  value: string[] | null;
   onChange: (value: string[]) => void;
   options: SelectOption[];
   onCreateOption?: (value: string) => void;
@@ -118,7 +118,7 @@ export function CreatableSelect({
           aria-expanded={open}
           className={cn("w-full justify-between", className)}
         >
-          {value.length > 0 ? selectedLabels : placeholder}
+          {(value && value.length > 0) ? selectedLabels : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

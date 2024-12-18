@@ -30,20 +30,23 @@ import { supplierService } from "@/services/supplierService";
 import { type Supplier } from "@/lib/types";
 
 const editIngredientSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  ingredient_name: z.string().min(1, "Name is required"),
   tags: z.array(z.string()).min(1, "At least one tag is required"),
-  parLevel: z.number().min(0, "Par level must be positive"),
+  par_level: z.number().min(0, "Par level must be positive"),
   quantity: z.number().min(0, "Quantity must be positive"),
-  unit: z.string().min(1, "Unit is required"),
-  ingredientSuppliers: z
+  unit: z.object({
+    unit_uuid: z.string(),
+    unit_name: z.string(),
+  }),
+  ingredient_suppliers: z
     .array(
       z.object({
         supplier: z.object({
           supplier_uuid: z.string().optional(),
           supplier_name: z.string().optional(),
         }),
-        unitCost: z.number().min(0),
-        packSize: z.string(),
+        unit_cost: z.number().min(0),
+        pack_size: z.string(),
       }),
     )
     .min(1, "At least one supplier is required"),
@@ -113,12 +116,12 @@ export default function EditIngredientForm({
   const form = useForm<EditIngredientFormValues>({
     resolver: zodResolver(editIngredientSchema),
     defaultValues: {
-      name: "",
+      ingredient_name: "",
       tags: [],
-      parLevel: 0,
+      par_level: 0,
       quantity: 0,
-      unit: "",
-      ingredientSuppliers: [],
+      unit: {},
+      ingredient_suppliers: [],
     },
   });
 
@@ -126,7 +129,7 @@ export default function EditIngredientForm({
     if (ingredient) {
       form.reset({
         ...ingredient,
-        parLevel: Number(ingredient.parLevel),
+        par_level: Number(ingredient.par_level),
         quantity: Number(ingredient.quantity),
         tags: ingredient.tags || [],
       });
@@ -139,22 +142,22 @@ export default function EditIngredientForm({
   };
 
   const addSupplier = () => {
-    const currentSuppliers = form.getValues("ingredientSuppliers");
-    form.setValue("ingredientSuppliers", [
+    const currentSuppliers = form.getValues("ingredient_suppliers");
+    form.setValue("ingredient_suppliers", [
       ...currentSuppliers,
       {
         supplier: {},
-        unitCost: 0,
-        packSize: "",
+        unit_cost: 0,
+        pack_size: "",
       },
     ]);
     setEditingSupplier(currentSuppliers.length);
   };
 
   const removeSupplier = (index: number) => {
-    const currentSuppliers = form.getValues("ingredientSuppliers");
+    const currentSuppliers = form.getValues("ingredient_suppliers");
     form.setValue(
-      "ingredientSuppliers",
+      "ingredient_suppliers",
       currentSuppliers.filter((_, i) => i !== index),
     );
   };
@@ -164,13 +167,13 @@ export default function EditIngredientForm({
     field: string,
     value: string | object,
   ) => {
-    const currentSuppliers = form.getValues("ingredientSuppliers");
+    const currentSuppliers = form.getValues("ingredient_suppliers");
     const updatedSuppliers = [...currentSuppliers];
     updatedSuppliers[index] = {
       ...updatedSuppliers[index],
       [field]: value,
     };
-    form.setValue("ingredientSuppliers", updatedSuppliers);
+    form.setValue("ingredient_suppliers", updatedSuppliers);
   };
 
   const removeTag = (tagToRemove: string) => {
@@ -197,7 +200,7 @@ export default function EditIngredientForm({
           >
             <FormField
               control={form.control}
-              name="name"
+              name="ingredient_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
@@ -281,7 +284,7 @@ export default function EditIngredientForm({
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="parLevel"
+                name="par_level"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Par Level</FormLabel>
@@ -362,7 +365,7 @@ export default function EditIngredientForm({
               </div>
               <div className="space-y-4">
                 {form
-                  .watch("ingredientSuppliers")
+                  .watch("ingredient_suppliers")
                   ?.map((ingredientSupplier, index) => (
                     <div
                       key={ingredientSupplier.supplier.supplier_uuid}
@@ -372,18 +375,15 @@ export default function EditIngredientForm({
                         <div className="space-y-4">
                           <FormField
                             control={form.control}
-                            name={`ingredientSuppliers.${index}.supplier`}
+                            name={`ingredient_suppliers.${index}.supplier`}
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
                                   <CreatableSelect
                                     value={
                                       field.value?.supplier_uuid
-                                        ? {
-                                            value: field.value.supplier_uuid,
-                                            label: field.value.supplier_name,
-                                          }
-                                        : null
+                                        ? [field.value.supplier_name || '']
+                                        : []
                                     }
                                     onChange={(newValue) => {
                                       if (newValue) {
@@ -401,8 +401,12 @@ export default function EditIngredientForm({
                                     }
                                     onCreateOption={async (inputValue) => {
                                       try {
-                                        if (!currentRestaurant?.restaurant_uuid) {
-                                          throw new Error("No restaurant selected");
+                                        if (
+                                          !currentRestaurant?.restaurant_uuid
+                                        ) {
+                                          throw new Error(
+                                            "No restaurant selected",
+                                          );
                                         }
                                         const newSupplier =
                                           await supplierService.createSupplier(
@@ -414,8 +418,10 @@ export default function EditIngredientForm({
                                           newSupplier?.supplier_name
                                         ) {
                                           field.onChange({
-                                            supplier_uuid: newSupplier.supplier_uuid,
-                                            supplier_name: newSupplier.supplier_name,
+                                            supplier_uuid:
+                                              newSupplier.supplier_uuid,
+                                            supplier_name:
+                                              newSupplier.supplier_name,
                                           });
                                         }
                                       } catch (error) {
@@ -435,7 +441,7 @@ export default function EditIngredientForm({
                           <div className="grid grid-cols-2 gap-4">
                             <FormField
                               control={form.control}
-                              name={`ingredientSuppliers.${index}.unitCost`}
+                              name={`ingredient_suppliers.${index}.unitCost`}
                               render={({ field }) => (
                                 <FormItem>
                                   <FormControl>
@@ -448,7 +454,9 @@ export default function EditIngredientForm({
                                         step="0.01"
                                         {...field}
                                         onChange={(e) =>
-                                          field.onChange(parseFloat(e.target.value))
+                                          field.onChange(
+                                            parseFloat(e.target.value),
+                                          )
                                         }
                                       />
                                     </div>
@@ -459,7 +467,7 @@ export default function EditIngredientForm({
                             />
                             <FormField
                               control={form.control}
-                              name={`ingredientSuppliers.${index}.packSize`}
+                              name={`ingredient_suppliers.${index}.packSize`}
                               render={({ field }) => (
                                 <FormItem>
                                   <FormControl>
@@ -490,7 +498,7 @@ export default function EditIngredientForm({
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <h4 className="text-base font-medium text-gray-900">
-                              {supplier.supplierName}
+                              {ingredientSupplier.supplier.supplier_name}
                             </h4>
                             <div className="flex items-center gap-2">
                               <Button
@@ -517,7 +525,7 @@ export default function EditIngredientForm({
                                 Unit Cost
                               </div>
                               <div className="font-medium">
-                                ${supplier.unitCost.toFixed(2)}
+                                ${ingredientSupplier.unit_cost.toFixed(2)}
                               </div>
                             </div>
                             <div className="space-y-1">
@@ -525,7 +533,7 @@ export default function EditIngredientForm({
                                 Pack Size
                               </div>
                               <div className="font-medium">
-                                {supplier.packSize}
+                                {ingredientSupplier.pack_size}
                               </div>
                             </div>
                           </div>
