@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
-import { tagService } from "@/services/tagService";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -24,23 +23,32 @@ import { Button } from "@/components/ui/button";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import type { InventoryItem } from "@/lib/types";
 import { unitService } from "@/services/unitService";
+import { tagService } from "@/services/tagService";
 
 const newIngredientSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  tags: z.array(z.string()).min(1, "At least one tag is required"),
-  parLevel: z.number().min(0, "Par level must be positive"),
+  ingredient_name: z.string().min(1, "Name is required"),
+  tags: z.array(
+    z.object({
+      tag_uuid: z.string(),
+      tag_name: z.string(),
+    }),
+  ),
+  par_level: z.number().min(0, "Par level must be positive"),
   quantity: z.number().min(0, "Quantity must be positive"),
-  unit: z.string().min(1, "Unit is required"),
-  suppliers: z
-    .array(
-      z.object({
-        supplierId: z.string(),
-        supplierName: z.string(),
-        unitCost: z.number().min(0),
-        packSize: z.string(),
+  unit: z.object({
+    unit_uuid: z.string(),
+    unit_name: z.string(),
+  }),
+  ingredient_suppliers: z.array(
+    z.object({
+      supplier: z.object({
+        supplier_uuid: z.string(),
+        supplier_name: z.string(),
       }),
-    )
-    .min(1, "At least one supplier is required"),
+      unit_cost: z.number().min(0),
+      pack_size: z.string(),
+    }),
+  ),
 });
 
 type NewIngredientFormValues = z.infer<typeof newIngredientSchema>;
@@ -68,7 +76,7 @@ export default function NewIngredientDialog({
       }
       const [referenceUnits, restaurantUnits] = await Promise.all([
         unitService.getReferenceUnit(),
-        unitService.getRestaurantUnit(currentRestaurant.restaurant_uuid)
+        unitService.getRestaurantUnit(currentRestaurant.restaurant_uuid),
       ]);
       return [...referenceUnits, ...restaurantUnits];
     },
@@ -90,16 +98,17 @@ export default function NewIngredientDialog({
   const form = useForm<NewIngredientFormValues>({
     resolver: zodResolver(newIngredientSchema),
     defaultValues: {
-      name: "",
+      ingredient_name: "",
       tags: [],
-      parLevel: 0,
+      par_level: 0,
       quantity: 0,
-      unit: "",
-      suppliers: [],
+      unit: {},
+      ingredient_suppliers: [],
     },
   });
 
   const handleSubmit = (values: NewIngredientFormValues) => {
+    console.log("Form values before submission:", values);
     onSubmit(values);
     onOpenChange(false);
   };
@@ -112,7 +121,7 @@ export default function NewIngredientDialog({
       >
         <FormField
           control={form.control}
-          name="name"
+          name="ingredient_name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
@@ -176,7 +185,7 @@ export default function NewIngredientDialog({
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="parLevel"
+            name="par_level"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Par Level</FormLabel>
@@ -221,14 +230,47 @@ export default function NewIngredientDialog({
               <FormLabel>Unit</FormLabel>
               <FormControl>
                 <CreatableSelect
-                  value={[field.value]}
-                  onChange={(values) => field.onChange(values[0])}
-                  options={unitsData?.map(unit => ({
-                    value: unit.unit_name,
-                    label: unit.unit_name,
-                    category: unit.category
-                  })) || []}
-                  onCreateOption={field.onChange}
+                  value={field.value.unit_name ? [field.value.unit_name] : []}
+                  onChange={(values) => {
+                    if (values[0]) {
+                      const selectedUnit = unitsData?.find(
+                        (u) => u.unit_uuid === values[0],
+                      ) || {
+                        unit_uuid: values[0],
+                        unit_name: values[0],
+                      };
+                      field.onChange({
+                        unit_uuid: selectedUnit.unit_uuid,
+                        unit_name: selectedUnit.unit_name,
+                      });
+                    }
+                  }}
+                  options={
+                    unitsData?.map((unit) => ({
+                      label: unit.unit_name,
+                      value: unit.unit_uuid,
+                      category: unit.category,
+                    })) || []
+                  }
+                  onCreateOption={async (value) => {
+                    try {
+                      if (!currentRestaurant?.restaurant_uuid) {
+                        throw new Error("No restaurant selected");
+                      }
+                      const newUnit = await unitService.createUnit(
+                        { unit_name: value },
+                        currentRestaurant.restaurant_uuid,
+                      );
+                      if (newUnit?.unit_uuid && newUnit?.unit_name) {
+                        field.onChange({
+                          unit_uuid: newUnit.unit_uuid,
+                          unit_name: newUnit.unit_name,
+                        });
+                      }
+                    } catch (error) {
+                      console.error("Failed to create unit:", error);
+                    }
+                  }}
                   placeholder="Select or create unit"
                 />
               </FormControl>
