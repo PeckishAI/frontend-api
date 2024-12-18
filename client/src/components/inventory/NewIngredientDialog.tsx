@@ -198,8 +198,11 @@ export default function NewIngredientDialog({
                         );
                         if (newTag?.tag_uuid && newTag?.tag_name) {
                           const updatedValue = [
-                            ...(field.value || []),
-                            newTag.tag_name,
+                            ...field.value,
+                            {
+                              tag_uuid: newTag.tag_uuid,
+                              tag_name: newTag.tag_name
+                            }
                           ];
                           field.onChange(updatedValue);
                         }
