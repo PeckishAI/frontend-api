@@ -1,10 +1,10 @@
 import { InventoryItem } from "../lib/types";
 
-import { config } from '../config/config';
+import { config } from "../config/config";
 const BASE_URL = config.apiBaseUrl;
 
 export const inventoryService = {
-  async getRestaurantInventory(restaurantUuid: string): Promise<any> {
+  async getRestaurantIngredients(restaurantUuid: string): Promise<any> {
     try {
       const response = await fetch(
         `${BASE_URL}/ingredients/v2/restaurant/${restaurantUuid}`,
@@ -31,7 +31,7 @@ export const inventoryService = {
     }
   },
 
-  async updateInventoryItem(
+  async updateIngredient(
     restaurantUuid: string,
     itemId: string,
     itemData: Partial<InventoryItem>,
@@ -60,13 +60,13 @@ export const inventoryService = {
     }
   },
 
-  async createInventoryItem(
+  async createIngredient(
     restaurantUuid: string,
-    itemData: Omit<InventoryItem, "id">,
+    itemData: Omit<InventoryItem, "ingredient_uuid">,
   ): Promise<any> {
     try {
       const response = await fetch(
-        `${BASE_URL}/ingredients/v2/restaurant/${restaurantUuid}/item`,
+        `${BASE_URL}/ingredients/v2/restaurant/${restaurantUuid}`,
         {
           method: "POST",
           headers: {

@@ -10,12 +10,12 @@ interface SupplierCardProps {
 
 export default function SupplierCard({ supplier, onClick }: SupplierCardProps) {
   return (
-    <Card 
+    <Card
       className="hover:shadow-lg transition-shadow cursor-pointer"
       onClick={onClick}
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <h2 className="font-semibold text-xl">{supplier.name}</h2>
+        <h2 className="font-semibold text-xl">{supplier.supplier_name}</h2>
         <Badge variant="secondary">{supplier.category}</Badge>
       </CardHeader>
       <CardContent>

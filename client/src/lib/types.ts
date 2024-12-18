@@ -1,4 +1,4 @@
-export type OrderStatus = 'draft' | 'pending' | 'received' | 'cancelled';
+export type OrderStatus = "draft" | "pending" | "received" | "cancelled";
 
 export interface Order {
   id: string;
@@ -18,37 +18,46 @@ export interface OrderItem {
 }
 
 export interface Supplier {
-  id: number;
-  name: string;
-  category: string;
+  supplier_uuid: string;
+  supplier_name: string;
+  category?: string;
   email?: string;
   phone?: string;
   address?: string;
+  active?: boolean;
   notes?: string;
-  active: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface InventorySupplierInfo {
-  supplierId: string;
-  supplierName: string;
-  unitCost: number;
-  packSize: string;
+  supplier: Supplier;
+  unit_cost: number;
+  pack_size: string;
 }
 
 export interface InventoryItem {
-  id: string;
-  name: string;
-  tags: string[];
-  parLevel: number;
-  quantity: number;
-  unit: string;
-  suppliers: InventorySupplierInfo[];
+  ingredient_uuid?: string;
+  ingredient_name: string;
+  tags?: Tag[];
+  par_level?: number;
+  quantity?: number;
+  unit?: Unit;
+  ingredient_suppliers?: InventorySupplierInfo[];
 }
 
 export interface UnitOption {
   value: string;
   label: string;
   category?: string;
+}
+
+export interface Unit {
+  unit_uuid: string;
+  unit_name: string;
+}
+
+export interface Tag {
+  tag_uuid: string;
+  tag_name: string;
 }

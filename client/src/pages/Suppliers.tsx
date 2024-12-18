@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function Suppliers() {
-  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
+  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
+    null,
+  );
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const { data: suppliers, isLoading } = useQuery({
@@ -37,18 +39,20 @@ export default function Suppliers() {
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Suppliers</h1>
-        <Button onClick={() => {
-          setSelectedSupplier(null);
-          setIsSheetOpen(true);
-        }}>
+        <Button
+          onClick={() => {
+            setSelectedSupplier(null);
+            setIsSheetOpen(true);
+          }}
+        >
           Add Supplier
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {suppliers?.map((supplier: Supplier) => (
-          <Card 
-            key={supplier.id} 
+          <Card
+            key={supplier.supplier_uuid}
             className="cursor-pointer hover:shadow-lg transition-shadow"
             onClick={() => {
               setSelectedSupplier(supplier);
@@ -56,7 +60,7 @@ export default function Suppliers() {
             }}
           >
             <CardContent className="p-6">
-              <h3 className="font-semibold mb-2">{supplier.name}</h3>
+              <h3 className="font-semibold mb-2">{supplier.supplier_name}</h3>
               <p className="text-sm text-gray-500">{supplier.category}</p>
             </CardContent>
           </Card>

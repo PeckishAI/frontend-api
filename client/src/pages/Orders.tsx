@@ -65,14 +65,16 @@ export default function Orders() {
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return supplierService.getRestaurantSuppliers(currentRestaurant.restaurant_uuid);
+      return supplierService.getRestaurantSuppliers(
+        currentRestaurant.restaurant_uuid,
+      );
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
     select: (data) => {
       if (!data?.data) return [];
       return data.data.map((supplier: any) => ({
-        id: supplier.supplier_uuid,
-        name: supplier.name,
+        supplier_uuid: supplier.supplier_uuid,
+        supplier_name: supplier.supplier_name,
         email: supplier.email || "",
         phone: supplier.phone || "",
       }));

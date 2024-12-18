@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import type { InventoryItem } from "@/lib/types";
+import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import { tagService } from "@/services/tagService";
 
@@ -110,6 +111,13 @@ export default function NewIngredientDialog({
 
   const handleSubmit = (values: NewIngredientFormValues) => {
     console.log("Form values before submission:", values);
+    if (!currentRestaurant?.restaurant_uuid) {
+      throw new Error("No restaurant selected");
+    }
+    inventoryService.createIngredient(
+      currentRestaurant?.restaurant_uuid,
+      values,
+    );
     onSubmit(values);
     onOpenChange(false);
   };
@@ -155,7 +163,9 @@ export default function NewIngredientDialog({
                         size="sm"
                         className="h-4 w-4 p-0 hover:bg-transparent"
                         onClick={() => {
-                          const newTags = field.value.filter(t => t.tag_uuid !== tag.tag_uuid);
+                          const newTags = field.value.filter(
+                            (t) => t.tag_uuid !== tag.tag_uuid,
+                          );
                           field.onChange(newTags);
                         }}
                       >
@@ -168,14 +178,16 @@ export default function NewIngredientDialog({
                   <CreatableSelect
                     multiple
                     placeholder="Add a tag..."
-                    value={field.value.map(tag => tag.tag_uuid)}
+                    value={field.value.map((tag) => tag.tag_uuid)}
                     onChange={(values) => {
-                      console.log('Selected values:', values);
-                      const selectedTags = values.map(value => {
-                        const tagData = tagsData?.find(tag => tag.tag_uuid === value);
+                      console.log("Selected values:", values);
+                      const selectedTags = values.map((value) => {
+                        const tagData = tagsData?.find(
+                          (tag) => tag.tag_uuid === value,
+                        );
                         return {
                           tag_uuid: value,
-                          tag_name: tagData?.tag_name || value
+                          tag_name: tagData?.tag_name || value,
                         };
                       });
                       field.onChange(selectedTags);
@@ -203,8 +215,8 @@ export default function NewIngredientDialog({
                             ...field.value,
                             {
                               tag_uuid: newTag.tag_uuid,
-                              tag_name: newTag.tag_name
-                            }
+                              tag_name: newTag.tag_name,
+                            },
                           ];
                           field.onChange(updatedValue);
                         }

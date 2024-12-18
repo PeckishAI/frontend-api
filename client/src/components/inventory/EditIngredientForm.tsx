@@ -114,7 +114,6 @@ export default function EditIngredientForm({
     enabled: !!currentRestaurant?.restaurant_uuid,
     select: (data) => data.data,
   });
-  console.log("Supplier data : ", suppliersData);
 
   const form = useForm<EditIngredientFormValues>({
     resolver: zodResolver(editIngredientSchema),
@@ -235,7 +234,12 @@ export default function EditIngredientForm({
                             variant="ghost"
                             size="sm"
                             className="h-4 w-4 p-0 hover:bg-transparent"
-                            onClick={() => removeTag(tag.tag_uuid)}
+                            onClick={() => {
+                              const newTags = field.value.filter(
+                                (t) => t.tag_uuid !== tag.tag_uuid,
+                              );
+                              field.onChange(newTags);
+                            }}
                           >
                             ×
                           </Button>
@@ -244,8 +248,21 @@ export default function EditIngredientForm({
                     </div>
                     <FormControl>
                       <CreatableSelect
-                        value={field.value || []}
-                        onChange={(values) => field.onChange(values)}
+                        multiple
+                        value={field.value.map((tag) => tag.tag_uuid)}
+                        onChange={(values) => {
+                          console.log("Selected values:", values);
+                          const selectedTags = values.map((value) => {
+                            const tagData = tagsData?.find(
+                              (tag) => tag.tag_uuid === value,
+                            );
+                            return {
+                              tag_uuid: value,
+                              tag_name: tagData?.tag_name || value,
+                            };
+                          });
+                          field.onChange(selectedTags);
+                        }}
                         options={
                           tagsData?.map((tag) => ({
                             label: tag.tag_name,
@@ -266,8 +283,11 @@ export default function EditIngredientForm({
                             );
                             if (newTag?.tag_uuid && newTag?.tag_name) {
                               const updatedValue = [
-                                ...(field.value || []),
-                                newTag.tag_name,
+                                ...field.value,
+                                {
+                                  tag_uuid: newTag.tag_uuid,
+                                  tag_name: newTag.tag_name,
+                                },
                               ];
                               field.onChange(updatedValue);
                             }
@@ -390,14 +410,6 @@ export default function EditIngredientForm({
             <div className="border-t mt-6 pt-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Suppliers</h3>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addSupplier}
-                >
-                  Add Supplier
-                </Button>
               </div>
               <div className="space-y-4">
                 {form
@@ -561,7 +573,8 @@ export default function EditIngredientForm({
                                 Unit Cost
                               </div>
                               <div className="font-medium">
-                                ${(ingredientSupplier.unit_cost || 0).toFixed(2)}
+                                $
+                                {(ingredientSupplier.unit_cost || 0).toFixed(2)}
                               </div>
                             </div>
                             <div className="space-y-1">
@@ -578,6 +591,14 @@ export default function EditIngredientForm({
                     </div>
                   ))}
               </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addSupplier}
+              >
+                Add Supplier
+              </Button>
             </div>
 
             <div className="flex justify-end gap-4 pt-6">

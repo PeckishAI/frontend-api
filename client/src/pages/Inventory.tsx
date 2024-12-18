@@ -54,7 +54,7 @@ export default function Inventory() {
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return inventoryService.getRestaurantInventory(
+      return inventoryService.getRestaurantIngredients(
         currentRestaurant.restaurant_uuid,
       );
     },
