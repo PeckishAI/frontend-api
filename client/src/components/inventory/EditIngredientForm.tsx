@@ -523,14 +523,14 @@ export default function EditIngredientForm({
                             />
                             <FormField
                               control={form.control}
-                              name={`ingredient_suppliers.${index}.unit.unit_uuid`}
+                              name={`ingredient_suppliers.${index}.unit`}
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel>Unit</FormLabel>
                                   <FormControl>
                                     <CreatableSelect
                                       value={
-                                        field.value?.unit_name
+                                        field.value.unit_name
                                           ? [field.value.unit_name]
                                           : []
                                       }
