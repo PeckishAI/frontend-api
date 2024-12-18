@@ -38,7 +38,7 @@ export const inventoryService = {
   ): Promise<any> {
     try {
       const response = await fetch(
-        `${BASE_URL}/ingredients/v2/restaurant/${restaurantUuid}/item/${itemId}`,
+        `${BASE_URL}/ingredients/v2/restaurant/${restaurantUuid}/ingredient/${itemId}`,
         {
           method: "PUT",
           headers: {
@@ -62,7 +62,7 @@ export const inventoryService = {
 
   async createIngredient(
     restaurantUuid: string,
-    itemData: Omit<InventoryItem, "ingredient_uuid">,
+    ingredient: Omit<InventoryItem, "ingredient_uuid">,
   ): Promise<any> {
     try {
       const response = await fetch(
@@ -72,7 +72,7 @@ export const inventoryService = {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(itemData),
+          body: JSON.stringify(ingredient),
         },
       );
 

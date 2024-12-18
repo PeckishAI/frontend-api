@@ -18,8 +18,8 @@ export interface OrderItem {
 }
 
 export interface Supplier {
-  supplier_uuid: string;
-  supplier_name: string;
+  supplier_uuid?: string;
+  supplier_name?: string;
   category?: string;
   email?: string;
   phone?: string;
@@ -31,9 +31,10 @@ export interface Supplier {
 }
 
 export interface InventorySupplierInfo {
-  supplier: Supplier;
-  unit_cost: number;
-  pack_size: string;
+  supplier?: Supplier;
+  unit_cost?: number;
+  pack_size?: number;
+  product_code?: string;
 }
 
 export interface InventoryItem {
@@ -53,8 +54,8 @@ export interface UnitOption {
 }
 
 export interface Unit {
-  unit_uuid: string;
-  unit_name: string;
+  unit_uuid?: string;
+  unit_name?: string;
 }
 
 export interface Tag {
