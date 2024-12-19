@@ -128,8 +128,8 @@ export default function Stocktakes() {
           <ViewToggle current={viewMode} onChange={setViewMode} />
         </div>
 
-        <div className="px-8">
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="px-8 pb-8">
+          <div className="bg-white rounded-lg shadow overflow-hidden" style={{ maxHeight: "calc(100vh - 180px)", overflowY: "auto" }}>
             {viewMode === 'cards' ? (
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {isLoading ? (
