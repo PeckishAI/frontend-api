@@ -1,34 +1,35 @@
-import { Switch, Route } from "wouter";
-import Orders from "@/pages/Orders";
+
+import { useState } from "react";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { Route, Router, Switch } from "wouter";
+import { Toaster } from "@/components/ui/toaster";
+import { queryClient } from "@/lib/queryClient";
+import { RestaurantProvider } from "@/contexts/RestaurantContext";
+import Sidebar from "@/components/layout/Sidebar";
+import Documents from "@/pages/documents/Stocktakes";
 import Inventory from "@/pages/Inventory";
 import Menu from "@/pages/Menu";
-import Documents from "@/pages/Documents";
+import Orders from "@/pages/Orders";
 import General from "@/pages/General";
-import Profile from "@/pages/Profile";
 import RestaurantManagement from "@/pages/RestaurantManagement";
-import { Home } from "@/pages/Home";
 
-import Sidebar from "@/components/layout/Sidebar";
-
-import { RestaurantProvider } from "@/contexts/RestaurantContext";
-
-function App() {
+export default function App() {
   return (
-    <RestaurantProvider>
-      <div className="flex">
-      <Sidebar />
-      <Switch>
-        <Route path="/" component={General} />
-        <Route path="/inventory" component={Inventory} />
-        <Route path="/menu" component={Menu} />
-        <Route path="/orders" component={Orders} />
-        <Route path="/documents" component={Documents} />
-        <Route path="/profile" component={Profile} />
-        <Route path="/restaurant-management" component={RestaurantManagement} />
-      </Switch>
-    </div>
-    </RestaurantProvider>
+    <QueryClientProvider client={queryClient}>
+      <RestaurantProvider>
+        <div className="min-h-screen bg-gray-50">
+          <Sidebar />
+          <Switch>
+            <Route path="/" component={General} />
+            <Route path="/inventory" component={Inventory} />
+            <Route path="/menu" component={Menu} />
+            <Route path="/orders" component={Orders} />
+            <Route path="/documents" component={Documents} />
+            <Route path="/restaurant" component={RestaurantManagement} />
+          </Switch>
+        </div>
+        <Toaster />
+      </RestaurantProvider>
+    </QueryClientProvider>
   );
 }
-
-export default App;
