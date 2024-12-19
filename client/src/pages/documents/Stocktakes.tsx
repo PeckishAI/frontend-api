@@ -1,8 +1,9 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FileText, Images, User2, Hash, Film } from "lucide-react";
+import { FileText, FileBox, ClipboardCheck, Images, User2, Hash, Film } from "lucide-react";
 import ViewToggle from "@/components/orders/ViewToggle";
+import SubSectionNav from "@/components/layout/SubSectionNav";
 import {
   Table,
   TableBody,
@@ -80,8 +81,15 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
 }
 
 export default function Stocktakes() {
+  const [activeSection, setActiveSection] = useState('stocktakes');
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
   const { currentRestaurant } = useRestaurantContext();
+  
+  const sections = [
+    { id: 'invoices', label: 'Invoices', icon: FileText },
+    { id: 'delivery-notes', label: 'Delivery Notes', icon: FileBox },
+    { id: 'stocktakes', label: 'Stocktakes', icon: ClipboardCheck },
+  ];
   
   const { data: stocktakes = [], isLoading } = useQuery({
     queryKey: ["stocktakes", currentRestaurant?.restaurant_uuid],
@@ -110,9 +118,11 @@ export default function Stocktakes() {
   return (
     <div className="ml-64 w-full">
       <div className="pt-8">
-        <div className="px-8 mb-8">
-          <h1 className="text-3xl font-semibold text-gray-900">Stocktakes</h1>
-        </div>
+        <SubSectionNav
+          sections={sections}
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+        />
 
         <div className="px-8 mb-6 flex items-center justify-end gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
