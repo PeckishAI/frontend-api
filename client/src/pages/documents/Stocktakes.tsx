@@ -12,6 +12,31 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import { documentService } from "@/services/documentService";
+
+const { currentRestaurant } = useRestaurantContext();
+const { data: stocktakes = [], isLoading } = useQuery({
+  queryKey: ["stocktakes", currentRestaurant?.restaurant_uuid],
+  queryFn: () => {
+    if (!currentRestaurant?.restaurant_uuid) {
+      throw new Error("No restaurant selected");
+    }
+    return documentService.getRestaurantStocktakes(currentRestaurant.restaurant_uuid);
+  },
+  enabled: !!currentRestaurant?.restaurant_uuid,
+  select: (data) => data.map((stocktake: any) => ({
+    id: stocktake.stocktake_uuid,
+    date: new Date(stocktake.to_char),
+    user: {
+      name: "System User", // Since user info isn't in the response
+    },
+    documents: stocktake.documents.map((doc: any) => ({
+      type: doc.document_type,
+      url: doc.file_path
+    }))
+  }))
+});
 
 export type Document = {
   type: 'image' | 'video';
@@ -28,7 +53,7 @@ export type Stocktake = {
   documents: Document[];
 };
 
-export const mockStocktakes: Stocktake[] = [
+const stocktakesList = stocktakes as Stocktake[];
   {
     id: "ST-001",
     date: new Date(2024, 0, 15),
@@ -133,7 +158,9 @@ export default function Stocktakes() {
           <div className="bg-white rounded-lg shadow overflow-hidden">
             {viewMode === 'cards' ? (
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockStocktakes.map((stocktake) => (
+                {isLoading ? (
+                  <div className="col-span-3 text-center py-8">Loading stocktakes...</div>
+                ) : stocktakesList.map((stocktake) => (
                   <StocktakeCard key={stocktake.id} stocktake={stocktake} />
                 ))}
               </div>
@@ -151,7 +178,11 @@ export default function Stocktakes() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {mockStocktakes.map((stocktake) => (
+                    {isLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-8">Loading stocktakes...</TableCell>
+                      </TableRow>
+                    ) : stocktakesList.map((stocktake) => (
                       <TableRow key={stocktake.id}>
                         <TableCell>{stocktake.id}</TableCell>
                         <TableCell>
