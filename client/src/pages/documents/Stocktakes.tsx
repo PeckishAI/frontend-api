@@ -1,4 +1,6 @@
+
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { FileText, Images, User2, Hash, Film } from "lucide-react";
 import ViewToggle from "@/components/orders/ViewToggle";
 import {
@@ -15,34 +17,6 @@ import { Badge } from "@/components/ui/badge";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { documentService } from "@/services/documentService";
 
-export default function Stocktakes() {
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
-  const { currentRestaurant } = useRestaurantContext();
-  
-  const { data: stocktakes = [], isLoading } = useQuery({
-    queryKey: ["stocktakes", currentRestaurant?.restaurant_uuid],
-    queryFn: () => {
-      if (!currentRestaurant?.restaurant_uuid) {
-        throw new Error("No restaurant selected");
-      }
-      return documentService.getRestaurantStocktakes(currentRestaurant.restaurant_uuid);
-    },
-    enabled: !!currentRestaurant?.restaurant_uuid,
-    select: (data) => data.map((stocktake: any) => ({
-      id: stocktake.stocktake_uuid,
-      date: new Date(stocktake.to_char),
-      user: {
-        name: "System User", // Since user info isn't in the response
-      },
-      documents: stocktake.documents.map((doc: any) => ({
-        type: doc.document_type,
-        url: doc.file_path
-      }))
-    }))
-  });
-
-  console.log("Stocktakes : ", stocktakes);
-
 export type Document = {
   type: 'image' | 'video';
   url: string;
@@ -58,48 +32,7 @@ export type Stocktake = {
   documents: Document[];
 };
 
-const stocktakesList = stocktakes as Stocktake[];
-const mockStocktakes: Stocktake[] = [
-  {
-    id: "ST-001",
-    date: new Date(2024, 0, 15),
-    user: {
-      name: "John Doe",
-    },
-    documents: [
-      { type: 'image', url: 'stocktake1-1.jpg' },
-      { type: 'video', url: 'stocktake1-2.mp4' },
-      { type: 'image', url: 'stocktake1-3.jpg' },
-    ],
-  },
-  {
-    id: "ST-002",
-    date: new Date(2024, 0, 14),
-    user: {
-      name: "Jane Smith",
-      avatar: "jane-avatar.jpg",
-    },
-    documents: [
-      { type: 'video', url: 'stocktake2-1.mp4' },
-      { type: 'image', url: 'stocktake2-2.jpg' },
-    ],
-  },
-  {
-    id: "ST-003",
-    date: new Date(2024, 0, 13),
-    user: {
-      name: "Mike Johnson",
-    },
-    documents: [
-      { type: 'image', url: 'stocktake3-1.jpg' },
-      { type: 'image', url: 'stocktake3-2.jpg' },
-      { type: 'video', url: 'stocktake3-3.mp4' },
-      { type: 'image', url: 'stocktake3-4.jpg' },
-    ],
-  },
-];
-
-export function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
+function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
   return (
     <Card className="group hover:shadow-lg transition-shadow duration-200">
       <CardHeader className="pb-3">
@@ -148,6 +81,31 @@ export function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
 
 export default function Stocktakes() {
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  const { currentRestaurant } = useRestaurantContext();
+  
+  const { data: stocktakes = [], isLoading } = useQuery({
+    queryKey: ["stocktakes", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      return documentService.getRestaurantStocktakes(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+    select: (data) => data.map((stocktake: any) => ({
+      id: stocktake.stocktake_uuid,
+      date: new Date(stocktake.to_char),
+      user: {
+        name: "System User", // Since user info isn't in the response
+      },
+      documents: stocktake.documents.map((doc: any) => ({
+        type: doc.document_type,
+        url: doc.file_path
+      }))
+    }))
+  });
+
+  const stocktakesList = stocktakes as Stocktake[];
 
   return (
     <div className="ml-64 w-full">
