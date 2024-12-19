@@ -27,7 +27,7 @@ const { data: stocktakes = [], isLoading } = useQuery({
   enabled: !!currentRestaurant?.restaurant_uuid,
   select: (data) => data.map((stocktake: any) => ({
     id: stocktake.stocktake_uuid,
-    date: new Date(stocktake.to_char),
+    date: stocktake.to_char,
     user: {
       name: "System User", // Since user info isn't in the response
     },
@@ -37,6 +37,8 @@ const { data: stocktakes = [], isLoading } = useQuery({
     }))
   }))
 });
+
+console.log("Stocktakes : ", stocktakes);
 
 export type Document = {
   type: 'image' | 'video';
@@ -54,6 +56,7 @@ export type Stocktake = {
 };
 
 const stocktakesList = stocktakes as Stocktake[];
+const mockStocktakes: Stocktake[] = [
   {
     id: "ST-001",
     date: new Date(2024, 0, 15),
