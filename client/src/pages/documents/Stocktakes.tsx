@@ -15,30 +15,33 @@ import { Badge } from "@/components/ui/badge";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { documentService } from "@/services/documentService";
 
-const { currentRestaurant } = useRestaurantContext();
-const { data: stocktakes = [], isLoading } = useQuery({
-  queryKey: ["stocktakes", currentRestaurant?.restaurant_uuid],
-  queryFn: () => {
-    if (!currentRestaurant?.restaurant_uuid) {
-      throw new Error("No restaurant selected");
-    }
-    return documentService.getRestaurantStocktakes(currentRestaurant.restaurant_uuid);
-  },
-  enabled: !!currentRestaurant?.restaurant_uuid,
-  select: (data) => data.map((stocktake: any) => ({
-    id: stocktake.stocktake_uuid,
-    date: stocktake.to_char,
-    user: {
-      name: "System User", // Since user info isn't in the response
+export default function Stocktakes() {
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  const { currentRestaurant } = useRestaurantContext();
+  
+  const { data: stocktakes = [], isLoading } = useQuery({
+    queryKey: ["stocktakes", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      return documentService.getRestaurantStocktakes(currentRestaurant.restaurant_uuid);
     },
-    documents: stocktake.documents.map((doc: any) => ({
-      type: doc.document_type,
-      url: doc.file_path
+    enabled: !!currentRestaurant?.restaurant_uuid,
+    select: (data) => data.map((stocktake: any) => ({
+      id: stocktake.stocktake_uuid,
+      date: new Date(stocktake.to_char),
+      user: {
+        name: "System User", // Since user info isn't in the response
+      },
+      documents: stocktake.documents.map((doc: any) => ({
+        type: doc.document_type,
+        url: doc.file_path
+      }))
     }))
-  }))
-});
+  });
 
-console.log("Stocktakes : ", stocktakes);
+  console.log("Stocktakes : ", stocktakes);
 
 export type Document = {
   type: 'image' | 'video';
