@@ -16,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 export type SelectOption = {
   value: string;
@@ -133,7 +133,8 @@ export function CreatableSelect({
             value={search}
             onValueChange={setSearch}
           />
-          <CommandList className="max-h-[300px] overflow-y-auto p-1">
+          <ScrollArea className="h-[300px]">
+            <CommandList className="p-1">
               <CommandEmpty className="p-2">
                 {search.trim() !== "" && onCreateOption ? (
                   <Button
@@ -175,6 +176,8 @@ export function CreatableSelect({
               </React.Fragment>
             ))}
             </CommandList>
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
         </Command>
       </PopoverContent>
     </Popover>
