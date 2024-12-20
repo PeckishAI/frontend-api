@@ -51,20 +51,20 @@ export default function Invoices() {
           <ViewToggle current={viewMode} onChange={setViewMode} />
         </div>
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          {viewMode === "cards" ? (
-            <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mockInvoices.map((invoice) => (
-                <div
-                  key={invoice.id}
-                  onClick={() => setEditingInvoice(invoice)}
-                  className="cursor-pointer"
-                >
-                  <InvoiceCard invoice={invoice} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="p-6">
+          <div className="p-6">
+            {viewMode === "cards" ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {mockInvoices.map((invoice) => (
+                  <div
+                    key={invoice.id}
+                    onClick={() => setEditingInvoice(invoice)}
+                    className="cursor-pointer"
+                  >
+                    <InvoiceCard invoice={invoice} />
+                  </div>
+                ))}
+              </div>
+            ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -112,8 +112,8 @@ export default function Invoices() {
                   ))}
                 </TableBody>
               </Table>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
       <EditInvoiceSlider
