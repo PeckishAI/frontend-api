@@ -1,7 +1,14 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FileText, FileBox, ClipboardCheck, Images, User2, Hash, Film } from "lucide-react";
+import {
+  FileText,
+  FileBox,
+  ClipboardCheck,
+  Images,
+  User2,
+  Hash,
+  Film,
+} from "lucide-react";
 import ViewToggle from "@/components/orders/ViewToggle";
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import {
@@ -17,21 +24,27 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { documentService } from "@/services/documentService";
+import type {
+  Unit,
+  Stocktake,
+  StocktakeDocument,
+  StocktakeIngredient,
+} from "@/lib/DocumentTypes";
 
-export type Document = {
-  type: 'image' | 'video';
-  url: string;
-};
-
-export type Stocktake = {
-  id: string;
-  date: Date;
-  user: {
-    name: string;
-    avatar?: string;
-  };
-  documents: Document[];
-};
+//export type Document = {
+//  type: "image" | "video";
+//  url: string;
+//};
+//
+//export type Stocktake = {
+//  id: string;
+//  date: Date;
+//  user: {
+//    name: string;
+//    avatar?: string;
+//  };
+//  documents: Document[];
+//};
 
 function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
   return (
@@ -40,17 +53,21 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <Hash className="h-4 w-4 text-muted-foreground" />
-            <CardTitle className="text-lg font-semibold">{stocktake.id}</CardTitle>
+            <CardTitle className="text-lg font-semibold">
+              {stocktake.sotcktake_uuid}
+            </CardTitle>
           </div>
           <div className="flex items-center gap-2">
             <User2 className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">{stocktake.user.name}</span>
+            <span className="text-sm text-muted-foreground">
+              {stocktake.created_by.name}
+            </span>
           </div>
           <div className="text-sm text-muted-foreground">
-            {stocktake.date.toLocaleDateString('en-US', { 
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
+            {stocktake.created_at.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
             })}
           </div>
         </div>
@@ -65,12 +82,22 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
           <div className="flex items-center justify-between border-t pt-4">
             <div className="flex items-center gap-2">
               <Images className="h-4 w-4 text-gray-600" />
-              <span className="font-medium">{stocktake.documents.filter(d => d.type === 'image').length}</span>
+              <span className="font-medium">
+                {
+                  stocktake.documents.filter((d) => d.document_type === "image")
+                    .length
+                }
+              </span>
               <span className="text-sm text-gray-500">images</span>
             </div>
             <div className="flex items-center gap-2">
               <Film className="h-4 w-4 text-gray-600" />
-              <span className="font-medium">{stocktake.documents.filter(d => d.type === 'video').length}</span>
+              <span className="font-medium">
+                {
+                  stocktake.documents.filter((d) => d.document_type === "video")
+                    .length
+                }
+              </span>
               <span className="text-sm text-gray-500">videos</span>
             </div>
           </div>
@@ -81,36 +108,40 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
 }
 
 export default function Stocktakes() {
-  const [activeSection, setActiveSection] = useState('stocktakes');
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  const [activeSection, setActiveSection] = useState("stocktakes");
+  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const { currentRestaurant } = useRestaurantContext();
-  
+
   const sections = [
-    { id: 'invoices', label: 'Invoices', icon: FileText },
-    { id: 'delivery-notes', label: 'Delivery Notes', icon: FileBox },
-    { id: 'stocktakes', label: 'Stocktakes', icon: ClipboardCheck },
+    { id: "invoices", label: "Invoices", icon: FileText },
+    { id: "delivery-notes", label: "Delivery Notes", icon: FileBox },
+    { id: "stocktakes", label: "Stocktakes", icon: ClipboardCheck },
   ];
-  
+
   const { data: stocktakes = [], isLoading } = useQuery({
     queryKey: ["stocktakes", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return documentService.getRestaurantStocktakes(currentRestaurant.restaurant_uuid);
+      return documentService.getRestaurantStocktakes(
+        currentRestaurant.restaurant_uuid,
+      );
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
-    select: (data) => data.map((stocktake: any) => ({
-      id: stocktake.stocktake_uuid,
-      date: new Date(stocktake.to_char),
-      user: {
-        name: "System User", // Since user info isn't in the response
-      },
-      documents: stocktake.documents.map((doc: any) => ({
-        type: doc.document_type,
-        url: doc.file_path
-      }))
-    }))
+    select: (data) =>
+      data.map((stocktake: Stocktake) => ({
+        stocktake_uuid: stocktake.stocktake_uuid,
+        created_at: new Date(stocktake.created_at),
+        created_by: {
+          name: "System User", // Since user info isn't in the response
+        },
+        documents: stocktake.documents.map((doc: StocktakeDocument) => ({
+          document_uuid: doc.document_uuid,
+          document_type: doc.document_type,
+          file_path: doc.file_path,
+        })),
+      })),
   });
 
   const stocktakesList = stocktakes as Stocktake[];
@@ -130,13 +161,53 @@ export default function Stocktakes() {
 
         <div className="px-8 pb-8">
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            {viewMode === 'cards' ? (
+            {activeSection === "invoices" && (
+              <div className="p-6">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Images</TableHead>
+                      <TableHead>Invoice Number</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Supplier</TableHead>
+                      <TableHead className="text-right">Price</TableHead>
+                      <TableHead className="text-right">Ingredients</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>3</TableCell>
+                      <TableCell>INV-2024-001</TableCell>
+                      <TableCell>January 15, 2024</TableCell>
+                      <TableCell>Fresh Produce Co.</TableCell>
+                      <TableCell className="text-right">$1250.99</TableCell>
+                      <TableCell className="text-right">15</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+            
+            {activeSection === "delivery-notes" && (
+              <div className="p-6">
+                <p className="text-gray-600">Delivery notes section coming soon...</p>
+              </div>
+            )}
+            
+            {activeSection === "stocktakes" && (viewMode === "cards" ? (
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {isLoading ? (
-                  <div className="col-span-3 text-center py-8">Loading stocktakes...</div>
-                ) : stocktakesList.map((stocktake) => (
-                  <StocktakeCard key={stocktake.id} stocktake={stocktake} />
-                ))}
+                  <div className="col-span-3 text-center py-8">
+                    Loading stocktakes...
+                  </div>
+                ) : (
+                  stocktakesList.map((stocktake) => (
+                    <StocktakeCard
+                      key={stocktake.stocktake_uuid}
+                      stocktake={stocktake}
+                    />
+                  ))
+                )}
               </div>
             ) : (
               <div className="p-6">
@@ -154,45 +225,55 @@ export default function Stocktakes() {
                   <TableBody>
                     {isLoading ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8">Loading stocktakes...</TableCell>
-                      </TableRow>
-                    ) : stocktakesList.map((stocktake) => (
-                      <TableRow key={stocktake.id}>
-                        <TableCell>{stocktake.id}</TableCell>
-                        <TableCell>
-                          {stocktake.date.toLocaleDateString('en-US', { 
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <User2 className="h-4 w-4 text-gray-500" />
-                            <span>{stocktake.user.name}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">
-                            {stocktake.documents.filter(d => d.type === 'image').length}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">
-                            {stocktake.documents.filter(d => d.type === 'video').length}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge>
-                            {stocktake.documents.length}
-                          </Badge>
+                        <TableCell colSpan={6} className="text-center py-8">
+                          Loading stocktakes...
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ) : (
+                      stocktakesList.map((stocktake) => (
+                        <TableRow key={stocktake.stocktake_uuid}>
+                          <TableCell>{stocktake.stocktake_uuid}</TableCell>
+                          <TableCell>
+                            {stocktake.created_at.toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <User2 className="h-4 w-4 text-gray-500" />
+                              <span>{stocktake.created_by.name}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">
+                              {
+                                stocktake.documents.filter(
+                                  (d) => d.document_type === "image",
+                                ).length
+                              }
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">
+                              {
+                                stocktake.documents.filter(
+                                  (d) => d.document_type === "video",
+                                ).length
+                              }
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge>{stocktake.documents.length}</Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </div>
-            )}
+            ))}
           </div>
         </div>
       </div>
