@@ -292,23 +292,26 @@ export default function OrderModal({
                       <CreatableSelect
                         value={item.name ? [item.name] : []}
                         onChange={(values) => {
-                          console.log("Selected values:", values);
-                          console.log("Current ingredients:", ingredients);
-                          try {
-                            if (values && values.length > 0) {
-                              console.log("Finding ingredient with uuid:", values[0]);
-                              const selectedIngredient = ingredients?.[values[0]];
-                              console.log("Found ingredient:", selectedIngredient);
-                              if (selectedIngredient) {
-                                updateItem(index, "name", selectedIngredient.ingredient_name);
-                              } else {
-                                updateItem(index, "name", values[0]);
-                              }
+                          if (!values?.length) {
+                            updateItem(index, "name", "");
+                            return;
+                          }
+                          
+                          const selectedId = values[0];
+                          const selectedIngredient = ingredients?.[selectedId];
+                          
+                          if (selectedIngredient) {
+                            const supplierIngredient = selectedIngredient.ingredient_suppliers?.find(
+                              s => s.supplier?.supplier_uuid === editedOrder.supplier_uuid
+                            );
+                            
+                            updateItem(index, "name", selectedIngredient.ingredient_name);
+                            if (supplierIngredient) {
+                              updateItem(index, "price", supplierIngredient.unit_cost || 0);
+                              updateItem(index, "unit", supplierIngredient.unit?.unit_name || "");
                             }
-                          } catch (error) {
-                            console.error("Error in ingredient selection:", error);
-                            console.error("Current item:", item);
-                            console.error("Current index:", index);
+                          } else {
+                            updateItem(index, "name", selectedId);
                           }
                         }}
                         options={getIngredientOptions(
