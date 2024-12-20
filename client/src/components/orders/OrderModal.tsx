@@ -39,7 +39,21 @@ export default function OrderModal({
   editMode = false,
   onSave,
 }: OrderModalProps) {
+  const { currentRestaurant } = useRestaurantContext();
   const [editedOrder, setEditedOrder] = useState<Order | null>(null);
+
+  const { data: suppliers, suppliersLoading } = useQuery({
+    queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("Missing restaurant or supplier UUID");
+      }
+      return supplierService.getRestaurantSuppliers(
+        currentRestaurant?.restaurant_uuid,
+      );
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+  });
 
   React.useEffect(() => {
     if (order) {
@@ -56,9 +70,6 @@ export default function OrderModal({
   }, [order]);
 
   if (!editedOrder || !order) return null;
-  const { currentRestaurant } = useRestaurantContext(); // Assuming this context provides necessary data.
-
-  const { data: suppliers, suppliersLoading } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
