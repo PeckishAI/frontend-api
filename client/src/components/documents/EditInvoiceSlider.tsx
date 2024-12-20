@@ -181,59 +181,28 @@ export function EditInvoiceSlider({
               {/* Image display */}
               {invoice.documents &&
               invoice.documents[activeImageIndex]?.name ? (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4 px-4">
-                    <span className="text-sm text-gray-500">Zoom:</span>
+                <div className="relative w-full h-full">
+                  <div className="absolute top-4 left-4 right-4 z-10 bg-white/90 p-2 rounded-lg shadow-sm">
                     <Slider
-                      className="flex-1"
                       defaultValue={[100]}
                       min={50}
                       max={300}
                       step={10}
                       onValueChange={(value) => setZoom(value[0])}
                     />
-                    <span className="text-sm text-gray-500">{zoom}%</span>
                   </div>
-                  <div 
-                    className="relative h-[calc(100vh-250px)] overflow-auto"
-                    style={{ cursor: zoom > 100 ? 'grab' : 'default' }}
-                    onMouseDown={(e) => {
-                      if (zoom <= 100) return;
-                      const ele = e.currentTarget;
-                      const startX = e.pageX - ele.offsetLeft;
-                      const startY = e.pageY - ele.offsetTop;
-                      const scrollLeft = ele.scrollLeft;
-                      const scrollTop = ele.scrollTop;
-
-                      const handleMouseMove = (e: MouseEvent) => {
-                        e.preventDefault();
-                        const x = e.pageX - ele.offsetLeft;
-                        const y = e.pageY - ele.offsetTop;
-                        const walkX = (x - startX);
-                        const walkY = (y - startY);
-                        ele.scrollLeft = scrollLeft - walkX;
-                        ele.scrollTop = scrollTop - walkY;
-                      };
-
-                      const handleMouseUp = () => {
-                        document.removeEventListener('mousemove', handleMouseMove);
-                        document.removeEventListener('mouseup', handleMouseUp);
-                      };
-
-                      document.addEventListener('mousemove', handleMouseMove);
-                      document.addEventListener('mouseup', handleMouseUp);
-                    }}
-                  >
+                  <div className="relative w-full h-full overflow-auto">
                     <img
                       src={
                         "https://storage.cloud.google.com/peckish-datasets/restaurant/" +
                         invoice.documents[0].name
                       }
                       alt={`Invoice ${invoice.invoice_number} - Image ${activeImageIndex + 1}`}
-                      className="min-w-full min-h-full transition-transform duration-200"
+                      className="w-full h-full object-contain transition-transform duration-200"
                       style={{ 
                         transform: `scale(${zoom / 100})`,
-                        transformOrigin: 'top left'
+                        transformOrigin: 'center',
+                        cursor: 'grab'
                       }}
                     />
                   </div>
