@@ -158,6 +158,7 @@ export function CreatableSelect({
                       key={option.value}
                       value={option.value}
                       onSelect={() => handleSelect(option.value)}
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
                     >
                       <Check
                         className={cn(
