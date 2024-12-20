@@ -60,7 +60,7 @@ export default function Invoices() {
                 </div>
               ))}
             </div>
-          ) : (
+          ) : viewMode === "table" ? (
             <div className="p-6">
               <Table>
                 <TableHeader>
