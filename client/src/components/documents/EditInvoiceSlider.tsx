@@ -158,7 +158,7 @@ export function EditInvoiceSlider({
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return unitService.getRestaurantUnits(currentRestaurant.restaurant_uuid);
+      return unitService.getRestaurantUnit(currentRestaurant.restaurant_uuid);
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
@@ -538,12 +538,12 @@ export function EditInvoiceSlider({
                                       field.onChange(values[0]);
                                     }
                                   }}
-                                  options={Object.values(restaurantIngredients || {}).map(
-                                    (ingredient) => ({
-                                      value: ingredient.ingredient_uuid,
-                                      label: ingredient.ingredient_name,
-                                    }),
-                                  )}
+                                  options={Object.values(
+                                    restaurantIngredients || {},
+                                  ).map((ingredient) => ({
+                                    value: ingredient.ingredient_uuid,
+                                    label: ingredient.ingredient_name,
+                                  }))}
                                   onCreateOption={(value) => {
                                     field.onChange(value);
                                   }}
@@ -598,11 +598,15 @@ export function EditInvoiceSlider({
                                 </FormLabel>
                                 <FormControl>
                                   <CreatableSelect
-                                    value={field.value?.unit_name ? [field.value.unit_name] : []}
+                                    value={
+                                      field.value?.unit_name
+                                        ? [field.value.unit_name]
+                                        : []
+                                    }
                                     onChange={(values) => {
                                       if (values[0]) {
                                         const selectedUnit = unitsData?.find(
-                                          (u) => u.unit_name === values[0]
+                                          (u) => u.unit_name === values[0],
                                         ) || {
                                           unit_uuid: values[0],
                                           unit_name: values[0],
@@ -614,40 +618,52 @@ export function EditInvoiceSlider({
                                       }
                                     }}
                                     options={(() => {
-                                      // Get all available units
-                                      const allUnits = unitsData?.map((unit) => ({
-                                        label: unit.unit_name,
-                                        value: unit.unit_name,
-                                        category: "All Units",
-                                      })) || [];
+                                      // Get units by category
+                                      const allUnits = unitsData?.reduce((acc, unit) => {
+                                        const category = unit.category === "reference" 
+                                          ? "Reference" 
+                                          : unit.category === "custom" ? "Custom" : "Associated";
+                                        acc.push({
+                                          label: unit.unit_name,
+                                          value: unit.unit_name,
+                                          category,
+                                        });
+                                        return acc;
+                                      }, [] as Array<{label: string; value: string; category: string}>) || [];
+                                      console.log("allUnits", allUnits);
 
                                       // Get associated units for the selected ingredient
                                       const selectedIngredientUuid = form.watch(
-                                        `ingredients.${index}.ingredient_uuid`
+                                        `ingredients.${index}.ingredient_uuid`,
                                       );
 
                                       const associatedUnits =
                                         supplierIngredientUnits?.find(
                                           (item) =>
                                             item.ingredient_uuid ===
-                                            selectedIngredientUuid
+                                            selectedIngredientUuid,
                                         )?.units || [];
 
                                       const associatedOptions = associatedUnits.map((unit) => ({
                                         label: unit.unit_name,
                                         value: unit.unit_name,
-                                        category: "Associated Units",
+                                        category: "Associated",
                                       }));
 
                                       // Combine and remove duplicates
-                                      const uniqueOptions = [...associatedOptions];
-                                      allUnits.forEach(option => {
-                                        if (!uniqueOptions.some(u => u.value === option.value)) {
-                                          uniqueOptions.push(option);
+                                      const uniqueOptions = [
+                                        ...associatedOptions,
+                                        ...allUnits,
+                                      ];
+
+                                      const uniqueOptionsWithoutDuplicates = [];
+                                      uniqueOptions.forEach((option) => {
+                                        if (!uniqueOptionsWithoutDuplicates.some(u => u.value === option.value)) {
+                                          uniqueOptionsWithoutDuplicates.push(option);
                                         }
                                       });
 
-                                      return uniqueOptions;
+                                      return uniqueOptionsWithoutDuplicates;
                                     })()}
                                     onCreateOption={async (value) => {
                                       try {
