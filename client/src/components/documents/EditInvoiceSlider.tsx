@@ -181,25 +181,31 @@ export function EditInvoiceSlider({
               {/* Image display */}
               {invoice.documents &&
               invoice.documents[activeImageIndex]?.name ? (
-                <div className="relative w-full h-full group">
-                  <div className="relative">
+                <div className="relative w-full h-full">
+                  <div className="absolute top-4 left-4 right-4 z-10 bg-white/90 p-2 rounded-lg shadow-sm">
                     <Slider
-                      defaultValue={zoom}
-                      min={0}
+                      defaultValue={[100]}
+                      min={50}
                       max={300}
-                      step={1}
-                      onValueChange={setZoom}
+                      step={10}
+                      onValueChange={(value) => setZoom(value[0])}
                     />
                   </div>
-                  <img
-                    src={
-                      "https://storage.cloud.google.com/peckish-datasets/restaurant/" +
-                      invoice.documents[0].name
-                    }
-                    alt={`Invoice ${invoice.invoice_number} - Image ${activeImageIndex + 1}`}
-                    className="absolute inset-0 w-full h-full object-contain transition-transform duration-200 hover:cursor-zoom-in"
-                    style={{ transformOrigin: "center center", transform: `scale(${zoom / 100})` }} // Apply zoom
-                  />
+                  <div className="relative w-full h-full overflow-auto">
+                    <img
+                      src={
+                        "https://storage.cloud.google.com/peckish-datasets/restaurant/" +
+                        invoice.documents[0].name
+                      }
+                      alt={`Invoice ${invoice.invoice_number} - Image ${activeImageIndex + 1}`}
+                      className="w-full h-full object-contain transition-transform duration-200"
+                      style={{ 
+                        transform: `scale(${zoom / 100})`,
+                        transformOrigin: 'center',
+                        cursor: 'grab'
+                      }}
+                    />
+                  </div>
                 </div>
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
