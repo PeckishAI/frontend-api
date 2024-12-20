@@ -20,10 +20,19 @@ import { getStatusColor } from "@/lib/data";
 interface OrderModalProps {
   order: Order | null;
   onClose: () => void;
+  editMode?: boolean;
+  onSave?: (order: Order) => void;
 }
 
-export default function OrderModal({ order, onClose }: OrderModalProps) {
+export default function OrderModal({ order, onClose, editMode = false, onSave }: OrderModalProps) {
   if (!order) return null;
+
+  const handleSave = () => {
+    if (onSave && order) {
+      onSave(order);
+    }
+    onClose();
+  };
 
   return (
     <Sheet open={!!order} onOpenChange={() => onClose()}>

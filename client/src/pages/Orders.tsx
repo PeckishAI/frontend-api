@@ -158,6 +158,11 @@ export default function Orders() {
       <OrderModal
         order={selectedOrder}
         onClose={() => setSelectedOrder(null)}
+        editMode={selectedOrder?.status === 'draft'}
+        onSave={(updatedOrder) => {
+          // Handle order update here
+          console.log('Updated order:', updatedOrder);
+        }}
       />
 
       <SupplierDialog
