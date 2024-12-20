@@ -3,6 +3,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetDescription,
 } from "@/components/ui/sheet";
 import {
   Table,
@@ -222,6 +223,9 @@ export default function OrderModal({
                 editedOrder.status.slice(1)}
             </Badge>
           </SheetTitle>
+          <SheetDescription>
+            View and manage order details
+          </SheetDescription>
         </SheetHeader>
 
         {isDraft ? (
