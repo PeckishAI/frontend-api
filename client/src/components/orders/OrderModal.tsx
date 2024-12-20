@@ -95,6 +95,59 @@ export default function OrderModal({ order, onClose, editMode = false, onSave }:
     });
   };
 
+  const isDraft = editedOrder.status === 'draft';
+
+  const renderNonDraftLayout = () => (
+    {isDraft ? (
+          <div className="space-y-6">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm text-gray-600">Supplier</label>
+          <div className="font-medium">{editedOrder.supplierName}</div>
+        </div>
+        <div>
+          <label className="text-sm text-gray-600">Date</label>
+          <div className="font-medium">
+            {new Date(editedOrder.orderDate).toLocaleDateString()}
+          </div>
+        </div>
+      </div>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Item</TableHead>
+            <TableHead>Quantity</TableHead>
+            <TableHead>Unit</TableHead>
+            <TableHead className="text-right">Price</TableHead>
+            <TableHead className="text-right">Total</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {editedOrder.items.map((item) => (
+            <TableRow key={item.id}>
+              <TableCell>{item.name}</TableCell>
+              <TableCell>{item.quantity}</TableCell>
+              <TableCell>{item.unit}</TableCell>
+              <TableCell className="text-right">${item.price.toFixed(2)}</TableCell>
+              <TableCell className="text-right">
+                ${(item.quantity * item.price).toFixed(2)}
+              </TableCell>
+            </TableRow>
+          ))}
+          <TableRow>
+            <TableCell colSpan={4} className="text-right font-semibold">
+              Total
+            </TableCell>
+            <TableCell className="text-right font-semibold">
+              ${editedOrder.total.toFixed(2)}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+  );
+
   return (
     <Sheet open={!!order} onOpenChange={() => onClose()}>
       <SheetContent className="w-[800px] sm:max-w-[800px]">
@@ -107,7 +160,8 @@ export default function OrderModal({ order, onClose, editMode = false, onSave }:
           </SheetTitle>
         </SheetHeader>
 
-        <div className="space-y-6">
+        {isDraft ? (
+          <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
               <label className="text-sm text-gray-600">Supplier</label>
@@ -230,6 +284,9 @@ export default function OrderModal({ order, onClose, editMode = false, onSave }:
             </div>
           )}
         </div>
+        ) : (
+          renderNonDraftLayout()
+        )}
       </SheetContent>
     </Sheet>
   );
