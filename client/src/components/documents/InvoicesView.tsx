@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Images } from "lucide-react";
+import { Images, Hash, DollarSign, Package2, User2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EditInvoiceSlider } from "@/components/documents/EditInvoiceSlider";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
@@ -22,7 +23,7 @@ interface InvoicesViewProps {
 }
 
 export default function InvoicesView({ viewMode }: InvoicesViewProps) {
-  const [editingInvoice, setEditingInvoice] = useState<Invoices | null>(null);
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoices | null>(null);
   const { currentRestaurant } = useRestaurantContext();
 
   const { data: invoices = [], isLoading } = useQuery({
@@ -31,7 +32,9 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return documentService.getRestaurantInvoices(currentRestaurant.restaurant_uuid);
+      return documentService.getRestaurantInvoices(
+        currentRestaurant.restaurant_uuid,
+      );
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
@@ -46,7 +49,7 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
             invoices.map((invoice) => (
               <div
                 key={invoice.invoice_uuid}
-                onClick={() => setEditingInvoice(invoice)}
+                onClick={() => setSelectedInvoice(invoice)}
                 className="cursor-pointer"
               >
                 <InvoiceCard invoice={invoice} />
@@ -79,7 +82,7 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
                   <TableRow
                     key={invoice.invoice_uuid}
                     className="cursor-pointer hover:bg-muted/50"
-                    onClick={() => setEditingInvoice(invoice)}
+                    onClick={() => setSelectedInvoice(invoice)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-1">
@@ -91,11 +94,13 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
                     </TableCell>
                     <TableCell>{invoice.invoice_number}</TableCell>
                     <TableCell>
-                      {invoice.date ? new Date(invoice.date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      }) : "-"}
+                      {invoice.date
+                        ? new Date(invoice.date).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })
+                        : "-"}
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">
@@ -116,9 +121,9 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
         </div>
       )}
       <EditInvoiceSlider
-        invoice={editingInvoice}
-        open={editingInvoice !== null}
-        onOpenChange={(open) => !open && setEditingInvoice(null)}
+        invoice={selectedInvoice}
+        open={!!selectedInvoice}
+        onOpenChange={(open) => !open && setSelectedInvoice(null)}
       />
     </>
   );
