@@ -23,6 +23,7 @@ interface InvoicesViewProps {
 }
 
 export default function InvoicesView({ viewMode }: InvoicesViewProps) {
+  console.log("InvoicesView: Component initialization");
   const [selectedInvoice, setSelectedInvoice] = useState<Invoices | null>(null);
   const { currentRestaurant } = useRestaurantContext();
 

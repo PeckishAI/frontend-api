@@ -33,11 +33,15 @@ export default function Documents() {
 
         <div className="px-8 pb-8">
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            {activeSection === "invoices" && (
-  <div className="bg-white rounded-lg shadow overflow-hidden">
-    <InvoicesView viewMode={viewMode} />
-  </div>
-)}
+            {activeSection === "invoices" && (() => {
+              console.log("Documents: Rendering invoices section");
+              console.log("Documents: Current view mode:", viewMode);
+              return (
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                  <InvoicesView viewMode={viewMode} />
+                </div>
+              );
+            })()}
             
             {activeSection === "delivery-notes" && (
               <div className="p-6">
