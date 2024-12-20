@@ -37,9 +37,9 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
       <CardContent>
         <div className="space-y-4">
           <div className="relative aspect-[3/2] bg-gray-100 rounded-md overflow-hidden">
-            {invoice.documents?.file_path ? (
+            {invoice.documents?.[0]?.name ? (
               <img
-                src={invoice.documents.file_path}
+                src={`https://storage.cloud.google.com/peckish-datasets/restaurant/${invoice.documents[0].name}`}
                 alt={invoice.invoice_number}
                 className="absolute inset-0 w-full h-full object-cover"
               />
