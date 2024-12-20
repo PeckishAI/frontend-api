@@ -43,7 +43,7 @@ export default function OrderModal({
   const [editedOrder, setEditedOrder] = useState<Order>(order);
   const { currentRestaurant } = useRestaurantContext(); // Assuming this context provides necessary data.
 
-  const { data: suppliers, suppliersLoading } = useQuery({
+  const { data: suppliers, suppliersLoading, error: suppliersError } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
@@ -53,6 +53,13 @@ export default function OrderModal({
         currentRestaurant?.restaurant_uuid,
       );
     },
+    onError: (error) => {
+      console.error("Suppliers query error details:", {
+        error,
+        restaurantId: currentRestaurant?.restaurant_uuid,
+        stack: error.stack
+      });
+    }
   });
   console.log("suppliers", suppliers);
 
