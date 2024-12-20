@@ -1,27 +1,29 @@
+
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Package } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { type Order } from "@/lib/types";
 import { getStatusColor } from "@/lib/data";
 
 interface OrderCardProps {
   order: Order;
   onClick: () => void;
+  onReceive?: () => void;
+  onEdit?: () => void;
+  onApprove?: () => void;
 }
 
-export default function OrderCard({ order, onClick }: OrderCardProps) {
+export default function OrderCard({ order, onClick, onReceive, onEdit, onApprove }: OrderCardProps) {
   return (
-    <Card 
-      className="hover:shadow-lg transition-shadow cursor-pointer"
-      onClick={onClick}
-    >
+    <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <h2 className="font-semibold text-xl">{order.supplierName}</h2>
         <Badge className={getStatusColor(order.status)}>
           {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
         </Badge>
       </CardHeader>
-      <CardContent>
+      <CardContent className="cursor-pointer" onClick={onClick}>
         <div className="flex flex-col space-y-3">
           <div className="flex items-center text-sm text-gray-600">
             <Calendar className="mr-2 h-4 w-4" />
@@ -33,10 +35,27 @@ export default function OrderCard({ order, onClick }: OrderCardProps) {
           </div>
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex justify-between items-center">
         <p className="text-lg font-semibold">
           ${order.total.toFixed(2)}
         </p>
+        <div className="flex gap-2">
+          {order.status === 'pending' && (
+            <Button size="sm" onClick={onReceive}>
+              Receive Stock
+            </Button>
+          )}
+          {order.status === 'draft' && (
+            <>
+              <Button size="sm" variant="outline" onClick={onEdit}>
+                Edit
+              </Button>
+              <Button size="sm" onClick={onApprove}>
+                Approve
+              </Button>
+            </>
+          )}
+        </div>
       </CardFooter>
     </Card>
   );
