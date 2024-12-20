@@ -293,9 +293,7 @@ export default function OrderModal({
                         value={item.name ? [item.name] : []}
                         onChange={(values) => {
                           if (values[0]) {
-                            const ingredient = ingredients?.find(
-                              (i) => i.ingredient_uuid === values[0],
-                            );
+                            const ingredient = ingredients?.[values[0]];
                             if (ingredient) {
                               updateItem(
                                 index,
