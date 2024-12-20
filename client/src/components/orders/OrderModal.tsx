@@ -1,10 +1,8 @@
-
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
 } from "@/components/ui/sheet";
 import {
   Table,
@@ -20,7 +18,7 @@ import { type Order, type OrderItem } from "@/lib/types";
 import { getStatusColor } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { supplierService } from "@/services/supplierService";
@@ -40,181 +38,315 @@ export default function OrderModal({
   editMode = false,
   onSave,
 }: OrderModalProps) {
-  const { currentRestaurant } = useRestaurantContext();
-  const [editedOrder, setEditedOrder] = useState<Order | null>(null);
+  if (!order) return null;
 
-  React.useEffect(() => {
-    if (order) {
-      setEditedOrder({
-        ...order,
-        items: order.items || [],
-        total: order.total || 0,
-        status: order.status || 'draft',
-        orderDate: order.orderDate || new Date().toISOString(),
-        supplier_name: order.supplier_name || '',
-        supplier_uuid: order.supplier_uuid || ''
-      });
-    }
-  }, [order]);
+  const [editedOrder, setEditedOrder] = useState<Order>(order);
+  const { currentRestaurant } = useRestaurantContext(); // Assuming this context provides necessary data.
 
-  const { data: suppliers } = useQuery({
+  const { data: suppliers, suppliersLoading } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
-        throw new Error("Missing restaurant UUID");
+        throw new Error("Missing restaurant or supplier UUID");
       }
-      return supplierService.getRestaurantSuppliers(currentRestaurant.restaurant_uuid);
+      return supplierService.getRestaurantSuppliers(
+        currentRestaurant?.restaurant_uuid,
+      );
     },
-    enabled: !!currentRestaurant?.restaurant_uuid,
   });
+  console.log("suppliers", suppliers);
 
-  const { data: ingredients } = useQuery({
+  const { data: ingredients, ingredientsLoading } = useQuery({
     queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("Missing restaurant UUID");
       }
-      return inventoryService.getRestaurantIngredients(currentRestaurant.restaurant_uuid);
+      return inventoryService.getRestaurantIngredients(
+        currentRestaurant?.restaurant_uuid,
+      );
     },
-    enabled: !!currentRestaurant?.restaurant_uuid,
   });
+  console.log("ingredients", ingredients);
 
-  if (!editedOrder || !order) return null;
+  const getIngredientOptions = (supplierId: string) => {
+    if (!ingredients) return [];
 
-  const handleItemChange = (index: number, field: keyof OrderItem, value: any) => {
-    const updatedItems = [...editedOrder.items];
-    updatedItems[index] = {
-      ...updatedItems[index],
-      [field]: value,
-    };
-    setEditedOrder({
-      ...editedOrder,
-      items: updatedItems,
-      total: calculateTotal(updatedItems),
-    });
-  };
+    const ingredientsArray = Object.values(ingredients);
+    const connectedIngredients = ingredientsArray
+      .filter((ing) =>
+        ing.ingredient_suppliers?.some(
+          (s) => s.supplier?.supplier_uuid === supplierId,
+        ),
+      )
+      .map((ing) => ({
+        label: ing.ingredient_name,
+        value: ing.ingredient_uuid,
+        category: "Connected",
+      }));
 
-  const calculateTotal = (items: OrderItem[]) => {
-    return items.reduce((sum, item) => sum + (item.quantity * item.price), 0);
-  };
+    const otherIngredients = ingredientsArray
+      .filter(
+        (ing) =>
+          !ing.ingredient_suppliers?.some(
+            (s) => s.supplier?.supplier_uuid === supplierId,
+          ),
+      )
+      .map((ing) => ({
+        label: ing.ingredient_name,
+        value: ing.ingredient_uuid,
+        category: "Other",
+      }));
 
-  const addItem = () => {
-    setEditedOrder({
-      ...editedOrder,
-      items: [
-        ...editedOrder.items,
-        { id: Date.now().toString(), name: '', quantity: 0, price: 0 },
-      ],
-    });
-  };
-
-  const removeItem = (index: number) => {
-    const updatedItems = editedOrder.items.filter((_, i) => i !== index);
-    setEditedOrder({
-      ...editedOrder,
-      items: updatedItems,
-      total: calculateTotal(updatedItems),
-    });
+    return [...connectedIngredients, ...otherIngredients];
   };
 
   const handleSave = () => {
-    if (onSave && editedOrder) {
+    if (onSave) {
       onSave(editedOrder);
     }
     onClose();
   };
 
+  const updateItem = (index: number, field: keyof OrderItem, value: any) => {
+    const newItems = [...editedOrder.items];
+    newItems[index] = { ...newItems[index], [field]: value };
+
+    // Recalculate item total
+    if (field === "quantity" || field === "price") {
+      const quantity = field === "quantity" ? value : newItems[index].quantity;
+      const price = field === "price" ? value : newItems[index].price;
+      newItems[index].total = quantity * price;
+    }
+
+    // Update order total
+    const newTotal = newItems.reduce(
+      (sum, item) => sum + item.quantity * item.price,
+      0,
+    );
+
+    setEditedOrder({
+      ...editedOrder,
+      items: newItems,
+      total: newTotal,
+    });
+  };
+
+  const addItem = () => {
+    const newItem: OrderItem = {
+      id: `new-${Date.now()}`,
+      name: "",
+      quantity: 0,
+      unit: "",
+      price: 0,
+    };
+    setEditedOrder({
+      ...editedOrder,
+      items: [...editedOrder.items, newItem],
+    });
+  };
+
+  const removeItem = (index: number) => {
+    const newItems = editedOrder.items.filter((_, i) => i !== index);
+    const newTotal = newItems.reduce(
+      (sum, item) => sum + item.quantity * item.price,
+      0,
+    );
+    setEditedOrder({
+      ...editedOrder,
+      items: newItems,
+      total: newTotal,
+    });
+  };
+
+  const isDraft = editedOrder.status === "draft";
+
+  const renderNonDraftLayout = () => (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm text-gray-600">Supplier</label>
+          <div className="font-medium">{editedOrder.supplier_name}</div>
+        </div>
+        <div>
+          <label className="text-sm text-gray-600">Date</label>
+          <div className="font-medium">
+            {new Date(editedOrder.orderDate).toLocaleDateString()}
+          </div>
+        </div>
+      </div>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Item</TableHead>
+            <TableHead>Quantity</TableHead>
+            <TableHead>Unit</TableHead>
+            <TableHead className="text-right">Price</TableHead>
+            <TableHead className="text-right">Total</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {editedOrder.items.map((item) => (
+            <TableRow key={item.id}>
+              <TableCell>{item.name}</TableCell>
+              <TableCell>{item.quantity}</TableCell>
+              <TableCell>{item.unit}</TableCell>
+              <TableCell className="text-right">
+                ${item.price.toFixed(2)}
+              </TableCell>
+              <TableCell className="text-right">
+                ${(item.quantity * item.price).toFixed(2)}
+              </TableCell>
+            </TableRow>
+          ))}
+          <TableRow>
+            <TableCell colSpan={4} className="text-right font-semibold">
+              Total
+            </TableCell>
+            <TableCell className="text-right font-semibold">
+              ${editedOrder.total.toFixed(2)}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+  );
+
   return (
-    <Sheet open={!!order} onOpenChange={onClose}>
+    <Sheet open={!!order} onOpenChange={() => onClose()}>
       <SheetContent className="w-[800px] sm:max-w-[800px]">
         <SheetHeader>
-          <SheetTitle>Order Details</SheetTitle>
-          <SheetDescription>
-            {editMode ? "Edit order details below" : "View order details below"}
-          </SheetDescription>
+          <SheetTitle className="flex items-center justify-between">
+            <span>Order Details</span>
+            <Badge className={getStatusColor(editedOrder.status)}>
+              {editedOrder.status.charAt(0).toUpperCase() +
+                editedOrder.status.slice(1)}
+            </Badge>
+          </SheetTitle>
         </SheetHeader>
 
-        <div className="mt-6 space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Building2 className="h-4 w-4 text-gray-500" />
-                <span className="font-medium">{editedOrder.supplier_name}</span>
+        {isDraft ? (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm text-gray-600">Supplier</label>
+                {suppliersLoading ? (
+                  <p>Loading suppliers...</p>
+                ) : (
+                  <CreatableSelect
+                    options={suppliers?.map((supplier) => ({
+                      label: supplier.supplier_name,
+                      value: supplier.supplier_uuid,
+                    }))}
+                    value={[editedOrder.supplier_uuid || "Select a supplier"]}
+                    onChange={(values) => {
+                      if (values && values.length > 0) {
+                        const selectedSupplier = suppliers?.find(
+                          (s) => s.supplier_uuid === values[0],
+                        );
+                        setEditedOrder({
+                          ...editedOrder,
+                          supplier_uuid: values[0],
+                          supplier_name: selectedSupplier?.supplier_name || "",
+                        });
+                      }
+                    }}
+                    disabled={!editMode}
+                  />
+                )}
               </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-600">
-                  {new Date(editedOrder.orderDate).toLocaleDateString()}
-                </span>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm text-gray-600">Date</label>
+                <Input
+                  type="date"
+                  value={
+                    new Date(editedOrder.orderDate).toISOString().split("T")[0]
+                  }
+                  onChange={(e) =>
+                    setEditedOrder({
+                      ...editedOrder,
+                      orderDate: e.target.value,
+                    })
+                  }
+                  disabled={!editMode}
+                />
               </div>
-            </div>
-            <Badge className={getStatusColor(editedOrder.status)}>
-              {editedOrder.status.charAt(0).toUpperCase() + editedOrder.status.slice(1)}
-            </Badge>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Items</h3>
-              {editMode && (
-                <Button onClick={addItem} size="sm">
-                  <Plus className="h-4 w-4 mr-1" /> Add Item
-                </Button>
-              )}
             </div>
 
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Item</TableHead>
-                  <TableHead className="w-[100px]">Quantity</TableHead>
-                  <TableHead className="w-[100px]">Price</TableHead>
-                  <TableHead className="w-[100px]">Total</TableHead>
-                  {editMode && <TableHead className="w-[50px]"></TableHead>}
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Unit</TableHead>
+                  <TableHead className="text-right">Price</TableHead>
+                  <TableHead className="text-right">Total</TableHead>
+                  {editMode && <TableHead></TableHead>}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {editedOrder.items.map((item, index) => (
                   <TableRow key={item.id}>
                     <TableCell>
-                      {editMode ? (
-                        <Input
-                          value={item.name}
-                          onChange={(e) =>
-                            handleItemChange(index, 'name', e.target.value)
+                      <CreatableSelect
+                        value={item.name ? [item.name] : []}
+                        onChange={(values) => {
+                          if (values[0]) {
+                            const ingredient = ingredients?.[values[0]];
+                            if (ingredient) {
+                              updateItem(
+                                index,
+                                "name",
+                                ingredient.ingredient_name,
+                              );
+                            }
                           }
-                        />
-                      ) : (
-                        item.name
-                      )}
+                        }}
+                        options={getIngredientOptions(
+                          editedOrder.supplier_uuid,
+                        )}
+                        placeholder="Select ingredient..."
+                        disabled={!editMode}
+                      />
                     </TableCell>
                     <TableCell>
-                      {editMode ? (
-                        <Input
-                          type="number"
-                          value={item.quantity}
-                          onChange={(e) =>
-                            handleItemChange(index, 'quantity', parseFloat(e.target.value))
-                          }
-                        />
-                      ) : (
-                        item.quantity
-                      )}
+                      <Input
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          updateItem(
+                            index,
+                            "quantity",
+                            parseFloat(e.target.value),
+                          )
+                        }
+                        disabled={!editMode}
+                      />
                     </TableCell>
                     <TableCell>
-                      {editMode ? (
-                        <Input
-                          type="number"
-                          value={item.price}
-                          onChange={(e) =>
-                            handleItemChange(index, 'price', parseFloat(e.target.value))
-                          }
-                        />
-                      ) : (
-                        `$${item.price.toFixed(2)}`
-                      )}
+                      <Input
+                        value={item.unit}
+                        onChange={(e) =>
+                          updateItem(index, "unit", e.target.value)
+                        }
+                        disabled={!editMode}
+                      />
                     </TableCell>
-                    <TableCell>${(item.quantity * item.price).toFixed(2)}</TableCell>
+                    <TableCell className="text-right">
+                      <Input
+                        type="number"
+                        value={item.price}
+                        onChange={(e) =>
+                          updateItem(index, "price", parseFloat(e.target.value))
+                        }
+                        disabled={!editMode}
+                        className="text-right"
+                      />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      ${(item.quantity * item.price).toFixed(2)}
+                    </TableCell>
                     {editMode && (
                       <TableCell>
                         <Button
@@ -228,28 +360,30 @@ export default function OrderModal({
                     )}
                   </TableRow>
                 ))}
+                <TableRow>
+                  <TableCell colSpan={4} className="text-right font-semibold">
+                    Total
+                  </TableCell>
+                  <TableCell className="text-right font-semibold">
+                    ${editedOrder.total.toFixed(2)}
+                  </TableCell>
+                  {editMode && <TableCell />}
+                </TableRow>
               </TableBody>
             </Table>
 
-            <div className="flex justify-between items-center pt-4 border-t">
-              <span className="font-semibold">Total</span>
-              <span className="text-lg font-bold">
-                ${editedOrder.total.toFixed(2)}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-4 pt-6">
-            <Button variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
             {editMode && (
-              <Button onClick={handleSave}>
-                Save Changes
-              </Button>
+              <div className="flex justify-end gap-4">
+                <Button variant="outline" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSave}>Save Changes</Button>
+              </div>
             )}
           </div>
-        </div>
+        ) : (
+          renderNonDraftLayout()
+        )}
       </SheetContent>
     </Sheet>
   );

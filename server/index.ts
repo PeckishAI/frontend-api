@@ -14,8 +14,8 @@ const app = express();
     serveStatic(app);
   }
 
-  // Serve the app on port 5001
-  const PORT = process.env.PORT || 5001;
+  // Serve the app on port 5000
+  const PORT = 5000;
   server.listen(PORT, "0.0.0.0", () => {
     log(`Server running on port ${PORT}`);
   });
