@@ -62,9 +62,38 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
       <CardContent>
         <div className="space-y-4">
           <div className="relative aspect-[3/2] bg-gray-100 rounded-md overflow-hidden">
-            <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-              <Images className="h-8 w-8" />
-            </div>
+            {stocktake.documents[0]?.document_type === 'video' ? (
+              <>
+                <video
+                  src={stocktake.documents[0]?.file_path}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  preload="metadata"
+                  muted
+                  playsInline
+                  onLoadedMetadata={(e) => {
+                    const video = e.target as HTMLVideoElement;
+                    video.currentTime = 0.1;
+                  }}
+                  onLoadedData={(e) => {
+                    const video = e.target as HTMLVideoElement;
+                    video.pause();
+                  }}
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                  <Film className="h-8 w-8 text-white" />
+                </div>
+              </>
+            ) : stocktake.documents[0]?.document_type === 'image' ? (
+              <img 
+                src={stocktake.documents[0]?.file_path}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                <Images className="h-8 w-8" />
+              </div>
+            )}
           </div>
           <div className="flex items-center justify-between border-t pt-4">
             <div className="flex items-center gap-2">
