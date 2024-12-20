@@ -132,48 +132,50 @@ export function CreatableSelect({
             value={search}
             onValueChange={setSearch}
           />
-          <CommandList className="max-h-[300px] overflow-y-auto">
-            <CommandEmpty className="p-2">
-              {search.trim() !== "" && onCreateOption ? (
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  onClick={handleCreate}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  {createOptionLabel} "{search}"
-                </Button>
-              ) : (
-                emptyMessage
-              )}
-            </CommandEmpty>
-            {Object.entries(filteredOptions).map(([category, opts]) => (
-              <React.Fragment key={category}>
-                <CommandGroup
-                  heading={category === "Default" ? undefined : category}
-                >
-                  {opts.map((option) => (
-                    <CommandItem
-                      key={option.value}
-                      value={option.value}
-                      onSelect={handleSelect}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          Array.isArray(value) && value.includes(option.value)
-                            ? "opacity-100"
-                            : "opacity-0",
-                        )}
-                      />
-                      {option.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-                <CommandSeparator />
-              </React.Fragment>
-            ))}
-          </CommandList>
+          <div className="max-h-[300px] overflow-y-auto">
+            <CommandList>
+              <CommandEmpty className="p-2">
+                {search.trim() !== "" && onCreateOption ? (
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    onClick={handleCreate}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    {createOptionLabel} "{search}"
+                  </Button>
+                ) : (
+                  emptyMessage
+                )}
+              </CommandEmpty>
+              {Object.entries(filteredOptions).map(([category, opts]) => (
+                <React.Fragment key={category}>
+                  <CommandGroup
+                    heading={category === "Default" ? undefined : category}
+                  >
+                    {opts.map((option) => (
+                      <CommandItem
+                        key={option.value}
+                        value={option.value}
+                        onSelect={handleSelect}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            Array.isArray(value) && value.includes(option.value)
+                              ? "opacity-100"
+                              : "opacity-0",
+                          )}
+                        />
+                        {option.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                  <CommandSeparator />
+                </React.Fragment>
+              ))}
+            </CommandList>
+          </div>
         </Command>
       </PopoverContent>
     </Popover>
