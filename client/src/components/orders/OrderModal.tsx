@@ -38,10 +38,45 @@ export default function OrderModal({ order, onClose, editMode = false, onSave }:
   const [editedOrder, setEditedOrder] = useState<Order>(order);
   const { restaurant } = useRestaurantContext(); // Assuming this context provides necessary data.
 
-  const { data: suppliers, isLoading } = useQuery({
+  const { data: suppliers, isLoading: suppliersLoading } = useQuery({
     queryKey: ['suppliers'],
-    queryFn: () => supplierService.getAllSuppliers(restaurant?.id), // Assuming supplierService.getAllSuppliers exists and takes restaurant ID
+    queryFn: () => supplierService.getRestaurantSuppliers(restaurant?.restaurant_uuid),
   });
+
+  const { data: ingredients, isLoading: ingredientsLoading } = useQuery({
+    queryKey: ['ingredients'],
+    queryFn: () => inventoryService.getRestaurantIngredients(restaurant?.restaurant_uuid),
+    select: (data) => {
+      const ingredients = Object.values(data.data);
+      return ingredients.map((item: any) => ({
+        ingredient_uuid: item.ingredient_uuid,
+        ingredient_name: item.ingredient_name,
+        ingredient_suppliers: item.ingredient_suppliers || []
+      }));
+    }
+  });
+
+  const getIngredientOptions = (supplierId: string) => {
+    if (!ingredients) return [];
+
+    const connectedIngredients = ingredients.filter(ing => 
+      ing.ingredient_suppliers.some(s => s.supplier.supplier_uuid === supplierId)
+    ).map(ing => ({
+      label: ing.ingredient_name,
+      value: ing.ingredient_uuid,
+      category: "Connected"
+    }));
+
+    const otherIngredients = ingredients.filter(ing => 
+      !ing.ingredient_suppliers.some(s => s.supplier.supplier_uuid === supplierId)
+    ).map(ing => ({
+      label: ing.ingredient_name,
+      value: ing.ingredient_uuid,
+      category: "Other"
+    }));
+
+    return [...connectedIngredients, ...otherIngredients];
+  };
 
   const handleSave = () => {
     if (onSave) {
@@ -168,9 +203,16 @@ export default function OrderModal({ order, onClose, editMode = false, onSave }:
                 <p>Loading suppliers...</p>
               ) : (
                 <CreatableSelect
-                  options={suppliers?.map(supplier => ({ label: supplier.name, value: supplier.id }))} // Assuming supplier object has name and id properties
-                  value={suppliers?.find(supplier => supplier.id === editedOrder.supplierId)} //Assuming editedOrder has supplierId
-                  onChange={(e) => setEditedOrder({ ...editedOrder, supplierId: e.value })} // Assuming e.value is the supplierId
+                  options={suppliers?.data?.map(supplier => ({ 
+                    label: supplier.supplier_name, 
+                    value: supplier.supplier_uuid 
+                  }))}
+                  value={suppliers?.data?.find(supplier => supplier.supplier_uuid === editedOrder.supplierId)}
+                  onChange={(e) => {
+                    if (e) {
+                      setEditedOrder({ ...editedOrder, supplierId: e.value });
+                    }
+                  }}
                   disabled={!editMode}
                 />
               )}
