@@ -37,6 +37,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { supplierService } from "@/services/supplierService";
 import { inventoryService } from "@/services/inventoryService"; //Import inventoryService
+import { unitService } from "@/services/unitService"; //Import unitService
 
 const editInvoiceSchema = z.object({
   invoice_number: z.string().optional(),
@@ -128,6 +129,17 @@ export function EditInvoiceSlider({
     },
     enabled: !!restaurant?.restaurant_uuid,
     select: (data) => data.data,
+  });
+
+  const { data: unitsData } = useQuery({ //Added unitsData query
+    queryKey: ["units", restaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!restaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      return unitService.getRestaurantUnits(restaurant.restaurant_uuid);
+    },
+    enabled: !!restaurant?.restaurant_uuid,
   });
 
   const calculateTotal = () => {
@@ -569,11 +581,50 @@ export function EditInvoiceSlider({
                                         field.onChange(values[0]);
                                       }
                                     }}
-                                    options={defaultUnits}
-                                    onCreateOption={(value) => {
-                                      field.onChange(value);
+                                    options={(() => {
+                                      // Get the selected ingredient's UUID
+                                      const selectedIngredientUuid = form.watch(`ingredients.${index}.ingredient_uuid`);
+
+                                      // Find associated units for this ingredient
+                                      const associatedUnits = supplierIngredientUnits?.find(
+                                        (item) => item.ingredient_uuid === selectedIngredientUuid
+                                      )?.units || [];
+
+                                      // Map associated units to options
+                                      const associatedOptions = associatedUnits.map((unit) => ({
+                                        label: unit.unit_name,
+                                        value: unit.unit_uuid,
+                                        category: "Associated Units"
+                                      }));
+
+                                      // Map all restaurant units to options
+                                      const availableOptions = (unitsData || []).map((unit) => ({
+                                        label: unit.unit_name,
+                                        value: unit.unit_uuid,
+                                        category: "Available Units"
+                                      }));
+
+                                      return [...associatedOptions, ...availableOptions];
+                                    })()}
+                                    onCreateOption={async (value) => {
+                                      try {
+                                        if (!restaurant?.restaurant_uuid) {
+                                          throw new Error("No restaurant selected");
+                                        }
+                                        const newUnit = await unitService.createUnit(
+                                          { unit_name: value },
+                                          restaurant.restaurant_uuid
+                                        );
+                                        if (newUnit?.unit_uuid && newUnit?.unit_name) {
+                                          field.onChange({
+                                            unit_uuid: newUnit.unit_uuid,
+                                            unit_name: newUnit.unit_name,
+                                          });
+                                        }
+                                      } catch (error) {
+                                        console.error("Failed to create unit:", error);
+                                      }
                                     }}
-                                    placeholder="Unit"
                                   />
                                 </FormControl>
                                 <FormMessage />
