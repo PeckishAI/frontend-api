@@ -18,7 +18,8 @@ interface ApiResponse<T> {
 export const documentService = {
   async getRestaurantInvoices(restaurantUuid: string): Promise<Invoices[]> {
     try {
-      console.log("Fetching invoices from API for restaurant:", restaurantUuid);
+      const url = `${BASE_URL}/documents/v2/restaurant/${restaurantUuid}/invoices`;
+      console.log("Fetching invoices from API:", url);
       const response = await fetch(
         `${BASE_URL}/documents/v2/restaurant/${restaurantUuid}/invoices`,
         {

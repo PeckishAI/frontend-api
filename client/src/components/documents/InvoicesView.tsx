@@ -28,6 +28,7 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
 
   console.log("Current restaurant context:", currentRestaurant);
 
+  console.log("InvoicesView component mounted");
   const { data: invoices = [], isLoading, error } = useQuery({
     queryKey: ["invoices", currentRestaurant?.restaurant_uuid],
     queryFn: async () => {
