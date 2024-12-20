@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Images, User2, Hash, Film } from "lucide-react";
@@ -93,11 +94,8 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
   );
 }
 
-interface StocktakesProps {
-  viewMode: "cards" | "table";
-}
-
-export default function Stocktakes({ viewMode }: StocktakesProps) {
+export default function Stocktakes() {
+  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
   const { currentRestaurant } = useRestaurantContext();
 
@@ -115,84 +113,94 @@ export default function Stocktakes({ viewMode }: StocktakesProps) {
   });
 
   return (
-    <div className="p-6">
-      {viewMode === "cards" ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {isLoading ? (
-            <div className="col-span-3 text-center py-8">
-              Loading stocktakes...
-            </div>
-          ) : (
-            stocktakes.map((stocktake) => (
-              <div
-                key={stocktake.stocktake_uuid}
-                onClick={() => setSelectedStocktake(stocktake)}
-                className="cursor-pointer"
-              >
-                <StocktakeCard stocktake={stocktake} />
-              </div>
-            ))
-          )}
+    <div className="ml-64 w-[calc(100%-16rem)]">
+      <div className="pt-8 px-8">
+        <div className="mb-6 flex items-center justify-end gap-4">
+          <ViewToggle current={viewMode} onChange={setViewMode} />
         </div>
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead>Images</TableHead>
-              <TableHead>Videos</TableHead>
-              <TableHead>Total Documents</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
-                  Loading stocktakes...
-                </TableCell>
-              </TableRow>
-            ) : (
-              stocktakes.map((stocktake) => (
-                <TableRow
-                  key={stocktake.stocktake_uuid}
-                  className="cursor-pointer hover:bg-muted/50"
-                  onClick={() => setSelectedStocktake(stocktake)}
-                >
-                  <TableCell>{stocktake.stocktake_uuid}</TableCell>
-                  <TableCell>
-                    {stocktake.created_at ? new Date(stocktake.created_at).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }) : "-"}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <User2 className="h-4 w-4 text-gray-500" />
-                      <span>{stocktake.created_by || "System User"}</span>
+
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="p-6">
+            {viewMode === "cards" ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {isLoading ? (
+                  <div className="col-span-3 text-center py-8">
+                    Loading stocktakes...
+                  </div>
+                ) : (
+                  stocktakes.map((stocktake) => (
+                    <div
+                      key={stocktake.stocktake_uuid}
+                      onClick={() => setSelectedStocktake(stocktake)}
+                      className="cursor-pointer"
+                    >
+                      <StocktakeCard stocktake={stocktake} />
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">
-                      {stocktake.documents?.filter(d => d.document_type === "image").length || 0}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">
-                      {stocktake.documents?.filter(d => d.document_type === "video").length || 0}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge>{stocktake.documents?.length || 0}</Badge>
-                  </TableCell>
-                </TableRow>
-              ))
+                  ))
+                )}
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>User</TableHead>
+                    <TableHead>Images</TableHead>
+                    <TableHead>Videos</TableHead>
+                    <TableHead>Total Documents</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8">
+                        Loading stocktakes...
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    stocktakes.map((stocktake) => (
+                      <TableRow
+                        key={stocktake.stocktake_uuid}
+                        className="cursor-pointer hover:bg-muted/50"
+                        onClick={() => setSelectedStocktake(stocktake)}
+                      >
+                        <TableCell>{stocktake.stocktake_uuid}</TableCell>
+                        <TableCell>
+                          {stocktake.created_at ? new Date(stocktake.created_at).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }) : "-"}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <User2 className="h-4 w-4 text-gray-500" />
+                            <span>{stocktake.created_by || "System User"}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="secondary">
+                            {stocktake.documents?.filter(d => d.document_type === "image").length || 0}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="secondary">
+                            {stocktake.documents?.filter(d => d.document_type === "video").length || 0}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge>{stocktake.documents?.length || 0}</Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
             )}
-          </TableBody>
-        </Table>
-      )}
+          </div>
+        </div>
+      </div>
       <StocktakeSlider
         stocktake={selectedStocktake}
         open={!!selectedStocktake}
