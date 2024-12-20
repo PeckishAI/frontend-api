@@ -21,7 +21,7 @@ export default function General() {
   ];
 
   return (
-    <div className="ml-64 w-full">
+    <div className="ml-64 w-[calc(100%-16rem)]">
       <div className="pt-8">
         <SubSectionNav
           sections={sections}
