@@ -1,4 +1,3 @@
-
 import { Hash, User2, Images, DollarSign, Package2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,11 +25,13 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
             </span>
           </div>
           <div className="text-sm text-muted-foreground">
-            {invoice.date ? new Date(invoice.date).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }) : "-"}
+            {invoice.date
+              ? new Date(invoice.date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+              : "-"}
           </div>
         </div>
       </CardHeader>
@@ -52,11 +53,15 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <DollarSign className="h-4 w-4 text-gray-600" />
-              <span className="font-medium">${invoice.amount?.toFixed(2) || "0.00"}</span>
+              <span className="font-medium">
+                ${invoice.amount?.toFixed(2) || "0.00"}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <Package2 className="h-4 w-4 text-gray-600" />
-              <span className="font-medium">{invoice.ingredients?.length || 0}</span>
+              <span className="font-medium">
+                {invoice.ingredients?.length || 0}
+              </span>
               <span className="text-sm text-gray-500">items</span>
             </div>
           </div>

@@ -328,7 +328,10 @@ export function EditInvoiceSlider({
                 >
                   {doc.name ? (
                     <img
-                      src={"https://storage.cloud.google.com/peckish-datasets/restaurant/" + doc.name}
+                      src={
+                        "https://storage.cloud.google.com/peckish-datasets/restaurant/" +
+                        doc.name
+                      }
                       alt={`Thumbnail ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -499,15 +502,6 @@ export function EditInvoiceSlider({
                     <h3 className="text-lg font-medium">
                       Extracted Ingredients
                     </h3>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={addIngredient}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Ingredient
-                    </Button>
                   </div>
 
                   {form.watch("ingredients").map((ingredient, index) => (
@@ -521,10 +515,7 @@ export function EditInvoiceSlider({
                           name={`ingredients.${index}.detected_name`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel
-                                >
-                                Detected
-                              </FormLabel>
+                              <FormLabel>Detected</FormLabel>
                               <FormControl>
                                 <Input {...field} />
                               </FormControl>
@@ -538,10 +529,7 @@ export function EditInvoiceSlider({
                           name={`ingredients.${index}.ingredient_name`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel
-                                >
-                                Mapped Ingredient
-                              </FormLabel>
+                              <FormLabel>Mapped Ingredient</FormLabel>
                               <FormControl>
                                 <CreatableSelect
                                   value={field.value ? [field.value] : []}
@@ -575,9 +563,7 @@ export function EditInvoiceSlider({
                             name={`ingredients.${index}.quantity`}
                             render={({ field }) => (
                               <FormItem className="flex-1">
-                                <FormLabel>
-                                  Quantity
-                                </FormLabel>
+                                <FormLabel>Quantity</FormLabel>
                                 <FormControl>
                                   <Input
                                     type="number"
@@ -597,9 +583,7 @@ export function EditInvoiceSlider({
                             name={`ingredients.${index}.unit`}
                             render={({ field }) => (
                               <FormItem className="w-32">
-                                <FormLabel>
-                                  Unit
-                                </FormLabel>
+                                <FormLabel>Unit</FormLabel>
                                 <FormControl>
                                   <CreatableSelect
                                     value={
@@ -733,10 +717,7 @@ export function EditInvoiceSlider({
                             name={`ingredients.${index}.unit_cost`}
                             render={({ field }) => (
                               <FormItem className="flex-1">
-                                <FormLabel
-                                  >
-                                  Unit Cost
-                                </FormLabel>
+                                <FormLabel>Unit Cost</FormLabel>
                                 <FormControl>
                                   <Input
                                     type="number"
@@ -757,9 +738,7 @@ export function EditInvoiceSlider({
                             name={`ingredients.${index}.vat`}
                             render={({ field }) => (
                               <FormItem className="w-24">
-                                <FormLabel>
-                                  VAT %
-                                </FormLabel>
+                                <FormLabel>VAT %</FormLabel>
                                 <FormControl>
                                   <Input
                                     type="number"
@@ -788,6 +767,15 @@ export function EditInvoiceSlider({
                       </div>
                     </div>
                   ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addIngredient}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Ingredient
+                  </Button>
                 </div>
 
                 <div className="mt-auto p-8 bg-gray-50 border-t">
