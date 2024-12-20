@@ -70,7 +70,7 @@ export function CreatableSelect({
   const selectedLabels = React.useMemo(() => {
     const valueArray = Array.isArray(value) ? value : [];
     return valueArray
-      .map((v) => options.find((opt) => opt.value === v)?.label || v)
+      .map((v) => (options || []).find((opt) => opt.value === v)?.label || v)
       .join(", ");
   }, [value, options]);
 
