@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FileText, FileBox, ClipboardCheck, Images, User2 } from "lucide-react";
@@ -12,16 +13,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { EditInvoiceSlider } from "@/components/documents/EditInvoiceSlider";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { documentService } from "@/services/documentService";
+import { InvoiceCard } from "@/components/documents/InvoiceCard";
 import StocktakeSlider from "@/components/documents/StocktakeSlider";
 import type { Invoices, Stocktake } from "@/lib/DocumentTypes";
-import InvoicesComponent from "@/components/invoices/Invoices"; // Import the new Invoices component
-
 
 export default function Documents() {
   const [activeSection, setActiveSection] = useState("invoices");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+  const [editingInvoice, setEditingInvoice] = useState<Invoices | null>(null);
+  const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
   const { currentRestaurant } = useRestaurantContext();
 
   const sections = [
@@ -29,6 +32,18 @@ export default function Documents() {
     { id: "delivery-notes", label: "Delivery Notes", icon: FileBox },
     { id: "stocktakes", label: "Stocktakes", icon: ClipboardCheck },
   ];
+
+  const { data: invoices = [], isLoading: isInvoicesLoading } = useQuery({
+    queryKey: ["invoices", currentRestaurant?.restaurant_uuid],
+    queryFn: async () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      const response = await documentService.getRestaurantInvoices(currentRestaurant.restaurant_uuid);
+      return response;
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid && activeSection === "invoices",
+  });
 
   const { data: stocktakes = [], isLoading: isStocktakesLoading } = useQuery({
     queryKey: ["stocktakes", currentRestaurant?.restaurant_uuid],
@@ -58,7 +73,93 @@ export default function Documents() {
         </div>
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          {activeSection === "invoices" && <InvoicesComponent />}
+          {activeSection === "invoices" && (
+            <>
+              {viewMode === "cards" ? (
+                <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {isInvoicesLoading ? (
+                    <div className="col-span-3 text-center py-8">Loading invoices...</div>
+                  ) : (
+                    invoices.map((invoice) => (
+                      <div
+                        key={invoice.invoice_uuid}
+                        onClick={() => setEditingInvoice(invoice)}
+                        className="cursor-pointer"
+                      >
+                        <InvoiceCard invoice={invoice} />
+                      </div>
+                    ))
+                  )}
+                </div>
+              ) : (
+                <div className="p-6">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Images</TableHead>
+                        <TableHead>Invoice Number</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Supplier</TableHead>
+                        <TableHead className="text-right">Amount</TableHead>
+                        <TableHead className="text-right">Ingredients</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {isInvoicesLoading ? (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center py-8">
+                            Loading invoices...
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        invoices.map((invoice) => (
+                          <TableRow
+                            key={invoice.invoice_uuid}
+                            className="cursor-pointer hover:bg-muted/50"
+                            onClick={() => setEditingInvoice(invoice)}
+                          >
+                            <TableCell>
+                              <div className="flex items-center gap-1">
+                                <Images className="h-4 w-4 text-gray-500" />
+                                <span className="text-sm text-gray-500">
+                                  {invoice.documents ? 1 : 0}
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell>{invoice.invoice_number}</TableCell>
+                            <TableCell>
+                              {invoice.date ? new Date(invoice.date).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              }) : "-"}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="secondary">
+                                {invoice.supplier?.[0]?.supplier_name || "-"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${invoice.amount?.toFixed(2) || "0.00"}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {invoice.ingredients?.length || 0}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+
+              <EditInvoiceSlider
+                invoice={editingInvoice}
+                open={editingInvoice !== null}
+                onOpenChange={(open) => !open && setEditingInvoice(null)}
+              />
+            </>
+          )}
 
           {activeSection === "delivery-notes" && (
             <div className="p-6">
@@ -82,7 +183,6 @@ export default function Documents() {
                           onClick={() => setSelectedStocktake(stocktake)}
                           className="cursor-pointer"
                         >
-                          {/* Assuming StocktakeCard component exists */}
                           <StocktakeCard stocktake={stocktake} />
                         </div>
                       ))
