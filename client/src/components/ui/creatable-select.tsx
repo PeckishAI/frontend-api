@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -90,7 +91,7 @@ export function CreatableSelect({
     return filtered;
   }, [groupedOptions, search]);
 
-  const handleSelect = (selectedValue: string) => {
+  const handleSelect = React.useCallback((selectedValue: string) => {
     const currentValue = value || [];
     if (multiple) {
       onChange(
@@ -102,14 +103,14 @@ export function CreatableSelect({
       onChange([selectedValue]);
       setOpen(false);
     }
-  };
+  }, [value, multiple, onChange]);
 
-  const handleCreate = () => {
+  const handleCreate = React.useCallback(() => {
     if (search && onCreateOption) {
       onCreateOption(search);
       setSearch("");
     }
-  };
+  }, [search, onCreateOption]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -135,6 +136,7 @@ export function CreatableSelect({
             <CommandEmpty>
               {search.trim() !== "" && onCreateOption ? (
                 <Button
+                  type="button"
                   variant="outline"
                   className="w-full justify-start"
                   onClick={handleCreate}
@@ -155,7 +157,7 @@ export function CreatableSelect({
                     <CommandItem
                       key={option.value}
                       value={option.value}
-                      onSelect={handleSelect}
+                      onSelect={() => handleSelect(option.value)}
                     >
                       <Check
                         className={cn(
