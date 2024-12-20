@@ -125,14 +125,14 @@ export function CreatableSelect({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
         <Command className="w-full">
           <CommandInput
             placeholder={searchPlaceholder}
             value={search}
             onValueChange={setSearch}
           />
-          <CommandList className="max-h-[300px] overflow-y-auto">
+          <CommandList>
             <CommandEmpty>
               {search.trim() !== "" && onCreateOption ? (
                 <Button
