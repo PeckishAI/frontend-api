@@ -292,14 +292,14 @@ export default function OrderModal({
                       <CreatableSelect
                         value={item.name ? [item.name] : []}
                         onChange={(values) => {
-                          if (values[0]) {
-                            const ingredient = ingredients?.[values[0]];
-                            if (ingredient) {
-                              updateItem(
-                                index,
-                                "name",
-                                ingredient.ingredient_name,
-                              );
+                          if (values && values.length > 0) {
+                            const selectedIngredient = ingredients?.data?.find(
+                              (ing) => ing.ingredient_uuid === values[0]
+                            );
+                            if (selectedIngredient) {
+                              updateItem(index, "name", selectedIngredient.ingredient_name);
+                            } else {
+                              updateItem(index, "name", values[0]);
                             }
                           }
                         }}
