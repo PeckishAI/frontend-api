@@ -26,23 +26,41 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoices | null>(null);
   const { currentRestaurant } = useRestaurantContext();
 
+  console.log("Current restaurant context:", currentRestaurant);
+
   const { data: invoices = [], isLoading, error } = useQuery({
     queryKey: ["invoices", currentRestaurant?.restaurant_uuid],
     queryFn: async () => {
-      console.log("Fetching invoices for restaurant:", currentRestaurant?.restaurant_uuid);
+      console.log("InvoicesView: Starting fetch for restaurant:", currentRestaurant?.restaurant_uuid);
       if (!currentRestaurant?.restaurant_uuid) {
+        console.error("InvoicesView: No restaurant UUID available");
         throw new Error("No restaurant selected");
       }
-      const result = await documentService.getRestaurantInvoices(
-        currentRestaurant.restaurant_uuid,
-      );
-      console.log("Received invoices data:", result);
-      return result;
+
+      try {
+        const result = await documentService.getRestaurantInvoices(
+          currentRestaurant.restaurant_uuid,
+        );
+        console.log("InvoicesView: API call successful, received data:", result);
+        return result;
+      } catch (err) {
+        console.error("InvoicesView: API call failed:", err);
+        throw err;
+      }
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
-  console.log("Current invoices state:", { loading: isLoading, error, data: invoices });
+  console.log("InvoicesView render state:", { 
+    loading: isLoading, 
+    error, 
+    invoicesCount: invoices?.length,
+    invoices 
+  });
+
+  if (error) {
+    console.error("InvoicesView: Error in query:", error);
+  }
 
   return (
     <>
@@ -50,16 +68,18 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
             <div className="col-span-3 text-center py-8">Loading invoices...</div>
-          ) : (
+          ) : invoices && invoices.length > 0 ? (
             invoices.map((invoice) => (
               <div
-                key={invoice.invoice_uuid}
+                key={invoice.invoice_uuid || `temp-${Math.random()}`}
                 onClick={() => setSelectedInvoice(invoice)}
                 className="cursor-pointer"
               >
                 <InvoiceCard invoice={invoice} />
               </div>
             ))
+          ) : (
+            <div className="col-span-3 text-center py-8">No invoices found</div>
           )}
         </div>
       ) : (
@@ -82,10 +102,10 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
                     Loading invoices...
                   </TableCell>
                 </TableRow>
-              ) : (
+              ) : invoices && invoices.length > 0 ? (
                 invoices.map((invoice) => (
                   <TableRow
-                    key={invoice.invoice_uuid}
+                    key={invoice.invoice_uuid || `temp-${Math.random()}`}
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => setSelectedInvoice(invoice)}
                   >
@@ -97,7 +117,7 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell>{invoice.invoice_number}</TableCell>
+                    <TableCell>{invoice.invoice_number || 'N/A'}</TableCell>
                     <TableCell>
                       {invoice.date
                         ? new Date(invoice.date).toLocaleDateString("en-US", {
@@ -120,6 +140,12 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
                     </TableCell>
                   </TableRow>
                 ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8">
+                    No invoices found
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
