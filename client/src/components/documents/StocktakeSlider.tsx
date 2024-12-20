@@ -212,6 +212,7 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                       <TableHead>Item</TableHead>
                       <TableHead className="text-right">Quantity</TableHead>
                       <TableHead className="text-right">Unit</TableHead>
+                      <TableHead className="text-right">Time</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -244,6 +245,9 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                           <TableCell className="text-right">{ingredient.quantity}</TableCell>
                           <TableCell className="text-right">
                             <Badge variant="secondary">{ingredient.unit.unit_name}</Badge>
+                          </TableCell>
+                          <TableCell className="text-right text-muted-foreground text-sm">
+                            {new Date(ingredient.created_at).toLocaleTimeString()}
                           </TableCell>
                         </TableRow>
                       ))}
