@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Images, Hash, DollarSign, Package2, User2 } from "lucide-react";
+import { Images, User2 } from "lucide-react";
 import ViewToggle from "@/components/orders/ViewToggle";
 import {
   Table,
