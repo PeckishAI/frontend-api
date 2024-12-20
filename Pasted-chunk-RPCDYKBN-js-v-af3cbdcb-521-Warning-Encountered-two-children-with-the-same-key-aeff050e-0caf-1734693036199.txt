@@ -1,0 +1,42 @@
+chunk-RPCDYKBN.js?v=af3cbdcb:521 Warning: Encountered two children with the same key, `aeff050e-0caf-4444-8cd0-1cdd96d302e8`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+    at tbody
+    at _c5 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/ui/table.tsx:53:12)
+    at table
+    at div
+    at _c (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/ui/table.tsx:20:11)
+    at div
+    at div
+    at div
+    at div
+    at div
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-M7N4V4P4.js?v=af3cbdcb:41:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…/runner/Frontend/node_modules/.vite/deps/chunk-H6ZAMRFS.js?v=af3cbdcb:63:7
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-DKHUMOWT.js?v=af3cbdcb:52:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-DKHUMOWT.js?v=af3cbdcb:33:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-M7N4V4P4.js?v=af3cbdcb:41:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…/runner/Frontend/node_modules/.vite/deps/chunk-ALBHCHIF.js?v=af3cbdcb:29:5
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-T3GMRRQP.js?v=af3cbdcb:234:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-T3GMRRQP.js?v=af3cbdcb:157:58
+    at Presence (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-2YG6M3C2.js?v=af3cbdcb:24:11)
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-T3GMRRQP.js?v=af3cbdcb:148:64
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-DKHUMOWT.js?v=af3cbdcb:52:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-DKHUMOWT.js?v=af3cbdcb:33:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-M7N4V4P4.js?v=af3cbdcb:41:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-H6ZAMRFS.js?v=af3cbdcb:262:22
+    at Presence (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-2YG6M3C2.js?v=af3cbdcb:24:11)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-7X6RRC7I.js?v=af3cbdcb:38:15)
+    at DialogPortal (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-T3GMRRQP.js?v=af3cbdcb:111:11)
+    at _c3 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/ui/sheet.tsx:66:12)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-7X6RRC7I.js?v=af3cbdcb:38:15)
+    at Dialog (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…/runner/Frontend/node_modules/.vite/deps/chunk-T3GMRRQP.js?v=af3cbdcb:52:5)
+    at StocktakeSlider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/documents/StocktakeSlider.tsx?t=1734692619540:36:43)
+    at div
+    at Stocktakes (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/pages/documents/Stocktakes.tsx?t=1734692619540:177:45)
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=af3cbdcb:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=af3cbdcb:247:17)
+    at div
+    at RestaurantProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/contexts/RestaurantContext.tsx:20:38)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=af3cbdcb:2805:3)
+    at App
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=af3cbdcb:2805:3)
+﻿

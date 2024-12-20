@@ -1,0 +1,248 @@
+0a0c9b61-d259-4064-baee-efdda443d39d
+: 
+ingredient_name
+: 
+"Brenne Cuvée Spéciale Single Malt Whisky 6/70 40%"
+ingredient_suppliers
+: 
+[{…}]
+ingredient_uuid
+: 
+"0a0c9b61-d259-4064-baee-efdda443d39d"
+par_level
+: 
+null
+quantity
+: 
+0
+tags
+: 
+[{…}]
+unit_name
+: 
+"bottle"
+unit_uuid
+: 
+"9362f879-fdf0-464a-aba6-47f2a3f4973f"
+volume_quantity
+: 
+70
+volume_unit_name
+: 
+"cL"
+volume_unit_uuid
+: 
+"ab35150f-18ee-4053-b7ea-40029a6f0afa"
+[[Prototype]]
+: 
+Object
+0a04ea68-f998-4691-91d0-a00e69097b86
+: 
+{ingredient_name: "Luke's Cider - Infernal Serpent (2023 Vintage) 24x33cl (6.2% Abv) CAN", ingredient_suppliers: Array(1), ingredient_uuid: '0a04ea68-f998-4691-91d0-a00e69097b86', par_level: null, quantity: 16, …}
+0a7e741a-6bc0-4a85-90a2-11faba47e099
+: 
+{ingredient_name: 'Chambord raspberry liqueur', ingredient_suppliers: Array(1), ingredient_uuid: '0a7e741a-6bc0-4a85-90a2-11faba47e099', par_level: 0, quantity: 1, …}
+0acf2179-dc11-4193-be04-9237eae30c44
+: 
+{ingredient_name: '50g DILL PREPACKED', ingredient_suppliers: Array(2), ingredient_uuid: '0acf2179-dc11-4193-be04-9237eae30c44', par_level: 0, quantity: 0, …}
+0ad9b02b-24fc-4704-a77f-469d2dbc3e88
+: 
+{ingredient_name: 'ONION POWDER', ingredient_suppliers: Array(1), ingredient_uuid: '0ad9b02b-24fc-4704-a77f-469d2dbc3e88', par_level: 0, quantity: 0, …}
+0ae25558-af69-4ea0-9773-f84ef1dccb49
+: 
+{ingredient_name: 'Corn flour', ingredient_suppliers: Array(1), ingredient_uuid: '0ae25558-af69-4ea0-9773-f84ef1dccb49', par_level: 0, quantity: 3.5, …}
+0af6720d-87d7-4f6a-816b-77fb83c24541
+: 
+{ingredient_name: 'Twining Cust Fav Variety 1x3x50 & 1x4x20', ingredient_suppliers: Array(1), ingredient_uuid: '0af6720d-87d7-4f6a-816b-77fb83c24541', par_level: 0, quantity: 0, …}
+0b2e6e8d-780d-436c-a2a1-e2bcb6f84724
+: 
+{ingredient_name: 'Blanco Sobre Lias 23 Care 6/75', ingredient_suppliers: Array(1), ingredient_uuid: '0b2e6e8d-780d-436c-a2a1-e2bcb6f84724', par_level: null, quantity: 4.5, …}
+0b739c4c-7377-43c1-b6c9-4e28aeea0f7a
+: 
+{ingredient_name: 'Eagle Rare Straight Bourbon 10yo 6/70 45%', ingredient_suppliers: Array(1), ingredient_uuid: '0b739c4c-7377-43c1-b6c9-4e28aeea0f7a', par_level: null, quantity: 0.8, …}
+0b8168e7-a736-43f8-a12f-8a33a2fda4c4
+: 
+{ingredient_name: 'Vault City - Blood & Ink 1x20L Keg (4.9% ABV)', ingredient_suppliers: Array(1), ingredient_uuid: '0b8168e7-a736-43f8-a12f-8a33a2fda4c4', par_level: null, quantity: 1, …}
+0bfebf29-5d76-47ff-b146-d303c9325c82
+: 
+{ingredient_name: 'Ground Almond', ingredient_suppliers: Array(0), ingredient_uuid: '0bfebf29-5d76-47ff-b146-d303c9325c82', par_level: 0, quantity: 100, …}
+0c6ddd0f-0f7d-47dd-b073-e098f9ac7c59
+: 
+{ingredient_name: 'Chickpeas', ingredient_suppliers: Array(0), ingredient_uuid: '0c6ddd0f-0f7d-47dd-b073-e098f9ac7c59', par_level: 0, quantity: 17, …}
+0c88a7ef-d08d-473b-8540-9906e76f90f8
+: 
+{ingredient_name: 'GRATED WHITE CHEESE 2KG', ingredient_suppliers: Array(1), ingredient_uuid: '0c88a7ef-d08d-473b-8540-9906e76f90f8', par_level: null, quantity: 0, …}
+0c26832a-9d84-4014-ba14-a98d3896846d
+: 
+{ingredient_name: 'Kakira 5 Year Old Dark Rum 6/70 40%', ingredient_suppliers: Array(1), ingredient_uuid: '0c26832a-9d84-4014-ba14-a98d3896846d', par_level: 0, quantity: 0.7, …}
+0c70215e-154e-4553-9532-d8d6547200ab
+: 
+{ingredient_name: '', ingredient_suppliers: Array(1), ingredient_uuid: '0c70215e-154e-4553-9532-d8d6547200ab', par_level: 0, quantity: 0, …}
+0ca6b056-41f3-4017-af0c-e5bbff473279
+: 
+{ingredient_name: 'Muscadet Sevre et Maine sur Lie 22 Bretesche 6/75', ingredient_suppliers: Array(1), ingredient_uuid: '0ca6b056-41f3-4017-af0c-e5bbff473279', par_level: null, quantity: 2.5, …}
+0d3f42ce-c8c0-4dee-b53d-cf6a5b0671f6
+: 
+{ingredient_name: 'GINGER                        ', ingredient_suppliers: Array(1), ingredient_uuid: '0d3f42ce-c8c0-4dee-b53d-cf6a5b0671f6', par_level: null, quantity: 0, …}
+0deb43ec-cfb4-493c-94b3-d071d0d02690
+: 
+{ingredient_name: 'SEACIDER MANDARIN 20 LTR BIB', ingredient_suppliers: Array(1), ingredient_uuid: '0deb43ec-cfb4-493c-94b3-d071d0d02690', par_level: null, quantity: 0, …}
+0eaa94ed-5b52-4473-b88b-539e25faa92d
+: 
+{ingredient_name: 'UK National Haz chem liquid delivery', ingredient_suppliers: Array(0), ingredient_uuid: '0eaa94ed-5b52-4473-b88b-539e25faa92d', par_level: null, quantity: 0, …}
+0eb6d2e7-41f3-42a8-886e-b8087fd8a2cd
+: 
+{ingredient_name: '', ingredient_suppliers: Array(1), ingredient_uuid: '0eb6d2e7-41f3-42a8-886e-b8087fd8a2cd', par_level: 0, quantity: 0, …}
+0ee6e0c6-909c-4e32-aa08-f20818c03d49
+: 
+{ingredient_name: 'Fee Brothers Peach Bitters 12/15 1.7%', ingredient_suppliers: Array(1), ingredient_uuid: '0ee6e0c6-909c-4e32-aa08-f20818c03d49', par_level: null, quantity: 0, …}
+0f6dffab-e8eb-425c-ac17-6e4708ef082e
+: 
+{ingredient_name: 'Sapling Vodka 6/70 40%', ingredient_suppliers: Array(1), ingredient_uuid: '0f6dffab-e8eb-425c-ac17-6e4708ef082e', par_level: null, quantity: 0, …}
+0f6e9364-f3fa-4ff0-a9fb-d16d5111b859
+: 
+{ingredient_name: 'Chorizo Mini Picante Parr', ingredient_suppliers: Array(1), ingredient_uuid: '0f6e9364-f3fa-4ff0-a9fb-d16d5111b859', par_level: null, quantity: 0, …}
+0f761f63-ce74-42c4-b742-d1c91fb7ec96
+: 
+{ingredient_name: 'Fever-Tree Light Lemonade 24/20', ingredient_suppliers: Array(1), ingredient_uuid: '0f761f63-ce74-42c4-b742-d1c91fb7ec96', par_level: null, quantity: 0, …}
+0f836de4-5374-4e3e-b970-6d70407302d2
+: 
+{ingredient_name: 'Bombay Sapphire Presse Lemon Gin 6/70 37.5%', ingredient_suppliers: Array(1), ingredient_uuid: '0f836de4-5374-4e3e-b970-6d70407302d2', par_level: null, quantity: 0, …}
+00c99a28-0031-4f11-a86d-37a23c30cbf7
+: 
+{ingredient_name: 'Dry Curaçao by Pierre Ferrand', ingredient_suppliers: Array(0), ingredient_uuid: '00c99a28-0031-4f11-a86d-37a23c30cbf7', par_level: 0, quantity: 1, …}
+01aeb531-9f7d-4ed2-9d4a-59866cd93f7c
+: 
+{ingredient_name: 'PEPPER RED', ingredient_suppliers: Array(1), ingredient_uuid: '01aeb531-9f7d-4ed2-9d4a-59866cd93f7c', par_level: null, quantity: 0, …}
+01b3feb9-98be-467e-b6a4-98b9c4a52885
+: 
+{ingredient_name: 'Double Dutch Pomegranate and Basil Tonic 24/20', ingredient_suppliers: Array(1), ingredient_uuid: '01b3feb9-98be-467e-b6a4-98b9c4a52885', par_level: null, quantity: 0, …}
+01f4fd06-f9bc-47bd-a186-c10fed1a7461
+: 
+{ingredient_name: 'Minor Figures Barista Oat Milk Standard', ingredient_suppliers: Array(1), ingredient_uuid: '01f4fd06-f9bc-47bd-a186-c10fed1a7461', par_level: 0, quantity: 8, …}
+01f15afa-3742-430e-8d4d-3be65b63da40
+: 
+{ingredient_name: 'Lea and Perris', ingredient_suppliers: Array(0), ingredient_uuid: '01f15afa-3742-430e-8d4d-3be65b63da40', par_level: 0, quantity: 8, …}
+1a4ee52f-1b03-49cd-9048-54d80414a77b
+: 
+{ingredient_name: 'Philly Cheese 1.65Kg', ingredient_suppliers: Array(1), ingredient_uuid: '1a4ee52f-1b03-49cd-9048-54d80414a77b', par_level: null, quantity: 0, …}
+1ab331a5-bbe3-4682-a8c6-a153e4063edb
+: 
+{ingredient_name: 'Parmezan kg', ingredient_suppliers: Array(0), ingredient_uuid: '1ab331a5-bbe3-4682-a8c6-a153e4063edb', par_level: 0, quantity: 1, …}
+1ad911ee-2170-498f-9707-efa39aead93c
+: 
+{ingredient_name: 'SOUR CREAM 2 KILOS', ingredient_suppliers: Array(1), ingredient_uuid: '1ad911ee-2170-498f-9707-efa39aead93c', par_level: null, quantity: 2, …}
+1c9123ee-2780-4eec-8445-d7ee06f8452b
+: 
+{ingredient_name: 'MICRO RED AMARANTH', ingredient_suppliers: Array(1), ingredient_uuid: '1c9123ee-2780-4eec-8445-d7ee06f8452b', par_level: 0, quantity: 0, …}
+1d04aa20-bf09-494f-8186-25c7a04866ad
+: 
+{ingredient_name: 'Roubertas Comte de Provence Rose', ingredient_suppliers: Array(0), ingredient_uuid: '1d04aa20-bf09-494f-8186-25c7a04866ad', par_level: 0, quantity: 0.2, …}
+1d6e6843-c4f1-4082-9286-4beb82b7a602
+: 
+{ingredient_name: 'Chefs Kitchen Cooking Wine Red 1.8% ABV (CF*)', ingredient_suppliers: Array(2), ingredient_uuid: '1d6e6843-c4f1-4082-9286-4beb82b7a602', par_level: 0, quantity: 0, …}
+1d73eeb9-7674-4c95-b1d1-62b9c0077c0f
+: 
+{ingredient_name: 'MAYONNAISE 10LITRE', ingredient_suppliers: Array(1), ingredient_uuid: '1d73eeb9-7674-4c95-b1d1-62b9c0077c0f', par_level: 0, quantity: 0, …}
+1d6969e0-dab0-48e2-816f-cbfd09019f59
+: 
+{ingredient_name: 'MINT BUNCHED', ingredient_suppliers: Array(2), ingredient_uuid: '1d6969e0-dab0-48e2-816f-cbfd09019f59', par_level: null, quantity: 1, …}
+1d547061-d365-4341-9115-22b6864f5ad9
+: 
+{ingredient_name: 'Wild Turkey 81 Proof Kentucky Straight Bourbon Whiskey', ingredient_suppliers: Array(0), ingredient_uuid: '1d547061-d365-4341-9115-22b6864f5ad9', par_level: 0, quantity: 1.9, …}
+1e00a574-19b8-44b0-895c-caa4c326d626
+: 
+{ingredient_name: 'Franklin and Sons Light Tonic Water 24/20', ingredient_suppliers: Array(1), ingredient_uuid: '1e00a574-19b8-44b0-895c-caa4c326d626', par_level: null, quantity: 0, …}
+1e889014-2e67-4d7b-962f-47fec873df49
+: 
+{ingredient_name: 'Los Siete Misterios Dobe-Yej 6/70 44%', ingredient_suppliers: Array(1), ingredient_uuid: '1e889014-2e67-4d7b-962f-47fec873df49', par_level: null, quantity: 0, …}
+1ebb1604-b0f3-4a9a-ae66-34a7d81b7df3
+: 
+{ingredient_name: 'Mondo Direct Road Soda (30L Kegstar)', ingredient_suppliers: Array(1), ingredient_uuid: '1ebb1604-b0f3-4a9a-ae66-34a7d81b7df3', par_level: 0, quantity: 0, …}
+1f307bf8-3e32-4b3d-ad9b-a705e9e883bd
+: 
+{ingredient_name: 'Auchentoshan American Oak Single Malt 6/70 40%', ingredient_suppliers: Array(1), ingredient_uuid: '1f307bf8-3e32-4b3d-ad9b-a705e9e883bd', par_level: null, quantity: 0.6, …}
+1fab32b6-792b-4d97-9c36-7f11177c0926
+: 
+{ingredient_name: 'Sausagemeat', ingredient_suppliers: Array(2), ingredient_uuid: '1fab32b6-792b-4d97-9c36-7f11177c0926', par_level: 0, quantity: 0, …}
+1fc2c019-cc48-451c-a37f-9e25bd1414d3
+: 
+{ingredient_name: 'Opie Cocktail Cherries', ingredient_suppliers: Array(1), ingredient_uuid: '1fc2c019-cc48-451c-a37f-9e25bd1414d3', par_level: 0, quantity: 0, …}
+02d0c84d-8c52-4b6d-a94d-b3cc3f6e4535
+: 
+{ingredient_name: 'Corn-Fed Whole Chicken ', ingredient_suppliers: Array(1), ingredient_uuid: '02d0c84d-8c52-4b6d-a94d-b3cc3f6e4535', par_level: null, quantity: 0, …}
+2a0f2b57-d826-4dbb-b094-a4d88f68b85c
+: 
+{ingredient_name: 'SAVOURSMITHS DESERT SALT CRISPS', ingredient_suppliers: Array(2), ingredient_uuid: '2a0f2b57-d826-4dbb-b094-a4d88f68b85c', par_level: 0, quantity: 2, …}
+2a75556a-50d0-408c-a8c0-82365b19bef0
+: 
+{ingredient_name: 'Pernod Absinthe 6/70 68%', ingredient_suppliers: Array(1), ingredient_uuid: '2a75556a-50d0-408c-a8c0-82365b19bef0', par_level: null, quantity: 0, …}
+2a97206d-a90f-49e8-b872-27cc182334b8
+: 
+{ingredient_name: 'SEACIDER LEMON MERINGUE PIE 20 LTR BIB', ingredient_suppliers: Array(1), ingredient_uuid: '2a97206d-a90f-49e8-b872-27cc182334b8', par_level: null, quantity: 0, …}
+2afe560c-b4a1-4807-a0de-26c51db5db46
+: 
+{ingredient_name: 'Two Drifters Lightly Spiced Rum 6/70 40%', ingredient_suppliers: Array(1), ingredient_uuid: '2afe560c-b4a1-4807-a0de-26c51db5db46', par_level: null, quantity: 0, …}
+2b8e09aa-c6d7-4150-86d5-e8a6dea6eb2f
+: 
+{ingredient_name: 'EGGS MEDIUM LION TRAYS (x30)', ingredient_suppliers: Array(1), ingredient_uuid: '2b8e09aa-c6d7-4150-86d5-e8a6dea6eb2f', par_level: 0, quantity: 0, …}
+2b24c6ce-3b01-4cb9-95f8-45c741e42f76
+: 
+{ingredient_name: 'Grated Mozz.Cheese 2Kg', ingredient_suppliers: Array(1), ingredient_uuid: '2b24c6ce-3b01-4cb9-95f8-45c741e42f76', par_level: null, quantity: 0, …}
+2b85abd6-4bf0-459a-ab52-1c835f74d2f1
+: 
+{ingredient_name: 'two flints', ingredient_suppliers: Array(0), ingredient_uuid: '2b85abd6-4bf0-459a-ab52-1c835f74d2f1', par_level: 0, quantity: 4, …}
+2b055518-99d7-4342-897d-55ed181d3200
+: 
+{ingredient_name: 'BEANSHOOTS                    ', ingredient_suppliers: Array(1), ingredient_uuid: '2b055518-99d7-4342-897d-55ed181d3200', par_level: null, quantity: 0, …}
+2ba999e5-b3bb-4cec-9a4c-414fef46cc19
+: 
+{ingredient_name: 'Lervig Pilsner 24x33cl (4.7% ABV) ***CAN***', ingredient_suppliers: Array(1), ingredient_uuid: '2ba999e5-b3bb-4cec-9a4c-414fef46cc19', par_level: null, quantity: 0, …}
+2bf69d6d-af02-402e-9148-7a3dbf898258
+: 
+{ingredient_name: 'Franklin and Sons Soda Water NRB 24/20', ingredient_suppliers: Array(1), ingredient_uuid: '2bf69d6d-af02-402e-9148-7a3dbf898258', par_level: null, quantity: 0, …}
+2c7ac61a-a097-447f-b651-54b1353c8f98
+: 
+{ingredient_name: 'Coca-cola 10Ltr BB (High Sugar Rate Applicable)', ingredient_suppliers: Array(1), ingredient_uuid: '2c7ac61a-a097-447f-b651-54b1353c8f98', par_level: null, quantity: 3, …}
+2d2e37e1-2f5c-45d5-aaa8-df97d5191748
+: 
+{ingredient_name: 'Schweppes Orange Cordial Litre 12/100', ingredient_suppliers: Array(1), ingredient_uuid: '2d2e37e1-2f5c-45d5-aaa8-df97d5191748', par_level: null, quantity: 0, …}
+2d68751f-ce84-4071-9f07-5bad5ecd7018
+: 
+{ingredient_name: 'Mild Chili Powder', ingredient_suppliers: Array(0), ingredient_uuid: '2d68751f-ce84-4071-9f07-5bad5ecd7018', par_level: 0, quantity: 200, …}
+2d618975-65fe-41d7-86a9-319455f00a70
+: 
+{ingredient_name: 'Ceylon Arrack 6/70 40%', ingredient_suppliers: Array(1), ingredient_uuid: '2d618975-65fe-41d7-86a9-319455f00a70', par_level: null, quantity: 0, …}
+2db3623f-de2a-4855-b360-4eec9bf83140
+: 
+{ingredient_name: 'Vedrenne Creme de Peche (Peach) 6/70 15%', ingredient_suppliers: Array(1), ingredient_uuid: '2db3623f-de2a-4855-b360-4eec9bf83140', par_level: null, quantity: 0, …}
+2dbb4199-1bff-4e8b-a433-89dbcd05cf70
+: 
+{ingredient_name: 'Rothaus Alcfrei Pils 0.33x24 ABV 0.4%', ingredient_suppliers: Array(2), ingredient_uuid: '2dbb4199-1bff-4e8b-a433-89dbcd05cf70', par_level: null, quantity: 10, …}
+2df671b3-870c-4206-aee7-6b9dfbdf4ad9
+: 
+{ingredient_name: 'White Truffle Oil', ingredient_suppliers: Array(0), ingredient_uuid: '2df671b3-870c-4206-aee7-6b9dfbdf4ad9', par_level: 0, quantity: 250, …}
+2e4b8444-3eb7-4e43-aa7f-344b67b0fe86
+: 
+{ingredient_name: 'Velho Barreiro Cachaca 6/70 39%', ingredient_suppliers: Array(1), ingredient_uuid: '2e4b8444-3eb7-4e43-aa7f-344b67b0fe86', par_level: null, quantity: 0, …}
+2e7c19ee-c041-4f01-866c-f4652f2fd19d
+: 
+{ingredient_name: 'EGGS BARN (DOZENS) MEDIUM', ingredient_suppliers: Array(1), ingredient_uuid: '2e7c19ee-c041-4f01-866c-f4652f2fd19d', par_level: null, quantity: 0, …}
+2e53930f-3303-4d9d-b668-f2016d0733f9
+: 
+{ingredient_name: 'Mascarpone', ingredient_suppliers: Array(0), ingredient_uuid: '2e53930f-3303-4d9d-b668-f2016d0733f9', par_level: 0, quantity: 1, …}
+2eda6252-cd25-441d-9794-d8311773b4f3
+: 
+{ingredient_name: 'Parmesan', ingredient_suppliers: Array(0), ingredient_uuid: '2eda6252-cd25-441d-9794-d8311773b4f3', par_level: 0, quantity: 500, …}
+2fadc0e8-02fb-4cd5-a682-0ce54579c6a7
+: 
+{ingredient_name: 'RumJava CinnaMon Bay 6/70 35%', ingredient_suppliers: Array(1), ingredient_uuid: '2fadc0e8-02fb-4cd5-a682-0ce54579c6a7', par_level: null, quantity: 0, …}
+3a532f24-54d5-4be5-bca4-0bd2f6a7fcac
+: 
+{ingredient_name: 'Haymans Old Tom Gin 6/70 41.4%', ingredient_suppliers: Array(1), ingredient_uuid: '3a532f24-54d5-4be5-bca4-0bd2f6a7fcac', par_level: null, quantity: 0, …}
+3b6d4967-270d-43da-9fa5-5e1b8021ae0f
+: 
+{ingredient_name: 'CORN ON THE COB x2', ingredient_suppliers: Array(1), ingredient_uuid: '3b6d4967-270d-43da-9fa5-5e1b8021ae0f', par_level: 0, quantity: 0, …}
+3b87ae39-4e63-4434-87dc-43f722bb7a26
+: 
+{ingredient_name: 'SEACIDER BLACK CHERRY 20 LTR BIB', ingredient_suppliers: Array(1), ingredient_uuid: '3b87ae39-4e63-4434-87dc-43f722bb7a26', par_level: null, quantity: 0, …}

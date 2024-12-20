@@ -24,7 +24,7 @@ export const inventoryService = {
       if (!data.success) {
         throw new Error("Failed to fetch inventory");
       }
-      return data;
+      return data.data;
     } catch (error) {
       console.error("Failed to fetch restaurant inventory:", error);
       throw error;

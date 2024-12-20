@@ -1,7 +1,7 @@
-
 import type { Supplier } from "@/lib/types";
 
-const BASE_URL = "https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev";
+const BASE_URL =
+  "https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev";
 
 export const supplierService = {
   async getRestaurantSuppliers(restaurantUuid: string): Promise<any> {
@@ -24,7 +24,7 @@ export const supplierService = {
       if (!data.success) {
         throw new Error("Failed to fetch suppliers");
       }
-      return data;
+      return data.data;
     } catch (error) {
       console.error("Failed to fetch restaurant suppliers:", error);
       throw error;

@@ -1,0 +1,418 @@
+Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'The Juice Cranberry Juice Drink', match: false}ingredient: "The Juice Cranberry Juice Drink"ingredientDocId: "7262c04f-dfe2-43a7-bb12-73ba5efc2f71"match: falseselectedDoc: {document_uuid: 'b29ccb68-023f-446e-9dc1-09ca5b8da0bf', document_type: 'video', file_path: 'https://storage.cloud.google.com/peckish-datasets/…501688ae_c7184139-4780-4f6d-91a8-c2f8c6eb8bb8.mp4'}selectedDocIndex: 0[[Prototype]]: Object
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Negroamaro Primitivo 23 Baccanera 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Negroamaro Primitivo 23 Baccanera 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'BenMarco Malbec 21 Susana Balbo 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'BenMarco Malbec 21 Susana Balbo 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Beaujolais Origine 22 Chermette 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Beaujolais Origine 22 Chermette 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'La Conquista 22 Chaffey Bros 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Rioja Crianza 20 Sierra Cantabria 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Rioja Crianza 20 Sierra Cantabria 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Albarino 23 Martin Codax 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Gavi di Gavi Minaia 23 Bergaglio 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Tinto Sobre Lias 23 Care 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Blanco Sobre Lias 23 Care 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Blanco Sobre Lias 23 Care 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Rose de Leoube Organic 23 Chateau Leoube 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Roubertas Comte de Provence Rose', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Agavero Tequila', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Prosecco Fiabesco DOC NV 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Moet Imperial NV Moet and Chandon 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Moet Imperial NV Moet and Chandon 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Prosecco Fiabesco DOC NV 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Everleaf Marine Non Alcoholic 6/50', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Everleaf Marine Non Alcoholic 6/50', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: "Vedrenne Sirop d'Orgeat (Almond) 6/100", match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bombay Sapphire 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Lot 40 Whisky', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Jameson Whiskey 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Taylor Whisky', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Diplomatico Reserva Exclusiva Dark Rum 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Diplomatico Reserva Exclusiva Dark Rum 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Ocho Blanco Tequila 6/50 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Tequila Ocho Plata', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Ojo de Tigre Mezcal 6/70 37%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Ojo de Tigre Mezcal 6/70 37%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: "Chardonnay 23 Pete's Pure 12/75", match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: "Chardonnay 23 Pete's Pure 12/75", match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Coffee Liqueur 6/70 34%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Coffee Liqueur 6/70 34%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Blanco Tequila 6/70 38%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Blanco Tequila 6/70 38%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aperol 6/70 11%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aperol 6/70 11%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bone Idyll Botanical Rum 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Slingsby Rhubarb Gin 6/50 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'The Duppy Share Caribbean Aged Rum 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Regal Rogue Wild Rose Vermouth 6/50 16.5%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'The Duppy Share Spiced Rum 6/70 35% ', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'The Duppy Share Spiced Rum 6/70 35% ', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Two Drifters Signature Rum 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'wheatley vodka', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Zubrowka Bison Grass 6/70 37.5%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Kakira Dark Rum', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Diplomatico Reserva Exclusiva Dark Rum 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Diplomatico Reserva Exclusiva Dark Rum 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bone Idyll Vodka 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bone Idyll Vodka 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cointreau Liqueur 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cointreau Liqueur 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'St Germain Elderflower Liqueur 6/70 20%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'St Germain Elderflower Liqueur 6/70 20%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Mr Black Coffee Liqueur 6/70 23%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Mr Black Coffee Liqueur 6/70 23%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Chambord Liqueur 6/70 16.5%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Campari Bitters 6/70 25%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Amaretto Disaronno 6/70 28%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Jagermeister 6/70 35%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Hennessy VS Cognac 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Hennessy VS Cognac 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Pimms No1 6/70 25%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aperol 6/70 11%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aperol 6/70 11%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aperol 6/70 11%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aperol 6/70 11%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Buffalo Trace Bourbon 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Nikka From The Barrel Whisky 6/50 51.4%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Makers Mark Bourbon 6/70 45%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Makers Mark Bourbon 6/70 45%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Nikka Coffey Grain Whisky 6/70 45%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Sazerac Rye', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Woodford Reserve Bourbon 6/70 43.2%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aberfeldy 12yo Single Malt 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Knob Creek Small Batch Bourbon 6/70 50%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Eagle Rare Straight Bourbon 10yo 6/70 45%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Eagle Rare Straight Bourbon 10yo 6/70 45%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Lagavulin 16yo Single Malt 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Lagavulin 16yo Single Malt 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Laphroaig 10yo Single Malt 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Laphroaig 10yo Single Malt 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Balvenie 12yo Doublewood Single Malt 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bushmills Black Bush Whiskey 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Compass Box Hedonism Grain Whisky NV 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bone Idyll London Bone Dry Gin 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bone Idyll London Bone Dry Gin 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bone Idyll Botanical Rum 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'East London Vodka 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Roku Gin 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Roku Gin 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Wimbledon Garden Gin', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Renegade Gin 6/70 42%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aviation Gin 6/70 42%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aviation Gin 6/70 42%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Gin Mare 6/70 42.7%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Inverroche Amber Gin 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Sapling Gin 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Four Pillars Bloody Shiraz Gin 6/70 37.8%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'KI NO BI Kyoto Dry Gin 6/70 45.7%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Coffee Liqueur 6/70 34%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Coffee Liqueur 6/70 34%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Pink Pepper Gin Original Audemus 6/70 44%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Mirabeau Dry Rose Gin 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Fee Brothers Orange Bitters 12/15 9%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Fee Brothers Orange Bitters 12/15 9%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Fee Brothers Plum Bitters 12/15 12%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Angostura Aromatic Bitters 12/20 44.7%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'BenMarco Malbec 21 Susana Balbo 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'BenMarco Malbec 21 Susana Balbo 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Blanco Sobre Lias 23 Care 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Blanco Sobre Lias 23 Care 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: "Chardonnay 23 Pete's Pure 12/75", match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: "Chardonnay 23 Pete's Pure 12/75", match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Blanco Tequila 6/70 38%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Blanco Tequila 6/70 38%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Buffalo Trace Bourbon 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Pohjala North Star 24x44cl (5% ABV) CAN', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Pohjala North Star 24x44cl (5% ABV) CAN', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Sauvignon Blanc 22 Mohua Wines 12/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Tinto Sobre Lias 23 Care 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'BenMarco Malbec 21 Susana Balbo 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'BenMarco Malbec 21 Susana Balbo 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'HAWKSTONE PREMIUM LAGER 330ML CASE', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Alcfrei Pils 0.33x24 ABV 0.4%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Alcfrei Pils 0.33x24 ABV 0.4%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: "Luke's Cider - Infernal Serpent (2023 Vintage) 24x33cl (6.2% Abv) CAN", match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Tannenzaepfle Pils 33clx24 (Green Label) ABV 5.1%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Tannenzaepfle Pils 33clx24 (Green Label) ABV 5.1%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'HAWKSTONE HEDGEROW FRUIT CIDER 500ML CASE', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'FLOC Whisper 24x44cl CANS (5.0% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Woof & Brew Bottom Sniffer Beer for Dogs', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'The Juice Apple Juice Drink', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: '"Bembel With Care" APFELWEIN-COLA', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'HAWKSTONE HEDGEROW FRUIT CIDER 500ML CASE', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'tasty brown ale', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Tannenzäpfle Pils 50cl 5.1% (red label)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Radler 33clx24 (Light Green label) ABV 2.1%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: '"Bembel With Care" Apfelwein-Gold', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Pulpt - Melba 24x44cl (3.5% Abv) CAN', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Hasting project', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Bayreuther, Hell', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'The Juice Orange Juice Drink', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'The Juice Cranberry Juice Drink', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'The Juice Tomato Juice Drink', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Radler 33clx24 (Light Green label) ABV 2.1%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Kulana Pineapple Juice From Concentrate ', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Schweppes Blackcurrant Cordial Litre 12/100', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Belu Still Water Glass Bottle 12/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Ginger Ale NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Roasted Pineapple Soda NRB24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Soda Water NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Soda Water NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence White Peach an Jasmine SodaNRB24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Pink Grapefruit Soda NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Pomelo and Pink Peppercorn NRB24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Indian Tonic NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Indian Tonic NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Grapefruit Rosemary Tonic NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Grapefruit Rosemary Tonic NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Augustiner Lager Helles 20x50cl (5.2% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Augustiner Lager Helles 20x50cl (5.2% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Augustiner Lager Helles 20x50cl (5.2% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Augustiner Lager Helles 20x50cl (5.2% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Augustiner Lager Helles 20x50cl (5.2% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Augustiner Lager Helles 20x50cl (5.2% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Bl Orange and Elder Tonic NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Bl Orange and Elder Tonic NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Schweppes Lime Cordial Litre 12/100', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Roses Lime Cordial Litre 12/100', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'GRAPEFRUIT PINK', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Spiced Ginger Beer NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Spiced Ginger Beer NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Fever-Tree Lemonade 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'LEMONS', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'CUCUMBER', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'DRIED JUNIPER BERRIES 200g', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'DRIED JUNIPER BERRIES 200g', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Bloody Bens', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'OGGS', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Solo Coffee Concentrate 6/100', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Solo Coffee Concentrate 6/100', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'DRIED LAVENDER                ', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'DRIED LAVENDER                ', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Minor Figures Barista Oat Milk Standard', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Minor Figures Barista Oat Milk Standard', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Tate & Lyle Agave Syrup', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'MINT BUNCHED', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'MINT BUNCHED', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Tabasco', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'DRIED JUNIPER BERRIES 200g', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'DRIED JUNIPER BERRIES 200g', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'KIWI FRUIT EACH', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: '50g THYME PREPACKED', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: '50g ROSEMARY PREPACKED', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Coca Cola Icon NRB (Coke) 24/33', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Coca Cola Icon NRB (Coke) 24/33', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Diet Coke Icon NRB (Coca Cola) 24/33', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Diet Coke Icon NRB (Coca Cola) 24/33', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Coca-cola 10Ltr BB (High Sugar Rate Applicable)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Vimto Sunkist Lemonade 10L', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Diet Coke 10Ltr BB', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'The Juice Cranberry Juice Drink', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Negroamaro Primitivo 23 Baccanera 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Negroamaro Primitivo 23 Baccanera 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'BenMarco Malbec 21 Susana Balbo 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'BenMarco Malbec 21 Susana Balbo 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Beaujolais Origine 22 Chermette 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Beaujolais Origine 22 Chermette 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'La Conquista 22 Chaffey Bros 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Rioja Crianza 20 Sierra Cantabria 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Rioja Crianza 20 Sierra Cantabria 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Albarino 23 Martin Codax 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Gavi di Gavi Minaia 23 Bergaglio 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Tinto Sobre Lias 23 Care 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Blanco Sobre Lias 23 Care 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Blanco Sobre Lias 23 Care 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Rose de Leoube Organic 23 Chateau Leoube 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Roubertas Comte de Provence Rose', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Agavero Tequila', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Prosecco Fiabesco DOC NV 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Moet Imperial NV Moet and Chandon 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Moet Imperial NV Moet and Chandon 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Prosecco Fiabesco DOC NV 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Everleaf Marine Non Alcoholic 6/50', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Everleaf Marine Non Alcoholic 6/50', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: "Vedrenne Sirop d'Orgeat (Almond) 6/100", match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bombay Sapphire 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Lot 40 Whisky', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Jameson Whiskey 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Taylor Whisky', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Diplomatico Reserva Exclusiva Dark Rum 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Diplomatico Reserva Exclusiva Dark Rum 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Ocho Blanco Tequila 6/50 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Tequila Ocho Plata', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Ojo de Tigre Mezcal 6/70 37%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Ojo de Tigre Mezcal 6/70 37%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: "Chardonnay 23 Pete's Pure 12/75", match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: "Chardonnay 23 Pete's Pure 12/75", match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Coffee Liqueur 6/70 34%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Coffee Liqueur 6/70 34%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Blanco Tequila 6/70 38%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Blanco Tequila 6/70 38%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aperol 6/70 11%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aperol 6/70 11%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bone Idyll Botanical Rum 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Slingsby Rhubarb Gin 6/50 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'The Duppy Share Caribbean Aged Rum 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Regal Rogue Wild Rose Vermouth 6/50 16.5%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'The Duppy Share Spiced Rum 6/70 35% ', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'The Duppy Share Spiced Rum 6/70 35% ', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Two Drifters Signature Rum 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'wheatley vodka', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Zubrowka Bison Grass 6/70 37.5%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Kakira Dark Rum', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Diplomatico Reserva Exclusiva Dark Rum 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Diplomatico Reserva Exclusiva Dark Rum 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bone Idyll Vodka 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bone Idyll Vodka 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cointreau Liqueur 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cointreau Liqueur 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'St Germain Elderflower Liqueur 6/70 20%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'St Germain Elderflower Liqueur 6/70 20%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Mr Black Coffee Liqueur 6/70 23%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Mr Black Coffee Liqueur 6/70 23%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Chambord Liqueur 6/70 16.5%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Campari Bitters 6/70 25%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Amaretto Disaronno 6/70 28%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Jagermeister 6/70 35%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Hennessy VS Cognac 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Hennessy VS Cognac 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Pimms No1 6/70 25%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aperol 6/70 11%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aperol 6/70 11%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aperol 6/70 11%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aperol 6/70 11%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Buffalo Trace Bourbon 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Nikka From The Barrel Whisky 6/50 51.4%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Makers Mark Bourbon 6/70 45%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Makers Mark Bourbon 6/70 45%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Nikka Coffey Grain Whisky 6/70 45%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Sazerac Rye', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Woodford Reserve Bourbon 6/70 43.2%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aberfeldy 12yo Single Malt 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Knob Creek Small Batch Bourbon 6/70 50%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Eagle Rare Straight Bourbon 10yo 6/70 45%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Eagle Rare Straight Bourbon 10yo 6/70 45%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Lagavulin 16yo Single Malt 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Lagavulin 16yo Single Malt 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Laphroaig 10yo Single Malt 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Laphroaig 10yo Single Malt 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Balvenie 12yo Doublewood Single Malt 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bushmills Black Bush Whiskey 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Compass Box Hedonism Grain Whisky NV 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bone Idyll London Bone Dry Gin 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bone Idyll London Bone Dry Gin 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Bone Idyll Botanical Rum 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'East London Vodka 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Roku Gin 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Roku Gin 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Wimbledon Garden Gin', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Renegade Gin 6/70 42%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aviation Gin 6/70 42%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Aviation Gin 6/70 42%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Gin Mare 6/70 42.7%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Inverroche Amber Gin 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Sapling Gin 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Four Pillars Bloody Shiraz Gin 6/70 37.8%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'KI NO BI Kyoto Dry Gin 6/70 45.7%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Coffee Liqueur 6/70 34%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Coffee Liqueur 6/70 34%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Pink Pepper Gin Original Audemus 6/70 44%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Mirabeau Dry Rose Gin 6/70 43%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Fee Brothers Orange Bitters 12/15 9%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Fee Brothers Orange Bitters 12/15 9%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Fee Brothers Plum Bitters 12/15 12%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Angostura Aromatic Bitters 12/20 44.7%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'BenMarco Malbec 21 Susana Balbo 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'BenMarco Malbec 21 Susana Balbo 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Blanco Sobre Lias 23 Care 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Blanco Sobre Lias 23 Care 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: "Chardonnay 23 Pete's Pure 12/75", match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: "Chardonnay 23 Pete's Pure 12/75", match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Blanco Tequila 6/70 38%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Cazcabel Blanco Tequila 6/70 38%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Buffalo Trace Bourbon 6/70 40%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Pohjala North Star 24x44cl (5% ABV) CAN', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Pohjala North Star 24x44cl (5% ABV) CAN', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Sauvignon Blanc 22 Mohua Wines 12/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'Tinto Sobre Lias 23 Care 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'BenMarco Malbec 21 Susana Balbo 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '43972eef-2f74-4e50-9a4e-bbf8c725b4e7', ingredient: 'BenMarco Malbec 21 Susana Balbo 6/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'HAWKSTONE PREMIUM LAGER 330ML CASE', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Alcfrei Pils 0.33x24 ABV 0.4%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Alcfrei Pils 0.33x24 ABV 0.4%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: "Luke's Cider - Infernal Serpent (2023 Vintage) 24x33cl (6.2% Abv) CAN", match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Tannenzaepfle Pils 33clx24 (Green Label) ABV 5.1%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Tannenzaepfle Pils 33clx24 (Green Label) ABV 5.1%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'HAWKSTONE HEDGEROW FRUIT CIDER 500ML CASE', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'FLOC Whisper 24x44cl CANS (5.0% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Woof & Brew Bottom Sniffer Beer for Dogs', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'The Juice Apple Juice Drink', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: '"Bembel With Care" APFELWEIN-COLA', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'HAWKSTONE HEDGEROW FRUIT CIDER 500ML CASE', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'tasty brown ale', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Tannenzäpfle Pils 50cl 5.1% (red label)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Radler 33clx24 (Light Green label) ABV 2.1%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: '"Bembel With Care" Apfelwein-Gold', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Pulpt - Melba 24x44cl (3.5% Abv) CAN', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Hasting project', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Bayreuther, Hell', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'The Juice Orange Juice Drink', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'The Juice Cranberry Juice Drink', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'The Juice Tomato Juice Drink', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Rothaus Radler 33clx24 (Light Green label) ABV 2.1%', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Kulana Pineapple Juice From Concentrate ', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Schweppes Blackcurrant Cordial Litre 12/100', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Belu Still Water Glass Bottle 12/75', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Ginger Ale NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Roasted Pineapple Soda NRB24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Soda Water NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Soda Water NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence White Peach an Jasmine SodaNRB24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Pink Grapefruit Soda NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Pomelo and Pink Peppercorn NRB24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Indian Tonic NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Indian Tonic NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Grapefruit Rosemary Tonic NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Grapefruit Rosemary Tonic NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Augustiner Lager Helles 20x50cl (5.2% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Augustiner Lager Helles 20x50cl (5.2% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Augustiner Lager Helles 20x50cl (5.2% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Augustiner Lager Helles 20x50cl (5.2% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Augustiner Lager Helles 20x50cl (5.2% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Augustiner Lager Helles 20x50cl (5.2% ABV)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Bl Orange and Elder Tonic NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Bl Orange and Elder Tonic NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Schweppes Lime Cordial Litre 12/100', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Roses Lime Cordial Litre 12/100', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'GRAPEFRUIT PINK', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Spiced Ginger Beer NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'London Essence Spiced Ginger Beer NRB 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: '7262c04f-dfe2-43a7-bb12-73ba5efc2f71', ingredient: 'Fever-Tree Lemonade 24/20', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'LEMONS', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'CUCUMBER', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'DRIED JUNIPER BERRIES 200g', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'DRIED JUNIPER BERRIES 200g', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Bloody Bens', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'OGGS', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Solo Coffee Concentrate 6/100', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Solo Coffee Concentrate 6/100', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'DRIED LAVENDER                ', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'DRIED LAVENDER                ', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Minor Figures Barista Oat Milk Standard', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Minor Figures Barista Oat Milk Standard', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Tate & Lyle Agave Syrup', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'MINT BUNCHED', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'MINT BUNCHED', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Tabasco', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'DRIED JUNIPER BERRIES 200g', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'DRIED JUNIPER BERRIES 200g', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'KIWI FRUIT EACH', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: '50g THYME PREPACKED', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: '50g ROSEMARY PREPACKED', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Coca Cola Icon NRB (Coke) 24/33', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Coca Cola Icon NRB (Coke) 24/33', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Diet Coke Icon NRB (Coca Cola) 24/33', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Diet Coke Icon NRB (Coca Cola) 24/33', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Coca-cola 10Ltr BB (High Sugar Rate Applicable)', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Vimto Sunkist Lemonade 10L', match: false}
+StocktakeSlider.tsx:216 Filtering: {selectedDocIndex: 0, selectedDoc: {…}, ingredientDocId: 'e7332fe4-84da-414f-bac8-a613efd084bc', ingredient: 'Diet Coke 10Ltr BB', match: false}

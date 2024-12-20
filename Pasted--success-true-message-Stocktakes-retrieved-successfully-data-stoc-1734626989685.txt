@@ -1,0 +1,339 @@
+{
+  "success": true,
+  "message": "Stocktakes retrieved successfully",
+  "data": [
+    {
+      "stocktake_uuid": "3bf4d154-8749-418a-b9f1-e9530d40a177",
+      "to_char": "2024-11-25 09:11:07",
+      "status": "Done",
+      "documents": [
+        {
+          "document_uuid": "b29ccb68-023f-446e-9dc1-09ca5b8da0bf",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_c7184139-4780-4f6d-91a8-c2f8c6eb8bb8.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "21be4806-3c14-49a6-922b-4ee6a49e42c7",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_33517d57-6ff8-46d3-8221-2336d5f3cbe5.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "541baf06-355b-4f25-8965-b231206695fa",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_0ec9ed0f-9341-4561-a9f9-fff04571dd5b.mp4",
+          "status": "Done"
+        }
+      ]
+    },
+    {
+      "stocktake_uuid": "8cfb0ccf-2e8b-4ae4-bd22-7c21fabf759f",
+      "to_char": "2024-11-19 09:11:12",
+      "status": "Done",
+      "documents": [
+        {
+          "document_uuid": "bdd348eb-6db8-4d23-9098-587981ae7dfb",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/2fff6bcb-d462-4d97-b8fe-f93307e596c5_62a3353d-2a64-4787-840f-6344d18bb2e6.mp4",
+          "status": "Done"
+        }
+      ]
+    },
+    {
+      "stocktake_uuid": "f17d7aee-825f-4c01-b8c8-0d2da53dddbe",
+      "to_char": "2024-12-09 12:12:20",
+      "status": "Done",
+      "documents": [
+        {
+          "document_uuid": "f1f5eaf5-9f4c-47ba-bbfd-bb4bf22bfc92",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_6b766f20-94be-4870-822d-01cee16a7611.mp4",
+          "status": "Done"
+        }
+      ]
+    },
+    {
+      "stocktake_uuid": "fbf2c5bd-3848-4014-8f94-afdc4866add8",
+      "to_char": "2024-11-18 08:11:44",
+      "status": "Done",
+      "documents": [
+        {
+          "document_uuid": "9fc4f4b7-5ec9-4e4b-9474-597f03789f5e",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_ff5ef12c-68bf-442a-a38a-a492ec8b9758.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "ef8a3874-9def-49c2-ae27-8e1d887245a5",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_f021dfec-1c8c-469f-bc10-573ca8418e8b.mp4",
+          "status": "Done"
+        }
+      ]
+    },
+    {
+      "stocktake_uuid": "bf57891d-df33-470e-81ac-a89699afbfbe",
+      "to_char": "2024-12-02 01:12:37",
+      "status": "Done",
+      "documents": [
+        {
+          "document_uuid": "b2d5471f-2f1c-4449-8188-cae4e34d9fb2",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/90e8f4fc-fdd1-4887-b70a-f5f2476fdfac_fa0f13bb-ad8c-4dd7-9bb7-93604c04be74.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "a42e25ba-4b0a-4b7b-ae57-024ad6d12200",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/90e8f4fc-fdd1-4887-b70a-f5f2476fdfac_1bd6965c-219d-401f-a198-dd420ba40e12.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "01d06fc3-975e-419d-935f-ea43fa8e93ce",
+          "document_type": "video",
+          "file_path": "https://storage.googleapis.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_2748ea27-8385-4891-b7ea-7f3421c359c1.mp4",
+          "status": "Done"
+        }
+      ]
+    },
+    {
+      "stocktake_uuid": "a376b5ea-d5fb-42a4-ba07-7802b767a895",
+      "to_char": "2024-12-09 01:12:19",
+      "status": "Done",
+      "documents": [
+        {
+          "document_uuid": "f21b3efd-a609-445a-81e7-a19ae7b2c308",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_d5c16cb2-5f51-4048-82fe-3de99904e678.mp4",
+          "status": "Done"
+        }
+      ]
+    },
+    {
+      "stocktake_uuid": "e2b764ef-5aa9-4d70-a34a-144e9c0415e7",
+      "to_char": "2024-12-16 11:12:42",
+      "status": "Done",
+      "documents": [
+        {
+          "document_uuid": "937ae69a-d2fb-4d45-8731-7d088ea09281",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_9dd5a85e-360c-4554-a008-92bb418798a6.mp4",
+          "status": "Done"
+        }
+      ]
+    },
+    {
+      "stocktake_uuid": "ae904064-cb7b-406e-b7ba-dfc32d1345f6",
+      "to_char": "2024-12-16 05:12:13",
+      "status": "Done",
+      "documents": [
+        {
+          "document_uuid": "8b17c052-2207-4185-b49f-a035a4090203",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_bdad62a6-764b-494a-9d3b-03a7bc4d9360.mp4",
+          "status": "Done"
+        }
+      ]
+    },
+    {
+      "stocktake_uuid": "3ebda68b-248d-4ba1-bb10-9b0e927f63a3",
+      "to_char": "2024-11-11 09:11:43",
+      "status": "Done",
+      "documents": [
+        {
+          "document_uuid": "c8d4abf6-ec52-4fd4-a00c-2a10f7105840",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_68f67196-6fc4-4343-aa16-e8a30a03a917.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "341379c3-3851-469c-98ef-ea96b90656ea",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_31e095d1-c66e-488a-b1b6-b5ac8e2cd518.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "25bf8d57-9348-4088-a469-573c10f761f7",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_4c46dd3a-a42c-48ee-86ba-45bcd58e5a10.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "eb0cbcf9-049b-4f53-9f38-0bd3aa906422",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_1300883d-924a-4461-bb61-8706100648d2.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "657fd0cf-b84a-49ab-9115-4090ed0d4e59",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_cbc18ba2-fdc3-4de5-9f68-b7a21c5b17c9.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "4a604563-1a81-4377-854b-acafdb32ea6d",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_22079bf8-f214-44fe-a212-11a16ca089c2.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "851bfe56-3956-487e-b12f-a56ca474ab7e",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_e89f1d38-b010-4064-9796-a81745242a1e.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "3f1ca001-87ee-45b5-ba78-53fc6e114798",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_3c797984-7b57-4951-924d-df24e3530d14.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "1f531927-fe0f-4ced-8768-90a0647b1faa",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_36a04bf3-5c91-462a-a535-65d9f5a8e156.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "e7c08bf3-f91e-4f26-80b4-9a7c1b018653",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_d27551d3-6b4b-4cc3-a6c9-8b57dd4574e5.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "b6cac5ca-1401-4f30-9b9c-2c7a47b1f1fe",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_127b3825-68f9-4be4-bd93-70a8e76123d8.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "18dccb3f-ddb6-4694-80a8-c57e4558db6c",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_285fca0e-c219-4893-b764-7fa58c514eb3.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "71a99ee3-d838-45d5-911c-907f995b5ebb",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_5d09a18d-0831-4b59-aeed-658c59879e1b.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "a564b960-1784-4b7d-9316-bb9f1c096595",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_db4eb333-704e-4acd-a023-1d3f966d6581.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "f7d3810e-17e4-46ae-98f8-6e34a75b5efe",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_b1ceb254-43a7-4206-80d8-a3bdae0dc349.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "a67cde51-567b-4217-843c-8dac175a6fdf",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_37e41b9d-9caa-47eb-a5a2-e08a7257a4be.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "61d3ef6e-81af-46fd-a5a0-24c2ef26f5d9",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_0b559db0-a598-40ac-84f4-9a26ce8d0c54.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "afdce690-09f7-432c-967b-bd53e41385fe",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_0e2afa44-6277-4926-8b5a-b492231648fe.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "0b6c94fb-7cae-4126-a655-83329c77e3ac",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_28e89cdc-86c4-4ccc-9d89-3272d7331b18.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "231a4612-df54-4045-b47c-d192e2ce0dca",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_e2befc71-3e4e-4126-934d-e16ce091b972.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "ff2edd2b-6a12-4472-a5bc-c92cbf5ed187",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_efd04988-98d3-4b11-b49e-653a549d3285.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "62a29a30-42c6-48a2-877d-943a9dd7382d",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_d195b3c1-36ae-49a8-b2a3-226239db5652.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "8414161e-200d-4140-9837-817216505f83",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_b67034e5-5e5b-46d4-8a3f-6e404ffffc10.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "c8f5d8c6-d6d6-491c-bb81-9e4ff7ef6fa9",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_416b8734-98bc-4bc7-8cbe-089b0a3742f8.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "457f5d3f-7166-4a0d-a33f-fef43e2d9f34",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_72c5e1a7-465e-4379-ba35-3dde0fa21484.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "f46662da-1172-47e5-86f5-37bb9058f62a",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_5987c76c-cb70-4c71-916d-0f392b3b6505.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "a017f3ff-92eb-4d14-bc3f-18a5063401e4",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_fec2f7ae-314b-485f-8ef9-8126abb90d0a.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "7f7f8bd7-0c91-4453-a4c6-fb6159dba4d0",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_5d315f7a-021c-41b8-9a17-39183a6669b2.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "61b325d1-85f2-4c92-a14f-8491615e8a4a",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_dbf7b9d9-38b6-4a40-a582-fc898c4c4d9b.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "7124dcba-2455-427d-96c7-484d0e749070",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_57d261a5-09b4-475b-86e0-9cee0f4b25a7.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "d4acdf10-5e2b-49b6-93ad-840cfd3b3081",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_9432ddbe-b84d-4384-bdce-3fe289183075.mp4",
+          "status": "Done"
+        },
+        {
+          "document_uuid": "46c6e8c0-2bdb-45d4-b604-305f81d9f8f2",
+          "document_type": "video",
+          "file_path": "https://storage.cloud.google.com/peckish-datasets/restaurant/546ae7e8-31af-4b04-ac86-db83501688ae_f5bea7b2-f31d-4633-8658-ef5be069a8c5.mp4",
+          "status": "Done"
+        }
+      ]
+    }
+  ]
+}

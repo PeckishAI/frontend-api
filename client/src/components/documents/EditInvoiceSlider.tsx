@@ -619,17 +619,30 @@ export function EditInvoiceSlider({
                                     }}
                                     options={(() => {
                                       // Get units by category
-                                      const allUnits = unitsData?.reduce((acc, unit) => {
-                                        const category = unit.category === "reference" 
-                                          ? "Reference" 
-                                          : unit.category === "custom" ? "Custom" : "Associated";
-                                        acc.push({
-                                          label: unit.unit_name,
-                                          value: unit.unit_name,
-                                          category,
-                                        });
-                                        return acc;
-                                      }, [] as Array<{label: string; value: string; category: string}>) || [];
+                                      const allUnits =
+                                        unitsData?.reduce(
+                                          (acc, unit) => {
+                                            // Map unit categories directly - keep custom and reference separate
+                                            const category =
+                                              unit.category === "reference"
+                                                ? "Reference"
+                                                : unit.category === "custom";
+                                            if (category) {
+                                              // Only add reference and custom units here
+                                              acc.push({
+                                                label: unit.unit_name,
+                                                value: unit.unit_name,
+                                                category,
+                                              });
+                                            }
+                                            return acc;
+                                          },
+                                          [] as Array<{
+                                            label: string;
+                                            value: string;
+                                            category: string;
+                                          }>,
+                                        ) || [];
                                       console.log("allUnits", allUnits);
 
                                       // Get associated units for the selected ingredient
@@ -644,11 +657,12 @@ export function EditInvoiceSlider({
                                             selectedIngredientUuid,
                                         )?.units || [];
 
-                                      const associatedOptions = associatedUnits.map((unit) => ({
-                                        label: unit.unit_name,
-                                        value: unit.unit_name,
-                                        category: "Associated",
-                                      }));
+                                      const associatedOptions =
+                                        associatedUnits.map((unit) => ({
+                                          label: unit.unit_name,
+                                          value: unit.unit_name,
+                                          category: "Associated",
+                                        }));
 
                                       // Combine and remove duplicates
                                       const uniqueOptions = [
@@ -658,8 +672,14 @@ export function EditInvoiceSlider({
 
                                       const uniqueOptionsWithoutDuplicates = [];
                                       uniqueOptions.forEach((option) => {
-                                        if (!uniqueOptionsWithoutDuplicates.some(u => u.value === option.value)) {
-                                          uniqueOptionsWithoutDuplicates.push(option);
+                                        if (
+                                          !uniqueOptionsWithoutDuplicates.some(
+                                            (u) => u.value === option.value,
+                                          )
+                                        ) {
+                                          uniqueOptionsWithoutDuplicates.push(
+                                            option,
+                                          );
                                         }
                                       });
 
