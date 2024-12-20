@@ -16,6 +16,7 @@ export function StocktakeCard({ stocktake }: StocktakeCardProps) {
   const firstImage = stocktake.documents.find(d => d.document_type === 'image');
   const firstVideo = stocktake.documents.find(d => d.document_type === 'video');
   const firstDoc = firstImage || firstVideo;
+  console.log('First document:', firstDoc);
 
   return (
     <Card className="group cursor-pointer hover:bg-muted/50">
