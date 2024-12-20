@@ -219,13 +219,11 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                         const selectedDoc = stocktake.documents[selectedDocIndex];
                         console.log('Filtering details:', {
                           ingredientName: ingredient.ingredient_name,
-                          ingredientDocuments: ingredient.documents,
+                          documentUuid: ingredient.document_uuid,
                           selectedDocId: selectedDoc?.document_uuid,
-                          selectedDocIndex,
-                          hasDocuments: !!ingredient.documents,
-                          match: ingredient.documents?.some(doc => doc.document_uuid === selectedDoc?.document_uuid)
+                          match: ingredient.document_uuid === selectedDoc?.document_uuid
                         });
-                        return selectedDoc && ingredient.documents?.some(doc => doc.document_uuid === selectedDoc.document_uuid);
+                        return selectedDoc && ingredient.document_uuid === selectedDoc.document_uuid;
                       })
                       .map((ingredient) => (
                         <TableRow key={ingredient.ingredient_uuid}>
