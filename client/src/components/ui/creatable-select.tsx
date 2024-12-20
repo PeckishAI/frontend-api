@@ -175,7 +175,6 @@ export function CreatableSelect({
               </React.Fragment>
             ))}
             </CommandList>
-          </div>
         </Command>
       </PopoverContent>
     </Popover>
