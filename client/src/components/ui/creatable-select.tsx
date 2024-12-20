@@ -25,7 +25,7 @@ export type SelectOption = {
 };
 
 interface CreatableSelectProps {
-  value?: string[];
+  value?: string[] | null;
   onChange: (value: string[]) => void;
   options: SelectOption[];
   onCreateOption?: (value: string) => void;
@@ -66,7 +66,7 @@ export function CreatableSelect({
   }, [options]);
 
   const selectedLabels = React.useMemo(() => {
-    const valueArray = value || [];
+    const valueArray = Array.isArray(value) ? value : [];
     return valueArray
       .map((v) => options.find((opt) => opt.value === v)?.label || v)
       .join(", ");
