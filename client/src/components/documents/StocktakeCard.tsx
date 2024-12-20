@@ -1,3 +1,4 @@
+
 import { Hash, User2, Images, DollarSign, Film } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +14,10 @@ interface StocktakeCardProps {
 }
 
 export function StocktakeCard({ stocktake }: StocktakeCardProps) {
+  const firstImage = stocktake.documents.find(d => d.document_type === 'image');
+  const firstVideo = stocktake.documents.find(d => d.document_type === 'video');
+  const firstDoc = firstImage || firstVideo;
+
   return (
     <Card className="group cursor-pointer hover:bg-muted/50">
       <CardContent className="p-6">
@@ -30,7 +35,7 @@ export function StocktakeCard({ stocktake }: StocktakeCardProps) {
             </div>
           </div>
           <div className="text-sm text-muted-foreground">
-            {stocktake.created_at.toLocaleDateString("en-US", {
+            {new Date(stocktake.created_at).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -39,41 +44,44 @@ export function StocktakeCard({ stocktake }: StocktakeCardProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Images className="h-4 w-4 text-gray-600" />
-              <span className="text-sm text-muted-foreground">
-                Total Documents:
-              </span>
+              <span className="text-sm text-muted-foreground">Documents:</span>
               <Badge variant="secondary">{stocktake.documents.length}</Badge>
             </div>
             <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-green-600" />
-              <span className="font-medium">$1,234.56</span>
+              <Film className="h-4 w-4 text-gray-600" />
+              <Badge variant="secondary">
+                {stocktake.documents.filter(d => d.document_type === 'video').length}
+              </Badge>
             </div>
           </div>
           <div className="relative aspect-[3/2] bg-gray-100 rounded-md overflow-hidden">
-            {stocktake.documents[0]?.document_type === 'video' ? (
+            {firstDoc ? (
               <>
-                <video
-                  src={stocktake.documents[0]?.file_path}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  preload="metadata"
-                  muted
-                  playsInline
-                  onLoadedMetadata={(e) => {
-                    const video = e.target as HTMLVideoElement;
-                    // Set to 1 second or 25% of video duration, whichever is less
-                    video.currentTime = Math.min(1, video.duration * 0.25);
-                  }}
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                  <Film className="h-8 w-8 text-white" />
-                </div>
+                {firstDoc.document_type === 'video' ? (
+                  <>
+                    <video
+                      src={firstDoc.file_path}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      preload="metadata"
+                      muted
+                      playsInline
+                      onLoadedMetadata={(e) => {
+                        const video = e.target as HTMLVideoElement;
+                        video.currentTime = Math.min(1, video.duration * 0.25);
+                      }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                      <Film className="h-8 w-8 text-white" />
+                    </div>
+                  </>
+                ) : (
+                  <img 
+                    src={firstDoc.file_path}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
               </>
-            ) : stocktake.documents[0]?.document_type === 'image' ? (
-              <img 
-                src={stocktake.documents[0]?.file_path}
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover"
-              />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                 <Images className="h-8 w-8" />
