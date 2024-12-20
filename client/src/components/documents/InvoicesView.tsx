@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Images, Hash, DollarSign, Package2, User2 } from "lucide-react";
+import { Images } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -99,7 +99,7 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">
-                        {invoice.supplier?.[0]?.supplier_name || "-"}
+                        {invoice.supplier?.supplier_name || "-"}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
