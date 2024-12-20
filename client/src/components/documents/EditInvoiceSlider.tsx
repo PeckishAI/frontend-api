@@ -516,8 +516,7 @@ export function EditInvoiceSlider({
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel
-                                className={index !== 0 ? "sr-only" : undefined}
-                              >
+                                >
                                 Detected
                               </FormLabel>
                               <FormControl>
@@ -534,8 +533,7 @@ export function EditInvoiceSlider({
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel
-                                className={index !== 0 ? "sr-only" : undefined}
-                              >
+                                >
                                 Mapped Ingredient
                               </FormLabel>
                               <FormControl>
@@ -571,11 +569,7 @@ export function EditInvoiceSlider({
                             name={`ingredients.${index}.quantity`}
                             render={({ field }) => (
                               <FormItem className="flex-1">
-                                <FormLabel
-                                  className={
-                                    index !== 0 ? "sr-only" : undefined
-                                  }
-                                >
+                                <FormLabel>
                                   Quantity
                                 </FormLabel>
                                 <FormControl>
@@ -738,10 +732,7 @@ export function EditInvoiceSlider({
                             render={({ field }) => (
                               <FormItem className="flex-1">
                                 <FormLabel
-                                  className={
-                                    index !== 0 ? "sr-only" : undefined
-                                  }
-                                >
+                                  >
                                   Unit Cost
                                 </FormLabel>
                                 <FormControl>
