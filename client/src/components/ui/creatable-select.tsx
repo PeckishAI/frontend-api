@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -17,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {ScrollArea} from '@radix-ui/react-scroll' // Added import for ScrollArea
 
 export type SelectOption = {
   value: string;
@@ -132,7 +132,7 @@ export function CreatableSelect({
             value={search}
             onValueChange={setSearch}
           />
-          <CommandList className="command-list">
+          <ScrollArea className="command-list"> {/* Wrapped CommandList with ScrollArea */}
             <CommandEmpty>
               {search.trim() !== "" && onCreateOption ? (
                 <Button
@@ -171,7 +171,7 @@ export function CreatableSelect({
                 {category !== Object.keys(filteredOptions).slice(-1)[0] && <CommandSeparator />}
               </React.Fragment>
             ))}
-          </CommandList>
+          </ScrollArea> {/* Closing ScrollArea */}
         </Command>
       </PopoverContent>
     </Popover>
