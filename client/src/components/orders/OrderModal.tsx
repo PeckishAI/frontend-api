@@ -22,7 +22,8 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { supplierService } from "@/services/supplierService";
-import { CreatableSelect } from "@/components/ui/creatable-select"; // Assuming this component exists
+import { inventoryService } from "@/services/inventoryService";
+import { CreatableSelect } from "@/components/ui/creatable-select";
 
 interface OrderModalProps {
   order: Order | null;
@@ -55,19 +56,15 @@ export default function OrderModal({
   });
   console.log("suppliers", suppliers);
 
-  const { data: ingredients, isLoading: ingredientsLoading } = useQuery({
-    queryKey: ["ingredients"],
-    queryFn: () =>
-      inventoryService.getRestaurantIngredients(
+  const { data: ingredients, ingredientsLoading } = useQuery({
+    queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("Missing restaurant UUID");
+      }
+      return inventoryService.getRestaurantIngredients(
         currentRestaurant?.restaurant_uuid,
-      ),
-    select: (data) => {
-      const ingredients = Object.values(data.data);
-      return ingredients.map((item: any) => ({
-        ingredient_uuid: item.ingredient_uuid,
-        ingredient_name: item.ingredient_name,
-        ingredient_suppliers: item.ingredient_suppliers || [],
-      }));
+      );
     },
   });
   console.log("ingredients", ingredients);
@@ -75,10 +72,11 @@ export default function OrderModal({
   const getIngredientOptions = (supplierId: string) => {
     if (!ingredients) return [];
 
-    const connectedIngredients = ingredients
+    const ingredientsArray = Object.values(ingredients);
+    const connectedIngredients = ingredientsArray
       .filter((ing) =>
-        ing.ingredient_suppliers.some(
-          (s) => s.supplier.supplier_uuid === supplierId,
+        ing.ingredient_suppliers?.some(
+          (s) => s.supplier?.supplier_uuid === supplierId,
         ),
       )
       .map((ing) => ({
@@ -87,11 +85,11 @@ export default function OrderModal({
         category: "Connected",
       }));
 
-    const otherIngredients = ingredients
+    const otherIngredients = ingredientsArray
       .filter(
         (ing) =>
-          !ing.ingredient_suppliers.some(
-            (s) => s.supplier.supplier_uuid === supplierId,
+          !ing.ingredient_suppliers?.some(
+            (s) => s.supplier?.supplier_uuid === supplierId,
           ),
       )
       .map((ing) => ({
@@ -296,14 +294,20 @@ export default function OrderModal({
                         onChange={(values) => {
                           if (values[0]) {
                             const ingredient = ingredients?.find(
-                              (i) => i.ingredient_uuid === values[0]
+                              (i) => i.ingredient_uuid === values[0],
                             );
                             if (ingredient) {
-                              updateItem(index, "name", ingredient.ingredient_name);
+                              updateItem(
+                                index,
+                                "name",
+                                ingredient.ingredient_name,
+                              );
                             }
                           }
                         }}
-                        options={getIngredientOptions(editedOrder.supplier_uuid)}
+                        options={getIngredientOptions(
+                          editedOrder.supplier_uuid,
+                        )}
                         placeholder="Select ingredient..."
                         disabled={!editMode}
                       />
@@ -369,8 +373,6 @@ export default function OrderModal({
                 </TableRow>
               </TableBody>
             </Table>
-
-            
 
             {editMode && (
               <div className="flex justify-end gap-4">
