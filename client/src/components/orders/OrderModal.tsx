@@ -98,8 +98,7 @@ export default function OrderModal({ order, onClose, editMode = false, onSave }:
   const isDraft = editedOrder.status === 'draft';
 
   const renderNonDraftLayout = () => (
-    {isDraft ? (
-          <div className="space-y-6">
+    <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="text-sm text-gray-600">Supplier</label>
