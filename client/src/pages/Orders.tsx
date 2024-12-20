@@ -71,8 +71,8 @@ export default function Orders() {
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
     select: (data) => {
-      if (!data?.data) return [];
-      return data.data.map((supplier: any) => ({
+      if (!data) return [];
+      return data.map((supplier: any) => ({
         supplier_uuid: supplier.supplier_uuid,
         supplier_name: supplier.supplier_name,
         email: supplier.email || "",

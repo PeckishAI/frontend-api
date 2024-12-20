@@ -68,7 +68,7 @@ export default function Inventory() {
     select: (data) => {
       if (!data) return [];
       console.log("Raw data in select:", data);
-      const inventoryItems = Object.values(data.data);
+      const inventoryItems = Object.values(data);
       return inventoryItems.map((item: any) => ({
         ingredient_uuid: item.ingredient_uuid,
         ingredient_name: item.ingredient_name,

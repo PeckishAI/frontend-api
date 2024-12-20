@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -149,7 +148,9 @@ export function CreatableSelect({
             </CommandEmpty>
             {Object.entries(filteredOptions).map(([category, opts]) => (
               <React.Fragment key={category}>
-                <CommandGroup heading={category === "Default" ? undefined : category}>
+                <CommandGroup
+                  heading={category === "Default" ? undefined : category}
+                >
                   {opts.map((option) => (
                     <CommandItem
                       key={option.value}
@@ -168,7 +169,9 @@ export function CreatableSelect({
                     </CommandItem>
                   ))}
                 </CommandGroup>
-                {category !== Object.keys(filteredOptions).slice(-1)[0] && <CommandSeparator />}
+                {category !== Object.keys(filteredOptions).slice(-1)[0] && (
+                  <CommandSeparator />
+                )}
               </React.Fragment>
             ))}
           </CommandList>
