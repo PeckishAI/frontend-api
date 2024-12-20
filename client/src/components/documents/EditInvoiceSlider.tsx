@@ -36,6 +36,7 @@ import { Slider } from "@/components/ui/slider";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { supplierService } from "@/services/supplierService";
+import { inventoryService } from "@/services/inventoryService"; //Import inventoryService
 
 const editInvoiceSchema = z.object({
   invoice_number: z.string().optional(),
@@ -115,6 +116,18 @@ export function EditInvoiceSlider({
       );
     },
     enabled: !!restaurant?.restaurant_uuid && !!invoice?.supplier?.supplier_uuid,
+  });
+
+  const { data: restaurantIngredients } = useQuery({ // Added restaurantIngredients query
+    queryKey: ["ingredients", restaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!restaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      return inventoryService.getRestaurantIngredients(restaurant.restaurant_uuid);
+    },
+    enabled: !!restaurant?.restaurant_uuid,
+    select: (data) => data.data,
   });
 
   const calculateTotal = () => {
@@ -492,7 +505,10 @@ export function EditInvoiceSlider({
                                       field.onChange(values[0]);
                                     }
                                   }}
-                                  options={defaultIngredients}
+                                  options={restaurantIngredients?.map((ingredient) => ({ //Use restaurantIngredients here
+                                    value: ingredient.ingredient_uuid,
+                                    label: ingredient.ingredient_name,
+                                  }))}
                                   onCreateOption={(value) => {
                                     field.onChange(value);
                                   }}
