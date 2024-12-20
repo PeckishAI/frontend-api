@@ -41,7 +41,15 @@ export default function OrderModal({
 }: OrderModalProps) {
   if (!order) return null;
 
-  const [editedOrder, setEditedOrder] = useState<Order>(order);
+  const [editedOrder, setEditedOrder] = useState<Order>(() => ({
+    ...order,
+    items: order?.items || [],
+    total: order?.total || 0,
+    status: order?.status || 'draft',
+    orderDate: order?.orderDate || new Date().toISOString(),
+    supplier_name: order?.supplier_name || '',
+    supplier_uuid: order?.supplier_uuid || ''
+  }));
   const { currentRestaurant } = useRestaurantContext(); // Assuming this context provides necessary data.
 
   const { data: suppliers, suppliersLoading } = useQuery({
