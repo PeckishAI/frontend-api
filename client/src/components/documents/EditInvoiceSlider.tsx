@@ -597,11 +597,7 @@ export function EditInvoiceSlider({
                             name={`ingredients.${index}.unit`}
                             render={({ field }) => (
                               <FormItem className="w-32">
-                                <FormLabel
-                                  className={
-                                    index !== 0 ? "sr-only" : undefined
-                                  }
-                                >
+                                <FormLabel>
                                   Unit
                                 </FormLabel>
                                 <FormControl>
@@ -761,11 +757,7 @@ export function EditInvoiceSlider({
                             name={`ingredients.${index}.vat`}
                             render={({ field }) => (
                               <FormItem className="w-24">
-                                <FormLabel
-                                  className={
-                                    index !== 0 ? "sr-only" : undefined
-                                  }
-                                >
+                                <FormLabel>
                                   VAT %
                                 </FormLabel>
                                 <FormControl>
