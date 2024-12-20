@@ -37,21 +37,25 @@ import { Slider } from "@/components/ui/slider";
 const editInvoiceSchema = z.object({
   invoice_number: z.string().optional(),
   date: z.string().optional(),
-  supplier: z.object({
-    supplier_uuid: z.string().optional(),
-    supplier_name: z.string().optional()
-  }).optional(),
+  supplier: z
+    .object({
+      supplier_uuid: z.string().optional(),
+      supplier_name: z.string().optional(),
+    })
+    .optional(),
   amount: z.number().optional(),
   vat: z.number().optional(),
   discount: z.number().optional(),
   created_supplier: z.boolean().optional(),
   documents: z.array(
-    z.object({
-      document_uuid: z.string().optional(),
-      file_path: z.string().optional(),
-      name: z.string().optional(),
-      document_type: z.string().optional()
-    }).optional(),
+    z
+      .object({
+        document_uuid: z.string().optional(),
+        file_path: z.string().optional(),
+        name: z.string().optional(),
+        document_type: z.string().optional(),
+      })
+      .optional(),
   ),
   invoice_ingredients: z.array(
     z.object({
@@ -94,14 +98,20 @@ export function EditInvoiceSlider({
   const calculateTotal = () => {
     const ingredients = form.watch("ingredients");
     return ingredients.reduce(
-      (sum, ingredient) => sum + (ingredient.totalCost || 0),
+      (sum, ingredient) => sum + (ingredient.total_cost || 0),
       0,
     );
   };
 
   const form = useForm<EditInvoiceFormValues>({
     resolver: zodResolver(editInvoiceSchema),
-    defaultValues: {}
+    defaultValues: {
+      invoice_number: "",
+      date: "",
+      amount: 0,
+      ingredients: [],
+      documents: []
+    }
   });
 
   React.useEffect(() => {
@@ -132,7 +142,7 @@ export function EditInvoiceSlider({
         unit_cost: 0,
         total_cost: 0,
         vat: 0,
-        discount: 0
+        discount: 0,
       },
     ]);
   };
@@ -178,10 +188,10 @@ export function EditInvoiceSlider({
                       }
                       alt={`Invoice ${invoice.invoice_number} - Image ${activeImageIndex + 1}`}
                       className="w-full h-full object-contain transition-transform duration-200"
-                      style={{ 
+                      style={{
                         transform: `scale(${zoom / 100})`,
-                        transformOrigin: 'center',
-                        cursor: 'grab'
+                        transformOrigin: "center",
+                        cursor: "grab",
                       }}
                     />
                   </div>
