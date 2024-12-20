@@ -292,25 +292,13 @@ export default function OrderModal({
                       <CreatableSelect
                         value={item.name ? [item.name] : []}
                         onChange={(values) => {
-                          console.log("Selected values:", values);
-                          console.log("Current ingredients:", ingredients);
-                          try {
-                            if (values && values.length > 0) {
-                              console.log("Finding ingredient with uuid:", values[0]);
-                              const selectedIngredient = ingredients?.data?.find(
-                                (ing) => ing.ingredient_uuid === values[0]
-                              );
-                              console.log("Found ingredient:", selectedIngredient);
-                              if (selectedIngredient) {
-                                updateItem(index, "name", selectedIngredient.ingredient_name);
-                              } else {
-                                updateItem(index, "name", values[0]);
-                              }
+                          if (values && values.length > 0) {
+                            const selectedIngredient = ingredients?.[values[0]];
+                            if (selectedIngredient) {
+                              updateItem(index, "name", selectedIngredient.ingredient_name);
+                            } else {
+                              updateItem(index, "name", values[0]);
                             }
-                          } catch (error) {
-                            console.error("Error in ingredient selection:", error);
-                            console.error("Current item:", item);
-                            console.error("Current index:", index);
                           }
                         }}
                         options={getIngredientOptions(
