@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -24,27 +25,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { documentService } from "@/services/documentService";
+import StocktakeSlider from "@/components/documents/StocktakeSlider";
 import type {
   Unit,
   Stocktake,
   StocktakeDocument,
   StocktakeIngredient,
 } from "@/lib/DocumentTypes";
-
-//export type Document = {
-//  type: "image" | "video";
-//  url: string;
-//};
-//
-//export type Stocktake = {
-//  id: string;
-//  date: Date;
-//  user: {
-//    name: string;
-//    avatar?: string;
-//  };
-//  documents: Document[];
-//};
 
 function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
   return (
@@ -54,7 +41,7 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
           <div className="flex items-center gap-2">
             <Hash className="h-4 w-4 text-muted-foreground" />
             <CardTitle className="text-lg font-semibold">
-              {stocktake.sotcktake_uuid}
+              {stocktake.stocktake_uuid}
             </CardTitle>
           </div>
           <div className="flex items-center gap-2">
@@ -110,6 +97,7 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
 export default function Stocktakes() {
   const [activeSection, setActiveSection] = useState("stocktakes");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+  const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
   const { currentRestaurant } = useRestaurantContext();
 
   const sections = [
@@ -134,7 +122,7 @@ export default function Stocktakes() {
         stocktake_uuid: stocktake.stocktake_uuid,
         created_at: new Date(stocktake.created_at),
         created_by: {
-          name: "System User", // Since user info isn't in the response
+          name: "System User",
         },
         documents: stocktake.documents.map((doc: StocktakeDocument) => ({
           document_uuid: doc.document_uuid,
@@ -202,10 +190,13 @@ export default function Stocktakes() {
                   </div>
                 ) : (
                   stocktakesList.map((stocktake) => (
-                    <StocktakeCard
+                    <div
                       key={stocktake.stocktake_uuid}
-                      stocktake={stocktake}
-                    />
+                      onClick={() => setSelectedStocktake(stocktake)}
+                      className="cursor-pointer"
+                    >
+                      <StocktakeCard stocktake={stocktake} />
+                    </div>
                   ))
                 )}
               </div>
@@ -231,7 +222,11 @@ export default function Stocktakes() {
                       </TableRow>
                     ) : (
                       stocktakesList.map((stocktake) => (
-                        <TableRow key={stocktake.stocktake_uuid}>
+                        <TableRow
+                          key={stocktake.stocktake_uuid}
+                          className="cursor-pointer hover:bg-muted/50"
+                          onClick={() => setSelectedStocktake(stocktake)}
+                        >
                           <TableCell>{stocktake.stocktake_uuid}</TableCell>
                           <TableCell>
                             {stocktake.created_at.toLocaleDateString("en-US", {
@@ -277,6 +272,11 @@ export default function Stocktakes() {
           </div>
         </div>
       </div>
+      <StocktakeSlider
+        stocktake={selectedStocktake}
+        open={!!selectedStocktake}
+        onOpenChange={(open) => !open && setSelectedStocktake(null)}
+      />
     </div>
   );
 }
