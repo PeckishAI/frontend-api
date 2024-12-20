@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -16,7 +17,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 export type SelectOption = {
   value: string;
@@ -52,7 +52,6 @@ export function CreatableSelect({
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
 
-  // Group options by category
   const groupedOptions = React.useMemo(() => {
     const groups: { [key: string]: SelectOption[] } = {};
     if (options) {
@@ -133,11 +132,10 @@ export function CreatableSelect({
             value={search}
             onValueChange={setSearch}
           />
-          <ScrollArea className="h-[300px]">
-            <CommandList className="p-1">
-              <CommandEmpty className="p-2">
-                {search.trim() !== "" && onCreateOption ? (
-                  <Button
+          <CommandList className="max-h-[300px] overflow-y-auto">
+            <CommandEmpty className="p-2">
+              {search.trim() !== "" && onCreateOption ? (
+                <Button
                   variant="outline"
                   className="w-full justify-start"
                   onClick={handleCreate}
@@ -175,9 +173,7 @@ export function CreatableSelect({
                 <CommandSeparator />
               </React.Fragment>
             ))}
-            </CommandList>
-            <ScrollBar orientation="vertical" />
-          </ScrollArea>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
