@@ -156,9 +156,17 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
           <div className="w-1/2 bg-gray-50/50 p-6">
             <div className="relative aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden border shadow-sm">
               {/* Image display */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-gray-400">Image {activeImageIndex + 1}</div>
-              </div>
+              {invoice.documents && invoice.documents[activeImageIndex]?.file_path ? (
+                <img
+                  src={invoice.documents[activeImageIndex].file_path}
+                  alt={`Invoice ${invoice.invoice_number} - Image ${activeImageIndex + 1}`}
+                  className="absolute inset-0 w-full h-full object-contain"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-gray-400">No image available</div>
+                </div>
+              )}
 
               {/* Image navigation */}
               {invoice.documents && invoice.documents.length > 1 && (
