@@ -224,7 +224,6 @@ export default function NewIngredientDialog({
                         console.error("Failed to create tag:", error);
                       }
                     }}
-                    placeholder="Add a tag..."
                   />
                 </FormControl>
               </div>

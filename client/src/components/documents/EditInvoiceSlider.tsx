@@ -32,51 +32,46 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import type { Invoice } from "@/pages/Documents";
-import { Slider } from "@/components/ui/slider"; //Import Slider component
-
-const defaultSuppliers = [
-  { value: "fresh_produce_co", label: "Fresh Produce Co." },
-  { value: "meat_suppliers_inc", label: "Meat Suppliers Inc." },
-  { value: "grocery_wholesale", label: "Grocery Wholesale Ltd." },
-];
-
-const defaultUnits = [
-  { value: "kg", label: "Kilogram (kg)" },
-  { value: "g", label: "Gram (g)" },
-  { value: "l", label: "Liter (L)" },
-  { value: "ml", label: "Milliliter (mL)" },
-  { value: "pcs", label: "Pieces" },
-  { value: "box", label: "Box" },
-  { value: "case", label: "Case" },
-];
-
-const defaultIngredients = [
-  { value: "tomatoes", label: "Tomatoes" },
-  { value: "lettuce", label: "Lettuce" },
-  { value: "chicken_breast", label: "Chicken Breast" },
-  { value: "olive_oil", label: "Olive Oil" },
-];
-
-const extractedIngredientSchema = z.object({
-  detected: z.string(),
-  mapped: z.string(),
-  unit: z.string(),
-  quantity: z.number().min(0),
-  unitCost: z.number().min(0),
-  totalCost: z.number().min(0),
-  vat: z.number().min(0),
-});
-
-type ExtractedIngredient = z.infer<typeof extractedIngredientSchema>;
+import { Slider } from "@/components/ui/slider";
 
 const editInvoiceSchema = z.object({
-  invoiceNumber: z.string().min(1, "Invoice number is required"),
-  supplier: z.string().min(1, "Supplier is required"),
-  date: z.date(),
-  ingredients: z
-    .array(extractedIngredientSchema)
-    .min(1, "At least one ingredient is required"),
-  price: z.number().min(0).optional(),
+  invoice_number: z.string().optional(),
+  date: z.string().optional(),
+  supplier: z.object({
+    supplier_uuid: z.string().optional(),
+    supplier_name: z.string().optional()
+  }).optional(),
+  amount: z.number().optional(),
+  vat: z.number().optional(),
+  discount: z.number().optional(),
+  created_supplier: z.booleans().optional(),
+  documents: z.array(
+    z.object({
+      document_uuid: z.string().optional(),
+      file_path: z.string().optional(),
+      name: z.string().optional(),
+      document_type: z.string().optional()
+    }).optional(),
+  ),
+  invoice_ingredients: z.array(
+    z.object({
+      uuid: z.string().optional().optional(),
+      ingredient_uuid: z.string().optional(),
+      ingredient_name: z.string().optional(),
+      detected_name: z.string().optional(),
+      quantity: z.number().optional(),
+      unit_cost: z.number().min(0).optional(),
+      total_cost: z.number().min(0).optional(),
+      unit: z
+        .object({
+          unit_uuid: z.string(),
+          unit_name: z.string(),
+        })
+        .optional(),
+      document_uuid: z.string().optional(),
+      product_code: z.string().optional(),
+    }),
+  ),
 });
 
 type EditInvoiceFormValues = z.infer<typeof editInvoiceSchema>;
@@ -106,33 +101,17 @@ export function EditInvoiceSlider({
 
   const form = useForm<EditInvoiceFormValues>({
     resolver: zodResolver(editInvoiceSchema),
-    defaultValues: {
-      invoiceNumber: "",
-      supplier: "",
-      date: new Date(),
-      ingredients: [
-        {
-          detected: "",
-          mapped: "",
-          unit: "",
-          quantity: 0,
-          unitCost: 0,
-          totalCost: 0,
-          vat: 0,
-        },
-      ],
-      price: 0,
-    },
+    defaultValues: {}
   });
 
   React.useEffect(() => {
     if (invoice) {
       form.reset({
-        invoiceNumber: invoice.invoiceNumber,
+        invoice_number: invoice.invoice_number,
         supplier: invoice.supplier,
         date: invoice.date,
         ingredients: invoice?.ingredients || [],
-        price: invoice?.price || 0,
+        amount: invoice?.amount || 0,
       });
     }
   }, [invoice, form]);
@@ -147,13 +126,13 @@ export function EditInvoiceSlider({
     form.setValue("ingredients", [
       ...currentIngredients,
       {
-        detected: "",
-        mapped: "",
-        unit: "",
+        detected_name: "",
+        ingredient_name: "",
         quantity: 0,
-        unitCost: 0,
-        totalCost: 0,
+        unit_cost: 0,
+        total_cost: 0,
         vat: 0,
+        discount: 0
       },
     ]);
   };
@@ -304,7 +283,7 @@ export function EditInvoiceSlider({
                       <div className="grid grid-cols-2 gap-6">
                         <FormField
                           control={form.control}
-                          name="invoiceNumber"
+                          name="invoice_number"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Invoice Number</FormLabel>
@@ -397,10 +376,10 @@ export function EditInvoiceSlider({
                           <Input
                             type="number"
                             step="0.01"
-                            value={form.watch("price")}
+                            value={form.watch("amount")}
                             onChange={(e) => {
                               form.setValue(
-                                "price",
+                                "amount",
                                 parseFloat(e.target.value),
                               );
                             }}
@@ -444,7 +423,7 @@ export function EditInvoiceSlider({
                       <div className="grid grid-cols-2 gap-4">
                         <FormField
                           control={form.control}
-                          name={`ingredients.${index}.detected`}
+                          name={`ingredients.${index}.detected_name`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel
@@ -462,7 +441,7 @@ export function EditInvoiceSlider({
 
                         <FormField
                           control={form.control}
-                          name={`ingredients.${index}.mapped`}
+                          name={`ingredients.${index}.ingredient_name`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel
@@ -555,7 +534,7 @@ export function EditInvoiceSlider({
                         <div className="flex items-center gap-2">
                           <FormField
                             control={form.control}
-                            name={`ingredients.${index}.unitCost`}
+                            name={`ingredients.${index}.unit_cost`}
                             render={({ field }) => (
                               <FormItem className="flex-1">
                                 <FormLabel
