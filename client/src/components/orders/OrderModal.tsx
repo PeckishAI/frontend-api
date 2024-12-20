@@ -299,26 +299,38 @@ export default function OrderModal({
                       <CreatableSelect
                         value={item.name ? [item.name] : []}
                         onChange={(values) => {
-                          if (!values?.length) {
-                            updateItem(index, "name", "");
-                            return;
-                          }
-                          
-                          const selectedId = values[0];
-                          const selectedIngredient = ingredients?.[selectedId];
-                          
-                          if (selectedIngredient) {
-                            const supplierIngredient = selectedIngredient.ingredient_suppliers?.find(
-                              s => s.supplier?.supplier_uuid === editedOrder.supplier_uuid
-                            );
-                            
-                            updateItem(index, "name", selectedIngredient.ingredient_name);
-                            if (supplierIngredient) {
-                              updateItem(index, "price", supplierIngredient.unit_cost || 0);
-                              updateItem(index, "unit", supplierIngredient.unit?.unit_name || "");
+                          try {
+                            // Handle clearing selection
+                            if (!values?.length) {
+                              updateItem(index, "name", "");
+                              updateItem(index, "price", 0);
+                              updateItem(index, "unit", "");
+                              return;
                             }
-                          } else {
-                            updateItem(index, "name", selectedId);
+                            
+                            // Skip if selecting the same value
+                            if (values[0] === item.name) {
+                              return;
+                            }
+
+                            const selectedId = values[0];
+                            const selectedIngredient = ingredients?.[selectedId];
+                            
+                            if (selectedIngredient) {
+                              const supplierIngredient = selectedIngredient.ingredient_suppliers?.find(
+                                s => s.supplier?.supplier_uuid === editedOrder.supplier_uuid
+                              );
+                              
+                              updateItem(index, "name", selectedIngredient.ingredient_name);
+                              if (supplierIngredient) {
+                                updateItem(index, "price", supplierIngredient.unit_cost || 0);
+                                updateItem(index, "unit", supplierIngredient.unit?.unit_name || "");
+                              }
+                            } else {
+                              updateItem(index, "name", selectedId);
+                            }
+                          } catch (error) {
+                            console.error("Error in ingredient selection:", error);
                           }
                         }}
                         options={getIngredientOptions(
