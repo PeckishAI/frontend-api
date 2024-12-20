@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -16,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
 export type SelectOption = {
   value: string;
   label: string;
@@ -50,7 +52,6 @@ export function CreatableSelect({
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
 
-  // Group options by category
   const groupedOptions = React.useMemo(() => {
     const groups: { [key: string]: SelectOption[] } = {};
     if (options) {
@@ -131,10 +132,10 @@ export function CreatableSelect({
             value={search}
             onValueChange={setSearch}
           />
-          <CommandList className="max-h-[300px] overflow-y-auto p-1">
-              <CommandEmpty className="p-2">
-                {search.trim() !== "" && onCreateOption ? (
-                  <Button
+          <CommandList>
+            <CommandEmpty className="p-2">
+              {search.trim() !== "" && onCreateOption ? (
+                <Button
                   variant="outline"
                   className="w-full justify-start"
                   onClick={handleCreate}
@@ -148,9 +149,7 @@ export function CreatableSelect({
             </CommandEmpty>
             {Object.entries(filteredOptions).map(([category, opts]) => (
               <React.Fragment key={category}>
-                <CommandGroup
-                  heading={category === "Default" ? undefined : category}
-                >
+                <CommandGroup heading={category === "Default" ? undefined : category}>
                   {opts.map((option) => (
                     <CommandItem
                       key={option.value}
@@ -172,7 +171,7 @@ export function CreatableSelect({
                 <CommandSeparator />
               </React.Fragment>
             ))}
-            </CommandList>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
