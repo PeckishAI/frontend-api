@@ -47,7 +47,10 @@ export default function OrderCard({ order, onClick, onReceive, onEdit, onApprove
           )}
           {order.status === 'draft' && (
             <>
-              <Button size="sm" variant="outline" onClick={onEdit}>
+              <Button size="sm" variant="outline" onClick={(e) => {
+  e.stopPropagation();
+  onEdit && onEdit();
+}}>
                 Edit
               </Button>
               <Button size="sm" onClick={onApprove}>

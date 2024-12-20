@@ -124,6 +124,13 @@ export default function Orders() {
                     key={order.id}
                     order={order}
                     onClick={() => setSelectedOrder(order)}
+                    onEdit={() => {
+                      setSelectedOrder(order);
+                    }}
+                    onApprove={() => {
+                      // Handle approve action
+                      console.log('Approve order:', order);
+                    }}
                   />
                 ))}
               </div>
