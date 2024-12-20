@@ -36,8 +36,8 @@ import { Slider } from "@/components/ui/slider";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { supplierService } from "@/services/supplierService";
-import { inventoryService } from "@/services/inventoryService"; //Import inventoryService
-import { unitService } from "@/services/unitService"; //Import unitService
+import { inventoryService } from "@/services/inventoryService";
+import { unitService } from "@/services/unitService";
 
 const editInvoiceSchema = z.object({
   invoice_number: z.string().optional(),
@@ -98,48 +98,69 @@ export function EditInvoiceSlider({
 }: EditInvoiceSliderProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isDetailsOpen, setIsDetailsOpen] = useState(true);
-  const [zoom, setZoom] = useState(100); //Added zoom state
-  const { restaurant } = useRestaurantContext();
+  const [zoom, setZoom] = useState(100);
+  const { currentRestaurant } = useRestaurantContext();
   const { data: suppliers, isLoading } = useQuery({
-    queryKey: ["suppliers", restaurant?.restaurant_uuid],
-    queryFn: () => supplierService.getAllSuppliers(restaurant?.restaurant_uuid),
+    queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("Missing restaurant or supplier UUID");
+      }
+      return supplierService.getRestaurantSuppliers(
+        currentRestaurant?.restaurant_uuid,
+      );
+    },
   });
+  console.log("suppliers:", suppliers);
 
   const { data: supplierIngredientUnits } = useQuery({
-    queryKey: ["supplier-ingredient-units", restaurant?.restaurant_uuid, invoice?.supplier?.supplier_uuid],
+    queryKey: [
+      "supplier-ingredient-units",
+      currentRestaurant?.restaurant_uuid,
+      invoice?.supplier?.supplier_uuid,
+    ],
     queryFn: () => {
-      if (!restaurant?.restaurant_uuid || !invoice?.supplier?.supplier_uuid) {
+      if (
+        !currentRestaurant?.restaurant_uuid ||
+        !invoice?.supplier?.supplier_uuid
+      ) {
         throw new Error("Missing restaurant or supplier UUID");
       }
       return unitService.getSupplierIngredientUnits(
-        restaurant.restaurant_uuid,
-        invoice.supplier.supplier_uuid
+        currentRestaurant.restaurant_uuid,
+        invoice.supplier.supplier_uuid,
       );
     },
-    enabled: !!restaurant?.restaurant_uuid && !!invoice?.supplier?.supplier_uuid,
+    enabled:
+      !!currentRestaurant?.restaurant_uuid &&
+      !!invoice?.supplier?.supplier_uuid,
   });
 
-  const { data: restaurantIngredients } = useQuery({ // Added restaurantIngredients query
-    queryKey: ["ingredients", restaurant?.restaurant_uuid],
+  const { data: restaurantIngredients } = useQuery({
+    // Added restaurantIngredients query
+    queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
-      if (!restaurant?.restaurant_uuid) {
+      if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return inventoryService.getRestaurantIngredients(restaurant.restaurant_uuid);
+      return inventoryService.getRestaurantIngredients(
+        currentRestaurant.restaurant_uuid,
+      );
     },
-    enabled: !!restaurant?.restaurant_uuid,
-    select: (data) => data.data,
+    enabled: !!currentRestaurant?.restaurant_uuid,
   });
+  console.log("restaurantIngredients:", restaurantIngredients);
 
-  const { data: unitsData } = useQuery({ //Added unitsData query
-    queryKey: ["units", restaurant?.restaurant_uuid],
+  const { data: unitsData } = useQuery({
+    //Added unitsData query
+    queryKey: ["units", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
-      if (!restaurant?.restaurant_uuid) {
+      if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return unitService.getRestaurantUnits(restaurant.restaurant_uuid);
+      return unitService.getRestaurantUnits(currentRestaurant.restaurant_uuid);
     },
-    enabled: !!restaurant?.restaurant_uuid,
+    enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
   const calculateTotal = () => {
@@ -157,8 +178,8 @@ export function EditInvoiceSlider({
       date: "",
       amount: 0,
       ingredients: [],
-      documents: []
-    }
+      documents: [],
+    },
   });
 
   React.useEffect(() => {
@@ -401,7 +422,7 @@ export function EditInvoiceSlider({
 
                       <FormField
                         control={form.control}
-                        name="supplier"
+                        name="supplier.supplier_name"
                         render={({ field }) => (
                           <FormItem className="col-span-2">
                             <FormLabel>Supplier</FormLabel>
@@ -517,10 +538,12 @@ export function EditInvoiceSlider({
                                       field.onChange(values[0]);
                                     }
                                   }}
-                                  options={restaurantIngredients?.map((ingredient) => ({ //Use restaurantIngredients here
-                                    value: ingredient.ingredient_uuid,
-                                    label: ingredient.ingredient_name,
-                                  }))}
+                                  options={Object.values(restaurantIngredients || {}).map(
+                                    (ingredient) => ({
+                                      value: ingredient.ingredient_uuid,
+                                      label: ingredient.ingredient_name,
+                                    }),
+                                  )}
                                   onCreateOption={(value) => {
                                     field.onChange(value);
                                   }}
@@ -583,46 +606,68 @@ export function EditInvoiceSlider({
                                     }}
                                     options={(() => {
                                       // Get the selected ingredient's UUID
-                                      const selectedIngredientUuid = form.watch(`ingredients.${index}.ingredient_uuid`);
+                                      const selectedIngredientUuid = form.watch(
+                                        `ingredients.${index}.ingredient_uuid`,
+                                      );
 
                                       // Find associated units for this ingredient
-                                      const associatedUnits = supplierIngredientUnits?.find(
-                                        (item) => item.ingredient_uuid === selectedIngredientUuid
-                                      )?.units || [];
+                                      const associatedUnits =
+                                        supplierIngredientUnits?.find(
+                                          (item) =>
+                                            item.ingredient_uuid ===
+                                            selectedIngredientUuid,
+                                        )?.units || [];
 
                                       // Map associated units to options
-                                      const associatedOptions = associatedUnits.map((unit) => ({
-                                        label: unit.unit_name,
-                                        value: unit.unit_uuid,
-                                        category: "Associated Units"
-                                      }));
+                                      const associatedOptions =
+                                        associatedUnits.map((unit) => ({
+                                          label: unit.unit_name,
+                                          value: unit.unit_uuid,
+                                          category: "Associated Units",
+                                        }));
 
                                       // Map all restaurant units to options
-                                      const availableOptions = (unitsData || []).map((unit) => ({
+                                      const availableOptions = (
+                                        unitsData || []
+                                      ).map((unit) => ({
                                         label: unit.unit_name,
                                         value: unit.unit_uuid,
-                                        category: "Available Units"
+                                        category: "Available Units",
                                       }));
 
-                                      return [...associatedOptions, ...availableOptions];
+                                      return [
+                                        ...associatedOptions,
+                                        ...availableOptions,
+                                      ];
                                     })()}
                                     onCreateOption={async (value) => {
                                       try {
-                                        if (!restaurant?.restaurant_uuid) {
-                                          throw new Error("No restaurant selected");
+                                        if (
+                                          !currentRestaurant?.restaurant_uuid
+                                        ) {
+                                          throw new Error(
+                                            "No restaurant selected",
+                                          );
                                         }
-                                        const newUnit = await unitService.createUnit(
-                                          { unit_name: value },
-                                          restaurant.restaurant_uuid
-                                        );
-                                        if (newUnit?.unit_uuid && newUnit?.unit_name) {
+                                        const newUnit =
+                                          await unitService.createUnit(
+                                            { unit_name: value },
+                                            currentRestaurant.restaurant_uuid,
+                                          );
+                                        if (
+                                          newUnit?.unit_uuid &&
+                                          newUnit?.unit_name
+                                        ) {
                                           field.onChange({
                                             unit_uuid: newUnit.unit_uuid,
                                             unit_name: newUnit.unit_name,
                                           });
                                         }
                                       } catch (error) {
-                                        console.error("Failed to create unit:", error);
+                                        console.error(
+                                          "Failed to create unit:",
+                                          error,
+                                        );
                                       }
                                     }}
                                   />
