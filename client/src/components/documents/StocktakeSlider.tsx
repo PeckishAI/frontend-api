@@ -95,19 +95,38 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                 <button
                   key={doc.document_uuid}
                   onClick={() => setSelectedDocIndex(index)}
-                  className={`relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm transition-all ${
+                  className={`relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm transition-all overflow-hidden ${
                     index === selectedDocIndex 
                       ? 'ring-2 ring-primary scale-95' 
                       : 'hover:scale-105'
                   }`}
                 >
-                  <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-400">
-                    {doc.document_type === 'video' ? (
-                      <Film className="h-4 w-4" />
-                    ) : (
-                      <Images className="h-4 w-4" />
-                    )}
-                  </div>
+                  {doc.document_type === 'video' ? (
+                    <>
+                      <video 
+                        src={doc.file_path}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        onLoadedData={(e) => {
+                          const video = e.target as HTMLVideoElement;
+                          video.currentTime = 1; // Seek to 1 second to get a representative frame
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <Film className="h-4 w-4 text-white" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <img 
+                        src={doc.file_path}
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                        <Images className="h-4 w-4 text-white" />
+                      </div>
+                    </>
+                  )}
                 </button>
               ))}
             </div>
