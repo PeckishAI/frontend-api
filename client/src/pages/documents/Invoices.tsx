@@ -18,8 +18,11 @@ import { documentService } from "@/services/documentService";
 import { InvoiceCard } from "@/components/documents/InvoiceCard";
 import type { Invoices } from "@/lib/DocumentTypes";
 
-export default function Invoices() {
-  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+interface InvoicesProps {
+  viewMode: "cards" | "table";
+}
+
+export default function Invoices({ viewMode }: InvoicesProps) {
   const [editingInvoice, setEditingInvoice] = useState<Invoices | null>(null);
   const { currentRestaurant } = useRestaurantContext();
 

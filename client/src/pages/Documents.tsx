@@ -1,12 +1,9 @@
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { FileText, FileBox, ClipboardCheck } from "lucide-react";
 import ViewToggle from "@/components/orders/ViewToggle";
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
-import { documentService } from "@/services/documentService";
-import type { Stocktake } from "@/lib/DocumentTypes";
 import Invoices from "./documents/Invoices";
 import Stocktakes from "./documents/Stocktakes";
 
@@ -37,7 +34,9 @@ export default function Documents() {
         </div>
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          {activeSection === "invoices" && <Invoices />}
+          {activeSection === "invoices" && (
+            <Invoices viewMode={viewMode} />
+          )}
 
           {activeSection === "delivery-notes" && (
             <div className="p-6">
@@ -45,7 +44,9 @@ export default function Documents() {
             </div>
           )}
 
-          {activeSection === "stocktakes" && <Stocktakes />}
+          {activeSection === "stocktakes" && (
+            <Stocktakes viewMode={viewMode} />
+          )}
         </div>
       </div>
     </div>

@@ -94,8 +94,11 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
   );
 }
 
-export default function Stocktakes() {
-  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+interface StocktakesProps {
+  viewMode: "cards" | "table";
+}
+
+export default function Stocktakes({ viewMode }: StocktakesProps) {
   const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
   const { currentRestaurant } = useRestaurantContext();
 
