@@ -124,9 +124,16 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
 }
 
 export default function Stocktakes() {
+  const [activeSection, setActiveSection] = useState("invoices");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
   const { currentRestaurant } = useRestaurantContext();
+
+  const sections = [
+    { id: "invoices", label: "Invoices", icon: FileText },
+    { id: "delivery-notes", label: "Delivery Notes", icon: FileBox },
+    { id: "stocktakes", label: "Stocktakes", icon: ClipboardCheck },
+  ];
 
   const { data: stocktakes = [], isLoading } = useQuery({
     queryKey: ["stocktakes", currentRestaurant?.restaurant_uuid],
@@ -159,13 +166,25 @@ export default function Stocktakes() {
   return (
     <div className="ml-64 w-[calc(100%-16rem)]">
       <div className="pt-8">
+        <SubSectionNav
+          sections={sections}
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+        />
+
         <div className="px-8 mb-6 flex items-center justify-end gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
         </div>
 
         <div className="px-8 pb-8">
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            {viewMode === "cards" ? (
+            {activeSection === "delivery-notes" && (
+              <div className="p-6">
+                <p className="text-gray-600">Delivery notes section coming soon...</p>
+              </div>
+            )}
+            
+            {activeSection === "stocktakes" && (viewMode === "cards" ? (
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {isLoading ? (
                   <div className="col-span-3 text-center py-8">
