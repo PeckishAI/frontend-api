@@ -133,8 +133,8 @@ export function CreatableSelect({
             value={search}
             onValueChange={setSearch}
           />
-          <ScrollArea className="h-[300px] overflow-y-auto">
-            <CommandList className="p-1">
+          <ScrollArea className="h-[300px] relative">
+            <CommandList className="p-1 absolute top-0 left-0 right-0">
               <CommandEmpty className="p-2">
                 {search.trim() !== "" && onCreateOption ? (
                   <Button
