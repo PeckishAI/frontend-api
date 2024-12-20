@@ -118,9 +118,6 @@ export default function Stocktakes({ viewMode }: StocktakesProps) {
   return (
     <div className="ml-64 w-[calc(100%-16rem)]">
       <div className="pt-8 px-8">
-        <div className="mb-6 flex items-center justify-end gap-4">
-          <ViewToggle current={viewMode} onChange={setViewMode} />
-        </div>
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="p-6">
