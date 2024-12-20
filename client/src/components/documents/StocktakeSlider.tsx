@@ -234,7 +234,7 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                         return selectedDoc && ingredient.document_uuid === selectedDoc.document_uuid;
                       })
                       .map((ingredient) => (
-                        <TableRow key={ingredient.ingredient_uuid}>
+                        <TableRow key={`${ingredient.ingredient_uuid}-${ingredient.document_uuid}`}>
                           <TableCell>{ingredient.ingredient_name}</TableCell>
                           <TableCell className="text-right">{ingredient.quantity}</TableCell>
                           <TableCell className="text-right">
