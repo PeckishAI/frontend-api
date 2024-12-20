@@ -14,63 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EditInvoiceSlider } from "@/components/documents/EditInvoiceSlider";
 
-function InvoiceCard({ invoice }) {
-  return (
-    <Card className="group hover:shadow-lg transition-shadow duration-200">
-      <CardHeader className="pb-3">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <Hash className="h-4 w-4 text-muted-foreground" />
-            <CardTitle className="text-lg font-semibold">
-              {invoice.invoiceNumber}
-            </CardTitle>
-          </div>
-          <div className="flex items-center gap-2">
-            <User2 className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">
-              {invoice.supplier}
-            </span>
-          </div>
-          <div className="text-sm text-muted-foreground">
-            {invoice.date.toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div className="relative aspect-[3/2] bg-gray-100 rounded-md overflow-hidden">
-            {invoice.images[0] ? (
-              <img
-                src={invoice.images[0]}
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                <Images className="h-8 w-8" />
-              </div>
-            )}
-          </div>
-          <div className="flex items-center justify-between border-t pt-4">
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-green-600" />
-              <span className="font-medium">${invoice.price.toFixed(2)}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Package2 className="h-4 w-4 text-gray-600" />
-              <span className="font-medium">{invoice.ingredientCount}</span>
-              <span className="text-sm text-gray-500">ingredients</span>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
+import { InvoiceCard } from "@/components/documents/InvoiceCard";
 
 export default function Invoices() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
