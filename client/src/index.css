@@ -1,4 +1,11 @@
 
+.command-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+
+
 .command-list::-webkit-scrollbar {
   width: 6px;
 }
