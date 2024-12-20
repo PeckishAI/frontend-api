@@ -196,7 +196,12 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Total of {ingredients.length} items recorded
+                  {selectedDocIndex === -1 
+                    ? `Total of ${ingredients.length} items recorded`
+                    : `${ingredients.filter(ingredient => 
+                        ingredient.document_uuid === stocktake.documents[selectedDocIndex]?.document_uuid
+                      ).length} items in document ${selectedDocIndex + 1}`
+                  }
                 </p>
               </div>
 
