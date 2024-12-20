@@ -32,6 +32,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import type { Invoice } from "@/pages/Documents";
+import { Slider } from "@/components/ui/slider"; //Import Slider component
 
 const defaultSuppliers = [
   { value: "fresh_produce_co", label: "Fresh Produce Co." },
@@ -93,6 +94,7 @@ export function EditInvoiceSlider({
 }: EditInvoiceSliderProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isDetailsOpen, setIsDetailsOpen] = useState(true);
+  const [zoom, setZoom] = useState(100); //Added zoom state
 
   const calculateTotal = () => {
     const ingredients = form.watch("ingredients");
@@ -180,14 +182,23 @@ export function EditInvoiceSlider({
               {invoice.documents &&
               invoice.documents[activeImageIndex]?.name ? (
                 <div className="relative w-full h-full group">
+                  <div className="relative">
+                    <Slider
+                      defaultValue={zoom}
+                      min={0}
+                      max={300}
+                      step={1}
+                      onValueChange={setZoom}
+                    />
+                  </div>
                   <img
                     src={
                       "https://storage.cloud.google.com/peckish-datasets/restaurant/" +
                       invoice.documents[0].name
                     }
                     alt={`Invoice ${invoice.invoice_number} - Image ${activeImageIndex + 1}`}
-                    className="absolute inset-0 w-full h-full object-contain transition-transform duration-200 hover:scale-150 hover:cursor-zoom-in"
-                    style={{ transformOrigin: 'center center' }}
+                    className="absolute inset-0 w-full h-full object-contain transition-transform duration-200 hover:cursor-zoom-in"
+                    style={{ transformOrigin: "center center", transform: `scale(${zoom / 100})` }} // Apply zoom
                   />
                 </div>
               ) : (
