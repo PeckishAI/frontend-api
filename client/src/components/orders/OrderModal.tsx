@@ -22,7 +22,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { supplierService } from "@/services/supplierService";
-import { CreatableSelect } from "@/components/ui/creatableSelect"; // Assuming this component exists
+import { CreatableSelect } from "@/components/ui/creatable-select"; // Assuming this component exists
 
 
 interface OrderModalProps {
