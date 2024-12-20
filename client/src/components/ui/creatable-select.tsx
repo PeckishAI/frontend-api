@@ -103,6 +103,7 @@ export function CreatableSelect({
       onChange([selectedValue]);
       setOpen(false);
     }
+    setSearch("");
   }, [value, multiple, onChange]);
 
   const handleCreate = React.useCallback(() => {
