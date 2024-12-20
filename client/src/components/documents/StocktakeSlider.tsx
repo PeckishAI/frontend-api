@@ -210,15 +210,20 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {ingredients.map((ingredient) => (
-                      <TableRow key={ingredient.ingredient_uuid}>
-                        <TableCell>{ingredient.ingredient_name}</TableCell>
-                        <TableCell className="text-right">{ingredient.quantity}</TableCell>
-                        <TableCell className="text-right">
-                          <Badge variant="secondary">{ingredient.unit.unit_name}</Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {ingredients
+                      .filter(ingredient => 
+                        selectedDocIndex === -1 || 
+                        ingredient.document_uuid === stocktake.documents[selectedDocIndex]?.document_uuid
+                      )
+                      .map((ingredient) => (
+                        <TableRow key={ingredient.ingredient_uuid}>
+                          <TableCell>{ingredient.ingredient_name}</TableCell>
+                          <TableCell className="text-right">{ingredient.quantity}</TableCell>
+                          <TableCell className="text-right">
+                            <Badge variant="secondary">{ingredient.unit.unit_name}</Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                 </Table>
               </div>
