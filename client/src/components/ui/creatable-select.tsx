@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -17,7 +16,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
 export type SelectOption = {
   value: string;
   label: string;
@@ -52,6 +50,7 @@ export function CreatableSelect({
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
 
+  // Group options by category
   const groupedOptions = React.useMemo(() => {
     const groups: { [key: string]: SelectOption[] } = {};
     if (options) {
@@ -69,7 +68,7 @@ export function CreatableSelect({
   const selectedLabels = React.useMemo(() => {
     const valueArray = Array.isArray(value) ? value : [];
     return valueArray
-      .map((v) => (options || []).find((opt) => opt.value === v)?.label || v)
+      .map((v) => options.find((opt) => opt.value === v)?.label || v)
       .join(", ");
   }, [value, options]);
 
@@ -132,50 +131,48 @@ export function CreatableSelect({
             value={search}
             onValueChange={setSearch}
           />
-          <div className="max-h-[300px] overflow-y-auto">
-            <CommandList>
+          <CommandList className="max-h-[300px] overflow-y-auto p-1">
               <CommandEmpty className="p-2">
                 {search.trim() !== "" && onCreateOption ? (
                   <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    onClick={handleCreate}
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    {createOptionLabel} "{search}"
-                  </Button>
-                ) : (
-                  emptyMessage
-                )}
-              </CommandEmpty>
-              {Object.entries(filteredOptions).map(([category, opts]) => (
-                <React.Fragment key={category}>
-                  <CommandGroup
-                    heading={category === "Default" ? undefined : category}
-                  >
-                    {opts.map((option) => (
-                      <CommandItem
-                        key={option.value}
-                        value={option.value}
-                        onSelect={handleSelect}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            Array.isArray(value) && value.includes(option.value)
-                              ? "opacity-100"
-                              : "opacity-0",
-                          )}
-                        />
-                        {option.label}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                  <CommandSeparator />
-                </React.Fragment>
-              ))}
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={handleCreate}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  {createOptionLabel} "{search}"
+                </Button>
+              ) : (
+                emptyMessage
+              )}
+            </CommandEmpty>
+            {Object.entries(filteredOptions).map(([category, opts]) => (
+              <React.Fragment key={category}>
+                <CommandGroup
+                  heading={category === "Default" ? undefined : category}
+                >
+                  {opts.map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      value={option.value}
+                      onSelect={handleSelect}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          Array.isArray(value) && value.includes(option.value)
+                            ? "opacity-100"
+                            : "opacity-0",
+                        )}
+                      />
+                      {option.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+                <CommandSeparator />
+              </React.Fragment>
+            ))}
             </CommandList>
-          </div>
         </Command>
       </PopoverContent>
     </Popover>
