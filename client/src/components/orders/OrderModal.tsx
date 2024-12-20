@@ -39,18 +39,21 @@ export default function OrderModal({
   editMode = false,
   onSave,
 }: OrderModalProps) {
-  const [editedOrder, setEditedOrder] = useState<Order | null>(() => {
-    if (!order) return null;
-    return {
-      ...order,
-      items: order?.items || [],
-      total: order?.total || 0,
-      status: order?.status || 'draft',
-      orderDate: order?.orderDate || new Date().toISOString(),
-      supplier_name: order?.supplier_name || '',
-      supplier_uuid: order?.supplier_uuid || ''
-    };
-  });
+  const [editedOrder, setEditedOrder] = useState<Order | null>(null);
+
+  React.useEffect(() => {
+    if (order) {
+      setEditedOrder({
+        ...order,
+        items: order.items || [],
+        total: order.total || 0,
+        status: order.status || 'draft',
+        orderDate: order.orderDate || new Date().toISOString(),
+        supplier_name: order.supplier_name || '',
+        supplier_uuid: order.supplier_uuid || ''
+      });
+    }
+  }, [order]);
 
   if (!editedOrder || !order) return null;
   const { currentRestaurant } = useRestaurantContext(); // Assuming this context provides necessary data.
