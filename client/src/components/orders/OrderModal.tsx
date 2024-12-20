@@ -241,14 +241,16 @@ export default function OrderModal({
                       label: supplier.supplier_name,
                       value: supplier.supplier_uuid,
                     }))}
-                    value={[editedOrder.supplier_uuid || '']}
+                    value={[editedOrder.supplier_uuid || "Select a supplier"]}
                     onChange={(values) => {
                       if (values && values.length > 0) {
-                        const selectedSupplier = suppliers?.find(s => s.supplier_uuid === values[0]);
+                        const selectedSupplier = suppliers?.find(
+                          (s) => s.supplier_uuid === values[0],
+                        );
                         setEditedOrder({
                           ...editedOrder,
                           supplier_uuid: values[0],
-                          supplier_name: selectedSupplier?.supplier_name || ''
+                          supplier_name: selectedSupplier?.supplier_name || "",
                         });
                       }
                     }}
@@ -289,11 +291,20 @@ export default function OrderModal({
                 {editedOrder.items.map((item, index) => (
                   <TableRow key={item.id}>
                     <TableCell>
-                      <Input
-                        value={item.name}
-                        onChange={(e) =>
-                          updateItem(index, "name", e.target.value)
-                        }
+                      <CreatableSelect
+                        value={item.name ? [item.name] : []}
+                        onChange={(values) => {
+                          if (values[0]) {
+                            const ingredient = ingredients?.find(
+                              (i) => i.ingredient_uuid === values[0]
+                            );
+                            if (ingredient) {
+                              updateItem(index, "name", ingredient.ingredient_name);
+                            }
+                          }
+                        }}
+                        options={getIngredientOptions(editedOrder.supplier_uuid)}
+                        placeholder="Select ingredient..."
                         disabled={!editMode}
                       />
                     </TableCell>
@@ -359,37 +370,7 @@ export default function OrderModal({
               </TableBody>
             </Table>
 
-            {editMode && editedOrder.supplier_uuid && (
-              <div className="space-y-4">
-                <div className="flex justify-start">
-                  <CreatableSelect
-                    options={getIngredientOptions(editedOrder.supplier_uuid)}
-                    placeholder="Select an ingredient..."
-                    onChange={(value) => {
-                      if (value) {
-                        const ingredient = ingredients?.find(
-                          (i) => i.ingredient_uuid === value[0]
-                        );
-                        if (ingredient) {
-                          const newItem: OrderItem = {
-                            id: `new-${Date.now()}`,
-                            name: ingredient.ingredient_name,
-                            quantity: 0,
-                            unit: "",
-                            price: 0,
-                            total: 0
-                          };
-                          setEditedOrder({
-                            ...editedOrder,
-                            items: [...editedOrder.items, newItem],
-                          });
-                        }
-                      }
-                    }}
-                  />
-                </div>
-              </div>
-            )}
+            
 
             {editMode && (
               <div className="flex justify-end gap-4">
