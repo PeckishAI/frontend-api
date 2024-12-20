@@ -36,6 +36,19 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
+          <div className="relative aspect-[3/2] bg-gray-100 rounded-md overflow-hidden">
+            {invoice.documents?.file_path ? (
+              <img
+                src={invoice.documents.file_path}
+                alt={invoice.invoice_number}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                <Images className="h-8 w-8" />
+              </div>
+            )}
+          </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <DollarSign className="h-4 w-4 text-gray-600" />
