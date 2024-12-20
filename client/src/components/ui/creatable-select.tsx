@@ -55,13 +55,15 @@ export function CreatableSelect({
   // Group options by category
   const groupedOptions = React.useMemo(() => {
     const groups: { [key: string]: SelectOption[] } = {};
-    options.forEach((option) => {
-      const category = option.category || "Default";
-      if (!groups[category]) {
-        groups[category] = [];
-      }
-      groups[category].push(option);
-    });
+    if (options) {
+      options.forEach((option) => {
+        const category = option.category || "Default";
+        if (!groups[category]) {
+          groups[category] = [];
+        }
+        groups[category].push(option);
+      });
+    }
     return groups;
   }, [options]);
 
