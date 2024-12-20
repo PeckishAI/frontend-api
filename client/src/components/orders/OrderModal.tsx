@@ -307,13 +307,13 @@ export default function OrderModal({
                               updateItem(index, "unit", "");
                               return;
                             }
-                            
-                            // Skip if selecting the same value
-                            if (values[0] === item.name) {
-                              return;
-                            }
 
                             const selectedId = values[0];
+                            // Reset item state before updating with new values
+                            updateItem(index, "name", "");
+                            updateItem(index, "price", 0);
+                            updateItem(index, "unit", "");
+                            
                             const selectedIngredient = ingredients?.[selectedId];
                             
                             if (selectedIngredient) {
