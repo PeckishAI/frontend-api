@@ -57,21 +57,29 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
           {/* Left side - Images */}
           <div className="w-1/2 bg-gray-50/50 p-6">
             <div className="relative aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden border shadow-sm">
-              {/* Image display */}
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                {selectedDocIndex === -1 ? (
+              {/* Media display */}
+              {selectedDocIndex === -1 ? (
+                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                   <div className="text-center">
                     <Images className="h-8 w-8 mx-auto mb-2" />
                     <span className="text-sm">Select a document to preview</span>
                   </div>
-                ) : (
-                  stocktake.documents[selectedDocIndex]?.document_type === 'video' ? (
-                    <Film className="h-8 w-8" />
-                  ) : (
-                    <Images className="h-8 w-8" />
-                  )
-                )}
-              </div>
+                </div>
+              ) : stocktake.documents[selectedDocIndex]?.document_type === 'video' ? (
+                <video 
+                  className="absolute inset-0 w-full h-full object-contain bg-black"
+                  controls
+                  src={stocktake.documents[selectedDocIndex].file_path}
+                >
+                  Your browser does not support video playback.
+                </video>
+              ) : (
+                <img 
+                  src={stocktake.documents[selectedDocIndex].file_path}
+                  alt="Stocktake document"
+                  className="absolute inset-0 w-full h-full object-contain"
+                />
+              )}
 
               {/* Image count indicator */}
               {selectedDocIndex !== -1 && (
