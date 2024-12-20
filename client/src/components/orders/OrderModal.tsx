@@ -19,7 +19,7 @@ import { type Order, type OrderItem } from "@/lib/types";
 import { getStatusColor } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { supplierService } from "@/services/supplierService";
