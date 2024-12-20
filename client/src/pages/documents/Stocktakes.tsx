@@ -178,33 +178,6 @@ export default function Stocktakes() {
 
         <div className="px-8 pb-8">
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            {activeSection === "invoices" && (
-              <div className="p-6">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Images</TableHead>
-                      <TableHead>Invoice Number</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Supplier</TableHead>
-                      <TableHead className="text-right">Price</TableHead>
-                      <TableHead className="text-right">Ingredients</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>3</TableCell>
-                      <TableCell>INV-2024-001</TableCell>
-                      <TableCell>January 15, 2024</TableCell>
-                      <TableCell>Fresh Produce Co.</TableCell>
-                      <TableCell className="text-right">$1250.99</TableCell>
-                      <TableCell className="text-right">15</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-            
             {activeSection === "delivery-notes" && (
               <div className="p-6">
                 <p className="text-gray-600">Delivery notes section coming soon...</p>
