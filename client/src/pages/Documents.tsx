@@ -31,16 +31,18 @@ export default function Documents() {
           )}
         </div>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          {activeSection === "invoices" && <InvoicesView viewMode={viewMode} />}
-          
-          {activeSection === "delivery-notes" && (
-            <div className="p-6">
-              <p className="text-gray-600">Delivery notes section coming soon...</p>
-            </div>
-          )}
-          
-          {activeSection === "stocktakes" && <StocktakesView viewMode={viewMode} />}
+        <div className="px-8 pb-8">
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            {activeSection === "invoices" && <InvoicesView viewMode={viewMode} />}
+            
+            {activeSection === "delivery-notes" && (
+              <div className="p-6">
+                <p className="text-gray-600">Delivery notes section coming soon...</p>
+              </div>
+            )}
+            
+            {activeSection === "stocktakes" && <StocktakesView viewMode={viewMode} />}
+          </div>
         </div>
       </div>
     </div>
