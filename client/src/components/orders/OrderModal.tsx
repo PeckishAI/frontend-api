@@ -241,15 +241,14 @@ export default function OrderModal({
                       label: supplier.supplier_name,
                       value: supplier.supplier_uuid,
                     }))}
-                    value={suppliers?.find(
-                      (supplier) =>
-                        supplier.supplier_uuid === editedOrder.supplier_uuid,
-                    )}
-                    onChange={(e) => {
-                      if (e) {
+                    value={[editedOrder.supplier_uuid || '']}
+                    onChange={(values) => {
+                      if (values && values.length > 0) {
+                        const selectedSupplier = suppliers?.find(s => s.supplier_uuid === values[0]);
                         setEditedOrder({
                           ...editedOrder,
-                          supplier_uuid: e.value,
+                          supplier_uuid: values[0],
+                          supplier_name: selectedSupplier?.supplier_name || ''
                         });
                       }
                     }}
