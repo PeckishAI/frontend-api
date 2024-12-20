@@ -199,7 +199,7 @@ export default function OrderModal({ order, onClose, editMode = false, onSave }:
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
               <label className="text-sm text-gray-600">Supplier</label>
-              {isLoading ? (
+              {suppliersLoading ? (
                 <p>Loading suppliers...</p>
               ) : (
                 <CreatableSelect
