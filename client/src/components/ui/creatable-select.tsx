@@ -16,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+
 
 export type SelectOption = {
   value: string;
@@ -133,8 +133,7 @@ export function CreatableSelect({
             value={search}
             onValueChange={setSearch}
           />
-          <div className="relative max-h-[300px] overflow-y-auto">
-            <CommandList className="p-1">
+          <CommandList className="max-h-[300px] overflow-y-auto p-1">
               <CommandEmpty className="p-2">
                 {search.trim() !== "" && onCreateOption ? (
                   <Button
