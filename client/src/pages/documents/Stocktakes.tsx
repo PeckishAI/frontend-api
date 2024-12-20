@@ -124,7 +124,7 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
 }
 
 export default function Stocktakes() {
-  const [activeSection, setActiveSection] = useState("stocktakes");
+  const [activeSection, setActiveSection] = useState("invoices");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
   const { currentRestaurant } = useRestaurantContext();
