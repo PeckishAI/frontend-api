@@ -213,7 +213,8 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                     {ingredients
                       .filter(ingredient => {
                         if (selectedDocIndex === -1) return true;
-                        return ingredient.document_uuid === stocktake.documents[selectedDocIndex].document_uuid;
+                        const selectedDoc = stocktake.documents[selectedDocIndex];
+                        return ingredient.document_uuid === selectedDoc?.document_uuid;
                       })
                       .map((ingredient) => (
                         <TableRow key={ingredient.ingredient_uuid}>
