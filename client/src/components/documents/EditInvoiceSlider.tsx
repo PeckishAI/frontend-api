@@ -161,7 +161,7 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
               </div>
 
               {/* Image navigation */}
-              {invoice.images.length > 1 && (
+              {invoice.documents && invoice.documents.length > 1 && (
                 <>
                   <Button
                     variant="ghost"
@@ -189,12 +189,12 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
 
             {/* Image count indicator */}
             <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
-              Image {activeImageIndex + 1} of {invoice.images.length}
+              Image {activeImageIndex + 1} of {invoice.documents?.length || 0}
             </div>
 
             {/* Thumbnails */}
             <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
-              {invoice.images.map((_, index) => (
+              {invoice.documents?.map((_, index) => (
                 <button
                   key={index}
                   className={`relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm transition-all ${
