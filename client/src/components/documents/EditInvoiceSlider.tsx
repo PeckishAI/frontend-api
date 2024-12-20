@@ -233,8 +233,8 @@ export function EditInvoiceSlider({
       >
         <div className="flex h-full divide-x divide-border">
           {/* Left side - Images */}
-          <div className="w-1/2 bg-gray-50/50 p-6">
-            <div className="relative aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden border shadow-sm">
+          <div className="w-2/3 bg-gray-50/50 p-6">
+            <div className="relative aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden border shadow-sm">
               {/* Image display */}
               {invoice.documents &&
               invoice.documents[activeImageIndex]?.name ? (
@@ -310,19 +310,27 @@ export function EditInvoiceSlider({
 
             {/* Thumbnails */}
             <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
-              {invoice.documents?.map((_, index) => (
+              {invoice.documents?.map((doc, index) => (
                 <button
                   key={index}
-                  className={`relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm transition-all ${
+                  className={`relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm transition-all overflow-hidden ${
                     index === activeImageIndex
                       ? "ring-2 ring-primary scale-95"
                       : "hover:scale-105"
                   }`}
                   onClick={() => setActiveImageIndex(index)}
                 >
-                  <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-400">
-                    {index + 1}
-                  </div>
+                  {doc.name ? (
+                    <img
+                      src={"https://storage.cloud.google.com/peckish-datasets/restaurant/" + doc.name}
+                      alt={`Thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-400">
+                      {index + 1}
+                    </div>
+                  )}
                 </button>
               ))}
             </div>
