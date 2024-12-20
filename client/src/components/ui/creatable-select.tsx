@@ -91,11 +91,12 @@ export function CreatableSelect({
   }, [groupedOptions, search]);
 
   const handleSelect = (selectedValue: string) => {
+    const currentValue = value || [];
     if (multiple) {
       onChange(
-        value.includes(selectedValue)
-          ? value.filter((v) => v !== selectedValue)
-          : [...value, selectedValue],
+        currentValue.includes(selectedValue)
+          ? currentValue.filter((v) => v !== selectedValue)
+          : [...currentValue, selectedValue],
       );
     } else {
       onChange([selectedValue]);
