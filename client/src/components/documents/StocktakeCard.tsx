@@ -1,4 +1,3 @@
-
 import { Hash, User2, Images, DollarSign, Film } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -67,7 +66,13 @@ export function StocktakeCard({ stocktake }: StocktakeCardProps) {
                       playsInline
                       onLoadedMetadata={(e) => {
                         const video = e.target as HTMLVideoElement;
-                        video.currentTime = Math.min(1, video.duration * 0.25);
+                        // Set time to 0.1 seconds to get first frame quickly
+                        video.currentTime = 0.1;
+                      }}
+                      onLoadedData={(e) => {
+                        const video = e.target as HTMLVideoElement;
+                        // Ensure frame is captured
+                        video.pause();
                       }}
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/20">
