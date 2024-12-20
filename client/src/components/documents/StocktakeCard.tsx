@@ -55,9 +55,13 @@ export function StocktakeCard({ stocktake }: StocktakeCardProps) {
                 <video
                   src={stocktake.documents[0]?.file_path}
                   className="absolute inset-0 w-full h-full object-cover"
-                  onLoadedData={(e) => {
+                  preload="metadata"
+                  muted
+                  playsInline
+                  onLoadedMetadata={(e) => {
                     const video = e.target as HTMLVideoElement;
-                    video.currentTime = 1; // Seek to 1 second for thumbnail
+                    // Set to 1 second or 25% of video duration, whichever is less
+                    video.currentTime = Math.min(1, video.duration * 0.25);
                   }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/20">
