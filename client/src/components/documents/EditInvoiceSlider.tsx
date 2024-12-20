@@ -598,11 +598,11 @@ export function EditInvoiceSlider({
                                 </FormLabel>
                                 <FormControl>
                                   <CreatableSelect
-                                    value={field.value?.unit_name ? [field.value.unit_uuid] : []}
+                                    value={field.value?.unit_name ? [field.value.unit_name] : []}
                                     onChange={(values) => {
                                       if (values[0]) {
                                         const selectedUnit = unitsData?.find(
-                                          (u) => u.unit_uuid === values[0]
+                                          (u) => u.unit_name === values[0]
                                         ) || {
                                           unit_uuid: values[0],
                                           unit_name: values[0],
@@ -614,6 +614,14 @@ export function EditInvoiceSlider({
                                       }
                                     }}
                                     options={(() => {
+                                      // Get all available units
+                                      const allUnits = unitsData?.map((unit) => ({
+                                        label: unit.unit_name,
+                                        value: unit.unit_name,
+                                        category: "Available Units",
+                                      })) || [];
+
+                                      // Get associated units for the selected ingredient
                                       const selectedIngredientUuid = form.watch(
                                         `ingredients.${index}.ingredient_uuid`
                                       );
@@ -627,19 +635,13 @@ export function EditInvoiceSlider({
 
                                       const associatedOptions = associatedUnits.map((unit) => ({
                                         label: unit.unit_name,
-                                        value: unit.unit_uuid,
+                                        value: unit.unit_name,
                                         category: "Associated Units",
                                       }));
 
-                                      const availableOptions = unitsData?.map((unit) => ({
-                                        label: unit.unit_name,
-                                        value: unit.unit_uuid,
-                                        category: "Available Units",
-                                      })) || [];
-
-                                      // Remove duplicates by unit_uuid
+                                      // Combine and remove duplicates
                                       const uniqueOptions = [...associatedOptions];
-                                      availableOptions.forEach(option => {
+                                      allUnits.forEach(option => {
                                         if (!uniqueOptions.some(u => u.value === option.value)) {
                                           uniqueOptions.push(option);
                                         }
