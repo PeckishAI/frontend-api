@@ -158,6 +158,7 @@ export default function OrderModal({
       quantity: 0,
       unit: "",
       price: 0,
+      total:0
     };
     setEditedOrder({
       ...editedOrder,
@@ -314,28 +315,43 @@ export default function OrderModal({
                         }
                         onChange={(values) => {
                           try {
-                            const selectedId = values[0];
-                            const selectedOption = selectedId ? getIngredientOptions(
-                              editedOrder.supplier_uuid,
-                            ).find((opt) => opt.value === selectedId) : null;
+                            const newItems = [...editedOrder.items];
+                            const selectedId = values?.[0] || "";
+                            const selectedOption = selectedId
+                              ? getIngredientOptions(
+                                  editedOrder.supplier_uuid,
+                                ).find((opt) => opt.value === selectedId)
+                              : null;
 
-                            const updates = {
-                              ingredient_uuid: selectedId || "",
-                              name: selectedOption ? selectedOption.label : selectedId || "",
-                              price: selectedOption ? selectedOption.price || 0 : 0,
-                              unit: selectedOption ? selectedOption.unit || "none" : "none"
+                            newItems[index] = {
+                              ...newItems[index],
+                              ingredient_uuid: selectedId,
+                              name: selectedOption
+                                ? selectedOption.label
+                                : selectedId,
+                              price: selectedOption?.price || 0,
+                              unit: selectedOption?.unit || "none",
+                              total:
+                                (selectedOption?.price || 0) *
+                                newItems[index].quantity,
                             };
 
-                            const newItems = [...editedOrder.items];
-                            newItems[index] = { ...newItems[index], ...updates };
+                            const newTotal = newItems.reduce(
+                              (sum, item) =>
+                                sum + item.quantity * item.price,
+                              0,
+                            );
 
-                            setEditedOrder({
-                              ...editedOrder,
+                            setEditedOrder((prev) => ({
+                              ...prev,
                               items: newItems,
-                              total: newItems.reduce((sum, item) => sum + (item.quantity * item.price), 0)
-                            });
+                              total: newTotal,
+                            }));
                           } catch (error) {
-                            console.error("Error in ingredient selection:", error);
+                            console.error(
+                              "Error in ingredient selection:",
+                              error,
+                            );
                           }
                         }}
                         options={getIngredientOptions(
@@ -373,7 +389,11 @@ export default function OrderModal({
                         type="number"
                         value={item.price}
                         onChange={(e) =>
-                          updateItem(index, "price", parseFloat(e.target.value))
+                          updateItem(
+                            index,
+                            "price",
+                            parseFloat(e.target.value),
+                          )
                         }
                         disabled={!editMode}
                         className="text-right"
