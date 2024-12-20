@@ -26,18 +26,23 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoices | null>(null);
   const { currentRestaurant } = useRestaurantContext();
 
-  const { data: invoices = [], isLoading } = useQuery({
+  const { data: invoices = [], isLoading, error } = useQuery({
     queryKey: ["invoices", currentRestaurant?.restaurant_uuid],
-    queryFn: () => {
+    queryFn: async () => {
+      console.log("Fetching invoices for restaurant:", currentRestaurant?.restaurant_uuid);
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return documentService.getRestaurantInvoices(
+      const result = await documentService.getRestaurantInvoices(
         currentRestaurant.restaurant_uuid,
       );
+      console.log("Received invoices data:", result);
+      return result;
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
+
+  console.log("Current invoices state:", { loading: isLoading, error, data: invoices });
 
   return (
     <>
