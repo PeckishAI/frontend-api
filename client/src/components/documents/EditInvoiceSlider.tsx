@@ -44,7 +44,7 @@ const editInvoiceSchema = z.object({
   amount: z.number().optional(),
   vat: z.number().optional(),
   discount: z.number().optional(),
-  created_supplier: z.booleans().optional(),
+  created_supplier: z.boolean().optional(),
   documents: z.array(
     z.object({
       document_uuid: z.string().optional(),
