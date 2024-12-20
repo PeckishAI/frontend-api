@@ -247,7 +247,11 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                             <Badge variant="secondary">{ingredient.unit.unit_name}</Badge>
                           </TableCell>
                           <TableCell className="text-right text-muted-foreground text-sm">
-                            {new Date(ingredient.created_at).toLocaleTimeString()}
+                            {new Date(ingredient.created_at).toLocaleTimeString('en-US', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: false
+                            })}
                           </TableCell>
                         </TableRow>
                       ))}
