@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Images, Hash, DollarSign, Package2, User2 } from "lucide-react";
 import ViewToggle from "@/components/orders/ViewToggle";
 import {
@@ -10,16 +11,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EditInvoiceSlider } from "@/components/documents/EditInvoiceSlider";
-
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import { documentService } from "@/services/documentService";
 import { InvoiceCard } from "@/components/documents/InvoiceCard";
 
 export default function Invoices() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [editingInvoice, setEditingInvoice] = useState(null);
+  const { currentRestaurant } = useRestaurantContext();
 
+  // Mock data until API is ready
   const mockInvoices = [
     {
       id: "1",
@@ -60,7 +63,7 @@ export default function Invoices() {
                 </div>
               ))}
             </div>
-          ) : viewMode === "table" ? (
+          ) : (
             <div className="p-6">
               <Table>
                 <TableHeader>
