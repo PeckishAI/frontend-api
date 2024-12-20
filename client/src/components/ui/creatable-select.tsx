@@ -132,7 +132,7 @@ export function CreatableSelect({
             value={search}
             onValueChange={setSearch}
           />
-          <CommandList>
+          <CommandList className="max-h-[200px] overflow-y-auto">
             <CommandEmpty>
               {search.trim() !== "" && onCreateOption ? (
                 <Button
