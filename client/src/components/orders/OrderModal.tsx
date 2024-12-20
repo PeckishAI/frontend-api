@@ -43,7 +43,11 @@ export default function OrderModal({
   const [editedOrder, setEditedOrder] = useState<Order>(order);
   const { currentRestaurant } = useRestaurantContext(); // Assuming this context provides necessary data.
 
-  const { data: suppliers, suppliersLoading, error: suppliersError } = useQuery({
+  const {
+    data: suppliers,
+    suppliersLoading,
+    error: suppliersError,
+  } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
@@ -57,11 +61,10 @@ export default function OrderModal({
       console.error("Suppliers query error details:", {
         error,
         restaurantId: currentRestaurant?.restaurant_uuid,
-        stack: error.stack
+        stack: error.stack,
       });
-    }
+    },
   });
-  console.log("suppliers", suppliers);
 
   const { data: ingredients, ingredientsLoading } = useQuery({
     queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
@@ -74,38 +77,46 @@ export default function OrderModal({
       );
     },
   });
-  console.log("ingredients", ingredients);
 
-  const getIngredientOptions = (supplierId: string) => {
+  const getIngredientOptions = (supplier_uuid: string) => {
     if (!ingredients) return [];
 
     const ingredientsArray = Object.values(ingredients);
-    const connectedIngredients = ingredientsArray
-      .filter((ing) =>
-        ing.ingredient_suppliers?.some(
-          (s) => s.supplier?.supplier_uuid === supplierId,
-        ),
-      )
-      .map((ing) => ({
-        label: ing.ingredient_name,
-        value: ing.ingredient_uuid,
-        category: "Connected",
-      }));
-
-    const otherIngredients = ingredientsArray
-      .filter(
-        (ing) =>
-          !ing.ingredient_suppliers?.some(
-            (s) => s.supplier?.supplier_uuid === supplierId,
+    const categories = {
+      Connected: ingredientsArray
+        .filter((ing) =>
+          ing.ingredient_suppliers?.some(
+            (s) => s.supplier?.supplier_uuid === supplier_uuid,
           ),
-      )
-      .map((ing) => ({
-        label: ing.ingredient_name,
-        value: ing.ingredient_uuid,
-        category: "Other",
-      }));
+        )
+        .map((ing) => ({
+          label: ing.ingredient_name,
+          value: ing.ingredient_uuid,
+          category: "Connected",
+          unit: ing.ingredient_suppliers?.find(
+            (s) => s.supplier?.supplier_uuid === supplier_uuid,
+          )?.unit?.unit_name,
+          price: ing.ingredient_suppliers?.find(
+            (s) => s.supplier?.supplier_uuid === supplier_uuid,
+          )?.unit_cost,
+        })),
+      Other: ingredientsArray
+        .filter(
+          (ing) =>
+            !ing.ingredient_suppliers?.some(
+              (s) => s.supplier?.supplier_uuid === supplier_uuid,
+            ),
+        )
+        .map((ing) => ({
+          label: ing.ingredient_name,
+          value: ing.ingredient_uuid,
+          category: "Other",
+          unit: "none",
+          price: 0,
+        })),
+    };
 
-    return [...connectedIngredients, ...otherIngredients];
+    return [...categories.Connected, ...categories.Other];
   };
 
   const handleSave = () => {
@@ -118,6 +129,7 @@ export default function OrderModal({
   const updateItem = (index: number, field: keyof OrderItem, value: any) => {
     const newItems = [...editedOrder.items];
     newItems[index] = { ...newItems[index], [field]: value };
+    console.log("Updated item:", newItems[index]);
 
     // Recalculate item total
     if (field === "quantity" || field === "price") {
@@ -313,24 +325,24 @@ export default function OrderModal({
                             updateItem(index, "name", "");
                             updateItem(index, "price", 0);
                             updateItem(index, "unit", "");
-                            
-                            const selectedIngredient = ingredients?.[selectedId];
-                            
-                            if (selectedIngredient) {
-                              const supplierIngredient = selectedIngredient.ingredient_suppliers?.find(
-                                s => s.supplier?.supplier_uuid === editedOrder.supplier_uuid
-                              );
-                              
-                              updateItem(index, "name", selectedIngredient.ingredient_name);
-                              if (supplierIngredient) {
-                                updateItem(index, "price", supplierIngredient.unit_cost || 0);
-                                updateItem(index, "unit", supplierIngredient.unit?.unit_name || "");
-                              }
+
+                            const selectedOption = getIngredientOptions(editedOrder.supplier_uuid)
+                              .find(opt => opt.value === selectedId);
+
+                            if (selectedOption) {
+                              updateItem(index, "name", selectedOption.label);
+                              updateItem(index, "price", selectedOption.price || 0);
+                              updateItem(index, "unit", selectedOption.unit || "none");
                             } else {
                               updateItem(index, "name", selectedId);
+                              updateItem(index, "price", 0);
+                              updateItem(index, "unit", "none");
                             }
                           } catch (error) {
-                            console.error("Error in ingredient selection:", error);
+                            console.error(
+                              "Error in ingredient selection:",
+                              error,
+                            );
                           }
                         }}
                         options={getIngredientOptions(
