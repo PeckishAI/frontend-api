@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { queryClient } from "@/lib/queryClient";
 import { RestaurantProvider } from "@/contexts/RestaurantContext";
 import Sidebar from "@/components/layout/Sidebar";
-import Documents from "@/pages/documents/Documents"; // Changed import path to Documents
+import Documents from "@/pages/Documents"; // Using the correct path
 import Inventory from "@/pages/Inventory";
 import Menu from "@/pages/Menu";
 import Orders from "@/pages/Orders";
