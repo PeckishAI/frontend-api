@@ -35,22 +35,24 @@ export default function Documents() {
 
   const { data: invoices = [], isLoading: isInvoicesLoading } = useQuery({
     queryKey: ["invoices", currentRestaurant?.restaurant_uuid],
-    queryFn: () => {
+    queryFn: async () => {
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return documentService.getRestaurantInvoices(currentRestaurant.restaurant_uuid);
+      const response = await documentService.getRestaurantInvoices(currentRestaurant.restaurant_uuid);
+      return response;
     },
     enabled: !!currentRestaurant?.restaurant_uuid && activeSection === "invoices",
   });
 
   const { data: stocktakes = [], isLoading: isStocktakesLoading } = useQuery({
     queryKey: ["stocktakes", currentRestaurant?.restaurant_uuid],
-    queryFn: () => {
+    queryFn: async () => {
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return documentService.getRestaurantStocktakes(currentRestaurant.restaurant_uuid);
+      const response = await documentService.getRestaurantStocktakes(currentRestaurant.restaurant_uuid);
+      return response;
     },
     enabled: !!currentRestaurant?.restaurant_uuid && activeSection === "stocktakes",
   });
@@ -82,6 +84,7 @@ export default function Documents() {
                       <div
                         key={invoice.invoice_uuid}
                         onClick={() => setEditingInvoice(invoice)}
+                        className="cursor-pointer"
                       >
                         <InvoiceCard invoice={invoice} />
                       </div>
