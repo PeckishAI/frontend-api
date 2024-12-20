@@ -212,8 +212,19 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                   <TableBody>
                     {ingredients
                       .filter(ingredient => {
-                        if (selectedDocIndex === -1) return true;
+                        if (selectedDocIndex === -1) {
+                          console.log('Show all documents mode - ingredient:', ingredient.ingredient_name);
+                          return true;
+                        }
                         const selectedDoc = stocktake.documents[selectedDocIndex];
+                        console.log('Filtering details:', {
+                          ingredientName: ingredient.ingredient_name,
+                          ingredientDocuments: ingredient.documents,
+                          selectedDocId: selectedDoc?.document_uuid,
+                          selectedDocIndex,
+                          hasDocuments: !!ingredient.documents,
+                          match: ingredient.documents?.some(doc => doc.document_uuid === selectedDoc?.document_uuid)
+                        });
                         return selectedDoc && ingredient.documents?.some(doc => doc.document_uuid === selectedDoc.document_uuid);
                       })
                       .map((ingredient) => (
