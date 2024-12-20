@@ -618,7 +618,7 @@ export function EditInvoiceSlider({
                                       const allUnits = unitsData?.map((unit) => ({
                                         label: unit.unit_name,
                                         value: unit.unit_name,
-                                        category: "Available Units",
+                                        category: "All Units",
                                       })) || [];
 
                                       // Get associated units for the selected ingredient
