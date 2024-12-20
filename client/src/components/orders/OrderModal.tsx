@@ -258,7 +258,7 @@ export default function OrderModal({
                       label: supplier.supplier_name,
                       value: supplier.supplier_uuid,
                     }))}
-                    value={[editedOrder.supplier_uuid || "Select a supplier"]}
+                    value={[editedOrder.supplier_uuid]}
                     onChange={(values) => {
                       if (values && values.length > 0) {
                         const selectedSupplier = suppliers?.find(
@@ -309,11 +309,12 @@ export default function OrderModal({
                   <TableRow key={item.id}>
                     <TableCell>
                       <CreatableSelect
-                        value={item.name ? [item.name] : []}
+                        value={item.ingredient_uuid ? [item.ingredient_uuid] : []}
                         onChange={(values) => {
                           try {
                             // Handle clearing selection
                             if (!values?.length) {
+                              updateItem(index, "ingredient_uuid", "");
                               updateItem(index, "name", "");
                               updateItem(index, "price", 0);
                               updateItem(index, "unit", "");
@@ -322,6 +323,7 @@ export default function OrderModal({
 
                             const selectedId = values[0];
                             // Reset item state before updating with new values
+                            updateItem(index, "ingredient_uuid", selectedId);
                             updateItem(index, "name", "");
                             updateItem(index, "price", 0);
                             updateItem(index, "unit", "");
