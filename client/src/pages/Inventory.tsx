@@ -66,7 +66,7 @@ export default function Inventory() {
     refetchOnReconnect: true,
     refetchOnWindowFocus: true,
     select: (data) => {
-      if (!data?.data) return [];
+      if (!data) return [];
       console.log("Raw data in select:", data);
       const inventoryItems = Object.values(data.data);
       return inventoryItems.map((item: any) => ({
