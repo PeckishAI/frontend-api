@@ -101,6 +101,33 @@ export const unitService = {
     }
   },
 
+  async getSupplierIngredientUnits(restaurantUuid: string, supplierUuid: string): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/units/v2/restaurant/${restaurantUuid}/supplier/${supplierUuid}/ingredients`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error("Failed to fetch supplier ingredient units");
+      }
+      return result.data;
+    } catch (error) {
+      console.error("Failed to fetch supplier ingredient units:", error);
+      throw error;
+    }
+  },
+
   async getConversionFactor(
     ingredientUuid: string,
     fromUnitUuid: string,

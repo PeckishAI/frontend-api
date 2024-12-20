@@ -103,6 +103,20 @@ export function EditInvoiceSlider({
     queryFn: () => supplierService.getAllSuppliers(restaurant?.restaurant_uuid),
   });
 
+  const { data: supplierIngredientUnits } = useQuery({
+    queryKey: ["supplier-ingredient-units", restaurant?.restaurant_uuid, invoice?.supplier?.supplier_uuid],
+    queryFn: () => {
+      if (!restaurant?.restaurant_uuid || !invoice?.supplier?.supplier_uuid) {
+        throw new Error("Missing restaurant or supplier UUID");
+      }
+      return unitService.getSupplierIngredientUnits(
+        restaurant.restaurant_uuid,
+        invoice.supplier.supplier_uuid
+      );
+    },
+    enabled: !!restaurant?.restaurant_uuid && !!invoice?.supplier?.supplier_uuid,
+  });
+
   const calculateTotal = () => {
     const ingredients = form.watch("ingredients");
     return ingredients.reduce(
