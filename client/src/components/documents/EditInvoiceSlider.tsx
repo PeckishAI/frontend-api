@@ -620,19 +620,14 @@ export function EditInvoiceSlider({
                                     options={(() => {
                                       // Get units by category
                                       const allUnits = unitsData?.reduce((acc, unit) => {
-                                        // Map unit categories directly - keep custom and reference separate
                                         const category = unit.category === "reference" 
                                           ? "Reference" 
-                                          : unit.category === "custom" 
-                                            ? "Custom" 
-                                            : "";  // Skip non-reference/custom units
-                                        if (category) {  // Only add reference and custom units here
-                                          acc.push({
-                                            label: unit.unit_name,
-                                            value: unit.unit_name,
-                                            category,
-                                          });
-                                        }
+                                          : unit.category === "custom" ? "Custom" : "Associated";
+                                        acc.push({
+                                          label: unit.unit_name,
+                                          value: unit.unit_name,
+                                          category,
+                                        });
                                         return acc;
                                       }, [] as Array<{label: string; value: string; category: string}>) || [];
                                       console.log("allUnits", allUnits);
