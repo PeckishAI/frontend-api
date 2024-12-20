@@ -33,6 +33,9 @@ import { cn } from "@/lib/utils";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import type { Invoice } from "@/pages/Documents";
 import { Slider } from "@/components/ui/slider";
+import { useQuery } from "@tanstack/react-query";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import { supplierService } from "@/services/supplierService";
 
 const editInvoiceSchema = z.object({
   invoice_number: z.string().optional(),
@@ -94,6 +97,11 @@ export function EditInvoiceSlider({
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isDetailsOpen, setIsDetailsOpen] = useState(true);
   const [zoom, setZoom] = useState(100); //Added zoom state
+  const { restaurant } = useRestaurantContext();
+  const { data: suppliers, isLoading } = useQuery({
+    queryKey: ["suppliers", restaurant?.restaurant_uuid],
+    queryFn: () => supplierService.getAllSuppliers(restaurant?.restaurant_uuid),
+  });
 
   const calculateTotal = () => {
     const ingredients = form.watch("ingredients");
@@ -366,7 +374,10 @@ export function EditInvoiceSlider({
                                     field.onChange(values[0]);
                                   }
                                 }}
-                                options={defaultSuppliers}
+                                options={suppliers?.map((supplier) => ({
+                                  value: supplier.supplier_uuid,
+                                  label: supplier.supplier_name,
+                                }))}
                                 onCreateOption={(value) => {
                                   field.onChange(value);
                                 }}
