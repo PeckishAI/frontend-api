@@ -33,20 +33,22 @@ export default function Documents() {
           )}
         </div>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          {activeSection === "invoices" && (
-            <Invoices viewMode={viewMode} />
-          )}
+        <div className="px-8">
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            {activeSection === "invoices" && (
+              <Invoices viewMode={viewMode} />
+            )}
 
-          {activeSection === "delivery-notes" && (
-            <div className="p-6">
-              <p className="text-gray-600">Delivery notes section coming soon...</p>
-            </div>
-          )}
+            {activeSection === "delivery-notes" && (
+              <div className="p-6">
+                <p className="text-gray-600">Delivery notes section coming soon...</p>
+              </div>
+            )}
 
-          {activeSection === "stocktakes" && (
-            <Stocktakes viewMode={viewMode} />
-          )}
+            {activeSection === "stocktakes" && (
+              <Stocktakes viewMode={viewMode} />
+            )}
+          </div>
         </div>
       </div>
     </div>

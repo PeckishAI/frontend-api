@@ -38,13 +38,7 @@ export default function Invoices({ viewMode }: InvoicesProps) {
   });
 
   return (
-    <div className="ml-64 w-[calc(100%-16rem)]">
-      <div className="pt-8 px-8">
-        <div className="mb-6 flex items-center justify-end gap-4">
-          <ViewToggle current={viewMode} onChange={setViewMode} />
-        </div>
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="p-6">
+    <div className="p-6">
             {viewMode === "cards" ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {isLoading ? (
