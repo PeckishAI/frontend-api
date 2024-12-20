@@ -129,7 +129,7 @@ export default function OrderModal({
   const updateItem = (index: number, field: keyof OrderItem, value: any) => {
     const newItems = [...editedOrder.items];
     newItems[index] = { ...newItems[index], [field]: value };
-    console.log("Updated item:", newItems[index]);
+    console.log("Updated item:", newItems);
 
     // Recalculate item total
     if (field === "quantity" || field === "price") {
@@ -309,42 +309,33 @@ export default function OrderModal({
                   <TableRow key={item.id}>
                     <TableCell>
                       <CreatableSelect
-                        value={item.ingredient_uuid ? [item.ingredient_uuid] : []}
+                        value={
+                          item.ingredient_uuid ? [item.ingredient_uuid] : []
+                        }
                         onChange={(values) => {
                           try {
-                            // Handle clearing selection
-                            if (!values?.length) {
-                              updateItem(index, "ingredient_uuid", "");
-                              updateItem(index, "name", "");
-                              updateItem(index, "price", 0);
-                              updateItem(index, "unit", "");
-                              return;
-                            }
-
                             const selectedId = values[0];
-                            // Reset item state before updating with new values
-                            updateItem(index, "ingredient_uuid", selectedId);
-                            updateItem(index, "name", "");
-                            updateItem(index, "price", 0);
-                            updateItem(index, "unit", "");
+                            const selectedOption = selectedId ? getIngredientOptions(
+                              editedOrder.supplier_uuid,
+                            ).find((opt) => opt.value === selectedId) : null;
 
-                            const selectedOption = getIngredientOptions(editedOrder.supplier_uuid)
-                              .find(opt => opt.value === selectedId);
+                            const updates = {
+                              ingredient_uuid: selectedId || "",
+                              name: selectedOption ? selectedOption.label : selectedId || "",
+                              price: selectedOption ? selectedOption.price || 0 : 0,
+                              unit: selectedOption ? selectedOption.unit || "none" : "none"
+                            };
 
-                            if (selectedOption) {
-                              updateItem(index, "name", selectedOption.label);
-                              updateItem(index, "price", selectedOption.price || 0);
-                              updateItem(index, "unit", selectedOption.unit || "none");
-                            } else {
-                              updateItem(index, "name", selectedId);
-                              updateItem(index, "price", 0);
-                              updateItem(index, "unit", "none");
-                            }
+                            const newItems = [...editedOrder.items];
+                            newItems[index] = { ...newItems[index], ...updates };
+
+                            setEditedOrder({
+                              ...editedOrder,
+                              items: newItems,
+                              total: newItems.reduce((sum, item) => sum + (item.quantity * item.price), 0)
+                            });
                           } catch (error) {
-                            console.error(
-                              "Error in ingredient selection:",
-                              error,
-                            );
+                            console.error("Error in ingredient selection:", error);
                           }
                         }}
                         options={getIngredientOptions(
