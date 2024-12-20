@@ -16,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {ScrollArea} from '@radix-ui/react-scroll' // Added import for ScrollArea
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export type SelectOption = {
   value: string;
@@ -132,8 +132,9 @@ export function CreatableSelect({
             value={search}
             onValueChange={setSearch}
           />
-          <ScrollArea className="command-list"> {/* Wrapped CommandList with ScrollArea */}
-            <CommandEmpty>
+          <ScrollArea className="h-[200px]">
+            <CommandList>
+              <CommandEmpty>
               {search.trim() !== "" && onCreateOption ? (
                 <Button
                   variant="outline"
@@ -171,7 +172,8 @@ export function CreatableSelect({
                 {category !== Object.keys(filteredOptions).slice(-1)[0] && <CommandSeparator />}
               </React.Fragment>
             ))}
-          </ScrollArea> {/* Closing ScrollArea */}
+            </CommandList>
+          </ScrollArea>
         </Command>
       </PopoverContent>
     </Popover>
