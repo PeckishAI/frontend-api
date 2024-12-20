@@ -1,7 +1,13 @@
 import * as React from "react";
 import { useState } from "react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { ChevronLeft, ChevronRight, ChevronDown, Plus, Trash2 } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,7 +22,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -24,26 +34,26 @@ import { CreatableSelect } from "@/components/ui/creatable-select";
 import type { Invoice } from "@/pages/Documents";
 
 const defaultSuppliers = [
-  { value: 'fresh_produce_co', label: 'Fresh Produce Co.' },
-  { value: 'meat_suppliers_inc', label: 'Meat Suppliers Inc.' },
-  { value: 'grocery_wholesale', label: 'Grocery Wholesale Ltd.' },
+  { value: "fresh_produce_co", label: "Fresh Produce Co." },
+  { value: "meat_suppliers_inc", label: "Meat Suppliers Inc." },
+  { value: "grocery_wholesale", label: "Grocery Wholesale Ltd." },
 ];
 
 const defaultUnits = [
-  { value: 'kg', label: 'Kilogram (kg)' },
-  { value: 'g', label: 'Gram (g)' },
-  { value: 'l', label: 'Liter (L)' },
-  { value: 'ml', label: 'Milliliter (mL)' },
-  { value: 'pcs', label: 'Pieces' },
-  { value: 'box', label: 'Box' },
-  { value: 'case', label: 'Case' },
+  { value: "kg", label: "Kilogram (kg)" },
+  { value: "g", label: "Gram (g)" },
+  { value: "l", label: "Liter (L)" },
+  { value: "ml", label: "Milliliter (mL)" },
+  { value: "pcs", label: "Pieces" },
+  { value: "box", label: "Box" },
+  { value: "case", label: "Case" },
 ];
 
 const defaultIngredients = [
-  { value: 'tomatoes', label: 'Tomatoes' },
-  { value: 'lettuce', label: 'Lettuce' },
-  { value: 'chicken_breast', label: 'Chicken Breast' },
-  { value: 'olive_oil', label: 'Olive Oil' },
+  { value: "tomatoes", label: "Tomatoes" },
+  { value: "lettuce", label: "Lettuce" },
+  { value: "chicken_breast", label: "Chicken Breast" },
+  { value: "olive_oil", label: "Olive Oil" },
 ];
 
 const extractedIngredientSchema = z.object({
@@ -62,7 +72,9 @@ const editInvoiceSchema = z.object({
   invoiceNumber: z.string().min(1, "Invoice number is required"),
   supplier: z.string().min(1, "Supplier is required"),
   date: z.date(),
-  ingredients: z.array(extractedIngredientSchema).min(1, "At least one ingredient is required"),
+  ingredients: z
+    .array(extractedIngredientSchema)
+    .min(1, "At least one ingredient is required"),
   price: z.number().min(0).optional(),
 });
 
@@ -74,30 +86,39 @@ interface EditInvoiceSliderProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSliderProps) {
+export function EditInvoiceSlider({
+  invoice,
+  open,
+  onOpenChange,
+}: EditInvoiceSliderProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isDetailsOpen, setIsDetailsOpen] = useState(true);
 
   const calculateTotal = () => {
     const ingredients = form.watch("ingredients");
-    return ingredients.reduce((sum, ingredient) => sum + (ingredient.totalCost || 0), 0);
+    return ingredients.reduce(
+      (sum, ingredient) => sum + (ingredient.totalCost || 0),
+      0,
+    );
   };
-  
+
   const form = useForm<EditInvoiceFormValues>({
     resolver: zodResolver(editInvoiceSchema),
     defaultValues: {
       invoiceNumber: "",
       supplier: "",
       date: new Date(),
-      ingredients: [{
-        detected: "",
-        mapped: "",
-        unit: "",
-        quantity: 0,
-        unitCost: 0,
-        totalCost: 0,
-        vat: 0,
-      }],
+      ingredients: [
+        {
+          detected: "",
+          mapped: "",
+          unit: "",
+          quantity: 0,
+          unitCost: 0,
+          totalCost: 0,
+          vat: 0,
+        },
+      ],
       price: 0,
     },
   });
@@ -139,7 +160,7 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
     const currentIngredients = form.getValues("ingredients");
     form.setValue(
       "ingredients",
-      currentIngredients.filter((_, i) => i !== index)
+      currentIngredients.filter((_, i) => i !== index),
     );
   };
 
@@ -156,12 +177,19 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
           <div className="w-1/2 bg-gray-50/50 p-6">
             <div className="relative aspect-[3/2] bg-gray-100 rounded-lg overflow-hidden border shadow-sm">
               {/* Image display */}
-              {invoice.documents && invoice.documents[activeImageIndex]?.file_path ? (
-                <img
-                  src={invoice.documents[activeImageIndex].file_path}
-                  alt={`Invoice ${invoice.invoice_number} - Image ${activeImageIndex + 1}`}
-                  className="absolute inset-0 w-full h-full object-contain"
-                />
+              {invoice.documents &&
+              invoice.documents[activeImageIndex]?.name ? (
+                <div className="relative w-full h-full group">
+                  <img
+                    src={
+                      "https://storage.cloud.google.com/peckish-datasets/restaurant/" +
+                      invoice.documents[0].name
+                    }
+                    alt={`Invoice ${invoice.invoice_number} - Image ${activeImageIndex + 1}`}
+                    className="absolute inset-0 w-full h-full object-contain transition-transform duration-200 hover:scale-150 hover:cursor-zoom-in"
+                    style={{ transformOrigin: 'center center' }}
+                  />
+                </div>
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-gray-400">No image available</div>
@@ -175,9 +203,13 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                     variant="ghost"
                     size="icon"
                     className="absolute left-2 top-1/2 -translate-y-1/2"
-                    onClick={() => setActiveImageIndex(prev => 
-                      (prev - 1 + invoice.images.length) % invoice.images.length
-                    )}
+                    onClick={() =>
+                      setActiveImageIndex(
+                        (prev) =>
+                          (prev - 1 + invoice.images.length) %
+                          invoice.images.length,
+                      )
+                    }
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
@@ -185,9 +217,11 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                     variant="ghost"
                     size="icon"
                     className="absolute right-2 top-1/2 -translate-y-1/2"
-                    onClick={() => setActiveImageIndex(prev => 
-                      (prev + 1) % invoice.images.length
-                    )}
+                    onClick={() =>
+                      setActiveImageIndex(
+                        (prev) => (prev + 1) % invoice.images.length,
+                      )
+                    }
                   >
                     <ChevronRight className="h-4 w-4" />
                   </Button>
@@ -206,7 +240,9 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                 <button
                   key={index}
                   className={`relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm transition-all ${
-                    index === activeImageIndex ? 'ring-2 ring-primary scale-95' : 'hover:scale-105'
+                    index === activeImageIndex
+                      ? "ring-2 ring-primary scale-95"
+                      : "hover:scale-105"
                   }`}
                   onClick={() => setActiveImageIndex(index)}
                 >
@@ -221,21 +257,33 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
           {/* Right side - Form */}
           <div className="w-1/2 bg-white">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="h-full flex flex-col"
+              >
                 <div className="border-b">
                   <div className="p-4">
-                    <div 
+                    <div
                       className="flex items-center justify-between cursor-pointer hover:bg-gray-50"
                       onClick={() => setIsDetailsOpen(!isDetailsOpen)}
                     >
                       <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                         Invoice Details
-                        <ChevronDown className={cn("h-4 w-4 transition-transform", isDetailsOpen ? "transform rotate-180" : "")} />
+                        <ChevronDown
+                          className={cn(
+                            "h-4 w-4 transition-transform",
+                            isDetailsOpen ? "transform rotate-180" : "",
+                          )}
+                        />
                       </h2>
                     </div>
 
-                    <div className={cn("space-y-8 overflow-hidden transition-all mt-6", 
-                      isDetailsOpen ? "opacity-100" : "h-0 opacity-0")}>
+                    <div
+                      className={cn(
+                        "space-y-8 overflow-hidden transition-all mt-6",
+                        isDetailsOpen ? "opacity-100" : "h-0 opacity-0",
+                      )}
+                    >
                       <div className="grid grid-cols-2 gap-6">
                         <FormField
                           control={form.control}
@@ -264,7 +312,7 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                                       variant={"outline"}
                                       className={cn(
                                         "w-full pl-3 text-left font-normal",
-                                        !field.value && "text-muted-foreground"
+                                        !field.value && "text-muted-foreground",
                                       )}
                                     >
                                       {field.value ? (
@@ -276,13 +324,17 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                                     </Button>
                                   </FormControl>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
+                                <PopoverContent
+                                  className="w-auto p-0"
+                                  align="start"
+                                >
                                   <Calendar
                                     mode="single"
                                     selected={field.value}
                                     onSelect={field.onChange}
                                     disabled={(date) =>
-                                      date > new Date() || date < new Date("1900-01-01")
+                                      date > new Date() ||
+                                      date < new Date("1900-01-01")
                                     }
                                     initialFocus
                                   />
@@ -322,20 +374,29 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
 
                       <div className="col-span-2 flex items-center gap-4 justify-end border-t pt-4">
                         <div className="text-sm flex items-center gap-2">
-                          <span className="text-muted-foreground">Extracted Total:</span>
+                          <span className="text-muted-foreground">
+                            Extracted Total:
+                          </span>
                           <Input
                             type="number"
                             step="0.01"
                             value={form.watch("price")}
                             onChange={(e) => {
-                              form.setValue("price", parseFloat(e.target.value));
+                              form.setValue(
+                                "price",
+                                parseFloat(e.target.value),
+                              );
                             }}
                             className="w-32"
                           />
                         </div>
                         <div className="text-sm flex items-center gap-2">
-                          <span className="text-muted-foreground">Calculated Total:</span>
-                          <span className="font-medium">${calculateTotal().toFixed(2)}</span>
+                          <span className="text-muted-foreground">
+                            Calculated Total:
+                          </span>
+                          <span className="font-medium">
+                            ${calculateTotal().toFixed(2)}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -344,7 +405,9 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
 
                 <div className="flex-1 p-8 space-y-6 overflow-y-auto">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-medium">Extracted Ingredients</h3>
+                    <h3 className="text-lg font-medium">
+                      Extracted Ingredients
+                    </h3>
                     <Button
                       type="button"
                       variant="outline"
@@ -367,7 +430,9 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                           name={`ingredients.${index}.detected`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                              <FormLabel
+                                className={index !== 0 ? "sr-only" : undefined}
+                              >
                                 Detected
                               </FormLabel>
                               <FormControl>
@@ -383,7 +448,9 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                           name={`ingredients.${index}.mapped`}
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                              <FormLabel
+                                className={index !== 0 ? "sr-only" : undefined}
+                              >
                                 Mapped Ingredient
                               </FormLabel>
                               <FormControl>
@@ -414,7 +481,11 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                             name={`ingredients.${index}.quantity`}
                             render={({ field }) => (
                               <FormItem className="flex-1">
-                                <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                <FormLabel
+                                  className={
+                                    index !== 0 ? "sr-only" : undefined
+                                  }
+                                >
                                   Quantity
                                 </FormLabel>
                                 <FormControl>
@@ -422,7 +493,9 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                                     type="number"
                                     step="0.01"
                                     {...field}
-                                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                                    onChange={(e) =>
+                                      field.onChange(parseFloat(e.target.value))
+                                    }
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -434,7 +507,11 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                             name={`ingredients.${index}.unit`}
                             render={({ field }) => (
                               <FormItem className="w-32">
-                                <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                <FormLabel
+                                  className={
+                                    index !== 0 ? "sr-only" : undefined
+                                  }
+                                >
                                   Unit
                                 </FormLabel>
                                 <FormControl>
@@ -464,7 +541,11 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                             name={`ingredients.${index}.unitCost`}
                             render={({ field }) => (
                               <FormItem className="flex-1">
-                                <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                <FormLabel
+                                  className={
+                                    index !== 0 ? "sr-only" : undefined
+                                  }
+                                >
                                   Unit Cost
                                 </FormLabel>
                                 <FormControl>
@@ -472,7 +553,9 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                                     type="number"
                                     step="0.01"
                                     {...field}
-                                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                                    onChange={(e) =>
+                                      field.onChange(parseFloat(e.target.value))
+                                    }
                                     placeholder="Unit Cost"
                                   />
                                 </FormControl>
@@ -485,7 +568,11 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                             name={`ingredients.${index}.vat`}
                             render={({ field }) => (
                               <FormItem className="w-24">
-                                <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                                <FormLabel
+                                  className={
+                                    index !== 0 ? "sr-only" : undefined
+                                  }
+                                >
                                   VAT %
                                 </FormLabel>
                                 <FormControl>
@@ -493,7 +580,9 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
                                     type="number"
                                     step="0.1"
                                     {...field}
-                                    onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                                    onChange={(e) =>
+                                      field.onChange(parseFloat(e.target.value))
+                                    }
                                     placeholder="VAT %"
                                   />
                                 </FormControl>
@@ -518,7 +607,11 @@ export function EditInvoiceSlider({ invoice, open, onOpenChange }: EditInvoiceSl
 
                 <div className="mt-auto p-8 bg-gray-50 border-t">
                   <div className="flex justify-end gap-4">
-                    <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => onOpenChange(false)}
+                    >
                       Cancel
                     </Button>
                     <Button type="submit">Save changes</Button>
