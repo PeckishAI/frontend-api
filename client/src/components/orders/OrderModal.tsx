@@ -1,4 +1,3 @@
-
 import {
   Sheet,
   SheetContent,
@@ -20,6 +19,11 @@ import { getStatusColor } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import { supplierService } from "@/services/supplierService";
+import { CreatableSelect } from "@/components/ui/creatableSelect"; // Assuming this component exists
+
 
 interface OrderModalProps {
   order: Order | null;
@@ -32,6 +36,12 @@ export default function OrderModal({ order, onClose, editMode = false, onSave }:
   if (!order) return null;
 
   const [editedOrder, setEditedOrder] = useState<Order>(order);
+  const { restaurant } = useRestaurantContext(); // Assuming this context provides necessary data.
+
+  const { data: suppliers, isLoading } = useQuery({
+    queryKey: ['suppliers'],
+    queryFn: () => supplierService.getAllSuppliers(restaurant?.id), // Assuming supplierService.getAllSuppliers exists and takes restaurant ID
+  });
 
   const handleSave = () => {
     if (onSave) {
@@ -43,7 +53,7 @@ export default function OrderModal({ order, onClose, editMode = false, onSave }:
   const updateItem = (index: number, field: keyof OrderItem, value: any) => {
     const newItems = [...editedOrder.items];
     newItems[index] = { ...newItems[index], [field]: value };
-    
+
     // Recalculate item total
     if (field === 'quantity' || field === 'price') {
       const quantity = field === 'quantity' ? value : newItems[index].quantity;
@@ -53,7 +63,7 @@ export default function OrderModal({ order, onClose, editMode = false, onSave }:
 
     // Update order total
     const newTotal = newItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);
-    
+
     setEditedOrder({
       ...editedOrder,
       items: newItems,
@@ -101,11 +111,16 @@ export default function OrderModal({ order, onClose, editMode = false, onSave }:
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
               <label className="text-sm text-gray-600">Supplier</label>
-              <Input
-                value={editedOrder.supplierName}
-                onChange={(e) => setEditedOrder({ ...editedOrder, supplierName: e.target.value })}
-                disabled={!editMode}
-              />
+              {isLoading ? (
+                <p>Loading suppliers...</p>
+              ) : (
+                <CreatableSelect
+                  options={suppliers?.map(supplier => ({ label: supplier.name, value: supplier.id }))} // Assuming supplier object has name and id properties
+                  value={suppliers?.find(supplier => supplier.id === editedOrder.supplierId)} //Assuming editedOrder has supplierId
+                  onChange={(e) => setEditedOrder({ ...editedOrder, supplierId: e.value })} // Assuming e.value is the supplierId
+                  disabled={!editMode}
+                />
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-sm text-gray-600">Date</label>
