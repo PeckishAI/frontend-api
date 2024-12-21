@@ -91,10 +91,7 @@ export function CreatableSelect({
     return filtered;
   }, [groupedOptions, search]);
 
-  const handleSelect = React.useCallback((selectedValue: string, event?: React.MouseEvent) => {
-    event?.preventDefault();
-    event?.stopPropagation();
-
+  const handleSelect = React.useCallback((selectedValue: string) => {
     const currentValue = value || [];
     if (multiple) {
       onChange(
@@ -108,9 +105,7 @@ export function CreatableSelect({
     }
   }, [multiple, onChange, value]);
 
-  const handleCreate = React.useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleCreate = React.useCallback(() => {
     if (search && onCreateOption) {
       onCreateOption(search);
       setSearch("");
@@ -144,10 +139,10 @@ export function CreatableSelect({
       </PopoverTrigger>
       <PopoverContent
         className="w-[var(--radix-popover-trigger-width)] p-0"
-        style={{ zIndex: 9999 }}
-        onPointerDownOutside={(e) => e.preventDefault()}
+        align="start"
+        style={{ zIndex: 50 }}
       >
-        <Command ref={commandRef} className="w-full h-full overflow-hidden">
+        <Command ref={commandRef} className="w-full">
           <CommandInput
             placeholder={searchPlaceholder}
             value={search}
@@ -157,8 +152,9 @@ export function CreatableSelect({
             <CommandEmpty>
               {search.trim() !== "" && onCreateOption ? (
                 <Button
+                  type="button"
                   variant="outline"
-                  className="w-full justify-start hover:bg-accent hover:text-accent-foreground active:bg-accent/90"
+                  className="w-full justify-start"
                   onClick={handleCreate}
                 >
                   <Plus className="mr-2 h-4 w-4" />
@@ -177,8 +173,8 @@ export function CreatableSelect({
                     <CommandItem
                       key={option.value}
                       value={option.value}
-                      onSelect={(value) => handleSelect(value)}
-                      className="cursor-pointer rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-accent hover:text-accent-foreground"
+                      onSelect={handleSelect}
+                      className="flex cursor-pointer items-center px-2 py-1.5 text-sm outline-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"
                     >
                       <Check
                         className={cn(
