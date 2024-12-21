@@ -90,7 +90,7 @@ export function CreatableSelect({
     return filtered;
   }, [groupedOptions, search]);
 
-  const handleSelect = React.useCallback((selectedValue: string) => {
+  const handleSelect = (selectedValue: string) => {
     const currentValue = value || [];
     if (multiple) {
       onChange(
@@ -102,14 +102,14 @@ export function CreatableSelect({
       onChange([selectedValue]);
       setOpen(false);
     }
-  }, [multiple, onChange, value]);
+  };
 
-  const handleCreate = React.useCallback(() => {
+  const handleCreate = () => {
     if (search && onCreateOption) {
       onCreateOption(search);
       setSearch("");
     }
-  }, [onCreateOption, search]);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -124,30 +124,20 @@ export function CreatableSelect({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent 
-        className="w-[var(--radix-popover-trigger-width)] p-0" 
-        align="start"
-        sideOffset={5}
-        style={{ zIndex: 51 }}
-      >
-        <Command className="w-full" shouldFilter={false}>
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+        <Command className="w-full h-full overflow-hidden">
           <CommandInput
             placeholder={searchPlaceholder}
             value={search}
             onValueChange={setSearch}
           />
-          <CommandList>
+          <CommandList className="command-list">
             <CommandEmpty>
               {search.trim() !== "" && onCreateOption ? (
                 <Button
-                  type="button"
                   variant="outline"
                   className="w-full justify-start"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleCreate();
-                  }}
+                  onClick={handleCreate}
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   {createOptionLabel} "{search}"
@@ -158,24 +148,21 @@ export function CreatableSelect({
             </CommandEmpty>
             {Object.entries(filteredOptions).map(([category, opts]) => (
               <React.Fragment key={category}>
-                <CommandGroup heading={category === "Default" ? undefined : category}>
+                <CommandGroup
+                  heading={category === "Default" ? undefined : category}
+                >
                   {opts.map((option) => (
                     <CommandItem
                       key={option.value}
                       value={option.value}
                       onSelect={handleSelect}
-                      className="cursor-pointer py-3 px-4 rounded-sm text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
                     >
                       <Check
                         className={cn(
                           "mr-2 h-4 w-4",
                           Array.isArray(value) && value.includes(option.value)
                             ? "opacity-100"
-                            : "opacity-0"
+                            : "opacity-0",
                         )}
                       />
                       {option.label}
