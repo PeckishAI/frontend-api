@@ -1,19 +1,22 @@
 
 import * as React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
-import { Button } from "./button";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "./command";
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "./popover";
+} from "@/components/ui/popover";
 
 export type SelectOption = {
   value: string;
@@ -22,77 +25,93 @@ export type SelectOption = {
 };
 
 interface CreatableSelectProps {
-  value?: string[];
+  value?: string[] | null;
   onChange: (value: string[]) => void;
   options: SelectOption[];
-  onCreateOption?: (value: string) => Promise<void>;
+  onCreateOption?: (value: string) => void;
   placeholder?: string;
   searchPlaceholder?: string;
   createOptionLabel?: string;
-  multiple?: boolean;
+  emptyMessage?: string;
   className?: string;
+  multiple?: boolean;
 }
 
 export function CreatableSelect({
-  value = [],
+  value,
   onChange,
   options,
   onCreateOption,
   placeholder = "Select...",
   searchPlaceholder = "Search...",
   createOptionLabel = "Create",
-  multiple = false,
+  emptyMessage = "No results found.",
   className,
+  multiple = false,
 }: CreatableSelectProps) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
-  const [isCreating, setIsCreating] = React.useState(false);
 
-  const filteredOptions = React.useMemo(() => {
-    const searchTerm = search.toLowerCase();
-    return options.filter(
-      (option) =>
-        option.label.toLowerCase().includes(searchTerm) ||
-        option.value.toLowerCase().includes(searchTerm)
-    );
-  }, [options, search]);
+  const groupedOptions = React.useMemo(() => {
+    const groups: { [key: string]: SelectOption[] } = {};
+    if (options) {
+      options.forEach((option) => {
+        const category = option.category || "Default";
+        if (!groups[category]) {
+          groups[category] = [];
+        }
+        groups[category].push(option);
+      });
+    }
+    return groups;
+  }, [options]);
 
   const selectedLabels = React.useMemo(() => {
-    return value
+    const valueArray = Array.isArray(value) ? value : [];
+    return valueArray
       .map((v) => options.find((opt) => opt.value === v)?.label || v)
       .join(", ");
   }, [value, options]);
 
-  const handleSelect = React.useCallback(
-    (selectedValue: string) => {
-      if (multiple) {
-        onChange(
-          value.includes(selectedValue)
-            ? value.filter((v) => v !== selectedValue)
-            : [...value, selectedValue]
-        );
-      } else {
-        onChange([selectedValue]);
-        setOpen(false);
-      }
-      setSearch("");
-    },
-    [value, multiple, onChange]
-  );
+  const filteredOptions = React.useMemo(() => {
+    const searchLower = search.toLowerCase();
+    const filtered: { [key: string]: SelectOption[] } = {};
 
-  const handleCreate = React.useCallback(async () => {
-    if (search && onCreateOption && !isCreating) {
-      setIsCreating(true);
-      try {
-        await onCreateOption(search);
-        setSearch("");
-      } catch (error) {
-        console.error("Failed to create option:", error);
-      } finally {
-        setIsCreating(false);
+    Object.entries(groupedOptions).forEach(([category, opts]) => {
+      const matchingOpts = opts.filter(
+        (opt) =>
+          opt.label.toLowerCase().includes(searchLower) ||
+          opt.value.toLowerCase().includes(searchLower),
+      );
+      if (matchingOpts.length > 0) {
+        filtered[category] = matchingOpts;
       }
+    });
+
+    return filtered;
+  }, [groupedOptions, search]);
+
+  const handleSelect = React.useCallback((selectedValue: string) => {
+    const currentValue = value || [];
+    if (multiple) {
+      onChange(
+        currentValue.includes(selectedValue)
+          ? currentValue.filter((v) => v !== selectedValue)
+          : [...currentValue, selectedValue],
+      );
+    } else {
+      onChange([selectedValue]);
+      setOpen(false);
     }
-  }, [search, onCreateOption, isCreating]);
+    setSearch("");
+  }, [value, multiple, onChange]);
+
+  const handleCreate = React.useCallback(() => {
+    if (search && onCreateOption) {
+      onCreateOption(search);
+      setSearch("");
+    }
+  }, [search, onCreateOption]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -101,51 +120,65 @@ export function CreatableSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={className}
+          className={cn("w-full justify-between", className)}
         >
-          {value.length > 0 ? selectedLabels : placeholder}
+          {value && value.length > 0 ? selectedLabels : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-        <Command className="w-full">
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 z-50">
+        <Command className="w-full h-full overflow-hidden">
           <CommandInput
             placeholder={searchPlaceholder}
             value={search}
             onValueChange={setSearch}
           />
-          <div className="max-h-[300px] overflow-y-auto">
+          <CommandList className="command-list">
             <CommandEmpty>
-              {search && onCreateOption && (
+              {search.trim() !== "" && onCreateOption ? (
                 <Button
                   type="button"
                   variant="outline"
                   className="w-full justify-start"
                   onClick={handleCreate}
-                  disabled={isCreating}
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   {createOptionLabel} "{search}"
                 </Button>
+              ) : (
+                emptyMessage
               )}
             </CommandEmpty>
-            <CommandGroup>
-              {filteredOptions.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={option.value}
-                  onSelect={() => handleSelect(option.value)}
+            {Object.entries(filteredOptions).map(([category, opts]) => (
+              <React.Fragment key={category}>
+                <CommandGroup
+                  heading={category === "Default" ? undefined : category}
                 >
-                  <Check
-                    className={`mr-2 h-4 w-4 ${
-                      value.includes(option.value) ? "opacity-100" : "opacity-0"
-                    }`}
-                  />
-                  {option.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </div>
+                  {opts.map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      value={option.value}
+                      onSelect={() => handleSelect(option.value)}
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          Array.isArray(value) && value.includes(option.value)
+                            ? "opacity-100"
+                            : "opacity-0",
+                        )}
+                      />
+                      {option.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+                {category !== Object.keys(filteredOptions).slice(-1)[0] && (
+                  <CommandSeparator />
+                )}
+              </React.Fragment>
+            ))}
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
