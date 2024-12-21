@@ -1,0 +1,636 @@
+~/Frontend$ npm install react@latest react-dom@latest
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peerOptional react@"^18.0.0" from framer-motion@11.13.1
+npm warn node_modules/framer-motion
+npm warn   framer-motion@"^11.13.1" from the root project
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^16.8.0 || ^17.0.0 || ^18.0.0" from react-day-picker@8.10.1
+npm warn node_modules/react-day-picker
+npm warn   react-day-picker@"^8.10.1" from the root project
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^18.3.1" from react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react@18.3.1
+npm warn node_modules/react
+npm warn   peer react@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   79 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react@"^16.0.0 || ^17.0.0 || ^18.0.0" from recharts@2.13.3
+npm warn node_modules/recharts
+npm warn   recharts@"^2.13.0" from the root project
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peerOptional react-dom@"^18.0.0" from framer-motion@11.13.1
+npm warn node_modules/framer-motion
+npm warn   framer-motion@"^11.13.1" from the root project
+npm warn ERESOLVE overriding peer dependency
+npm warn While resolving: rest-express@1.0.0
+npm warn Found: react-dom@18.3.1
+npm warn node_modules/react-dom
+npm warn   peer react-dom@">=16.8.0" from @floating-ui/react-dom@2.1.2
+npm warn   node_modules/@floating-ui/react-dom
+npm warn     @floating-ui/react-dom@"^2.0.0" from @radix-ui/react-popper@1.2.0
+npm warn     node_modules/@radix-ui/react-popper
+npm warn   47 more (@radix-ui/react-accordion, ...)
+npm warn
+npm warn Could not resolve dependency:
+npm warn peer react-dom@"^16.0.0 || ^17.0.0 || ^18.0.0" from recharts@2.13.3
+npm warn node_modules/recharts
+npm warn   recharts@"^2.13.0" from the root project
+npm warn ERESOLVE overriding peer dependency
+npm warn ERESOLVE overriding peer dependency
+npm warn ERESOLVE overriding peer dependency
+npm warn ERESOLVE overriding peer dependency
+
+added 50 packages, removed 1 package, changed 16 packages, and audited 488 packages in 7s
+
+63 packages are looking for funding
+  run `npm fund` for details
+
+1 moderate severity vulnerability
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+~/Frontend$ npm run dev
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts
+
+Re-optimizing dependencies because lockfile has changed
+11:48:10 PM [express] Server running on port 5000
+11:50:36 PM [vite] hmr update /src/components/ui/creatable-select.tsx, /src/index.css
+11:52:04 PM [vite] hmr update /src/components/ui/creatable-select.tsx, /src/index.css (x2)
+11:52:04 PM [vite] hmr update /src/components/ui/command.tsx, /src/index.css
+
+
+
+
+
+
+
+
+
+
+
