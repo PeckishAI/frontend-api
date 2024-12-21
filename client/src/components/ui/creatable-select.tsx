@@ -50,6 +50,7 @@ export function CreatableSelect({
 }: CreatableSelectProps) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
+  const commandRef = React.useRef<HTMLDivElement>(null);
 
   const groupedOptions = React.useMemo(() => {
     const groups: { [key: string]: SelectOption[] } = {};
@@ -90,7 +91,10 @@ export function CreatableSelect({
     return filtered;
   }, [groupedOptions, search]);
 
-  const handleSelect = (selectedValue: string) => {
+  const handleSelect = React.useCallback((selectedValue: string, event?: React.MouseEvent) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+
     const currentValue = value || [];
     if (multiple) {
       onChange(
@@ -102,14 +106,28 @@ export function CreatableSelect({
       onChange([selectedValue]);
       setOpen(false);
     }
-  };
+  }, [multiple, onChange, value]);
 
-  const handleCreate = () => {
+  const handleCreate = React.useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (search && onCreateOption) {
       onCreateOption(search);
       setSearch("");
     }
-  };
+  }, [onCreateOption, search]);
+
+  // Handle clicks outside of the component
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (commandRef.current && !commandRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -124,19 +142,23 @@ export function CreatableSelect({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-        <Command className="w-full h-full overflow-hidden">
+      <PopoverContent
+        className="w-[var(--radix-popover-trigger-width)] p-0"
+        style={{ zIndex: 9999 }}
+        onPointerDownOutside={(e) => e.preventDefault()}
+      >
+        <Command ref={commandRef} className="w-full h-full overflow-hidden">
           <CommandInput
             placeholder={searchPlaceholder}
             value={search}
             onValueChange={setSearch}
           />
-          <CommandList className="command-list">
+          <CommandList>
             <CommandEmpty>
               {search.trim() !== "" && onCreateOption ? (
                 <Button
                   variant="outline"
-                  className="w-full justify-start"
+                  className="w-full justify-start hover:bg-accent hover:text-accent-foreground active:bg-accent/90"
                   onClick={handleCreate}
                 >
                   <Plus className="mr-2 h-4 w-4" />
@@ -155,7 +177,8 @@ export function CreatableSelect({
                     <CommandItem
                       key={option.value}
                       value={option.value}
-                      onSelect={handleSelect}
+                      onSelect={(value) => handleSelect(value)}
+                      className="cursor-pointer rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-accent hover:text-accent-foreground"
                     >
                       <Check
                         className={cn(
