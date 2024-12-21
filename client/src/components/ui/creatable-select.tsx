@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -91,7 +90,7 @@ export function CreatableSelect({
     return filtered;
   }, [groupedOptions, search]);
 
-  const handleSelect = React.useCallback((selectedValue: string) => {
+  const handleSelect = (selectedValue: string) => {
     const currentValue = value || [];
     if (multiple) {
       onChange(
@@ -103,15 +102,14 @@ export function CreatableSelect({
       onChange([selectedValue]);
       setOpen(false);
     }
-    setSearch("");
-  }, [value, multiple, onChange]);
+  };
 
-  const handleCreate = React.useCallback(() => {
+  const handleCreate = () => {
     if (search && onCreateOption) {
       onCreateOption(search);
       setSearch("");
     }
-  }, [search, onCreateOption]);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -126,7 +124,7 @@ export function CreatableSelect({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 z-50">
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
         <Command className="w-full h-full overflow-hidden">
           <CommandInput
             placeholder={searchPlaceholder}
@@ -137,7 +135,6 @@ export function CreatableSelect({
             <CommandEmpty>
               {search.trim() !== "" && onCreateOption ? (
                 <Button
-                  type="button"
                   variant="outline"
                   className="w-full justify-start"
                   onClick={handleCreate}
@@ -158,8 +155,7 @@ export function CreatableSelect({
                     <CommandItem
                       key={option.value}
                       value={option.value}
-                      onSelect={() => handleSelect(option.value)}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
+                      onSelect={handleSelect}
                     >
                       <Check
                         className={cn(
