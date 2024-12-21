@@ -1,7 +1,8 @@
+"use client"
+
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
-import { Check, ChevronDown, ChevronUp } from "lucide-react"
-
+import { Check, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const Select = SelectPrimitive.Root
@@ -45,14 +46,6 @@ const SelectContent = React.forwardRef<
       )}
       position={position}
       {...props}
-      onCloseAutoFocus={(event) => {
-        event.preventDefault();
-        props.onCloseAutoFocus?.(event);
-      }}
-      onPointerDownOutside={(event) => {
-        event.preventDefault();
-        props.onPointerDownOutside?.(event);
-      }}
     >
       <SelectPrimitive.Viewport
         className={cn(
@@ -68,18 +61,6 @@ const SelectContent = React.forwardRef<
 ))
 SelectContent.displayName = SelectPrimitive.Content.displayName
 
-const SelectLabel = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Label>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>
->(({ className, ...props }, ref) => (
-  <SelectPrimitive.Label
-    ref={ref}
-    className={cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className)}
-    {...props}
-  />
-))
-SelectLabel.displayName = SelectPrimitive.Label.displayName
-
 const SelectItem = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
@@ -87,18 +68,10 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+      "relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className
     )}
     {...props}
-    onPointerDown={(event) => {
-      event.preventDefault();
-      props.onPointerDown?.(event);
-    }}
-    onPointerUp={(event) => {
-      event.preventDefault();
-      props.onPointerUp?.(event);
-    }}
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
