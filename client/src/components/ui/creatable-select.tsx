@@ -50,7 +50,6 @@ export function CreatableSelect({
 }: CreatableSelectProps) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
-  const commandRef = React.useRef<HTMLDivElement>(null);
 
   const groupedOptions = React.useMemo(() => {
     const groups: { [key: string]: SelectOption[] } = {};
@@ -112,18 +111,6 @@ export function CreatableSelect({
     }
   }, [onCreateOption, search]);
 
-  // Handle clicks outside of the component
-  React.useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (commandRef.current && !commandRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -137,12 +124,13 @@ export function CreatableSelect({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent
-        className="w-[var(--radix-popover-trigger-width)] p-0"
+      <PopoverContent 
+        className="w-[var(--radix-popover-trigger-width)] p-0" 
         align="start"
-        style={{ zIndex: 50 }}
+        sideOffset={5}
+        style={{ zIndex: 51 }}
       >
-        <Command ref={commandRef} className="w-full">
+        <Command className="w-full" shouldFilter={false}>
           <CommandInput
             placeholder={searchPlaceholder}
             value={search}
@@ -155,7 +143,11 @@ export function CreatableSelect({
                   type="button"
                   variant="outline"
                   className="w-full justify-start"
-                  onClick={handleCreate}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleCreate();
+                  }}
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   {createOptionLabel} "{search}"
@@ -166,22 +158,24 @@ export function CreatableSelect({
             </CommandEmpty>
             {Object.entries(filteredOptions).map(([category, opts]) => (
               <React.Fragment key={category}>
-                <CommandGroup
-                  heading={category === "Default" ? undefined : category}
-                >
+                <CommandGroup heading={category === "Default" ? undefined : category}>
                   {opts.map((option) => (
                     <CommandItem
                       key={option.value}
                       value={option.value}
                       onSelect={handleSelect}
-                      className="flex cursor-pointer items-center px-2 py-1.5 text-sm outline-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"
+                      className="cursor-pointer py-3 px-4 rounded-sm text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
                     >
                       <Check
                         className={cn(
                           "mr-2 h-4 w-4",
                           Array.isArray(value) && value.includes(option.value)
                             ? "opacity-100"
-                            : "opacity-0",
+                            : "opacity-0"
                         )}
                       />
                       {option.label}
