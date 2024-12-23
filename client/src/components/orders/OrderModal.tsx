@@ -14,7 +14,12 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Building2, Plus, Trash2 } from "lucide-react";
-import { type Order, type OrderItem, type Supplier, type Unit } from "@/lib/OrderTypes";
+import {
+  type Order,
+  type OrderItem,
+  type Supplier,
+  type Unit,
+} from "@/lib/OrderTypes";
 import { getStatusColor } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -271,7 +276,8 @@ export default function OrderModal({
                     value={suppliers
                       ?.filter(
                         (s: Supplier) =>
-                          s.supplier_uuid === editedOrder.supplier,
+                          s.supplier_uuid ===
+                          editedOrder.supplier?.supplier_uuid,
                       )
                       .map((s: Supplier) => ({
                         label: s.supplier_name,
@@ -299,11 +305,9 @@ export default function OrderModal({
                 <label className="text-sm text-gray-600">Date</label>
                 <Input
                   type="date"
-                  value={
-                    new Date(editedOrder.delivery_date || "")
-                      .toISOString()
-                      .split("T")[0]
-                  }
+                  value={new Date(
+                    editedOrder.delivery_date || "",
+                  ).toLocaleDateString()}
                   onChange={(e) =>
                     setEditedOrder({
                       ...editedOrder,
