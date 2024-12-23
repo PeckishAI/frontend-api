@@ -32,22 +32,27 @@ import { CreatableSelect } from "@/components/ui/creatable-select";
 
 const defaultUnits = [
   {
-    label: 'Common Units',
+    label: "Volume",
     options: [
-      { value: 'kg', label: 'Kilogram (kg)' },
-      { value: 'g', label: 'Gram (g)' },
-      { value: 'lb', label: 'Pound (lb)' },
-      { value: 'oz', label: 'Ounce (oz)' },
-      { value: 'l', label: 'Liter (L)' },
-      { value: 'ml', label: 'Milliliter (mL)' },
-      { value: 'pcs', label: 'Pieces' },
-      { value: 'box', label: 'Box' },
-      { value: 'case', label: 'Case' },
-      { value: 'bag', label: 'Bag' }
-    ]
-  }
+      { label: "Liter", value: "liter" },
+      { label: "Milliliter", value: "milliliter" },
+    ],
+  },
+  {
+    label: "Weight",
+    options: [
+      { label: "Kilogram", value: "kilogram" },
+      { label: "Gram", value: "gram" },
+    ],
+  },
+  {
+    label: "Other",
+    options: [
+      { label: "Unit", value: "unit" },
+      { label: "Piece", value: "piece" },
+    ],
+  },
 ];
-
 
 interface OrderModalProps {
   order: Order | null;
@@ -434,7 +439,14 @@ export default function OrderModal({
                     <TableCell>
                       {editMode ? (
                         <CreatableSelect
-                          value={item.unit?.unit_name ? { value: item.unit.unit_name, label: item.unit.unit_name } : null}
+                          value={
+                            item.unit?.unit_name
+                              ? {
+                                  value: item.unit.unit_name,
+                                  label: item.unit.unit_name,
+                                }
+                              : null
+                          }
                           onChange={(values) => {
                             if (values[0]) {
                               updateItem(index, "unit", {
