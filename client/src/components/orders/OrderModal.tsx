@@ -29,6 +29,8 @@ import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { supplierService } from "@/services/supplierService";
 import { inventoryService } from "@/services/inventoryService";
 import { CreatableSelect } from "@/components/ui/creatable-select";
+import defaultUnits from "@/lib/data"; // Assuming defaultUnits is defined here
+
 
 interface OrderModalProps {
   order: Order | null;
@@ -413,16 +415,29 @@ export default function OrderModal({
                       />
                     </TableCell>
                     <TableCell>
-                      <Input
-                        value={item.unit?.unit_name}
-                        onChange={(e) =>
-                          updateItem(index, "unit", {
-                            unit_name: e.target.value,
-                            unit_uuid: item.unit?.unit_uuid,
-                          })
-                        }
-                        disabled={!editMode}
-                      />
+                      {editMode ? (
+                        <CreatableSelect
+                          value={item.unit?.unit_name ? [item.unit.unit_name] : []}
+                          onChange={(values) => {
+                            if (values[0]) {
+                              updateItem(index, "unit", {
+                                unit_name: values[0],
+                                unit_uuid: values[0],
+                              });
+                            }
+                          }}
+                          options={defaultUnits}
+                          onCreateOption={(value) => {
+                            updateItem(index, "unit", {
+                              unit_name: value,
+                              unit_uuid: value,
+                            });
+                          }}
+                          size="small"
+                        />
+                      ) : (
+                        <div>{item.unit?.unit_name}</div>
+                      )}
                     </TableCell>
                     <TableCell className="text-right">
                       <Input
