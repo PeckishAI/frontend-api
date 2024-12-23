@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Building2, Plus, Trash2 } from "lucide-react";
-import { type Order, type OrderItem, type Supplier } from "@/lib/OrderTypes";
+import { type Order, type OrderItem, type Supplier, type Unit } from "@/lib/OrderTypes";
 import { getStatusColor } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,7 +41,8 @@ export default function OrderModal({
   if (!order) return null;
 
   const [editedOrder, setEditedOrder] = useState<Order>(order);
-  const { currentRestaurant } = useRestaurantContext(); // Assuming this context provides necessary data.
+  console.log("editedOrder", editedOrder);
+  const { currentRestaurant } = useRestaurantContext();
 
   const { data: suppliers, isLoading: suppliersLoading } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
@@ -124,7 +125,6 @@ export default function OrderModal({
     newItems[index] = { ...newItems[index], [field]: value };
     console.log("Updated item:", newItems);
 
-    // Recalculate item total
     if (field === "quantity" || field === "unit_cost") {
       const quantity = field === "quantity" ? value : newItems[index].quantity;
       const unit_cost =

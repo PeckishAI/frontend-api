@@ -1,10 +1,10 @@
+import type { Order } from "@/lib/OrderTypes";
 
-import type { Order } from "@/lib/types";
-
-const BASE_URL = "https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev";
+import { config } from "../config/config";
+const BASE_URL = config.apiBaseUrl;
 
 export const orderService = {
-  async getRestaurantOrders(restaurantUuid: string): Promise<any> {
+  async getRestaurantOrders(restaurantUuid: string): Promise<Order[]> {
     try {
       const response = await fetch(
         `${BASE_URL}/orders/v2/restaurant/${restaurantUuid}`,
@@ -24,6 +24,7 @@ export const orderService = {
       if (!data.success) {
         throw new Error("Failed to fetch orders");
       }
+      console.log("Orders : ", data);
       return data;
     } catch (error) {
       console.error("Failed to fetch restaurant orders:", error);

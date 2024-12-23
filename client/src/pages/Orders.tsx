@@ -6,15 +6,17 @@ import OrderTable from "@/components/orders/OrderTable";
 import ViewToggle from "@/components/orders/ViewToggle";
 import OrderModal from "@/components/orders/OrderModal";
 import SubSectionNav from "@/components/layout/SubSectionNav";
-import { type Order, type Supplier } from "@/lib/types";
-import { mockOrders } from "@/mockData/orders";
-import { mockSuppliers } from "@/mockData/suppliers";
+import {
+  type Order,
+  type Supplier,
+  type OrderItem,
+  type Unit,
+} from "@/lib/OrderTypes";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import SupplierCard from "@/components/suppliers/SupplierCard";
 import SupplierDialog from "@/components/suppliers/SupplierDialog";
 import SupplierSheet from "@/components/suppliers/SupplierSheet";
-import { useToast } from "@/hooks/use-toast";
 import { orderService } from "@/services/orderService";
 import { supplierService } from "@/services/supplierService";
 
@@ -39,24 +41,6 @@ export default function Orders() {
         currentRestaurant.restaurant_uuid,
       );
     },
-    enabled: !!currentRestaurant?.restaurant_uuid,
-    select: (data) => {
-      if (!data?.data) return [];
-      return data.data.map((order: any) => ({
-        id: order.order_uuid,
-        supplierName: order.supplier_name,
-        orderDate: order.created_at,
-        status: order.status,
-        total: order.price || 0,
-        items: order.items.map((item: any) => ({
-          id: item.ingredient_uuid,
-          name: item.name,
-          quantity: item.quantity || 0,
-          unit: item.unit_name || "",
-          price: item.price || 0,
-        })),
-      }));
-    },
   });
 
   const { data: suppliers = [], isLoading: suppliersLoading } = useQuery({
@@ -68,16 +52,6 @@ export default function Orders() {
       return supplierService.getRestaurantSuppliers(
         currentRestaurant.restaurant_uuid,
       );
-    },
-    enabled: !!currentRestaurant?.restaurant_uuid,
-    select: (data) => {
-      if (!data) return [];
-      return data.map((supplier: any) => ({
-        supplier_uuid: supplier.supplier_uuid,
-        supplier_name: supplier.supplier_name,
-        email: supplier.email || "",
-        phone: supplier.phone || "",
-      }));
     },
   });
 
@@ -119,9 +93,9 @@ export default function Orders() {
               <div className="p-6">Loading orders...</div>
             ) : viewMode === "cards" ? (
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {(orders || []).map((order) => (
+                {(orders || []).map((order: Order) => (
                   <OrderCard
-                    key={order.id}
+                    key={order.order_uuid}
                     order={order}
                     onClick={() => setSelectedOrder(order)}
                     onEdit={() => {
@@ -129,7 +103,7 @@ export default function Orders() {
                     }}
                     onApprove={() => {
                       // Handle approve action
-                      console.log('Approve order:', order);
+                      console.log("Approve order:", order);
                     }}
                   />
                 ))}
@@ -149,9 +123,9 @@ export default function Orders() {
               <div>Loading suppliers...</div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {(suppliers || []).map((supplier) => (
+                {(suppliers || []).map((supplier: Supplier) => (
                   <SupplierCard
-                    key={supplier.id}
+                    key={supplier.supplier_uuid}
                     supplier={supplier}
                     onClick={() => setSelectedSupplier(supplier)}
                   />
@@ -165,10 +139,10 @@ export default function Orders() {
       <OrderModal
         order={selectedOrder}
         onClose={() => setSelectedOrder(null)}
-        editMode={selectedOrder?.status === 'draft'}
+        editMode={selectedOrder?.status === "draft"}
         onSave={(updatedOrder) => {
           // Handle order update here
-          console.log('Updated order:', updatedOrder);
+          console.log("Updated order:", updatedOrder);
         }}
       />
 

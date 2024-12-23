@@ -1,9 +1,13 @@
-
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { type Order } from "@/lib/types";
+import { type Order } from "@/lib/OrderTypes";
 import { getStatusColor } from "@/lib/data";
 
 interface OrderCardProps {
@@ -14,43 +18,63 @@ interface OrderCardProps {
   onApprove?: () => void;
 }
 
-export default function OrderCard({ order, onClick, onReceive, onEdit, onApprove }: OrderCardProps) {
+export default function OrderCard({
+  order,
+  onClick,
+  onReceive,
+  onEdit,
+  onApprove,
+}: OrderCardProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <h2 className="font-semibold text-xl">{order.supplierName}</h2>
-        <Badge className={getStatusColor(order.status)}>
-          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+        <h2 className="font-semibold text-xl">
+          {order.supplier?.supplier_name}
+        </h2>
+        <Badge
+          className={
+            order.status ? getStatusColor(order.status) : "default-class"
+          }
+        >
+          {order.status
+            ? order.status.charAt(0).toUpperCase() + order.status.slice(1)
+            : "Unknown"}
         </Badge>
       </CardHeader>
       <CardContent className="cursor-pointer" onClick={onClick}>
         <div className="flex flex-col space-y-3">
           <div className="flex items-center text-sm text-gray-600">
             <Calendar className="mr-2 h-4 w-4" />
-            {new Date(order.orderDate).toLocaleDateString()}
+            {order.delivery_date
+              ? new Date(order.delivery_date).toLocaleDateString()
+              : "Unknown Date"}
           </div>
           <div className="flex items-center text-sm text-gray-600">
             <Package className="mr-2 h-4 w-4" />
-            {order.items.length} items
+            {order.items ? order.items.length : 0} items
           </div>
         </div>
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <p className="text-lg font-semibold">
-          ${order.total.toFixed(2)}
+          ${order.amount ? order.amount.toFixed(2) : "0.00"}
         </p>
         <div className="flex gap-2">
-          {order.status === 'pending' && (
+          {order.status === "pending" && (
             <Button size="sm" onClick={onReceive}>
               Receive Stock
             </Button>
           )}
-          {order.status === 'draft' && (
+          {order.status === "draft" && (
             <>
-              <Button size="sm" variant="outline" onClick={(e) => {
-  e.stopPropagation();
-  onEdit && onEdit();
-}}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit && onEdit();
+                }}
+              >
                 Edit
               </Button>
               <Button size="sm" onClick={onApprove}>

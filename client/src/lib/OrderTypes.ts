@@ -3,6 +3,8 @@ export type OrderStatus = "draft" | "pending" | "received" | "cancelled";
 export interface Supplier {
   supplier_uuid?: string;
   supplier_name?: string;
+  email?: string;
+  phone?: string;
 }
 
 export interface Unit {
