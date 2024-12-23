@@ -43,7 +43,7 @@ export default function OrderModal({
   const [editedOrder, setEditedOrder] = useState<Order>(order);
   const { currentRestaurant } = useRestaurantContext(); // Assuming this context provides necessary data.
 
-  const { data: suppliers } = useQuery({
+  const { data: suppliers, isLoading: suppliersLoading } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
