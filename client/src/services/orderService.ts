@@ -25,7 +25,7 @@ export const orderService = {
         throw new Error("Failed to fetch orders");
       }
       console.log("Orders : ", data);
-      return data;
+      return data.data || [];
     } catch (error) {
       console.error("Failed to fetch restaurant orders:", error);
       throw error;
