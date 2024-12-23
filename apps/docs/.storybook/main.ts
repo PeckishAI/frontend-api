@@ -1,5 +1,4 @@
 import type { StorybookConfig } from '@storybook/react-vite';
-
 import { join, dirname } from 'path';
 
 /**
@@ -9,6 +8,7 @@ import { join, dirname } from 'path';
 function getAbsolutePath(value: string): any {
   return dirname(require.resolve(join(value, 'package.json')));
 }
+
 const config: StorybookConfig = {
   stories: [
     '../src/**/*.mdx',
@@ -28,5 +28,18 @@ const config: StorybookConfig = {
   docs: {
     autodocs: 'tag',
   },
+  viteFinal: (config) => {
+    return {
+      ...config,
+      resolve: {
+        ...config.resolve,
+        alias: {
+          ...config.resolve?.alias,
+          '@peckishai/shared-ui': '/packages/shared-ui',
+        },
+      },
+    };
+  },
 };
+
 export default config;

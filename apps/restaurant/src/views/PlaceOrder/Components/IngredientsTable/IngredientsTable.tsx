@@ -103,17 +103,22 @@ const IngredientsTable = (props: Props) => {
   }, [ingredients]);
 
   const filteredBySupplier = useMemo(() => {
-    return props.supplierFilter
-      ? ingredientOptions.filter((option) => {
-          // Split the ingredientSupplier string into an array of supplier names
-          const supplierNamesArray = option.ingredientSupplier
-            .split(',')
-            .map((supplier) => supplier.trim());
+    console.log('Current supplier filter:', props.supplierFilter);
 
-          // Check if the selected supplier exists in the array
-          return supplierNamesArray.includes(props.supplierFilter.name);
-        })
-      : ingredientOptions;
+    if (!props.supplierFilter) {
+      return ingredientOptions;
+    }
+
+    return ingredientOptions.filter((option) => {
+      console.log('Checking ingredient:', {
+        name: option.ingredientName,
+        supplierInOption: option.ingredientSupplier, // This is a string
+        filteringSupplier: props.supplierFilter.name, // Compare with supplier name
+      });
+
+      // Compare the supplier name directly since ingredientSupplier is stored as a string
+      return option.ingredientSupplier.includes(props.supplierFilter.name);
+    });
   }, [props.supplierFilter, ingredientOptions]);
 
   const filteredIngredients = useDebounceMemo(
@@ -129,6 +134,9 @@ const IngredientsTable = (props: Props) => {
     200,
     [props.searchTermFilter, filteredBySupplier]
   );
+
+  console.log('filteredBySupplier', props.supplierFilter);
+  console.log('filteredIngredients', ingredientOptions);
 
   const handleSupplierChange = (uuid: string, newSupplier: string) => {
     const ingredientToUpdate = ingredientOptions.find(

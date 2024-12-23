@@ -1,22 +1,24 @@
 import { useState, useRef, useEffect } from 'react';
 import styles from './styles.module.scss';
 import { Button, IconButton, Select } from 'shared-ui';
-import { Supplier, Tag } from '../../../../services';
+import { Supplier, TagsTMP } from '../../../../services';
 import { useTranslation } from 'react-i18next';
+import { MultiValue } from 'react-select';
 
 type Props = {
   suppliers: Supplier[];
-  tags: Tag[];
+  tags: TagsTMP[];
   onApplyFilters: (filters: FiltersType) => void;
 };
 
 export type FiltersType = {
-  selectedTag: Tag | null;
-  selectedSupplier?: Supplier | null;
+  selectedTag: MultiValue<TagsTMP>;
+  selectedSupplier: MultiValue<Supplier>;
 };
+
 export const defaultFilters: FiltersType = {
-  selectedTag: null,
-  selectedSupplier: null,
+  selectedTag: [],
+  selectedSupplier: [],
 };
 
 const Filters = ({ suppliers, tags, onApplyFilters }: Props) => {
@@ -50,14 +52,12 @@ const Filters = ({ suppliers, tags, onApplyFilters }: Props) => {
 
   const handleFiltersChange = (
     key: keyof FiltersType,
-    value: Tag | Supplier | null
+    value: MultiValue<TagsTMP> | MultiValue<Supplier>
   ) => {
-    setFilters((prev) => {
-      return {
-        ...prev,
-        [key]: value,
-      };
-    });
+    setFilters((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
   };
 
   const handleResetFilters = () => {
@@ -86,33 +86,37 @@ const Filters = ({ suppliers, tags, onApplyFilters }: Props) => {
       {isVisible && (
         <div ref={popupRef} className={styles.filters}>
           <p className={styles.title}>{t('filterBy')} :</p>
-          <div className='filter-selection'>
-          <Select
-            placeholder={'Tag'}
-            options={tags}
-            size="small"
-            isClearable
-            isMulti
-            menuPosition="fixed"
-            maxMenuHeight={200}
-            getOptionLabel={(option) => option.name}
-            getOptionValue={(option) => option.uuid}
-            onChange={(value) => handleFiltersChange('selectedTag', value)}
-            value={filters?.selectedTag}
-          />
-          <Select
-            placeholder={t('ingredient:supplier')}
-            options={suppliers}
-            size="small"
-            isClearable
-            isMulti
-            menuPosition="fixed"
-            maxMenuHeight={200}
-            getOptionLabel={(option) => option.name}
-            getOptionValue={(option) => option.uuid}
-            onChange={(value) => handleFiltersChange('selectedSupplier', value)}
-            value={filters?.selectedSupplier}
-          />
+          <div className="filter-selection">
+            <Select
+              placeholder={'Tag'}
+              options={tags}
+              size="small"
+              isClearable
+              isMulti
+              menuPosition="fixed"
+              maxMenuHeight={200}
+              getOptionLabel={(option: TagsTMP) => option.tag_name || ''}
+              getOptionValue={(option: TagsTMP) => option.tag_uuid || ''}
+              onChange={(value: MultiValue<TagsTMP>) =>
+                handleFiltersChange('selectedTag', value)
+              }
+              value={filters.selectedTag}
+            />
+            <Select
+              placeholder={t('ingredient:supplier')}
+              options={suppliers}
+              size="small"
+              isClearable
+              isMulti
+              menuPosition="fixed"
+              maxMenuHeight={200}
+              getOptionLabel={(option: Supplier) => option.name || ''}
+              getOptionValue={(option: Supplier) => option.uuid || ''}
+              onChange={(value: MultiValue<Supplier>) =>
+                handleFiltersChange('selectedSupplier', value)
+              }
+              value={filters.selectedSupplier}
+            />
           </div>
           <div className={styles.buttons}>
             <Button

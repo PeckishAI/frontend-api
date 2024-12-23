@@ -139,3 +139,29 @@ export type TransferForm = {
     unit?: string;
   }[];
 };
+
+export type IngredientTMP = {
+  ingredient_uuid?: string;
+  ingredient_name?: string;
+  base_unit?: Unit;
+  quantity?: number;
+  par_level?: number;
+  tags?: TagsTMP[];
+  suppliers?: SupplierIngredientTMP[];
+  volume_unit?: Unit;
+  volume_quantity?: number;
+};
+
+export type SupplierIngredientTMP = {
+  supplier_uuid?: string;
+  supplier_name?: string;
+  unit_cost?: number;
+  conversion_factor?: number;
+  unit?: Unit;
+  product_code?: string;
+};
+
+export type TagsTMP = {
+  tag_uuid?: string;
+  tag_name?: string;
+};

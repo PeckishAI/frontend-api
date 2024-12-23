@@ -3,7 +3,12 @@ import { ActionMeta, MultiValue } from 'react-select';
 import { useTranslation } from 'react-i18next';
 import { Button, IconButton, LabeledInput, Select, SidePanel } from 'shared-ui';
 import CreatableSelect from 'react-select/creatable';
-import { Ingredient, Tag, inventoryService } from '../../services';
+import {
+  IngredientTMP,
+  TagsTMP,
+  inventoryServiceV2,
+  unitServiceV2,
+} from '../../services';
 import { tagService } from '../../services/tag.service';
 import { useRestaurantStore } from '../../store/useRestaurantStore';
 import styles from './IngredientFormPanel.module.scss';
@@ -14,7 +19,7 @@ type Props = {
   isOpen: boolean;
   onRequestClose: () => void;
   onSubmitted: () => void;
-  ingredient?: Ingredient | null;
+  ingredient?: IngredientTMP | null;
   action: 'create' | 'edit';
   suppliers?: any[];
 };
@@ -36,7 +41,7 @@ const IngredientFormPanel = ({
   const [editedValues, setEditedValues] = useState(ingredient);
   const [unitname, setUnitName] = useState<Unit[]>([]);
   const [reference_units, setReferenceUnitName] = useState<Unit[]>([]);
-  const [tagList, setTagList] = useState<Tag[]>();
+  const [tagList, setTagList] = useState<TagsTMP[]>();
   const [unitError, setUnitError] = useState(false);
   const [inputValue, setInputValue] = useState<any>('');
 
@@ -44,24 +49,15 @@ const IngredientFormPanel = ({
     (state) => state.selectedRestaurantUUID
   );
 
-  const toggleIngredientsVisibility = () => {
-    setIsIngredientsVisible(!isIngredientsVisible);
-  };
-
-  const toggleQuantityVisibility = () => {
-    setIsQuantityVisible(!isQuantityVisible);
-  };
-
-  // Load initial data
   const reloadReferenceUnits = useCallback(async () => {
-    inventoryService.getReferenceUnits().then((res) => {
+    unitServiceV2.getReferenceUnits().then((res) => {
       setReferenceUnitName(res);
     });
   }, []);
 
   const reloadUnits = useCallback(() => {
     if (!selectedRestaurantUUID) return;
-    inventoryService
+    unitServiceV2
       .getUnits(selectedRestaurantUUID)
       .then(setUnitName)
       .catch(console.error);
@@ -78,10 +74,9 @@ const IngredientFormPanel = ({
       reloadUnits();
       reloadTagList();
 
-      // Check volume visibility based on unit type
       if (ingredient) {
         const isReferenceUnit = reference_units.some(
-          (unit) => unit.unit_uuid === ingredient.unit_uuid
+          (unit) => unit.unit_uuid === ingredient.base_unit?.unit_uuid
         );
         setIsVolumeVisible(!isReferenceUnit);
       }
@@ -90,7 +85,7 @@ const IngredientFormPanel = ({
 
   const handleSave = async () => {
     setIsLoading(true);
-    if (!editedValues?.unit_uuid) {
+    if (!editedValues?.base_unit?.unit_uuid) {
       setUnitError(true);
       setIsLoading(false);
       return;
@@ -100,12 +95,12 @@ const IngredientFormPanel = ({
 
     try {
       if (action === 'create') {
-        await inventoryService.addIngredient(
+        await inventoryServiceV2.createIngredient(
           selectedRestaurantUUID,
           editedValues
         );
       } else {
-        await inventoryService.updateIngredient(
+        await inventoryServiceV2.updateIngredient(
           selectedRestaurantUUID,
           editedValues
         );
@@ -122,27 +117,27 @@ const IngredientFormPanel = ({
 
   const handleAddSupplierDetail = () => {
     setEditedValues((prevValues) => {
+      console.log('Button pressed', prevValues);
       if (!prevValues) return prevValues;
-      const newDetails = prevValues.supplier_details
-        ? [...prevValues.supplier_details]
-        : [];
+      const newDetails = prevValues.suppliers ? [...prevValues.suppliers] : [];
       newDetails.push({
         supplier_uuid: '',
-        supplier_cost: 0,
         supplier_name: '',
-        supplier_unit: '',
-        supplier_unit_name: '',
+        unit: {
+          unit_uuid: '',
+          unit_name: '',
+        },
         product_code: '',
         conversion_factor: 1,
       });
-      return { ...prevValues, supplier_details: newDetails };
+      return { ...prevValues, suppliers: newDetails };
     });
   };
 
   const handleRemoveSupplierDetail = (index: number) => {
     setEditedValues((prevValues) => {
-      if (!prevValues || !prevValues.supplier_details) return prevValues;
-      const updatedSupplierDetails = prevValues.supplier_details.filter(
+      if (!prevValues || !prevValues.suppliers) return prevValues;
+      const updatedSupplierDetails = prevValues.suppliers.filter(
         (_, idx) => idx !== index
       );
       return {
@@ -154,12 +149,9 @@ const IngredientFormPanel = ({
 
   useEffect(() => {
     if (isOpen) {
-      // When panel opens, set the clicked ingredient as the edited values
       setEditedValues(ingredient);
-
-      // Check volume visibility based on unit type
       const isReferenceUnit = reference_units.some(
-        (unit) => unit.unit_uuid === ingredient?.unit_uuid
+        (unit) => unit.unit_uuid === ingredient?.base_unit?.unit_uuid
       );
       setIsVolumeVisible(!isReferenceUnit);
     }
@@ -176,12 +168,10 @@ const IngredientFormPanel = ({
           {isEditMode ? (
             <>
               <IconButton
-                // icon={<i className="fa-solid fa-check"></i>}
                 tooltipMsg={t('save')}
                 onClick={handleSave}
                 className="iconButton"
-                disabled={isLoading} // Add disabled state
-                // You can also add a loading spinner if the button supports it
+                disabled={isLoading}
                 icon={
                   isLoading ? (
                     <i className="fa-solid fa-spinner fa-spin"></i>
@@ -218,7 +208,7 @@ const IngredientFormPanel = ({
                       placeholder={t('ingredientName')}
                       type="text"
                       lighter
-                      value={editedValues?.name}
+                      value={editedValues?.ingredient_name}
                       onChange={(event) =>
                         setEditedValues((prev) => {
                           if (!prev) return prev;
@@ -232,7 +222,7 @@ const IngredientFormPanel = ({
                   ) : (
                     <div className={styles.title}>
                       <span className={styles.titleRecipeName}>
-                        {editedValues?.name}
+                        {editedValues?.ingredient_name}
                       </span>
                     </div>
                   )}
@@ -255,26 +245,19 @@ const IngredientFormPanel = ({
                         placeholder={t('ingredient:actualStock')}
                         type="text"
                         lighter
-                        value={editedValues?.actualStock?.quantity || ''}
+                        value={editedValues?.quantity || ''}
                         onChange={(event) => {
-                          if (!editedValues) return; // Guard clause
+                          if (!editedValues) return;
 
-                          setEditedValues({
-                            ...editedValues,
-                            actualStock: {
-                              ...editedValues.actualStock,
-                              quantity: +event.target.value,
-                              event_type:
-                                editedValues.actualStock?.event_type || null,
-                              unit_name:
-                                editedValues.actualStock?.unit_name || null,
-                            },
-                          } as Ingredient);
+                          setEditedValues((prevValues) => ({
+                            ...prevValues,
+                            quantity: Number(event.target.value),
+                          }));
                         }}
                       />
                     ) : (
                       <span className={styles.value}>
-                        {editedValues?.actualStock?.quantity}
+                        {editedValues?.quantity}
                       </span>
                     )}
                   </div>
@@ -287,22 +270,22 @@ const IngredientFormPanel = ({
                     {isEditMode ? (
                       <LabeledInput
                         placeholder={t('ingredient:parLevel')}
-                        type="text"
+                        type="number"
                         lighter
-                        value={editedValues?.parLevel || ''}
+                        value={editedValues?.par_level || ''}
                         onChange={(event) =>
                           setEditedValues((prev) => {
                             if (!prev) return prev;
                             return {
                               ...prev,
-                              parLevel: Number(event.target.value),
+                              par_level: Number(event.target.value),
                             };
                           })
                         }
                       />
                     ) : (
                       <span className={styles.value}>
-                        {editedValues?.parLevel}
+                        {editedValues?.par_level}
                       </span>
                     )}
                   </div>
@@ -316,7 +299,7 @@ const IngredientFormPanel = ({
                       <>
                         <CreatableSelect
                           placeholder={
-                            editedValues?.unit_uuid
+                            editedValues?.base_unit?.unit_uuid
                               ? t('unit')
                               : t('ingredient:unit')
                           }
@@ -325,27 +308,27 @@ const IngredientFormPanel = ({
                             value: unit.unit_uuid,
                           }))}
                           value={
-                            editedValues?.unit_name
+                            editedValues?.base_unit?.unit_name
                               ? {
-                                  label: editedValues.unit_name,
-                                  value: editedValues.unit_uuid,
+                                  label: editedValues.base_unit.unit_name,
+                                  value: editedValues.base_unit.unit_uuid,
                                 }
                               : null
                           }
                           onChange={(selectedOption: any) => {
                             if (selectedOption) {
-                              if (!editedValues) return; // Guard clause for null/undefined
+                              if (!editedValues) return;
 
                               const updatedValues = {
                                 ...editedValues,
-                                unit_uuid: selectedOption.__isNew__
-                                  ? undefined
-                                  : selectedOption.value,
-                                unit_name: selectedOption.label,
+                                base_unit: {
+                                  unit_uuid: selectedOption.__isNew__
+                                    ? undefined
+                                    : selectedOption.value,
+                                  unit_name: selectedOption.label,
+                                },
                               };
-
-                              // Type assertion to ensure it matches the Ingredient type
-                              setEditedValues(updatedValues as Ingredient);
+                              setEditedValues(updatedValues as IngredientTMP);
 
                               setUnitError(false);
                               setIsVolumeVisible(
@@ -366,7 +349,7 @@ const IngredientFormPanel = ({
                       </>
                     ) : (
                       <span className={styles.value}>
-                        {editedValues?.unit_name}
+                        {editedValues?.base_unit?.unit_name}
                       </span>
                     )}
                   </div>
@@ -381,7 +364,7 @@ const IngredientFormPanel = ({
                         <span className={styles.values}>Container</span>
                       </div>
                       <span className={styles.value}>
-                        {editedValues?.unit_name}
+                        {editedValues?.volume_unit?.unit_name}
                       </span>
                     </div>
 
@@ -421,7 +404,7 @@ const IngredientFormPanel = ({
                       {isEditMode ? (
                         <Select
                           placeholder={
-                            editedValues?.volume_unit_uuid
+                            editedValues?.volume_unit?.unit_uuid
                               ? t('unit')
                               : t('selectUnit')
                           }
@@ -430,10 +413,10 @@ const IngredientFormPanel = ({
                             value: unit.unit_uuid,
                           }))}
                           value={
-                            editedValues?.volume_unit_name
+                            editedValues?.volume_unit?.unit_name
                               ? {
-                                  label: editedValues.volume_unit_name,
-                                  value: editedValues.volume_unit_uuid,
+                                  label: editedValues.volume_unit.unit_name,
+                                  value: editedValues.volume_unit.unit_uuid,
                                 }
                               : null
                           }
@@ -453,7 +436,7 @@ const IngredientFormPanel = ({
                         />
                       ) : (
                         <span className={styles.value}>
-                          {editedValues?.volume_unit_name}
+                          {editedValues?.volume_unit?.unit_name}
                         </span>
                       )}
                     </div>
@@ -476,19 +459,21 @@ const IngredientFormPanel = ({
                         setInputValue(newInputValue);
                       }
                     }}
-                    options={tagList?.map((tag) => ({
-                      label: tag.name || '--',
-                      value: tag.uuid,
-                    }))}
-                    value={editedValues?.tag_details?.map((tag) => ({
-                      label: tag.name || 'New Tag',
-                      value: tag.uuid || '',
+                    options={
+                      tagList?.map((tag) => ({
+                        label: tag.tag_name || '--',
+                        value: tag.tag_uuid || '', // S'assurer qu'une chaîne vide est utilisée si undefined
+                      })) || []
+                    }
+                    value={editedValues?.tags?.map((tag) => ({
+                      label: tag.tag_name || 'New Tag',
+                      value: tag.tag_uuid || '',
                     }))}
                     onChange={async (
                       newValue: MultiValue<TagOption>,
                       actionMeta: ActionMeta<TagOption>
                     ) => {
-                      const updatedTagDetails: TagDetails[] = [];
+                      const updatedTagDetails: TagsTMP[] = [];
 
                       for (const option of [...newValue]) {
                         if (option.__isNew__) {
@@ -499,8 +484,8 @@ const IngredientFormPanel = ({
                                 selectedRestaurantUUID
                               );
                               updatedTagDetails.push({
-                                name: newTag.name,
-                                uuid: newTag.uuid,
+                                tag_name: newTag.tag_name,
+                                tag_uuid: newTag.tag_uuid,
                               });
                               setTagList((prevTags) =>
                                 prevTags ? [...prevTags, newTag] : [newTag]
@@ -509,17 +494,19 @@ const IngredientFormPanel = ({
                           } catch (error) {
                             console.error('Error creating tag:', error);
                             updatedTagDetails.push({
-                              name: option.label || 'Unknown',
-                              uuid: '',
+                              tag_name: option.label || 'Unknown',
+                              tag_uuid: '',
                             });
                           }
                         } else {
                           const existingTag = tagList?.find(
-                            (tag) => tag.uuid === option.value
+                            (tag) => tag.tag_uuid === option.value
                           );
                           updatedTagDetails.push({
-                            name: existingTag ? existingTag.name : option.label,
-                            uuid: existingTag ? option.value : '',
+                            tag_name: existingTag
+                              ? existingTag.tag_name
+                              : option.label,
+                            tag_uuid: existingTag ? option.value : '',
                           });
                         }
                       }
@@ -528,33 +515,33 @@ const IngredientFormPanel = ({
                         if (!prevValues) return prevValues;
                         return {
                           ...prevValues,
-                          tag_details: updatedTagDetails,
+                          tags: updatedTagDetails,
                         };
                       });
                     }}
                   />
                 ) : (
                   <div className={styles.tagList}>
-                    {(editedValues?.tagUUID?.length ?? 0) > 0 ? (
+                    {(editedValues?.tags?.length ?? 0) > 0 ? (
                       <div className={styles.tagContainer}>
-                        {editedValues?.tagUUID?.map((uuid) => {
-                          const tag = tagList?.find((tag) => tag.uuid === uuid);
+                        {editedValues?.tags?.map((el) => {
+                          const tag = tagList?.find(
+                            (tag) => tag.tag_uuid === el.tag_uuid
+                          );
                           if (tag) {
+                            console.log('Tag', tag);
                             return (
-                              <span key={uuid} className={styles.tagItem}>
-                                {tag.name}
+                              <span
+                                key={tag.tag_uuid}
+                                className={styles.tagItem}>
+                                {tag.tag_name}
                               </span>
                             );
                           }
-                          return (
-                            <span key={uuid} className={styles.tagItem}>
-                              -
-                            </span>
-                          );
                         })}
                       </div>
                     ) : (
-                      '-'
+                      ''
                     )}
                   </div>
                 )}
@@ -573,7 +560,7 @@ const IngredientFormPanel = ({
                 </div>
                 {isEditMode ? (
                   <>
-                    {editedValues?.supplier_details?.map((detail, index) => (
+                    {editedValues?.suppliers?.map((detail, index) => (
                       <div key={index} className={styles.gridContainer6}>
                         {!index && (
                           <>
@@ -600,7 +587,7 @@ const IngredientFormPanel = ({
                           value={detail.product_code}
                           onChange={(event) => {
                             const updatedDetails = [
-                              ...(editedValues?.supplier_details || []),
+                              ...(editedValues?.suppliers || []),
                             ];
                             updatedDetails[index] = {
                               ...updatedDetails[index],
@@ -609,7 +596,7 @@ const IngredientFormPanel = ({
 
                             setEditedValues({
                               ...editedValues,
-                              supplier_details: updatedDetails,
+                              suppliers: updatedDetails,
                             });
                           }}
                         />
@@ -634,7 +621,7 @@ const IngredientFormPanel = ({
                             }
                             onChange={(selectedOption) => {
                               const updatedDetails = [
-                                ...(editedValues?.supplier_details || []),
+                                ...(editedValues?.suppliers || []),
                               ];
 
                               updatedDetails[index] = {
@@ -645,7 +632,7 @@ const IngredientFormPanel = ({
 
                               setEditedValues({
                                 ...editedValues,
-                                supplier_details: updatedDetails,
+                                suppliers: updatedDetails,
                               });
                             }}
                           />
@@ -654,44 +641,44 @@ const IngredientFormPanel = ({
                           placeholder={t('ingredient:supplierCost')}
                           type="number"
                           lighter
-                          value={detail.supplier_cost}
+                          value={detail.unit_cost}
                           onChange={(event) => {
                             const updatedDetails = [
-                              ...(editedValues?.supplier_details || []),
+                              ...(editedValues?.suppliers || []),
                             ];
-                            updatedDetails[index].supplier_cost = Number(
+                            updatedDetails[index].unit_cost = Number(
                               event.target.value
                             );
 
                             setEditedValues({
                               ...editedValues,
-                              supplier_details: updatedDetails,
+                              suppliers: updatedDetails,
                             });
                           }}
                         />
                         <CreatableSelect
                           placeholder={
-                            detail.supplier_unit ? t('unit') : t('selectUnit')
+                            detail.unit?.unit_uuid ? t('unit') : t('selectUnit')
                           }
                           options={unitname.map((unit) => ({
                             label: unit.unit_name,
                             value: unit.unit_uuid,
                           }))}
                           value={
-                            detail.supplier_unit
+                            detail.unit?.unit_uuid
                               ? {
-                                  label: detail.supplier_unit_name,
-                                  value: detail.supplier_unit,
+                                  label: detail.unit?.unit_name,
+                                  value: detail.unit?.unit_uuid,
                                 }
                               : null
                           }
                           onChange={(selectedOption: any) => {
                             const updatedDetails = [
-                              ...(editedValues?.supplier_details || []),
+                              ...(editedValues?.suppliers || []),
                             ];
 
                             if (selectedOption?.__isNew__) {
-                              inventoryService
+                              unitServiceV2
                                 .createUnit(
                                   selectedRestaurantUUID,
                                   selectedOption.label
@@ -699,13 +686,15 @@ const IngredientFormPanel = ({
                                 .then((newUnit) => {
                                   updatedDetails[index] = {
                                     ...updatedDetails[index],
-                                    supplier_unit: newUnit.unit_uuid,
-                                    supplier_unit_name: selectedOption.label,
+                                    unit: {
+                                      unit_uuid: newUnit.unit_uuid,
+                                      unit_name: selectedOption.label,
+                                    },
                                   };
 
                                   setEditedValues({
                                     ...editedValues,
-                                    supplier_details: updatedDetails,
+                                    suppliers: updatedDetails,
                                   });
 
                                   reloadUnits();
@@ -714,13 +703,15 @@ const IngredientFormPanel = ({
                             } else {
                               updatedDetails[index] = {
                                 ...updatedDetails[index],
-                                supplier_unit: selectedOption?.value,
-                                supplier_unit_name: selectedOption?.label,
+                                unit: {
+                                  unit_uuid: selectedOption?.value,
+                                  unit_name: selectedOption.label,
+                                },
                               };
 
                               setEditedValues({
                                 ...editedValues,
-                                supplier_details: updatedDetails,
+                                suppliers: updatedDetails,
                               });
                             }
                           }}
@@ -728,7 +719,13 @@ const IngredientFormPanel = ({
                         />
                         <div className={styles.IconContainer}>
                           <LabeledInput
-                            placeholder={`${t('ingredient:size')} (1 ${editedValues?.supplier_details?.[index]?.supplier_unit_name || '_'} → ${editedValues?.supplier_details?.[index]?.conversion_factor || 'x'} ${editedValues?.unit_name || '_'})`}
+                            placeholder={`${t('ingredient:size')} (1 ${
+                              editedValues?.suppliers?.[index]?.unit
+                                ?.unit_name || '_'
+                            } → ${
+                              editedValues?.suppliers?.[index]
+                                ?.conversion_factor || 'x'
+                            } ${editedValues?.base_unit?.unit_name || '_'})`}
                             type="number"
                             lighter
                             value={detail.conversion_factor}
@@ -737,11 +734,11 @@ const IngredientFormPanel = ({
                                 event.target.value;
 
                               const updatedDetails =
-                                editedValues.supplier_details?.map(
+                                editedValues.suppliers?.map(
                                   (supplierDetail) => {
                                     if (
-                                      supplierDetail.supplier_unit ===
-                                      detail.supplier_unit
+                                      supplierDetail.unit?.unit_uuid ===
+                                      detail.unit?.unit_uuid
                                     ) {
                                       return {
                                         ...supplierDetail,
@@ -755,7 +752,7 @@ const IngredientFormPanel = ({
 
                               setEditedValues({
                                 ...editedValues,
-                                supplier_details: updatedDetails,
+                                suppliers: updatedDetails,
                               });
                             }}
                           />
@@ -789,7 +786,7 @@ const IngredientFormPanel = ({
                       <span className={styles.values}>Unit</span>
                       <span className={styles.values}>Size</span>
                     </div>
-                    {editedValues?.supplier_details?.map((detail, index) => (
+                    {editedValues?.suppliers?.map((detail, index) => (
                       <div key={index} className={styles.gridContainer4}>
                         <span className={styles.value}>1234</span>
                         <span
@@ -798,8 +795,8 @@ const IngredientFormPanel = ({
                           data-tooltip-content={detail.supplier_name}>
                           {detail.supplier_name}
                         </span>
-                        <span>{detail.supplier_cost}</span>
-                        <span>{detail.supplier_unit_name}</span>
+                        <span>{detail.unit_cost}</span>
+                        <span>{detail.unit?.unit_name}</span>
                         <span className={styles.flexContainer}>
                           {detail.conversion_factor}
                           <IconButton
@@ -808,7 +805,7 @@ const IngredientFormPanel = ({
                                 className="fa-solid fa-circle-info"
                                 style={{ color: '#5e72e4' }}></i>
                             }
-                            tooltipMsg={`from ${detail.supplier_unit_name} to ${editedValues.unit_name}`}
+                            tooltipMsg={`from ${detail.unit?.unit_name} to ${editedValues.base_unit?.unit_name}`}
                             className={styles.forecastIiconBtn}
                           />
                         </span>

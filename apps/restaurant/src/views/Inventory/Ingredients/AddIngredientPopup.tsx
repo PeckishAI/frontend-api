@@ -7,52 +7,68 @@ import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 import { useRestaurantStore } from '../../../store/useRestaurantStore';
-import { inventoryService, Tag, Unit, Supplier } from '../../../services';
+import {
+  inventoryServiceV2,
+  unitServiceV2,
+  TagsTMP,
+  IngredientTMP,
+  Unit,
+  Supplier,
+} from '../../../services';
 import CreatableSelect from 'react-select/creatable';
 import { tagService } from '../../../services/tag.service';
 import supplierService from '../../../services/supplier.service';
 import toast from 'react-hot-toast';
 
 const AddIngredientSchema = z.object({
-  name: z.string().min(1, { message: 'Recipe name is required' }),
-  actualStock: z.string().optional(), // Will be converted to Stock type when sending to API
-  parLevel: z.string().optional(), // Will be converted to number when sending to API
-  tag_details: z
+  ingredient_name: z
+    .string()
+    .min(1, { message: 'Ingredient name is required' }),
+  quantity: z.string().optional(),
+  par_level: z.string().optional(),
+  tags: z
     .array(
       z.object({
-        uuid: z.string().optional(),
-        name: z.string().min(1, { message: 'Tag name is required' }),
+        tag_uuid: z.string().optional(),
+        tag_name: z.string().min(1, { message: 'Tag name is required' }),
       })
     )
     .optional(),
-  supplier_details: z
+  suppliers: z
     .array(
       z.object({
         supplier_name: z
           .string()
           .min(1, { message: 'Supplier Name is required' }),
-        supplier_id: z
+        supplier_uuid: z
           .string()
           .min(1, { message: 'Supplier uuid is required' }),
-        supplier_cost: z
-          .string()
-          .min(1, { message: 'Supplier Cost is required' }),
+        unit_cost: z.string().min(1, { message: 'Supplier Cost is required' }),
         conversion_factor: z
           .string()
           .min(1, { message: 'Conversion Factor is required' }),
-        supplier_unit_uuid: z.string().optional(),
-        supplier_unit_name: z
-          .string()
-          .min(1, { message: 'Supplier Unit name is required' }),
+        unit: z.object({
+          unit_uuid: z.string().optional(),
+          unit_name: z.string().min(1, { message: 'Unit name is required' }),
+        }),
         product_code: z.string().optional(),
       })
     )
     .optional(),
-  unit_name: z.string().min(1, { message: 'Unit name is required' }),
-  unit_uuid: z.string().optional(),
+  base_unit: z.object({
+    unit_uuid: z.string().optional(),
+    unit_name: z.string().min(1, { message: 'Unit name is required' }),
+  }),
+  volume_unit: z
+    .object({
+      unit_uuid: z.string().optional(),
+      unit_name: z.string().min(1, { message: 'Unit name is required' }),
+    })
+    .optional(),
+  volume_quantity: z.string().optional(),
 });
 
-type PreparationForm = z.infer<typeof AddIngredientSchema>;
+type IngredientForm = z.infer<typeof AddIngredientSchema>;
 
 type Props = {
   isVisible: boolean;
@@ -70,7 +86,7 @@ const AddIngredientPopup = ({
     (state) => state.selectedRestaurantUUID
   );
   const [unitOptions, setUnitOptions] = useState<Unit[]>([]);
-  const [tagList, setTagList] = useState<Tag[]>([]);
+  const [tagList, setTagList] = useState<TagsTMP[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
 
   const {
@@ -81,12 +97,12 @@ const AddIngredientPopup = ({
     formState: { errors, isSubmitting },
     reset,
     watch,
-  } = useForm<PreparationForm>({
+  } = useForm<IngredientForm>({
     resolver: zodResolver(AddIngredientSchema),
     defaultValues: {
-      name: '',
-      tag_details: [],
-      supplier_details: [], // Empty array by default
+      ingredient_name: '',
+      tags: [],
+      suppliers: [],
     },
   });
 
@@ -96,16 +112,16 @@ const AddIngredientPopup = ({
     remove: removeSupplier,
   } = useFieldArray({
     control,
-    name: 'supplier_details',
+    name: 'suppliers',
   });
 
   useEffect(() => {
     if (restaurantUUID) {
       tagService
         .getAll(restaurantUUID)
-        .then((tags: Tag[]) => setTagList(tags || []));
+        .then((tags: TagsTMP[]) => setTagList(tags || []));
 
-      inventoryService
+      unitServiceV2
         .getUnits(restaurantUUID)
         .then(setUnitOptions)
         .catch(console.error);
@@ -121,22 +137,15 @@ const AddIngredientPopup = ({
     }
   }, [restaurantUUID]);
 
-  const mapSuppliersToOptions = (suppliers: Supplier[]) =>
-    suppliers.map((supplier) => ({
-      ...supplier,
-      label: supplier.name,
-      value: supplier.uuid,
-    }));
-
   const handleCreateTag = (inputValue: string) => {
-    const newTag = { uuid: '', name: inputValue };
+    const newTag = { tag_uuid: '', tag_name: inputValue };
     setTagList((prev) => [...prev, newTag]);
-    setValue('tag_details', [...(watch('tag_details') || []), newTag]);
+    setValue('tags', [...(watch('tags') || []), newTag]);
   };
 
   const handleCreateUnit = async (inputValue: string) => {
     try {
-      const newUnit = await inventoryService.createUnit(
+      const newUnit = await unitServiceV2.createUnit(
         restaurantUUID,
         inputValue
       );
@@ -145,10 +154,12 @@ const AddIngredientPopup = ({
         unit_uuid: newUnit.unit_uuid,
       };
       setUnitOptions((prev) => [...prev, newUnitOption]);
-      setValue('unit_name', newUnit.unit_name);
-      setValue('unit_uuid', newUnit.unit_uuid);
+      setValue('base_unit', {
+        unit_uuid: newUnit.unit_uuid,
+        unit_name: newUnit.unit_name,
+      });
 
-      inventoryService
+      unitServiceV2
         .getUnits(restaurantUUID)
         .then(setUnitOptions)
         .catch(console.error);
@@ -160,33 +171,51 @@ const AddIngredientPopup = ({
 
   const handleSelectChange = (selectedOptions: any) => {
     setValue(
-      'tag_details',
+      'tags',
       selectedOptions.map((option: any) => ({
-        uuid: option.value,
-        name: option.label,
+        tag_uuid: option.value,
+        tag_name: option.label,
       }))
     );
   };
 
   const handleSubmitForm = handleSubmit(async (data) => {
     try {
-      await inventoryService.addIngredient(restaurantUUID, {
-        ...data,
-        tag_details: (data.tag_details || []).map((tag) => ({
-          tag_uuid: tag?.uuid || '',
-          tag_name: tag?.name || '',
+      const formattedData: IngredientTMP = {
+        ingredient_name: data.ingredient_name,
+        base_unit: {
+          unit_uuid: data.base_unit.unit_uuid || '',
+          unit_name: data.base_unit.unit_name,
+        },
+        quantity: data.quantity ? Number(data.quantity) : undefined,
+        par_level: data.par_level ? Number(data.par_level) : undefined,
+        tags: data.tags?.map((tag) => ({
+          tag_uuid: tag.tag_uuid || '',
+          tag_name: tag.tag_name,
         })),
-        supplier_details: (data.supplier_details || []).map((supplier) => ({
-          supplier_uuid: supplier?.supplier_id || '',
-          supplier_cost: Number(supplier?.supplier_cost) || 0, // Convert to number
-          conversion_factor: Number(supplier?.conversion_factor) || 0, // Convert to number if needed
-          supplier_unit_uuid: supplier?.supplier_unit_uuid || '',
-          supplier_name: supplier?.supplier_name || '',
-          supplier_unit: supplier?.supplier_unit_uuid || '',
-          supplier_unit_name: supplier?.supplier_unit_name || '',
-          product_code: supplier?.product_code || '',
+        suppliers: data.suppliers?.map((supplier) => ({
+          supplier_uuid: supplier.supplier_uuid,
+          supplier_name: supplier.supplier_name,
+          unit_cost: Number(supplier.unit_cost),
+          conversion_factor: Number(supplier.conversion_factor),
+          unit: {
+            unit_uuid: supplier.unit.unit_uuid || '',
+            unit_name: supplier.unit.unit_name,
+          },
+          product_code: supplier.product_code,
         })),
-      });
+        volume_unit: data.volume_unit
+          ? {
+              unit_uuid: data.volume_unit.unit_uuid || '',
+              unit_name: data.volume_unit.unit_name,
+            }
+          : undefined,
+        volume_quantity: data.volume_quantity
+          ? Number(data.volume_quantity)
+          : undefined,
+      };
+
+      await inventoryServiceV2.createIngredient(restaurantUUID, formattedData);
       onRequestClose();
       reloadInventoryData();
       reset();
@@ -210,20 +239,20 @@ const AddIngredientPopup = ({
               placeholder={t('ingredientName')}
               type="text"
               lighter
-              error={errors.name?.message}
-              {...register('name')}
+              error={errors.ingredient_name?.message}
+              {...register('ingredient_name')}
             />
             <LabeledInput
               placeholder={t('ingredient:actualStock')}
               type="number"
               lighter
-              {...register('actualStock')}
+              {...register('quantity')}
             />
             <LabeledInput
               placeholder={t('ingredient:parLevel')}
               type="number"
               lighter
-              {...register('parLevel')}
+              {...register('par_level')}
             />
             <CreatableSelect
               placeholder="Select a unit"
@@ -234,23 +263,25 @@ const AddIngredientPopup = ({
               className={styles.unitInput}
               isClearable
               value={
-                watch('unit_name')
-                  ? { label: watch('unit_name'), value: watch('unit_uuid') }
+                watch('base_unit.unit_name')
+                  ? {
+                      label: watch('base_unit.unit_name'),
+                      value: watch('base_unit.unit_uuid'),
+                    }
                   : null
               }
               onChange={(selectedOption, actionMeta) => {
                 if (!selectedOption) {
-                  // Handle null case by clearing the values
-                  setValue('unit_name', '');
-                  setValue('unit_uuid', '');
+                  setValue('base_unit.unit_name', '');
+                  setValue('base_unit.unit_uuid', '');
                   return;
                 }
 
                 if (actionMeta.action === 'create-option') {
                   handleCreateUnit(selectedOption.label);
                 } else {
-                  setValue('unit_name', selectedOption.label || '');
-                  setValue('unit_uuid', selectedOption.value || '');
+                  setValue('base_unit.unit_name', selectedOption.label || '');
+                  setValue('base_unit.unit_uuid', selectedOption.value || '');
                 }
               }}
             />
@@ -259,18 +290,20 @@ const AddIngredientPopup = ({
           <h3>Tag Details</h3>
           <CreatableSelect
             placeholder="Select Tags"
-            options={tagList.map(({ name, uuid }) => ({
-              label: name,
-              value: uuid,
-            }))}
+            options={
+              tagList?.map(({ tag_name, tag_uuid }) => ({
+                label: tag_name || '',
+                value: tag_uuid || '',
+              })) || []
+            }
             isMulti
             onCreateOption={handleCreateTag}
             onChange={handleSelectChange}
             className={styles.unitInput}
             value={
-              watch('tag_details')?.map(({ name, uuid }) => ({
-                label: name,
-                value: uuid,
+              watch('tags')?.map(({ tag_name, tag_uuid }) => ({
+                label: tag_name || '',
+                value: tag_uuid || '',
               })) || []
             }
             isClearable
@@ -283,7 +316,7 @@ const AddIngredientPopup = ({
                 placeholder={t('ingredient:productCode')}
                 type="string"
                 lighter
-                {...register(`supplier_details.${index}.product_code`)}
+                {...register(`suppliers.${index}.product_code`)}
               />
               <Select
                 size="large"
@@ -295,16 +328,16 @@ const AddIngredientPopup = ({
                   suppliers.find(
                     (supplier) =>
                       supplier.uuid ===
-                      watch(`supplier_details.${index}.supplier_id`)
+                      watch(`suppliers.${index}.supplier_uuid`)
                   ) || null
                 }
                 onChange={(selectedOption) => {
                   setValue(
-                    `supplier_details.${index}.supplier_id`,
+                    `suppliers.${index}.supplier_uuid`,
                     selectedOption?.uuid || ''
                   );
                   setValue(
-                    `supplier_details.${index}.supplier_name`,
+                    `suppliers.${index}.supplier_name`,
                     selectedOption?.name || ''
                   );
                 }}
@@ -318,11 +351,9 @@ const AddIngredientPopup = ({
                 placeholder={t('ingredient:supplierCost')}
                 type="number"
                 step="any"
-                error={
-                  errors?.supplier_details?.[index]?.supplier_cost?.message
-                }
+                error={errors?.suppliers?.[index]?.unit_cost?.message}
                 lighter
-                {...register(`supplier_details.${index}.supplier_cost`)}
+                {...register(`suppliers.${index}.unit_cost`)}
               />
               <CreatableSelect
                 placeholder="Pack"
@@ -333,57 +364,44 @@ const AddIngredientPopup = ({
                 className={styles.unitInput}
                 isClearable
                 value={
-                  watch(`supplier_details.${index}.supplier_unit_name`) ||
-                  watch(`supplier_details.${index}.supplier_unit_uuid`)
+                  watch(`suppliers.${index}.unit.unit_name`) ||
+                  watch(`suppliers.${index}.unit.unit_uuid`)
                     ? {
                         label:
-                          watch(
-                            `supplier_details.${index}.supplier_unit_name`
-                          ) || 'Select a supplier unit',
-                        value: watch(
-                          `supplier_details.${index}.supplier_unit_uuid`
-                        ),
+                          watch(`suppliers.${index}.unit.unit_name`) ||
+                          'Select a supplier unit',
+                        value: watch(`suppliers.${index}.unit.unit_uuid`),
                       }
                     : null
                 }
                 onChange={(selectedOption, actionMeta) => {
                   if (!selectedOption) {
-                    // Handle null case by clearing the values
-                    setValue(
-                      `supplier_details.${index}.supplier_unit_uuid`,
-                      ''
-                    );
-                    setValue(
-                      `supplier_details.${index}.supplier_unit_name`,
-                      ''
-                    );
+                    setValue(`suppliers.${index}.unit.unit_uuid`, '');
+                    setValue(`suppliers.${index}.unit.unit_name`, '');
                     return;
                   }
 
                   if (actionMeta.action === 'create-option') {
                     handleCreateUnit(selectedOption.label);
+                    setValue(`suppliers.${index}.unit.unit_uuid`, '');
                     setValue(
-                      `supplier_details.${index}.supplier_unit_uuid`,
-                      ''
-                    );
-                    setValue(
-                      `supplier_details.${index}.supplier_unit_name`,
+                      `suppliers.${index}.unit.unit_name`,
                       selectedOption.label
                     );
                   } else {
                     setValue(
-                      `supplier_details.${index}.supplier_unit_uuid`,
+                      `suppliers.${index}.unit.unit_uuid`,
                       selectedOption.value || ''
                     );
                     setValue(
-                      `supplier_details.${index}.supplier_unit_name`,
+                      `suppliers.${index}.unit.unit_name`,
                       selectedOption.label || ''
                     );
                   }
                 }}
-                menuPosition="fixed" // Use fixed positioning for dropdown
+                menuPosition="fixed"
                 styles={{
-                  menuPortal: (base) => ({ ...base, zIndex: 9999 }), // Ensure it's above other elements
+                  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                 }}
               />
               <div className={styles.flexContainer}>
@@ -392,11 +410,10 @@ const AddIngredientPopup = ({
                     placeholder={t('ingredient:size')}
                     type="text"
                     error={
-                      errors?.supplier_details?.[index]?.conversion_factor
-                        ?.message
+                      errors?.suppliers?.[index]?.conversion_factor?.message
                     }
                     lighter
-                    {...register(`supplier_details.${index}.conversion_factor`)}
+                    {...register(`suppliers.${index}.conversion_factor`)}
                   />
                 </div>
                 <FaTrash
@@ -412,11 +429,14 @@ const AddIngredientPopup = ({
             onClick={() =>
               addSupplier({
                 supplier_name: '',
-                supplier_id: '',
-                supplier_cost: '',
+                supplier_uuid: '',
+                unit_cost: '',
                 conversion_factor: '',
-                supplier_unit_uuid: '',
-                supplier_unit_name: '',
+                unit: {
+                  unit_uuid: '',
+                  unit_name: '',
+                },
+                product_code: '',
               })
             }
           />
