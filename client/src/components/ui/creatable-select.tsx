@@ -132,28 +132,33 @@ const customStyles = (size: "small" | "medium" | "large") => ({
 });
 
 const CustomMenu = (props: any) => {
-  const { selectProps } = props;
+  const { children, selectProps } = props;
 
   return (
     <components.Menu {...props}>
       <div className="flex flex-col">
-        {selectProps.options.map((group: any) => (
-          <div key={group.label}>
-            <div className="px-4 py-2 text-sm font-semibold text-gray-600">
-              {group.label}
-            </div>
-            {group.options.map((option: any) => (
-              <div
-                key={option.value}
-                className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                onClick={() => props.selectOption(option)}
-              >
-                {option.label}
-              </div>
-            ))}
-          </div>
-        ))}
+        {Array.isArray(selectProps.options) &&
+          selectProps.options.map((group: any) => {
+            if (group.options) {
+              return (
+                <div key={group.label}>
+                  <div className="px-4 py-2 text-sm font-semibold text-gray-600">
+                    {group.label}
+                  </div>
+                  {group.options.map((option: any) => (
+                    <components.Option
+                      key={option.value}
+                      data={option}
+                      {...props}
+                    />
+                  ))}
+                </div>
+              );
+            }
+          })}
+        {/* Separator */}
         <div className="border-t border-gray-300 my-2"></div>
+        {/* Create New Option */}
         <div
           className="flex items-center cursor-pointer px-4 py-2 text-sm hover:bg-gray-100 rounded-md mb-2"
           onClick={() =>
