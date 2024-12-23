@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Building2, Plus, Trash2 } from "lucide-react";
-import { type Order, type OrderItem } from "@/lib/types";
+import { type Order, type OrderItem, type Supplier } from "@/lib/OrderTypes";
 import { getStatusColor } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,11 +43,7 @@ export default function OrderModal({
   const [editedOrder, setEditedOrder] = useState<Order>(order);
   const { currentRestaurant } = useRestaurantContext(); // Assuming this context provides necessary data.
 
-  const {
-    data: suppliers,
-    suppliersLoading,
-    error: suppliersError,
-  } = useQuery({
+  const { data: suppliers } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
@@ -57,16 +53,9 @@ export default function OrderModal({
         currentRestaurant?.restaurant_uuid,
       );
     },
-    onError: (error) => {
-      console.error("Suppliers query error details:", {
-        error,
-        restaurantId: currentRestaurant?.restaurant_uuid,
-        stack: error.stack,
-      });
-    },
   });
 
-  const { data: ingredients, ingredientsLoading } = useQuery({
+  const { data: ingredients } = useQuery({
     queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) {
@@ -82,6 +71,7 @@ export default function OrderModal({
     if (!ingredients) return [];
 
     const ingredientsArray = Object.values(ingredients);
+    console.log("Ingredient Array : ", ingredientsArray);
     const categories = {
       Connected: ingredientsArray
         .filter((ing) =>
@@ -127,39 +117,39 @@ export default function OrderModal({
   };
 
   const updateItem = (index: number, field: keyof OrderItem, value: any) => {
+    if (!editedOrder.items) {
+      return;
+    }
     const newItems = [...editedOrder.items];
     newItems[index] = { ...newItems[index], [field]: value };
     console.log("Updated item:", newItems);
 
     // Recalculate item total
-    if (field === "quantity" || field === "price") {
+    if (field === "quantity" || field === "unit_cost") {
       const quantity = field === "quantity" ? value : newItems[index].quantity;
-      const price = field === "price" ? value : newItems[index].price;
-      newItems[index].total = quantity * price;
+      const unit_cost =
+        field === "unit_cost" ? value : newItems[index].unit_cost;
+      newItems[index].total_cost = quantity * unit_cost;
     }
 
     // Update order total
     const newTotal = newItems.reduce(
-      (sum, item) => sum + item.quantity * item.price,
+      (sum, item) => sum + (item.quantity || 0) * (item.unit_cost || 0),
       0,
     );
 
     setEditedOrder({
       ...editedOrder,
       items: newItems,
-      total: newTotal,
+      amount: newTotal,
     });
   };
 
   const addItem = () => {
-    const newItem: OrderItem = {
-      id: `new-${Date.now()}`,
-      name: "",
-      quantity: 0,
-      unit: "",
-      price: 0,
-      total: 0,
-    };
+    const newItem: OrderItem = {};
+    if (!editedOrder.items) {
+      return;
+    }
     setEditedOrder({
       ...editedOrder,
       items: [...editedOrder.items, newItem],
@@ -167,15 +157,18 @@ export default function OrderModal({
   };
 
   const removeItem = (index: number) => {
+    if (!editedOrder.items) {
+      return;
+    }
     const newItems = editedOrder.items.filter((_, i) => i !== index);
     const newTotal = newItems.reduce(
-      (sum, item) => sum + item.quantity * item.price,
+      (sum, item) => sum + (item.quantity || 9) * (item.unit_cost || 0),
       0,
     );
     setEditedOrder({
       ...editedOrder,
       items: newItems,
-      total: newTotal,
+      amount: newTotal,
     });
   };
 
@@ -186,12 +179,14 @@ export default function OrderModal({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="text-sm text-gray-600">Supplier</label>
-          <div className="font-medium">{editedOrder.supplier_name}</div>
+          <div className="font-medium">
+            {editedOrder.supplier?.supplier_name}
+          </div>
         </div>
         <div>
           <label className="text-sm text-gray-600">Date</label>
           <div className="font-medium">
-            {new Date(editedOrder.orderDate).toLocaleDateString()}
+            {new Date(editedOrder.delivery_date || "").toLocaleDateString()}
           </div>
         </div>
       </div>
@@ -207,27 +202,37 @@ export default function OrderModal({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {editedOrder.items.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell>{item.name}</TableCell>
-              <TableCell>{item.quantity}</TableCell>
-              <TableCell>{item.unit}</TableCell>
-              <TableCell className="text-right">
-                ${item.price.toFixed(2)}
-              </TableCell>
-              <TableCell className="text-right">
-                ${(item.quantity * item.price).toFixed(2)}
+          {editedOrder.items ? (
+            <>
+              {editedOrder.items.map((item) => (
+                <TableRow key={item.ingredient_uuid}>
+                  <TableCell>{item.ingredient_name}</TableCell>
+                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell>{item.unit?.unit_name}</TableCell>
+                  <TableCell className="text-right">
+                    {item.unit_cost ? item.unit_cost.toFixed(2) : "N/A"}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {((item.quantity ?? 0) * (item.unit_cost ?? 0)).toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              ))}
+              <TableRow>
+                <TableCell colSpan={4} className="text-right font-semibold">
+                  Total
+                </TableCell>
+                <TableCell className="text-right font-semibold">
+                  ${editedOrder.amount ? editedOrder.amount.toFixed(2) : "N/A"}
+                </TableCell>
+              </TableRow>
+            </>
+          ) : (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center">
+                No items available
               </TableCell>
             </TableRow>
-          ))}
-          <TableRow>
-            <TableCell colSpan={4} className="text-right font-semibold">
-              Total
-            </TableCell>
-            <TableCell className="text-right font-semibold">
-              ${editedOrder.total.toFixed(2)}
-            </TableCell>
-          </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
@@ -239,9 +244,11 @@ export default function OrderModal({
         <SheetHeader>
           <SheetTitle className="flex items-center justify-between">
             <span>Order Details</span>
-            <Badge className={getStatusColor(editedOrder.status)}>
-              {editedOrder.status.charAt(0).toUpperCase() +
-                editedOrder.status.slice(1)}
+            <Badge className={getStatusColor(editedOrder.status || "")}>
+              {editedOrder.status
+                ? editedOrder.status.charAt(0).toUpperCase() +
+                  editedOrder.status.slice(1)
+                : ""}
             </Badge>
           </SheetTitle>
         </SheetHeader>
@@ -255,25 +262,36 @@ export default function OrderModal({
                   <p>Loading suppliers...</p>
                 ) : (
                   <CreatableSelect
-                    options={suppliers?.map((supplier) => ({
+                    options={suppliers?.map((supplier: Supplier) => ({
                       label: supplier.supplier_name,
                       value: supplier.supplier_uuid,
                     }))}
+                    placeholder=""
                     size="large"
-                    value={[editedOrder.supplier_uuid]}
-                    onChange={(values) => {
-                      if (values && values.length > 0) {
+                    value={suppliers
+                      ?.filter(
+                        (s: Supplier) =>
+                          s.supplier_uuid === editedOrder.supplier,
+                      )
+                      .map((s: Supplier) => ({
+                        label: s.supplier_name,
+                        value: s.supplier_uuid,
+                      }))}
+                    onChange={(option) => {
+                      if (option) {
                         const selectedSupplier = suppliers?.find(
-                          (s) => s.supplier_uuid === values[0],
+                          (s: Supplier) => s.supplier_uuid === option.value,
                         );
                         setEditedOrder({
                           ...editedOrder,
-                          supplier_uuid: values[0],
-                          supplier_name: selectedSupplier?.supplier_name || "",
+                          supplier: {
+                            supplier_uuid: option.value,
+                            supplier_name:
+                              selectedSupplier?.supplier_name || "",
+                          },
                         });
                       }
                     }}
-                    disabled={!editMode}
                   />
                 )}
               </div>
@@ -282,12 +300,14 @@ export default function OrderModal({
                 <Input
                   type="date"
                   value={
-                    new Date(editedOrder.orderDate).toISOString().split("T")[0]
+                    new Date(editedOrder.delivery_date || "")
+                      .toISOString()
+                      .split("T")[0]
                   }
                   onChange={(e) =>
                     setEditedOrder({
                       ...editedOrder,
-                      orderDate: e.target.value,
+                      delivery_date: e.target.value,
                     })
                   }
                   disabled={!editMode}
@@ -307,39 +327,51 @@ export default function OrderModal({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {editedOrder.items.map((item, index) => (
-                  <TableRow key={item.id}>
+                {editedOrder.items?.map((item, index) => (
+                  <TableRow key={item.ingredient_uuid}>
                     <TableCell>
                       <CreatableSelect
                         value={
-                          item.ingredient_uuid ? [item.ingredient_uuid] : []
+                          item.ingredient_uuid
+                            ? [
+                                {
+                                  label: item.ingredient_name || "",
+                                  value: item.ingredient_uuid,
+                                },
+                              ]
+                            : []
                         }
                         size="medium"
                         onChange={(values) => {
                           try {
-                            const newItems = [...editedOrder.items];
-                            const selectedId = values?.[0] || "";
-                            const selectedOption = selectedId
-                              ? getIngredientOptions(
-                                  editedOrder.supplier_uuid,
-                                ).find((opt) => opt.value === selectedId)
-                              : null;
+                            const newItems = Array.isArray(editedOrder.items)
+                              ? [...editedOrder.items]
+                              : [];
+                            const selectedId = values?.value || "";
+                            const selectedOption =
+                              selectedId && editedOrder.supplier?.supplier_uuid
+                                ? getIngredientOptions(
+                                    editedOrder.supplier.supplier_uuid,
+                                  ).find((opt) => opt.value === selectedId)
+                                : null;
 
                             newItems[index] = {
                               ...newItems[index],
                               ingredient_uuid: selectedId,
-                              name: selectedOption
+                              ingredient_name: selectedOption
                                 ? selectedOption.label
                                 : selectedId,
-                              price: selectedOption?.price || 0,
+                              unit_cost: selectedOption?.unit_cost || 0,
                               unit: selectedOption?.unit || "none",
-                              total:
+                              total_cost:
                                 (selectedOption?.price || 0) *
-                                newItems[index].quantity,
+                                (newItems[index].quantity || 0),
                             };
 
                             const newTotal = newItems.reduce(
-                              (sum, item) => sum + item.quantity * item.price,
+                              (sum, item) =>
+                                sum +
+                                (item.quantity || 0) * (item.unit_cost || 0),
                               0,
                             );
 
@@ -356,9 +388,9 @@ export default function OrderModal({
                           }
                         }}
                         options={getIngredientOptions(
-                          editedOrder.supplier_uuid,
+                          editedOrder.supplier.supplier_uuid,
                         )}
-                        placeholder="Item"
+                        placeholder=""
                         disabled={!editMode}
                       />
                     </TableCell>
@@ -378,9 +410,12 @@ export default function OrderModal({
                     </TableCell>
                     <TableCell>
                       <Input
-                        value={item.unit}
+                        value={item.unit?.unit_name}
                         onChange={(e) =>
-                          updateItem(index, "unit", e.target.value)
+                          updateItem(index, "unit", {
+                            unit_name: e.target.value,
+                            unit_uuid: item.unit?.unit_uuid,
+                          })
                         }
                         disabled={!editMode}
                       />
@@ -388,16 +423,23 @@ export default function OrderModal({
                     <TableCell className="text-right">
                       <Input
                         type="number"
-                        value={item.price}
+                        value={item.unit_cost}
                         onChange={(e) =>
-                          updateItem(index, "price", parseFloat(e.target.value))
+                          updateItem(
+                            index,
+                            "unit_cost",
+                            parseFloat(e.target.value),
+                          )
                         }
                         disabled={!editMode}
                         className="text-right"
                       />
                     </TableCell>
                     <TableCell className="text-right">
-                      ${(item.quantity * item.price).toFixed(2)}
+                      $
+                      {((item.quantity || 0) * (item.unit_cost || 0)).toFixed(
+                        2,
+                      )}
                     </TableCell>
                     {editMode && (
                       <TableCell>
@@ -417,7 +459,7 @@ export default function OrderModal({
                     Total
                   </TableCell>
                   <TableCell className="text-right font-semibold">
-                    ${editedOrder.total.toFixed(2)}
+                    ${editedOrder.amount?.toFixed(2)}
                   </TableCell>
                   {editMode && <TableCell />}
                 </TableRow>
