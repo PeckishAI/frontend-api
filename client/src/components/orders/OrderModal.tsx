@@ -31,16 +31,21 @@ import { inventoryService } from "@/services/inventoryService";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 
 const defaultUnits = [
-  { value: 'kg', label: 'Kilogram (kg)' },
-  { value: 'g', label: 'Gram (g)' },
-  { value: 'lb', label: 'Pound (lb)' },
-  { value: 'oz', label: 'Ounce (oz)' },
-  { value: 'l', label: 'Liter (L)' },
-  { value: 'ml', label: 'Milliliter (mL)' },
-  { value: 'pcs', label: 'Pieces' },
-  { value: 'box', label: 'Box' },
-  { value: 'case', label: 'Case' },
-  { value: 'bag', label: 'Bag' }
+  {
+    label: 'Common Units',
+    options: [
+      { value: 'kg', label: 'Kilogram (kg)' },
+      { value: 'g', label: 'Gram (g)' },
+      { value: 'lb', label: 'Pound (lb)' },
+      { value: 'oz', label: 'Ounce (oz)' },
+      { value: 'l', label: 'Liter (L)' },
+      { value: 'ml', label: 'Milliliter (mL)' },
+      { value: 'pcs', label: 'Pieces' },
+      { value: 'box', label: 'Box' },
+      { value: 'case', label: 'Case' },
+      { value: 'bag', label: 'Bag' }
+    ]
+  }
 ];
 
 
@@ -429,7 +434,7 @@ export default function OrderModal({
                     <TableCell>
                       {editMode ? (
                         <CreatableSelect
-                          value={item.unit?.unit_name ? [item.unit.unit_name] : []}
+                          value={item.unit?.unit_name ? { value: item.unit.unit_name, label: item.unit.unit_name } : null}
                           onChange={(values) => {
                             if (values[0]) {
                               updateItem(index, "unit", {
