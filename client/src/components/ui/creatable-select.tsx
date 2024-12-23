@@ -1,182 +1,250 @@
-import * as React from "react";
-import { Check, ChevronsUpDown, Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import React, { useState } from "react";
+import Creatable from "react-select/creatable";
+import { components, createFilter } from "react-select";
+import { PlusCircle } from "lucide-react";
 
-export type SelectOption = {
-  value: string;
+interface Option {
   label: string;
-  category?: string;
-};
+  value: string;
+}
 
 interface CreatableSelectProps {
-  value?: string[] | null;
-  onChange: (value: string[]) => void;
-  options: SelectOption[];
-  onCreateOption?: (value: string) => void;
+  options: Option[];
+  onChange: (selectedOption: Option | null) => void;
+  onCreateOption: (newOption: string) => void;
   placeholder?: string;
-  searchPlaceholder?: string;
-  createOptionLabel?: string;
-  emptyMessage?: string;
-  className?: string;
-  multiple?: boolean;
+  value?: Option | null;
+  size?: "small" | "medium" | "large";
 }
 
-export function CreatableSelect({
-  value,
-  onChange,
-  options,
-  onCreateOption,
-  placeholder = "Select...",
-  searchPlaceholder = "Search...",
-  createOptionLabel = "Create",
-  emptyMessage = "No results found.",
-  className,
-  multiple = false,
-}: CreatableSelectProps) {
-  const [open, setOpen] = React.useState(false);
-  const [search, setSearch] = React.useState("");
+const getSizeStyles = (size: "small" | "medium" | "large") => {
+  switch (size) {
+    case "small":
+      return {
+        height: "40px",
+        width: "100px", // Adjusted for small size
+        fontSize: "0.75rem",
+        padding: "0 8px",
+      };
+    case "medium":
+      return {
+        height: "40px",
+        width: "200px", // Adjusted for medium size
+        fontSize: "0.875rem",
+        padding: "0 12px",
+      };
+    case "large":
+      return {
+        height: "40px",
+        width: "100%", // Adjusted for large size
+        fontSize: "1rem",
+        padding: "0 16px",
+      };
+    default:
+      return {};
+  }
+};
 
-  const groupedOptions = React.useMemo(() => {
-    const groups: { [key: string]: SelectOption[] } = {};
-    if (options) {
-      options.forEach((option) => {
-        const category = option.category || "Default";
-        if (!groups[category]) {
-          groups[category] = [];
-        }
-        groups[category].push(option);
-      });
-    }
-    return groups;
-  }, [options]);
+const customStyles = (size: "small" | "medium" | "large") => ({
+  control: (provided: any, state: any) => ({
+    ...provided,
+    display: "flex",
+    height: getSizeStyles(size).height,
+    width: getSizeStyles(size).width,
+    padding: getSizeStyles(size).padding,
+    fontSize: getSizeStyles(size).fontSize,
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderRadius: "6px",
+    border: `1px solid ${state.isFocused ? "#000" : "#d1d5db"}`,
+    backgroundColor: "#fff",
+    boxShadow: state.isFocused ? "0 0 0 2px rgba(0, 0, 0, 0.1)" : "none",
+    "&:hover": {
+      borderColor: "#000",
+    },
+    gap: "0px",
+  }),
+  menu: (provided: any) => ({
+    ...provided,
+    zIndex: 9999,
+    backgroundColor: "#fff",
+    borderRadius: "6px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    border: "1px solid #d1d5db",
+  }),
+  menuPortal: (provided: any) => ({
+    ...provided,
+    zIndex: 9999, // Highest priority for dropdown menu
+  }),
+  option: (provided: any, state: any) => ({
+    ...provided,
+    display: "flex",
+    alignItems: "center",
+    padding: "8px 16px",
+    fontSize: "0.875rem",
+    cursor: "pointer",
+    backgroundColor: state.isFocused ? "#f3f4f6" : "#fff",
+    color: state.isFocused ? "#000" : "#374151",
+    "&:active": {
+      backgroundColor: "#e5e7eb",
+    },
+  }),
+  dropdownIndicator: (provided: any) => ({
+    ...provided,
+    color: "#6b7280",
+    padding: "0",
+    margin: "0",
+    borderLeft: "none",
+    "&:hover": {
+      color: "#000",
+    },
+  }),
+  indicatorsContainer: (provided: any) => ({
+    ...provided,
+    borderLeft: "none",
+    padding: "0",
+    margin: "0",
+    display: "flex",
+    alignItems: "center",
+  }),
+  valueContainer: (provided: any) => ({
+    ...provided,
+    padding: "0",
+    margin: "0",
+    display: "flex",
+    alignItems: "center",
+  }),
+  placeholder: (provided: any) => ({
+    ...provided,
+    color: "#9ca3af",
+    fontSize: getSizeStyles(size).fontSize,
+  }),
+  singleValue: (provided: any) => ({
+    ...provided,
+    color: "#374151",
+    fontSize: getSizeStyles(size).fontSize,
+  }),
+});
 
-  const selectedLabels = React.useMemo(() => {
-    const valueArray = Array.isArray(value) ? value : [];
-    return valueArray
-      .map((v) => options.find((opt) => opt.value === v)?.label || v)
-      .join(", ");
-  }, [value, options]);
-
-  const filteredOptions = React.useMemo(() => {
-    const searchLower = search.toLowerCase();
-    const filtered: { [key: string]: SelectOption[] } = {};
-
-    Object.entries(groupedOptions).forEach(([category, opts]) => {
-      const matchingOpts = opts.filter(
-        (opt) =>
-          opt.label.toLowerCase().includes(searchLower) ||
-          opt.value.toLowerCase().includes(searchLower),
-      );
-      if (matchingOpts.length > 0) {
-        filtered[category] = matchingOpts;
-      }
-    });
-
-    return filtered;
-  }, [groupedOptions, search]);
-
-  const handleSelect = (selectedValue: string) => {
-    const currentValue = value || [];
-    if (multiple) {
-      onChange(
-        currentValue.includes(selectedValue)
-          ? currentValue.filter((v) => v !== selectedValue)
-          : [...currentValue, selectedValue],
-      );
-    } else {
-      onChange([selectedValue]);
-      setOpen(false);
-    }
-  };
-
-  const handleCreate = () => {
-    if (search && onCreateOption) {
-      onCreateOption(search);
-      setSearch("");
-    }
-  };
+const CustomMenu = (props: any) => {
+  const { children, selectProps } = props;
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className={cn("w-full justify-between", className)}
+    <components.Menu {...props}>
+      <div className="flex flex-col">
+        {children}
+        {/* Separator */}
+        <div className="border-t border-gray-300 my-2"></div>
+        {/* Create New Option */}
+        <div
+          className="flex items-center cursor-pointer px-4 py-2 text-sm hover:bg-gray-100 rounded-md mb-2"
+          onClick={() =>
+            selectProps.onCreateOption(selectProps.inputValue || "New Item")
+          }
         >
-          {value && value.length > 0 ? selectedLabels : placeholder}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-        <Command className="w-full h-full overflow-hidden">
-          <CommandInput
-            placeholder={searchPlaceholder}
-            value={search}
-            onValueChange={setSearch}
-          />
-          <CommandList className="command-list">
-            <CommandEmpty>
-              {search.trim() !== "" && onCreateOption ? (
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  onClick={handleCreate}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  {createOptionLabel} "{search}"
-                </Button>
-              ) : (
-                emptyMessage
-              )}
-            </CommandEmpty>
-            {Object.entries(filteredOptions).map(([category, opts]) => (
-              <React.Fragment key={category}>
-                <CommandGroup
-                  heading={category === "Default" ? undefined : category}
-                >
-                  {opts.map((option) => (
-                    <CommandItem
-                      key={option.value}
-                      value={option.value}
-                      onSelect={handleSelect}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          Array.isArray(value) && value.includes(option.value)
-                            ? "opacity-100"
-                            : "opacity-0",
-                        )}
-                      />
-                      {option.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-                {category !== Object.keys(filteredOptions).slice(-1)[0] && (
-                  <CommandSeparator />
-                )}
-              </React.Fragment>
-            ))}
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+          <PlusCircle className="mr-2 h-4 w-4 text-gray-600" />
+          <span className="text-gray-800">
+            Create{" "}
+            {selectProps.inputValue
+              ? `"${selectProps.inputValue}"`
+              : "New Item"}
+          </span>
+        </div>
+      </div>
+    </components.Menu>
   );
-}
+};
+
+const CustomDropdownIndicator = (props: any) => {
+  return (
+    <components.DropdownIndicator {...props}>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M6 8l4 4 4-4"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </components.DropdownIndicator>
+  );
+};
+
+const CustomOption = (props: any) => {
+  const { data, selectProps } = props;
+
+  if (data.__isNew__) {
+    return (
+      <div
+        className="flex items-center cursor-pointer p-2 text-sm hover:bg-gray-100"
+        onClick={() => selectProps.onCreateOption(selectProps.inputValue)}
+      >
+        <PlusCircle className="mr-2 h-4 w-4" />
+        <span>Create "{selectProps.inputValue}"</span>
+      </div>
+    );
+  }
+
+  return <components.Option {...props} />;
+};
+
+export const CreatableSelect: React.FC<CreatableSelectProps> = ({
+  options,
+  onChange,
+  onCreateOption,
+  placeholder = "Search...",
+  value,
+  size = "medium",
+}) => {
+  const [inputValue, setInputValue] = useState("");
+
+  const handleInputChange = (newValue: string) => {
+    setInputValue(newValue);
+  };
+
+  const handleChange = (newValue: any) => {
+    onChange(newValue);
+  };
+
+  const handleCreate = (newOptionLabel: string) => {
+    const newOption = {
+      label: newOptionLabel,
+      value: newOptionLabel.toLowerCase(),
+    };
+    onCreateOption(newOptionLabel);
+    handleChange(newOption);
+  };
+
+  const sizeStyles = getSizeStyles(size);
+  return (
+    <div style={{ width: sizeStyles.width }}>
+      {" "}
+      {/* Apply width here */}
+      <Creatable
+        isClearable
+        value={value}
+        onChange={handleChange}
+        onInputChange={handleInputChange}
+        onCreateOption={handleCreate}
+        options={options}
+        placeholder={placeholder}
+        styles={customStyles(size)}
+        components={{
+          Menu: CustomMenu, // Custom menu for options and create button
+          Option: CustomOption, // Custom option for default items
+          ClearIndicator: () => null, // Removes clear button
+          DropdownIndicator: CustomDropdownIndicator, // Custom arrow
+          IndicatorSeparator: () => null, // Removes the vertical line
+        }}
+        filterOption={createFilter({ ignoreAccents: false })}
+      />
+    </div>
+  );
+};

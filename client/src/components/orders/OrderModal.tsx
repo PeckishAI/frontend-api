@@ -158,7 +158,7 @@ export default function OrderModal({
       quantity: 0,
       unit: "",
       price: 0,
-      total:0
+      total: 0,
     };
     setEditedOrder({
       ...editedOrder,
@@ -259,6 +259,7 @@ export default function OrderModal({
                       label: supplier.supplier_name,
                       value: supplier.supplier_uuid,
                     }))}
+                    size="large"
                     value={[editedOrder.supplier_uuid]}
                     onChange={(values) => {
                       if (values && values.length > 0) {
@@ -313,6 +314,7 @@ export default function OrderModal({
                         value={
                           item.ingredient_uuid ? [item.ingredient_uuid] : []
                         }
+                        size="medium"
                         onChange={(values) => {
                           try {
                             const newItems = [...editedOrder.items];
@@ -337,8 +339,7 @@ export default function OrderModal({
                             };
 
                             const newTotal = newItems.reduce(
-                              (sum, item) =>
-                                sum + item.quantity * item.price,
+                              (sum, item) => sum + item.quantity * item.price,
                               0,
                             );
 
@@ -357,7 +358,7 @@ export default function OrderModal({
                         options={getIngredientOptions(
                           editedOrder.supplier_uuid,
                         )}
-                        placeholder="Select ingredient..."
+                        placeholder="Item"
                         disabled={!editMode}
                       />
                     </TableCell>
@@ -389,11 +390,7 @@ export default function OrderModal({
                         type="number"
                         value={item.price}
                         onChange={(e) =>
-                          updateItem(
-                            index,
-                            "price",
-                            parseFloat(e.target.value),
-                          )
+                          updateItem(index, "price", parseFloat(e.target.value))
                         }
                         disabled={!editMode}
                         className="text-right"
