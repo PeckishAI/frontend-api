@@ -8,8 +8,13 @@ interface Option {
   value: string;
 }
 
-interface CreatableSelectProps {
+interface Group {
+  label: string;
   options: Option[];
+}
+
+interface CreatableSelectProps {
+  options: Option[] | Group[];
   onChange: (selectedOption: Option | null) => void;
   onCreateOption: (newOption: string) => void;
   placeholder?: string;
@@ -22,21 +27,21 @@ const getSizeStyles = (size: "small" | "medium" | "large") => {
     case "small":
       return {
         height: "40px",
-        width: "100px", // Adjusted for small size
+        width: "100px",
         fontSize: "0.75rem",
         padding: "0 8px",
       };
     case "medium":
       return {
         height: "40px",
-        width: "200px", // Adjusted for medium size
+        width: "200px",
         fontSize: "0.875rem",
         padding: "0 12px",
       };
     case "large":
       return {
         height: "40px",
-        width: "100%", // Adjusted for large size
+        width: "100%",
         fontSize: "1rem",
         padding: "0 16px",
       };
@@ -74,7 +79,7 @@ const customStyles = (size: "small" | "medium" | "large") => ({
   }),
   menuPortal: (provided: any) => ({
     ...provided,
-    zIndex: 9999, // Highest priority for dropdown menu
+    zIndex: 9999,
   }),
   option: (provided: any, state: any) => ({
     ...provided,
@@ -132,7 +137,25 @@ const CustomMenu = (props: any) => {
   return (
     <components.Menu {...props}>
       <div className="flex flex-col">
-        {children}
+        {Array.isArray(selectProps.options) &&
+          selectProps.options.map((group: any) => {
+            if (group.options) {
+              return (
+                <div key={group.label}>
+                  <div className="px-4 py-2 text-sm font-semibold text-gray-600">
+                    {group.label}
+                  </div>
+                  {group.options.map((option: any) => (
+                    <components.Option
+                      key={option.value}
+                      data={option}
+                      {...props}
+                    />
+                  ))}
+                </div>
+              );
+            }
+          })}
         {/* Separator */}
         <div className="border-t border-gray-300 my-2"></div>
         {/* Create New Option */}
@@ -223,10 +246,9 @@ export const CreatableSelect: React.FC<CreatableSelectProps> = ({
   };
 
   const sizeStyles = getSizeStyles(size);
+
   return (
     <div style={{ width: sizeStyles.width }}>
-      {" "}
-      {/* Apply width here */}
       <Creatable
         isClearable
         value={value}
@@ -237,11 +259,11 @@ export const CreatableSelect: React.FC<CreatableSelectProps> = ({
         placeholder={placeholder}
         styles={customStyles(size)}
         components={{
-          Menu: CustomMenu, // Custom menu for options and create button
-          Option: CustomOption, // Custom option for default items
-          ClearIndicator: () => null, // Removes clear button
-          DropdownIndicator: CustomDropdownIndicator, // Custom arrow
-          IndicatorSeparator: () => null, // Removes the vertical line
+          Menu: CustomMenu,
+          Option: CustomOption,
+          ClearIndicator: () => null,
+          DropdownIndicator: CustomDropdownIndicator,
+          IndicatorSeparator: () => null,
         }}
         filterOption={createFilter({ ignoreAccents: false })}
       />
