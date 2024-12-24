@@ -481,24 +481,24 @@ export default function OrderModal({
                               });
                             }
                           }}
-                          options={
-                            item.ingredient_uuid && editedOrder.supplier?.supplier_uuid
-                              ? useQuery({
-                                  queryKey: [
-                                    "units",
-                                    currentRestaurant?.restaurant_uuid,
-                                    editedOrder.supplier?.supplier_uuid,
-                                    item.ingredient_uuid,
-                                  ],
-                                  queryFn: () =>
-                                    getUnitOptions(
-                                      currentRestaurant?.restaurant_uuid || "",
-                                      editedOrder.supplier?.supplier_uuid || "",
-                                      item.ingredient_uuid || ""
-                                    ),
-                                }).data || []
-                              : []
-                          }
+                          options={() => {
+                            const { data } = useQuery({
+                              queryKey: [
+                                "units",
+                                currentRestaurant?.restaurant_uuid,
+                                editedOrder.supplier?.supplier_uuid,
+                                item.ingredient_uuid,
+                              ],
+                              queryFn: () =>
+                                getUnitOptions(
+                                  currentRestaurant?.restaurant_uuid || "",
+                                  editedOrder.supplier?.supplier_uuid || "",
+                                  item.ingredient_uuid || ""
+                                ),
+                              enabled: !!(item.ingredient_uuid && editedOrder.supplier?.supplier_uuid),
+                            });
+                            return data || [];
+                          }}
                           onCreateOption={(value) => {
                             updateItem(index, "unit", {
                               unit_name: value,
