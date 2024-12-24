@@ -114,10 +114,11 @@ const customStyles = (size: "small" | "medium" | "large") => ({
   }),
   valueContainer: (provided: any) => ({
     ...provided,
-    padding: "0",
+    padding: "0 12px",
     margin: "0",
     display: "flex",
     alignItems: "center",
+    maxWidth: "100%",
   }),
   placeholder: (provided: any) => ({
     ...provided,
@@ -128,6 +129,10 @@ const customStyles = (size: "small" | "medium" | "large") => ({
     ...provided,
     color: "#374151",
     fontSize: getSizeStyles(size).fontSize,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "calc(100% - 24px)",
   }),
 });
 
@@ -204,7 +209,7 @@ export const CreatableSelect: React.FC<CreatableSelectProps> = ({
   options,
   onChange,
   onCreateOption,
-  placeholder = "Search...",
+  placeholder = "",
   value,
   size = "medium",
 }) => {
