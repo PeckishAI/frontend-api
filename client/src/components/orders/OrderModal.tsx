@@ -361,18 +361,16 @@ export default function OrderModal({
               <div className="flex flex-col gap-2">
                 <label className="text-sm text-gray-600">Date</label>
                 <Input
-                  type="date"
-                  value={new Date(
-                    editedOrder.delivery_date || "",
-                  ).toLocaleDateString()}
-                  onChange={(e) =>
-                    setEditedOrder({
-                      ...editedOrder,
-                      delivery_date: e.target.value,
-                    })
-                  }
-                  disabled={!editMode}
-                />
+                    type="date"
+                    value={editedOrder.delivery_date ? new Date(editedOrder.delivery_date).toISOString().split('T')[0] : ''}
+                    onChange={(e) =>
+                      setEditedOrder({
+                        ...editedOrder,
+                        delivery_date: e.target.value,
+                      })
+                    }
+                    disabled={!editMode}
+                  />
               </div>
             </div>
 
