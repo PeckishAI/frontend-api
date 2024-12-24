@@ -35,8 +35,9 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { menuService } from "@/services/menu";
-
+import { menuService } from "@/services/menuService";
+import { inventoryService } from "@/services/inventoryService";
+import { unitService } from "@/services/unitService";
 
 export const defaultCategories = [
   { value: "mains", label: "Main Dishes", emoji: "🍽️" },
@@ -151,7 +152,7 @@ const recipeSchema = z.object({
         quantity: z.number().min(0, "Quantity must be positive"),
         unit: z.string().min(1, "Unit is required"),
         conversionFactor: z.number().optional(),
-        id: z.string().optional()
+        id: z.string().optional(),
       }),
     )
     .min(1, "At least one ingredient is required"),
@@ -172,7 +173,7 @@ export default function RecipeSheet({
   onOpenChange: (open: boolean) => void;
   recipe?: Recipe;
   onSubmit: (data: Recipe) => void;
-  currentRestaurant?: {restaurant_uuid: string}
+  currentRestaurant?: { restaurant_uuid: string };
 }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const queryClient = useQueryClient();
@@ -241,26 +242,32 @@ export default function RecipeSheet({
                   portion_count: data.portionCount,
                   portion_price: data.price,
                   portion_cost: data.cost,
-                  product_ingredients: data.ingredients.map(ing => ({
+                  product_ingredients: data.ingredients.map((ing) => ({
                     ingredient_uuid: ing.id || undefined,
                     ingredient_name: ing.name,
                     quantity: ing.quantity,
                     recipe_unit: {
-                      unit_name: ing.unit
-                    }
-                  }))
+                      unit_name: ing.unit,
+                    },
+                  })),
                 };
 
                 if (recipe) {
-                  await menuService.updateProduct(currentRestaurant.restaurant_uuid, productData);
+                  await menuService.updateProduct(
+                    currentRestaurant.restaurant_uuid,
+                    productData,
+                  );
                 } else {
-                  await menuService.createProduct(currentRestaurant.restaurant_uuid, productData);
+                  await menuService.createProduct(
+                    currentRestaurant.restaurant_uuid,
+                    productData,
+                  );
                 }
 
-                queryClient.invalidateQueries(['products']);
+                queryClient.invalidateQueries(["products"]);
                 onOpenChange(false);
               } catch (error) {
-                console.error('Failed to save recipe:', error);
+                console.error("Failed to save recipe:", error);
               }
             })}
             className="space-y-6 pt-8"
