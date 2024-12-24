@@ -488,26 +488,33 @@ export default function OrderModal({
                               });
                             }
                           }}
-                          options={
-                            !currentRestaurant?.restaurant_uuid ||
-                            !editedOrder.supplier?.supplier_uuid ||
-                            !item.ingredient_uuid
-                              ? []
-                              : useQuery({
-                                  queryKey: [
-                                    "units",
-                                    currentRestaurant.restaurant_uuid,
-                                    editedOrder.supplier.supplier_uuid,
-                                    item.ingredient_uuid,
-                                  ],
-                                  queryFn: () =>
-                                    getUnitOptions(
-                                      currentRestaurant.restaurant_uuid,
-                                      editedOrder.supplier.supplier_uuid,
-                                      item.ingredient_uuid || "",
-                                    ),
-                                }).data || []
-                          }
+                          options={(() => {
+                            if (!currentRestaurant?.restaurant_uuid ||
+                                !editedOrder.supplier?.supplier_uuid ||
+                                !item.ingredient_uuid) {
+                              return [];
+                            }
+                            
+                            const { data } = useQuery({
+                              queryKey: [
+                                "units",
+                                currentRestaurant.restaurant_uuid,
+                                editedOrder.supplier.supplier_uuid,
+                                item.ingredient_uuid,
+                              ],
+                              queryFn: () =>
+                                getUnitOptions(
+                                  currentRestaurant.restaurant_uuid,
+                                  editedOrder.supplier.supplier_uuid,
+                                  item.ingredient_uuid || "",
+                                ),
+                            });
+
+                            // Filter out categories with no options
+                            return (data || []).filter(
+                              (category) => category.options && category.options.length > 0
+                            );
+                          })()}
                           onCreateOption={(value) => {
                             updateItem(index, "unit", {
                               unit_name: value,
