@@ -138,11 +138,15 @@ const CustomMenu = (props: any) => {
     <components.Menu {...props}>
       <div className="flex flex-col">
         {Array.isArray(selectProps.options) &&
-          selectProps.options.map((group: any) => {
-            if (group.options) {
+          selectProps.options.map((item: any) => {
+            if (item.options) {
+              // This is a group
               return (
-                <div key={group.label}>
-                  {group.options.map((option: any) => (
+                <div key={item.label} className="group">
+                  <div className="px-2 py-1 text-sm font-semibold text-gray-500">
+                    {item.label}
+                  </div>
+                  {item.options.map((option: any) => (
                     <components.Option
                       key={option.value}
                       data={option}
@@ -152,6 +156,14 @@ const CustomMenu = (props: any) => {
                 </div>
               );
             }
+            // This is a single option
+            return (
+              <components.Option
+                key={item.value}
+                data={item}
+                {...props}
+              />
+            );
           })}
         {/* Separator */}
         <div className="border-t border-gray-300 my-2"></div>
