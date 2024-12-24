@@ -488,42 +488,24 @@ export default function OrderModal({
                               });
                             }
                           }}
-                          options={() => {
-                            console.log(
-                              "Restaurant UUID:",
-                              currentRestaurant?.restaurant_uuid,
-                            );
-                            console.log(
-                              "Supplier UUID:",
-                              editedOrder.supplier?.supplier_uuid,
-                            );
-                            console.log(
-                              "Ingredient UUID:",
-                              item.ingredient_uuid,
-                            );
-
-                            const { data } = useQuery({
-                              queryKey: [
-                                "units",
-                                currentRestaurant?.restaurant_uuid,
-                                editedOrder.supplier?.supplier_uuid,
-                                item.ingredient_uuid,
-                              ],
-                              queryFn: () =>
-                                getUnitOptions(
-                                  currentRestaurant?.restaurant_uuid || "",
-                                  editedOrder.supplier?.supplier_uuid || "",
-                                  item.ingredient_uuid || "",
-                                ),
-                              enabled: !!(
-                                item.ingredient_uuid &&
-                                editedOrder.supplier?.supplier_uuid
-                              ),
-                            });
-                            console.log("Unit options data:", data);
-                            const options = data || [];
-                            console.log("Final options:", options);
-                            return options;
+                          options={async () => {
+                            if (!currentRestaurant?.restaurant_uuid || 
+                                !editedOrder.supplier?.supplier_uuid || 
+                                !item.ingredient_uuid) {
+                              return [];
+                            }
+                            
+                            try {
+                              const options = await getUnitOptions(
+                                currentRestaurant.restaurant_uuid,
+                                editedOrder.supplier.supplier_uuid,
+                                item.ingredient_uuid
+                              );
+                              return options;
+                            } catch (error) {
+                              console.error("Failed to fetch unit options:", error);
+                              return [];
+                            }
                           }}
                           onCreateOption={(value) => {
                             updateItem(index, "unit", {
