@@ -133,48 +133,26 @@ const customStyles = (size: "small" | "medium" | "large") => ({
 
 const CustomMenu = (props: any) => {
   const { children, selectProps } = props;
-  const uniqueOptions = [];
-
-  //Filter out duplicate options (assuming duplication based on 'value' property)
-
-  const filteredOptions = Array.isArray(selectProps.options) ? selectProps.options.filter(option => {
-    if (Array.isArray(option.options)) {
-      const uniqueGroupOptions = [];
-      option.options.forEach(groupOption => {
-        const existing = uniqueGroupOptions.find(o => o.value === groupOption.value);
-        if (!existing) {
-          uniqueGroupOptions.push(groupOption);
-        }
-      });
-      option.options = uniqueGroupOptions;
-    }
-    const existing = uniqueOptions.find(o => o.value === option.value);
-    if (!existing) {
-      uniqueOptions.push(option);
-      return true;
-    }
-    return false;
-  }) : [];
 
   return (
     <components.Menu {...props}>
       <div className="flex flex-col">
-        {filteredOptions.map((group: any) => {
-          if (group.options) {
-            return (
-              <div key={group.label}>
-                {group.options.map((option: any) => (
-                  <components.Option
-                    key={option.value}
-                    data={option}
-                    {...props}
-                  />
-                ))}
-              </div>
-            );
-          }
-          return <components.Option key={group.value} data={group} {...props} />;
-        })}
+        {Array.isArray(selectProps.options) &&
+          selectProps.options.map((group: any) => {
+            if (group.options) {
+              return (
+                <div key={group.label}>
+                  {group.options.map((option: any) => (
+                    <components.Option
+                      key={option.value}
+                      data={option}
+                      {...props}
+                    />
+                  ))}
+                </div>
+              );
+            }
+          })}
         {/* Separator */}
         <div className="border-t border-gray-300 my-2"></div>
         {/* Create New Option */}
