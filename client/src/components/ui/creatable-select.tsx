@@ -134,42 +134,10 @@ const customStyles = (size: "small" | "medium" | "large") => ({
 const CustomMenu = (props: any) => {
   const { children, selectProps } = props;
 
-  // Remove duplicate groups by label
-  const uniqueGroups = Array.isArray(selectProps.options) 
-    ? selectProps.options.reduce((acc: any[], item: any) => {
-        if (!acc.some(g => g.label === item.label)) {
-          acc.push(item);
-        }
-        return acc;
-      }, [])
-    : [];
-
   return (
     <components.Menu {...props}>
       <div className="flex flex-col">
-        {uniqueGroups.map((item: any) => {
-          if (item.options) {
-            // This is a group
-            return (
-              <div key={item.label} className="group">
-                <div className="px-2 py-1 text-xs uppercase tracking-wide text-gray-500 font-semibold">
-                  {item.label}
-                </div>
-                {item.options.map((option: any) => (
-                  <components.Option
-                    key={option.value}
-                    data={option}
-                    {...props}
-                  />
-                ))}
-              </div>
-            );
-          }
-          // This is a single option
-          return (
-            <components.Option key={item.value} data={item} {...props} />
-          );
-        })}
+        {children} {/* Automatically renders grouped options and labels */}
         {/* Separator */}
         <div className="border-t border-gray-300 my-2"></div>
         {/* Create New Option */}
