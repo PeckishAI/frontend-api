@@ -34,7 +34,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { menuService } from "@/services/menuService";
 import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
@@ -128,11 +128,11 @@ const useIngredientOptions = (restaurantUuid?: string) => {
       return inventoryService.getRestaurantIngredients(restaurantUuid);
     },
     enabled: !!restaurantUuid,
-    select: (data) => 
+    select: (data) =>
       data.map((ing: any) => ({
         value: ing.ingredient_uuid,
-        label: ing.ingredient_name
-      }))
+        label: ing.ingredient_name,
+      })),
   });
   return ingredients || [];
 };
@@ -148,8 +148,8 @@ const useUnitOptions = (restaurantUuid?: string) => {
     select: (data) =>
       data.map((unit: any) => ({
         value: unit.unit_uuid,
-        label: unit.unit_name
-      }))
+        label: unit.unit_name,
+      })),
   });
   return units || [];
 };
@@ -472,7 +472,9 @@ export default function RecipeSheet({
                                 field.onChange(values[0]);
                               }
                             }}
-                            options={useIngredientOptions(currentRestaurant?.restaurant_uuid)}
+                            options={useIngredientOptions(
+                              currentRestaurant?.restaurant_uuid,
+                            )}
                             onCreateOption={(value) => {
                               if (!field.value.includes(value)) {
                                 field.onChange(value);
@@ -528,7 +530,9 @@ export default function RecipeSheet({
                                 field.onChange(values[0]);
                               }
                             }}
-                            options={useUnitOptions(currentRestaurant?.restaurant_uuid)}
+                            options={useUnitOptions(
+                              currentRestaurant?.restaurant_uuid,
+                            )}
                             onCreateOption={(value) => {
                               if (!field.value.includes(value)) {
                                 field.onChange(value);
