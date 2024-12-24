@@ -466,19 +466,30 @@ export default function RecipeSheet({
                         </FormLabel>
                         <FormControl>
                           <CreatableSelect
-                            value={field.value ? [field.value] : []}
-                            onChange={(values) => {
-                              if (values[0]) {
-                                field.onChange(values[0]);
+                            value={
+                              field.value?.id
+                                ? {
+                                    value: field.value.id,
+                                    label: field.value.name,
+                                  }
+                                : null
+                            }
+                            onChange={(option) => {
+                              if (option) {
+                                field.onChange({
+                                  id: option.value,
+                                  name: option.label,
+                                });
                               }
                             }}
                             options={useIngredientOptions(
                               currentRestaurant?.restaurant_uuid,
                             )}
                             onCreateOption={(value) => {
-                              if (!field.value.includes(value)) {
-                                field.onChange(value);
-                              }
+                              field.onChange({
+                                id: value.toLowerCase(),
+                                name: value,
+                              });
                             }}
                             placeholder="Select or add ingredient"
                           />
@@ -524,19 +535,24 @@ export default function RecipeSheet({
                         </FormLabel>
                         <FormControl>
                           <CreatableSelect
-                            value={field.value ? [field.value] : []}
-                            onChange={(values) => {
-                              if (values[0]) {
-                                field.onChange(values[0]);
+                            value={
+                              field.value
+                                ? {
+                                    value: field.value,
+                                    label: field.value,
+                                  }
+                                : null
+                            }
+                            onChange={(option) => {
+                              if (option) {
+                                field.onChange(option.value);
                               }
                             }}
                             options={useUnitOptions(
                               currentRestaurant?.restaurant_uuid,
                             )}
                             onCreateOption={(value) => {
-                              if (!field.value.includes(value)) {
-                                field.onChange(value);
-                              }
+                              field.onChange(value);
                             }}
                             placeholder="Select unit"
                           />
