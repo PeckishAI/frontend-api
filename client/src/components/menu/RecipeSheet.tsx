@@ -120,21 +120,39 @@ const foodEmojis = [
   "🥣",
 ];
 
-const defaultIngredients = [
-  { value: "tomatoes", label: "Tomatoes" },
-  { value: "flour", label: "Flour" },
-  { value: "sugar", label: "Sugar" },
-  { value: "salt", label: "Salt" },
-  { value: "olive_oil", label: "Olive Oil" },
-  { value: "onions", label: "Onions" },
-  { value: "garlic", label: "Garlic" },
-  { value: "pepper", label: "Black Pepper" },
-];
+const useIngredientOptions = (restaurantUuid?: string) => {
+  const { data: ingredients } = useQuery({
+    queryKey: ["ingredients", restaurantUuid],
+    queryFn: () => {
+      if (!restaurantUuid) return [];
+      return inventoryService.getRestaurantIngredients(restaurantUuid);
+    },
+    enabled: !!restaurantUuid,
+    select: (data) => 
+      data.map((ing: any) => ({
+        value: ing.ingredient_uuid,
+        label: ing.ingredient_name
+      }))
+  });
+  return ingredients || [];
+};
 
-const defaultUnits = [
-  { value: "g", label: "Grams (g)" },
-  { value: "kg", label: "Kilograms (kg)" },
-];
+const useUnitOptions = (restaurantUuid?: string) => {
+  const { data: units } = useQuery({
+    queryKey: ["units", restaurantUuid],
+    queryFn: () => {
+      if (!restaurantUuid) return [];
+      return unitService.getRestaurantUnit(restaurantUuid);
+    },
+    enabled: !!restaurantUuid,
+    select: (data) =>
+      data.map((unit: any) => ({
+        value: unit.unit_uuid,
+        label: unit.unit_name
+      }))
+  });
+  return units || [];
+};
 
 const recipeSchema = z.object({
   id: z.string().optional(),
@@ -454,7 +472,7 @@ export default function RecipeSheet({
                                 field.onChange(values[0]);
                               }
                             }}
-                            options={defaultIngredients}
+                            options={useIngredientOptions(currentRestaurant?.restaurant_uuid)}
                             onCreateOption={(value) => {
                               if (!field.value.includes(value)) {
                                 field.onChange(value);
@@ -510,7 +528,7 @@ export default function RecipeSheet({
                                 field.onChange(values[0]);
                               }
                             }}
-                            options={defaultUnits}
+                            options={useUnitOptions(currentRestaurant?.restaurant_uuid)}
                             onCreateOption={(value) => {
                               if (!field.value.includes(value)) {
                                 field.onChange(value);
