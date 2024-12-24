@@ -158,11 +158,7 @@ const CustomMenu = (props: any) => {
             }
             // This is a single option
             return (
-              <components.Option
-                key={item.value}
-                data={item}
-                {...props}
-              />
+              <components.Option key={item.value} data={item} {...props} />
             );
           })}
         {/* Separator */}
