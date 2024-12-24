@@ -14,16 +14,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import RecipeSheet, { defaultCategories } from "@/components/menu/RecipeSheet";
 import { Badge } from "@/components/ui/badge";
-
-type Product = {
-  id: string;
-  name: string;
-  category: string;
-  ingredients: string[];
-  price: number;
-  cost: number;
-  margin: number;
-};
+import { menuService } from "@/services/menuService";
+import { type Product, type ProductIngredient, type ProductPreparation, type Unit } from "@/types/menu";
 
 const mockProducts: Product[] = [
   {

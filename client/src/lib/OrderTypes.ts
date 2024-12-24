@@ -13,6 +13,7 @@ export interface Unit {
 }
 
 export interface OrderItem {
+  uuid?: string;
   ingredient_uuid?: string;
   ingredient_name?: string;
   quantity?: number;

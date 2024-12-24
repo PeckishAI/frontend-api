@@ -355,6 +355,7 @@ export default function OrderModal({
                         });
                       }
                     }}
+                    onCreateOption={console.log("create")}
                   />
                 )}
               </div>
