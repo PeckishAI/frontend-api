@@ -28,12 +28,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { supplierService } from "@/services/supplierService";
 import { inventoryService } from "@/services/inventoryService";
+import { unitService } from "@/services/unitService";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 
 const getUnitOptions = async (
   restaurantUuid: string,
   supplierUuid: string,
-  ingredientUuid: string
+  ingredientUuid: string,
 ) => {
   try {
     // Get connected units for this supplier-ingredient pair
@@ -41,9 +42,11 @@ const getUnitOptions = async (
       restaurantUuid,
       supplierUuid,
     );
+    console.log("Connected Units : ", connectedUnits);
 
     // Get all restaurant units
     const allUnits = await unitService.getRestaurantUnit(restaurantUuid);
+    console.log("All Units : ", allUnits);
 
     // Filter connected units for this ingredient
     const connectedIngredientUnits = connectedUnits
@@ -55,10 +58,12 @@ const getUnitOptions = async (
 
     // Filter remaining units (not connected to this ingredient)
     const remainingUnits = allUnits
-      .filter((unit: any) => 
-        !connectedIngredientUnits.some(
-          (connectedUnit: any) => connectedUnit.value === unit.unit_uuid
-        ))
+      .filter(
+        (unit: any) =>
+          !connectedIngredientUnits.some(
+            (connectedUnit: any) => connectedUnit.value === unit.unit_uuid,
+          ),
+      )
       .map((unit: any) => ({
         label: unit.unit_name,
         value: unit.unit_uuid,
@@ -79,6 +84,8 @@ const getUnitOptions = async (
     return [];
   }
 };
+
+console.log("getUnitOptions", getUnitOptions);
 
 interface OrderModalProps {
   order: Order | null;
@@ -482,10 +489,19 @@ export default function OrderModal({
                             }
                           }}
                           options={() => {
-                            console.log("Restaurant UUID:", currentRestaurant?.restaurant_uuid);
-                            console.log("Supplier UUID:", editedOrder.supplier?.supplier_uuid);
-                            console.log("Ingredient UUID:", item.ingredient_uuid);
-                            
+                            console.log(
+                              "Restaurant UUID:",
+                              currentRestaurant?.restaurant_uuid,
+                            );
+                            console.log(
+                              "Supplier UUID:",
+                              editedOrder.supplier?.supplier_uuid,
+                            );
+                            console.log(
+                              "Ingredient UUID:",
+                              item.ingredient_uuid,
+                            );
+
                             const { data } = useQuery({
                               queryKey: [
                                 "units",
@@ -497,9 +513,12 @@ export default function OrderModal({
                                 getUnitOptions(
                                   currentRestaurant?.restaurant_uuid || "",
                                   editedOrder.supplier?.supplier_uuid || "",
-                                  item.ingredient_uuid || ""
+                                  item.ingredient_uuid || "",
                                 ),
-                              enabled: !!(item.ingredient_uuid && editedOrder.supplier?.supplier_uuid),
+                              enabled: !!(
+                                item.ingredient_uuid &&
+                                editedOrder.supplier?.supplier_uuid
+                              ),
                             });
                             console.log("Unit options data:", data);
                             const options = data || [];
