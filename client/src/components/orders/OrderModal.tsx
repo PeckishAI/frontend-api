@@ -510,10 +510,16 @@ export default function OrderModal({
                                 ),
                             });
 
-                            // Filter out categories with no options
-                            return (data || []).filter(
+                            // Filter out categories with no options and customize labels
+                            const filteredCategories = (data || []).filter(
                               (category) => category.options && category.options.length > 0
                             );
+
+                            // Only show categories that actually have options
+                            return filteredCategories.map(category => ({
+                              ...category,
+                              label: category.options.length > 0 ? category.label : null
+                            })).filter(category => category.label !== null);
                           })()}
                           onCreateOption={(value) => {
                             updateItem(index, "unit", {
