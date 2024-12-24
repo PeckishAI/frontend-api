@@ -482,6 +482,10 @@ export default function OrderModal({
                             }
                           }}
                           options={() => {
+                            console.log("Restaurant UUID:", currentRestaurant?.restaurant_uuid);
+                            console.log("Supplier UUID:", editedOrder.supplier?.supplier_uuid);
+                            console.log("Ingredient UUID:", item.ingredient_uuid);
+                            
                             const { data } = useQuery({
                               queryKey: [
                                 "units",
@@ -497,7 +501,10 @@ export default function OrderModal({
                                 ),
                               enabled: !!(item.ingredient_uuid && editedOrder.supplier?.supplier_uuid),
                             });
-                            return data || [];
+                            console.log("Unit options data:", data);
+                            const options = data || [];
+                            console.log("Final options:", options);
+                            return options;
                           }}
                           onCreateOption={(value) => {
                             updateItem(index, "unit", {
