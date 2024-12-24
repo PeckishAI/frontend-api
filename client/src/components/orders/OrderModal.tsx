@@ -488,30 +488,26 @@ export default function OrderModal({
                               });
                             }
                           }}
-                          options={async () => {
-                            if (
-                              !currentRestaurant?.restaurant_uuid ||
-                              !editedOrder.supplier?.supplier_uuid ||
-                              !item.ingredient_uuid
-                            ) {
-                              return [];
-                            }
-
-                            try {
-                              const options = await getUnitOptions(
-                                currentRestaurant.restaurant_uuid,
-                                editedOrder.supplier.supplier_uuid,
-                                item.ingredient_uuid,
-                              );
-                              return options;
-                            } catch (error) {
-                              console.error(
-                                "Failed to fetch unit options:",
-                                error,
-                              );
-                              return [];
-                            }
-                          }}
+                          options={
+                            !currentRestaurant?.restaurant_uuid ||
+                            !editedOrder.supplier?.supplier_uuid ||
+                            !item.ingredient_uuid
+                              ? []
+                              : useQuery({
+                                  queryKey: [
+                                    "units",
+                                    currentRestaurant.restaurant_uuid,
+                                    editedOrder.supplier.supplier_uuid,
+                                    item.ingredient_uuid,
+                                  ],
+                                  queryFn: () =>
+                                    getUnitOptions(
+                                      currentRestaurant.restaurant_uuid,
+                                      editedOrder.supplier.supplier_uuid,
+                                      item.ingredient_uuid || "",
+                                    ),
+                                }).data || []
+                          }
                           onCreateOption={(value) => {
                             updateItem(index, "unit", {
                               unit_name: value,
