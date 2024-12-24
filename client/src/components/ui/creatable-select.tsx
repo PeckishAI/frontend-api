@@ -142,9 +142,6 @@ const CustomMenu = (props: any) => {
             if (group.options) {
               return (
                 <div key={group.label}>
-                  <div className="px-4 py-2 text-sm font-semibold text-gray-600">
-                    {group.label}
-                  </div>
                   {group.options.map((option: any) => (
                     <components.Option
                       key={option.value}
