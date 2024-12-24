@@ -1,56 +1,34 @@
+
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { PlusCircle, UtensilsCrossed, Sandwich, ScrollText, Layers, TagIcon, DollarSign, Percent } from "lucide-react";
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import ViewToggle from "@/components/orders/ViewToggle";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import RecipeSheet, { defaultCategories } from "@/components/menu/RecipeSheet";
 import { Badge } from "@/components/ui/badge";
 import { menuService } from "@/services/menuService";
-import { type Product, type ProductIngredient, type ProductPreparation, type Unit } from "@/types/menu";
-
-const mockProducts: Product[] = [
-  {
-    id: "1",
-    name: "Margherita Pizza",
-    category: "Pizza",
-    ingredients: ["Tomato Sauce", "Mozzarella", "Basil"],
-    price: 12.99,
-    cost: 4.50,
-    margin: 65.36,
-  },
-  {
-    id: "2",
-    name: "Caesar Salad",
-    category: "Salads",
-    ingredients: ["Romaine Lettuce", "Croutons", "Parmesan", "Caesar Dressing"],
-    price: 8.99,
-    cost: 2.80,
-    margin: 68.85,
-  },
-  {
-    id: "3",
-    name: "Spaghetti Carbonara",
-    category: "Pasta",
-    ingredients: ["Spaghetti", "Eggs", "Pecorino Romano", "Guanciale", "Black Pepper"],
-    price: 14.99,
-    cost: 5.20,
-    margin: 65.31,
-  },
-];
+import { type Product } from "@/types/menu";
+import { useQuery } from "@tanstack/react-query";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
 
 export default function Menu() {
   const [activeSection, setActiveSection] = useState('products');
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
   const [editingRecipe, setEditingRecipe] = useState<Product | null>(null);
+  const { currentRestaurant } = useRestaurantContext();
+
+  const { data: products = [], isLoading } = useQuery({
+    queryKey: ['products', currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      return menuService.getRestaurantProducts(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid
+  });
 
   const sections = [
     { id: 'products', label: 'Products' },
@@ -68,11 +46,12 @@ export default function Menu() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sandwich className="h-5 w-5 text-primary" />
-              <CardTitle className="text-lg">{product.name}</CardTitle>
+              <CardTitle className="text-lg">{product.product_name}</CardTitle>
             </div>
             <Badge variant="secondary" className="flex items-center gap-1">
               <TagIcon className="h-3 w-3" />
-              {product.category}
+              {/* TODO: Add category to Product type */}
+              Menu Item
             </Badge>
           </div>
         </CardHeader>
@@ -80,7 +59,7 @@ export default function Menu() {
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Layers className="h-4 w-4" />
-              <span>{product.ingredients.length} ingredients</span>
+              <span>{product.product_ingredients?.length || 0} ingredients</span>
             </div>
             <div className="grid grid-cols-3 gap-4 border-t pt-4">
               <div>
@@ -88,14 +67,14 @@ export default function Menu() {
                   <DollarSign className="h-4 w-4 text-green-600" />
                   <div className="text-sm text-gray-500">Price</div>
                 </div>
-                <div className="font-medium">${product.price.toFixed(2)}</div>
+                <div className="font-medium">${product.portion_price?.toFixed(2) || '0.00'}</div>
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <ScrollText className="h-4 w-4 text-gray-600" />
                   <div className="text-sm text-gray-500">Cost</div>
                 </div>
-                <div className="font-medium">${product.cost.toFixed(2)}</div>
+                <div className="font-medium">${product.portion_cost?.toFixed(2) || '0.00'}</div>
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
@@ -103,8 +82,16 @@ export default function Menu() {
                   <div className="text-sm text-gray-500">Margin</div>
                 </div>
                 <div className="font-semibold text-base">
-                  <span className="text-2xl font-bold text-blue-600">{product.margin.toFixed(1)}</span>
-                  <span className="text-sm ml-0.5 text-blue-600">%</span>
+                  {product.portion_price && product.portion_cost ? (
+                    <>
+                      <span className="text-2xl font-bold text-blue-600">
+                        {((1 - (product.portion_cost / product.portion_price)) * 100).toFixed(1)}
+                      </span>
+                      <span className="text-sm ml-0.5 text-blue-600">%</span>
+                    </>
+                  ) : (
+                    'N/A'
+                  )}
                 </div>
               </div>
             </div>
@@ -112,6 +99,10 @@ export default function Menu() {
         </CardContent>
       </Card>
     );
+  }
+
+  if (isLoading) {
+    return <div className="p-8">Loading products...</div>;
   }
 
   return (
@@ -145,8 +136,8 @@ export default function Menu() {
           <div className="bg-white rounded-lg shadow overflow-hidden">
             {viewMode === 'cards' ? (
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                {products.map((product) => (
+                  <ProductCard key={product.product_uuid} product={product} />
                 ))}
               </div>
             ) : (
@@ -155,7 +146,6 @@ export default function Menu() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Name</TableHead>
-                      <TableHead>Category</TableHead>
                       <TableHead>Ingredients</TableHead>
                       <TableHead className="text-right">Price</TableHead>
                       <TableHead className="text-right">Cost</TableHead>
@@ -163,20 +153,25 @@ export default function Menu() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {mockProducts.map((product) => (
+                    {products.map((product) => (
                       <TableRow 
-                        key={product.id} 
+                        key={product.product_uuid} 
                         className="cursor-pointer hover:bg-gray-50"
                         onClick={() => setEditingRecipe(product)}
                       >
-                        <TableCell>{product.name}</TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">{product.category}</Badge>
+                        <TableCell>{product.product_name}</TableCell>
+                        <TableCell>{product.product_ingredients?.length || 0}</TableCell>
+                        <TableCell className="text-right">
+                          ${product.portion_price?.toFixed(2) || '0.00'}
                         </TableCell>
-                        <TableCell>{product.ingredients.length}</TableCell>
-                        <TableCell className="text-right">${product.price.toFixed(2)}</TableCell>
-                        <TableCell className="text-right">${product.cost.toFixed(2)}</TableCell>
-                        <TableCell className="text-right">{product.margin.toFixed(1)}%</TableCell>
+                        <TableCell className="text-right">
+                          ${product.portion_cost?.toFixed(2) || '0.00'}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {product.portion_price && product.portion_cost
+                            ? `${((1 - (product.portion_cost / product.portion_price)) * 100).toFixed(1)}%`
+                            : 'N/A'}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -205,23 +200,22 @@ export default function Menu() {
           if (!open) setEditingRecipe(null);
         }}
         recipe={editingRecipe ? {
-          id: editingRecipe.id,
-          name: editingRecipe.name,
+          id: editingRecipe.product_uuid || '',
+          name: editingRecipe.product_name || '',
           category: {
-            value: editingRecipe.category.toLowerCase(),
-            label: editingRecipe.category,
-            emoji: defaultCategories.find(c => 
-              c.value === editingRecipe.category.toLowerCase())?.emoji || '🍽️'
+            value: 'menu-item',
+            label: 'Menu Item',
+            emoji: '🍽️'
           },
-          portionCount: 1,
-          ingredients: editingRecipe.ingredients.map(name => ({
-            id: `${name}-${Math.random()}`,
-            name,
-            quantity: 1,
-            unit: 'g'
-          })),
-          price: editingRecipe.price,
-          cost: editingRecipe.cost
+          portionCount: editingRecipe.portion_count || 1,
+          ingredients: editingRecipe.product_ingredients?.map(ing => ({
+            id: ing.uuid || '',
+            name: ing.ingredient_name || '',
+            quantity: ing.quantity || 0,
+            unit: ing.recipe_unit?.unit_name || 'g'
+          })) || [],
+          price: editingRecipe.portion_price || 0,
+          cost: editingRecipe.portion_cost || 0
         } : undefined}
         onSubmit={(data) => {
           console.log('Updated recipe:', data);
