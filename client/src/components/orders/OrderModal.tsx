@@ -30,29 +30,55 @@ import { supplierService } from "@/services/supplierService";
 import { inventoryService } from "@/services/inventoryService";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 
-const defaultUnits = [
-  {
-    label: "Volume",
-    options: [
-      { label: "Liter", value: "liter" },
-      { label: "Milliliter", value: "milliliter" },
-    ],
-  },
-  {
-    label: "Weight",
-    options: [
-      { label: "Kilogram", value: "kilogram" },
-      { label: "Gram", value: "gram" },
-    ],
-  },
-  {
-    label: "Other",
-    options: [
-      { label: "Unit", value: "unit" },
-      { label: "Piece", value: "piece" },
-    ],
-  },
-];
+const getUnitOptions = async (
+  restaurantUuid: string,
+  supplierUuid: string,
+  ingredientUuid: string
+) => {
+  try {
+    // Get connected units for this supplier-ingredient pair
+    const connectedUnits = await unitService.getSupplierIngredientUnits(
+      restaurantUuid,
+      supplierUuid,
+    );
+
+    // Get all restaurant units
+    const allUnits = await unitService.getRestaurantUnit(restaurantUuid);
+
+    // Filter connected units for this ingredient
+    const connectedIngredientUnits = connectedUnits
+      .filter((unit: any) => unit.ingredient_uuid === ingredientUuid)
+      .map((unit: any) => ({
+        label: unit.unit_name,
+        value: unit.unit_uuid,
+      }));
+
+    // Filter remaining units (not connected to this ingredient)
+    const remainingUnits = allUnits
+      .filter((unit: any) => 
+        !connectedIngredientUnits.some(
+          (connectedUnit: any) => connectedUnit.value === unit.unit_uuid
+        ))
+      .map((unit: any) => ({
+        label: unit.unit_name,
+        value: unit.unit_uuid,
+      }));
+
+    return [
+      {
+        label: "Connected Units",
+        options: connectedIngredientUnits,
+      },
+      {
+        label: "Other Units",
+        options: remainingUnits,
+      },
+    ];
+  } catch (error) {
+    console.error("Error fetching units:", error);
+    return [];
+  }
+};
 
 interface OrderModalProps {
   order: Order | null;
@@ -442,20 +468,37 @@ export default function OrderModal({
                           value={
                             item.unit?.unit_name
                               ? {
-                                  value: item.unit.unit_name,
+                                  value: item.unit.unit_uuid,
                                   label: item.unit.unit_name,
                                 }
                               : null
                           }
-                          onChange={(values) => {
-                            if (values[0]) {
+                          onChange={(option) => {
+                            if (option) {
                               updateItem(index, "unit", {
-                                unit_name: values[0],
-                                unit_uuid: values[0],
+                                unit_name: option.label,
+                                unit_uuid: option.value,
                               });
                             }
                           }}
-                          options={defaultUnits}
+                          options={
+                            item.ingredient_uuid && editedOrder.supplier?.supplier_uuid
+                              ? useQuery({
+                                  queryKey: [
+                                    "units",
+                                    currentRestaurant?.restaurant_uuid,
+                                    editedOrder.supplier?.supplier_uuid,
+                                    item.ingredient_uuid,
+                                  ],
+                                  queryFn: () =>
+                                    getUnitOptions(
+                                      currentRestaurant?.restaurant_uuid || "",
+                                      editedOrder.supplier?.supplier_uuid || "",
+                                      item.ingredient_uuid || ""
+                                    ),
+                                }).data || []
+                              : []
+                          }
                           onCreateOption={(value) => {
                             updateItem(index, "unit", {
                               unit_name: value,
