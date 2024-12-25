@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import RecipeSheet from "@/components/menu/RecipeSheet";
+import PreparationSheet from "@/components/menu/PreparationSheet";
 import { Badge } from "@/components/ui/badge";
 import { menuService } from "@/services/menuService";
 import { type Preparation } from "@/types/menu";
@@ -122,7 +122,7 @@ export default function Preparations() {
         <h2 className="text-2xl font-semibold">Preparations</h2>
         <div className="flex items-center gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
-          <Button>
+          <Button onClick={() => setEditingPreparation({})}>
             <PlusCircle className="mr-2 h-4 w-4" />
             New Preparation
           </Button>
@@ -183,15 +183,33 @@ export default function Preparations() {
         )}
       </div>
 
-      <RecipeSheet
+      <PreparationSheet
         open={!!editingPreparation}
         onOpenChange={(open) => {
           if (!open) setEditingPreparation(null);
         }}
-        product={editingPreparation || undefined}
-        onSubmit={(data) => {
-          console.log("Updated preparation:", data);
-          setEditingPreparation(null);
+        preparation={editingPreparation || undefined}
+        onSubmit={async (data) => {
+          try {
+            if (!currentRestaurant?.restaurant_uuid) {
+              throw new Error("No restaurant selected");
+            }
+
+            if (editingPreparation?.preparation_uuid) {
+              await menuService.updatePreparation(
+                currentRestaurant.restaurant_uuid,
+                data,
+              );
+            } else {
+              await menuService.createPreparation(
+                currentRestaurant.restaurant_uuid,
+                data,
+              );
+            }
+            setEditingPreparation(null);
+          } catch (error) {
+            console.error("Failed to save preparation:", error);
+          }
         }}
       />
     </div>
