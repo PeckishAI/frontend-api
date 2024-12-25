@@ -470,10 +470,10 @@ export default function RecipeSheet({
                         <FormControl>
                           <CreatableSelect
                             value={
-                              field.ingredient_name
+                              field.value
                                 ? {
-                                    value: field.ingredient_uuid || "",
-                                    label: field.ingredient_name || "",
+                                    value: field.value.ingredient_uuid || "",
+                                    label: field.value.ingredient_name || "",
                                   }
                                 : null
                             }
