@@ -205,8 +205,7 @@ export default function RecipeSheet({
     resolver: zodResolver(productSchema),
     defaultValues: {
       portion_count: 1,
-      product_ingredients: product?.product_ingredients || [],
-      ...product,
+      ...(product || {}),
     },
   });
 
