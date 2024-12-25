@@ -119,6 +119,17 @@ const useIngredientOptions = (restaurantUuid?: string) => {
     : [];
 };
 
+const usePreparationOptions = (restaurantUuid?: string) => {
+  const { data: preparations } = useQuery({
+    queryKey: ["preparations", restaurantUuid],
+    queryFn: () => {
+      if (!restaurantUuid) return [];
+      return menuService.getRestaurantPreparations(restaurantUuid);
+    },
+  });
+  return preparations || [];
+};
+
 const useUnitOptions = (restaurantUuid?: string) => {
   const { data: units } = useQuery({
     queryKey: ["units", restaurantUuid],
