@@ -32,14 +32,17 @@ export function RestaurantSelector({
     queryKey: ["restaurants"],
     queryFn: restaurantService.getRestaurants,
     onSuccess: (fetchedData) => {
-      if (fetchedData.length > 0) {
+      if (fetchedData.length > 0 && !currentRestaurant) {
         setCurrentRestaurant(fetchedData[0]);
       }
       setIsLoading(false);
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Failed to fetch restaurants:", error);
       setIsLoading(false);
-    }
+    },
+    retry: 2,
+    staleTime: 30000
   });
 
   if (isLoading) {
