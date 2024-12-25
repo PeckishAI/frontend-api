@@ -454,18 +454,18 @@ export default function RecipeSheet({
                         <FormControl>
                           <CreatableSelect
                             value={
-                              field.value?.ingredient_uuid
+                              field.value?.ingredient_name
                                 ? {
-                                    value: field.value.ingredient_uuid,
-                                    label: field.value.ingredient_name,
+                                    value: field.value?.ingredient_uuid || "",
+                                    label: field.value?.ingredient_name || "",
                                   }
                                 : null
                             }
                             onChange={(option) => {
                               if (option) {
                                 field.onChange({
-                                  id: option.value,
-                                  name: option.label,
+                                  ingredient_uuid: option.value,
+                                  ingredient_name: option.label,
                                 });
                               }
                             }}
@@ -526,7 +526,7 @@ export default function RecipeSheet({
                               field.value
                                 ? {
                                     value: field.value,
-                                    label: field.value,
+                                    label: ingredients[index]?.recipe_unit?.unit_name || field.value,
                                   }
                                 : null
                             }
