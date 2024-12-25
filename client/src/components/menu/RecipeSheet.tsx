@@ -71,17 +71,17 @@ const useIngredientAndPrepOptions = (restaurantUuid?: string) => {
       options: (ingredients || []).map((ing: any) => ({
         label: ing.ingredient_name,
         value: ing.ingredient_uuid,
-        type: "ingredient"
-      }))
+        type: "ingredient",
+      })),
     },
     {
-      label: "Preparations", 
+      label: "Preparations",
       options: (preparations || []).map((prep: any) => ({
         label: prep.preparation_name,
         value: prep.preparation_uuid,
-        type: "preparation"
-      }))
-    }
+        type: "preparation",
+      })),
+    },
   ];
 };
 
@@ -97,7 +97,7 @@ const useUnitOptions = (restaurantUuid?: string) => {
   return (units || []).map((unit: any) => ({
     label: unit.unit_name,
     value: unit.unit_uuid,
-    category: unit.category || "custom"
+    category: unit.category || "custom",
   }));
 };
 
@@ -110,16 +110,18 @@ const usePreparationOptions = (restaurantUuid?: string) => {
     },
   });
   return preparations || [];
-}
+};
 
 const productSchema = z.object({
   product_uuid: z.string().optional(),
   product_name: z.string().min(1, "Name is required"),
-  category: z.object({
-    value: z.string(),
-    label: z.string(),
-    emoji: z.string(),
-  }),
+  category: z
+    .object({
+      category_uuid: z.string().optional(),
+      category_name: z.string().optional(),
+      emoji: z.string().optional(),
+    })
+    .optional(),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
   portion_price: z.number().optional(),
   portion_cost: z.number().optional(),
@@ -142,7 +144,8 @@ const productSchema = z.object({
         unit_cost: z.number().optional(),
         total_cost: z.number().optional(),
       }),
-    ).optional(),
+    )
+    .optional(),
   product_preparations: z
     .array(
       z.object({
@@ -162,7 +165,8 @@ const productSchema = z.object({
         unit_cost: z.number().optional(),
         total_cost: z.number().optional(),
       }),
-    ).optional(),
+    )
+    .optional(),
 });
 
 type Product = z.infer<typeof productSchema>;
@@ -187,13 +191,8 @@ export default function RecipeSheet({
     resolver: zodResolver(productSchema),
     defaultValues: {
       portion_count: 1,
-      category: product?.category || {
-        value: "mains",
-        label: "Main Dishes",
-        emoji: "🍽️"
-      },
       product_ingredients: product?.product_ingredients || [],
-      ...product
+      ...product,
     },
   });
 
@@ -243,31 +242,31 @@ export default function RecipeSheet({
                   throw new Error("No restaurant selected");
                 }
 
-                const productData = {
-                  product_uuid: product?.product_uuid,
-                  product_name: data.product_name,
-                  portion_count: data.portion_count,
-                  portion_price: data.portion_price,
-                  portion_cost: data.portion_cost,
-                  product_ingredients: data.product_ingredients.map((ing) => ({
-                    ingredient_uuid: ing.ingredient_uuid || undefined,
-                    ingredient_name: ing.ingredient_name,
-                    quantity: ing.quantity,
-                    recipe_unit: {
-                      unit_name: ing.recipe_unit.unit_name,
-                    },
-                  })),
-                };
+                //const productData = {
+                //  product_uuid: product?.product_uuid,
+                //  product_name: data.product_name,
+                //  portion_count: data.portion_count,
+                //  portion_price: data.portion_price,
+                //  portion_cost: data.portion_cost,
+                //  product_ingredients: data.product_ingredients.map((ing) => ({
+                //    ingredient_uuid: ing.ingredient_uuid || undefined,
+                //    ingredient_name: ing.ingredient_name,
+                //    quantity: ing.quantity,
+                //    recipe_unit: {
+                //      unit_name: ing.recipe_unit.unit_name,
+                //    },
+                //  })),
+                //};
 
                 if (product) {
                   await menuService.updateProduct(
                     currentRestaurant.restaurant_uuid,
-                    productData,
+                    product,
                   );
                 } else {
                   await menuService.createProduct(
                     currentRestaurant.restaurant_uuid,
-                    productData,
+                    product,
                   );
                 }
 
@@ -305,17 +304,17 @@ export default function RecipeSheet({
                         className="w-12"
                         onClick={() => setShowEmojiPicker(true)}
                       >
-                        {field.value.emoji}
+                        {field.value?.emoji}
                       </Button>
                       <Select
-                        value={field.value.value}
+                        value={field.value?.emoji}
                         onValueChange={(value) => {
                           const category = defaultCategories.find(
                             (c) => c.value === value,
                           ) || {
                             value,
                             label: value,
-                            emoji: field.value.emoji,
+                            emoji: field.value?.emoji,
                           };
                           field.onChange(category);
                         }}
@@ -323,7 +322,7 @@ export default function RecipeSheet({
                         <FormControl>
                           <SelectTrigger className="flex-1">
                             <SelectValue>
-                              <span>{field.value.label}</span>
+                              <span>{field.value?.category_name}</span>
                             </SelectValue>
                           </SelectTrigger>
                         </FormControl>

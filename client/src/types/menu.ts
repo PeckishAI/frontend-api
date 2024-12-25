@@ -3,6 +3,12 @@ export interface Unit {
   unit_name?: string;
 }
 
+export interface Category {
+  category_uuid?: string;
+  category_name?: string;
+  emoji?: string;
+}
+
 export interface ProductIngredient {
   uuid?: string;
   ingredient_uuid?: string;
@@ -30,6 +36,7 @@ export interface ProductPreparation {
 export interface Product {
   product_uuid?: string;
   product_name?: string;
+  category?: Category;
   portion_count?: number;
   portion_price?: number;
   portion_cost?: number;
