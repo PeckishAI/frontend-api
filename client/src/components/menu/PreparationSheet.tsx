@@ -537,7 +537,7 @@ export default function PreparationSheet({
               </div>
             </div>
 
-            
+            {preparations.map((preparation, index) => (
                 <div
                   key={index}
                   className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end"
