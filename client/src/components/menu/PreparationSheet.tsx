@@ -335,19 +335,44 @@ export default function PreparationSheet({
             <div className="space-y-8">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium">Ingredients</h3>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addIngredient}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Ingredient
-                  </Button>
+                  <h3 className="text-lg font-medium">Recipe Components</h3>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addIngredient}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Ingredient
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const currentPreparations = form.getValues("preparation_preparations") || [];
+                        form.setValue("preparation_preparations", [
+                          ...currentPreparations,
+                          {
+                            preparation_name: "",
+                            quantity: 0,
+                            base_unit: { unit_name: "" },
+                            recipe_unit: { unit_name: "" },
+                            base_to_recipe: 1,
+                            unit_cost: 0,
+                            total_cost: 0
+                          },
+                        ]);
+                      }}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Preparation
+                    </Button>
+                  </div>
                 </div>
 
-                {ingredients.map((ingredient, index) => (
+                {[...ingredients, ...preparations].map((component, index) => (
                   <div
                     key={index}
                     className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end"
@@ -512,35 +537,7 @@ export default function PreparationSheet({
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium">Preparations</h3>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    const currentPreparations = form.getValues("preparation_preparations") || [];
-                    form.setValue("preparation_preparations", [
-                      ...currentPreparations,
-                      {
-                        preparation_name: "",
-                        quantity: 0,
-                        base_unit: { unit_name: "" },
-                        recipe_unit: { unit_name: "" },
-                        base_to_recipe: 1,
-                        unit_cost: 0,
-                        total_cost: 0
-                      },
-                    ]);
-                  }}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Preparation
-                </Button>
-              </div>
-
-              {preparations.map((preparation, index) => (
+            
                 <div
                   key={index}
                   className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end"
