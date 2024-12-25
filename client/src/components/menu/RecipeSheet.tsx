@@ -191,7 +191,8 @@ export default function RecipeSheet({
         value: "mains",
         label: "Main Dishes",
         emoji: "🍽️"
-      }
+      },
+      product_ingredients: []
     },
   });
 
