@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Preparations from "./Preparations";
 import { Button } from "@/components/ui/button";
 import {
   PlusCircle,
@@ -217,11 +218,7 @@ export default function Menu() {
           </div>
         )}
 
-        {activeSection === "preparations" && (
-          <div className="bg-white rounded-lg shadow overflow-hidden p-6">
-            <p className="text-gray-600">Preparations section coming soon...</p>
-          </div>
-        )}
+        {activeSection === "preparations" && <Preparations />}
       </div>
 
       <RecipeSheet
