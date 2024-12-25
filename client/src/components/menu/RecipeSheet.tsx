@@ -777,19 +777,19 @@ export default function RecipeSheet({
                   </div>
                 ))}
               </div>
-            </div>
 
-            <div className="flex justify-end gap-4 pt-6">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit">
-                {product ? "Save changes" : "Create recipe"}
-              </Button>
+              <div className="flex justify-end gap-4 pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  {product ? "Save changes" : "Create recipe"}
+                </Button>
+              </div>
             </div>
           </form>
         </Form>
