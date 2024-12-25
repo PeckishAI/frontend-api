@@ -86,7 +86,6 @@ export const unitService = {
       }
 
       const result = await response.json();
-      console.log("Unit Created : ", result.data);
       if (!result.success) {
         throw new Error("Failed to create unit");
       }

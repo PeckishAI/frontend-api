@@ -200,7 +200,6 @@ export default function RecipeSheet({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const queryClient = useQueryClient();
   const { currentRestaurant } = useRestaurantContext();
-  console.log("Restaurant: ", currentRestaurant);
 
   const form = useForm<Product>({
     resolver: zodResolver(productSchema),
