@@ -52,71 +52,68 @@ export const defaultCategories = [
 const useIngredientAndPrepOptions = (restaurantUuid?: string) => {
   const { data: ingredients } = useQuery({
     queryKey: ["ingredients", restaurantUuid],
-    queryFn: () => {
+    queryFn: async () => {
       if (!restaurantUuid) return [];
-      return inventoryService.getRestaurantIngredients(restaurantUuid);
+      const data = await inventoryService.getRestaurantIngredients(restaurantUuid);
+      return data;
     },
     enabled: !!restaurantUuid,
   });
 
   const { data: preparations } = useQuery({
     queryKey: ["preparations", restaurantUuid],
-    queryFn: () => {
+    queryFn: async () => {
       if (!restaurantUuid) return [];
-      return menuService.getRestaurantPreparations(restaurantUuid);
+      const data = await menuService.getRestaurantPreparations(restaurantUuid);
+      return data;
     },
     enabled: !!restaurantUuid,
   });
 
-  const formattedIngredients = {
-    label: "Ingredients",
-    options: Object.values(ingredients || {}).map((ing: any) => ({
-      label: ing.ingredient_name,
-      value: ing.ingredient_uuid,
-      type: "ingredient",
-    })),
-  };
+  const options = [
+    {
+      label: "Ingredients",
+      options: ingredients ? Object.values(ingredients).map((ing: any) => ({
+        label: ing.ingredient_name,
+        value: ing.ingredient_uuid,
+        type: "ingredient",
+      })) : [],
+    },
+    {
+      label: "Preparations",
+      options: preparations ? preparations.map((prep: any) => ({
+        label: prep.preparation_name,
+        value: prep.preparation_uuid,
+        type: "preparation",
+      })) : [],
+    }
+  ];
 
-  const formattedPreparations = {
-    label: "Preparations",
-    options: (preparations || []).map((prep: any) => ({
-      label: prep.preparation_name,
-      value: prep.preparation_uuid,
-      type: "preparation",
-    })),
-  };
-
-  return [formattedIngredients, formattedPreparations];
+  return options;
 };
 
 const useUnitOptions = (restaurantUuid?: string) => {
   const { data: units } = useQuery({
     queryKey: ["units", restaurantUuid],
-    queryFn: () => {
+    queryFn: async () => {
       if (!restaurantUuid) return [];
-      return unitService.getRestaurantUnit(restaurantUuid);
+      const data = await unitService.getRestaurantUnit(restaurantUuid);
+      return data;
     },
+    enabled: !!restaurantUuid,
   });
-  console.log("Unit options: ", units);
 
-  // Group units by category
-  const groupedUnits = (units || []).reduce((acc: any, unit: any) => {
-    const category = unit.category || "Custom";
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push({
-      label: unit.unit_name,
-      value: unit.unit_uuid,
-    });
-    return acc;
-  }, {});
+  if (!units) return [];
 
-  // Convert to format expected by CreatableSelect
-  return Object.entries(groupedUnits).map(([category, options]) => ({
-    label: category,
-    options: options,
+  const allUnits = units.map((unit: any) => ({
+    label: unit.unit_name,
+    value: unit.unit_uuid,
   }));
+
+  return [{
+    label: "All Units",
+    options: allUnits
+  }];
 };
 
 const usePreparationOptions = (restaurantUuid?: string) => {
