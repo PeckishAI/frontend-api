@@ -85,8 +85,6 @@ const getUnitOptions = async (
   }
 };
 
-console.log("getUnitOptions", getUnitOptions);
-
 interface OrderModalProps {
   order: Order | null;
   onClose: () => void;
@@ -103,7 +101,6 @@ export default function OrderModal({
   if (!order) return null;
 
   const [editedOrder, setEditedOrder] = useState<Order>(order);
-  console.log("editedOrder", editedOrder);
   const { currentRestaurant } = useRestaurantContext();
 
   const { data: suppliers, isLoading: suppliersLoading } = useQuery({
@@ -362,16 +359,22 @@ export default function OrderModal({
               <div className="flex flex-col gap-2">
                 <label className="text-sm text-gray-600">Date</label>
                 <Input
-                    type="date"
-                    value={editedOrder.delivery_date ? new Date(editedOrder.delivery_date).toISOString().split('T')[0] : ''}
-                    onChange={(e) =>
-                      setEditedOrder({
-                        ...editedOrder,
-                        delivery_date: e.target.value,
-                      })
-                    }
-                    disabled={!editMode}
-                  />
+                  type="date"
+                  value={
+                    editedOrder.delivery_date
+                      ? new Date(editedOrder.delivery_date)
+                          .toISOString()
+                          .split("T")[0]
+                      : ""
+                  }
+                  onChange={(e) =>
+                    setEditedOrder({
+                      ...editedOrder,
+                      delivery_date: e.target.value,
+                    })
+                  }
+                  disabled={!editMode}
+                />
               </div>
             </div>
 
@@ -488,12 +491,14 @@ export default function OrderModal({
                             }
                           }}
                           options={(() => {
-                            if (!currentRestaurant?.restaurant_uuid ||
-                                !editedOrder.supplier?.supplier_uuid ||
-                                !item.ingredient_uuid) {
+                            if (
+                              !currentRestaurant?.restaurant_uuid ||
+                              !editedOrder.supplier?.supplier_uuid ||
+                              !item.ingredient_uuid
+                            ) {
                               return [];
                             }
-                            
+
                             const { data } = useQuery({
                               queryKey: [
                                 "units",
@@ -511,14 +516,20 @@ export default function OrderModal({
 
                             // Filter out categories with no options and customize labels
                             const filteredCategories = (data || []).filter(
-                              (category) => category.options && category.options.length > 0
+                              (category) =>
+                                category.options && category.options.length > 0,
                             );
 
                             // Only show categories that actually have options
-                            return filteredCategories.map(category => ({
-                              ...category,
-                              label: category.options.length > 0 ? category.label : null
-                            })).filter(category => category.label !== null);
+                            return filteredCategories
+                              .map((category) => ({
+                                ...category,
+                                label:
+                                  category.options.length > 0
+                                    ? category.label
+                                    : null,
+                              }))
+                              .filter((category) => category.label !== null);
                           })()}
                           onCreateOption={(value) => {
                             updateItem(index, "unit", {

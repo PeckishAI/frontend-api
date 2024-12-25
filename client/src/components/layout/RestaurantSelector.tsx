@@ -2,8 +2,19 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { restaurantService } from "@/services/restaurantService";
 import { ChevronDown, Plus, Settings } from "lucide-react";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -20,7 +31,8 @@ export function RestaurantSelector({
   onManageRestaurants,
 }: RestaurantSelectorProps) {
   const [open, setOpen] = useState(false);
-  const { currentRestaurant, setCurrentRestaurant, setIsLoading } = useRestaurantContext();
+  const { currentRestaurant, setCurrentRestaurant, setIsLoading } =
+    useRestaurantContext();
   const queryClient = useQueryClient();
 
   const handleRestaurantChange = (restaurant: Restaurant) => {
@@ -30,19 +42,14 @@ export function RestaurantSelector({
 
   const { data: restaurants = [], isLoading } = useQuery({
     queryKey: ["restaurants"],
-    queryFn: restaurantService.getRestaurants,
-    onSuccess: (fetchedData) => {
-      if (fetchedData.length > 0 && !currentRestaurant) {
-        setCurrentRestaurant(fetchedData[0]);
+    queryFn: async () => {
+      const restaurants = await restaurantService.getRestaurants();
+      if (restaurants.length > 0 && !currentRestaurant) {
+        setCurrentRestaurant(restaurants[0]);
       }
       setIsLoading(false);
+      return restaurants;
     },
-    onError: (error) => {
-      console.error("Failed to fetch restaurants:", error);
-      setIsLoading(false);
-    },
-    retry: 2,
-    staleTime: 30000
   });
 
   if (isLoading) {
@@ -62,7 +69,10 @@ export function RestaurantSelector({
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8">
               {currentRestaurant?.logo_url ? (
-                <AvatarImage src={currentRestaurant.logo_url} alt={currentRestaurant.name} />
+                <AvatarImage
+                  src={currentRestaurant.logo_url}
+                  alt={currentRestaurant.name}
+                />
               ) : (
                 <AvatarFallback>
                   {currentRestaurant?.name?.[0]?.toUpperCase() || ""}
@@ -93,18 +103,24 @@ export function RestaurantSelector({
                 >
                   <Avatar className="h-8 w-8">
                     {restaurant.logo_url ? (
-                      <AvatarImage src={restaurant.logo_url} alt={restaurant.name} />
+                      <AvatarImage
+                        src={restaurant.logo_url}
+                        alt={restaurant.name}
+                      />
                     ) : (
-                      <AvatarFallback>{restaurant.name[0].toUpperCase()}</AvatarFallback>
+                      <AvatarFallback>
+                        {restaurant.name[0].toUpperCase()}
+                      </AvatarFallback>
                     )}
                   </Avatar>
                   <span>{restaurant.name}</span>
                   <span
                     className={cn(
                       "ml-auto",
-                      restaurant.restaurant_uuid === currentRestaurant?.restaurant_uuid
+                      restaurant.restaurant_uuid ===
+                        currentRestaurant?.restaurant_uuid
                         ? "opacity-100"
-                        : "opacity-0"
+                        : "opacity-0",
                     )}
                   >
                     ✓
