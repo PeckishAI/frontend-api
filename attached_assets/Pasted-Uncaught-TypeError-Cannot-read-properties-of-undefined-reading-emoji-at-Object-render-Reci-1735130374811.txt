@@ -1,0 +1,48 @@
+Uncaught TypeError: Cannot read properties of undefined (reading 'emoji')
+    at Object.render (RecipeSheet.tsx:306:38)
+
+RecipeSheet.tsx:306 Uncaught TypeError: Cannot read properties of undefined (reading 'emoji')
+    at Object.render (RecipeSheet.tsx:306:38)
+chunk-C43VWYGG.js?v=a3232ce5:14016 The above error occurred in the <Controller> component:
+
+    at Controller (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-ZEF6PIFK.js?v=a3232ce5:313:35)
+    at FormField (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/ui/form.tsx:32:6)
+    at div
+    at form
+    at FormProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-ZEF6PIFK.js?v=a3232ce5:102:11)
+    at div
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:254:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:283:7
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:540:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:521:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:618:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:637:5
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…nner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1772:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…nner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1695:58
+    at Presence (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…nner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1012:11)
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…nner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1686:64
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:900:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:881:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:978:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:994:22
+    at Presence (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…nner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1012:11)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-XUAN5KW6.js?v=a3232ce5:38:15)
+    at DialogPortal (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…nner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1649:11)
+    at _c3 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/ui/sheet.tsx:66:12)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-XUAN5KW6.js?v=a3232ce5:38:15)
+    at Dialog (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1590:5)
+    at RecipeSheet (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/menu/RecipeSheet.tsx?t=1735130278228:187:3)
+    at div
+    at Menu (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/pages/Menu.tsx?t=1735130278228:47:45)
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=a3232ce5:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=a3232ce5:247:17)
+    at div
+    at RestaurantProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/contexts/RestaurantContext.tsx:20:38)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=a3232ce5:2805:3)
+    at App
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=a3232ce5:2805:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+chunk-C43VWYGG.js?v=a3232ce5:9129 Uncaught TypeError: Cannot read properties of undefined (reading 'emoji')
+    at Object.render (RecipeSheet.tsx:306:38)
