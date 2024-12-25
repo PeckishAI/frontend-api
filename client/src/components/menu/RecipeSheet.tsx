@@ -438,21 +438,23 @@ export default function RecipeSheet({
               </FormItem>
             </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium">Ingredients</h3>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addIngredient}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Ingredient
-                </Button>
-              </div>
+            <div className="space-y-8">
+              {/* Ingredients Section */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium">Ingredients</h3>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addIngredient}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Ingredient
+                  </Button>
+                </div>
 
-              {ingredients.map((ingredient, index) => (
+                {ingredients.map((ingredient, index) => (
                 <div
                   key={index}
                   className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end"
@@ -616,6 +618,167 @@ export default function RecipeSheet({
                   </Button>
                 </div>
               ))}
+              </div>
+
+              {/* Preparations Section */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium">Preparations</h3>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const currentPreparations = form.getValues("product_preparations") || [];
+                      form.setValue("product_preparations", [
+                        ...currentPreparations,
+                        { preparation_name: "", quantity: 0 },
+                      ]);
+                    }}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Preparation
+                  </Button>
+                </div>
+
+                {(form.watch("product_preparations") || []).map((preparation, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end"
+                  >
+                    <FormField
+                      control={form.control}
+                      name={`product_preparations.${index}.preparation_name`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                            Name
+                          </FormLabel>
+                          <FormControl>
+                            <CreatableSelect
+                              value={
+                                field.value
+                                  ? {
+                                      value: preparation.preparation_uuid || "",
+                                      label: field.value || "",
+                                    }
+                                  : null
+                              }
+                              onChange={(option) => {
+                                if (option) {
+                                  field.onChange(option.label);
+                                  form.setValue(`product_preparations.${index}.preparation_uuid`, option.value);
+                                }
+                              }}
+                              options={usePreparationOptions(currentRestaurant?.restaurant_uuid)}
+                              placeholder=""
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={`product_preparations.${index}.quantity`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                            Quantity
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min={0}
+                              step="any"
+                              {...field}
+                              onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={`product_preparations.${index}.recipe_unit.unit_uuid`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                            Unit
+                          </FormLabel>
+                          <FormControl>
+                            <CreatableSelect
+                              value={
+                                field.value
+                                  ? {
+                                      value: field.value,
+                                      label: preparation.recipe_unit?.unit_name || field.value,
+                                    }
+                                  : null
+                              }
+                              onChange={(option) => {
+                                if (option) {
+                                  field.onChange(option.value);
+                                }
+                              }}
+                              options={useUnitOptions(currentRestaurant?.restaurant_uuid)}
+                              placeholder=""
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={`product_preparations.${index}.base_to_recipe`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className={index !== 0 ? "sr-only" : undefined}>
+                            Factor
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min={0}
+                              step="any"
+                              placeholder="Conv. factor"
+                              {...field}
+                              onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="flex items-center">
+                      <span className="text-sm text-muted-foreground">
+                        $
+                        {(
+                          (form.watch(`product_preparations.${index}.quantity`) || 0) *
+                          (form.watch(`product_preparations.${index}.base_to_recipe`) || 0)
+                        ).toFixed(2)}
+                      </span>
+                    </div>
+
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        const currentPreparations = form.getValues("product_preparations");
+                        form.setValue(
+                          "product_preparations",
+                          currentPreparations.filter((_, i) => i !== index)
+                        );
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="flex justify-end gap-4 pt-6">
