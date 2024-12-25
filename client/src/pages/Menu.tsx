@@ -66,9 +66,10 @@ export default function Menu() {
               <CardTitle className="text-lg">{product.product_name}</CardTitle>
             </div>
             <Badge variant="secondary" className="flex items-center gap-1">
-              <TagIcon className="h-3 w-3" />
+              {/* <TagIcon className="h-3 w-3" /> */}
               {/* TODO: Add category to Product type */}
-              Menu Item
+              {product.category?.emoji}
+              {product.category?.category_name}
             </Badge>
           </div>
         </CardHeader>

@@ -4,7 +4,10 @@ import { config } from "../config/config";
 const BASE_URL = config.apiBaseUrl;
 
 export const menuService = {
-  async createProduct(restaurantUuid: string, product: Partial<Product>): Promise<Product> {
+  async createProduct(
+    restaurantUuid: string,
+    product: Partial<Product>,
+  ): Promise<Product> {
     try {
       const response = await fetch(
         `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/products`,
@@ -32,7 +35,10 @@ export const menuService = {
     }
   },
 
-  async updateProduct(restaurantUuid: string, product: Partial<Product>): Promise<Product> {
+  async updateProduct(
+    restaurantUuid: string,
+    product: Partial<Product>,
+  ): Promise<Product> {
     try {
       const response = await fetch(
         `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/products/${product.product_uuid}`,
