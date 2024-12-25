@@ -226,6 +226,8 @@ export default function RecipeSheet({
   }, [product, form]);
 
   const ingredients = form.watch("product_ingredients") || [];
+  const preparations = form.watch("product_preparations") || [];
+  const recipeComponents = [...ingredients, ...preparations];
 
   const addIngredient = () => {
     const currentIngredients = form.getValues("product_ingredients") || [];
@@ -479,8 +481,8 @@ export default function RecipeSheet({
                   </div>
                 </div>
 
-                {/* Ingredients */}
-                {ingredients.map((ingredient, index) => (
+                {/* Recipe Components */}
+                {recipeComponents.map((component, index) => (
                   <div
                     key={index}
                     className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end"
