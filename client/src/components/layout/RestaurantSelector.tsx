@@ -32,7 +32,7 @@ export function RestaurantSelector({
     queryKey: ["restaurants"],
     queryFn: restaurantService.getRestaurants,
     onSuccess: (fetchedData) => {
-      if (fetchedData.length > 0 && !currentRestaurant?.restaurant_uuid) {
+      if (fetchedData.length > 0) {
         setCurrentRestaurant(fetchedData[0]);
       }
       setIsLoading(false);
