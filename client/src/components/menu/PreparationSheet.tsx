@@ -699,19 +699,18 @@ export default function PreparationSheet({
                   </Button>
                 </div>
               ))}
-            </div>
-
-            <div className="flex justify-end gap-4 pt-6">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit">
-                {preparation ? "Save changes" : "Create preparation"}
-              </Button>
+              <div className="flex justify-end gap-4 pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  {preparation ? "Save changes" : "Create preparation"}
+                </Button>
+              </div>
             </div>
           </form>
         </Form>
