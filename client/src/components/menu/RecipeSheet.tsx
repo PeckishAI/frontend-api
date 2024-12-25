@@ -506,14 +506,8 @@ export default function RecipeSheet({
                                   if (option) {
                                     const isPreparation =
                                       option.type === "preparation";
-                                    field.onChange({
-                                      [isPreparation
-                                        ? "preparation_uuid"
-                                        : "ingredient_uuid"]: option.value,
-                                      [isPreparation
-                                        ? "preparation_name"
-                                        : "ingredient_name"]: option.label,
-                                    });
+                                    field.onChange(option.label);
+                                    form.setValue(`${fieldPrefix}.${index}.${isPreparation ? "preparation_uuid" : "ingredient_uuid"}`, option.value);
                                   }
                                 }}
                                 options={useIngredientAndPrepOptions(
