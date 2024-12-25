@@ -187,6 +187,11 @@ export default function RecipeSheet({
     resolver: zodResolver(productSchema),
     defaultValues: {
       portion_count: 1,
+      category: {
+        value: "mains",
+        label: "Main Dishes",
+        emoji: "🍽️"
+      }
     },
   });
 
