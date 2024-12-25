@@ -482,14 +482,19 @@ export default function RecipeSheet({
                 </div>
 
                 {/* Recipe Components */}
-                {recipeComponents.map((component, index) => (
-                  <div
-                    key={index}
-                    className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end"
-                  >
-                    <FormField
-                      control={form.control}
-                      name={`product_ingredients.${index}.ingredient_name`}
+                {recipeComponents.map((component, index) => {
+                  const isPreparation = 'preparation_uuid' in component;
+                  const fieldPrefix = isPreparation ? 'product_preparations' : 'product_ingredients';
+                  const nameField = isPreparation ? 'preparation_name' : 'ingredient_name';
+                  
+                  return (
+                    <div
+                      key={index}
+                      className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end"
+                    >
+                      <FormField
+                        control={form.control}
+                        name={`${fieldPrefix}.${index}.${nameField}`}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel
@@ -500,18 +505,12 @@ export default function RecipeSheet({
                           <FormControl>
                             <CreatableSelect
                               value={
-                                field.value &&
-                                (field.value.ingredient_uuid ||
-                                  field.value.preparation_uuid)
+                                field.value
                                   ? {
-                                      value:
-                                        field.value.ingredient_uuid ||
-                                        field.value.preparation_uuid ||
-                                        "",
-                                      label:
-                                        field.value.ingredient_name ||
-                                        field.value.preparation_name ||
-                                        "",
+                                      value: isPreparation 
+                                        ? component.preparation_uuid 
+                                        : component.ingredient_uuid || "",
+                                      label: field.value || "",
                                     }
                                   : null
                               }
