@@ -393,11 +393,7 @@ export default function PreparationSheet({
                   name={`preparation_ingredients.${index}.ingredient_name`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel
-                        className={index !== 0 ? "sr-only" : undefined}
-                      >
-                        Name
-                      </FormLabel>
+                      {index === 0 && <FormLabel>Name</FormLabel>}
                       <FormControl>
                         <CreatableSelect
                           value={
@@ -556,11 +552,7 @@ export default function PreparationSheet({
                   name={`preparation_preparations.${index}.preparation_name`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel
-                        className={index !== 0 ? "sr-only" : undefined}
-                      >
-                        Name
-                      </FormLabel>
+                      {index === 0 && <FormLabel>Name</FormLabel>}
                       <FormControl>
                         <CreatableSelect
                           value={
