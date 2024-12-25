@@ -684,14 +684,9 @@ export default function RecipeSheet({
                       <div className="flex items-center">
                         <span className="text-sm text-muted-foreground">
                           $
-                          {(
-                            (form.watch(
-                              `product_ingredients.${index}.quantity`,
-                            ) || 0) *
-                            (form.watch(
-                              `product_ingredients.${index}.base_to_recipe`,
-                            ) || 0)
-                          ).toFixed(2)}
+                          {(form.watch(
+                              `product_ingredients.${index}.total_cost`,
+                            ) || 0).toFixed(2)}
                         </span>
                       </div>
 
