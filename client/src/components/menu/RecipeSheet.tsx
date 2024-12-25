@@ -38,6 +38,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { menuService } from "@/services/menuService";
 import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { foodEmojis } from "@/lib/emojis";
 
 export const defaultCategories = [
@@ -64,6 +65,7 @@ const useIngredientAndPrepOptions = (restaurantUuid?: string) => {
       return menuService.getRestaurantPreparations(restaurantUuid);
     },
   });
+  console.log("preparations", preparations);
 
   return [
     {
@@ -93,6 +95,7 @@ const useUnitOptions = (restaurantUuid?: string) => {
       return unitService.getRestaurantUnit(restaurantUuid);
     },
   });
+  console.log("Unit options: ", units);
 
   // Group units by category
   const groupedUnits = (units || []).reduce((acc: any, unit: any) => {
@@ -189,16 +192,16 @@ export default function RecipeSheet({
   onOpenChange,
   product,
   onSubmit,
-  currentRestaurant,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   product?: Product;
   onSubmit: (data: Product) => void;
-  currentRestaurant?: { restaurant_uuid: string };
 }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const queryClient = useQueryClient();
+  const { currentRestaurant } = useRestaurantContext();
+  console.log("Restaurant: ", currentRestaurant);
 
   const form = useForm<Product>({
     resolver: zodResolver(productSchema),
@@ -467,10 +470,10 @@ export default function RecipeSheet({
                         <FormControl>
                           <CreatableSelect
                             value={
-                              field.value?.ingredient_name
+                              field.ingredient_name
                                 ? {
-                                    value: field.value?.ingredient_uuid || "",
-                                    label: field.value?.ingredient_name || "",
+                                    value: field.ingredient_uuid || "",
+                                    label: field.ingredient_name || "",
                                   }
                                 : null
                             }
@@ -491,7 +494,7 @@ export default function RecipeSheet({
                                 name: value,
                               });
                             }}
-                            placeholder="Select or add ingredient"
+                            placeholder=""
                           />
                         </FormControl>
                       </FormItem>
@@ -539,7 +542,9 @@ export default function RecipeSheet({
                               field.value
                                 ? {
                                     value: field.value,
-                                    label: ingredients[index]?.recipe_unit?.unit_name || field.value,
+                                    label:
+                                      ingredients[index]?.recipe_unit
+                                        ?.unit_name || field.value,
                                   }
                                 : null
                             }
@@ -554,7 +559,7 @@ export default function RecipeSheet({
                             onCreateOption={(value) => {
                               field.onChange(value);
                             }}
-                            placeholder="Select unit"
+                            placeholder=""
                           />
                         </FormControl>
                       </FormItem>

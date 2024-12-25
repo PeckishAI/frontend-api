@@ -58,11 +58,7 @@ export const unitService = {
       if (!result.success) {
         throw new Error("Failed to create unit");
       }
-      return result.data.map((unit: any) => ({
-        unit_uuid: unit.unit_uuid,
-        unit_name: unit.unit_name,
-        category: unit.unit_type || "customs",
-      }));
+      return result.data;
     } catch (error) {
       console.error("Failed to create unit:", error);
       throw error;
@@ -101,7 +97,10 @@ export const unitService = {
     }
   },
 
-  async getSupplierIngredientUnits(restaurantUuid: string, supplierUuid: string): Promise<any> {
+  async getSupplierIngredientUnits(
+    restaurantUuid: string,
+    supplierUuid: string,
+  ): Promise<any> {
     try {
       const response = await fetch(
         `${BASE_URL}/units/v2/restaurant/${restaurantUuid}/supplier/${supplierUuid}/ingredients`,
@@ -110,7 +109,7 @@ export const unitService = {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (!response.ok) {
