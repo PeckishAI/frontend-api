@@ -171,11 +171,12 @@ export default function PreparationSheet({
     form.reset(defaultValues);
   }, [preparation, form]);
 
-  const ingredients = form.watch("product_ingredients") || [];
+  const ingredients = form.watch("preparation_ingredients") || [];
+  const preparations = form.watch("preparation_preparations") || [];
 
   const addIngredient = () => {
-    const currentIngredients = form.getValues("product_ingredients") || [];
-    form.setValue("product_ingredients", [
+    const currentIngredients = form.getValues("preparation_ingredients") || [];
+    form.setValue("preparation_ingredients", [
       ...currentIngredients,
       {
         ingredient_name: "",
@@ -183,16 +184,30 @@ export default function PreparationSheet({
         base_unit: { unit_name: "" },
         recipe_unit: { unit_name: "" },
         base_to_recipe: 1,
+        unit_cost: 0,
+        total_cost: 0
       },
     ]);
   };
 
   const removeIngredient = (index: number) => {
-    const currentIngredients = form.getValues("product_ingredients");
+    const currentIngredients = form.getValues("preparation_ingredients");
     form.setValue(
-      "product_ingredients",
+      "preparation_ingredients",
       currentIngredients.filter((_, i) => i !== index),
     );
+    calculateTotalCost();
+  };
+
+  const calculateTotalCost = () => {
+    const ingredients = form.getValues("preparation_ingredients") || [];
+    const preparations = form.getValues("preparation_preparations") || [];
+    
+    const totalIngredientCost = ingredients.reduce((sum, ing) => sum + (ing.total_cost || 0), 0);
+    const totalPrepCost = preparations.reduce((sum, prep) => sum + (prep.total_cost || 0), 0);
+    const portionCount = form.getValues("portion_count") || 1;
+    
+    form.setValue("portion_cost", (totalIngredientCost + totalPrepCost) / portionCount);
   };
 
   return (
