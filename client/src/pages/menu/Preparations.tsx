@@ -70,7 +70,9 @@ export default function Preparations() {
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Layers className="h-4 w-4" />
               <span>
-                {preparation.product_ingredients?.length || 0} ingredients
+                {preparation.preparation_ingredients?.length +
+                  preparation.preparation_preparations?.length || 0}{" "}
+                ingredients
               </span>
             </div>
             <div className="grid grid-cols-3 gap-4 border-t pt-4">
@@ -160,7 +162,8 @@ export default function Preparations() {
                   >
                     <TableCell>{preparation.preparation_name}</TableCell>
                     <TableCell>
-                      {preparation.product_ingredients?.length || 0}
+                      {preparation.preparation_ingredients?.length +
+                        preparation.preparation_preparations?.length || 0}
                     </TableCell>
                     <TableCell className="text-right">
                       ${preparation.portion_cost?.toFixed(2) || "0.00"}

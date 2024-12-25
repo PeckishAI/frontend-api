@@ -75,6 +75,6 @@ export interface Preparation {
   portion_count?: number;
   portion_price?: number;
   portion_cost?: number;
-  product_ingredients?: PreparationIngredient[];
-  product_preparations?: PreparationPreparation[];
+  preparation_ingredients?: PreparationIngredient[];
+  preparation_preparations?: PreparationPreparation[];
 }

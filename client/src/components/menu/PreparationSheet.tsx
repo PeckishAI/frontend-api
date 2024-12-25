@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { useState } from "react";
 import {
@@ -55,12 +54,33 @@ const preparationSchema = z.object({
     .optional(),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
   portion_cost: z.number().optional(),
-  product_ingredients: z
+  preparation_ingredients: z
     .array(
       z.object({
         uuid: z.string().optional(),
         ingredient_uuid: z.string().optional(),
         ingredient_name: z.string().optional(),
+        quantity: z.number().min(0, "Quantity must be positive"),
+        base_unit: z.object({
+          unit_uuid: z.string().optional(),
+          unit_name: z.string().optional(),
+        }),
+        recipe_unit: z.object({
+          unit_uuid: z.string().optional(),
+          unit_name: z.string().optional(),
+        }),
+        base_to_recipe: z.number().optional(),
+        unit_cost: z.number().optional(),
+        total_cost: z.number().optional(),
+      }),
+    )
+    .optional(),
+  preparation_preparations: z
+    .array(
+      z.object({
+        uuid: z.string().optional(),
+        preparation_uuid: z.string().optional(),
+        preparation_name: z.string().optional(),
         quantity: z.number().min(0, "Quantity must be positive"),
         base_unit: z.object({
           unit_uuid: z.string().optional(),
@@ -308,7 +328,7 @@ export default function PreparationSheet({
                   >
                     <FormField
                       control={form.control}
-                      name={`product_ingredients.${index}.ingredient_name`}
+                      name={`preparation_ingredients.${index}.ingredient_name`}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel
@@ -330,7 +350,7 @@ export default function PreparationSheet({
                                 if (option) {
                                   field.onChange(option.label);
                                   form.setValue(
-                                    `product_ingredients.${index}.ingredient_uuid`,
+                                    `preparation_ingredients.${index}.ingredient_uuid`,
                                     option.value,
                                   );
                                 }
@@ -347,7 +367,7 @@ export default function PreparationSheet({
 
                     <FormField
                       control={form.control}
-                      name={`product_ingredients.${index}.quantity`}
+                      name={`preparation_ingredients.${index}.quantity`}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel
@@ -372,7 +392,7 @@ export default function PreparationSheet({
 
                     <FormField
                       control={form.control}
-                      name={`product_ingredients.${index}.recipe_unit.unit_uuid`}
+                      name={`preparation_ingredients.${index}.recipe_unit.unit_uuid`}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel
@@ -395,7 +415,7 @@ export default function PreparationSheet({
                               onChange={(option) => {
                                 if (option) {
                                   form.setValue(
-                                    `product_ingredients.${index}.recipe_unit`,
+                                    `preparation_ingredients.${index}.recipe_unit`,
                                     {
                                       unit_uuid: option.value,
                                       unit_name: option.label,
@@ -415,7 +435,7 @@ export default function PreparationSheet({
 
                     <FormField
                       control={form.control}
-                      name={`product_ingredients.${index}.base_to_recipe`}
+                      name={`preparation_ingredients.${index}.base_to_recipe`}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel
@@ -444,10 +464,10 @@ export default function PreparationSheet({
                         $
                         {(
                           (form.watch(
-                            `product_ingredients.${index}.quantity`,
+                            `preparation_ingredients.${index}.quantity`,
                           ) || 0) *
                           (form.watch(
-                            `product_ingredients.${index}.unit_cost`,
+                            `preparation_ingredients.${index}.unit_cost`,
                           ) || 0)
                         ).toFixed(2)}
                       </span>
