@@ -48,7 +48,7 @@ export const defaultCategories = [
   { value: "sides", label: "Side Dishes", emoji: "🥨" },
 ];
 
-const useIngredientOptions = (restaurantUuid?: string) => {
+const useIngredientAndPrepOptions = (restaurantUuid?: string) => {
   const { data: ingredients } = useQuery({
     queryKey: ["ingredients", restaurantUuid],
     queryFn: () => {
@@ -56,7 +56,33 @@ const useIngredientOptions = (restaurantUuid?: string) => {
       return inventoryService.getRestaurantIngredients(restaurantUuid);
     },
   });
-  return ingredients || [];
+
+  const { data: preparations } = useQuery({
+    queryKey: ["preparations", restaurantUuid],
+    queryFn: () => {
+      if (!restaurantUuid) return [];
+      return menuService.getRestaurantPreparations(restaurantUuid);
+    },
+  });
+
+  return [
+    {
+      label: "Ingredients",
+      options: (ingredients || []).map((ing: any) => ({
+        label: ing.ingredient_name,
+        value: ing.ingredient_uuid,
+        type: "ingredient"
+      }))
+    },
+    {
+      label: "Preparations", 
+      options: (preparations || []).map((prep: any) => ({
+        label: prep.preparation_name,
+        value: prep.preparation_uuid,
+        type: "preparation"
+      }))
+    }
+  ];
 };
 
 const useUnitOptions = (restaurantUuid?: string) => {
@@ -67,7 +93,12 @@ const useUnitOptions = (restaurantUuid?: string) => {
       return unitService.getRestaurantUnit(restaurantUuid);
     },
   });
-  return units || [];
+
+  return (units || []).map((unit: any) => ({
+    label: unit.unit_name,
+    value: unit.unit_uuid,
+    category: unit.category || "custom"
+  }));
 };
 
 const usePreparationOptions = (restaurantUuid?: string) => {
@@ -432,7 +463,7 @@ export default function RecipeSheet({
                                 });
                               }
                             }}
-                            options={useIngredientOptions(
+                            options={useIngredientAndPrepOptions(
                               currentRestaurant?.restaurant_uuid,
                             )}
                             onCreateOption={(value) => {
