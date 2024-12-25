@@ -382,6 +382,14 @@ export default function PreparationSheet({
                   </div>
                 </div>
 
+                <div className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 mb-4">
+                  <div>Name</div>
+                  <div>Quantity</div>
+                  <div>Unit</div>
+                  <div>Factor</div>
+                  <div>Total</div>
+                  <div></div>
+                </div>
                 {ingredients.map((ingredient, index) => (
                   <div
                     key={index}
@@ -547,6 +555,7 @@ export default function PreparationSheet({
               </div>
             </div>
 
+            {preparations.length > 0 && <div className="mt-6">Preparations</div>}
             {preparations.map((preparation, index) => (
               <div
                 key={index}
