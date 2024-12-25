@@ -502,12 +502,45 @@ export default function RecipeSheet({
                                       }
                                     : null
                                 }
-                                onChange={(option) => {
+                                onChange={async (option) => {
                                   if (option) {
-                                    const isPreparation =
-                                      option.type === "preparation";
+                                    const isPreparation = option.type === "preparation";
                                     field.onChange(option.label);
-                                    form.setValue(`${fieldPrefix}.${index}.${isPreparation ? "preparation_uuid" : "ingredient_uuid"}`, option.value);
+                                    
+                                    // Set the UUID
+                                    const idField = isPreparation ? "preparation_uuid" : "ingredient_uuid";
+                                    form.setValue(`${fieldPrefix}.${index}.${idField}`, option.value);
+                                    
+                                    // Get current values
+                                    const quantity = form.watch(`${fieldPrefix}.${index}.quantity`) || 0;
+                                    const baseUnit = form.watch(`${fieldPrefix}.${index}.base_unit`);
+                                    const recipeUnit = form.watch(`${fieldPrefix}.${index}.recipe_unit`);
+                                    
+                                    if (baseUnit?.unit_uuid && recipeUnit?.unit_uuid) {
+                                      try {
+                                        // Get conversion factor
+                                        const conversionData = isPreparation ? 
+                                          await unitService.getPreparationConversionFactor(
+                                            option.value,
+                                            baseUnit.unit_uuid,
+                                            recipeUnit.unit_uuid
+                                          ) :
+                                          await unitService.getConversionFactor(
+                                            option.value,
+                                            baseUnit.unit_uuid,
+                                            recipeUnit.unit_uuid
+                                          );
+                                        
+                                        form.setValue(`${fieldPrefix}.${index}.base_to_recipe`, conversionData.conversion_factor);
+                                        
+                                        // Calculate total cost
+                                        const unitCost = form.watch(`${fieldPrefix}.${index}.unit_cost`) || 0;
+                                        const totalCost = quantity * conversionData.conversion_factor * unitCost;
+                                        form.setValue(`${fieldPrefix}.${index}.total_cost`, totalCost);
+                                      } catch (error) {
+                                        console.error('Error fetching conversion factor:', error);
+                                      }
+                                    }
                                   }
                                 }}
                                 options={useIngredientAndPrepOptions(
@@ -542,9 +575,15 @@ export default function RecipeSheet({
                                 min={0}
                                 step="any"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseFloat(e.target.value))
-                                }
+                                onChange={async (e) => {
+                                  const newQuantity = parseFloat(e.target.value);
+                                  field.onChange(newQuantity);
+                                  
+                                  const unitCost = form.watch(`${fieldPrefix}.${index}.unit_cost`) || 0;
+                                  const conversionFactor = form.watch(`${fieldPrefix}.${index}.base_to_recipe`) || 1;
+                                  const totalCost = newQuantity * conversionFactor * unitCost;
+                                  form.setValue(`${fieldPrefix}.${index}.total_cost`, totalCost);
+                                }}
                               />
                             </FormControl>
                           </FormItem>
@@ -608,9 +647,15 @@ export default function RecipeSheet({
                                 step="any"
                                 placeholder="Conv. factor"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseFloat(e.target.value))
-                                }
+                                onChange={async (e) => {
+                                  const newQuantity = parseFloat(e.target.value);
+                                  field.onChange(newQuantity);
+                                  
+                                  const unitCost = form.watch(`${fieldPrefix}.${index}.unit_cost`) || 0;
+                                  const conversionFactor = form.watch(`${fieldPrefix}.${index}.base_to_recipe`) || 1;
+                                  const totalCost = newQuantity * conversionFactor * unitCost;
+                                  form.setValue(`${fieldPrefix}.${index}.total_cost`, totalCost);
+                                }}
                               />
                             </FormControl>
                           </FormItem>
