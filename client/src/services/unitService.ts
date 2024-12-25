@@ -156,4 +156,35 @@ export const unitService = {
       throw error;
     }
   },
+
+  async getPreparationConversionFactor(
+    preparationUuid: string,
+    fromUnitUuid: string,
+    toUnitUuid: string,
+  ): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/units/v2/conversions/from/${fromUnitUuid}/to/${toUnitUuid}/preparations/${preparationUuid}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error("Failed to create unit");
+      }
+      return result.data;
+    } catch (error) {
+      console.error("Failed to create unit:", error);
+      throw error;
+    }
+  },
 };
