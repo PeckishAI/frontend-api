@@ -614,7 +614,10 @@ export default function RecipeSheet({
                                 }
                                 onChange={(option) => {
                                   if (option) {
-                                    field.onChange(option.value);
+                                    form.setValue(`${fieldPrefix}.${index}.recipe_unit`, {
+                                      unit_uuid: option.value,
+                                      unit_name: option.label
+                                    });
                                   }
                                 }}
                                 options={useUnitOptions(
