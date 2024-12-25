@@ -583,6 +583,14 @@ export default function RecipeSheet({
                                   const conversionFactor = form.watch(`${fieldPrefix}.${index}.base_to_recipe`) || 1;
                                   const totalCost = newQuantity * conversionFactor * unitCost;
                                   form.setValue(`${fieldPrefix}.${index}.total_cost`, totalCost);
+
+                                  // Calculate overall cost
+                                  const ingredients = form.watch("product_ingredients") || [];
+                                  const preparations = form.watch("product_preparations") || [];
+                                  const totalIngredientCost = ingredients.reduce((sum, ing) => sum + (ing.total_cost || 0), 0);
+                                  const totalPrepCost = preparations.reduce((sum, prep) => sum + (prep.total_cost || 0), 0);
+                                  const portionCount = form.watch("portion_count") || 1;
+                                  form.setValue("portion_cost", (totalIngredientCost + totalPrepCost) / portionCount);
                                 }}
                               />
                             </FormControl>
@@ -658,6 +666,14 @@ export default function RecipeSheet({
                                   const conversionFactor = form.watch(`${fieldPrefix}.${index}.base_to_recipe`) || 1;
                                   const totalCost = newQuantity * conversionFactor * unitCost;
                                   form.setValue(`${fieldPrefix}.${index}.total_cost`, totalCost);
+
+                                  // Calculate overall cost
+                                  const ingredients = form.watch("product_ingredients") || [];
+                                  const preparations = form.watch("product_preparations") || [];
+                                  const totalIngredientCost = ingredients.reduce((sum, ing) => sum + (ing.total_cost || 0), 0);
+                                  const totalPrepCost = preparations.reduce((sum, prep) => sum + (prep.total_cost || 0), 0);
+                                  const portionCount = form.watch("portion_count") || 1;
+                                  form.setValue("portion_cost", (totalIngredientCost + totalPrepCost) / portionCount);
                                 }}
                               />
                             </FormControl>
