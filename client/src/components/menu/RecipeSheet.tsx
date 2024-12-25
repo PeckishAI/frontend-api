@@ -185,14 +185,15 @@ export default function RecipeSheet({
 
   const form = useForm<Product>({
     resolver: zodResolver(productSchema),
-    defaultValues: product || {
+    defaultValues: {
       portion_count: 1,
-      category: {
+      category: product?.category || {
         value: "mains",
         label: "Main Dishes",
         emoji: "🍽️"
       },
-      product_ingredients: []
+      product_ingredients: product?.product_ingredients || [],
+      ...product
     },
   });
 
