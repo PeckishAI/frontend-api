@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,13 +22,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import RecipeSheet from "@/components/menu/RecipeSheet";
 import { Badge } from "@/components/ui/badge";
 import { menuService } from "@/services/menuService";
-import { type Product } from "@/types/menu";
+import { type Preparation } from "@/types/menu";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 
 export default function Preparations() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
-  const [editingPreparation, setEditingPreparation] = useState<Product | null>(null);
+  const [editingPreparation, setEditingPreparation] =
+    useState<Preparation | null>(null);
   const { currentRestaurant } = useRestaurantContext();
 
   const { data: preparations = [], isLoading } = useQuery({
@@ -45,7 +45,7 @@ export default function Preparations() {
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
-  function PreparationCard({ preparation }: { preparation: Product }) {
+  function PreparationCard({ preparation }: { preparation: Preparation }) {
     return (
       <Card
         className="group hover:shadow-lg transition-shadow duration-200 cursor-pointer"
@@ -55,7 +55,9 @@ export default function Preparations() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <UtensilsCrossed className="h-5 w-5 text-primary" />
-              <CardTitle className="text-lg">{preparation.product_name}</CardTitle>
+              <CardTitle className="text-lg">
+                {preparation.preparation_name}
+              </CardTitle>
             </div>
             <Badge variant="secondary" className="flex items-center gap-1">
               {preparation.category?.emoji}
@@ -96,7 +98,11 @@ export default function Preparations() {
                   <div className="text-sm text-gray-500">Per Portion</div>
                 </div>
                 <div className="font-medium">
-                  ${((preparation.portion_cost || 0) / (preparation.portion_count || 1)).toFixed(2)}
+                  $
+                  {(
+                    (preparation.portion_cost || 0) /
+                    (preparation.portion_count || 1)
+                  ).toFixed(2)}
                 </div>
               </div>
             </div>
@@ -127,7 +133,10 @@ export default function Preparations() {
         {viewMode === "cards" ? (
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {preparations.map((preparation) => (
-              <PreparationCard key={preparation.product_uuid} preparation={preparation} />
+              <PreparationCard
+                key={preparation.preparation_uuid}
+                preparation={preparation}
+              />
             ))}
           </div>
         ) : (
@@ -145,11 +154,11 @@ export default function Preparations() {
               <TableBody>
                 {preparations.map((preparation) => (
                   <TableRow
-                    key={preparation.product_uuid}
+                    key={preparation.preparation_uuid}
                     className="cursor-pointer hover:bg-gray-50"
                     onClick={() => setEditingPreparation(preparation)}
                   >
-                    <TableCell>{preparation.product_name}</TableCell>
+                    <TableCell>{preparation.preparation_name}</TableCell>
                     <TableCell>
                       {preparation.product_ingredients?.length || 0}
                     </TableCell>
@@ -160,7 +169,11 @@ export default function Preparations() {
                       {preparation.portion_count || 1}
                     </TableCell>
                     <TableCell className="text-right">
-                      ${((preparation.portion_cost || 0) / (preparation.portion_count || 1)).toFixed(2)}
+                      $
+                      {(
+                        (preparation.portion_cost || 0) /
+                        (preparation.portion_count || 1)
+                      ).toFixed(2)}
                     </TableCell>
                   </TableRow>
                 ))}
