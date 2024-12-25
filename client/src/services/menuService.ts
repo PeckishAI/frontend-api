@@ -78,11 +78,38 @@ export const menuService = {
 
       const data = await response.json();
       if (!data.success) {
-        throw new Error("Failed to fetch menu");
+        throw new Error("Failed to fetch products");
       }
       return data.data;
     } catch (error) {
-      console.error("Failed to fetch restaurant menu:", error);
+      console.error("Failed to fetch restaurant products:", error);
+      throw error;
+    }
+  },
+
+  async getRestaurantPreparations(restaurantUuid: string): Promise<Product[]> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/preparations`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error("Failed to fetch preparations");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to fetch restaurant preparations:", error);
       throw error;
     }
   },

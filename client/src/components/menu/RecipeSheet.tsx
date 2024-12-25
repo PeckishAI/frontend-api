@@ -38,6 +38,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { menuService } from "@/services/menuService";
 import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
+import { foodEmojis } from "@/lib/emojis";
 
 export const defaultCategories = [
   { value: "mains", label: "Main Dishes", emoji: "🍽️" },
@@ -47,79 +48,6 @@ export const defaultCategories = [
   { value: "sides", label: "Side Dishes", emoji: "🥨" },
 ];
 
-const foodEmojis = [
-  "🍕",
-  "🍔",
-  "🍟",
-  "🌭",
-  "🍿",
-  "🧂",
-  "🥨",
-  "🥪",
-  "🌮",
-  "🌯",
-  "🥙",
-  "🧆",
-  "🥚",
-  "🍳",
-  "🥘",
-  "🍲",
-  "🥣",
-  "🥗",
-  "🍿",
-  "🧈",
-  "🧀",
-  "🥩",
-  "🥓",
-  "🍖",
-  "🍗",
-  "🥞",
-  "🧇",
-  "🥯",
-  "🥖",
-  "🥐",
-  "🥨",
-  "🥯",
-  "🥖",
-  "🫓",
-  "🥨",
-  "🥯",
-  "🥖",
-  "🥐",
-  "🍞",
-  "🥜",
-  "🌰",
-  "🥔",
-  "🥕",
-  "🌽",
-  "🥑",
-  "🥬",
-  "🥒",
-  "🥦",
-  "🧄",
-  "🧅",
-  "🥜",
-  "🍯",
-  "🥫",
-  "🍖",
-  "🍗",
-  "🥩",
-  "🥓",
-  "🍔",
-  "🍟",
-  "🌭",
-  "🥪",
-  "🌮",
-  "🌯",
-  "🥙",
-  "🧆",
-  "🥚",
-  "🍳",
-  "🥘",
-  "🍲",
-  "🥣",
-];
-
 const useIngredientOptions = (restaurantUuid?: string) => {
   const { data: ingredients } = useQuery({
     queryKey: ["ingredients", restaurantUuid],
@@ -127,12 +55,6 @@ const useIngredientOptions = (restaurantUuid?: string) => {
       if (!restaurantUuid) return [];
       return inventoryService.getRestaurantIngredients(restaurantUuid);
     },
-    enabled: !!restaurantUuid,
-    select: (data) =>
-      data.map((ing: any) => ({
-        value: ing.ingredient_uuid,
-        label: ing.ingredient_name,
-      })),
   });
   return ingredients || [];
 };
@@ -144,97 +66,126 @@ const useUnitOptions = (restaurantUuid?: string) => {
       if (!restaurantUuid) return [];
       return unitService.getRestaurantUnit(restaurantUuid);
     },
-    enabled: !!restaurantUuid,
-    select: (data) =>
-      data.map((unit: any) => ({
-        value: unit.unit_uuid,
-        label: unit.unit_name,
-      })),
   });
   return units || [];
 };
 
-const recipeSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, "Name is required"),
+const usePreparationOptions = (restaurantUuid?: string) => {
+  const { data: preparations } = useQuery({
+    queryKey: ["preparations", restaurantUuid],
+    queryFn: () => {
+      if (!restaurantUuid) return [];
+      return menuService.getRestaurantPreparations(restaurantUuid);
+    },
+  });
+  return preparations || [];
+}
+
+const productSchema = z.object({
+  product_uuid: z.string().optional(),
+  product_name: z.string().min(1, "Name is required"),
   category: z.object({
     value: z.string(),
     label: z.string(),
     emoji: z.string(),
   }),
-  portionCount: z.number().min(1, "Portion count must be at least 1"),
-  ingredients: z
+  portion_count: z.number().min(1, "Portion count must be at least 1"),
+  portion_price: z.number().optional(),
+  portion_cost: z.number().optional(),
+  product_ingredients: z
     .array(
       z.object({
-        name: z.string().min(1, "Ingredient name is required"),
+        uuid: z.string().optional(),
+        ingredient_uuid: z.string().optional(),
+        ingredient_name: z.string().optional(),
         quantity: z.number().min(0, "Quantity must be positive"),
-        unit: z.string().min(1, "Unit is required"),
-        conversionFactor: z.number().optional(),
-        id: z.string().optional(),
+        base_unit: z.object({
+          unit_uuid: z.string().optional(),
+          unit_name: z.string().optional(),
+        }),
+        recipe_unit: z.object({
+          unit_uuid: z.string().optional(),
+          unit_name: z.string().optional(),
+        }),
+        base_to_recipe: z.number().optional(),
+        unit_cost: z.number().optional(),
+        total_cost: z.number().optional(),
       }),
-    )
-    .min(1, "At least one ingredient is required"),
-  price: z.number().optional(),
-  cost: z.number().optional(),
+    ).optional(),
+  product_preparations: z
+    .array(
+      z.object({
+        uuid: z.string().optional(),
+        preparation_uuid: z.string().optional(),
+        preparation_name: z.string().optional(),
+        quanity: z.number().min(0, "Quantity must be positive"),
+        base_unit: z.object({
+          unit_uuid: z.string().optional(),
+          unit_name: z.string().optional(),
+        }),
+        recipe_unit: z.object({
+          unit_uuid: z.string().optional(),
+          unit_name: z.string().optional(),
+        }),
+        base_to_recipe: z.number().optional(),
+        unit_cost: z.number().optional(),
+        total_cost: z.number().optional(),
+      }),
+    ).optional(),
 });
 
-type Recipe = z.infer<typeof recipeSchema>;
+type Product = z.infer<typeof productSchema>;
 
 export default function RecipeSheet({
   open,
   onOpenChange,
-  recipe,
+  product,
   onSubmit,
   currentRestaurant,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  recipe?: Recipe;
-  onSubmit: (data: Recipe) => void;
+  product?: Product;
+  onSubmit: (data: Product) => void;
   currentRestaurant?: { restaurant_uuid: string };
 }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const queryClient = useQueryClient();
 
-  const form = useForm<Recipe>({
-    resolver: zodResolver(recipeSchema),
+  const form = useForm<Product>({
+    resolver: zodResolver(productSchema),
     defaultValues: {
-      name: "",
-      category: defaultCategories[0],
-      portionCount: 1,
-      ingredients: [{ name: "", quantity: 0, unit: "g", conversionFactor: 1 }],
-      price: 0,
-      cost: 0,
+      portion_count: 1,
     },
   });
 
   React.useEffect(() => {
-    if (recipe) {
-      form.reset(recipe);
+    if (product) {
+      form.reset(product);
     }
-  }, [recipe, form]);
+  }, [product, form]);
 
-  const ingredients = form.watch("ingredients") || [];
+  const ingredients = form.watch("product_ingredients") || [];
 
   const addIngredient = () => {
-    const currentIngredients = form.getValues("ingredients") || [];
-    form.setValue("ingredients", [
+    const currentIngredients = form.getValues("product_ingredients") || [];
+    form.setValue("product_ingredients", [
       ...currentIngredients,
-      { name: "", quantity: 0, unit: "g", conversionFactor: 1 },
+      { ingredient_name: "", quantity: 0, unit: "g", conversionFactor: 1 },
     ]);
   };
 
   const removeIngredient = (index: number) => {
-    const currentIngredients = form.getValues("ingredients");
+    const currentIngredients = form.getValues("product_ingredients");
     form.setValue(
-      "ingredients",
+      "product_ingredients",
       currentIngredients.filter((_, i) => i !== index),
     );
   };
 
   const getMarginPercentage = () => {
-    const price = form.watch("price") || 0;
-    const cost = form.watch("cost") || 0;
+    const price = form.watch("portion_price") || 0;
+    const cost = form.watch("portion_cost") || 0;
     if (price === 0) return 0;
     return (((price - cost) / price) * 100).toFixed(2);
   };
@@ -243,7 +194,7 @@ export default function RecipeSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-[800px] sm:max-w-[800px] h-screen overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>{recipe ? "Edit" : "New"} Recipe</SheetTitle>
+          <SheetTitle>{product ? "Edit" : "New"} Product</SheetTitle>
         </SheetHeader>
 
         <Form {...form}>
@@ -255,22 +206,22 @@ export default function RecipeSheet({
                 }
 
                 const productData = {
-                  product_uuid: recipe?.id,
-                  product_name: data.name,
-                  portion_count: data.portionCount,
-                  portion_price: data.price,
-                  portion_cost: data.cost,
-                  product_ingredients: data.ingredients.map((ing) => ({
-                    ingredient_uuid: ing.id || undefined,
-                    ingredient_name: ing.name,
+                  product_uuid: product?.product_uuid,
+                  product_name: data.product_name,
+                  portion_count: data.portion_count,
+                  portion_price: data.portion_price,
+                  portion_cost: data.portion_cost,
+                  product_ingredients: data.product_ingredients.map((ing) => ({
+                    ingredient_uuid: ing.ingredient_uuid || undefined,
+                    ingredient_name: ing.ingredient_name,
                     quantity: ing.quantity,
                     recipe_unit: {
-                      unit_name: ing.unit,
+                      unit_name: ing.recipe_unit.unit_name,
                     },
                   })),
                 };
 
-                if (recipe) {
+                if (product) {
                   await menuService.updateProduct(
                     currentRestaurant.restaurant_uuid,
                     productData,
@@ -282,7 +233,6 @@ export default function RecipeSheet({
                   );
                 }
 
-                queryClient.invalidateQueries(["products"]);
                 onOpenChange(false);
               } catch (error) {
                 console.error("Failed to save recipe:", error);
@@ -292,7 +242,7 @@ export default function RecipeSheet({
           >
             <FormField
               control={form.control}
-              name="name"
+              name="product_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
@@ -360,7 +310,7 @@ export default function RecipeSheet({
 
               <FormField
                 control={form.control}
-                name="portionCount"
+                name="portion_count"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Number of Portions</FormLabel>
@@ -382,7 +332,7 @@ export default function RecipeSheet({
             <div className="grid grid-cols-3 gap-4">
               <FormField
                 control={form.control}
-                name="price"
+                name="portion_price"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Price</FormLabel>
@@ -403,7 +353,7 @@ export default function RecipeSheet({
 
               <FormField
                 control={form.control}
-                name="cost"
+                name="portion_cost"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Cost</FormLabel>
@@ -456,7 +406,7 @@ export default function RecipeSheet({
                 >
                   <FormField
                     control={form.control}
-                    name={`ingredients.${index}.name`}
+                    name={`product_ingredients.${index}.ingredient_name`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel
@@ -467,10 +417,10 @@ export default function RecipeSheet({
                         <FormControl>
                           <CreatableSelect
                             value={
-                              field.value?.id
+                              field.value?.ingredient_uuid
                                 ? {
-                                    value: field.value.id,
-                                    label: field.value.name,
+                                    value: field.value.ingredient_uuid,
+                                    label: field.value.ingredient_name,
                                   }
                                 : null
                             }
@@ -500,7 +450,7 @@ export default function RecipeSheet({
 
                   <FormField
                     control={form.control}
-                    name={`ingredients.${index}.quantity`}
+                    name={`product_ingredients.${index}.quantity`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel
@@ -525,7 +475,7 @@ export default function RecipeSheet({
 
                   <FormField
                     control={form.control}
-                    name={`ingredients.${index}.unit`}
+                    name={`product_ingredients.${index}.recipe_unit.unit_uuid`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel
@@ -563,7 +513,7 @@ export default function RecipeSheet({
 
                   <FormField
                     control={form.control}
-                    name={`ingredients.${index}.conversionFactor`}
+                    name={`product_ingredients.${index}.base_to_recipe`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel
@@ -591,9 +541,11 @@ export default function RecipeSheet({
                     <span className="text-sm text-muted-foreground">
                       $
                       {(
-                        (form.watch(`ingredients.${index}.quantity`) || 0) *
-                        (form.watch(`ingredients.${index}.conversionFactor`) ||
-                          0)
+                        (form.watch(`product_ingredients.${index}.quantity`) ||
+                          0) *
+                        (form.watch(
+                          `product_ingredients.${index}.base_to_recipe`,
+                        ) || 0)
                       ).toFixed(2)}
                     </span>
                   </div>
@@ -619,7 +571,7 @@ export default function RecipeSheet({
                 Cancel
               </Button>
               <Button type="submit">
-                {recipe ? "Save changes" : "Create recipe"}
+                {product ? "Save changes" : "Create recipe"}
               </Button>
             </div>
           </form>
