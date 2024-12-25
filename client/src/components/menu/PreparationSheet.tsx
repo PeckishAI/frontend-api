@@ -402,7 +402,7 @@ export default function PreparationSheet({
                               value={
                                 field.value
                                   ? {
-                                      value: ingredient.ingredient_uuid || "",
+                                      value: component.ingredient_uuid || component.preparation_uuid || "",
                                       label: field.value,
                                     }
                                   : null
