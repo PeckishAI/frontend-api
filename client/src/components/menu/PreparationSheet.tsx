@@ -347,15 +347,6 @@ export default function PreparationSheet({
                   <h3 className="text-lg font-medium">Recipe Components</h3>
                   <div className="flex gap-2"></div>
                 </div>
-
-                <div className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 mb-4">
-                  <div>Name</div>
-                  <div>Quantity</div>
-                  <div>Unit</div>
-                  <div>Factor</div>
-                  <div>Total</div>
-                  <div></div>
-                </div>
                 <Button
                   type="button"
                   variant="outline"
