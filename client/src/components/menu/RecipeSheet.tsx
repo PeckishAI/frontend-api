@@ -210,9 +210,12 @@ export default function RecipeSheet({
   });
 
   React.useEffect(() => {
-    if (product) {
-      form.reset(product);
-    }
+    const defaultValues = {
+      portion_count: 1,
+      product_ingredients: [],
+      ...(product || {})
+    };
+    form.reset(defaultValues);
   }, [product, form]);
 
   const ingredients = form.watch("product_ingredients") || [];
