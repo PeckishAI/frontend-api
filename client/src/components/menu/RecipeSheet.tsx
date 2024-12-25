@@ -94,10 +94,23 @@ const useUnitOptions = (restaurantUuid?: string) => {
     },
   });
 
-  return (units || []).map((unit: any) => ({
-    label: unit.unit_name,
-    value: unit.unit_uuid,
-    category: unit.category || "custom",
+  // Group units by category
+  const groupedUnits = (units || []).reduce((acc: any, unit: any) => {
+    const category = unit.category || "Custom";
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push({
+      label: unit.unit_name,
+      value: unit.unit_uuid,
+    });
+    return acc;
+  }, {});
+
+  // Convert to format expected by CreatableSelect
+  return Object.entries(groupedUnits).map(([category, options]) => ({
+    label: category,
+    options: options,
   }));
 };
 
