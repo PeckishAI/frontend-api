@@ -711,8 +711,8 @@ export default function PreparationSheet({
                   {preparation ? "Save changes" : "Create preparation"}
                 </Button>
               </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </Form>
 
         <Dialog open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
