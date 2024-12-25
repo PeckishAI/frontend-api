@@ -56,6 +56,7 @@ const useIngredientAndPrepOptions = (restaurantUuid?: string) => {
       if (!restaurantUuid) return [];
       return inventoryService.getRestaurantIngredients(restaurantUuid);
     },
+    enabled: !!restaurantUuid,
   });
 
   const { data: preparations } = useQuery({
@@ -64,27 +65,28 @@ const useIngredientAndPrepOptions = (restaurantUuid?: string) => {
       if (!restaurantUuid) return [];
       return menuService.getRestaurantPreparations(restaurantUuid);
     },
+    enabled: !!restaurantUuid,
   });
-  console.log("preparations", preparations);
 
-  return [
-    {
-      label: "Ingredients",
-      options: (ingredients || []).map((ing: any) => ({
-        label: ing.ingredient_name,
-        value: ing.ingredient_uuid,
-        type: "ingredient",
-      })),
-    },
-    {
-      label: "Preparations",
-      options: (preparations || []).map((prep: any) => ({
-        label: prep.preparation_name,
-        value: prep.preparation_uuid,
-        type: "preparation",
-      })),
-    },
-  ];
+  const formattedIngredients = {
+    label: "Ingredients",
+    options: Object.values(ingredients || {}).map((ing: any) => ({
+      label: ing.ingredient_name,
+      value: ing.ingredient_uuid,
+      type: "ingredient",
+    })),
+  };
+
+  const formattedPreparations = {
+    label: "Preparations",
+    options: (preparations || []).map((prep: any) => ({
+      label: prep.preparation_name,
+      value: prep.preparation_uuid,
+      type: "preparation",
+    })),
+  };
+
+  return [formattedIngredients, formattedPreparations];
 };
 
 const useUnitOptions = (restaurantUuid?: string) => {
