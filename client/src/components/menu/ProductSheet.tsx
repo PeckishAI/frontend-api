@@ -231,10 +231,19 @@ export default function RecipeSheet({
 
   const addIngredient = () => {
     const currentIngredients = form.getValues("product_ingredients") || [];
-    //form.setValue("product_ingredients", [
-    //  ...currentIngredients,
-    //  { ingredient_name: "", quantity: 0, unit: "g", conversionFactor: 1 },
-    //]);
+    form.setValue("product_ingredients", [
+      ...currentIngredients,
+      {
+        ingredient_uuid: "",
+        ingredient_name: "",
+        quantity: 0,
+        base_unit: { unit_uuid: "", unit_name: "" },
+        recipe_unit: { unit_uuid: "", unit_name: "" },
+        base_to_recipe: 1,
+        unit_cost: 0,
+        total_cost: 0
+      }
+    ]);
   };
 
   const removeIngredient = (index: number) => {
