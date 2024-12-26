@@ -40,7 +40,7 @@ import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { foodEmojis } from "@/lib/emojis";
-import { defaultCategories } from "./RecipeSheet";
+import { defaultCategories } from "./ProductSheet";
 
 const preparationSchema = z.object({
   preparation_uuid: z.string().optional(),

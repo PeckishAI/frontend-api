@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import RecipeSheet from "@/components/menu/RecipeSheet";
+import RecipeSheet from "@/components/menu/ProductSheet";
 import { Badge } from "@/components/ui/badge";
 import { menuService } from "@/services/menuService";
 import { type Product } from "@/types/menu";
@@ -37,7 +36,9 @@ export default function Products() {
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return menuService.getRestaurantProducts(currentRestaurant.restaurant_uuid);
+      return menuService.getRestaurantProducts(
+        currentRestaurant.restaurant_uuid,
+      );
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
@@ -64,7 +65,11 @@ export default function Products() {
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Layers className="h-4 w-4" />
-              <span>{product.product_ingredients?.length || 0} ingredients</span>
+              <span>
+                {product.product_ingredients?.length +
+                  product.product_preparations?.length || 0}{" "}
+                ingredients
+              </span>
             </div>
             <div className="grid grid-cols-3 gap-4 border-t pt-4">
               <div>
@@ -94,7 +99,10 @@ export default function Products() {
                   {product.portion_price && product.portion_cost ? (
                     <>
                       <span className="text-2xl font-bold text-blue-600">
-                        {((1 - product.portion_cost / product.portion_price) * 100).toFixed(1)}
+                        {(
+                          (1 - product.portion_cost / product.portion_price) *
+                          100
+                        ).toFixed(1)}
                       </span>
                       <span className="text-sm ml-0.5 text-blue-600">%</span>
                     </>
@@ -154,7 +162,9 @@ export default function Products() {
                     onClick={() => setEditingRecipe(product)}
                   >
                     <TableCell>{product.product_name}</TableCell>
-                    <TableCell>{product.product_ingredients?.length || 0}</TableCell>
+                    <TableCell>
+                      {product.product_ingredients?.length || 0}
+                    </TableCell>
                     <TableCell className="text-right">
                       ${product.portion_price?.toFixed(2) || "0.00"}
                     </TableCell>
