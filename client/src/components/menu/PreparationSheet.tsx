@@ -356,30 +356,6 @@ export default function PreparationSheet({
                   <Plus className="h-4 w-4 mr-2" />
                   Add Ingredient
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    const currentPreparations =
-                      form.getValues("preparation_preparations") || [];
-                    form.setValue("preparation_preparations", [
-                      ...currentPreparations,
-                      {
-                        preparation_name: "",
-                        quantity: 0,
-                        base_unit: { unit_name: "" },
-                        recipe_unit: { unit_name: "" },
-                        base_to_recipe: 1,
-                        unit_cost: 0,
-                        total_cost: 0,
-                      },
-                    ]);
-                  }}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Preparation
-                </Button>
               </div>
             </div>
 
@@ -552,7 +528,11 @@ export default function PreparationSheet({
                   name={`preparation_preparations.${index}.preparation_name`}
                   render={({ field }) => (
                     <FormItem>
-                      {index === 0 && <FormLabel>Name</FormLabel>}
+                      {index === 0 &&
+                        preparations.preparation_ingredients &&
+                        preparations.preparation_ingredients.length > 0 && (
+                          <FormLabel>Name</FormLabel>
+                        )}
                       <FormControl>
                         <CreatableSelect
                           value={
@@ -587,11 +567,14 @@ export default function PreparationSheet({
                   name={`preparation_preparations.${index}.quantity`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel
-                        className={index !== 0 ? "sr-only" : undefined}
-                      >
-                        Quantity
-                      </FormLabel>
+                      {preparations.preparation_ingredients &&
+                        preparations.preparation_ingredients.length > 0 && (
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Quantity
+                          </FormLabel>
+                        )}
                       <FormControl>
                         <Input
                           type="number"
@@ -629,11 +612,14 @@ export default function PreparationSheet({
                   name={`preparation_preparations.${index}.recipe_unit.unit_uuid`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel
-                        className={index !== 0 ? "sr-only" : undefined}
-                      >
-                        Unit
-                      </FormLabel>
+                      {preparations.preparation_ingredients &&
+                        preparations.preparation_ingredients.length > 0 && (
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Unit
+                          </FormLabel>
+                        )}
                       <FormControl>
                         <CreatableSelect
                           value={
@@ -672,11 +658,14 @@ export default function PreparationSheet({
                   name={`preparation_preparations.${index}.base_to_recipe`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel
-                        className={index !== 0 ? "sr-only" : undefined}
-                      >
-                        Factor
-                      </FormLabel>
+                      {preparations.preparation_ingredients &&
+                        preparations.preparation_ingredients.length > 0 && (
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Factor
+                          </FormLabel>
+                        )}
                       <FormControl>
                         <Input
                           type="number"
