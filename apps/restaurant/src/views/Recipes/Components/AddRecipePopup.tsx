@@ -462,9 +462,15 @@ const AddRecipePopup = (props: Props) => {
                     />
                     <IconButton
                       icon={<i className="fa-solid fa-circle-info"></i>}
-                      tooltipMsg={`1 ${watch(`ingredients.${index}.unit_name`)} = 
-                                  ${watch(`ingredients.${index}.conversion_factor`)} 
-                                  ${watch(`ingredients.${index}.base_unit_name`)}`}
+                      tooltipMsg={`1 ${watch(
+                        `ingredients.${index}.unit_name`
+                      )} = 
+                                  ${watch(
+                                    `ingredients.${index}.conversion_factor`
+                                  )} 
+                                  ${watch(
+                                    `ingredients.${index}.base_unit_name`
+                                  )}`}
                       className={styles.info}
                     />
                   </div>
