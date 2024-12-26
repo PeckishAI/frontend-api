@@ -332,16 +332,17 @@ export default function RecipeSheet({
                         {field.value?.emoji}
                       </Button>
                       <Select
-                        value={field.value?.emoji}
+                        value={field.value?.category_name || ""}
                         onValueChange={(value) => {
                           const category = defaultCategories.find(
                             (c) => c.value === value,
-                          ) || {
-                            value,
-                            label: value,
-                            emoji: field.value?.emoji,
-                          };
-                          field.onChange(category);
+                          );
+                          if (category) {
+                            field.onChange({
+                              category_name: category.label,
+                              emoji: category.emoji
+                            });
+                          }
                         }}
                       >
                         <FormControl>
