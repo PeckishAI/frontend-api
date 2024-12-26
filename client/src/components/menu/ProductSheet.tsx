@@ -322,9 +322,9 @@ export default function RecipeSheet({
                             (c) => c.value === value,
                           );
                           if (category) {
-                            field.onChange({
+                            form.setValue("category", {
                               category_name: category.label,
-                              emoji: category.emoji,
+                              emoji: category.emoji
                             });
                           }
                         }}
