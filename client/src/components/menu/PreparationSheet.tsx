@@ -190,15 +190,17 @@ export default function PreparationSheet({
     form.setValue("preparation_ingredients", [
       ...currentIngredients,
       {
+        ingredient_uuid: "",
         ingredient_name: "",
         quantity: 0,
-        base_unit: { unit_name: "" },
-        recipe_unit: { unit_name: "" },
+        base_unit: { unit_uuid: "", unit_name: "" },
+        recipe_unit: { unit_uuid: "", unit_name: "" },
         base_to_recipe: 1,
         unit_cost: 0,
         total_cost: 0,
       },
     ]);
+    calculateTotalCost();
   };
 
   const removeIngredient = (index: number) => {
