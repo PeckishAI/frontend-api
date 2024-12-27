@@ -348,7 +348,7 @@ export default function NewIngredientDialog({
         <div className="mt-8">
           <div className="space-y-4">
             <h3 className="text-lg font-medium">Suppliers</h3>
-            <div className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 mb-2">
+            <div className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,40px] gap-4 mb-2">
               <div className="text-sm text-gray-500">Supplier</div>
               <div className="text-sm text-gray-500">Product Code</div>
               <div className="text-sm text-gray-500">Unit Cost</div>
@@ -357,7 +357,7 @@ export default function NewIngredientDialog({
               <div></div>
             </div>
             {form.watch("ingredient_suppliers")?.map((supplier, index) => (
-              <div key={index} className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end">
+              <div key={index} className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,40px] gap-4 items-end">
                 <FormField
                   control={form.control}
                   name={`ingredient_suppliers.${index}.supplier`}
@@ -528,7 +528,7 @@ export default function NewIngredientDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[600px]">
+      <DialogContent className="max-w-[800px] w-full">
         <DialogHeader>
           <DialogTitle>Add New Ingredient</DialogTitle>
           <DialogDescription>
