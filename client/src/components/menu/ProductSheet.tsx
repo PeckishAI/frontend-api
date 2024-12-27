@@ -921,18 +921,22 @@ export default function RecipeSheet({
                             <FormControl>
                               <CreatableSelect
                                 value={
-                                  field.value
+                                  preparation.recipe_unit?.unit_uuid
                                     ? {
-                                        value: field.value,
-                                        label:
-                                          preparation.recipe_unit?.unit_name ||
-                                          field.value,
+                                        value: preparation.recipe_unit.unit_uuid,
+                                        label: preparation.recipe_unit.unit_name,
                                       }
                                     : null
                                 }
                                 onChange={(option) => {
                                   if (option) {
-                                    field.onChange(option.value);
+                                    form.setValue(
+                                      `product_preparations.${index}.recipe_unit`,
+                                      {
+                                        unit_uuid: option.value,
+                                        unit_name: option.label,
+                                      },
+                                    );
                                   }
                                 }}
                                 options={useUnitOptions(
@@ -1000,6 +1004,7 @@ export default function RecipeSheet({
                             "product_preparations",
                             currentPreparations.filter((_, i) => i !== index),
                           );
+                          calculateTotalCost();
                         }}
                       >
                         <Trash2 className="h-4 w-4" />
