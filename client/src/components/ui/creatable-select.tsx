@@ -191,6 +191,8 @@ const CustomOption = (props: any) => {
   const { data, selectProps } = props;
 
   if (data.__isNew__) {
+    console.log("New Option: ", data);
+    console.log("Select Props: ", selectProps);
     return (
       <div
         className="flex items-center cursor-pointer p-2 text-sm hover:bg-gray-100"
