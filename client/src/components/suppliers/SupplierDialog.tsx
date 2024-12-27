@@ -59,8 +59,13 @@ export default function SupplierDialog({
   });
 
   const handleSubmit = (values: SupplierFormValues) => {
-    onSubmit(values);
-    console.log("Creating Suppliers: ", values);
+    const payload = {
+      ...values,
+      active: true,
+      supplier_name: values.name,
+    };
+    console.log("Creating supplier with payload:", payload);
+    onSubmit(payload);
     onOpenChange(false);
     form.reset();
   };
