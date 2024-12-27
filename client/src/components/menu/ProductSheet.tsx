@@ -51,6 +51,17 @@ export const defaultCategories = [
   { value: "sides", label: "Side Dishes", emoji: "🥨" },
 ];
 
+const useCategory = (restaurantUuid?: string) => {
+  const { data: categories } = useQuery({
+    queryKey: ["categories", restaurantUuid],
+    queryFn: async () => {
+      if (!restaurantUuid) return [];
+      const data = await categoryService.getAllCategories(restaurantUuid);
+      return data;
+    },
+  });
+};
+
 const useIngredientOptions = (restaurantUuid?: string) => {
   const { data: ingredients } = useQuery({
     queryKey: ["ingredients", restaurantUuid],
@@ -227,6 +238,10 @@ export default function RecipeSheet({
   const preparations = form.watch("product_preparations") || [];
   const recipeComponents = [...ingredients, ...preparations];
 
+  const handleCreateCategory = (inputValue: string) => {
+    console.log("User wants to create a new category:", inputValue);
+  };
+
   const addIngredient = () => {
     const currentIngredients = form.getValues("product_ingredients") || [];
     form.setValue("product_ingredients", [
@@ -337,18 +352,9 @@ export default function RecipeSheet({
                 control={form.control}
                 name="category"
                 render={({ field }) => {
-                  const [showCategoryModal, setShowCategoryModal] = useState(false);
+                  const [showCategoryModal, setShowCategoryModal] =
+                    useState(false);
                   const [newCategoryName, setNewCategoryName] = useState("");
-
-                  const { data: categories } = useQuery({
-                    queryKey: ["categories", currentRestaurant?.restaurant_uuid],
-                    queryFn: () => {
-                      if (!currentRestaurant?.restaurant_uuid) return [];
-                      return categoryService.getRestaurantCategories(
-                        currentRestaurant.restaurant_uuid,
-                      );
-                    },
-                  });
 
                   return (
                     <FormItem>
@@ -360,50 +366,34 @@ export default function RecipeSheet({
                         <FormControl>
                           <CreatableSelect
                             value={
-                              field.value?.category_name
+                              field.category_name
                                 ? {
-                                    value: field.value.category_uuid || "",
-                                    label: field.value.category_name,
+                                    value: field.category_uuid,
+                                    label: field.category_name,
                                   }
                                 : null
                             }
                             onChange={(option) => {
+                              // Called when user selects an existing option or clears
                               if (option) {
-                                form.setValue("category", {
-                                  ...field.value,
+                                setValue("category", {
                                   category_uuid: option.value,
                                   category_name: option.label,
                                 });
+                              } else {
+                                // Clear
+                                setValue("category", {
+                                  category_uuid: "",
+                                  category_name: "",
+                                });
                               }
                             }}
-                            onCreateOption={(inputValue) => {
-                              if (!currentRestaurant?.restaurant_uuid) return;
-                              categoryService.createCategory(
-                                currentRestaurant.restaurant_uuid,
-                                { 
-                                  category_name: inputValue,
-                                  emoji: "🍽️" 
-                                }
-                              ).then((newCategory) => {
-                                form.setValue("category", {
-                                  category_uuid: newCategory.category_uuid,
-                                  category_name: newCategory.category_name,
-                                  emoji: newCategory.emoji,
-                                });
-                                queryClient.invalidateQueries(["categories"]);
-                              }).catch((error) => {
-                                console.error("Failed to create category:", error);
-                              });
-                            }}
-                            options={
-                              categories
-                                ? categories.map((cat: any) => ({
-                                    value: cat.category_uuid,
-                                    label: cat.category_name,
-                                  }))
-                                : []
-                            }
-                            placeholder=""
+                            onCreateOption={handleCreateCategory}
+                            options={categories.map((cat) => ({
+                              value: cat.category_uuid,
+                              label: cat.category_name,
+                            }))}
+                            placeholder="Choose a category or type to create new"
                             size="large"
                           />
                         </FormControl>
@@ -415,10 +405,11 @@ export default function RecipeSheet({
                         onSubmit={async (data) => {
                           try {
                             if (!currentRestaurant?.restaurant_uuid) return;
-                            const newCategory = await categoryService.createCategory(
-                              currentRestaurant.restaurant_uuid,
-                              data
-                            );
+                            const newCategory =
+                              await categoryService.createCategory(
+                                currentRestaurant.restaurant_uuid,
+                                data,
+                              );
                             form.setValue("category", {
                               category_uuid: newCategory.category_uuid,
                               category_name: newCategory.category_name,
@@ -431,7 +422,7 @@ export default function RecipeSheet({
                         }}
                         defaultValues={{
                           category_name: newCategoryName,
-                          emoji: "🍽️"
+                          emoji: "🍽️",
                         }}
                       />
                     </FormItem>
@@ -591,19 +582,26 @@ export default function RecipeSheet({
                                   currentRestaurant?.restaurant_uuid,
                                 )}
                                 onCreateOption={async (inputValue) => {
-                                  if (!currentRestaurant?.restaurant_uuid) return;
+                                  if (!currentRestaurant?.restaurant_uuid)
+                                    return;
                                   try {
-                                    const newIngredient = await inventoryService.createIngredient(
-                                      currentRestaurant.restaurant_uuid,
-                                      { ingredient_name: inputValue }
+                                    const newIngredient =
+                                      await inventoryService.createIngredient(
+                                        currentRestaurant.restaurant_uuid,
+                                        { ingredient_name: inputValue },
+                                      );
+                                    field.onChange(
+                                      newIngredient.ingredient_name,
                                     );
-                                    field.onChange(newIngredient.ingredient_name);
                                     form.setValue(
                                       `${fieldPrefix}.${index}.ingredient_uuid`,
                                       newIngredient.ingredient_uuid,
                                     );
                                   } catch (error) {
-                                    console.error("Failed to create ingredient:", error);
+                                    console.error(
+                                      "Failed to create ingredient:",
+                                      error,
+                                    );
                                   }
                                 }}
                                 placeholder=""
@@ -714,12 +712,14 @@ export default function RecipeSheet({
                                   currentRestaurant?.restaurant_uuid,
                                 )}
                                 onCreateOption={async (inputValue) => {
-                                  if (!currentRestaurant?.restaurant_uuid) return;
+                                  if (!currentRestaurant?.restaurant_uuid)
+                                    return;
                                   try {
-                                    const newUnit = await unitService.createUnit(
-                                      { unit_name: inputValue },
-                                      currentRestaurant.restaurant_uuid
-                                    );
+                                    const newUnit =
+                                      await unitService.createUnit(
+                                        { unit_name: inputValue },
+                                        currentRestaurant.restaurant_uuid,
+                                      );
                                     form.setValue(
                                       `${fieldPrefix}.${index}.recipe_unit`,
                                       {
@@ -728,7 +728,10 @@ export default function RecipeSheet({
                                       },
                                     );
                                   } catch (error) {
-                                    console.error("Failed to create unit:", error);
+                                    console.error(
+                                      "Failed to create unit:",
+                                      error,
+                                    );
                                   }
                                 }}
                                 placeholder=""

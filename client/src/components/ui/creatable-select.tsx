@@ -136,11 +136,15 @@ const customStyles = (size: "small" | "medium" | "large") => ({
   }),
 });
 
+/** Custom Menu: adds a "Create" row at the bottom. */
 const CustomMenu = (props: any) => {
   const { children, selectProps } = props;
+
+  // This "Create" button calls `selectProps.onCreateOption`.
+  // We must ensure `selectProps.onCreateOption` is actually passed into `selectProps`.
   const handleCreate = () => {
-    if (props.selectProps.onCreateOption && props.selectProps.inputValue) {
-      props.selectProps.onCreateOption(props.selectProps.inputValue);
+    if (selectProps.onCreateOption && selectProps.inputValue) {
+      selectProps.onCreateOption(selectProps.inputValue);
     }
   };
 
@@ -166,6 +170,7 @@ const CustomMenu = (props: any) => {
   );
 };
 
+/** Custom dropdown icon (arrow) */
 const CustomDropdownIndicator = (props: any) => {
   return (
     <components.DropdownIndicator {...props}>
@@ -188,6 +193,7 @@ const CustomDropdownIndicator = (props: any) => {
   );
 };
 
+/** Custom Option: handles the __isNew__ case with a plus icon */
 const CustomOption = (props: any) => {
   const { data, selectProps } = props;
 
@@ -197,7 +203,10 @@ const CustomOption = (props: any) => {
     return (
       <div
         className="flex items-center cursor-pointer p-2 text-sm hover:bg-gray-100"
-        onClick={() => selectProps.onCreateOption(selectProps.inputValue)}
+        onClick={() =>
+          selectProps.onCreateOption &&
+          selectProps.onCreateOption(selectProps.inputValue)
+        }
       >
         <PlusCircle className="mr-2 h-4 w-4" />
         <span>Create "{selectProps.inputValue}"</span>
@@ -205,6 +214,7 @@ const CustomOption = (props: any) => {
     );
   }
 
+  // Otherwise render the default Option
   return <components.Option {...props} />;
 };
 
@@ -226,12 +236,18 @@ export const CreatableSelect: React.FC<CreatableSelectProps> = ({
     onChange(newValue);
   };
 
+  /**
+   * This is called by React-Select's built-in Creatable logic,
+   * AND by our custom menu/option if user clicks "Create" row.
+   */
   const handleCreate = (newOptionLabel: string) => {
     const newOption = {
       label: newOptionLabel,
       value: newOptionLabel.toLowerCase(),
     };
+    // Call your parent prop so it can do any "create" logic (like opening a modal or API calls)
     onCreateOption(newOptionLabel);
+    // Also select this new option
     handleChange(newOption);
   };
 
@@ -244,7 +260,7 @@ export const CreatableSelect: React.FC<CreatableSelectProps> = ({
         value={value}
         onChange={handleChange}
         onInputChange={handleInputChange}
-        onCreateOption={handleCreate}
+        onCreateOption={handleCreate} // standard Creatable prop
         options={options}
         placeholder={placeholder}
         styles={customStyles(size)}
@@ -256,6 +272,11 @@ export const CreatableSelect: React.FC<CreatableSelectProps> = ({
           IndicatorSeparator: () => null,
         }}
         filterOption={createFilter({ ignoreAccents: false })}
+        // IMPORTANT: pass handleCreate into selectProps so our custom Menu/Option can call it.
+        selectProps={{
+          onCreateOption: handleCreate,
+          inputValue,
+        }}
       />
     </div>
   );
