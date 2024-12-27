@@ -131,7 +131,7 @@ export default function Preparations() {
             <PlusCircle className="mr-2 h-4 w-4" />
             New Preparation
           </Button>
-          <PreparationSheet
+          <PreparationModal
             open={editingPreparation === true}
             onOpenChange={(open) => {
               if (!open) setEditingPreparation(null);
@@ -206,7 +206,7 @@ export default function Preparations() {
         )}
       </div>
 
-      <PreparationSheet
+      <PreparationModal
         open={!!editingPreparation && editingPreparation !== true}
         onOpenChange={(open) => {
           if (!open) setEditingPreparation(null);
