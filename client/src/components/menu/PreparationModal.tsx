@@ -42,6 +42,7 @@ import { defaultCategories } from "./ProductSheet";
 const preparationSchema = z.object({
   preparation_name: z.string().min(1, "Name is required"),
   category: z.object({
+    category_uuid: z.string().optional(),
     category_name: z.string(),
     emoji: z.string(),
   }),
@@ -252,6 +253,7 @@ export default function PreparationModal({
                           );
                           if (category) {
                             field.onChange({
+                              category_uuid: category.value,
                               category_name: category.label,
                               emoji: category.emoji,
                             });
