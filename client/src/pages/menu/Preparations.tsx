@@ -1,3 +1,6 @@
+
+import PreparationModal from "@/components/menu/PreparationModal";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -128,6 +131,23 @@ export default function Preparations() {
             <PlusCircle className="mr-2 h-4 w-4" />
             New Preparation
           </Button>
+          <PreparationModal
+            open={!!editingPreparation}
+            onOpenChange={(open) => {
+              if (!open) setEditingPreparation(null);
+            }}
+            onSubmit={async (data) => {
+              try {
+                if (!currentRestaurant?.restaurant_uuid) {
+                  throw new Error("No restaurant selected");
+                }
+                await menuService.createPreparation(currentRestaurant.restaurant_uuid, data);
+                setEditingPreparation(null);
+              } catch (error) {
+                console.error("Failed to save preparation:", error);
+              }
+            }}
+          />
         </div>
       </div>
 
