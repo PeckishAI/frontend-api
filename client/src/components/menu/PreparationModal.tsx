@@ -793,37 +793,39 @@ export default function PreparationModal({
           <DialogHeader>
             <DialogTitle>Create New Preparation</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <FormField
-              control={form.control}
-              name="preparation_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} defaultValue={newItemName} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="portion_count"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Portions</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="number" 
-                      min={1} 
-                      {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value))}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          </div>
+          <Form {...form}>
+            <form className="space-y-4 py-4">
+              <FormField
+                control={form.control}
+                name="preparation_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} defaultValue={newItemName} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="portion_count"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Portions</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min={1} 
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value))}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setShowNewPreparationDialog(false)}>
               Cancel
