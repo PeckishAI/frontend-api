@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import {
   Dialog,
@@ -152,6 +152,7 @@ export default function PreparationModal({
 }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { currentRestaurant } = useRestaurantContext();
+  const queryClient = useQueryClient();
 
   const form = useForm<PreparationFormData>({
     resolver: zodResolver(preparationSchema),
@@ -367,6 +368,7 @@ export default function PreparationModal({
                                   unit_uuid: newUnit.unit_uuid,
                                   unit_name: newUnit.unit_name,
                                 });
+                                queryClient.invalidateQueries(["units"]);
                               } catch (error) {
                                 console.error("Failed to create unit:", error);
                               }
@@ -502,6 +504,25 @@ export default function PreparationModal({
                                   options={useUnitOptions(
                                     currentRestaurant?.restaurant_uuid,
                                   )}
+                                  onCreateOption={async (value) => {
+                                    try {
+                                      if (!currentRestaurant?.restaurant_uuid) return;
+                                      const newUnit = await unitService.createUnit(
+                                        { unit_name: value },
+                                        currentRestaurant.restaurant_uuid,
+                                      );
+                                      form.setValue(
+                                        `preparation_ingredients.${index}.recipe_unit`,
+                                        {
+                                          unit_uuid: newUnit.unit_uuid,
+                                          unit_name: newUnit.unit_name,
+                                        },
+                                      );
+                                      queryClient.invalidateQueries(["units"]);
+                                    } catch (error) {
+                                      console.error("Failed to create unit:", error);
+                                    }
+                                  }}
                                   placeholder=""
                                 />
                               </FormControl>
@@ -669,6 +690,25 @@ export default function PreparationModal({
                                   options={useUnitOptions(
                                     currentRestaurant?.restaurant_uuid,
                                   )}
+                                  onCreateOption={async (value) => {
+                                    try {
+                                      if (!currentRestaurant?.restaurant_uuid) return;
+                                      const newUnit = await unitService.createUnit(
+                                        { unit_name: value },
+                                        currentRestaurant.restaurant_uuid,
+                                      );
+                                      form.setValue(
+                                        `preparation_preparations.${index}.recipe_unit`,
+                                        {
+                                          unit_uuid: newUnit.unit_uuid,
+                                          unit_name: newUnit.unit_name,
+                                        },
+                                      );
+                                      queryClient.invalidateQueries(["units"]);
+                                    } catch (error) {
+                                      console.error("Failed to create unit:", error);
+                                    }
+                                  }}
                                   placeholder=""
                                 />
                               </FormControl>
