@@ -28,6 +28,7 @@ import type { InventoryItem } from "@/lib/types";
 import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import { tagService } from "@/services/tagService";
+import { supplierService } from "@/services/supplierService";
 
 const newIngredientSchema = z.object({
   ingredient_name: z.string().min(1, "Name is required"),
@@ -71,6 +72,17 @@ export default function NewIngredientDialog({
   embedded = false,
 }: NewIngredientDialogProps) {
   const { currentRestaurant } = useRestaurantContext();
+
+  const { data: suppliersData } = useQuery({
+    queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      return supplierService.getRestaurantSuppliers(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+  });
 
   const { data: unitsData } = useQuery({
     queryKey: ["units", currentRestaurant?.restaurant_uuid],
@@ -378,7 +390,10 @@ export default function NewIngredientDialog({
                               });
                             }
                           }}
-                          options={[]}
+                          options={suppliersData?.map((supplier: any) => ({
+                            label: supplier.supplier_name,
+                            value: supplier.supplier_uuid
+                          })) || []}
                           placeholder=""
                         />
                       </FormControl>
