@@ -29,46 +29,49 @@ import { menuService } from "@/services/menuService";
 import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
-
-// ... rest of your code remains the same until render function ...
+import { type Preparation } from "@/types/menu";
 
 export default function PreparationModal({
   open,
   onOpenChange,
+  preparation,
   onSubmit,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: PreparationFormData) => void;
+  preparation?: Preparation;
+  onSubmit: (data: Preparation) => void;
 }) {
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [showNewIngredientDialog, setShowNewIngredientDialog] = useState(false);
-  const [newItemName, setNewItemName] = useState("");
   const { currentRestaurant } = useRestaurantContext();
-  const queryClient = useQueryClient();
-
-  // ... rest of the component remains the same but remove the PreparationModal self-reference ...
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        {/* ... existing dialog content ... */}
-      </Dialog>
-
-      <NewIngredientDialog 
-        open={showNewIngredientDialog}
-        onOpenChange={setShowNewIngredientDialog}
-        defaultName={newItemName}
-        onSubmit={async (data) => {
-          if (!currentRestaurant?.restaurant_uuid) return;
-          const newIngredient = await inventoryService.createIngredient(
-            currentRestaurant.restaurant_uuid,
-            data
-          );
-          queryClient.invalidateQueries(["ingredients"]);
-          setShowNewIngredientDialog(false);
-        }}
-      />
-    </>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{preparation ? "Edit" : "New"} Preparation</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="preparation_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                <Button type="submit">Save</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
