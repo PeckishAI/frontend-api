@@ -619,10 +619,7 @@ export default function PreparationModal({
                                   options={usePreparationOptions(
                                     currentRestaurant?.restaurant_uuid,
                                   )}
-                                  onCreateOption={(inputValue) => {
-                                    setNewItemName(inputValue);
-                                    setShowNewPreparationDialog(true);
-                                  }}
+                                  isCreatable={false}
                                   placeholder=""
                                 />
                               </FormControl>
