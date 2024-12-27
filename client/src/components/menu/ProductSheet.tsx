@@ -85,16 +85,12 @@ const useIngredientAndPrepOptions = (restaurantUuid?: string) => {
     },
     {
       label: "Preparations",
-      options: preparations?.map((prep: any) =>
-        prep
-          ? {
-              label: prep.preparation_name,
-              value: prep.preparation_uuid,
-              type: "preparation",
-              unit_cost: prep.portion_cost,
-            }
-          : [],
-      ),
+      options: Array.isArray(preparations) ? preparations.map((prep: any) => ({
+        label: prep.preparation_name,
+        value: prep.preparation_uuid,
+        type: "preparation",
+        unit_cost: prep.portion_cost,
+      })) : [],
     },
   ];
 
