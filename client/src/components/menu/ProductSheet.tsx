@@ -85,7 +85,7 @@ const useIngredientAndPrepOptions = (restaurantUuid?: string) => {
     },
     {
       label: "Preparations",
-      options: preparations
+      options: Array.isArray(preparations) 
         ? preparations.map((prep: any) => ({
             label: prep.preparation_name,
             value: prep.preparation_uuid,
