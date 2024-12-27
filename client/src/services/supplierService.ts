@@ -30,4 +30,31 @@ export const supplierService = {
       throw error;
     }
   },
+
+  async createSupplier(restaurantUuid: string, supplier: any): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/suppliers/v2/restaurant/${restaurantUuid}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error("Failed to fetch suppliers");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to fetch restaurant suppliers:", error);
+      throw error;
+    }
+  },
 };

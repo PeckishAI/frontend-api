@@ -47,11 +47,8 @@ export default function SupplierDialog({
     resolver: zodResolver(supplierSchema),
     defaultValues: {
       name: "",
-      category: "",
       email: "",
       phone: "",
-      address: "",
-
     },
   });
 
@@ -64,6 +61,7 @@ export default function SupplierDialog({
     };
     console.log("Creating supplier with payload:", payload);
     onSubmit(payload);
+    
     console.log("Submit callback called");
     onOpenChange(false);
     form.reset();
