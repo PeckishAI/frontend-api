@@ -63,12 +63,21 @@ const useIngredientOptions = (restaurantUuid?: string) => {
 
   console.log("Ingredients: ", ingredients);
   return ingredients
-    ? Object.values(ingredients).map((ing: any) => ({
-        label: ing.ingredient_name,
-        value: ing.ingredient_uuid,
-        type: "ingredient",
-        unit_cost: ing.unit_cost,
-      }))
+    ? Object.values(ingredients).map((ing: any) => {
+        // Calculate minimum unit cost from suppliers
+        const unitCost = ing.ingredient_suppliers?.length
+          ? Math.min(...ing.ingredient_suppliers.map((supplier: any) => 
+              (supplier.unit_cost || 0) / (supplier.pack_size || 1)
+            ))
+          : 0;
+
+        return {
+          label: ing.ingredient_name,
+          value: ing.ingredient_uuid,
+          type: "ingredient",
+          unit_cost: unitCost,
+        };
+      })
     : [];
 };
 
