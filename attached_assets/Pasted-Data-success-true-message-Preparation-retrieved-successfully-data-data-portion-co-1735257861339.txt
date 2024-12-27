@@ -1,0 +1,110 @@
+Data:  
+{success: true, message: 'Preparation retrieved successfully', data: {…}}
+data
+: 
+portion_cost
+: 
+14
+portion_count
+: 
+1
+portion_price
+: 
+0
+preparation_ingredients
+: 
+Array(1)
+0
+: 
+{uuid: '1400141a-4a86-4ecb-935f-fafe9a72b661', ingredient_uuid: '0a8706ca-7501-4a27-84d8-112bff111386', ingredient_name: 'toffu', quantity: 1, base_unit: {…}, …}
+length
+: 
+1
+[[Prototype]]
+: 
+Array(0)
+preparation_name
+: 
+"Mayonnaise"
+preparation_preparations
+: 
+Array(0)
+length
+: 
+0
+[[Prototype]]
+: 
+Array(0)
+preparation_uuid
+: 
+"206f7575-b115-44c7-ac91-01b7ebdb01a9"
+[[Prototype]]
+: 
+Object
+message
+: 
+"Preparation retrieved successfully"
+success
+: 
+true
+[[Prototype]]
+: 
+Object
+2
+ProductSheet.tsx:89 Uncaught TypeError: preparations.map is not a function
+    at useIngredientAndPrepOptions (ProductSheet.tsx:89:24)
+    at jsxDEV.children.jsxDEV.render (ProductSheet.tsx:598:42)
+2
+ProductSheet.tsx:89 Uncaught TypeError: preparations.map is not a function
+    at useIngredientAndPrepOptions (ProductSheet.tsx:89:24)
+    at jsxDEV.children.jsxDEV.render (ProductSheet.tsx:598:42)
+2
+@react-refresh:267 The above error occurred in the <Controller> component:
+
+    at Controller (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-ZEF6PIFK.js?v=a3232ce5:313:35)
+    at FormField (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/ui/form.tsx:32:6)
+    at div
+    at div
+    at div
+    at form
+    at FormProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-ZEF6PIFK.js?v=a3232ce5:102:11)
+    at div
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:254:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:283:7
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:540:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:521:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:618:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:637:5
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…nner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1772:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…nner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1695:58
+    at Presence (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…nner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1012:11)
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…nner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1686:64
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:900:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:881:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:978:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:994:22
+    at Presence (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…nner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1012:11)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-XUAN5KW6.js?v=a3232ce5:38:15)
+    at DialogPortal (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…nner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1649:11)
+    at _c3 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/ui/sheet.tsx:66:12)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…runner/Frontend/node_modules/.vite/deps/chunk-XUAN5KW6.js?v=a3232ce5:38:15)
+    at Dialog (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…unner/Frontend/node_modules/.vite/deps/chunk-NH3DEOXZ.js?v=a3232ce5:1590:5)
+    at RecipeSheet (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/menu/ProductSheet.tsx?t=1735257819088:204:3)
+    at div
+    at Products (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/pages/menu/Products.tsx?t=1735257819088:45:35)
+    at div
+    at div
+    at Menu (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/pages/menu/Menu.tsx?t=1735257729690:24:45)
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=a3232ce5:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=a3232ce5:247:17)
+    at div
+    at RestaurantProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/contexts/RestaurantContext.tsx:20:38)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=a3232ce5:2805:3)
+    at App
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=a3232ce5:2805:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+ProductSheet.tsx:89 Uncaught (in promise) TypeError: preparations.map is not a function
+    at useIngredientAndPrepOptions (ProductSheet.tsx:89:24)
+    at jsxDEV.children.jsxDEV.render (ProductSheet.tsx:598:42)
