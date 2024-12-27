@@ -741,15 +741,13 @@ export default function RecipeSheet({
                                 options={useUnitOptions(
                                   currentRestaurant?.restaurant_uuid,
                                 )}
-                                onCreateOption={async (inputValue) => {
-                                  if (!currentRestaurant?.restaurant_uuid)
-                                    return;
+                                onCreateOption={async (value) => {
                                   try {
-                                    const newUnit =
-                                      await unitService.createUnit(
-                                        { unit_name: inputValue },
-                                        currentRestaurant.restaurant_uuid,
-                                      );
+                                    if (!currentRestaurant?.restaurant_uuid) return;
+                                    const newUnit = await unitService.createUnit(
+                                      { unit_name: value },
+                                      currentRestaurant.restaurant_uuid,
+                                    );
                                     form.setValue(
                                       `${fieldPrefix}.${index}.recipe_unit`,
                                       {
@@ -757,11 +755,9 @@ export default function RecipeSheet({
                                         unit_name: newUnit.unit_name,
                                       },
                                     );
+                                    queryClient.invalidateQueries(["units"]);
                                   } catch (error) {
-                                    console.error(
-                                      "Failed to create unit:",
-                                      error,
-                                    );
+                                    console.error("Failed to create unit:", error);
                                   }
                                 }}
                                 placeholder=""
