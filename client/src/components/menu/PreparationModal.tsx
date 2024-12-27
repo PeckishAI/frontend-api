@@ -788,19 +788,7 @@ export default function PreparationModal({
         }}
       />
 
-      <PreparationModal
-        open={showNewPreparationDialog}
-        onOpenChange={setShowNewPreparationDialog}
-        onSubmit={async (data) => {
-          if (!currentRestaurant?.restaurant_uuid) return;
-          const newPreparation = await menuService.createProduct(
-            currentRestaurant.restaurant_uuid,
-            data
-          );
-          queryClient.invalidateQueries(["preparations"]);
-          setShowNewPreparationDialog(false);
-        }}
-      />
+      {/* Removed nested PreparationModal to prevent infinite recursion */}
     </>
   );
 }
