@@ -283,7 +283,7 @@ export default function PreparationModal({
                         }}
                       >
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select category" />
+                          <SelectValue placeholder="" />
                         </SelectTrigger>
                         <SelectContent>
                           {defaultCategories.map((category) => (
@@ -360,7 +360,7 @@ export default function PreparationModal({
                             console.error("Failed to create unit:", error);
                           }
                         }}
-                        placeholder="Select or create unit"
+                        placeholder=""
                       />
                     </FormControl>
                   </FormItem>
