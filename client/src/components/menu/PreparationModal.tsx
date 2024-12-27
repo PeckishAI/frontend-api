@@ -151,6 +151,9 @@ export default function PreparationModal({
   onSubmit: (data: PreparationFormData) => void;
 }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showNewIngredientDialog, setShowNewIngredientDialog] = useState(false);
+  const [showNewPreparationDialog, setShowNewPreparationDialog] = useState(false);
+  const [newItemName, setNewItemName] = useState("");
   const { currentRestaurant } = useRestaurantContext();
   const queryClient = useQueryClient();
 
@@ -357,21 +360,9 @@ export default function PreparationModal({
                             options={useUnitOptions(
                               currentRestaurant?.restaurant_uuid,
                             )}
-                            onCreateOption={async (value) => {
-                              try {
-                                if (!currentRestaurant?.restaurant_uuid) return;
-                                const newUnit = await unitService.createUnit(
-                                  { unit_name: value },
-                                  currentRestaurant.restaurant_uuid,
-                                );
-                                field.onChange({
-                                  unit_uuid: newUnit.unit_uuid,
-                                  unit_name: newUnit.unit_name,
-                                });
-                                queryClient.invalidateQueries(["units"]);
-                              } catch (error) {
-                                console.error("Failed to create unit:", error);
-                              }
+                            onCreateOption={(inputValue) => {
+                              setNewItemName(inputValue);
+                              setShowNewPreparationDialog(true);
                             }}
                             placeholder=""
                           />
@@ -436,6 +427,10 @@ export default function PreparationModal({
                                   options={useIngredientOptions(
                                     currentRestaurant?.restaurant_uuid,
                                   )}
+                                  onCreateOption={(inputValue) => {
+                                    setNewItemName(inputValue);
+                                    setShowNewIngredientDialog(true);
+                                  }}
                                   placeholder=""
                                 />
                               </FormControl>
@@ -622,6 +617,10 @@ export default function PreparationModal({
                                   options={usePreparationOptions(
                                     currentRestaurant?.restaurant_uuid,
                                   )}
+                                  onCreateOption={(inputValue) => {
+                                    setNewItemName(inputValue);
+                                    setShowNewPreparationDialog(true);
+                                  }}
                                   placeholder=""
                                 />
                               </FormControl>
