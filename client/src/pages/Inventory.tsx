@@ -59,27 +59,6 @@ export default function Inventory() {
       );
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
-    cacheTime: 0,
-    gcTime: 0,
-    staleTime: 0,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
-    refetchOnWindowFocus: true,
-    select: (data) => {
-      if (!data) return [];
-      const inventoryItems = Object.values(data);
-      return inventoryItems.map((item: any) => ({
-        ingredient_uuid: item.ingredient_uuid,
-        ingredient_name: item.ingredient_name,
-        tags: Array.isArray(item.tags)
-          ? item.tags.map((tag: any) => tag.tag_name)
-          : [],
-        par_level: item.par_level || 0,
-        quantity: item.quantity || 0,
-        unit: item.unit_name || "",
-        ingredient_suppliers: item.ingredient_suppliers || [],
-      }));
-    },
   });
 
   const tags = !inventory
@@ -221,7 +200,7 @@ export default function Inventory() {
               <TableBody>
                 {filteredInventory.map((item) => (
                   <TableRow
-                    key={item.id}
+                    key={item.ingredient_uuid}
                     className="cursor-pointer hover:bg-gray-50"
                     onClick={() => setSelectedIngredient(item)}
                   >
@@ -232,7 +211,7 @@ export default function Inventory() {
                       <div className="flex gap-1 flex-wrap">
                         {item.tags.map((tag) => (
                           <Badge key={tag} variant="secondary">
-                            {tag}
+                            {tag.tag_name}
                           </Badge>
                         ))}
                       </div>
@@ -249,7 +228,7 @@ export default function Inventory() {
                         {item.quantity}
                       </span>
                     </TableCell>
-                    <TableCell>{item.unit}</TableCell>
+                    <TableCell>{item.base_unit.unit_name}</TableCell>
                     <TableCell>
                       <div className="text-sm">
                         {item.ingredient_suppliers.length > 0 &&

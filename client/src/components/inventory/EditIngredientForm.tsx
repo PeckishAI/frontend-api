@@ -40,7 +40,7 @@ const editIngredientSchema = z.object({
   ),
   par_level: z.number().min(0, "Par level must be positive"),
   quantity: z.number().min(0, "Quantity must be positive"),
-  unit: z.object({
+  base_unit: z.object({
     unit_uuid: z.string(),
     unit_name: z.string(),
   }),
@@ -133,7 +133,7 @@ export default function EditIngredientForm({
       tags: [],
       par_level: 0,
       quantity: 0,
-      unit: {},
+      base_unit: {},
       ingredient_suppliers: [],
     },
   });
@@ -372,7 +372,7 @@ export default function EditIngredientForm({
 
             <FormField
               control={form.control}
-              name="unit"
+              name="base_unit"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Unit</FormLabel>
@@ -459,7 +459,11 @@ export default function EditIngredientForm({
                                       if (values && values.length > 0) {
                                         field.onChange({
                                           supplier_uuid: values[0],
-                                          supplier_name: suppliersData?.find(s => s.supplier_uuid === values[0])?.supplier_name || values[0],
+                                          supplier_name:
+                                            suppliersData?.find(
+                                              (s) =>
+                                                s.supplier_uuid === values[0],
+                                            )?.supplier_name || values[0],
                                         });
                                       }
                                     }}
