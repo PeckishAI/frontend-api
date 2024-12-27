@@ -212,6 +212,24 @@ export default function PreparationModal({
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="portion_cost"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cost per Portion</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        readOnly
+                        value={field.value?.toFixed(2) || "0.00"}
+                        className="bg-gray-50"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="space-y-4">
