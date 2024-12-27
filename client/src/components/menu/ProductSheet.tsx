@@ -575,11 +575,21 @@ export default function RecipeSheet({
                                 options={useIngredientOptions(
                                   currentRestaurant?.restaurant_uuid,
                                 )}
-                                onCreateOption={(value) => {
-                                  field.onChange({
-                                    id: value.toLowerCase(),
-                                    name: value,
-                                  });
+                                onCreateOption={async (inputValue) => {
+                                  if (!currentRestaurant?.restaurant_uuid) return;
+                                  try {
+                                    const newIngredient = await inventoryService.createIngredient(
+                                      currentRestaurant.restaurant_uuid,
+                                      { ingredient_name: inputValue }
+                                    );
+                                    field.onChange(newIngredient.ingredient_name);
+                                    form.setValue(
+                                      `${fieldPrefix}.${index}.ingredient_uuid`,
+                                      newIngredient.ingredient_uuid,
+                                    );
+                                  } catch (error) {
+                                    console.error("Failed to create ingredient:", error);
+                                  }
                                 }}
                                 placeholder=""
                               />
@@ -688,8 +698,23 @@ export default function RecipeSheet({
                                 options={useUnitOptions(
                                   currentRestaurant?.restaurant_uuid,
                                 )}
-                                onCreateOption={(value) => {
-                                  field.onChange(value);
+                                onCreateOption={async (inputValue) => {
+                                  if (!currentRestaurant?.restaurant_uuid) return;
+                                  try {
+                                    const newUnit = await unitService.createUnit(
+                                      { unit_name: inputValue },
+                                      currentRestaurant.restaurant_uuid
+                                    );
+                                    form.setValue(
+                                      `${fieldPrefix}.${index}.recipe_unit`,
+                                      {
+                                        unit_uuid: newUnit.unit_uuid,
+                                        unit_name: newUnit.unit_name,
+                                      },
+                                    );
+                                  } catch (error) {
+                                    console.error("Failed to create unit:", error);
+                                  }
                                 }}
                                 placeholder=""
                               />
