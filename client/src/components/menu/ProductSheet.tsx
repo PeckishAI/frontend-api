@@ -217,6 +217,7 @@ export default function RecipeSheet({
 }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showIngredientDialog, setShowIngredientDialog] = useState(false);
+  const [newIngredientName, setNewIngredientName] = useState("");
   const queryClient = useQueryClient();
   const { currentRestaurant } = useRestaurantContext();
 
@@ -629,37 +630,9 @@ export default function RecipeSheet({
                                 options={useIngredientOptions(
                                   currentRestaurant?.restaurant_uuid,
                                 )}
-                                onCreateOption={async (inputValue) => {
-                                  if (!currentRestaurant?.restaurant_uuid)
-                                    return;
-                                  try {
-                                    const newIngredient =
-                                      await inventoryService.createIngredient(
-                                        currentRestaurant.restaurant_uuid,
-                                        { 
-                                          ingredient_name: inputValue,
-                                          par_level: 0,
-                                          quantity: 0,
-                                          unit: {
-                                            unit_uuid: "",
-                                            unit_name: ""
-                                          },
-                                          tags: []
-                                        },
-                                      );
-                                    field.onChange(
-                                      newIngredient.ingredient_name,
-                                    );
-                                    form.setValue(
-                                      `${fieldPrefix}.${index}.ingredient_uuid`,
-                                      newIngredient.ingredient_uuid,
-                                    );
-                                  } catch (error) {
-                                    console.error(
-                                      "Failed to create ingredient:",
-                                      error,
-                                    );
-                                  }
+                                onCreateOption={(inputValue) => {
+                                  setNewIngredientName(inputValue);
+                                  setShowIngredientDialog(true);
                                 }}
                                 placeholder=""
                               />
