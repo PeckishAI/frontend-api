@@ -5,6 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -57,6 +58,7 @@ export default function CategoryModal({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Category</DialogTitle>
+          <DialogDescription>Create a new category for your menu items.</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -92,9 +94,9 @@ export default function CategoryModal({
                   <FormLabel>Select Emoji</FormLabel>
                   <ScrollArea className="h-[200px]">
                     <div className="grid grid-cols-8 gap-2 p-2">
-                      {foodEmojis.map((emoji) => (
+                      {foodEmojis.map((emoji, index) => (
                         <Button
-                          key={emoji}
+                          key={`${emoji}-${index}`}
                           type="button"
                           variant={field.value === emoji ? "default" : "outline"}
                           className="h-10 w-10 p-0 text-lg"
