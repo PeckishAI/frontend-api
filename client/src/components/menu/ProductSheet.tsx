@@ -335,61 +335,91 @@ export default function RecipeSheet({
               <FormField
                 control={form.control}
                 name="category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <div className="flex gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="w-12"
-                        onClick={() => setShowEmojiPicker(true)}
-                      >
-                        {field.value?.emoji}
-                      </Button>
-                      <FormControl>
-                        <CreatableSelect
-                          value={
-                            field.value?.category_name
-                              ? {
-                                  value: field.value.category_uuid || "",
-                                  label: field.value.category_name,
-                                }
-                              : null
-                          }
-                          onChange={(option) => {
-                            if (option) {
-                              form.setValue("category", {
-                                ...field.value,
-                                category_uuid: option.value,
-                                category_name: option.label,
-                              });
+                render={({ field }) => {
+                  const [showCategoryModal, setShowCategoryModal] = useState(false);
+                  const [newCategoryName, setNewCategoryName] = useState("");
+                  
+                  const { data: categories } = useQuery({
+                    queryKey: ["categories", currentRestaurant?.restaurant_uuid],
+                    queryFn: () => {
+                      if (!currentRestaurant?.restaurant_uuid) return [];
+                      return categoryService.getRestaurantCategories(
+                        currentRestaurant.restaurant_uuid,
+                      );
+                    },
+                  });
+
+                  return (
+                    <FormItem>
+                      <FormLabel>Category</FormLabel>
+                      <div className="flex gap-2">
+                        <div className="w-12 flex items-center justify-center">
+                          {field.value?.emoji}
+                        </div>
+                        <FormControl>
+                          <CreatableSelect
+                            value={
+                              field.value?.category_name
+                                ? {
+                                    value: field.value.category_uuid || "",
+                                    label: field.value.category_name,
+                                  }
+                                : null
                             }
-                          }}
-                          options={(() => {
-                            const { data: categories } = useQuery({
-                              queryKey: ["categories", currentRestaurant?.restaurant_uuid],
-                              queryFn: () => {
-                                if (!currentRestaurant?.restaurant_uuid) return [];
-                                return categoryService.getRestaurantCategories(
-                                  currentRestaurant.restaurant_uuid,
-                                );
-                              },
+                            onChange={(option) => {
+                              if (option) {
+                                form.setValue("category", {
+                                  ...field.value,
+                                  category_uuid: option.value,
+                                  category_name: option.label,
+                                });
+                              }
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setNewCategoryName(inputValue);
+                              setShowCategoryModal(true);
+                            }}
+                            options={
+                              categories
+                                ? categories.map((cat: any) => ({
+                                    value: cat.category_uuid,
+                                    label: cat.category_name,
+                                  }))
+                                : []
+                            }
+                            placeholder=""
+                          />
+                        </FormControl>
+                      </div>
+
+                      <CategoryModal
+                        open={showCategoryModal}
+                        onOpenChange={setShowCategoryModal}
+                        onSubmit={async (data) => {
+                          try {
+                            if (!currentRestaurant?.restaurant_uuid) return;
+                            const newCategory = await categoryService.createCategory(
+                              currentRestaurant.restaurant_uuid,
+                              data
+                            );
+                            form.setValue("category", {
+                              category_uuid: newCategory.category_uuid,
+                              category_name: newCategory.category_name,
+                              emoji: newCategory.emoji,
                             });
-                            
-                            return categories
-                              ? categories.map((cat: any) => ({
-                                  value: cat.category_uuid,
-                                  label: cat.category_name,
-                                }))
-                              : [];
-                          })()}
-                          placeholder=""
-                        />
-                      </FormControl>
-                    </div>
-                  </FormItem>
-                )}
+                            queryClient.invalidateQueries(["categories"]);
+                          } catch (error) {
+                            console.error("Failed to create category:", error);
+                          }
+                        }}
+                        defaultValues={{
+                          category_name: newCategoryName,
+                          emoji: "🍽️"
+                        }}
+                      />
+                    </FormItem>
+                  );
+                }}
               />
 
               <FormField
@@ -1042,34 +1072,7 @@ export default function RecipeSheet({
           </form>
         </Form>
 
-        <Dialog open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Select an Emoji</DialogTitle>
-            </DialogHeader>
-            <ScrollArea className="h-[400px] pr-4">
-              <div className="grid grid-cols-8 gap-2">
-                {foodEmojis.map((emoji, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    className="h-10 w-10 p-0 text-lg"
-                    onClick={() => {
-                      const currentCategory = form.getValues("category");
-                      form.setValue("category", {
-                        ...currentCategory,
-                        emoji,
-                      });
-                      setShowEmojiPicker(false);
-                    }}
-                  >
-                    {emoji}
-                  </Button>
-                ))}
-              </div>
-            </ScrollArea>
-          </DialogContent>
-        </Dialog>
+        
       </SheetContent>
     </Sheet>
   );

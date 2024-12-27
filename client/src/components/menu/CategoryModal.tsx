@@ -32,6 +32,10 @@ interface CategoryModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: Category) => void;
+  defaultValues?: {
+    category_name?: string;
+    emoji?: string;
+  };
 }
 
 export default function CategoryModal({
@@ -42,8 +46,8 @@ export default function CategoryModal({
   const form = useForm<Category>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      category_name: "",
-      emoji: "🍽️",
+      category_name: defaultValues?.category_name || "",
+      emoji: defaultValues?.emoji || "🍽️",
     },
   });
 
