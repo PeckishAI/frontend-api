@@ -21,6 +21,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import type { Supplier } from "@/lib/types";
+import { supplierService } from "@/services/supplierService";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
 
 const supplierSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -42,6 +44,7 @@ export default function SupplierDialog({
   onSubmit,
 }: SupplierDialogProps) {
   const { toast } = useToast();
+  const { currentRestaurant } = useRestaurantContext();
 
   const form = useForm<SupplierFormValues>({
     resolver: zodResolver(supplierSchema),
@@ -52,19 +55,37 @@ export default function SupplierDialog({
     },
   });
 
-  const handleSubmit = (values: SupplierFormValues) => {
-    console.log("Form values received:", values);
-    const payload = {
-      ...values,
-      active: true,
-      supplier_name: values.name,
-    };
-    console.log("Creating supplier with payload:", payload);
-    onSubmit(payload);
-    
-    console.log("Submit callback called");
-    onOpenChange(false);
-    form.reset();
+  const handleSubmit = async (values: SupplierFormValues) => {
+    try {
+      console.log("Form values received:", values);
+      const payload = {
+        ...values,
+        active: true,
+        supplier_name: values.name,
+      };
+      console.log("Creating supplier with payload:", payload);
+      
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      
+      const result = await supplierService.createSupplier(
+        currentRestaurant.restaurant_uuid,
+        payload
+      );
+      
+      console.log("Supplier created:", result);
+      onSubmit(result);
+      onOpenChange(false);
+      form.reset();
+    } catch (error) {
+      console.error("Failed to create supplier:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create supplier",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
