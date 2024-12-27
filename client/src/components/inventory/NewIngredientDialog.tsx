@@ -51,7 +51,7 @@ const newIngredientSchema = z.object({
         supplier_name: z.string(),
       }),
       unit_cost: z.number().min(0),
-      pack_size: z.string(),
+      pack_size: z.number().min(0),
     }),
   ),
 });
