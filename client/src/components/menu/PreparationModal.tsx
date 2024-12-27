@@ -234,6 +234,7 @@ export default function PreparationModal({
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] p-0">
         <ScrollArea className="h-[90vh]">
@@ -770,5 +771,35 @@ export default function PreparationModal({
         </ScrollArea>
       </DialogContent>
     </Dialog>
+
+    <NewIngredientDialog 
+        open={showNewIngredientDialog}
+        onOpenChange={setShowNewIngredientDialog}
+        defaultName={newItemName}
+        onSubmit={async (data) => {
+          if (!currentRestaurant?.restaurant_uuid) return;
+          const newIngredient = await inventoryService.createIngredient(
+            currentRestaurant.restaurant_uuid,
+            data
+          );
+          queryClient.invalidateQueries(["ingredients"]);
+          setShowNewIngredientDialog(false);
+        }}
+      />
+
+      <PreparationModal
+        open={showNewPreparationDialog}
+        onOpenChange={setShowNewPreparationDialog}
+        onSubmit={async (data) => {
+          if (!currentRestaurant?.restaurant_uuid) return;
+          const newPreparation = await menuService.createProduct(
+            currentRestaurant.restaurant_uuid,
+            data
+          );
+          queryClient.invalidateQueries(["preparations"]);
+          setShowNewPreparationDialog(false);
+        }}
+      />
+    </>
   );
 }
