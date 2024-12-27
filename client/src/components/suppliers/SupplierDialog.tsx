@@ -41,6 +41,7 @@ export default function SupplierDialog({
   onSubmit,
   defaultName = "",
 }: SupplierDialogProps) {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const form = useForm<SupplierFormValues>({
     resolver: zodResolver(supplierSchema),
     defaultValues: {
@@ -68,7 +69,17 @@ export default function SupplierDialog({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(async (data) => {
+              setIsSubmitting(true);
+              try {
+                await onSubmit(data);
+              } finally {
+                setIsSubmitting(false);
+              }
+            })}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="supplier_name"
@@ -115,7 +126,9 @@ export default function SupplierDialog({
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit">Create Supplier</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Creating..." : "Create Supplier"}
+              </Button>
             </div>
           </form>
         </Form>
