@@ -45,6 +45,10 @@ const preparationSchema = z.object({
     category_name: z.string(),
     emoji: z.string(),
   }),
+  unit: z.object({
+    unit_uuid: z.string(),
+    unit_name: z.string(),
+  }),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
   portion_cost: z.number().min(0, "Portion cost must be at least 0"),
   preparation_ingredients: z.array(
@@ -290,6 +294,49 @@ export default function PreparationModal({
                         onChange={(e) =>
                           field.onChange(parseInt(e.target.value))
                         }
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="unit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Unit</FormLabel>
+                    <FormControl>
+                      <CreatableSelect
+                        value={field.value ? {
+                          value: field.value.unit_uuid,
+                          label: field.value.unit_name,
+                        } : null}
+                        onChange={(option) => {
+                          if (option) {
+                            field.onChange({
+                              unit_uuid: option.value,
+                              unit_name: option.label,
+                            });
+                          }
+                        }}
+                        options={useUnitOptions(currentRestaurant?.restaurant_uuid)}
+                        onCreateOption={async (value) => {
+                          try {
+                            if (!currentRestaurant?.restaurant_uuid) return;
+                            const newUnit = await unitService.createUnit(
+                              { unit_name: value },
+                              currentRestaurant.restaurant_uuid,
+                            );
+                            field.onChange({
+                              unit_uuid: newUnit.unit_uuid,
+                              unit_name: newUnit.unit_name,
+                            });
+                          } catch (error) {
+                            console.error("Failed to create unit:", error);
+                          }
+                        }}
+                        placeholder="Select or create unit"
                       />
                     </FormControl>
                   </FormItem>
