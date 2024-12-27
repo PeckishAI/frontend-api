@@ -378,16 +378,17 @@ export default function EditIngredientForm({
                   <FormLabel>Unit</FormLabel>
                   <FormControl>
                     <CreatableSelect
-                      value={
-                        field.value.unit_name ? [field.value.unit_name] : []
-                      }
+                      value={field.value?.unit_uuid ? {
+                        value: field.value.unit_uuid,
+                        label: field.value.unit_name
+                      } : null}
                       onChange={(values) => {
-                        if (values[0]) {
+                        if (values) {
                           const selectedUnit = unitsData?.find(
-                            (u) => u.unit_uuid === values[0],
+                            (u) => u.unit_uuid === values.value,
                           ) || {
-                            unit_uuid: values[0],
-                            unit_name: values[0],
+                            unit_uuid: values.value,
+                            unit_name: values.label,
                           };
                           field.onChange({
                             unit_uuid: selectedUnit.unit_uuid,
