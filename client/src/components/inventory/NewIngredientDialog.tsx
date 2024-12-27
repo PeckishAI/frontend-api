@@ -177,7 +177,7 @@ export default function NewIngredientDialog({
                 <FormControl>
                   <CreatableSelect
                     multiple
-                    placeholder="Add a tag..."
+                    placeholder=""
                     value={field.value.map((tag) => tag.tag_uuid)}
                     onChange={(values) => {
                       console.log("Selected values:", values);
@@ -321,7 +321,7 @@ export default function NewIngredientDialog({
                       console.error("Failed to create unit:", error);
                     }
                   }}
-                  placeholder="Select or create unit"
+                  placeholder=""
                 />
               </FormControl>
               <FormMessage />

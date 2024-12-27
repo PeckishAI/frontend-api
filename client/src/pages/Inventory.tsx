@@ -67,7 +67,6 @@ export default function Inventory() {
     refetchOnWindowFocus: true,
     select: (data) => {
       if (!data) return [];
-      console.log("Raw data in select:", data);
       const inventoryItems = Object.values(data);
       return inventoryItems.map((item: any) => ({
         ingredient_uuid: item.ingredient_uuid,
@@ -82,7 +81,6 @@ export default function Inventory() {
       }));
     },
   });
-  console.log("inventory", inventory);
 
   const tags = !inventory
     ? []
@@ -294,8 +292,6 @@ export default function Inventory() {
             title: "Item Added",
             description: `${data.ingredient_name} has been added to the inventory.`,
           });
-          // In a real app, we would add the item to the database here
-          console.log("New item:", data);
         }}
       />
 
@@ -310,8 +306,6 @@ export default function Inventory() {
             title: "Item Updated",
             description: `${data.ingredient_name} has been updated in the inventory.`,
           });
-          // In a real app, we would update the item in the database here
-          console.log("Updated item:", data);
         }}
       />
     </div>

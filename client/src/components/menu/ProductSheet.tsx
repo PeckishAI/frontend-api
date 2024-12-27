@@ -522,19 +522,10 @@ export default function RecipeSheet({
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => setShowIngredientDialog(true)}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Create New
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
                       onClick={addIngredient}
                     >
                       <Plus className="h-4 w-4 mr-2" />
-                      Add Existing
+                      Add Ingredient
                     </Button>
                   </div>
                 </div>
@@ -545,11 +536,13 @@ export default function RecipeSheet({
                   onSubmit={async (data) => {
                     try {
                       if (!currentRestaurant?.restaurant_uuid) return;
-                      const newIngredient = await inventoryService.createIngredient(
-                        currentRestaurant.restaurant_uuid,
-                        data
-                      );
-                      const currentIngredients = form.getValues("product_ingredients") || [];
+                      const newIngredient =
+                        await inventoryService.createIngredient(
+                          currentRestaurant.restaurant_uuid,
+                          data,
+                        );
+                      const currentIngredients =
+                        form.getValues("product_ingredients") || [];
                       form.setValue("product_ingredients", [
                         ...currentIngredients,
                         {
@@ -743,11 +736,13 @@ export default function RecipeSheet({
                                 )}
                                 onCreateOption={async (value) => {
                                   try {
-                                    if (!currentRestaurant?.restaurant_uuid) return;
-                                    const newUnit = await unitService.createUnit(
-                                      { unit_name: value },
-                                      currentRestaurant.restaurant_uuid,
-                                    );
+                                    if (!currentRestaurant?.restaurant_uuid)
+                                      return;
+                                    const newUnit =
+                                      await unitService.createUnit(
+                                        { unit_name: value },
+                                        currentRestaurant.restaurant_uuid,
+                                      );
                                     form.setValue(
                                       `${fieldPrefix}.${index}.recipe_unit`,
                                       {
@@ -757,7 +752,10 @@ export default function RecipeSheet({
                                     );
                                     queryClient.invalidateQueries(["units"]);
                                   } catch (error) {
-                                    console.error("Failed to create unit:", error);
+                                    console.error(
+                                      "Failed to create unit:",
+                                      error,
+                                    );
                                   }
                                 }}
                                 placeholder=""
