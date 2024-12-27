@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import Creatable from "react-select/creatable";
 import { components, createFilter } from "react-select";
@@ -16,7 +17,7 @@ interface Group {
 interface CreatableSelectProps {
   options: Option[] | Group[];
   onChange: (selectedOption: Option | null) => void;
-  onCreateOption: (newOption: string) => void;
+  onCreateOption?: (newOption: string) => void;
   placeholder?: string;
   value?: Option | null;
   size?: "small" | "medium" | "large";
@@ -138,10 +139,9 @@ const customStyles = (size: "small" | "medium" | "large") => ({
 
 const CustomMenu = (props: any) => {
   const { children, selectProps } = props;
-
   const handleCreate = () => {
-    if (typeof selectProps.onCreateOption === 'function') {
-      selectProps.onCreateOption(selectProps.inputValue || "New Item");
+    if (selectProps.onCreateOption && selectProps.inputValue) {
+      selectProps.onCreateOption(selectProps.inputValue);
     }
   };
 
@@ -196,7 +196,11 @@ const CustomOption = (props: any) => {
     return (
       <div
         className="flex items-center cursor-pointer p-2 text-sm hover:bg-gray-100"
-        onClick={() => selectProps.onCreateOption(selectProps.inputValue)}
+        onClick={() => {
+          if (selectProps.onCreateOption) {
+            selectProps.onCreateOption(selectProps.inputValue);
+          }
+        }}
       >
         <PlusCircle className="mr-2 h-4 w-4" />
         <span>Create "{selectProps.inputValue}"</span>
@@ -226,11 +230,13 @@ export const CreatableSelect: React.FC<CreatableSelectProps> = ({
   };
 
   const handleCreate = (newOptionLabel: string) => {
+    if (onCreateOption) {
+      onCreateOption(newOptionLabel);
+    }
     const newOption = {
       label: newOptionLabel,
       value: newOptionLabel.toLowerCase(),
     };
-    onCreateOption(newOptionLabel);
     handleChange(newOption);
   };
 
