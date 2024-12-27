@@ -127,12 +127,12 @@ export default function Preparations() {
         <h2 className="text-2xl font-semibold">Preparations</h2>
         <div className="flex items-center gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
-          <Button onClick={() => setEditingPreparation({})}>
+          <Button onClick={() => setEditingPreparation(true)}>
             <PlusCircle className="mr-2 h-4 w-4" />
             New Preparation
           </Button>
           <PreparationModal
-            open={!!editingPreparation}
+            open={editingPreparation === true}
             onOpenChange={(open) => {
               if (!open) setEditingPreparation(null);
             }}
@@ -207,7 +207,7 @@ export default function Preparations() {
       </div>
 
       <PreparationSheet
-        open={!!editingPreparation}
+        open={!!editingPreparation && editingPreparation !== true}
         onOpenChange={(open) => {
           if (!open) setEditingPreparation(null);
         }}
