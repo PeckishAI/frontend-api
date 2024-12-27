@@ -182,12 +182,15 @@ export default function NewIngredientDialog({
                       value: tag.tag_uuid,
                       label: tag.tag_name
                     }))}
-                    onChange={(options) => {
-                      const selectedTags = (options || []).map(option => ({
+                    onChange={(option) => {
+                      if (!option) {
+                        field.onChange([]);
+                        return;
+                      }
+                      field.onChange([{
                         tag_uuid: option.value,
                         tag_name: option.label
-                      }));
-                      field.onChange(selectedTags);
+                      }]);
                     }}
                     options={
                       tagsData?.map((tag) => ({
