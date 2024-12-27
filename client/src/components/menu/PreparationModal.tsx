@@ -499,7 +499,9 @@ export default function PreparationModal({
                                       );
                                     }
                                   }}
-                                  options={[]}
+                                  options={useUnitOptions(
+                                    currentRestaurant?.restaurant_uuid,
+                                  )}
                                   placeholder=""
                                 />
                               </FormControl>
@@ -664,7 +666,9 @@ export default function PreparationModal({
                                       );
                                     }
                                   }}
-                                  options={[]}
+                                  options={useUnitOptions(
+                                    currentRestaurant?.restaurant_uuid,
+                                  )}
                                   placeholder=""
                                 />
                               </FormControl>
