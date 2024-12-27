@@ -597,6 +597,7 @@ export default function NewIngredientDialog({
                 supplier_name: newSupplier.supplier_name,
               });
             }
+            setShowSupplierDialog(false);
           } catch (error) {
             console.error("Failed to create supplier:", error);
           }
