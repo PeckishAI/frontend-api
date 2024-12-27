@@ -147,6 +147,7 @@ export const unitService = {
       }
 
       const result = await response.json();
+      console.log("Conversion factor:", result.data);
       if (!result.success) {
         throw new Error("Failed to create unit");
       }
