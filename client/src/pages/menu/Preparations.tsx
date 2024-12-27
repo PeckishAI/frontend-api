@@ -206,7 +206,7 @@ export default function Preparations() {
         )}
       </div>
 
-      <PreparationModal
+      <PreparationSheet
         open={!!editingPreparation && editingPreparation !== true}
         onOpenChange={(open) => {
           if (!open) setEditingPreparation(null);
