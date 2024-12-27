@@ -874,24 +874,6 @@ export default function PreparationSheet({
             }
           }}
         />
-
-        <PreparationModal
-          open={showNewPreparationDialog}
-          onOpenChange={setShowNewPreparationDialog}
-          onSubmit={async (data) => {
-            try {
-              if (!currentRestaurant?.restaurant_uuid) return;
-              const newPreparation = await menuService.createProduct(
-                currentRestaurant.restaurant_uuid,
-                data
-              );
-              queryClient.invalidateQueries(["preparations"]);
-              setShowNewPreparationDialog(false);
-            } catch (error) {
-              console.error("Failed to create preparation:", error);
-            }
-          }}
-        />
       </SheetContent>
     </Sheet>
   );
