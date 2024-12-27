@@ -24,11 +24,8 @@ import type { Supplier } from "@/lib/types";
 
 const supplierSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  category: z.string().min(1, "Category is required"),
   email: z.string().email("Invalid email").optional().or(z.literal("")),
   phone: z.string().optional().or(z.literal("")),
-  address: z.string().optional().or(z.literal("")),
-  notes: z.string().optional().or(z.literal("")),
 });
 
 type SupplierFormValues = z.infer<typeof supplierSchema>;
@@ -54,11 +51,12 @@ export default function SupplierDialog({
       email: "",
       phone: "",
       address: "",
-      notes: "",
+
     },
   });
 
   const handleSubmit = (values: SupplierFormValues) => {
+    console.log("Form values received:", values);
     const payload = {
       ...values,
       active: true,
@@ -66,6 +64,7 @@ export default function SupplierDialog({
     };
     console.log("Creating supplier with payload:", payload);
     onSubmit(payload);
+    console.log("Submit callback called");
     onOpenChange(false);
     form.reset();
   };
