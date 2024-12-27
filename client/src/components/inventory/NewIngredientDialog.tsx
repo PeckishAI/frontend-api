@@ -176,19 +176,25 @@ export default function NewIngredientDialog({
                 </div>
                 <FormControl>
                   <CreatableSelect
-                    isMulti
-                    size="large"
+                    multiple
                     placeholder=""
                     value={field.value.map((tag) => ({
                       value: tag.tag_uuid,
-                      label: tag.tag_name
+                      label: tag.tag_name,
                     }))}
-                    onChange={(newValue) => {
-                      const selectedTags = newValue.map(option => ({
-                        tag_uuid: option.value,
-                        tag_name: option.label
-                      }));
-                      field.onChange(selectedTags);
+                    onChange={(option) => {
+                      if (!option) {
+                        field.onChange([]);
+                        return;
+                      }
+                      field.onChange([
+                        ...field.value,
+                        {
+                          tag_uuid: option.value,
+                          tag_name: option.label,
+                        },
+                      ]);
+                      console.log("Fields:", field);
                     }}
                     options={
                       tagsData?.map((tag) => ({
