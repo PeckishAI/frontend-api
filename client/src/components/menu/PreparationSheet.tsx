@@ -454,10 +454,12 @@ export default function PreparationSheet({
                       <FormControl>
                         <CreatableSelect
                           value={
-                            ingredients[index]?.recipe_unit?.unit_uuid
+                            field.value
                               ? {
-                                  value: ingredients[index].recipe_unit.unit_uuid,
-                                  label: ingredients[index].recipe_unit.unit_name,
+                                  value: field.value,
+                                  label:
+                                    ingredients[index]?.recipe_unit
+                                      ?.unit_name || field.value,
                                 }
                               : null
                           }
