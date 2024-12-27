@@ -51,6 +51,14 @@ export default function SupplierDialog({
     },
   });
 
+  React.useEffect(() => {
+    form.reset({
+      supplier_name: defaultName,
+      email: "",
+      phone: "",
+    });
+  }, [defaultName, form]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
