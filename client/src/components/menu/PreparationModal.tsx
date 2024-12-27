@@ -231,7 +231,8 @@ export default function PreparationModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-3xl h-[90vh]">
+        <ScrollArea className="h-[calc(90vh-8rem)]">
         <DialogHeader>
           <DialogTitle>Create New Preparation</DialogTitle>
         </DialogHeader>
@@ -696,6 +697,7 @@ export default function PreparationModal({
             </DialogFooter>
           </form>
         </Form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
