@@ -54,12 +54,14 @@ const useIngredientOptions = (restaurantUuid?: string) => {
     queryKey: ["ingredients", restaurantUuid],
     queryFn: async () => {
       if (!restaurantUuid) return [];
-      const data = await inventoryService.getRestaurantIngredients(restaurantUuid);
+      const data =
+        await inventoryService.getRestaurantIngredients(restaurantUuid);
       return data;
     },
     enabled: !!restaurantUuid,
   });
 
+  console.log("Ingredients: ", ingredients);
   return ingredients
     ? Object.values(ingredients).map((ing: any) => ({
         label: ing.ingredient_name,
@@ -116,8 +118,6 @@ const useUnitOptions = (restaurantUuid?: string) => {
     },
   ];
 };
-
-
 
 const productSchema = z.object({
   product_uuid: z.string().optional(),
@@ -477,8 +477,14 @@ export default function RecipeSheet({
                                 }
                                 onChange={async (option) => {
                                   if (option) {
-                                    console.log("Selected ingredient option:", option);
-                                    console.log("Unit cost from option:", option.unit_cost);
+                                    console.log(
+                                      "Selected ingredient option:",
+                                      option,
+                                    );
+                                    console.log(
+                                      "Unit cost from option:",
+                                      option.unit_cost,
+                                    );
 
                                     field.onChange(option.label);
                                     form.setValue(
@@ -490,20 +496,27 @@ export default function RecipeSheet({
                                       option.unit_cost || 0,
                                     );
 
-                                    const quantity = form.watch(`${fieldPrefix}.${index}.quantity`) || 0;
-                                    const conversionFactor = form.watch(`${fieldPrefix}.${index}.base_to_recipe`) || 1;
+                                    const quantity =
+                                      form.watch(
+                                        `${fieldPrefix}.${index}.quantity`,
+                                      ) || 0;
+                                    const conversionFactor =
+                                      form.watch(
+                                        `${fieldPrefix}.${index}.base_to_recipe`,
+                                      ) || 1;
                                     const unitCost = option.unit_cost || 0;
 
                                     console.log("Calculating total cost:", {
                                       quantity,
                                       conversionFactor,
                                       unitCost,
-                                      calculatedTotal: quantity * conversionFactor * unitCost
+                                      calculatedTotal:
+                                        quantity * conversionFactor * unitCost,
                                     });
 
                                     form.setValue(
                                       `${fieldPrefix}.${index}.total_cost`,
-                                      quantity * conversionFactor * unitCost
+                                      quantity * conversionFactor * unitCost,
                                     );
                                   }
                                 }}
@@ -757,15 +770,22 @@ export default function RecipeSheet({
                                 value={
                                   field.value
                                     ? {
-                                        value: preparation.preparation_uuid || "",
+                                        value:
+                                          preparation.preparation_uuid || "",
                                         label: field.value || "",
                                       }
                                     : null
                                 }
                                 onChange={async (option) => {
                                   if (option) {
-                                    console.log("Selected preparation option:", option);
-                                    console.log("Unit cost from option:", option.unit_cost);
+                                    console.log(
+                                      "Selected preparation option:",
+                                      option,
+                                    );
+                                    console.log(
+                                      "Unit cost from option:",
+                                      option.unit_cost,
+                                    );
 
                                     field.onChange(option.label);
                                     form.setValue(
@@ -787,7 +807,8 @@ export default function RecipeSheet({
                                       quantity,
                                       conversionFactor,
                                       unitCost,
-                                      calculatedTotal: quantity * conversionFactor * unitCost
+                                      calculatedTotal:
+                                        quantity * conversionFactor * unitCost,
                                     });
 
                                     form.setValue(
