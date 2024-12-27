@@ -133,17 +133,26 @@ export default function NewIngredientDialog({
     return () => subscription.unsubscribe();
   }, [form]);
 
-  const handleSubmit = (values: NewIngredientFormValues) => {
+  const handleSubmit = async (values: NewIngredientFormValues) => {
     console.log("Form values before submission:", values);
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
     }
-    inventoryService.createIngredient(
-      currentRestaurant?.restaurant_uuid,
-      values,
-    );
-    onSubmit(values);
-    onOpenChange(false);
+    try {
+      const createdIngredient = await inventoryService.createIngredient(
+        currentRestaurant?.restaurant_uuid,
+        values,
+      );
+      console.log("Created ingredient:", {
+        timestamp: new Date().toISOString(),
+        ingredient: createdIngredient,
+        values
+      });
+      onSubmit(values);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Failed to create ingredient:", error);
+    }
   };
 
   const formContent = (
