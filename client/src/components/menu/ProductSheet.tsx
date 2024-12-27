@@ -263,6 +263,27 @@ export default function RecipeSheet({
       "product_ingredients",
       currentIngredients.filter((_, i) => i !== index),
     );
+    calculateTotalCost();
+  };
+
+  const calculateTotalCost = () => {
+    const ingredients = form.getValues("product_ingredients") || [];
+    const preparations = form.getValues("product_preparations") || [];
+
+    const totalIngredientCost = ingredients.reduce(
+      (sum, ing) => sum + (ing.total_cost || 0),
+      0,
+    );
+    const totalPrepCost = preparations.reduce(
+      (sum, prep) => sum + (prep.total_cost || 0),
+      0,
+    );
+    const portionCount = form.getValues("portion_count") || 1;
+
+    form.setValue(
+      "portion_cost",
+      (totalIngredientCost + totalPrepCost) / portionCount,
+    );
   };
 
   const getMarginPercentage = () => {
