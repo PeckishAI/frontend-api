@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,11 +20,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import type { Supplier } from "@/lib/types";
-import { supplierService } from "@/services/supplierService";
-import { useRestaurantContext } from "@/contexts/RestaurantContext";
-import { useQueryClient } from "@tanstack/react-query"; // Added import for queryClient
 
 const supplierSchema = z.object({
   supplier_name: z.string().min(1, "Name is required"),
@@ -44,78 +40,34 @@ export default function SupplierDialog({
   open,
   onOpenChange,
   onSubmit,
+  defaultName = "",
 }: SupplierDialogProps) {
-  const { toast } = useToast();
-  const { currentRestaurant } = useRestaurantContext();
-  const queryClient = useQueryClient(); // Added queryClient hook
-
   const form = useForm<SupplierFormValues>({
     resolver: zodResolver(supplierSchema),
     defaultValues: {
-      supplier_name: defaultName || "",
+      supplier_name: defaultName,
       email: "",
       phone: "",
     },
   });
 
-  const handleSubmit = async (values: SupplierFormValues) => {
-    try {
-      const payload = {
-        ...values,
-        supplier_name: values.supplier_name,
-      };
-
-      if (!currentRestaurant?.restaurant_uuid) {
-        throw new Error("No restaurant selected");
-      }
-      const result = await supplierService.createSupplier(
-        currentRestaurant.restaurant_uuid,
-        payload,
-      );
-
-      queryClient.invalidateQueries([
-        "suppliers",
-        currentRestaurant.restaurant_uuid,
-      ]); // Added query invalidation
-      toast({
-        title: "Supplier Created",
-        description: `${values.supplier_name} has been added successfully.`, // Corrected description
-      });
-      onSubmit(result); // Moved onSubmit call after toast
-      onOpenChange(false);
-      form.reset();
-    } catch (error) {
-      console.error("Failed to create supplier:", error);
-      toast({
-        title: "Error",
-        description: "Failed to create supplier",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add New Supplier</DialogTitle>
           <DialogDescription>
-            Add a new supplier to your system. Fill out their basic information
-            below.
+            Add a new supplier to your system. Fill out their information below.
           </DialogDescription>
         </DialogHeader>
-
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-6 pt-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="supplier_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Supplier Name</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -124,45 +76,39 @@ export default function SupplierDialog({
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input type="email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div className="flex justify-end gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit">Create supplier</Button>
+              <Button type="submit">Create Supplier</Button>
             </div>
           </form>
         </Form>
