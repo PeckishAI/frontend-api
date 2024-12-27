@@ -133,10 +133,13 @@ export default function NewIngredientDialog({
     return () => subscription.unsubscribe();
   }, [form]);
 
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  
   const handleSubmit = async (values: NewIngredientFormValues) => {
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
     }
+    setIsSubmitting(true);
     try {
       const createdIngredient = await inventoryService.createIngredient(
         currentRestaurant?.restaurant_uuid,
@@ -146,6 +149,8 @@ export default function NewIngredientDialog({
       onOpenChange(false);
     } catch (error) {
       console.error("Failed to create ingredient:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -557,7 +562,9 @@ export default function NewIngredientDialog({
               Cancel
             </Button>
           )}
-          <Button type="submit">Create ingredient</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Creating..." : "Create ingredient"}
+          </Button>
         </div>
       </form>
     </Form>
