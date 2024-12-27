@@ -45,10 +45,23 @@ const preparationSchema = z.object({
     emoji: z.string(),
   }),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
+  portion_cost: z.number().min(0, "Portion cost must be at least 0"),
   preparation_ingredients: z.array(
     z.object({
       ingredient_uuid: z.string(),
       ingredient_name: z.string(),
+      quantity: z.number().min(0),
+      recipe_unit: z.object({
+        unit_uuid: z.string(),
+        unit_name: z.string(),
+      }),
+      base_to_recipe: z.number(),
+    })
+  ),
+  preparation_preparations: z.array(
+    z.object({
+      preparation_uuid: z.string(),
+      preparation_name: z.string(),
       quantity: z.number().min(0),
       recipe_unit: z.object({
         unit_uuid: z.string(),
