@@ -117,16 +117,7 @@ const useUnitOptions = (restaurantUuid?: string) => {
   ];
 };
 
-const usePreparationOptions = (restaurantUuid?: string) => {
-  const { data: preparations } = useQuery({
-    queryKey: ["preparations", restaurantUuid],
-    queryFn: () => {
-      if (!restaurantUuid) return [];
-      return menuService.getRestaurantPreparations(restaurantUuid);
-    },
-  });
-  return preparations || [];
-};
+
 
 const productSchema = z.object({
   product_uuid: z.string().optional(),
