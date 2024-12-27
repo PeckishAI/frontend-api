@@ -41,6 +41,7 @@ import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { foodEmojis } from "@/lib/emojis";
+import CategoryModal from "./CategoryModal"; // Added import
 
 export const defaultCategories = [
   { value: "mains", label: "Main Dishes", emoji: "🍽️" },
@@ -338,7 +339,7 @@ export default function RecipeSheet({
                 render={({ field }) => {
                   const [showCategoryModal, setShowCategoryModal] = useState(false);
                   const [newCategoryName, setNewCategoryName] = useState("");
-                  
+
                   const { data: categories } = useQuery({
                     queryKey: ["categories", currentRestaurant?.restaurant_uuid],
                     queryFn: () => {
@@ -1071,8 +1072,6 @@ export default function RecipeSheet({
             </div>
           </form>
         </Form>
-
-        
       </SheetContent>
     </Sheet>
   );
