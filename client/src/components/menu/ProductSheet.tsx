@@ -622,7 +622,16 @@ export default function RecipeSheet({
                                     const newIngredient =
                                       await inventoryService.createIngredient(
                                         currentRestaurant.restaurant_uuid,
-                                        { ingredient_name: inputValue },
+                                        { 
+                                          ingredient_name: inputValue,
+                                          par_level: 0,
+                                          quantity: 0,
+                                          unit: {
+                                            unit_uuid: "",
+                                            unit_name: ""
+                                          },
+                                          tags: []
+                                        },
                                       );
                                     field.onChange(
                                       newIngredient.ingredient_name,
