@@ -855,27 +855,42 @@ export default function PreparationSheet({
           </DialogContent>
         </Dialog>
 
-        {/* New Ingredient Dialog */}
-        <Dialog open={showNewIngredientDialog} onOpenChange={setShowNewIngredientDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>New Ingredient</DialogTitle>
-            </DialogHeader>
-            {/* Add form for creating a new ingredient here */}
-            <p>Implement New Ingredient Dialog</p> {/* Placeholder */}
-          </DialogContent>
-        </Dialog>
+        <NewIngredientDialog 
+          open={showNewIngredientDialog} 
+          onOpenChange={setShowNewIngredientDialog}
+          defaultName={newItemName}
+          onSubmit={async (data) => {
+            try {
+              if (!currentRestaurant?.restaurant_uuid) return;
+              const newIngredient = await inventoryService.createIngredient(
+                currentRestaurant.restaurant_uuid,
+                data
+              );
+              queryClient.invalidateQueries(["ingredients"]);
+              setShowNewIngredientDialog(false);
+            } catch (error) {
+              console.error("Failed to create ingredient:", error);
+            }
+          }}
+        />
 
-        {/* New Preparation Dialog */}
-        <Dialog open={showNewPreparationDialog} onOpenChange={setShowNewPreparationDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>New Preparation</DialogTitle>
-            </DialogHeader>
-            {/* Add form for creating a new preparation here */}
-            <p>Implement New Preparation Dialog</p> {/* Placeholder */}
-          </DialogContent>
-        </Dialog>
+        <PreparationModal
+          open={showNewPreparationDialog}
+          onOpenChange={setShowNewPreparationDialog}
+          onSubmit={async (data) => {
+            try {
+              if (!currentRestaurant?.restaurant_uuid) return;
+              const newPreparation = await menuService.createProduct(
+                currentRestaurant.restaurant_uuid,
+                data
+              );
+              queryClient.invalidateQueries(["preparations"]);
+              setShowNewPreparationDialog(false);
+            } catch (error) {
+              console.error("Failed to create preparation:", error);
+            }
+          }}
+        />
       </SheetContent>
     </Sheet>
   );
