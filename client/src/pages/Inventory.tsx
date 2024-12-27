@@ -210,7 +210,7 @@ export default function Inventory() {
                     <TableCell>
                       <div className="flex gap-1 flex-wrap">
                         {item.tags.map((tag) => (
-                          <Badge key={tag} variant="secondary">
+                          <Badge key={tag.tag_uuid} variant="secondary">
                             {tag.tag_name}
                           </Badge>
                         ))}
