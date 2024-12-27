@@ -138,6 +138,11 @@ const customStyles = (size: "small" | "medium" | "large") => ({
 
 const CustomMenu = (props: any) => {
   const { children, selectProps } = props;
+  const handleCreate = () => {
+    if (props.selectProps.onCreateOption && props.selectProps.inputValue) {
+      props.selectProps.onCreateOption(props.selectProps.inputValue);
+    }
+  };
 
   return (
     <components.Menu {...props}>
@@ -146,11 +151,7 @@ const CustomMenu = (props: any) => {
         <div className="border-t border-gray-300 my-2"></div>
         <div
           className="flex items-center cursor-pointer px-4 py-2 text-sm hover:bg-gray-100 rounded-md mb-2"
-          onClick={() => {
-            if (selectProps.onCreateOption && selectProps.inputValue) {
-              selectProps.onCreateOption(selectProps.inputValue);
-            }
-          }}
+          onClick={handleCreate}
         >
           <PlusCircle className="mr-2 h-4 w-4 text-gray-600" />
           <span className="text-gray-800">
