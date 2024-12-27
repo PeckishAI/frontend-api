@@ -147,8 +147,8 @@ const CustomMenu = (props: any) => {
         <div
           className="flex items-center cursor-pointer px-4 py-2 text-sm hover:bg-gray-100 rounded-md mb-2"
           onClick={() => {
-            if (props.selectProps.onCreateOption) {
-              props.selectProps.onCreateOption(props.selectProps.inputValue);
+            if (selectProps.onCreateOption && selectProps.inputValue) {
+              selectProps.onCreateOption(selectProps.inputValue);
             }
           }}
         >
