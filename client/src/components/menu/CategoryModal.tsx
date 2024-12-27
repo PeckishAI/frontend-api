@@ -42,6 +42,7 @@ export default function CategoryModal({
   open,
   onOpenChange,
   onSubmit,
+  defaultValues = { category_name: "", emoji: "🍽️" },
 }: CategoryModalProps) {
   const form = useForm<Category>({
     resolver: zodResolver(categorySchema),
