@@ -788,7 +788,65 @@ export default function PreparationModal({
         }}
       />
 
-      {/* Removed nested PreparationModal to prevent infinite recursion */}
+      <Dialog open={showNewPreparationDialog} onOpenChange={setShowNewPreparationDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Preparation</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <FormField
+              control={form.control}
+              name="preparation_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} defaultValue={newItemName} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="portion_count"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Portions</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      min={1} 
+                      {...field}
+                      onChange={(e) => field.onChange(parseInt(e.target.value))}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setShowNewPreparationDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={async () => {
+              try {
+                if (!currentRestaurant?.restaurant_uuid) return;
+                const data = form.getValues();
+                const newPreparation = await menuService.createPreparation(
+                  currentRestaurant.restaurant_uuid,
+                  data
+                );
+                queryClient.invalidateQueries(["preparations"]);
+                setShowNewPreparationDialog(false);
+              } catch (error) {
+                console.error("Failed to create preparation:", error);
+              }
+            }}>
+              Create
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
