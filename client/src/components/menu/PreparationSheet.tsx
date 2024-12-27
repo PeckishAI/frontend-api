@@ -563,6 +563,23 @@ export default function PreparationSheet({
                                 `preparation_preparations.${index}.preparation_uuid`,
                                 option.value,
                               );
+                              form.setValue(
+                                `preparation_preparations.${index}.unit_cost`,
+                                option.unit_cost || 0,
+                              );
+
+                              const quantity = form.watch(
+                                `preparation_preparations.${index}.quantity`,
+                              ) || 0;
+                              const conversionFactor = form.watch(
+                                `preparation_preparations.${index}.base_to_recipe`,
+                              ) || 1;
+                              
+                              form.setValue(
+                                `preparation_preparations.${index}.total_cost`,
+                                quantity * conversionFactor * (option.unit_cost || 0),
+                              );
+                              calculateTotalCost();
                             }
                           }}
                           options={usePreparationOptions(
