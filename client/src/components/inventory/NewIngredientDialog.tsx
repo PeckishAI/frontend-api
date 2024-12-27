@@ -65,45 +65,7 @@ interface NewIngredientDialogProps {
   embedded?: boolean;
 }
 
-function SupplierDialog({ open, onOpenChange, defaultName, onSubmit }: any) {
-  const form = useForm({
-    defaultValues: { supplier_name: defaultName || "" },
-  });
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add New Supplier</DialogTitle>
-          <DialogDescription>
-            Add a new supplier to your system. Fill out their information below.
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form} onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="supplier_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Supplier Name</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex justify-end gap-4 pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit">Create Supplier</Button>
-          </div>
-        </Form>
-      </DialogContent>
-    </Dialog>
-  );
-}
+import SupplierDialog from "@/components/suppliers/SupplierDialog";
 
 
 export default function NewIngredientDialog({
