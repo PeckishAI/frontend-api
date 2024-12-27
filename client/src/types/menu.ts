@@ -25,7 +25,7 @@ export interface ProductPreparation {
   uuid?: string;
   preparation_uuid?: string;
   preparation_name?: string;
-  quanity?: number;
+  quantity?: number;
   base_unit?: Unit;
   recipe_unit?: Unit;
   unit_cost?: number;
@@ -60,7 +60,7 @@ export interface PreparationPreparation {
   uuid?: string;
   preparation_uuid?: string;
   preparation_name?: string;
-  quanity?: number;
+  quantity?: number;
   base_unit?: Unit;
   recipe_unit?: Unit;
   unit_cost?: number;

@@ -822,32 +822,16 @@ export default function RecipeSheet({
                                       option.value,
                                     );
 
-                                    const quantity =
-                                      form.watch(
-                                        `product_preparations.${index}.quantity`,
-                                      ) || 0;
-                                    const conversionFactor =
-                                      form.watch(
-                                        `product_preparations.${index}.base_to_recipe`,
-                                      ) || 1;
+                                    const quantity = form.watch(`product_preparations.${index}.quantity`) || 0;
+                                    const conversionFactor = form.watch(`product_preparations.${index}.base_to_recipe`) || 1;
                                     const unitCost = option.unit_cost || 0;
 
-                                    console.log("Calculating total cost:", {
-                                      quantity,
-                                      conversionFactor,
-                                      unitCost,
-                                      calculatedTotal:
-                                        quantity * conversionFactor * unitCost,
-                                    });
-
-                                    form.setValue(
-                                      `product_preparations.${index}.unit_cost`,
-                                      unitCost,
-                                    );
+                                    form.setValue(`product_preparations.${index}.unit_cost`, unitCost);
                                     form.setValue(
                                       `product_preparations.${index}.total_cost`,
                                       quantity * conversionFactor * unitCost,
                                     );
+                                    calculateTotalCost();
 
                                     const ingredients =
                                       form.watch("product_ingredients") || [];
