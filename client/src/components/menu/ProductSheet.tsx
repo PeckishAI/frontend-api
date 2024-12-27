@@ -51,15 +51,16 @@ export const defaultCategories = [
   { value: "sides", label: "Side Dishes", emoji: "🥨" },
 ];
 
-const useCategory = (restaurantUuid?: string) => {
-  const { data: categories } = useQuery({
+const useCategories = (restaurantUuid?: string) => {
+  const { data: categories = [] } = useQuery({
     queryKey: ["categories", restaurantUuid],
     queryFn: async () => {
       if (!restaurantUuid) return [];
-      const data = await categoryService.getAllCategories(restaurantUuid);
-      return data;
+      return categoryService.getRestaurantCategories(restaurantUuid);
     },
+    enabled: !!restaurantUuid,
   });
+  return categories;
 };
 
 const useIngredientOptions = (restaurantUuid?: string) => {
@@ -366,30 +367,29 @@ export default function RecipeSheet({
                         <FormControl>
                           <CreatableSelect
                             value={
-                              field.category_name
+                              field.value
                                 ? {
-                                    value: field.category_uuid,
-                                    label: field.category_name,
+                                    value: field.value.category_uuid,
+                                    label: field.value.category_name,
                                   }
                                 : null
                             }
                             onChange={(option) => {
-                              // Called when user selects an existing option or clears
                               if (option) {
-                                setValue("category", {
+                                form.setValue("category", {
                                   category_uuid: option.value,
                                   category_name: option.label,
+                                  emoji: field.value?.emoji,
                                 });
                               } else {
-                                // Clear
-                                setValue("category", {
-                                  category_uuid: "",
-                                  category_name: "",
-                                });
+                                form.setValue("category", undefined);
                               }
                             }}
-                            onCreateOption={handleCreateCategory}
-                            options={categories.map((cat) => ({
+                            onCreateOption={(inputValue) => {
+                              setNewCategoryName(inputValue);
+                              setShowCategoryModal(true);
+                            }}
+                            options={useCategories(currentRestaurant?.restaurant_uuid).map((cat) => ({
                               value: cat.category_uuid,
                               label: cat.category_name,
                             }))}
