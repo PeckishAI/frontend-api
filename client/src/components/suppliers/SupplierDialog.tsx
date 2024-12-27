@@ -23,6 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Supplier } from "@/lib/types";
 import { supplierService } from "@/services/supplierService";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import { useQueryClient } from "@tanstack/react-query"; // Added import for queryClient
 
 const supplierSchema = z.object({
   supplier_name: z.string().min(1, "Name is required"),
@@ -45,6 +46,7 @@ export default function SupplierDialog({
 }: SupplierDialogProps) {
   const { toast } = useToast();
   const { currentRestaurant } = useRestaurantContext();
+  const queryClient = useQueryClient(); // Added queryClient hook
 
   const form = useForm<SupplierFormValues>({
     resolver: zodResolver(supplierSchema),
@@ -74,7 +76,12 @@ export default function SupplierDialog({
       );
 
       console.log("Supplier created:", result);
-      onSubmit(result);
+      queryClient.invalidateQueries(["suppliers", currentRestaurant.restaurant_uuid]); // Added query invalidation
+      toast({
+        title: "Supplier Created",
+        description: `${values.supplier_name} has been added successfully.`, // Corrected description
+      });
+      onSubmit(result); // Moved onSubmit call after toast
       onOpenChange(false);
       form.reset();
     } catch (error) {
