@@ -85,14 +85,16 @@ const useIngredientAndPrepOptions = (restaurantUuid?: string) => {
     },
     {
       label: "Preparations",
-      options: preparations?.map((prep: any) => 
-        prep ? {
-          label: prep.preparation_name,
-          value: prep.preparation_uuid,
-            type: "preparation",
-            unit_cost: prep.portion_cost,
-          }))
-        : [],
+      options: preparations?.map((prep: any) =>
+        prep
+          ? {
+              label: prep.preparation_name,
+              value: prep.preparation_uuid,
+              type: "preparation",
+              unit_cost: prep.portion_cost,
+            }
+          : [],
+      ),
     },
   ];
 
@@ -243,8 +245,8 @@ export default function RecipeSheet({
         recipe_unit: { unit_uuid: "", unit_name: "" },
         base_to_recipe: 1,
         unit_cost: 0,
-        total_cost: 0
-      }
+        total_cost: 0,
+      },
     ]);
   };
 
@@ -335,7 +337,7 @@ export default function RecipeSheet({
                           if (category) {
                             form.setValue("category", {
                               category_name: category.label,
-                              emoji: category.emoji
+                              emoji: category.emoji,
                             });
                           }
                         }}
@@ -504,11 +506,11 @@ export default function RecipeSheet({
                                     const isPreparation =
                                       option.type === "preparation";
                                     field.onChange(option.label);
-                                    
+
                                     // Set unit cost
                                     form.setValue(
                                       `${fieldPrefix}.${index}.unit_cost`,
-                                      option.unit_cost || 0
+                                      option.unit_cost || 0,
                                     );
 
                                     // Set the UUID
@@ -575,7 +577,7 @@ export default function RecipeSheet({
                                       // Handle case where baseUnit or recipeUnit is missing
                                       form.setValue(
                                         `${fieldPrefix}.${index}.total_cost`,
-                                        quantity * unitCost
+                                        quantity * unitCost,
                                       );
                                     }
 
@@ -586,11 +588,13 @@ export default function RecipeSheet({
                                       form.watch("product_preparations") || [];
                                     const totalIngredientCost =
                                       ingredients.reduce(
-                                        (sum, ing) => sum + (ing.total_cost || 0),
+                                        (sum, ing) =>
+                                          sum + (ing.total_cost || 0),
                                         0,
                                       );
                                     const totalPrepCost = preparations.reduce(
-                                      (sum, prep) => sum + (prep.total_cost || 0),
+                                      (sum, prep) =>
+                                        sum + (prep.total_cost || 0),
                                       0,
                                     );
                                     const portionCount =
@@ -855,12 +859,14 @@ export default function RecipeSheet({
                                   );
 
                                   // Get current values
-                                  const quantity = form.watch(
-                                    `product_preparations.${index}.quantity`,
-                                  ) || 0;
-                                  const conversionFactor = form.watch(
-                                    `product_preparations.${index}.base_to_recipe`,
-                                  ) || 1;
+                                  const quantity =
+                                    form.watch(
+                                      `product_preparations.${index}.quantity`,
+                                    ) || 0;
+                                  const conversionFactor =
+                                    form.watch(
+                                      `product_preparations.${index}.base_to_recipe`,
+                                    ) || 1;
                                   const unitCost = option.unit_cost || 0; // Get unit cost from option
 
                                   // Update unit cost and total cost
@@ -878,10 +884,11 @@ export default function RecipeSheet({
                                     form.watch("product_ingredients") || [];
                                   const preparations =
                                     form.watch("product_preparations") || [];
-                                  const totalIngredientCost = ingredients.reduce(
-                                    (sum, ing) => sum + (ing.total_cost || 0),
-                                    0,
-                                  );
+                                  const totalIngredientCost =
+                                    ingredients.reduce(
+                                      (sum, ing) => sum + (ing.total_cost || 0),
+                                      0,
+                                    );
                                   const totalPrepCost = preparations.reduce(
                                     (sum, prep) => sum + (prep.total_cost || 0),
                                     0,

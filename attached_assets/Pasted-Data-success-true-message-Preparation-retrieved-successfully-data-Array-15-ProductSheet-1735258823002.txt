@@ -1,0 +1,45 @@
+Data:  
+{success: true, message: 'Preparation retrieved successfully', data: Array(15)}
+ProductSheet.tsx:505 Selected option: 
+{label: 'Tomato Sauce', value: '944e6f9f-bdba-4d37-b6e4-6a5198ba6869', type: 'preparation', unit_cost: 518}
+menu:1 Access to fetch at 'https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit…3-4825-8d73-86d6ab80c0ea/preparations/944e6f9f-bdba-4d37-b6e4-6a5198ba6869' from origin 'https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: It does not have HTTP ok status.
+unitService.ts:167 
+ GET https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit…3-4825-8d73-86d6ab80c0ea/preparations/944e6f9f-bdba-4d37-b6e4-6a5198ba6869 net::ERR_FAILED
+unitService.ts:187 Failed to create unit: TypeError: Failed to fetch
+    at Object.getPreparationConversionFactor (unitService.ts:167:30)
+    at onChange (ProductSheet.tsx:545:63)
+    at handleChange (creatable-select.tsx:223:5)
+ProductSheet.tsx:571 Error fetching conversion factor: TypeError: Failed to fetch
+    at Object.getPreparationConversionFactor (unitService.ts:167:30)
+    at onChange (ProductSheet.tsx:545:63)
+    at handleChange (creatable-select.tsx:223:5)
+ProductSheet.tsx:468 Uncaught TypeError: Cannot use 'in' operator to search for 'preparation_uuid' in undefined
+    at ProductSheet.tsx:468:41
+    at Array.map (<anonymous>)
+    at RecipeSheet (ProductSheet.tsx:467:35)
+ProductSheet.tsx:468 Uncaught TypeError: Cannot use 'in' operator to search for 'preparation_uuid' in undefined
+    at ProductSheet.tsx:468:41
+    at Array.map (<anonymous>)
+    at RecipeSheet (ProductSheet.tsx:467:35)
+hook.js:608 The above error occurred in the <RecipeSheet> component:
+
+    at RecipeSheet (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/menu/ProductSheet.tsx:206:3)
+    at div
+    at Products (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/pages/menu/Products.tsx:45:35)
+    at div
+    at div
+    at Menu (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/pages/menu/Menu.tsx:24:45)
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=a3232ce5:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=a3232ce5:247:17)
+    at div
+    at RestaurantProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/contexts/RestaurantContext.tsx:20:38)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=a3232ce5:2805:3)
+    at App
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=a3232ce5:2805:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+chunk-C43VWYGG.js?v=a3232ce5:19381 Uncaught TypeError: Cannot use 'in' operator to search for 'preparation_uuid' in undefined
+    at ProductSheet.tsx:468:41
+    at Array.map (<anonymous>)
+    at RecipeSheet (ProductSheet.tsx:467:35)
