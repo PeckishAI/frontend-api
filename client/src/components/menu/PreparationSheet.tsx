@@ -168,6 +168,9 @@ export default function PreparationSheet({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { currentRestaurant } = useRestaurantContext();
   const queryClient = useQueryClient();
+  const [showNewIngredientDialog, setShowNewIngredientDialog] = useState(false);
+  const [showNewPreparationDialog, setShowNewPreparationDialog] = useState(false);
+  const [newItemName, setNewItemName] = useState("");
 
   const form = useForm<Preparation>({
     resolver: zodResolver(preparationSchema),
@@ -409,6 +412,10 @@ export default function PreparationSheet({
                           options={useIngredientOptions(
                             currentRestaurant?.restaurant_uuid,
                           )}
+                          onCreateOption={(inputValue) => {
+                            setNewItemName(inputValue);
+                            setShowNewIngredientDialog(true);
+                          }}
                           placeholder=""
                         />
                       </FormControl>
@@ -608,6 +615,10 @@ export default function PreparationSheet({
                           options={usePreparationOptions(
                             currentRestaurant?.restaurant_uuid,
                           )}
+                          onCreateOption={(inputValue) => {
+                            setNewItemName(inputValue);
+                            setShowNewPreparationDialog(true);
+                          }}
                           placeholder=""
                         />
                       </FormControl>
@@ -841,6 +852,28 @@ export default function PreparationSheet({
                 ))}
               </div>
             </ScrollArea>
+          </DialogContent>
+        </Dialog>
+
+        {/* New Ingredient Dialog */}
+        <Dialog open={showNewIngredientDialog} onOpenChange={setShowNewIngredientDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>New Ingredient</DialogTitle>
+            </DialogHeader>
+            {/* Add form for creating a new ingredient here */}
+            <p>Implement New Ingredient Dialog</p> {/* Placeholder */}
+          </DialogContent>
+        </Dialog>
+
+        {/* New Preparation Dialog */}
+        <Dialog open={showNewPreparationDialog} onOpenChange={setShowNewPreparationDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>New Preparation</DialogTitle>
+            </DialogHeader>
+            {/* Add form for creating a new preparation here */}
+            <p>Implement New Preparation Dialog</p> {/* Placeholder */}
           </DialogContent>
         </Dialog>
       </SheetContent>
