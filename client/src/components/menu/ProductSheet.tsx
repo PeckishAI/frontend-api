@@ -548,7 +548,6 @@ export default function RecipeSheet({
                         currentRestaurant.restaurant_uuid,
                         data
                       );
-                      queryClient.invalidateQueries(["ingredients"]);
                       const currentIngredients = form.getValues("product_ingredients") || [];
                       form.setValue("product_ingredients", [
                         ...currentIngredients,
@@ -563,6 +562,7 @@ export default function RecipeSheet({
                           total_cost: 0,
                         },
                       ]);
+                      queryClient.invalidateQueries(["ingredients"]);
                       setShowIngredientDialog(false);
                     } catch (error) {
                       console.error("Failed to create ingredient:", error);
