@@ -73,6 +73,12 @@ function SupplierDialog({ open, onOpenChange, defaultName, onSubmit }: any) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add New Supplier</DialogTitle>
+          <DialogDescription>
+            Add a new supplier to your system. Fill out their information below.
+          </DialogDescription>
+        </DialogHeader>
         <Form {...form} onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
@@ -87,7 +93,12 @@ function SupplierDialog({ open, onOpenChange, defaultName, onSubmit }: any) {
               </FormItem>
             )}
           />
-          <Button type="submit">Create Supplier</Button>
+          <div className="flex justify-end gap-4 pt-4">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit">Create Supplier</Button>
+          </div>
         </Form>
       </DialogContent>
     </Dialog>
