@@ -389,6 +389,7 @@ export default function RecipeSheet({
                                 : []
                             }
                             placeholder=""
+                            size="large"
                           />
                         </FormControl>
                       </div>
