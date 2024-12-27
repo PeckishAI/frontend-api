@@ -788,172 +788,23 @@ export default function PreparationModal({
         }}
       />
 
-      <Dialog open={showNewPreparationDialog} onOpenChange={setShowNewPreparationDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create New Preparation</DialogTitle>
-          </DialogHeader>
-          <Form {...form}>
-            <form className="space-y-4 py-4">
-              <FormField
-                control={form.control}
-                name="preparation_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} defaultValue={newItemName} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="category"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Category</FormLabel>
-                      <div className="flex gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="w-12"
-                          onClick={() => setShowEmojiPicker(true)}
-                        >
-                          {field.value?.emoji}
-                        </Button>
-                        <Select
-                          value={field.value?.category_name}
-                          onValueChange={(value) => {
-                            const category = defaultCategories.find(
-                              (c) => c.value === value,
-                            );
-                            if (category) {
-                              field.onChange({
-                                category_uuid: category.value,
-                                category_name: category.label,
-                                emoji: category.emoji,
-                              });
-                            }
-                          }}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {defaultCategories.map((category) => (
-                              <SelectItem
-                                key={category.value}
-                                value={category.value}
-                              >
-                                <div className="flex items-center gap-2">
-                                  <span>{category.emoji}</span>
-                                  <span>{category.label}</span>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="portion_count"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Portions</FormLabel>
-                      <FormControl>
-                        <Input 
-                          type="number" 
-                          min={1} 
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value))}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="unit"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Unit</FormLabel>
-                    <FormControl>
-                      <CreatableSelect
-                        value={
-                          field.value
-                            ? {
-                                value: field.value.unit_uuid,
-                                label: field.value.unit_name,
-                              }
-                            : null
-                        }
-                        onChange={(option) => {
-                          if (option) {
-                            field.onChange({
-                              unit_uuid: option.value,
-                              unit_name: option.label,
-                            });
-                          }
-                        }}
-                        options={useUnitOptions(
-                          currentRestaurant?.restaurant_uuid,
-                        )}
-                        onCreateOption={async (value) => {
-                          try {
-                            if (!currentRestaurant?.restaurant_uuid) return;
-                            const newUnit = await unitService.createUnit(
-                              { unit_name: value },
-                              currentRestaurant.restaurant_uuid,
-                            );
-                            field.onChange({
-                              unit_uuid: newUnit.unit_uuid,
-                              unit_name: newUnit.unit_name,
-                            });
-                            queryClient.invalidateQueries(["units"]);
-                          } catch (error) {
-                            console.error("Failed to create unit:", error);
-                          }
-                        }}
-                        placeholder=""
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </form>
-          </Form>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setShowNewPreparationDialog(false)}>
-              Cancel
-            </Button>
-            <Button onClick={async () => {
-              try {
-                if (!currentRestaurant?.restaurant_uuid) return;
-                const data = form.getValues();
-                const newPreparation = await menuService.createPreparation(
-                  currentRestaurant.restaurant_uuid,
-                  data
-                );
-                queryClient.invalidateQueries(["preparations"]);
-                setShowNewPreparationDialog(false);
-              } catch (error) {
-                console.error("Failed to create preparation:", error);
-              }
-            }}>
-              Create
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <PreparationModal
+        open={showNewPreparationDialog}
+        onOpenChange={setShowNewPreparationDialog}
+        onSubmit={async (data) => {
+          try {
+            if (!currentRestaurant?.restaurant_uuid) return;
+            const newPreparation = await menuService.createPreparation(
+              currentRestaurant.restaurant_uuid,
+              data
+            );
+            queryClient.invalidateQueries(["preparations"]);
+            setShowNewPreparationDialog(false);
+          } catch (error) {
+            console.error("Failed to create preparation:", error);
+          }
+        }}
+      />
     </>
   );
 }
