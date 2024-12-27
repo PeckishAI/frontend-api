@@ -549,6 +549,20 @@ export default function RecipeSheet({
                         data
                       );
                       queryClient.invalidateQueries(["ingredients"]);
+                      const currentIngredients = form.getValues("product_ingredients") || [];
+                      form.setValue("product_ingredients", [
+                        ...currentIngredients,
+                        {
+                          ingredient_uuid: newIngredient.ingredient_uuid,
+                          ingredient_name: newIngredient.ingredient_name,
+                          quantity: 1,
+                          base_unit: newIngredient.unit,
+                          recipe_unit: newIngredient.unit,
+                          base_to_recipe: 1,
+                          unit_cost: 0,
+                          total_cost: 0,
+                        },
+                      ]);
                       setShowIngredientDialog(false);
                     } catch (error) {
                       console.error("Failed to create ingredient:", error);
