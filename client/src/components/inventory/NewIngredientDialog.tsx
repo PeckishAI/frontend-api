@@ -178,21 +178,15 @@ export default function NewIngredientDialog({
                   <CreatableSelect
                     multiple
                     placeholder=""
-                    value={field.value.map((tag) => tag.tag_uuid)}
+                    value={field.value.map((tag) => ({
+                      value: tag.tag_uuid,
+                      label: tag.tag_name
+                    }))}
                     onChange={(options) => {
-                      if (!options || !Array.isArray(options)) {
-                        field.onChange([]);
-                        return;
-                      }
-                      const selectedTags = options.map(option => {
-                        const tagData = tagsData?.find(
-                          (tag) => tag.tag_uuid === option.value
-                        );
-                        return {
-                          tag_uuid: option.value,
-                          tag_name: tagData?.tag_name || option.label
-                        };
-                      });
+                      const selectedTags = (options || []).map(option => ({
+                        tag_uuid: option.value,
+                        tag_name: option.label
+                      }));
                       field.onChange(selectedTags);
                     }}
                     options={
