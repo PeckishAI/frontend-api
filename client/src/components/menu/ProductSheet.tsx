@@ -376,9 +376,25 @@ export default function RecipeSheet({
                                 });
                               }
                             }}
-                            onCreateOption={(inputValue) => {
-                              setNewCategoryName(inputValue);
-                              setShowCategoryModal(true);
+                            onCreateOption={async (inputValue) => {
+                              if (!currentRestaurant?.restaurant_uuid) return;
+                              try {
+                                const newCategory = await categoryService.createCategory(
+                                  currentRestaurant.restaurant_uuid,
+                                  { 
+                                    category_name: inputValue,
+                                    emoji: "🍽️" 
+                                  }
+                                );
+                                form.setValue("category", {
+                                  category_uuid: newCategory.category_uuid,
+                                  category_name: newCategory.category_name,
+                                  emoji: newCategory.emoji,
+                                });
+                                queryClient.invalidateQueries(["categories"]);
+                              } catch (error) {
+                                console.error("Failed to create category:", error);
+                              }
                             }}
                             options={
                               categories
