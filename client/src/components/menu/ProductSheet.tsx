@@ -36,6 +36,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { menuService } from "@/services/menuService";
+import { categoryService } from "@/services/categoryService";
 import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
@@ -346,41 +347,46 @@ export default function RecipeSheet({
                       >
                         {field.value?.emoji}
                       </Button>
-                      <Select
-                        value={field.value?.category_name || ""}
-                        onValueChange={(value) => {
-                          const category = defaultCategories.find(
-                            (c) => c.value === value,
-                          );
-                          if (category) {
-                            form.setValue("category", {
-                              category_name: category.label,
-                              emoji: category.emoji,
-                            });
+                      <FormControl>
+                        <CreatableSelect
+                          value={
+                            field.value?.category_name
+                              ? {
+                                  value: field.value.category_uuid || "",
+                                  label: field.value.category_name,
+                                }
+                              : null
                           }
-                        }}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="flex-1">
-                            <SelectValue>
-                              <span>{field.value?.category_name}</span>
-                            </SelectValue>
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {defaultCategories.map((category) => (
-                            <SelectItem
-                              key={category.value}
-                              value={category.value}
-                            >
-                              <div className="flex items-center gap-2">
-                                <span>{category.emoji}</span>
-                                <span>{category.label}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                          onChange={(option) => {
+                            if (option) {
+                              form.setValue("category", {
+                                ...field.value,
+                                category_uuid: option.value,
+                                category_name: option.label,
+                              });
+                            }
+                          }}
+                          options={(() => {
+                            const { data: categories } = useQuery({
+                              queryKey: ["categories", currentRestaurant?.restaurant_uuid],
+                              queryFn: () => {
+                                if (!currentRestaurant?.restaurant_uuid) return [];
+                                return categoryService.getRestaurantCategories(
+                                  currentRestaurant.restaurant_uuid,
+                                );
+                              },
+                            });
+                            
+                            return categories
+                              ? categories.map((cat: any) => ({
+                                  value: cat.category_uuid,
+                                  label: cat.category_name,
+                                }))
+                              : [];
+                          })()}
+                          placeholder=""
+                        />
+                      </FormControl>
                     </div>
                   </FormItem>
                 )}
