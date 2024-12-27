@@ -37,6 +37,7 @@ interface SupplierDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: SupplierFormValues) => void;
+  defaultName?: string;
 }
 
 export default function SupplierDialog({
@@ -51,7 +52,7 @@ export default function SupplierDialog({
   const form = useForm<SupplierFormValues>({
     resolver: zodResolver(supplierSchema),
     defaultValues: {
-      supplier_name: "",
+      supplier_name: defaultName || "",
       email: "",
       phone: "",
     },

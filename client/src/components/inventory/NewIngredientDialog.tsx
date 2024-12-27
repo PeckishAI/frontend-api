@@ -65,6 +65,36 @@ interface NewIngredientDialogProps {
   embedded?: boolean;
 }
 
+function SupplierDialog({ open, onOpenChange, defaultName, onSubmit }: any) {
+  const form = useForm({
+    defaultValues: { supplier_name: defaultName || "" },
+  });
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <Form {...form} onSubmit={form.handleSubmit(onSubmit)}>
+          <FormField
+            control={form.control}
+            name="supplier_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Supplier Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Create Supplier</Button>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+
 export default function NewIngredientDialog({
   open,
   onOpenChange,
@@ -145,6 +175,9 @@ export default function NewIngredientDialog({
       console.error("Failed to create ingredient:", error);
     }
   };
+
+  const [showSupplierDialog, setShowSupplierDialog] = React.useState(false);
+  const [newSupplierName, setNewSupplierName] = React.useState("");
 
   const formContent = (
     <Form {...form}>
@@ -402,6 +435,10 @@ export default function NewIngredientDialog({
                               value: supplier.supplier_uuid,
                             })) || []
                           }
+                          onCreateOption={(inputValue) => {
+                            setNewSupplierName(inputValue);
+                            setShowSupplierDialog(true);
+                          }}
                           placeholder=""
                         />
                       </FormControl>
@@ -568,6 +605,30 @@ export default function NewIngredientDialog({
         </DialogHeader>
         {formContent}
       </DialogContent>
+      <SupplierDialog 
+        open={showSupplierDialog}
+        onOpenChange={setShowSupplierDialog}
+        defaultName={newSupplierName}
+        onSubmit={async (supplierData) => {
+          if (!currentRestaurant?.restaurant_uuid) return;
+          try {
+            const newSupplier = await supplierService.createSupplier(
+              currentRestaurant.restaurant_uuid,
+              supplierData
+            );
+            const currentSuppliers = form.getValues("ingredient_suppliers") || [];
+            const lastIndex = currentSuppliers.length - 1;
+            if (lastIndex >= 0) {
+              form.setValue(`ingredient_suppliers.${lastIndex}.supplier`, {
+                supplier_uuid: newSupplier.supplier_uuid,
+                supplier_name: newSupplier.supplier_name,
+              });
+            }
+          } catch (error) {
+            console.error("Failed to create supplier:", error);
+          }
+        }}
+      />
     </Dialog>
   );
 }
