@@ -41,6 +41,7 @@ import { unitService } from "@/services/unitService";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { foodEmojis } from "@/lib/emojis";
 import { defaultCategories } from "./ProductSheet";
+import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
 
 const preparationSchema = z.object({
   preparation_uuid: z.string().optional(),
