@@ -142,15 +142,15 @@ const CustomMenu = (props: any) => {
   return (
     <components.Menu {...props}>
       <div className="flex flex-col">
-        {children} {/* Automatically renders grouped options and labels */}
-        {/* Separator */}
+        {children}
         <div className="border-t border-gray-300 my-2"></div>
-        {/* Create New Option */}
         <div
           className="flex items-center cursor-pointer px-4 py-2 text-sm hover:bg-gray-100 rounded-md mb-2"
-          onClick={() =>
-            selectProps.onCreateOption(selectProps.inputValue || "New Item")
-          }
+          onClick={() => {
+            if (props.selectProps.onCreateOption) {
+              props.selectProps.onCreateOption(props.selectProps.inputValue);
+            }
+          }}
         >
           <PlusCircle className="mr-2 h-4 w-4 text-gray-600" />
           <span className="text-gray-800">
