@@ -85,10 +85,10 @@ const useIngredientAndPrepOptions = (restaurantUuid?: string) => {
     },
     {
       label: "Preparations",
-      options: Array.isArray(preparations) 
-        ? preparations.map((prep: any) => ({
-            label: prep.preparation_name,
-            value: prep.preparation_uuid,
+      options: preparations?.map((prep: any) => 
+        prep ? {
+          label: prep.preparation_name,
+          value: prep.preparation_uuid,
             type: "preparation",
             unit_cost: prep.portion_cost,
           }))
@@ -500,9 +500,16 @@ export default function RecipeSheet({
                                 }
                                 onChange={async (option) => {
                                   if (option) {
+                                    console.log("Selected option:", option);
                                     const isPreparation =
                                       option.type === "preparation";
                                     field.onChange(option.label);
+                                    
+                                    // Set unit cost
+                                    form.setValue(
+                                      `${fieldPrefix}.${index}.unit_cost`,
+                                      option.unit_cost || 0
+                                    );
 
                                     // Set the UUID
                                     const idField = isPreparation
