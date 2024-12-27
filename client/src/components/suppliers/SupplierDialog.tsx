@@ -60,6 +60,7 @@ export default function SupplierDialog({
 
   const handleSubmit = (values: SupplierFormValues) => {
     onSubmit(values);
+    console.log("Creating Suppliers: ", values);
     onOpenChange(false);
     form.reset();
   };
@@ -70,32 +71,22 @@ export default function SupplierDialog({
         <DialogHeader>
           <DialogTitle>Add New Supplier</DialogTitle>
           <DialogDescription>
-            Add a new supplier to your system. Fill out their basic information below.
+            Add a new supplier to your system. Fill out their basic information
+            below.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 pt-4">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6 pt-4"
+          >
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -134,36 +125,12 @@ export default function SupplierDialog({
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="notes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Notes</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <div className="flex justify-end gap-4">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
                 Cancel
               </Button>
               <Button type="submit">Create supplier</Button>
