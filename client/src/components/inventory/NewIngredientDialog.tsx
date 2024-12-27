@@ -22,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Plus, Trash2 } from "lucide-react";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import type { InventoryItem } from "@/lib/types";
 import { inventoryService } from "@/services/inventoryService";
@@ -343,6 +344,161 @@ export default function NewIngredientDialog({
             </FormItem>
           )}
         />
+
+        <div className="space-y-8">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-medium">Suppliers</h3>
+            </div>
+            {form.watch("ingredient_suppliers")?.map((supplier, index) => (
+              <div key={index} className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end">
+                <FormField
+                  control={form.control}
+                  name={`ingredient_suppliers.${index}.supplier`}
+                  render={({ field }) => (
+                    <FormItem>
+                      {index === 0 && <FormLabel>Supplier</FormLabel>}
+                      <FormControl>
+                        <CreatableSelect
+                          value={field.value?.supplier_name ? {
+                            value: field.value.supplier_uuid,
+                            label: field.value.supplier_name
+                          } : null}
+                          onChange={(option) => {
+                            if (option) {
+                              field.onChange({
+                                supplier_uuid: option.value,
+                                supplier_name: option.label
+                              });
+                            }
+                          }}
+                          options={[]}
+                          placeholder=""
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name={`ingredient_suppliers.${index}.product_code`}
+                  render={({ field }) => (
+                    <FormItem>
+                      {index === 0 && <FormLabel>Product Code</FormLabel>}
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name={`ingredient_suppliers.${index}.unit_cost`}
+                  render={({ field }) => (
+                    <FormItem>
+                      {index === 0 && <FormLabel>Unit Cost</FormLabel>}
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          {...field}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name={`ingredient_suppliers.${index}.unit`}
+                  render={({ field }) => (
+                    <FormItem>
+                      {index === 0 && <FormLabel>Unit</FormLabel>}
+                      <FormControl>
+                        <CreatableSelect
+                          value={field.value?.unit_name ? {
+                            value: field.value.unit_uuid,
+                            label: field.value.unit_name
+                          } : null}
+                          onChange={(option) => {
+                            if (option) {
+                              field.onChange({
+                                unit_uuid: option.value,
+                                unit_name: option.label
+                              });
+                            }
+                          }}
+                          options={unitsData?.map((unit: any) => ({
+                            label: unit.unit_name,
+                            value: unit.unit_uuid
+                          })) || []}
+                          placeholder=""
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name={`ingredient_suppliers.${index}.pack_size`}
+                  render={({ field }) => (
+                    <FormItem>
+                      {index === 0 && <FormLabel>Pack Size</FormLabel>}
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          {...field}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    const currentSuppliers = form.getValues("ingredient_suppliers") || [];
+                    form.setValue(
+                      "ingredient_suppliers",
+                      currentSuppliers.filter((_, i) => i !== index)
+                    );
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const currentSuppliers = form.getValues("ingredient_suppliers") || [];
+                form.setValue("ingredient_suppliers", [
+                  ...currentSuppliers,
+                  {
+                    supplier: { supplier_uuid: "", supplier_name: "" },
+                    product_code: "",
+                    unit_cost: 0,
+                    unit: { unit_uuid: "", unit_name: "" },
+                    pack_size: 0
+                  }
+                ]);
+              }}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Supplier
+            </Button>
+          </div>
+        </div>
 
         <div className="flex justify-end gap-4 pt-4">
           {!embedded && (
