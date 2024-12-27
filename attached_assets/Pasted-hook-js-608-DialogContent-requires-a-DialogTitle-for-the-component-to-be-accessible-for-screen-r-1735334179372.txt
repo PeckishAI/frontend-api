@@ -1,0 +1,109 @@
+hook.js:608 `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog Error Component Stack
+    at TitleWarning (chunk-NH3DEOXZ.js?v=a3232ce5:1852:23)
+    at chunk-NH3DEOXZ.js?v=a3232ce5:1772:13
+    at chunk-NH3DEOXZ.js?v=a3232ce5:1695:58
+    at Presence (chunk-NH3DEOXZ.js?v=a3232ce5:1012:11)
+    at chunk-NH3DEOXZ.js?v=a3232ce5:1686:64
+    at chunk-NH3DEOXZ.js?v=a3232ce5:900:11
+    at chunk-NH3DEOXZ.js?v=a3232ce5:881:11
+    at chunk-NH3DEOXZ.js?v=a3232ce5:978:13
+    at chunk-NH3DEOXZ.js?v=a3232ce5:994:22
+    at Presence (chunk-NH3DEOXZ.js?v=a3232ce5:1012:11)
+    at Provider (chunk-XUAN5KW6.js?v=a3232ce5:38:15)
+    at DialogPortal (chunk-NH3DEOXZ.js?v=a3232ce5:1649:11)
+    at _c3 (dialog.tsx:33:6)
+    at Provider (chunk-XUAN5KW6.js?v=a3232ce5:38:15)
+    at Dialog (chunk-NH3DEOXZ.js?v=a3232ce5:1590:5)
+    at SupplierDialog (NewIngredientDialog.tsx:68:27)
+    at Provider (chunk-XUAN5KW6.js?v=a3232ce5:38:15)
+    at Dialog (chunk-NH3DEOXZ.js?v=a3232ce5:1590:5)
+    at NewIngredientDialog (NewIngredientDialog.tsx:99:3)
+    at div (<anonymous>)
+    at Inventory (Inventory.tsx:30:45)
+    at Route (wouter.js?v=a3232ce5:191:16)
+    at Switch (wouter.js?v=a3232ce5:247:17)
+    at div (<anonymous>)
+    at RestaurantProvider (RestaurantContext.tsx:14:38)
+    at QueryClientProvider (@tanstack_react-query.js?v=a3232ce5:2805:3)
+    at App (<anonymous>)
+    at QueryClientProvider (@tanstack_react-query.js?v=a3232ce5:2805:3)
+overrideMethod @ hook.js:608
+(anonymous) @ chunk-NH3DEOXZ.js?v=a3232ce5:1862
+commitHookEffectListMount @ chunk-C43VWYGG.js?v=a3232ce5:16883
+commitPassiveMountOnFiber @ chunk-C43VWYGG.js?v=a3232ce5:18124
+commitPassiveMountEffects_complete @ chunk-C43VWYGG.js?v=a3232ce5:18097
+commitPassiveMountEffects_begin @ chunk-C43VWYGG.js?v=a3232ce5:18087
+commitPassiveMountEffects @ chunk-C43VWYGG.js?v=a3232ce5:18077
+flushPassiveEffectsImpl @ chunk-C43VWYGG.js?v=a3232ce5:19458
+flushPassiveEffects @ chunk-C43VWYGG.js?v=a3232ce5:19415
+commitRootImpl @ chunk-C43VWYGG.js?v=a3232ce5:19384
+commitRoot @ chunk-C43VWYGG.js?v=a3232ce5:19245
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=a3232ce5:18863
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=a3232ce5:9119
+(anonymous) @ chunk-C43VWYGG.js?v=a3232ce5:18595Understand this errorAI
+hook.js:608 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. Error Component Stack
+    at DescriptionWarning (chunk-NH3DEOXZ.js?v=a3232ce5:1868:29)
+    at chunk-NH3DEOXZ.js?v=a3232ce5:1772:13
+    at chunk-NH3DEOXZ.js?v=a3232ce5:1695:58
+    at Presence (chunk-NH3DEOXZ.js?v=a3232ce5:1012:11)
+    at chunk-NH3DEOXZ.js?v=a3232ce5:1686:64
+    at chunk-NH3DEOXZ.js?v=a3232ce5:900:11
+    at chunk-NH3DEOXZ.js?v=a3232ce5:881:11
+    at chunk-NH3DEOXZ.js?v=a3232ce5:978:13
+    at chunk-NH3DEOXZ.js?v=a3232ce5:994:22
+    at Presence (chunk-NH3DEOXZ.js?v=a3232ce5:1012:11)
+    at Provider (chunk-XUAN5KW6.js?v=a3232ce5:38:15)
+    at DialogPortal (chunk-NH3DEOXZ.js?v=a3232ce5:1649:11)
+    at _c3 (dialog.tsx:33:6)
+    at Provider (chunk-XUAN5KW6.js?v=a3232ce5:38:15)
+    at Dialog (chunk-NH3DEOXZ.js?v=a3232ce5:1590:5)
+    at SupplierDialog (NewIngredientDialog.tsx:68:27)
+    at Provider (chunk-XUAN5KW6.js?v=a3232ce5:38:15)
+    at Dialog (chunk-NH3DEOXZ.js?v=a3232ce5:1590:5)
+    at NewIngredientDialog (NewIngredientDialog.tsx:99:3)
+    at div (<anonymous>)
+    at Inventory (Inventory.tsx:30:45)
+    at Route (wouter.js?v=a3232ce5:191:16)
+    at Switch (wouter.js?v=a3232ce5:247:17)
+    at div (<anonymous>)
+    at RestaurantProvider (RestaurantContext.tsx:14:38)
+    at QueryClientProvider (@tanstack_react-query.js?v=a3232ce5:2805:3)
+    at App (<anonymous>)
+    at QueryClientProvider (@tanstack_react-query.js?v=a3232ce5:2805:3)
+overrideMethod @ hook.js:608
+(anonymous) @ chunk-NH3DEOXZ.js?v=a3232ce5:1876
+commitHookEffectListMount @ chunk-C43VWYGG.js?v=a3232ce5:16883
+commitPassiveMountOnFiber @ chunk-C43VWYGG.js?v=a3232ce5:18124
+commitPassiveMountEffects_complete @ chunk-C43VWYGG.js?v=a3232ce5:18097
+commitPassiveMountEffects_begin @ chunk-C43VWYGG.js?v=a3232ce5:18087
+commitPassiveMountEffects @ chunk-C43VWYGG.js?v=a3232ce5:18077
+flushPassiveEffectsImpl @ chunk-C43VWYGG.js?v=a3232ce5:19458
+flushPassiveEffects @ chunk-C43VWYGG.js?v=a3232ce5:19415
+commitRootImpl @ chunk-C43VWYGG.js?v=a3232ce5:19384
+commitRoot @ chunk-C43VWYGG.js?v=a3232ce5:19245
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=a3232ce5:18863
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=a3232ce5:9119
+(anonymous) @ chunk-C43VWYGG.js?v=a3232ce5:18595Understand this warningAI
+hook.js:608 `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+overrideMethod @ hook.js:608
+(anonymous) @ chunk-NH3DEOXZ.js?v=a3232ce5:1862
+commitHookEffectListMount @ chunk-C43VWYGG.js?v=a3232ce5:16883
+invokePassiveEffectMountInDEV @ chunk-C43VWYGG.js?v=a3232ce5:18292
+invokeEffectsInDev @ chunk-C43VWYGG.js?v=a3232ce5:19669
+commitDoubleInvokeEffectsInDEV @ chunk-C43VWYGG.js?v=a3232ce5:19654
+flushPassiveEffectsImpl @ chunk-C43VWYGG.js?v=a3232ce5:19471
+flushPassiveEffects @ chunk-C43VWYGG.js?v=a3232ce5:19415
+commitRootImpl @ chunk-C43VWYGG.js?v=a3232ce5:19384
+commitRoot @ chunk-C43VWYGG.js?v=a3232ce5:19245
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=a3232ce5:18863
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=a3232ce5:9119
+(anonymous) @ chunk-C43VWYGG.js?v=a3232ce5:18595Understand this errorAI
+hook.js:608 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
