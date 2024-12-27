@@ -308,18 +308,15 @@ export default function NewIngredientDialog({
               <FormLabel>Unit</FormLabel>
               <FormControl>
                 <CreatableSelect
-                  value={field.value.unit_name ? [field.value.unit_name] : []}
-                  onChange={(values) => {
-                    if (values[0]) {
-                      const selectedUnit = unitsData?.find(
-                        (u) => u.unit_uuid === values[0],
-                      ) || {
-                        unit_uuid: values[0],
-                        unit_name: values[0],
-                      };
+                  value={field.value.unit_name ? {
+                    value: field.value.unit_uuid,
+                    label: field.value.unit_name
+                  } : null}
+                  onChange={(option) => {
+                    if (option) {
                       field.onChange({
-                        unit_uuid: selectedUnit.unit_uuid,
-                        unit_name: selectedUnit.unit_name,
+                        unit_uuid: option.value,
+                        unit_name: option.label,
                       });
                     }
                   }}
