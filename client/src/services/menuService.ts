@@ -110,6 +110,7 @@ export const menuService = {
       }
 
       const data = await response.json();
+      console.log("Data: ", data);
       if (!data.success) {
         throw new Error("Failed to fetch preparations");
       }
