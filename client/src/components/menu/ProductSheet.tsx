@@ -418,7 +418,7 @@ export default function RecipeSheet({
                               category_name: newCategory.category_name,
                               emoji: newCategory.emoji,
                             });
-                            //queryClient.invalidateQueries(["categories"]);
+                            queryClient.invalidateQueries(["categories"]);
                           } catch (error) {
                             console.error("Failed to create category:", error);
                           }
