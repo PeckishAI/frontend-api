@@ -109,6 +109,16 @@ export default function NewIngredientDialog({
     },
   });
 
+  React.useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      console.log('Field changed:', name);
+      console.log('New value:', value);
+      console.log('Change type:', type);
+      console.log('Current form state:', form.getValues());
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
   const handleSubmit = (values: NewIngredientFormValues) => {
     console.log("Form values before submission:", values);
     if (!currentRestaurant?.restaurant_uuid) {
