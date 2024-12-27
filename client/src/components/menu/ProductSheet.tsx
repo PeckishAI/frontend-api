@@ -386,10 +386,13 @@ export default function RecipeSheet({
                               }
                             }}
                             onCreateOption={(inputValue) => {
+                              console.log("trying to create");
                               setNewCategoryName(inputValue);
                               setShowCategoryModal(true);
                             }}
-                            options={useCategories(currentRestaurant?.restaurant_uuid).map((cat) => ({
+                            options={useCategories(
+                              currentRestaurant?.restaurant_uuid,
+                            ).map((cat) => ({
                               value: cat.category_uuid,
                               label: cat.category_name,
                             }))}
@@ -415,7 +418,7 @@ export default function RecipeSheet({
                               category_name: newCategory.category_name,
                               emoji: newCategory.emoji,
                             });
-                            queryClient.invalidateQueries(["categories"]);
+                            //queryClient.invalidateQueries(["categories"]);
                           } catch (error) {
                             console.error("Failed to create category:", error);
                           }
