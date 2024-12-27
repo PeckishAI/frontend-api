@@ -345,10 +345,16 @@ export default function NewIngredientDialog({
           )}
         />
 
-        <div className="space-y-8">
+        <div className="mt-8">
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium">Suppliers</h3>
+            <h3 className="text-lg font-medium">Suppliers</h3>
+            <div className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 mb-2">
+              <div className="text-sm text-gray-500">Supplier</div>
+              <div className="text-sm text-gray-500">Product Code</div>
+              <div className="text-sm text-gray-500">Unit Cost</div>
+              <div className="text-sm text-gray-500">Unit</div>
+              <div className="text-sm text-gray-500">Pack Size</div>
+              <div></div>
             </div>
             {form.watch("ingredient_suppliers")?.map((supplier, index) => (
               <div key={index} className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end">
@@ -357,7 +363,7 @@ export default function NewIngredientDialog({
                   name={`ingredient_suppliers.${index}.supplier`}
                   render={({ field }) => (
                     <FormItem>
-                      {index === 0 && <FormLabel>Supplier</FormLabel>}
+                      
                       <FormControl>
                         <CreatableSelect
                           value={field.value?.supplier_name ? {
@@ -385,7 +391,7 @@ export default function NewIngredientDialog({
                   name={`ingredient_suppliers.${index}.product_code`}
                   render={({ field }) => (
                     <FormItem>
-                      {index === 0 && <FormLabel>Product Code</FormLabel>}
+                      
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -398,7 +404,7 @@ export default function NewIngredientDialog({
                   name={`ingredient_suppliers.${index}.unit_cost`}
                   render={({ field }) => (
                     <FormItem>
-                      {index === 0 && <FormLabel>Unit Cost</FormLabel>}
+                      
                       <FormControl>
                         <Input
                           type="number"
@@ -416,7 +422,7 @@ export default function NewIngredientDialog({
                   name={`ingredient_suppliers.${index}.unit`}
                   render={({ field }) => (
                     <FormItem>
-                      {index === 0 && <FormLabel>Unit</FormLabel>}
+                      
                       <FormControl>
                         <CreatableSelect
                           value={field.value?.unit_name ? {
@@ -447,7 +453,7 @@ export default function NewIngredientDialog({
                   name={`ingredient_suppliers.${index}.pack_size`}
                   render={({ field }) => (
                     <FormItem>
-                      {index === 0 && <FormLabel>Pack Size</FormLabel>}
+                      
                       <FormControl>
                         <Input
                           type="number"
