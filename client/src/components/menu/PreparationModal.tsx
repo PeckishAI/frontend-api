@@ -37,6 +37,7 @@ import { menuService } from "@/services/menuService";
 import { unitService } from "@/services/unitService";
 import { foodEmojis } from "@/lib/emojis";
 import { defaultCategories } from "./ProductSheet";
+import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
 
 const preparationSchema = z.object({
   preparation_name: z.string().min(1, "Name is required"),
