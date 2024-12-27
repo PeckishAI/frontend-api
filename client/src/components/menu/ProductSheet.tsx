@@ -896,9 +896,25 @@ export default function RecipeSheet({
                                 min={0}
                                 step="any"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseFloat(e.target.value))
-                                }
+                                onChange={(e) => {
+                                  const newValue = parseFloat(e.target.value);
+                                  field.onChange(newValue);
+
+                                  const unitCost = form.watch(
+                                    `product_preparations.${index}.unit_cost`,
+                                  ) || 0;
+                                  const conversionFactor = form.watch(
+                                    `product_preparations.${index}.base_to_recipe`,
+                                  ) || 1;
+                                  const totalCost =
+                                    newValue * conversionFactor * unitCost;
+
+                                  form.setValue(
+                                    `product_preparations.${index}.total_cost`,
+                                    totalCost,
+                                  );
+                                  calculateTotalCost();
+                                }}
                               />
                             </FormControl>
                           </FormItem>
@@ -965,9 +981,17 @@ export default function RecipeSheet({
                                 step="any"
                                 placeholder="Conv. factor"
                                 {...field}
-                                onChange={(e) =>
-                                  field.onChange(parseFloat(e.target.value))
-                                }
+                                onChange={(e) => {
+                                  const newValue = parseFloat(e.target.value);
+                                  field.onChange(newValue);
+                                  
+                                  const quantity = form.watch(`product_preparations.${index}.quantity`) || 0;
+                                  const unitCost = form.watch(`product_preparations.${index}.unit_cost`) || 0;
+                                  const totalCost = quantity * newValue * unitCost;
+                                  
+                                  form.setValue(`product_preparations.${index}.total_cost`, totalCost);
+                                  calculateTotalCost();
+                                }}
                               />
                             </FormControl>
                           </FormItem>
