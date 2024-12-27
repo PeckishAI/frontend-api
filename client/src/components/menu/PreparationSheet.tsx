@@ -135,8 +135,11 @@ const useUnitOptions = (restaurantUuid?: string) => {
     queryKey: ["units", restaurantUuid],
     queryFn: async () => {
       if (!restaurantUuid) return [];
-      const data = await unitService.getRestaurantUnit(restaurantUuid);
-      return data;
+      const [referenceUnits, restaurantUnits] = await Promise.all([
+        unitService.getReferenceUnit(),
+        unitService.getRestaurantUnit(restaurantUuid),
+      ]);
+      return [...referenceUnits, ...restaurantUnits];
     },
     enabled: !!restaurantUuid,
   });
@@ -148,7 +151,7 @@ const useUnitOptions = (restaurantUuid?: string) => {
     value: unit.unit_uuid,
   }));
 
-  return [{ label: "All Units", options: allUnits }];
+  return allUnits;
 };
 
 export default function PreparationSheet({
