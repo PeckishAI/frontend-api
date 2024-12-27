@@ -1,4 +1,3 @@
-
 import { config } from "../config/config";
 const BASE_URL = config.apiBaseUrl;
 
@@ -30,7 +29,10 @@ export const categoryService = {
     }
   },
 
-  async createCategory(restaurantUuid: string, category: { category_name: string, emoji: string }): Promise<any> {
+  async createCategory(
+    restaurantUuid: string,
+    category: { category_name: string; emoji: string },
+  ): Promise<any> {
     try {
       const response = await fetch(
         `${BASE_URL}/categories/v2/restaurant/${restaurantUuid}`,
@@ -48,6 +50,7 @@ export const categoryService = {
       }
 
       const data = await response.json();
+      console.log("Category: ", data);
       if (!data.success) {
         throw new Error("Failed to create category");
       }
