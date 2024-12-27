@@ -438,10 +438,9 @@ export default function RecipeSheet({
                         type="number"
                         step="0.01"
                         placeholder="0.00"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(parseFloat(e.target.value))
-                        }
+                        value={field.value || 0}
+                        disabled
+                        className="bg-muted"
                       />
                     </FormControl>
                   </FormItem>
