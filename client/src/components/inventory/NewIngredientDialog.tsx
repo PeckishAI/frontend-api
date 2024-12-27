@@ -52,6 +52,10 @@ const newIngredientSchema = z.object({
       }),
       unit_cost: z.number().min(0),
       pack_size: z.number().min(0),
+      unit: z.object({
+        unit_uuid: z.string(),
+        unit_name: z.string(),
+      }),
     }),
   ),
 });
@@ -66,7 +70,6 @@ interface NewIngredientDialogProps {
 }
 
 import SupplierDialog from "@/components/suppliers/SupplierDialog";
-
 
 export default function NewIngredientDialog({
   open,
@@ -134,7 +137,7 @@ export default function NewIngredientDialog({
   }, [form]);
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  
+
   const handleSubmit = async (values: NewIngredientFormValues) => {
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
@@ -585,7 +588,7 @@ export default function NewIngredientDialog({
         </DialogHeader>
         {formContent}
       </DialogContent>
-      <SupplierDialog 
+      <SupplierDialog
         open={showSupplierDialog}
         onOpenChange={setShowSupplierDialog}
         defaultName={newSupplierName}
@@ -594,9 +597,10 @@ export default function NewIngredientDialog({
           try {
             const newSupplier = await supplierService.createSupplier(
               currentRestaurant.restaurant_uuid,
-              supplierData
+              supplierData,
             );
-            const currentSuppliers = form.getValues("ingredient_suppliers") || [];
+            const currentSuppliers =
+              form.getValues("ingredient_suppliers") || [];
             const lastIndex = currentSuppliers.length - 1;
             if (lastIndex >= 0) {
               form.setValue(`ingredient_suppliers.${lastIndex}.supplier`, {
