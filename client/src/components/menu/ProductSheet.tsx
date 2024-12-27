@@ -377,8 +377,15 @@ export default function RecipeSheet({
                               }
                             }}
                             onCreateOption={(inputValue) => {
-                              setNewCategoryName(inputValue);
-                              setShowCategoryModal(true);
+                              console.log("Creating new category:", inputValue);
+                              const newCategory = {
+                                value: inputValue.toLowerCase(),
+                                label: inputValue
+                              };
+                              form.setValue("category", {
+                                category_name: inputValue,
+                                category_uuid: newCategory.value,
+                              });
                             }}
                             options={
                               categories
