@@ -79,7 +79,9 @@ export default function NewIngredientDialog({
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return supplierService.getRestaurantSuppliers(currentRestaurant.restaurant_uuid);
+      return supplierService.getRestaurantSuppliers(
+        currentRestaurant.restaurant_uuid,
+      );
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
@@ -124,17 +126,11 @@ export default function NewIngredientDialog({
   });
 
   React.useEffect(() => {
-    const subscription = form.watch((value, { name, type }) => {
-      console.log('Field changed:', name);
-      console.log('New value:', value);
-      console.log('Change type:', type);
-      console.log('Current form state:', form.getValues());
-    });
+    const subscription = form.watch((value, { name, type }) => {});
     return () => subscription.unsubscribe();
   }, [form]);
 
   const handleSubmit = async (values: NewIngredientFormValues) => {
-    console.log("Form values before submission:", values);
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
     }
@@ -143,11 +139,6 @@ export default function NewIngredientDialog({
         currentRestaurant?.restaurant_uuid,
         values,
       );
-      console.log("Created ingredient:", {
-        timestamp: new Date().toISOString(),
-        ingredient: createdIngredient,
-        values
-      });
       onSubmit(values);
       onOpenChange(false);
     } catch (error) {
@@ -227,7 +218,6 @@ export default function NewIngredientDialog({
                           tag_name: option.label,
                         },
                       ]);
-                      console.log("Fields:", field);
                     }}
                     options={
                       tagsData?.map((tag) => ({
@@ -317,10 +307,14 @@ export default function NewIngredientDialog({
               <FormLabel>Unit</FormLabel>
               <FormControl>
                 <CreatableSelect
-                  value={field.value.unit_name ? {
-                    value: field.value.unit_uuid,
-                    label: field.value.unit_name
-                  } : null}
+                  value={
+                    field.value.unit_name
+                      ? {
+                          value: field.value.unit_uuid,
+                          label: field.value.unit_name,
+                        }
+                      : null
+                  }
                   onChange={(option) => {
                     if (option) {
                       field.onChange({
@@ -375,31 +369,39 @@ export default function NewIngredientDialog({
               <div></div>
             </div>
             {form.watch("ingredient_suppliers")?.map((supplier, index) => (
-              <div key={index} className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,40px] gap-4 items-end">
+              <div
+                key={index}
+                className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,40px] gap-4 items-end"
+              >
                 <FormField
                   control={form.control}
                   name={`ingredient_suppliers.${index}.supplier`}
                   render={({ field }) => (
                     <FormItem>
-                      
                       <FormControl>
                         <CreatableSelect
-                          value={field.value?.supplier_name ? {
-                            value: field.value.supplier_uuid,
-                            label: field.value.supplier_name
-                          } : null}
+                          value={
+                            field.value?.supplier_name
+                              ? {
+                                  value: field.value.supplier_uuid,
+                                  label: field.value.supplier_name,
+                                }
+                              : null
+                          }
                           onChange={(option) => {
                             if (option) {
                               field.onChange({
                                 supplier_uuid: option.value,
-                                supplier_name: option.label
+                                supplier_name: option.label,
                               });
                             }
                           }}
-                          options={suppliersData?.map((supplier: any) => ({
-                            label: supplier.supplier_name,
-                            value: supplier.supplier_uuid
-                          })) || []}
+                          options={
+                            suppliersData?.map((supplier: any) => ({
+                              label: supplier.supplier_name,
+                              value: supplier.supplier_uuid,
+                            })) || []
+                          }
                           placeholder=""
                         />
                       </FormControl>
@@ -412,7 +414,6 @@ export default function NewIngredientDialog({
                   name={`ingredient_suppliers.${index}.product_code`}
                   render={({ field }) => (
                     <FormItem>
-                      
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -425,13 +426,14 @@ export default function NewIngredientDialog({
                   name={`ingredient_suppliers.${index}.unit_cost`}
                   render={({ field }) => (
                     <FormItem>
-                      
                       <FormControl>
                         <Input
                           type="number"
                           step="0.01"
                           {...field}
-                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                          onChange={(e) =>
+                            field.onChange(parseFloat(e.target.value))
+                          }
                         />
                       </FormControl>
                     </FormItem>
@@ -443,25 +445,30 @@ export default function NewIngredientDialog({
                   name={`ingredient_suppliers.${index}.unit`}
                   render={({ field }) => (
                     <FormItem>
-                      
                       <FormControl>
                         <CreatableSelect
-                          value={field.value?.unit_name ? {
-                            value: field.value.unit_uuid,
-                            label: field.value.unit_name
-                          } : null}
+                          value={
+                            field.value?.unit_name
+                              ? {
+                                  value: field.value.unit_uuid,
+                                  label: field.value.unit_name,
+                                }
+                              : null
+                          }
                           onChange={(option) => {
                             if (option) {
                               field.onChange({
                                 unit_uuid: option.value,
-                                unit_name: option.label
+                                unit_name: option.label,
                               });
                             }
                           }}
-                          options={unitsData?.map((unit: any) => ({
-                            label: unit.unit_name,
-                            value: unit.unit_uuid
-                          })) || []}
+                          options={
+                            unitsData?.map((unit: any) => ({
+                              label: unit.unit_name,
+                              value: unit.unit_uuid,
+                            })) || []
+                          }
                           placeholder=""
                         />
                       </FormControl>
@@ -474,13 +481,14 @@ export default function NewIngredientDialog({
                   name={`ingredient_suppliers.${index}.pack_size`}
                   render={({ field }) => (
                     <FormItem>
-                      
                       <FormControl>
                         <Input
                           type="number"
                           step="0.01"
                           {...field}
-                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                          onChange={(e) =>
+                            field.onChange(parseFloat(e.target.value))
+                          }
                         />
                       </FormControl>
                     </FormItem>
@@ -492,10 +500,11 @@ export default function NewIngredientDialog({
                   variant="ghost"
                   size="icon"
                   onClick={() => {
-                    const currentSuppliers = form.getValues("ingredient_suppliers") || [];
+                    const currentSuppliers =
+                      form.getValues("ingredient_suppliers") || [];
                     form.setValue(
                       "ingredient_suppliers",
-                      currentSuppliers.filter((_, i) => i !== index)
+                      currentSuppliers.filter((_, i) => i !== index),
                     );
                   }}
                 >
@@ -508,7 +517,8 @@ export default function NewIngredientDialog({
               variant="outline"
               size="sm"
               onClick={() => {
-                const currentSuppliers = form.getValues("ingredient_suppliers") || [];
+                const currentSuppliers =
+                  form.getValues("ingredient_suppliers") || [];
                 form.setValue("ingredient_suppliers", [
                   ...currentSuppliers,
                   {
@@ -516,8 +526,8 @@ export default function NewIngredientDialog({
                     product_code: "",
                     unit_cost: 0,
                     unit: { unit_uuid: "", unit_name: "" },
-                    pack_size: 0
-                  }
+                    pack_size: 0,
+                  },
                 ]);
               }}
             >

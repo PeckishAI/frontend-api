@@ -150,7 +150,6 @@ export default function EditIngredientForm({
   }, [ingredient, form]);
 
   const handleSubmit = (values: EditIngredientFormValues) => {
-    console.log("Form completed : ", values);
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
     }
@@ -273,7 +272,6 @@ export default function EditIngredientForm({
                         multiple
                         value={field.value.map((tag) => tag.tag_uuid)}
                         onChange={(values) => {
-                          console.log("Selected values:", values);
                           const selectedTags = values.map((value) => {
                             const tagData = tagsData?.find(
                               (tag) => tag.tag_uuid === value,
@@ -378,10 +376,14 @@ export default function EditIngredientForm({
                   <FormLabel>Unit</FormLabel>
                   <FormControl>
                     <CreatableSelect
-                      value={field.value?.unit_uuid ? {
-                        value: field.value.unit_uuid,
-                        label: field.value.unit_name
-                      } : null}
+                      value={
+                        field.value?.unit_uuid
+                          ? {
+                              value: field.value.unit_uuid,
+                              label: field.value.unit_name,
+                            }
+                          : null
+                      }
                       onChange={(values) => {
                         if (values) {
                           const selectedUnit = unitsData?.find(
@@ -644,14 +646,6 @@ export default function EditIngredientForm({
                               variant="outline"
                               size="sm"
                               onClick={() => {
-                                console.log(
-                                  "Supplier editing state before close:",
-                                  editingSupplier,
-                                );
-                                console.log(
-                                  "Current form values:",
-                                  form.getValues(),
-                                );
                                 setEditingSupplier(null);
                               }}
                             >

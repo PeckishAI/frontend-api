@@ -59,24 +59,23 @@ export default function SupplierDialog({
 
   const handleSubmit = async (values: SupplierFormValues) => {
     try {
-      console.log("Form values received:", values);
       const payload = {
         ...values,
         supplier_name: values.supplier_name,
       };
-      console.log("Creating supplier with payload:", payload);
 
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      console.log("Payload: ", payload);
       const result = await supplierService.createSupplier(
         currentRestaurant.restaurant_uuid,
         payload,
       );
 
-      console.log("Supplier created:", result);
-      queryClient.invalidateQueries(["suppliers", currentRestaurant.restaurant_uuid]); // Added query invalidation
+      queryClient.invalidateQueries([
+        "suppliers",
+        currentRestaurant.restaurant_uuid,
+      ]); // Added query invalidation
       toast({
         title: "Supplier Created",
         description: `${values.supplier_name} has been added successfully.`, // Corrected description
