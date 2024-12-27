@@ -25,7 +25,7 @@ import { supplierService } from "@/services/supplierService";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 
 const supplierSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  supplier_name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email").optional().or(z.literal("")),
   phone: z.string().optional().or(z.literal("")),
 });
@@ -49,7 +49,7 @@ export default function SupplierDialog({
   const form = useForm<SupplierFormValues>({
     resolver: zodResolver(supplierSchema),
     defaultValues: {
-      name: "",
+      supplier_name: "",
       email: "",
       phone: "",
     },
@@ -60,20 +60,19 @@ export default function SupplierDialog({
       console.log("Form values received:", values);
       const payload = {
         ...values,
-        active: true,
-        supplier_name: values.name,
+        supplier_name: values.supplier_name,
       };
       console.log("Creating supplier with payload:", payload);
-      
+
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      
+      console.log("Payload: ", payload);
       const result = await supplierService.createSupplier(
         currentRestaurant.restaurant_uuid,
-        payload
+        payload,
       );
-      
+
       console.log("Supplier created:", result);
       onSubmit(result);
       onOpenChange(false);
@@ -106,7 +105,7 @@ export default function SupplierDialog({
           >
             <FormField
               control={form.control}
-              name="name"
+              name="supplier_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>

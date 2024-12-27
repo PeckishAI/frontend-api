@@ -33,6 +33,7 @@ export const supplierService = {
 
   async createSupplier(restaurantUuid: string, supplier: any): Promise<any> {
     try {
+      console.log("Supplier: ", supplier);
       const response = await fetch(
         `${BASE_URL}/suppliers/v2/restaurant/${restaurantUuid}`,
         {
@@ -40,6 +41,7 @@ export const supplierService = {
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify(supplier),
         },
       );
 
