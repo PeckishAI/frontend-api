@@ -120,6 +120,28 @@ const usePreparationOptions = (restaurantUuid?: string) => {
     : [];
 };
 
+const useUnitOptions = (restaurantUuid?: string) => {
+  const { data: units } = useQuery({
+    queryKey: ["units", restaurantUuid],
+    queryFn: async () => {
+      if (!restaurantUuid) return [];
+      const [referenceUnits, restaurantUnits] = await Promise.all([
+        unitService.getReferenceUnit(),
+        unitService.getRestaurantUnit(restaurantUuid),
+      ]);
+      return [...referenceUnits, ...restaurantUnits];
+    },
+    enabled: !!restaurantUuid,
+  });
+
+  return units
+    ? units.map((unit: any) => ({
+        label: unit.unit_name,
+        value: unit.unit_uuid,
+      }))
+    : [];
+};
+
 export default function PreparationModal({
   open,
   onOpenChange,
