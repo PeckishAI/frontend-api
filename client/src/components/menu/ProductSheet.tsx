@@ -249,7 +249,7 @@ export default function RecipeSheet({
       {
         preparation_uuid: "",
         preparation_name: "",
-        quanity: 1,
+        quantity: 1,
         base_unit: { unit_uuid: "", unit_name: "" },
         recipe_unit: { unit_uuid: "", unit_name: "" },
         base_to_recipe: 1,
