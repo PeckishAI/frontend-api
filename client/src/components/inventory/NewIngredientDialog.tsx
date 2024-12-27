@@ -179,18 +179,18 @@ export default function NewIngredientDialog({
                     multiple
                     placeholder=""
                     value={field.value.map((tag) => tag.tag_uuid)}
-                    onChange={(values) => {
-                      console.log("Selected values:", values);
-                      const selectedTags = values.map((value) => {
-                        const tagData = tagsData?.find(
-                          (tag) => tag.tag_uuid === value,
-                        );
-                        return {
-                          tag_uuid: value,
-                          tag_name: tagData?.tag_name || value,
-                        };
-                      });
-                      field.onChange(selectedTags);
+                    onChange={(option) => {
+                      if (!option) {
+                        field.onChange([]);
+                        return;
+                      }
+                      const tagData = tagsData?.find(
+                        (tag) => tag.tag_uuid === option.value
+                      );
+                      field.onChange([{
+                        tag_uuid: option.value,
+                        tag_name: tagData?.tag_name || option.label
+                      }]);
                     }}
                     options={
                       tagsData?.map((tag) => ({
