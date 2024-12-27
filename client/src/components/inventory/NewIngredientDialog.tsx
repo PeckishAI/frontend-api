@@ -528,7 +528,7 @@ export default function NewIngredientDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[800px] w-full">
+      <DialogContent className="max-w-[800px] w-full max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Ingredient</DialogTitle>
           <DialogDescription>
