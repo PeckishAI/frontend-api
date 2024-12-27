@@ -41,7 +41,8 @@ import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { foodEmojis } from "@/lib/emojis";
-import CategoryModal from "./CategoryModal"; // Added import
+import CategoryModal from "./CategoryModal";
+import NewIngredientDialog from "../inventory/NewIngredientDialog";
 
 export const defaultCategories = [
   { value: "mains", label: "Main Dishes", emoji: "🍽️" },
@@ -215,6 +216,7 @@ export default function RecipeSheet({
   onSubmit: (data: Product) => void;
 }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showIngredientDialog, setShowIngredientDialog] = useState(false);
   const queryClient = useQueryClient();
   const { currentRestaurant } = useRestaurantContext();
 
@@ -514,16 +516,45 @@ export default function RecipeSheet({
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-medium">Ingredients</h3>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addIngredient}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Ingredient
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowIngredientDialog(true)}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create New
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addIngredient}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Existing
+                    </Button>
+                  </div>
                 </div>
+
+                <NewIngredientDialog
+                  open={showIngredientDialog}
+                  onOpenChange={setShowIngredientDialog}
+                  onSubmit={async (data) => {
+                    try {
+                      if (!currentRestaurant?.restaurant_uuid) return;
+                      const newIngredient = await inventoryService.createIngredient(
+                        currentRestaurant.restaurant_uuid,
+                        data
+                      );
+                      queryClient.invalidateQueries(["ingredients"]);
+                      setShowIngredientDialog(false);
+                    } catch (error) {
+                      console.error("Failed to create ingredient:", error);
+                    }
+                  }}
+                />
                 {ingredients.map((component, index) => {
                   const fieldPrefix = "product_ingredients";
                   const nameField = "ingredient_name";
