@@ -477,10 +477,10 @@ export default function NewOrderModal({
             <AlertDialogAction
               onClick={() => {
                 setShowCancelAlert(false);
-                onOpenChange(false);
                 setSelectedSupplier(null);
                 setDeliveryDate("");
                 setItems([]);
+                onOpenChange(false);
               }}
             >
               Yes, cancel order
