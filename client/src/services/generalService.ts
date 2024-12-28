@@ -125,4 +125,66 @@ export const generalService = {
       throw error;
     }
   },
+
+  async getRestaurantSalesBreakdown(
+    restaurantUuid: string,
+    dates: object,
+  ): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/metrics/v2/restaurant/${restaurantUuid}/sales_breakdown`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dates),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error("Failed to fetch categories");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to fetch restaurant categories:", error);
+      throw error;
+    }
+  },
+
+  async getRestaurantCostOfSalesBreakdown(
+    restaurantUuid: string,
+    dates: object,
+  ): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/metrics/v2/restaurant/${restaurantUuid}/cost_of_sales_breakdown`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dates),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error("Failed to fetch categories");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to fetch restaurant categories:", error);
+      throw error;
+    }
+  },
 };

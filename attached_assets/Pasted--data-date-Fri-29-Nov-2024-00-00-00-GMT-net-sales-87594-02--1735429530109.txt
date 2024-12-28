@@ -1,0 +1,114 @@
+{
+  "data": [
+    {
+      "date": "Fri, 29 Nov 2024 00:00:00 GMT",
+      "net_sales": 87594.02
+    },
+    {
+      "date": "Sat, 30 Nov 2024 00:00:00 GMT",
+      "net_sales": 38736.39
+    },
+    {
+      "date": "Sun, 01 Dec 2024 00:00:00 GMT",
+      "net_sales": 51344
+    },
+    {
+      "date": "Mon, 02 Dec 2024 00:00:00 GMT",
+      "net_sales": 82090.73
+    },
+    {
+      "date": "Tue, 03 Dec 2024 00:00:00 GMT",
+      "net_sales": 961.930000000001
+    },
+    {
+      "date": "Wed, 04 Dec 2024 00:00:00 GMT",
+      "net_sales": 21355.66
+    },
+    {
+      "date": "Thu, 05 Dec 2024 00:00:00 GMT",
+      "net_sales": 831.07
+    },
+    {
+      "date": "Fri, 06 Dec 2024 00:00:00 GMT",
+      "net_sales": 16054.76
+    },
+    {
+      "date": "Sat, 07 Dec 2024 00:00:00 GMT",
+      "net_sales": 13912.74
+    },
+    {
+      "date": "Sun, 08 Dec 2024 00:00:00 GMT",
+      "net_sales": 64133.57
+    },
+    {
+      "date": "Mon, 09 Dec 2024 00:00:00 GMT",
+      "net_sales": 65116.94
+    },
+    {
+      "date": "Tue, 10 Dec 2024 00:00:00 GMT",
+      "net_sales": 138.33
+    },
+    {
+      "date": "Wed, 11 Dec 2024 00:00:00 GMT",
+      "net_sales": 11224.17
+    },
+    {
+      "date": "Fri, 13 Dec 2024 00:00:00 GMT",
+      "net_sales": 7327.22
+    },
+    {
+      "date": "Sat, 14 Dec 2024 00:00:00 GMT",
+      "net_sales": 35426.51
+    },
+    {
+      "date": "Sun, 15 Dec 2024 00:00:00 GMT",
+      "net_sales": 101525.58
+    },
+    {
+      "date": "Mon, 16 Dec 2024 00:00:00 GMT",
+      "net_sales": 100607.87
+    },
+    {
+      "date": "Tue, 17 Dec 2024 00:00:00 GMT",
+      "net_sales": 2776.03
+    },
+    {
+      "date": "Wed, 18 Dec 2024 00:00:00 GMT",
+      "net_sales": 28519.23
+    },
+    {
+      "date": "Fri, 20 Dec 2024 00:00:00 GMT",
+      "net_sales": 2674.18
+    },
+    {
+      "date": "Sat, 21 Dec 2024 00:00:00 GMT",
+      "net_sales": 33213.47
+    },
+    {
+      "date": "Sun, 22 Dec 2024 00:00:00 GMT",
+      "net_sales": 42093.63
+    },
+    {
+      "date": "Mon, 23 Dec 2024 00:00:00 GMT",
+      "net_sales": 66854.38
+    },
+    {
+      "date": "Tue, 24 Dec 2024 00:00:00 GMT",
+      "net_sales": 10866.96
+    },
+    {
+      "date": "Wed, 25 Dec 2024 00:00:00 GMT",
+      "net_sales": 35534.18
+    },
+    {
+      "date": "Thu, 26 Dec 2024 00:00:00 GMT",
+      "net_sales": 3943.98
+    },
+    {
+      "date": "Fri, 27 Dec 2024 00:00:00 GMT",
+      "net_sales": 11336.6
+    }
+  ],
+  "message": "Success",
+  "success": true
+}
