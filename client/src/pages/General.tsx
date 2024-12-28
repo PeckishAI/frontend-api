@@ -50,6 +50,18 @@ export default function General() {
     enabled: !!currentRestaurant?.restaurant_uuid
   });
 
+  const { data: salesBreakdown } = useQuery({
+    queryKey: ['salesBreakdown', currentRestaurant?.restaurant_uuid, dateParams],
+    queryFn: () => generalService.getRestaurantSalesBreakdown(currentRestaurant?.restaurant_uuid!, dateParams),
+    enabled: !!currentRestaurant?.restaurant_uuid
+  });
+
+  const { data: costBreakdown } = useQuery({
+    queryKey: ['costBreakdown', currentRestaurant?.restaurant_uuid, dateParams],
+    queryFn: () => generalService.getRestaurantCostOfSalesBreakdown(currentRestaurant?.restaurant_uuid!, dateParams),
+    enabled: !!currentRestaurant?.restaurant_uuid
+  });
+
   const sections = [
     { id: 'overview', label: 'Overview', icon: ChartBar },
     { id: 'inventory', label: 'Inventory', icon: Package2 },
@@ -131,14 +143,14 @@ export default function General() {
                 <Card>
                   <CardContent className="p-6">
                     <h3 className="text-lg font-medium mb-4">Sales Over Time</h3>
-                    <SalesChart />
+                    <SalesChart data={salesBreakdown?.data || []} />
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="text-lg font-medium mb-4">Customer Analytics</h3>
-                    <CustomerChart />
+                    <h3 className="text-lg font-medium mb-4">Cost of Sales Over Time</h3>
+                    <SalesChart data={costBreakdown?.data || []} type="cost" />
                   </CardContent>
                 </Card>
               </div>
