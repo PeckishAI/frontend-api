@@ -352,7 +352,7 @@ export default function NewOrderModal({
                               options: otherUnits
                             }
                           ].filter(group => group.options.length > 0);
-                        }}
+                        }
                         placeholder=""
                       />
                     </TableCell>
