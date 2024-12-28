@@ -1,4 +1,3 @@
-
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface DataPoint {
@@ -22,6 +21,9 @@ export function SalesChart({ data, type = 'sales' }: ChartProps) {
   
   const valueKey = type === 'sales' ? 'net_sales' : 'cost_of_sales';
   const color = type === 'sales' ? '#0284c7' : '#ef4444';
+
+  console.log('Chart data:', data);
+  console.log('Value key:', valueKey);
 
   return (
     <ResponsiveContainer width="100%" height={300}>
