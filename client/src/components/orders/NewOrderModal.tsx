@@ -476,11 +476,11 @@ export default function NewOrderModal({
             <AlertDialogCancel>No, continue editing</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                onOpenChange(false);
                 setShowCancelAlert(false);
                 setSelectedSupplier(null);
                 setDeliveryDate("");
                 setItems([]);
+                onOpenChange(false);
               }}
             >
               Yes, cancel order
