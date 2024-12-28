@@ -317,71 +317,86 @@ export default function PreparationSheet({
             />
 
             <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
+                control={form.control}
+                name="category"
+                render={({ field }) => {
+                  const [showCategoryModal, setShowCategoryModal] = useState(false);
+                  const [newCategoryName, setNewCategoryName] = useState("");
 
-                  <CreatableSelect
-                    size="large"
-                    value={
-                      field.value
-                        ? {
-                            value: field.value.category_uuid,
-                            label: field.value.category_name,
+                  return (
+                    <FormItem>
+                      <FormLabel>Category</FormLabel>
+                      <div className="flex gap-2">
+                        <div className="w-12 flex items-center justify-center">
+                          {field.value?.emoji}
+                        </div>
+                        <FormControl>
+                          <CreatableSelect
+                            value={
+                              field.value
+                                ? {
+                                    value: field.value.category_uuid,
+                                    label: field.value.category_name,
+                                  }
+                                : null
+                            }
+                            onChange={(option) => {
+                              if (option) {
+                                form.setValue("category", {
+                                  category_uuid: option.value,
+                                  category_name: option.label,
+                                  emoji: field.value?.emoji,
+                                });
+                              } else {
+                                form.setValue("category", undefined);
+                              }
+                            }}
+                            onCreateOption={(inputValue) => {
+                              setNewCategoryName(inputValue);
+                              setShowCategoryModal(true);
+                            }}
+                            options={useCategories(
+                              currentRestaurant?.restaurant_uuid,
+                            ).map((cat) => ({
+                              value: cat.category_uuid,
+                              label: cat.category_name,
+                            }))}
+                            placeholder="Choose a category or type to create new"
+                            size="large"
+                          />
+                        </FormControl>
+                      </div>
+
+                      <CategoryModal
+                        open={showCategoryModal}
+                        onOpenChange={setShowCategoryModal}
+                        onSubmit={async (data) => {
+                          try {
+                            if (!currentRestaurant?.restaurant_uuid) return;
+                            const newCategory =
+                              await categoryService.createCategory(
+                                currentRestaurant.restaurant_uuid,
+                                data,
+                              );
+                            form.setValue("category", {
+                              category_uuid: newCategory.category_uuid,
+                              category_name: newCategory.category_name,
+                              emoji: newCategory.emoji,
+                            });
+                            queryClient.invalidateQueries(["categories"]);
+                          } catch (error) {
+                            console.error("Failed to create category:", error);
                           }
-                        : null
-                    }
-                    onChange={(option) => {
-                      if (option) {
-                        field.onChange({
-                          category_uuid: option.value,
-                          category_name: option.label,
-                          emoji: "🍽️", // Default emoji
-                        });
-                      }
-                    }}
-                    options={
-                      useQuery({
-                        queryKey: [
-                          "categories",
-                          currentRestaurant?.restaurant_uuid,
-                        ],
-                        queryFn: () => {
-                          if (!currentRestaurant?.restaurant_uuid) return [];
-                          return categoryService
-                            .getRestaurantCategories(
-                              currentRestaurant.restaurant_uuid,
-                            )
-                            .then((categories) =>
-                              categories.map((cat: any) => ({
-                                value: cat.category_uuid,
-                                label: cat.category_name,
-                              })),
-                            );
-                        },
-                        enabled: !!currentRestaurant?.restaurant_uuid,
-                      }).data || []
-                    }
-                    onCreateOption={async (inputValue) => {
-                      if (!currentRestaurant?.restaurant_uuid) return;
-                      const newCategory = await categoryService.createCategory(
-                        currentRestaurant.restaurant_uuid,
-                        { category_name: inputValue, emoji: "🍽️" },
-                      );
-                      field.onChange({
-                        category_uuid: newCategory.category_uuid,
-                        category_name: newCategory.category_name,
-                        emoji: newCategory.emoji,
-                      });
-                      queryClient.invalidateQueries(["categories"]);
-                    }}
-                    placeholder=""
-                  />
-                </FormItem>
-              )}
-            />
+                        }}
+                        defaultValues={{
+                          category_name: newCategoryName,
+                          emoji: "🍽️",
+                        }}
+                      />
+                    </FormItem>
+                  );
+                }}
+              />
 
             <div className="grid grid-cols-3 gap-4">
               <FormField
