@@ -42,7 +42,6 @@ import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { foodEmojis } from "@/lib/emojis";
 import { defaultCategories } from "./ProductSheet";
 import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
-import { useQuery } from "@tanstack/react-query";
 import { categoryService } from "@/services/categoryService";
 
 const useCategories = (restaurantUuid?: string) => {
@@ -267,14 +266,14 @@ export default function PreparationSheet({
       const quantity = ing.quantity || 0;
       const unitCost = ing.unit_cost || 0;
       const conversionFactor = ing.base_to_recipe || 1;
-      return sum + (quantity * unitCost * conversionFactor);
+      return sum + quantity * unitCost * conversionFactor;
     }, 0);
 
     const totalPrepCost = preparations.reduce((sum, prep) => {
       const quantity = prep.quantity || 0;
       const unitCost = prep.unit_cost || 0;
       const conversionFactor = prep.base_to_recipe || 1;
-      return sum + (quantity * unitCost * conversionFactor);
+      return sum + quantity * unitCost * conversionFactor;
     }, 0);
 
     const totalCost = totalIngredientCost + totalPrepCost;
@@ -284,12 +283,16 @@ export default function PreparationSheet({
 
     // Update individual total costs
     ingredients.forEach((ing, index) => {
-      const totalCost = (ing.quantity || 0) * (ing.unit_cost || 0) * (ing.base_to_recipe || 1);
+      const totalCost =
+        (ing.quantity || 0) * (ing.unit_cost || 0) * (ing.base_to_recipe || 1);
       form.setValue(`preparation_ingredients.${index}.total_cost`, totalCost);
     });
 
     preparations.forEach((prep, index) => {
-      const totalCost = (prep.quantity || 0) * (prep.unit_cost || 0) * (prep.base_to_recipe || 1);
+      const totalCost =
+        (prep.quantity || 0) *
+        (prep.unit_cost || 0) *
+        (prep.base_to_recipe || 1);
       form.setValue(`preparation_preparations.${index}.total_cost`, totalCost);
     });
   };
@@ -330,86 +333,87 @@ export default function PreparationSheet({
             />
 
             <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => {
-                  const [showCategoryModal, setShowCategoryModal] = useState(false);
-                  const [newCategoryName, setNewCategoryName] = useState("");
+              control={form.control}
+              name="category"
+              render={({ field }) => {
+                const [showCategoryModal, setShowCategoryModal] =
+                  useState(false);
+                const [newCategoryName, setNewCategoryName] = useState("");
 
-                  return (
-                    <FormItem>
-                      <FormLabel>Category</FormLabel>
-                      <div className="flex gap-2">
-                        <div className="w-12 flex items-center justify-center">
-                          {field.value?.emoji}
-                        </div>
-                        <FormControl>
-                          <CreatableSelect
-                            value={
-                              field.value
-                                ? {
-                                    value: field.value.category_uuid,
-                                    label: field.value.category_name,
-                                  }
-                                : null
-                            }
-                            onChange={(option) => {
-                              if (option) {
-                                form.setValue("category", {
-                                  category_uuid: option.value,
-                                  category_name: option.label,
-                                  emoji: field.value?.emoji,
-                                });
-                              } else {
-                                form.setValue("category", undefined);
-                              }
-                            }}
-                            onCreateOption={(inputValue) => {
-                              setNewCategoryName(inputValue);
-                              setShowCategoryModal(true);
-                            }}
-                            options={useCategories(
-                              currentRestaurant?.restaurant_uuid,
-                            ).map((cat) => ({
-                              value: cat.category_uuid,
-                              label: cat.category_name,
-                            }))}
-                            placeholder="Choose a category or type to create new"
-                            size="large"
-                          />
-                        </FormControl>
+                return (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <div className="flex gap-2">
+                      <div className="w-12 flex items-center justify-center">
+                        {field.value?.emoji}
                       </div>
-
-                      <CategoryModal
-                        open={showCategoryModal}
-                        onOpenChange={setShowCategoryModal}
-                        onSubmit={async (data) => {
-                          try {
-                            if (!currentRestaurant?.restaurant_uuid) return;
-                            const newCategory =
-                              await categoryService.createCategory(
-                                currentRestaurant.restaurant_uuid,
-                                data,
-                              );
-                            form.setValue("category", {
-                              category_uuid: newCategory.category_uuid,
-                              category_name: newCategory.category_name,
-                              emoji: newCategory.emoji,
-                            });
-                            queryClient.invalidateQueries(["categories"]);
-                          } catch (error) {
-                            console.error("Failed to create category:", error);
+                      <FormControl>
+                        <CreatableSelect
+                          value={
+                            field.value
+                              ? {
+                                  value: field.value.category_uuid,
+                                  label: field.value.category_name,
+                                }
+                              : null
                           }
-                        }}
-                        defaultValues={{
-                          category_name: newCategoryName,
-                          emoji: "🍽️",
-                        }}
-                      />
-                    </FormItem>
-                  );
-                }}
-              />
+                          onChange={(option) => {
+                            if (option) {
+                              form.setValue("category", {
+                                category_uuid: option.value,
+                                category_name: option.label,
+                                emoji: field.value?.emoji,
+                              });
+                            } else {
+                              form.setValue("category", undefined);
+                            }
+                          }}
+                          onCreateOption={(inputValue) => {
+                            setNewCategoryName(inputValue);
+                            setShowCategoryModal(true);
+                          }}
+                          options={useCategories(
+                            currentRestaurant?.restaurant_uuid,
+                          ).map((cat) => ({
+                            value: cat.category_uuid,
+                            label: cat.category_name,
+                          }))}
+                          placeholder="Choose a category or type to create new"
+                          size="large"
+                        />
+                      </FormControl>
+                    </div>
+
+                    <CategoryModal
+                      open={showCategoryModal}
+                      onOpenChange={setShowCategoryModal}
+                      onSubmit={async (data) => {
+                        try {
+                          if (!currentRestaurant?.restaurant_uuid) return;
+                          const newCategory =
+                            await categoryService.createCategory(
+                              currentRestaurant.restaurant_uuid,
+                              data,
+                            );
+                          form.setValue("category", {
+                            category_uuid: newCategory.category_uuid,
+                            category_name: newCategory.category_name,
+                            emoji: newCategory.emoji,
+                          });
+                          queryClient.invalidateQueries(["categories"]);
+                        } catch (error) {
+                          console.error("Failed to create category:", error);
+                        }
+                      }}
+                      defaultValues={{
+                        category_name: newCategoryName,
+                        emoji: "🍽️",
+                      }}
+                    />
+                  </FormItem>
+                );
+              }}
+            />
 
             <div className="grid grid-cols-3 gap-4">
               <FormField
