@@ -1,0 +1,20 @@
+Sales data: (27) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+General.tsx:146 Sales data: (27) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+OverviewCharts.tsx:25 Chart data: []
+OverviewCharts.tsx:26 Value key: net_sales
+OverviewCharts.tsx:25 Chart data: []
+OverviewCharts.tsx:26 Value key: net_sales
+OverviewCharts.tsx:25 Chart data: []
+OverviewCharts.tsx:26 Value key: cost_of_sales
+OverviewCharts.tsx:25 Chart data: []
+OverviewCharts.tsx:26 Value key: cost_of_sales
+General.tsx:146 Sales data: (27) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+General.tsx:146 Sales data: (27) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]0: {date: 'Fri, 29 Nov 2024 00:00:00 GMT', net_sales: 87594.02}1: {date: 'Sat, 30 Nov 2024 00:00:00 GMT', net_sales: 38736.39}2: {date: 'Sun, 01 Dec 2024 00:00:00 GMT', net_sales: 51344}3: {date: 'Mon, 02 Dec 2024 00:00:00 GMT', net_sales: 82090.73}4: {date: 'Tue, 03 Dec 2024 00:00:00 GMT', net_sales: 961.930000000001}5: {date: 'Wed, 04 Dec 2024 00:00:00 GMT', net_sales: 21355.66}6: {date: 'Thu, 05 Dec 2024 00:00:00 GMT', net_sales: 831.07}7: {date: 'Fri, 06 Dec 2024 00:00:00 GMT', net_sales: 16054.76}8: {date: 'Sat, 07 Dec 2024 00:00:00 GMT', net_sales: 13912.74}9: {date: 'Sun, 08 Dec 2024 00:00:00 GMT', net_sales: 64133.57}10: {date: 'Mon, 09 Dec 2024 00:00:00 GMT', net_sales: 65116.94}11: {date: 'Tue, 10 Dec 2024 00:00:00 GMT', net_sales: 138.33}12: {date: 'Wed, 11 Dec 2024 00:00:00 GMT', net_sales: 11224.17}13: {date: 'Fri, 13 Dec 2024 00:00:00 GMT', net_sales: 7327.22}14: {date: 'Sat, 14 Dec 2024 00:00:00 GMT', net_sales: 35426.51}15: {date: 'Sun, 15 Dec 2024 00:00:00 GMT', net_sales: 101525.58}16: {date: 'Mon, 16 Dec 2024 00:00:00 GMT', net_sales: 100607.87}17: {date: 'Tue, 17 Dec 2024 00:00:00 GMT', net_sales: 2776.03}18: {date: 'Wed, 18 Dec 2024 00:00:00 GMT', net_sales: 28519.23}19: {date: 'Fri, 20 Dec 2024 00:00:00 GMT', net_sales: 2674.18}20: {date: 'Sat, 21 Dec 2024 00:00:00 GMT', net_sales: 33213.47}21: {date: 'Sun, 22 Dec 2024 00:00:00 GMT', net_sales: 42093.63}22: {date: 'Mon, 23 Dec 2024 00:00:00 GMT', net_sales: 66854.38}23: {date: 'Tue, 24 Dec 2024 00:00:00 GMT', net_sales: 10866.96}24: {date: 'Wed, 25 Dec 2024 00:00:00 GMT', net_sales: 35534.18}25: {date: 'Thu, 26 Dec 2024 00:00:00 GMT', net_sales: 3943.98}26: {date: 'Fri, 27 Dec 2024 00:00:00 GMT', net_sales: 11336.6}length: 27[[Prototype]]: Array(0)
+OverviewCharts.tsx:25 Chart data: []
+OverviewCharts.tsx:26 Value key: net_sales
+OverviewCharts.tsx:25 Chart data: []
+OverviewCharts.tsx:26 Value key: net_sales
+OverviewCharts.tsx:25 Chart data: []
+OverviewCharts.tsx:26 Value key: cost_of_sales
+OverviewCharts.tsx:25 Chart data: []
+OverviewCharts.tsx:26 Value key: cost_of_sales
