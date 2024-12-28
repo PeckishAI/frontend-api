@@ -84,7 +84,14 @@ export default function Orders() {
                 onOpenChange={setShowNewOrderModal}
                 onSave={async (order, status) => {
                   try {
-                    // Handle order creation here
+                    if (!currentRestaurant?.restaurant_uuid) {
+                      throw new Error("No restaurant selected");
+                    }
+                    await orderService.createOrder(currentRestaurant.restaurant_uuid, {
+                      ...order,
+                      status,
+                    });
+                    queryClient.invalidateQueries(["orders"]);
                     setShowNewOrderModal(false);
                   } catch (error) {
                     console.error("Failed to create order:", error);
