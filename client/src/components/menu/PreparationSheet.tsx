@@ -345,9 +345,6 @@ export default function PreparationSheet({
                   <FormItem>
                     <FormLabel>Category</FormLabel>
                     <div className="flex gap-2">
-                      <div className="w-12 flex items-center justify-center">
-                        {field.value?.emoji}
-                      </div>
                       <FormControl>
                         <CreatableSelect
                           value={
@@ -379,7 +376,7 @@ export default function PreparationSheet({
                             value: cat.category_uuid,
                             label: cat.category_name,
                           }))}
-                          placeholder="Choose a category or type to create new"
+                          placeholder=""
                           size="large"
                         />
                       </FormControl>
