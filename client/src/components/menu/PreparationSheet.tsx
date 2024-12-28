@@ -43,6 +43,7 @@ import { foodEmojis } from "@/lib/emojis";
 import { defaultCategories } from "./ProductSheet";
 import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
 import { categoryService } from "@/services/categoryService";
+import CategoryModal from "./CategoryModal";
 
 const useCategories = (restaurantUuid?: string) => {
   const { data: categories = [] } = useQuery({
