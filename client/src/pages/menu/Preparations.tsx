@@ -1,4 +1,3 @@
-
 import PreparationModal from "@/components/menu/PreparationModal";
 
 import { useState } from "react";
@@ -26,7 +25,7 @@ import PreparationSheet from "@/components/menu/PreparationSheet";
 import { Badge } from "@/components/ui/badge";
 import { menuService } from "@/services/menuService";
 import { type Preparation } from "@/types/menu";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 
 export default function Preparations() {
@@ -34,6 +33,7 @@ export default function Preparations() {
   const [editingPreparation, setEditingPreparation] =
     useState<Preparation | null>(null);
   const { currentRestaurant } = useRestaurantContext();
+  const queryClient = useQueryClient();
 
   const { data: preparations = [], isLoading } = useQuery({
     queryKey: ["preparations", currentRestaurant?.restaurant_uuid],
@@ -142,6 +142,7 @@ export default function Preparations() {
                   throw new Error("No restaurant selected");
                 }
                 await menuService.createPreparation(currentRestaurant.restaurant_uuid, data);
+                queryClient.invalidateQueries(["preparations"]);
                 setEditingPreparation(null);
               } catch (error) {
                 console.error("Failed to save preparation:", error);
