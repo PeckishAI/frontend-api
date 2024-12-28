@@ -257,10 +257,42 @@ export default function NewOrderModal({
                           }
                           setItems(newItems);
                         }}
-                        options={ingredients?.map((ing: any) => ({
-                          label: ing.ingredient_name,
-                          value: ing.ingredient_uuid,
-                        }))}
+                        options={(() => {
+                          if (!ingredients || !selectedSupplier) return [];
+                          
+                          const connectedIngredients = ingredients
+                            .filter((ing: any) => 
+                              ing.ingredient_suppliers?.some(
+                                (s: any) => s.supplier?.supplier_uuid === selectedSupplier.supplier_uuid
+                              )
+                            )
+                            .map((ing: any) => ({
+                              label: ing.ingredient_name,
+                              value: ing.ingredient_uuid,
+                            }));
+
+                          const otherIngredients = ingredients
+                            .filter((ing: any) => 
+                              !ing.ingredient_suppliers?.some(
+                                (s: any) => s.supplier?.supplier_uuid === selectedSupplier.supplier_uuid
+                              )
+                            )
+                            .map((ing: any) => ({
+                              label: ing.ingredient_name,
+                              value: ing.ingredient_uuid,
+                            }));
+
+                          return [
+                            {
+                              label: "Connected Ingredients",
+                              options: connectedIngredients
+                            },
+                            {
+                              label: "Other Ingredients",
+                              options: otherIngredients
+                            }
+                          ].filter(group => group.options.length > 0);
+                        })()}
                         placeholder=""
                       />
                     </TableCell>
