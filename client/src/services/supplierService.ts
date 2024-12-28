@@ -58,4 +58,61 @@ export const supplierService = {
       throw error;
     }
   },
+
+  async getSuppliersIngredients(restaurantUuid: string): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/suppliers/v2/restaurant/${restaurantUuid}/suppliers`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error("Failed to fetch suppliers ingredients");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to fetch suppliers ingredients:", error);
+      throw error;
+    }
+  },
+
+  async getSupplierIngredients(
+    restaurantUuid: string,
+    supplierUuid: string,
+  ): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/suppliers/v2/restaurant/${restaurantUuid}/supplier/${supplierUuid}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error("Failed to fetch supplier ingredients");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to fetch supplier ingredients:", error);
+      throw error;
+    }
+  },
 };

@@ -1,0 +1,123 @@
+{
+  "data": [
+    {
+      "ingredient_name": "Royal Gala Sweet Apple Juice 75cl",
+      "ingredient_uuid": "1dde6ef1-f533-4d7f-ac1f-1b2bf52c8cd0",
+      "pack_details": [
+        {
+          "product_code": null,
+          "unit_cost": 1.7,
+          "unit_name": null,
+          "unit_uuid": null
+        }
+      ],
+      "supplier_uuid": "e97f4308-dfed-427a-a874-7bbb0e544559"
+    },
+    {
+      "ingredient_name": "Apple & Elderflower Juice 75cl",
+      "ingredient_uuid": "3331f754-ca05-400b-8dfa-64bbc6b57d63",
+      "pack_details": [
+        {
+          "product_code": null,
+          "unit_cost": 1.7,
+          "unit_name": null,
+          "unit_uuid": null
+        }
+      ],
+      "supplier_uuid": "e97f4308-dfed-427a-a874-7bbb0e544559"
+    },
+    {
+      "ingredient_name": "Bramley Dry Apple Juice 75cl",
+      "ingredient_uuid": "5d6c0327-c9eb-4a3e-9f96-ee47023ba7c5",
+      "pack_details": [
+        {
+          "product_code": null,
+          "unit_cost": 1.7,
+          "unit_name": null,
+          "unit_uuid": null
+        }
+      ],
+      "supplier_uuid": "e97f4308-dfed-427a-a874-7bbb0e544559"
+    },
+    {
+      "ingredient_name": "Pear Juice Sweet 75cl",
+      "ingredient_uuid": "69b706c6-6a0c-4f3c-85c5-bcecc248ebbb",
+      "pack_details": [
+        {
+          "product_code": null,
+          "unit_cost": 1.7,
+          "unit_name": null,
+          "unit_uuid": null
+        }
+      ],
+      "supplier_uuid": "e97f4308-dfed-427a-a874-7bbb0e544559"
+    },
+    {
+      "ingredient_name": "Tickled Pink Apple Juice 75cl",
+      "ingredient_uuid": "a45ba950-9775-4b81-a408-908afb50a3e7",
+      "pack_details": [
+        {
+          "product_code": null,
+          "unit_cost": 1.7,
+          "unit_name": null,
+          "unit_uuid": null
+        }
+      ],
+      "supplier_uuid": "e97f4308-dfed-427a-a874-7bbb0e544559"
+    },
+    {
+      "ingredient_name": "Cox Medium Apple Juice 75cl",
+      "ingredient_uuid": "d9d99885-1188-4d2c-aefd-f4cfc87e5d83",
+      "pack_details": [
+        {
+          "product_code": null,
+          "unit_cost": 1.7,
+          "unit_name": null,
+          "unit_uuid": null
+        }
+      ],
+      "supplier_uuid": "e97f4308-dfed-427a-a874-7bbb0e544559"
+    },
+    {
+      "ingredient_name": "Russet Sweet Apple Juice 75cl",
+      "ingredient_uuid": "e3df356a-92f4-4d71-88c5-d62ce3209b33",
+      "pack_details": [
+        {
+          "product_code": null,
+          "unit_cost": 1.7,
+          "unit_name": null,
+          "unit_uuid": null
+        }
+      ],
+      "supplier_uuid": "e97f4308-dfed-427a-a874-7bbb0e544559"
+    },
+    {
+      "ingredient_name": "8 Litre Apple Juice Box",
+      "ingredient_uuid": "ea9c03a5-1646-4240-9b6a-1ce49c31434d",
+      "pack_details": [
+        {
+          "product_code": null,
+          "unit_cost": 10,
+          "unit_name": null,
+          "unit_uuid": null
+        }
+      ],
+      "supplier_uuid": "e97f4308-dfed-427a-a874-7bbb0e544559"
+    },
+    {
+      "ingredient_name": "Apple & Raspberry Juice 75cl",
+      "ingredient_uuid": "ec03ab29-e699-4a83-8378-a8e7145c0eb8",
+      "pack_details": [
+        {
+          "product_code": null,
+          "unit_cost": 1.7,
+          "unit_name": null,
+          "unit_uuid": null
+        }
+      ],
+      "supplier_uuid": "e97f4308-dfed-427a-a874-7bbb0e544559"
+    }
+  ],
+  "message": "Supplier ingredients retrieved successfully",
+  "success": true
+}
