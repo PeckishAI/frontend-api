@@ -199,16 +199,30 @@ export default function NewOrderModal({
                         onChange={(option) => {
                           if (option) {
                             const selectedIngredient = ingredients?.find(
-                              (ing: any) => ing.ingredient_uuid === option.value
+                              (ing: any) =>
+                                ing.ingredient_uuid === option.value,
                             );
-                            
+                            console.log("Items: ", items);
                             updateItem(index, "ingredient_uuid", option.value);
                             updateItem(index, "ingredient_name", option.label);
-                            
+
                             if (selectedIngredient) {
-                              updateItem(index, "product_code", selectedIngredient.product_code || "");
-                              updateItem(index, "unit_cost", selectedIngredient.unit_cost || 0);
-                              updateItem(index, "total_cost", (selectedIngredient.unit_cost || 0) * (item.quantity || 0));
+                              updateItem(
+                                index,
+                                "product_code",
+                                selectedIngredient.product_code || "",
+                              );
+                              updateItem(
+                                index,
+                                "unit_cost",
+                                selectedIngredient.unit_cost || 0,
+                              );
+                              updateItem(
+                                index,
+                                "total_cost",
+                                (selectedIngredient.unit_cost || 0) *
+                                  (item.quantity || 0),
+                              );
                             }
                           } else {
                             updateItem(index, "ingredient_uuid", "");
