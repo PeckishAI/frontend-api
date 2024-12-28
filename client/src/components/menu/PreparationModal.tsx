@@ -246,12 +246,12 @@ export default function PreparationModal({
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit((data) => {
-                    console.log('Form data being submitted:', data);
+                    console.log("Form data being submitted:", data);
                     try {
                       onSubmit(data);
-                      console.log('onSubmit called successfully');
+                      console.log("onSubmit called successfully");
                     } catch (error) {
-                      console.error('Error in form submission:', error);
+                      console.error("Error in form submission:", error);
                     }
                   })}
                   className="space-y-6 pt-6"
@@ -295,27 +295,36 @@ export default function PreparationModal({
                                   });
                                 }
                               }}
-                              options={useQuery({
-                                queryKey: ["categories", currentRestaurant?.restaurant_uuid],
-                                queryFn: () => {
-                                  if (!currentRestaurant?.restaurant_uuid) return [];
-                                  return categoryService.getRestaurantCategories(
-                                    currentRestaurant.restaurant_uuid,
-                                  ).then((categories) =>
-                                    categories.map((cat: any) => ({
-                                      value: cat.category_uuid,
-                                      label: cat.category_name,
-                                    })),
-                                  );
-                                },
-                                enabled: !!currentRestaurant?.restaurant_uuid,
-                              }).data || []}
+                              options={
+                                useQuery({
+                                  queryKey: [
+                                    "categories",
+                                    currentRestaurant?.restaurant_uuid,
+                                  ],
+                                  queryFn: () => {
+                                    if (!currentRestaurant?.restaurant_uuid)
+                                      return [];
+                                    return categoryService
+                                      .getRestaurantCategories(
+                                        currentRestaurant.restaurant_uuid,
+                                      )
+                                      .then((categories) =>
+                                        categories.map((cat: any) => ({
+                                          value: cat.category_uuid,
+                                          label: cat.category_name,
+                                        })),
+                                      );
+                                  },
+                                  enabled: !!currentRestaurant?.restaurant_uuid,
+                                }).data || []
+                              }
                               onCreateOption={async (inputValue) => {
                                 if (!currentRestaurant?.restaurant_uuid) return;
-                                const newCategory = await categoryService.createCategory(
-                                  currentRestaurant.restaurant_uuid,
-                                  { category_name: inputValue, emoji: "🍽️" }
-                                );
+                                const newCategory =
+                                  await categoryService.createCategory(
+                                    currentRestaurant.restaurant_uuid,
+                                    { category_name: inputValue, emoji: "🍽️" },
+                                  );
                                 field.onChange({
                                   category_uuid: newCategory.category_uuid,
                                   category_name: newCategory.category_name,
