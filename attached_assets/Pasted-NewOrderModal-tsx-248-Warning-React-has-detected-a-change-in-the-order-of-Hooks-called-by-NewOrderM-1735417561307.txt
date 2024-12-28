@@ -1,0 +1,63 @@
+NewOrderModal.tsx:248 Warning: React has detected a change in the order of Hooks called by NewOrderModal. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://reactjs.org/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+1. useState                   useState
+2. useState                   useState
+3. useState                   useState
+4. useState                   useState
+5. useContext                 useContext
+6. useContext                 useContext
+7. useContext                 useContext
+8. useContext                 useContext
+9. useEffect                  useEffect
+10. useState                  useState
+11. useCallback               useCallback
+12. useSyncExternalStore      useSyncExternalStore
+13. useEffect                 useEffect
+14. useContext                useContext
+15. useContext                useContext
+16. useContext                useContext
+17. useEffect                 useEffect
+18. useState                  useState
+19. useCallback               useCallback
+20. useSyncExternalStore      useSyncExternalStore
+21. useEffect                 useEffect
+22. undefined                 useContext
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ Error Component Stack
+    at NewOrderModal (NewOrderModal.tsx:47:3)
+    at div (<anonymous>)
+    at div (<anonymous>)
+    at div (<anonymous>)
+    at Orders (Orders.tsx:25:45)
+    at div (<anonymous>)
+    at RestaurantProvider (RestaurantContext.tsx:14:38)
+    at App (<anonymous>)
+
+chunk-C43VWYGG.js?v=54ec1e40:12281 Uncaught Error: Rendered more hooks than during the previous render.
+    at NewOrderModal.tsx:248:61
+    at NewOrderModal.tsx:248:69
+chunk-C43VWYGG.js?v=54ec1e40:12281 Uncaught Error: Rendered more hooks than during the previous render.
+    at NewOrderModal.tsx:248:61
+    at NewOrderModal.tsx:248:69
+hook.js:608 The above error occurred in the <NewOrderModal> component:
+
+    at NewOrderModal (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/orders/NewOrderModal.tsx?t=1735417504404:54:3)
+    at div
+    at div
+    at div
+    at Orders (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/pages/Orders.tsx?t=1735417504404:36:45)
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=54ec1e40:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=54ec1e40:247:17)
+    at div
+    at RestaurantProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/contexts/RestaurantContext.tsx:20:38)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=54ec1e40:2805:3)
+    at App
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=54ec1e40:2805:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+chunk-C43VWYGG.js?v=54ec1e40:12281 Uncaught Error: Rendered more hooks than during the previous render.
+    at NewOrderModal.tsx:248:61
+    at NewOrderModal.tsx:248:69
