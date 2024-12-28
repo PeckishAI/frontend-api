@@ -1,4 +1,4 @@
-import { Product } from "@/types/menu";
+import { Product, Preparation } from "@/types/menu";
 
 import { config } from "../config/config";
 const BASE_URL = config.apiBaseUrl;
@@ -121,7 +121,7 @@ export const menuService = {
     }
   },
 
-  async createPreparation(restaurantUuid: string, preparation: any): Promise<Product> {
+  async createPreparation(restaurantUuid: string, preparation: any): Promise<Preparation> {
     try {
       console.log('Creating preparation with data:', preparation);
       const response = await fetch(
