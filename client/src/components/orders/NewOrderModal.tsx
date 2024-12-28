@@ -267,45 +267,6 @@ export default function NewOrderModal({
                               options: otherUnits
                             }
                           ].filter(group => group.options.length > 0);
-                            return [];
-
-                          const selectedSupplierIngredients = ingredients
-                            .filter((ing: any) =>
-                              ing.ingredient_suppliers?.some(
-                                (s: any) =>
-                                  s.supplier?.supplier_uuid ===
-                                  selectedSupplier.supplier_uuid,
-                              ),
-                            )
-                            .map((ing: any) => ({
-                              label: ing.ingredient_name,
-                              value: ing.ingredient_uuid,
-                            }));
-
-                          const otherIngredients = ingredients
-                            .filter(
-                              (ing: any) =>
-                                !ing.ingredient_suppliers?.some(
-                                  (s: any) =>
-                                    s.supplier?.supplier_uuid ===
-                                    selectedSupplier.supplier_uuid,
-                                ),
-                            )
-                            .map((ing: any) => ({
-                              label: ing.ingredient_name,
-                              value: ing.ingredient_uuid,
-                            }));
-
-                          return [
-                            {
-                              label: `${selectedSupplier.supplier_name} Ingredients`,
-                              options: selectedSupplierIngredients,
-                            },
-                            {
-                              label: "Other Suppliers",
-                              options: otherIngredients,
-                            },
-                          ];
                         })()}
                         placeholder=""
                       />
@@ -343,50 +304,51 @@ export default function NewOrderModal({
                             });
                           }
                         }}
-                        options={(() => {
-  if (!currentRestaurant?.restaurant_uuid || !selectedSupplier?.supplier_uuid || !item.ingredient_uuid) {
-    return [];
-  }
+                        options={() => {
+                          if (!currentRestaurant?.restaurant_uuid || !selectedSupplier?.supplier_uuid || !item.ingredient_uuid) {
+                            return [];
+                          }
 
-  const { data: supplierIngredientUnits } = useQuery({
-    queryKey: ["units", currentRestaurant.restaurant_uuid, selectedSupplier.supplier_uuid, item.ingredient_uuid],
-    queryFn: () => unitService.getSupplierIngredientUnits(currentRestaurant.restaurant_uuid, selectedSupplier.supplier_uuid),
-  });
+                          // Move queries outside the options callback
+                          const supplierIngredientUnits = useQueryData(
+                            ["units", currentRestaurant.restaurant_uuid, selectedSupplier.supplier_uuid, item.ingredient_uuid],
+                            () => unitService.getSupplierIngredientUnits(currentRestaurant.restaurant_uuid, selectedSupplier.supplier_uuid)
+                          );
 
-  const { data: allUnits } = useQuery({
-    queryKey: ["units", currentRestaurant.restaurant_uuid],
-    queryFn: () => unitService.getRestaurantUnit(currentRestaurant.restaurant_uuid),
-  });
+                          const allUnits = useQueryData(
+                            ["units", currentRestaurant.restaurant_uuid],
+                            () => unitService.getRestaurantUnit(currentRestaurant.restaurant_uuid)
+                          );
 
-  if (!supplierIngredientUnits || !allUnits) return [];
+                          if (!supplierIngredientUnits || !allUnits) return [];
 
-  // Get mapped units for this ingredient
-  const mappedUnits = supplierIngredientUnits
-    .filter(unit => unit.ingredient_uuid === item.ingredient_uuid)
-    .map(unit => ({
-      label: unit.unit?.unit_name || '',
-      value: unit.unit?.unit_uuid || ''
-    }));
+                          // Get mapped units for this ingredient
+                          const mappedUnits = supplierIngredientUnits
+                            .filter(unit => unit.ingredient_uuid === item.ingredient_uuid)
+                            .map(unit => ({
+                              label: unit.unit?.unit_name || '',
+                              value: unit.unit?.unit_uuid || ''
+                            }));
 
-  // Get all other units not mapped
-  const otherUnits = allUnits
-    .filter(unit => !mappedUnits.some(mapped => mapped.value === unit.unit_uuid))
-    .map(unit => ({
-      label: unit.unit_name,
-      value: unit.unit_uuid
-    }));
+                          // Get all other units not mapped
+                          const otherUnits = allUnits
+                            .filter(unit => !mappedUnits.some(mapped => mapped.value === unit.unit_uuid))
+                            .map(unit => ({
+                              label: unit.unit_name,
+                              value: unit.unit_uuid
+                            }));
 
-  return [
-    {
-      label: 'Mapped Units',
-      options: mappedUnits
-    },
-    {
-      label: 'Other Units',
-      options: otherUnits
-    }
-  ].filter(group => group.options.length > 0);
-})()}
+                          return [
+                            {
+                              label: 'Mapped Units',
+                              options: mappedUnits
+                            },
+                            {
+                              label: 'Other Units',
+                              options: otherUnits
+                            }
+                          ].filter(group => group.options.length > 0);
+                        }}
                         placeholder=""
                       />
                     </TableCell>
