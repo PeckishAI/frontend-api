@@ -189,35 +189,28 @@ export default function NewOrderModal({
                     <TableCell>
                       <CreatableSelect
                         value={
-                          item.ingredient_uuid && item.ingredient_name
+                          item.ingredient_uuid
                             ? {
-                                label: item.ingredient_name,
+                                label: item.ingredient_name || "",
                                 value: item.ingredient_uuid,
                               }
                             : null
                         }
-                        onChange={(selectedOption) => {
-                          if (selectedOption) {
-                            // Find the selected ingredient
+                        onChange={(option) => {
+                          if (option) {
                             const selectedIngredient = ingredients?.find(
-                              (ing: any) => ing.ingredient_uuid === selectedOption.value
+                              (ing: any) => ing.ingredient_uuid === option.value
                             );
-
-                            // Update all related fields at once
-                            const updates: Partial<OrderItem> = {
-                              ingredient_uuid: selectedOption.value,
-                              ingredient_name: selectedOption.label,
-                              product_code: selectedIngredient?.product_code || "",
-                              unit_cost: selectedIngredient?.unit_cost || 0,
-                              total_cost: (selectedIngredient?.unit_cost || 0) * (item.quantity || 0)
-                            };
-
-                            // Apply all updates
-                            Object.entries(updates).forEach(([key, value]) => {
-                              updateItem(index, key as keyof OrderItem, value);
-                            });
+                            
+                            updateItem(index, "ingredient_uuid", option.value);
+                            updateItem(index, "ingredient_name", option.label);
+                            
+                            if (selectedIngredient) {
+                              updateItem(index, "product_code", selectedIngredient.product_code || "");
+                              updateItem(index, "unit_cost", selectedIngredient.unit_cost || 0);
+                              updateItem(index, "total_cost", (selectedIngredient.unit_cost || 0) * (item.quantity || 0));
+                            }
                           } else {
-                            // Clear all values if selection is removed
                             updateItem(index, "ingredient_uuid", "");
                             updateItem(index, "ingredient_name", "");
                             updateItem(index, "product_code", "");
