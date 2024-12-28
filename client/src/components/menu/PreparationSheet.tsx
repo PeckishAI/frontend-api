@@ -42,6 +42,19 @@ import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { foodEmojis } from "@/lib/emojis";
 import { defaultCategories } from "./ProductSheet";
 import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
+import { useQuery } from "@tanstack/react-query";
+import { categoryService } from "@/services/categoryService";
+
+const useCategories = (restaurantUuid?: string) => {
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories", restaurantUuid],
+    queryFn: async () => {
+      if (!restaurantUuid) return defaultCategories;
+      return categoryService.getRestaurantCategories(restaurantUuid);
+    },
+  });
+  return categories;
+};
 
 const preparationSchema = z.object({
   preparation_uuid: z.string().optional(),
