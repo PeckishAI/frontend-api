@@ -335,7 +335,50 @@ export default function NewOrderModal({
                             });
                           }
                         }}
-                        options={[]}
+                        options={(() => {
+  if (!currentRestaurant?.restaurant_uuid || !selectedSupplier?.supplier_uuid || !item.ingredient_uuid) {
+    return [];
+  }
+
+  const { data: supplierIngredientUnits } = useQuery({
+    queryKey: ["units", currentRestaurant.restaurant_uuid, selectedSupplier.supplier_uuid, item.ingredient_uuid],
+    queryFn: () => unitService.getSupplierIngredientUnits(currentRestaurant.restaurant_uuid, selectedSupplier.supplier_uuid),
+  });
+
+  const { data: allUnits } = useQuery({
+    queryKey: ["units", currentRestaurant.restaurant_uuid],
+    queryFn: () => unitService.getRestaurantUnit(currentRestaurant.restaurant_uuid),
+  });
+
+  if (!supplierIngredientUnits || !allUnits) return [];
+
+  // Get mapped units for this ingredient
+  const mappedUnits = supplierIngredientUnits
+    .filter(unit => unit.ingredient_uuid === item.ingredient_uuid)
+    .map(unit => ({
+      label: unit.unit?.unit_name || '',
+      value: unit.unit?.unit_uuid || ''
+    }));
+
+  // Get all other units not mapped
+  const otherUnits = allUnits
+    .filter(unit => !mappedUnits.some(mapped => mapped.value === unit.unit_uuid))
+    .map(unit => ({
+      label: unit.unit_name,
+      value: unit.unit_uuid
+    }));
+
+  return [
+    {
+      label: 'Mapped Units',
+      options: mappedUnits
+    },
+    {
+      label: 'Other Units',
+      options: otherUnits
+    }
+  ].filter(group => group.options.length > 0);
+})()}
                         placeholder=""
                       />
                     </TableCell>
