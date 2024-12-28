@@ -36,7 +36,7 @@ import { inventoryService } from "@/services/inventoryService";
 import { menuService } from "@/services/menuService";
 import { unitService } from "@/services/unitService";
 import { foodEmojis } from "@/lib/emojis";
-import { defaultCategories } from "./ProductSheet";
+import { categoryService } from "@/services/categoryService";
 import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
 
 const preparationSchema = z.object({
@@ -272,38 +272,54 @@ export default function PreparationModal({
                         <FormItem>
                           <FormLabel>Category</FormLabel>
                           <div className="flex gap-2">
-                            <Select
-                              value={field.value?.category_name}
-                              onValueChange={(value) => {
-                                const category = defaultCategories.find(
-                                  (c) => c.value === value,
-                                );
-                                if (category) {
+                            <CreatableSelect
+                              value={
+                                field.value
+                                  ? {
+                                      value: field.value.category_uuid,
+                                      label: field.value.category_name,
+                                    }
+                                  : null
+                              }
+                              onChange={(option) => {
+                                if (option) {
                                   field.onChange({
-                                    category_uuid: category.value,
-                                    category_name: category.label,
-                                    emoji: category.emoji,
+                                    category_uuid: option.value,
+                                    category_name: option.label,
+                                    emoji: "🍽️", // Default emoji
                                   });
                                 }
                               }}
-                            >
-                              <SelectTrigger className="w-full">
-                                <SelectValue placeholder="" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {defaultCategories.map((category) => (
-                                  <SelectItem
-                                    key={category.value}
-                                    value={category.value}
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <span>{category.emoji}</span>
-                                      <span>{category.label}</span>
-                                    </div>
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                              options={useQuery({
+                                queryKey: ["categories", currentRestaurant?.restaurant_uuid],
+                                queryFn: () => {
+                                  if (!currentRestaurant?.restaurant_uuid) return [];
+                                  return categoryService.getRestaurantCategories(
+                                    currentRestaurant.restaurant_uuid,
+                                  ).then((categories) =>
+                                    categories.map((cat: any) => ({
+                                      value: cat.category_uuid,
+                                      label: cat.category_name,
+                                    })),
+                                  );
+                                },
+                                enabled: !!currentRestaurant?.restaurant_uuid,
+                              }).data || []}
+                              onCreateOption={async (inputValue) => {
+                                if (!currentRestaurant?.restaurant_uuid) return;
+                                const newCategory = await categoryService.createCategory(
+                                  currentRestaurant.restaurant_uuid,
+                                  { category_name: inputValue, emoji: "🍽️" }
+                                );
+                                field.onChange({
+                                  category_uuid: newCategory.category_uuid,
+                                  category_name: newCategory.category_name,
+                                  emoji: newCategory.emoji,
+                                });
+                                queryClient.invalidateQueries(["categories"]);
+                              }}
+                              placeholder=""
+                            />
                           </div>
                         </FormItem>
                       )}
