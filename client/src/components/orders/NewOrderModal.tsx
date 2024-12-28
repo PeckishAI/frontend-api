@@ -54,6 +54,21 @@ export default function NewOrderModal({
   const [items, setItems] = useState<OrderItem[]>([]);
   const { currentRestaurant } = useRestaurantContext();
 
+  const { data: restaurantUnits = [] } = useQuery({
+    queryKey: ["units", currentRestaurant?.restaurant_uuid],
+    queryFn: () => unitService.getRestaurantUnit(currentRestaurant?.restaurant_uuid || ""),
+    enabled: !!currentRestaurant?.restaurant_uuid
+  });
+
+  const { data: supplierIngredientUnits = [] } = useQuery({
+    queryKey: ["supplier-units", currentRestaurant?.restaurant_uuid, selectedSupplier?.supplier_uuid],
+    queryFn: () => unitService.getSupplierIngredientUnits(
+      currentRestaurant?.restaurant_uuid || "", 
+      selectedSupplier?.supplier_uuid || ""
+    ),
+    enabled: !!(currentRestaurant?.restaurant_uuid && selectedSupplier?.supplier_uuid)
+  });
+
   const { data: suppliers } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
@@ -227,47 +242,10 @@ export default function NewOrderModal({
                           }
                           setItems(newItems);
                         }}
-                        options={(() => {
-                          if (!selectedSupplier?.supplier_uuid || !ingredients) {
-                            return [];
-                          }
-
-                          const selectedIngredient = ingredients.find(
-                            (ing: any) => ing.ingredient_uuid === item.ingredient_uuid
-                          );
-
-                          // Get pack details for this supplier-ingredient combination
-                          const packUnits = selectedIngredient?.pack_details
-                            ?.filter((pack: any) => pack.supplier_uuid === selectedSupplier.supplier_uuid)
-                            ?.map((pack: any) => ({
-                              label: pack.unit_name,
-                              value: pack.unit_uuid,
-                            })) || [];
-
-                          // Get all restaurant units
-                          const { data: restaurantUnits } = useQuery({
-                            queryKey: ["units", currentRestaurant?.restaurant_uuid],
-                            queryFn: () => unitService.getRestaurantUnit(currentRestaurant?.restaurant_uuid || ""),
-                          });
-
-                          const otherUnits = (restaurantUnits || [])
-                            .filter((unit: any) => !packUnits.some(pack => pack.value === unit.unit_uuid))
-                            .map((unit: any) => ({
-                              label: unit.unit_name,
-                              value: unit.unit_uuid,
-                            }));
-
-                          return [
-                            {
-                              label: 'Pack Units',
-                              options: packUnits
-                            },
-                            {
-                              label: 'Other Units',
-                              options: otherUnits
-                            }
-                          ].filter(group => group.options.length > 0);
-                        })()}
+                        options={ingredients?.map((ing: any) => ({
+                          label: ing.ingredient_name,
+                          value: ing.ingredient_uuid,
+                        }))}
                         placeholder=""
                       />
                     </TableCell>
@@ -304,22 +282,11 @@ export default function NewOrderModal({
                             });
                           }
                         }}
-                        options={(() => {
-                          // Initialize queries outside the callback
-                          const { data: allUnits = [] } = useQuery({
-                            queryKey: ["units", currentRestaurant?.restaurant_uuid],
-                            queryFn: () => unitService.getRestaurantUnit(currentRestaurant?.restaurant_uuid || ""),
-                            enabled: !!currentRestaurant?.restaurant_uuid
-                          });
-
-                          const { data: supplierIngredientUnits = [] } = useQuery({
-                            queryKey: ["units", currentRestaurant?.restaurant_uuid, selectedSupplier?.supplier_uuid, item.ingredient_uuid],
-                            queryFn: () => unitService.getSupplierIngredientUnits(currentRestaurant?.restaurant_uuid || "", selectedSupplier?.supplier_uuid || ""),
-                            enabled: !!(currentRestaurant?.restaurant_uuid && selectedSupplier?.supplier_uuid && item.ingredient_uuid)
-                          });
+                        options={() => {
+                          const allUnits = restaurantUnits || [];
+                          const supplierUnits = supplierIngredientUnits || [];
 
                           if (!item.ingredient_uuid) {
-                            // Return all units without categories if no ingredient selected
                             return allUnits.map(unit => ({
                               label: unit.unit_name,
                               value: unit.unit_uuid
@@ -327,16 +294,8 @@ export default function NewOrderModal({
                           }
 
                           // Get mapped units for this ingredient
-                          const mappedUnits = supplierIngredientUnits
+                          const connectedUnits = supplierUnits
                             .filter(unit => unit.ingredient_uuid === item.ingredient_uuid)
-                            .map(unit => ({
-                              label: unit.unit?.unit_name || '',
-                              value: unit.unit?.unit_uuid || ''
-                            }));
-
-                          // Get all other units not mapped
-                          const otherUnits = allUnits
-                            .filter(unit => !mappedUnits.some(mapped => mapped.value === unit.unit_uuid))
                             .map(unit => ({
                               label: unit.unit_name,
                               value: unit.unit_uuid
@@ -344,15 +303,20 @@ export default function NewOrderModal({
 
                           return [
                             {
-                              label: 'Mapped Units',
-                              options: mappedUnits
+                              label: "Connected Units",
+                              options: connectedUnits
                             },
                             {
-                              label: 'Other Units',
-                              options: otherUnits
+                              label: "All Units",
+                              options: allUnits
+                                .filter(unit => !connectedUnits.some(connected => connected.value === unit.unit_uuid))
+                                .map(unit => ({
+                                  label: unit.unit_name,
+                                  value: unit.unit_uuid
+                                }))
                             }
                           ].filter(group => group.options.length > 0);
-                        })()}
+                        }}
                         placeholder=""
                       />
                     </TableCell>
