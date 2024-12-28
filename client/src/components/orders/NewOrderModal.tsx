@@ -27,15 +27,7 @@ import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 
-interface OrderItem {
-  ingredient_uuid?: string;
-  ingredient_name?: string;
-  product_code?: string;
-  quantity?: number;
-  unit?: { unit_uuid: string; unit_name: string };
-  unit_cost?: number;
-  total_cost?: number;
-}
+import { OrderItem, Order, OrderStatus } from '@/types/order';
 
 interface NewOrderModalProps {
   open: boolean;
