@@ -189,10 +189,10 @@ export default function NewOrderModal({
                     <TableCell>
                       <CreatableSelect
                         value={
-                          item.ingredient_uuid
+                          item.ingredient_uuid && item.ingredient_name
                             ? {
-                                label: item.ingredient_name,
-                                value: item.ingredient_uuid,
+                                label: item.ingredient_name || "",
+                                value: item.ingredient_uuid || "",
                               }
                             : null
                         }
@@ -202,18 +202,15 @@ export default function NewOrderModal({
                               (ing: any) =>
                                 ing.ingredient_uuid === option.value,
                             );
-                            updateItem(index, "ingredient_uuid", option.value);
-                            updateItem(index, "ingredient_name", option.label);
-                            updateItem(
-                              index,
-                              "product_code",
-                              selectedIngredient?.product_code,
-                            );
-                            updateItem(
-                              index,
-                              "unit_cost",
-                              selectedIngredient?.unit_cost,
-                            );
+                            const updates = {
+                              ingredient_uuid: option.value,
+                              ingredient_name: option.label,
+                              product_code: selectedIngredient?.product_code || "",
+                              unit_cost: selectedIngredient?.unit_cost || 0
+                            };
+                            Object.entries(updates).forEach(([field, value]) => {
+                              updateItem(index, field as keyof OrderItem, value);
+                            });
                           }
                         }}
                         options={ingredients?.map((ing: any) => ({
