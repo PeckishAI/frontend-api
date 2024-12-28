@@ -153,7 +153,6 @@ export default function PreparationModal({
 }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showNewIngredientDialog, setShowNewIngredientDialog] = useState(false);
-  const [showNewPreparationDialog, setShowNewPreparationDialog] = useState(false);
   const [newItemName, setNewItemName] = useState("");
   const { currentRestaurant } = useRestaurantContext();
   const queryClient = useQueryClient();
@@ -236,544 +235,580 @@ export default function PreparationModal({
 
   return (
     <>
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] p-0">
-        <ScrollArea className="h-[90vh]">
-          <div className="p-6">
-            <DialogHeader>
-              <DialogTitle>Create New Preparation</DialogTitle>
-            </DialogHeader>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-3xl max-h-[90vh] p-0">
+          <ScrollArea className="h-[90vh]">
+            <div className="p-6">
+              <DialogHeader>
+                <DialogTitle>Create New Preparation</DialogTitle>
+              </DialogHeader>
 
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6 pt-6"
-              >
-                <FormField
-                  control={form.control}
-                  name="preparation_name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="" />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-2 gap-4">
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6 pt-6"
+                >
                   <FormField
                     control={form.control}
-                    name="category"
+                    name="preparation_name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Category</FormLabel>
-                        <div className="flex gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            className="w-12"
-                            onClick={() => setShowEmojiPicker(true)}
-                          >
-                            {field.value?.emoji}
-                          </Button>
-                          <Select
-                            value={field.value?.category_name}
-                            onValueChange={(value) => {
-                              const category = defaultCategories.find(
-                                (c) => c.value === value,
-                              );
-                              if (category) {
-                                field.onChange({
-                                  category_uuid: category.value,
-                                  category_name: category.label,
-                                  emoji: category.emoji,
-                                });
-                              }
-                            }}
-                          >
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {defaultCategories.map((category) => (
-                                <SelectItem
-                                  key={category.value}
-                                  value={category.value}
-                                >
-                                  <div className="flex items-center gap-2">
-                                    <span>{category.emoji}</span>
-                                    <span>{category.label}</span>
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="portion_count"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Portions</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            min={1}
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(parseInt(e.target.value))
-                            }
-                          />
+                          <Input {...field} placeholder="" />
                         </FormControl>
                       </FormItem>
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="unit"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Unit</FormLabel>
-                        <FormControl>
-                          <CreatableSelect
-                            value={
-                              field.value
-                                ? {
-                                    value: field.value.unit_uuid,
-                                    label: field.value.unit_name,
-                                  }
-                                : null
-                            }
-                            onChange={(option) => {
-                              if (option) {
-                                field.onChange({
-                                  unit_uuid: option.value,
-                                  unit_name: option.label,
-                                });
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Category</FormLabel>
+                          <div className="flex gap-2">
+                            <Select
+                              value={field.value?.category_name}
+                              onValueChange={(value) => {
+                                const category = defaultCategories.find(
+                                  (c) => c.value === value,
+                                );
+                                if (category) {
+                                  field.onChange({
+                                    category_uuid: category.value,
+                                    category_name: category.label,
+                                    emoji: category.emoji,
+                                  });
+                                }
+                              }}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {defaultCategories.map((category) => (
+                                  <SelectItem
+                                    key={category.value}
+                                    value={category.value}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <span>{category.emoji}</span>
+                                      <span>{category.label}</span>
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="portion_count"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Portions</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min={1}
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(parseInt(e.target.value))
                               }
-                            }}
-                            options={useUnitOptions(
-                              currentRestaurant?.restaurant_uuid,
-                            )}
-                            onCreateOption={(inputValue) => {
-                              setNewItemName(inputValue);
-                              setShowNewPreparationDialog(true);
-                            }}
-                            placeholder=""
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="space-y-8">
-                  {/* Ingredients Section */}
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-medium">Ingredients</h3>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={addIngredient}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Ingredient
-                      </Button>
-                    </div>
+                    <FormField
+                      control={form.control}
+                      name="unit"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Unit</FormLabel>
+                          <FormControl>
+                            <CreatableSelect
+                              value={
+                                field.value
+                                  ? {
+                                      value: field.value.unit_uuid,
+                                      label: field.value.unit_name,
+                                    }
+                                  : null
+                              }
+                              onChange={(option) => {
+                                if (option) {
+                                  field.onChange({
+                                    unit_uuid: option.value,
+                                    unit_name: option.label,
+                                  });
+                                }
+                              }}
+                              options={useUnitOptions(
+                                currentRestaurant?.restaurant_uuid,
+                              )}
+                              onCreateOption={(inputValue) => {
+                                setNewItemName(inputValue);
+                              }}
+                              placeholder=""
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                    {form.watch("preparation_ingredients")?.map((_, index) => (
-                      <div
-                        key={index}
-                        className="grid grid-cols-[2fr,1fr,1fr,1fr,auto] gap-4 items-end"
-                      >
-                        <FormField
-                          control={form.control}
-                          name={`preparation_ingredients.${index}.ingredient_name`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel
-                                className={index !== 0 ? "sr-only" : undefined}
-                              >
-                                Ingredient
-                              </FormLabel>
-                              <FormControl>
-                                <CreatableSelect
-                                  value={
-                                    field.value
-                                      ? {
-                                          label: field.value,
-                                          value: form.watch(
+                  <div className="space-y-8">
+                    {/* Ingredients Section */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-medium">Ingredients</h3>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={addIngredient}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Ingredient
+                        </Button>
+                      </div>
+
+                      {form
+                        .watch("preparation_ingredients")
+                        ?.map((_, index) => (
+                          <div
+                            key={index}
+                            className="grid grid-cols-[2fr,1fr,1fr,1fr,auto] gap-4 items-end"
+                          >
+                            <FormField
+                              control={form.control}
+                              name={`preparation_ingredients.${index}.ingredient_name`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel
+                                    className={
+                                      index !== 0 ? "sr-only" : undefined
+                                    }
+                                  >
+                                    Ingredient
+                                  </FormLabel>
+                                  <FormControl>
+                                    <CreatableSelect
+                                      value={
+                                        field.value
+                                          ? {
+                                              label: field.value,
+                                              value: form.watch(
+                                                `preparation_ingredients.${index}.ingredient_uuid`,
+                                              ),
+                                            }
+                                          : null
+                                      }
+                                      onChange={(option) => {
+                                        if (option) {
+                                          field.onChange(option.label);
+                                          form.setValue(
                                             `preparation_ingredients.${index}.ingredient_uuid`,
-                                          ),
+                                            option.value,
+                                          );
                                         }
-                                      : null
-                                  }
-                                  onChange={(option) => {
-                                    if (option) {
-                                      field.onChange(option.label);
-                                      form.setValue(
-                                        `preparation_ingredients.${index}.ingredient_uuid`,
-                                        option.value,
-                                      );
+                                      }}
+                                      options={useIngredientOptions(
+                                        currentRestaurant?.restaurant_uuid,
+                                      )}
+                                      onCreateOption={(inputValue) => {
+                                        setNewItemName(inputValue);
+                                        setShowNewIngredientDialog(true);
+                                      }}
+                                      placeholder=""
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name={`preparation_ingredients.${index}.quantity`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel
+                                    className={
+                                      index !== 0 ? "sr-only" : undefined
                                     }
-                                  }}
-                                  options={useIngredientOptions(
-                                    currentRestaurant?.restaurant_uuid,
-                                  )}
-                                  onCreateOption={(inputValue) => {
-                                    setNewItemName(inputValue);
-                                    setShowNewIngredientDialog(true);
-                                  }}
-                                  placeholder=""
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
+                                  >
+                                    Quantity
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      min={0}
+                                      step="any"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          parseFloat(e.target.value),
+                                        )
+                                      }
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
 
-                        <FormField
-                          control={form.control}
-                          name={`preparation_ingredients.${index}.quantity`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel
-                                className={index !== 0 ? "sr-only" : undefined}
-                              >
-                                Quantity
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  min={0}
-                                  step="any"
-                                  {...field}
-                                  onChange={(e) =>
-                                    field.onChange(parseFloat(e.target.value))
-                                  }
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`preparation_ingredients.${index}.recipe_unit.unit_uuid`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel
-                                className={index !== 0 ? "sr-only" : undefined}
-                              >
-                                Unit
-                              </FormLabel>
-                              <FormControl>
-                                <CreatableSelect
-                                  value={
-                                    field.value
-                                      ? {
-                                          value: field.value,
-                                          label: form.watch(
-                                            `preparation_ingredients.${index}.recipe_unit.unit_name`,
-                                          ),
+                            <FormField
+                              control={form.control}
+                              name={`preparation_ingredients.${index}.recipe_unit.unit_uuid`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel
+                                    className={
+                                      index !== 0 ? "sr-only" : undefined
+                                    }
+                                  >
+                                    Unit
+                                  </FormLabel>
+                                  <FormControl>
+                                    <CreatableSelect
+                                      value={
+                                        field.value
+                                          ? {
+                                              value: field.value,
+                                              label: form.watch(
+                                                `preparation_ingredients.${index}.recipe_unit.unit_name`,
+                                              ),
+                                            }
+                                          : null
+                                      }
+                                      onChange={(option) => {
+                                        if (option) {
+                                          form.setValue(
+                                            `preparation_ingredients.${index}.recipe_unit`,
+                                            {
+                                              unit_uuid: option.value,
+                                              unit_name: option.label,
+                                            },
+                                          );
                                         }
-                                      : null
-                                  }
-                                  onChange={(option) => {
-                                    if (option) {
-                                      form.setValue(
-                                        `preparation_ingredients.${index}.recipe_unit`,
-                                        {
-                                          unit_uuid: option.value,
-                                          unit_name: option.label,
-                                        },
-                                      );
+                                      }}
+                                      options={useUnitOptions(
+                                        currentRestaurant?.restaurant_uuid,
+                                      )}
+                                      onCreateOption={async (value) => {
+                                        try {
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          )
+                                            return;
+                                          const newUnit =
+                                            await unitService.createUnit(
+                                              { unit_name: value },
+                                              currentRestaurant.restaurant_uuid,
+                                            );
+                                          form.setValue(
+                                            `preparation_ingredients.${index}.recipe_unit`,
+                                            {
+                                              unit_uuid: newUnit.unit_uuid,
+                                              unit_name: newUnit.unit_name,
+                                            },
+                                          );
+                                          queryClient.invalidateQueries([
+                                            "units",
+                                          ]);
+                                        } catch (error) {
+                                          console.error(
+                                            "Failed to create unit:",
+                                            error,
+                                          );
+                                        }
+                                      }}
+                                      placeholder=""
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name={`preparation_ingredients.${index}.base_to_recipe`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel
+                                    className={
+                                      index !== 0 ? "sr-only" : undefined
                                     }
-                                  }}
-                                  options={useUnitOptions(
-                                    currentRestaurant?.restaurant_uuid,
-                                  )}
-                                  onCreateOption={async (value) => {
-                                    try {
-                                      if (!currentRestaurant?.restaurant_uuid) return;
-                                      const newUnit = await unitService.createUnit(
-                                        { unit_name: value },
-                                        currentRestaurant.restaurant_uuid,
-                                      );
-                                      form.setValue(
-                                        `preparation_ingredients.${index}.recipe_unit`,
-                                        {
-                                          unit_uuid: newUnit.unit_uuid,
-                                          unit_name: newUnit.unit_name,
-                                        },
-                                      );
-                                      queryClient.invalidateQueries(["units"]);
-                                    } catch (error) {
-                                      console.error("Failed to create unit:", error);
-                                    }
-                                  }}
-                                  placeholder=""
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
+                                  >
+                                    Factor
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      min={0}
+                                      step="any"
+                                      placeholder="Conv. factor"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          parseFloat(e.target.value),
+                                        )
+                                      }
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
 
-                        <FormField
-                          control={form.control}
-                          name={`preparation_ingredients.${index}.base_to_recipe`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel
-                                className={index !== 0 ? "sr-only" : undefined}
-                              >
-                                Factor
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  min={0}
-                                  step="any"
-                                  placeholder="Conv. factor"
-                                  {...field}
-                                  onChange={(e) =>
-                                    field.onChange(parseFloat(e.target.value))
-                                  }
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeIngredient(index)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Preparations Section */}
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-medium">Preparations</h3>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={addPreparation}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Preparation
-                      </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => removeIngredient(index)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
                     </div>
 
-                    {form.watch("preparation_preparations")?.map((_, index) => (
-                      <div
-                        key={index}
-                        className="grid grid-cols-[2fr,1fr,1fr,1fr,auto] gap-4 items-end"
-                      >
-                        <FormField
-                          control={form.control}
-                          name={`preparation_preparations.${index}.preparation_name`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel
-                                className={index !== 0 ? "sr-only" : undefined}
-                              >
-                                Preparation
-                              </FormLabel>
-                              <FormControl>
-                                <CreatableSelect
-                                  value={
-                                    field.value
-                                      ? {
-                                          label: field.value,
-                                          value: form.watch(
-                                            `preparation_preparations.${index}.preparation_uuid`,
-                                          ),
-                                        }
-                                      : null
-                                  }
-                                  onChange={(option) => {
-                                    if (option) {
-                                      field.onChange(option.label);
-                                      form.setValue(
-                                        `preparation_preparations.${index}.preparation_uuid`,
-                                        option.value,
-                                      );
-                                    }
-                                  }}
-                                  options={usePreparationOptions(
-                                    currentRestaurant?.restaurant_uuid,
-                                  )}
-                                  onCreateOption={(inputValue) => {
-                                    setNewItemName(inputValue);
-                                    setShowNewPreparationDialog(true);
-                                  }}
-                                  placeholder=""
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`preparation_preparations.${index}.quantity`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel
-                                className={index !== 0 ? "sr-only" : undefined}
-                              >
-                                Quantity
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  min={0}
-                                  step="any"
-                                  {...field}
-                                  onChange={(e) =>
-                                    field.onChange(parseFloat(e.target.value))
-                                  }
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`preparation_preparations.${index}.recipe_unit.unit_uuid`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel
-                                className={index !== 0 ? "sr-only" : undefined}
-                              >
-                                Unit
-                              </FormLabel>
-                              <FormControl>
-                                <CreatableSelect
-                                  value={
-                                    field.value
-                                      ? {
-                                          value: field.value,
-                                          label: form.watch(
-                                            `preparation_preparations.${index}.recipe_unit.unit_name`,
-                                          ),
-                                        }
-                                      : null
-                                  }
-                                  onChange={(option) => {
-                                    if (option) {
-                                      form.setValue(
-                                        `preparation_preparations.${index}.recipe_unit`,
-                                        {
-                                          unit_uuid: option.value,
-                                          unit_name: option.label,
-                                        },
-                                      );
-                                    }
-                                  }}
-                                  options={useUnitOptions(
-                                    currentRestaurant?.restaurant_uuid,
-                                  )}
-                                  onCreateOption={async (value) => {
-                                    try {
-                                      if (!currentRestaurant?.restaurant_uuid) return;
-                                      const newUnit = await unitService.createUnit(
-                                        { unit_name: value },
-                                        currentRestaurant.restaurant_uuid,
-                                      );
-                                      form.setValue(
-                                        `preparation_preparations.${index}.recipe_unit`,
-                                        {
-                                          unit_uuid: newUnit.unit_uuid,
-                                          unit_name: newUnit.unit_name,
-                                        },
-                                      );
-                                      queryClient.invalidateQueries(["units"]);
-                                    } catch (error) {
-                                      console.error("Failed to create unit:", error);
-                                    }
-                                  }}
-                                  placeholder=""
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`preparation_preparations.${index}.base_to_recipe`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel
-                                className={index !== 0 ? "sr-only" : undefined}
-                              >
-                                Factor
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  min={0}
-                                  step="any"
-                                  placeholder="Conv. factor"
-                                  {...field}
-                                  onChange={(e) =>
-                                    field.onChange(parseFloat(e.target.value))
-                                  }
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-
+                    {/* Preparations Section */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-medium">Preparations</h3>
                         <Button
                           type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removePreparation(index)}
+                          variant="outline"
+                          size="sm"
+                          onClick={addPreparation}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Preparation
                         </Button>
                       </div>
-                    ))}
+
+                      {form
+                        .watch("preparation_preparations")
+                        ?.map((_, index) => (
+                          <div
+                            key={index}
+                            className="grid grid-cols-[2fr,1fr,1fr,1fr,auto] gap-4 items-end"
+                          >
+                            <FormField
+                              control={form.control}
+                              name={`preparation_preparations.${index}.preparation_name`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel
+                                    className={
+                                      index !== 0 ? "sr-only" : undefined
+                                    }
+                                  >
+                                    Preparation
+                                  </FormLabel>
+                                  <FormControl>
+                                    <CreatableSelect
+                                      value={
+                                        field.value
+                                          ? {
+                                              label: field.value,
+                                              value: form.watch(
+                                                `preparation_preparations.${index}.preparation_uuid`,
+                                              ),
+                                            }
+                                          : null
+                                      }
+                                      onChange={(option) => {
+                                        if (option) {
+                                          field.onChange(option.label);
+                                          form.setValue(
+                                            `preparation_preparations.${index}.preparation_uuid`,
+                                            option.value,
+                                          );
+                                        }
+                                      }}
+                                      options={usePreparationOptions(
+                                        currentRestaurant?.restaurant_uuid,
+                                      )}
+                                      onCreateOption={(inputValue) => {
+                                        setNewItemName(inputValue);
+                                      }}
+                                      placeholder=""
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name={`preparation_preparations.${index}.quantity`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel
+                                    className={
+                                      index !== 0 ? "sr-only" : undefined
+                                    }
+                                  >
+                                    Quantity
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      min={0}
+                                      step="any"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          parseFloat(e.target.value),
+                                        )
+                                      }
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name={`preparation_preparations.${index}.recipe_unit.unit_uuid`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel
+                                    className={
+                                      index !== 0 ? "sr-only" : undefined
+                                    }
+                                  >
+                                    Unit
+                                  </FormLabel>
+                                  <FormControl>
+                                    <CreatableSelect
+                                      value={
+                                        field.value
+                                          ? {
+                                              value: field.value,
+                                              label: form.watch(
+                                                `preparation_preparations.${index}.recipe_unit.unit_name`,
+                                              ),
+                                            }
+                                          : null
+                                      }
+                                      onChange={(option) => {
+                                        if (option) {
+                                          form.setValue(
+                                            `preparation_preparations.${index}.recipe_unit`,
+                                            {
+                                              unit_uuid: option.value,
+                                              unit_name: option.label,
+                                            },
+                                          );
+                                        }
+                                      }}
+                                      options={useUnitOptions(
+                                        currentRestaurant?.restaurant_uuid,
+                                      )}
+                                      onCreateOption={async (value) => {
+                                        try {
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          )
+                                            return;
+                                          const newUnit =
+                                            await unitService.createUnit(
+                                              { unit_name: value },
+                                              currentRestaurant.restaurant_uuid,
+                                            );
+                                          form.setValue(
+                                            `preparation_preparations.${index}.recipe_unit`,
+                                            {
+                                              unit_uuid: newUnit.unit_uuid,
+                                              unit_name: newUnit.unit_name,
+                                            },
+                                          );
+                                          queryClient.invalidateQueries([
+                                            "units",
+                                          ]);
+                                        } catch (error) {
+                                          console.error(
+                                            "Failed to create unit:",
+                                            error,
+                                          );
+                                        }
+                                      }}
+                                      placeholder=""
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name={`preparation_preparations.${index}.base_to_recipe`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel
+                                    className={
+                                      index !== 0 ? "sr-only" : undefined
+                                    }
+                                  >
+                                    Factor
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      min={0}
+                                      step="any"
+                                      placeholder="Conv. factor"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          parseFloat(e.target.value),
+                                        )
+                                      }
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => removePreparation(index)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                    </div>
                   </div>
-                </div>
 
-                <DialogFooter>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => onOpenChange(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button type="submit">Create Preparation</Button>
-                </DialogFooter>
-              </form>
-            </Form>
-          </div>
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
+                  <DialogFooter>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => onOpenChange(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit">Create Preparation</Button>
+                  </DialogFooter>
+                </form>
+              </Form>
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
 
-    <NewIngredientDialog 
+      <NewIngredientDialog
         open={showNewIngredientDialog}
         onOpenChange={setShowNewIngredientDialog}
         defaultName={newItemName}
@@ -781,72 +816,12 @@ export default function PreparationModal({
           if (!currentRestaurant?.restaurant_uuid) return;
           const newIngredient = await inventoryService.createIngredient(
             currentRestaurant.restaurant_uuid,
-            data
+            data,
           );
           queryClient.invalidateQueries(["ingredients"]);
           setShowNewIngredientDialog(false);
         }}
       />
-
-      <Dialog open={showNewPreparationDialog} onOpenChange={setShowNewPreparationDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create New Preparation</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <FormField
-              control={form.control}
-              name="preparation_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} defaultValue={newItemName} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="portion_count"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Portions</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="number" 
-                      min={1} 
-                      {...field}
-                      onChange={(e) => field.onChange(parseInt(e.target.value))}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setShowNewPreparationDialog(false)}>
-              Cancel
-            </Button>
-            <Button onClick={async () => {
-              try {
-                if (!currentRestaurant?.restaurant_uuid) return;
-                const data = form.getValues();
-                const newPreparation = await menuService.createPreparation(
-                  currentRestaurant.restaurant_uuid,
-                  data
-                );
-                queryClient.invalidateQueries(["preparations"]);
-                setShowNewPreparationDialog(false);
-              } catch (error) {
-                console.error("Failed to create preparation:", error);
-              }
-            }}>
-              Create
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
