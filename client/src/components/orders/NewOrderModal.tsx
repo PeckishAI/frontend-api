@@ -282,15 +282,18 @@ export default function NewOrderModal({
                             });
                           }
                         }}
-                        options={() => {
+                        options={(() => {
                           const allUnits = restaurantUnits || [];
                           const supplierUnits = supplierIngredientUnits || [];
 
                           if (!item.ingredient_uuid) {
-                            return allUnits.map(unit => ({
-                              label: unit.unit_name,
-                              value: unit.unit_uuid
-                            }));
+                            return [{
+                              label: "All Units",
+                              options: allUnits.map(unit => ({
+                                label: unit.unit_name,
+                                value: unit.unit_uuid
+                              }))
+                            }];
                           }
 
                           // Get mapped units for this ingredient
@@ -301,22 +304,31 @@ export default function NewOrderModal({
                               value: unit.unit_uuid
                             }));
 
-                          return [
-                            {
+                          const groups = [];
+                          
+                          if (connectedUnits.length > 0) {
+                            groups.push({
                               label: "Connected Units",
                               options: connectedUnits
-                            },
-                            {
-                              label: "All Units",
-                              options: allUnits
-                                .filter(unit => !connectedUnits.some(connected => connected.value === unit.unit_uuid))
-                                .map(unit => ({
-                                  label: unit.unit_name,
-                                  value: unit.unit_uuid
-                                }))
-                            }
-                          ].filter(group => group.options.length > 0);
-                        }}
+                            });
+                          }
+
+                          const otherUnits = allUnits
+                            .filter(unit => !connectedUnits.some(connected => connected.value === unit.unit_uuid))
+                            .map(unit => ({
+                              label: unit.unit_name,
+                              value: unit.unit_uuid
+                            }));
+
+                          if (otherUnits.length > 0) {
+                            groups.push({
+                              label: "All Units", 
+                              options: otherUnits
+                            });
+                          }
+
+                          return groups;
+                        })()}
                         placeholder=""
                       />
                     </TableCell>
