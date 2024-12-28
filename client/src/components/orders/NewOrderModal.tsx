@@ -56,17 +56,25 @@ export default function NewOrderModal({
 
   const { data: restaurantUnits = [] } = useQuery({
     queryKey: ["units", currentRestaurant?.restaurant_uuid],
-    queryFn: () => unitService.getRestaurantUnit(currentRestaurant?.restaurant_uuid || ""),
-    enabled: !!currentRestaurant?.restaurant_uuid
+    queryFn: () =>
+      unitService.getRestaurantUnit(currentRestaurant?.restaurant_uuid || ""),
+    enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
   const { data: supplierIngredientUnits = [] } = useQuery({
-    queryKey: ["supplier-units", currentRestaurant?.restaurant_uuid, selectedSupplier?.supplier_uuid],
-    queryFn: () => unitService.getSupplierIngredientUnits(
-      currentRestaurant?.restaurant_uuid || "", 
-      selectedSupplier?.supplier_uuid || ""
+    queryKey: [
+      "supplier-units",
+      currentRestaurant?.restaurant_uuid,
+      selectedSupplier?.supplier_uuid,
+    ],
+    queryFn: () =>
+      unitService.getSupplierIngredientUnits(
+        currentRestaurant?.restaurant_uuid || "",
+        selectedSupplier?.supplier_uuid || "",
+      ),
+    enabled: !!(
+      currentRestaurant?.restaurant_uuid && selectedSupplier?.supplier_uuid
     ),
-    enabled: !!(currentRestaurant?.restaurant_uuid && selectedSupplier?.supplier_uuid)
   });
 
   const { data: suppliers } = useQuery({
@@ -94,11 +102,14 @@ export default function NewOrderModal({
   });
 
   const addItem = () => {
-    setItems([...items, {
-      quantity: 0,
-      unit_cost: 0,
-      total_cost: 0
-    }]);
+    setItems([
+      ...items,
+      {
+        quantity: 0,
+        unit_cost: 0,
+        total_cost: 0,
+      },
+    ]);
   };
 
   const removeItem = (index: number) => {
@@ -219,16 +230,20 @@ export default function NewOrderModal({
                           const newItems = [...items];
                           if (option) {
                             const selectedIngredient = ingredients?.find(
-                              (ing: any) => ing.ingredient_uuid === option.value
+                              (ing: any) =>
+                                ing.ingredient_uuid === option.value,
                             );
-                            
+
                             newItems[index] = {
                               ...newItems[index],
                               ingredient_uuid: option.value,
                               ingredient_name: option.label,
-                              product_code: selectedIngredient?.product_code || "",
+                              product_code:
+                                selectedIngredient?.product_code || "",
                               unit_cost: selectedIngredient?.unit_cost || 0,
-                              total_cost: (selectedIngredient?.unit_cost || 0) * (newItems[index].quantity || 0)
+                              total_cost:
+                                (selectedIngredient?.unit_cost || 0) *
+                                (newItems[index].quantity || 0),
                             };
                           } else {
                             newItems[index] = {
@@ -237,7 +252,7 @@ export default function NewOrderModal({
                               ingredient_name: "",
                               product_code: "",
                               unit_cost: 0,
-                              total_cost: 0
+                              total_cost: 0,
                             };
                           }
                           setItems(newItems);
@@ -285,45 +300,57 @@ export default function NewOrderModal({
                         options={(() => {
                           const allUnits = restaurantUnits || [];
                           const supplierUnits = supplierIngredientUnits || [];
+                          console.log("suppliernunits", supplierUnits);
 
                           if (!item.ingredient_uuid) {
-                            return [{
-                              label: "All Units",
-                              options: allUnits.map(unit => ({
-                                label: unit.unit_name,
-                                value: unit.unit_uuid
-                              }))
-                            }];
+                            return [
+                              {
+                                label: "All Units",
+                                options: allUnits.map((unit) => ({
+                                  label: unit.unit_name,
+                                  value: unit.unit_uuid,
+                                })),
+                              },
+                            ];
                           }
 
                           // Get mapped units for this ingredient
                           const connectedUnits = supplierUnits
-                            .filter(unit => unit.ingredient_uuid === item.ingredient_uuid)
-                            .map(unit => ({
-                              label: unit.unit_name,
-                              value: unit.unit_uuid
+                            .filter(
+                              (unit) =>
+                                unit.ingredient_uuid === item.ingredient_uuid,
+                            )
+                            .map((item) => ({
+                              label: item.units.unit_name,
+                              value: item.units.unit_uuid,
                             }));
 
                           const groups = [];
-                          
+                          console.log("connectedUnits", connectedUnits);
                           if (connectedUnits.length > 0) {
                             groups.push({
                               label: "Connected Units",
-                              options: connectedUnits
+                              options: connectedUnits,
                             });
                           }
 
                           const otherUnits = allUnits
-                            .filter(unit => !connectedUnits.some(connected => connected.value === unit.unit_uuid))
-                            .map(unit => ({
+                            .filter(
+                              (unit) =>
+                                !connectedUnits.some(
+                                  (connected) =>
+                                    connected.value === unit.unit_uuid,
+                                ),
+                            )
+                            .map((unit) => ({
                               label: unit.unit_name,
-                              value: unit.unit_uuid
+                              value: unit.unit_uuid,
                             }));
 
                           if (otherUnits.length > 0) {
                             groups.push({
-                              label: "All Units", 
-                              options: otherUnits
+                              label: "All Units",
+                              options: otherUnits,
                             });
                           }
 
