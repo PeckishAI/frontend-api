@@ -245,10 +245,14 @@ export default function PreparationModal({
 
               <Form {...form}>
                 <form
-                  onSubmit={form.handleSubmit((data) => {
+                  onSubmit={form.handleSubmit(async (data) => {
                     console.log("Form data being submitted:", data);
                     try {
-                      onSubmit(data);
+                      if (!data.preparation_name || !data.category || !data.unit) {
+                        console.error("Required fields missing");
+                        return;
+                      }
+                      await onSubmit(data);
                       console.log("onSubmit called successfully");
                     } catch (error) {
                       console.error("Error in form submission:", error);
