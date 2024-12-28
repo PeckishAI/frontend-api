@@ -91,7 +91,9 @@ export default function General() {
                     <div className="flex flex-col space-y-1">
                       <span className="text-sm text-muted-foreground">Total Sales</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold">${sales?.net_sales?.toFixed(2) || '0.00'}</span>
+                        <span className="text-2xl font-bold">
+                          ${sales?.net_sales ? (sales.net_sales >= 1000 ? (sales.net_sales / 1000).toFixed(1) + 'K' : sales.net_sales.toFixed(2)) : '0.00'}
+                        </span>
                         {/* <span className="text-sm text-red-500">↓20%</span> */}
                       </div>
                       {/* <span className="text-xs text-muted-foreground">Compared to previous period</span> */}
@@ -104,7 +106,9 @@ export default function General() {
                     <div className="flex flex-col space-y-1">
                       <span className="text-sm text-muted-foreground">Cost of Sales</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold">${costOfSales?.data?.toFixed(2) || '0.00'}</span>
+                        <span className="text-2xl font-bold">
+                          ${costOfSales?.data ? (costOfSales.data >= 1000 ? (costOfSales.data / 1000).toFixed(1) + 'K' : costOfSales.data.toFixed(2)) : '0.00'}
+                        </span>
                         {/* <span className="text-sm text-green-500">↑600%</span> */}
                       </div>
                       {/* <span className="text-xs text-muted-foreground">Compared to previous period</span> */}
@@ -117,7 +121,9 @@ export default function General() {
                     <div className="flex flex-col space-y-1">
                       <span className="text-sm text-muted-foreground">Inventory Value</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold">${inventoryValue?.data?.toFixed(2) || '0.00'}</span>
+                        <span className="text-2xl font-bold">
+                          ${inventoryValue?.data ? (inventoryValue.data >= 1000 ? (inventoryValue.data / 1000).toFixed(1) + 'K' : inventoryValue.data.toFixed(2)) : '0.00'}
+                        </span>
                         {/* <span className="text-sm text-neutral-500">-</span> */}
                       </div>
                       {/* <span className="text-xs text-muted-foreground">Current value</span> */}
