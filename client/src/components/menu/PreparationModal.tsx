@@ -245,7 +245,10 @@ export default function PreparationModal({
 
               <Form {...form}>
                 <form
-                  onSubmit={form.handleSubmit(onSubmit)}
+                  onSubmit={form.handleSubmit((data) => {
+                    console.log('New preparation being created:', data);
+                    onSubmit(data);
+                  })}
                   className="space-y-6 pt-6"
                 >
                   <FormField
