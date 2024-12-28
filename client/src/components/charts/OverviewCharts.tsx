@@ -17,7 +17,12 @@ export function SalesChart({ data, type = 'sales' }: ChartProps) {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
-  const formatValue = (value: number) => `$${value.toFixed(2)}`;
+  const formatValue = (value: number) => {
+    if (value >= 1000) {
+      return `$${(value / 1000).toFixed(1)}K`;
+    }
+    return `$${value.toFixed(2)}`;
+  };
   
   const valueKey = type === 'sales' ? 'net_sales' : 'cost_of_sales';
   const color = type === 'sales' ? '#0284c7' : '#ef4444';
