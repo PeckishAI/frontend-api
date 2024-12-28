@@ -144,14 +144,14 @@ export default function General() {
                   <CardContent className="p-6">
                     <h3 className="text-lg font-medium mb-4">Sales Over Time</h3>
                     {console.log('Sales data:', salesBreakdown)}
-<SalesChart data={salesBreakdown?.data || []} />
+<SalesChart data={salesBreakdown || []} />
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardContent className="p-6">
                     <h3 className="text-lg font-medium mb-4">Cost of Sales Over Time</h3>
-                    <SalesChart data={costBreakdown?.data || []} type="cost" />
+                    <SalesChart data={costBreakdown || []} type="cost" />
                   </CardContent>
                 </Card>
               </div>
