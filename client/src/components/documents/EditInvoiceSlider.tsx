@@ -458,7 +458,8 @@ export function EditInvoiceSlider({
                                 onCreateOption={(value) => {
                                   field.onChange(value);
                                 }}
-                                placeholder="Select or add supplier"
+                                placeholder=""
+                                size="large"
                               />
                             </FormControl>
                             <FormMessage />
@@ -547,7 +548,7 @@ export function EditInvoiceSlider({
                                   onCreateOption={(value) => {
                                     field.onChange(value);
                                   }}
-                                  placeholder="Select or add ingredient"
+                                  placeholder=""
                                 />
                               </FormControl>
                               <FormMessage />
@@ -586,6 +587,7 @@ export function EditInvoiceSlider({
                                 <FormLabel>Unit</FormLabel>
                                 <FormControl>
                                   <CreatableSelect
+                                    size="small"
                                     value={
                                       field.value?.unit_name
                                         ? [field.value.unit_name]
@@ -726,7 +728,7 @@ export function EditInvoiceSlider({
                                     onChange={(e) =>
                                       field.onChange(parseFloat(e.target.value))
                                     }
-                                    placeholder="Unit Cost"
+                                    placeholder=""
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -738,7 +740,7 @@ export function EditInvoiceSlider({
                             name={`ingredients.${index}.vat`}
                             render={({ field }) => (
                               <FormItem className="w-24">
-                                <FormLabel>VAT %</FormLabel>
+                                <FormLabel>VAT</FormLabel>
                                 <FormControl>
                                   <Input
                                     type="number"
@@ -747,7 +749,7 @@ export function EditInvoiceSlider({
                                     onChange={(e) =>
                                       field.onChange(parseFloat(e.target.value))
                                     }
-                                    placeholder="VAT %"
+                                    placeholder=""
                                   />
                                 </FormControl>
                                 <FormMessage />
