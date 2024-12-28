@@ -396,21 +396,19 @@ export default function OrderModal({
                       <CreatableSelect
                         value={
                           item.ingredient_uuid
-                            ? [
-                                {
-                                  label: item.ingredient_name || "",
-                                  value: item.ingredient_uuid,
-                                },
-                              ]
-                            : []
+                            ? {
+                                label: item.ingredient_name || "",
+                                value: item.ingredient_uuid,
+                              }
+                            : null
                         }
                         size="medium"
-                        onChange={(values) => {
+                        onChange={(option) => {
                           try {
                             const newItems = Array.isArray(editedOrder.items)
                               ? [...editedOrder.items]
                               : [];
-                            const selectedId = values?.value || "";
+                            const selectedId = option?.value || "";
                             const selectedOption =
                               selectedId && editedOrder.supplier?.supplier_uuid
                                 ? getIngredientOptions(
