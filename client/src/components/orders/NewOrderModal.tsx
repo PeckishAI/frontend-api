@@ -79,7 +79,11 @@ export default function NewOrderModal({
   });
 
   const addItem = () => {
-    setItems([...items, {}]);
+    setItems([...items, {
+      quantity: 0,
+      unit_cost: 0,
+      total_cost: 0
+    }]);
   };
 
   const removeItem = (index: number) => {
@@ -271,12 +275,12 @@ export default function NewOrderModal({
                     <TableCell>
                       <Input
                         type="number"
-                        value={item.quantity}
+                        value={item.quantity || 0}
                         onChange={(e) =>
                           updateItem(
                             index,
                             "quantity",
-                            parseFloat(e.target.value),
+                            e.target.value ? parseFloat(e.target.value) : 0,
                           )
                         }
                         min={0}
