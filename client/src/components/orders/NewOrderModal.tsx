@@ -476,11 +476,17 @@ export default function NewOrderModal({
             <AlertDialogCancel>No, continue editing</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                setShowCancelAlert(false);
+                // Clean up state
                 setSelectedSupplier(null);
                 setDeliveryDate("");
                 setItems([]);
+                setShowCancelAlert(false);
+                
+                // Force unmount and cleanup
                 onOpenChange(false);
+                setTimeout(() => {
+                  window.location.reload();
+                }, 100);
               }}
             >
               Yes, cancel order
