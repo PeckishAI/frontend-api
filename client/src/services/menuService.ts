@@ -120,4 +120,36 @@ export const menuService = {
       throw error;
     }
   },
+
+  async createPreparation(restaurantUuid: string, preparation: any): Promise<Product> {
+    try {
+      console.log('Creating preparation with data:', preparation);
+      const response = await fetch(
+        `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/preparations`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(preparation),
+        },
+      );
+
+      if (!response.ok) {
+        console.error('Server response not ok:', response.status);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Server response:', data);
+      
+      if (!data.success) {
+        throw new Error("Failed to create preparation");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to create preparation:", error);
+      throw error;
+    }
+  },
 };

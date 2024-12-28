@@ -246,8 +246,13 @@ export default function PreparationModal({
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit((data) => {
-                    console.log('New preparation being created:', data);
-                    onSubmit(data);
+                    console.log('Form data being submitted:', data);
+                    try {
+                      onSubmit(data);
+                      console.log('onSubmit called successfully');
+                    } catch (error) {
+                      console.error('Error in form submission:', error);
+                    }
                   })}
                   className="space-y-6 pt-6"
                 >
