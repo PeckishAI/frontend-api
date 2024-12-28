@@ -42,8 +42,8 @@ const getSizeStyles = (size: "small" | "medium" | "large") => {
       return {
         height: "40px",
         width: "100%",
-        fontSize: "1rem",
-        padding: "0 16px",
+        fontSize: "0.875rem",
+        padding: "0 12px",
       };
     default:
       return {};

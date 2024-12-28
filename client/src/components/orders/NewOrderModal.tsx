@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { useState } from "react";
 import {
@@ -25,14 +24,23 @@ import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { supplierService } from "@/services/supplierService";
 import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
-import { OrderItem, Order, OrderStatus } from '@/types/order';
+import { OrderItem, Order, OrderStatus } from "@/types/order";
 
 interface NewOrderModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (order: any, status: 'draft' | 'placed') => void;
+  onSave: (order: any, status: "draft" | "placed") => void;
 }
 
 export default function NewOrderModal({
@@ -83,8 +91,10 @@ export default function NewOrderModal({
     newItems[index] = { ...newItems[index], [field]: value };
 
     if (field === "quantity" || field === "unit_cost") {
-      const quantity = field === "quantity" ? value : newItems[index].quantity || 0;
-      const unit_cost = field === "unit_cost" ? value : newItems[index].unit_cost || 0;
+      const quantity =
+        field === "quantity" ? value : newItems[index].quantity || 0;
+      const unit_cost =
+        field === "unit_cost" ? value : newItems[index].unit_cost || 0;
       newItems[index].total_cost = quantity * unit_cost;
     }
 
@@ -95,7 +105,7 @@ export default function NewOrderModal({
     return items.reduce((sum, item) => sum + (item.total_cost || 0), 0);
   };
 
-  const handleSave = (status: 'draft' | 'placed') => {
+  const handleSave = (status: "draft" | "placed") => {
     const order = {
       supplier: selectedSupplier,
       delivery_date: deliveryDate,
@@ -108,16 +118,19 @@ export default function NewOrderModal({
 
   return (
     <>
-      <Dialog open={open} onOpenChange={(isOpen) => {
-        if (!isOpen) {
-          setShowCancelAlert(true);
-        }
-      }}>
+      <Dialog
+        open={open}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setShowCancelAlert(true);
+          }
+        }}
+      >
         <DialogContent className="max-w-4xl">
           <DialogHeader>
             <DialogTitle>Create New Order</DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -127,10 +140,14 @@ export default function NewOrderModal({
                     label: supplier.supplier_name,
                     value: supplier.supplier_uuid,
                   }))}
-                  value={selectedSupplier ? {
-                    label: selectedSupplier.supplier_name,
-                    value: selectedSupplier.supplier_uuid,
-                  } : null}
+                  value={
+                    selectedSupplier
+                      ? {
+                          label: selectedSupplier.supplier_name,
+                          value: selectedSupplier.supplier_uuid,
+                        }
+                      : null
+                  }
                   onChange={(option) => {
                     if (option) {
                       setSelectedSupplier({
@@ -140,6 +157,7 @@ export default function NewOrderModal({
                     }
                   }}
                   placeholder=""
+                  size="large"
                 />
               </div>
               <div>
@@ -155,8 +173,8 @@ export default function NewOrderModal({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Item</TableHead>
                   <TableHead>Product Code</TableHead>
+                  <TableHead>Item</TableHead>
                   <TableHead>Quantity</TableHead>
                   <TableHead>Unit</TableHead>
                   <TableHead className="text-right">Unit Cost</TableHead>
@@ -167,21 +185,35 @@ export default function NewOrderModal({
               <TableBody>
                 {items.map((item, index) => (
                   <TableRow key={index}>
+                    <TableCell>{item.product_code || "-"}</TableCell>
                     <TableCell>
                       <CreatableSelect
-                        value={item.ingredient_uuid ? {
-                          label: item.ingredient_name,
-                          value: item.ingredient_uuid,
-                        } : null}
+                        value={
+                          item.ingredient_uuid
+                            ? {
+                                label: item.ingredient_name,
+                                value: item.ingredient_uuid,
+                              }
+                            : null
+                        }
                         onChange={(option) => {
                           if (option) {
                             const selectedIngredient = ingredients?.find(
-                              (ing: any) => ing.ingredient_uuid === option.value,
+                              (ing: any) =>
+                                ing.ingredient_uuid === option.value,
                             );
                             updateItem(index, "ingredient_uuid", option.value);
                             updateItem(index, "ingredient_name", option.label);
-                            updateItem(index, "product_code", selectedIngredient?.product_code);
-                            updateItem(index, "unit_cost", selectedIngredient?.unit_cost);
+                            updateItem(
+                              index,
+                              "product_code",
+                              selectedIngredient?.product_code,
+                            );
+                            updateItem(
+                              index,
+                              "unit_cost",
+                              selectedIngredient?.unit_cost,
+                            );
                           }
                         }}
                         options={ingredients?.map((ing: any) => ({
@@ -191,22 +223,31 @@ export default function NewOrderModal({
                         placeholder=""
                       />
                     </TableCell>
-                    <TableCell>{item.product_code || "-"}</TableCell>
                     <TableCell>
                       <Input
                         type="number"
                         value={item.quantity}
-                        onChange={(e) => updateItem(index, "quantity", parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          updateItem(
+                            index,
+                            "quantity",
+                            parseFloat(e.target.value),
+                          )
+                        }
                         min={0}
                         step="any"
                       />
                     </TableCell>
                     <TableCell>
                       <CreatableSelect
-                        value={item.unit ? {
-                          label: item.unit.unit_name,
-                          value: item.unit.unit_uuid,
-                        } : null}
+                        value={
+                          item.unit
+                            ? {
+                                label: item.unit.unit_name,
+                                value: item.unit.unit_uuid,
+                              }
+                            : null
+                        }
                         onChange={(option) => {
                           if (option) {
                             updateItem(index, "unit", {
@@ -258,12 +299,10 @@ export default function NewOrderModal({
             <Button variant="outline" onClick={() => setShowCancelAlert(true)}>
               Cancel
             </Button>
-            <Button variant="outline" onClick={() => handleSave('draft')}>
+            <Button variant="outline" onClick={() => handleSave("draft")}>
               Save as Draft
             </Button>
-            <Button onClick={() => handleSave('placed')}>
-              Place Order
-            </Button>
+            <Button onClick={() => handleSave("placed")}>Place Order</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -278,13 +317,15 @@ export default function NewOrderModal({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>No, continue editing</AlertDialogCancel>
-            <AlertDialogAction onClick={() => {
-              setShowCancelAlert(false);
-              onOpenChange(false);
-              setSelectedSupplier(null);
-              setDeliveryDate("");
-              setItems([]);
-            }}>
+            <AlertDialogAction
+              onClick={() => {
+                setShowCancelAlert(false);
+                onOpenChange(false);
+                setSelectedSupplier(null);
+                setDeliveryDate("");
+                setItems([]);
+              }}
+            >
               Yes, cancel order
             </AlertDialogAction>
           </AlertDialogFooter>
