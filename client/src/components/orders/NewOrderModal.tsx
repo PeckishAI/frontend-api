@@ -304,22 +304,27 @@ export default function NewOrderModal({
                             });
                           }
                         }}
-                        options={() => {
-                          if (!currentRestaurant?.restaurant_uuid || !selectedSupplier?.supplier_uuid || !item.ingredient_uuid) {
-                            return [];
+                        options={(() => {
+                          // Initialize queries outside the callback
+                          const { data: allUnits = [] } = useQuery({
+                            queryKey: ["units", currentRestaurant?.restaurant_uuid],
+                            queryFn: () => unitService.getRestaurantUnit(currentRestaurant?.restaurant_uuid || ""),
+                            enabled: !!currentRestaurant?.restaurant_uuid
+                          });
+
+                          const { data: supplierIngredientUnits = [] } = useQuery({
+                            queryKey: ["units", currentRestaurant?.restaurant_uuid, selectedSupplier?.supplier_uuid, item.ingredient_uuid],
+                            queryFn: () => unitService.getSupplierIngredientUnits(currentRestaurant?.restaurant_uuid || "", selectedSupplier?.supplier_uuid || ""),
+                            enabled: !!(currentRestaurant?.restaurant_uuid && selectedSupplier?.supplier_uuid && item.ingredient_uuid)
+                          });
+
+                          if (!item.ingredient_uuid) {
+                            // Return all units without categories if no ingredient selected
+                            return allUnits.map(unit => ({
+                              label: unit.unit_name,
+                              value: unit.unit_uuid
+                            }));
                           }
-
-                          const { data: supplierIngredientUnits } = useQuery({
-                            queryKey: ["units", currentRestaurant.restaurant_uuid, selectedSupplier.supplier_uuid, item.ingredient_uuid],
-                            queryFn: () => unitService.getSupplierIngredientUnits(currentRestaurant.restaurant_uuid, selectedSupplier.supplier_uuid)
-                          });
-
-                          const { data: allUnits } = useQuery({
-                            queryKey: ["units", currentRestaurant.restaurant_uuid],
-                            queryFn: () => unitService.getRestaurantUnit(currentRestaurant.restaurant_uuid)
-                          });
-
-                          if (!supplierIngredientUnits || !allUnits) return [];
 
                           // Get mapped units for this ingredient
                           const mappedUnits = supplierIngredientUnits
