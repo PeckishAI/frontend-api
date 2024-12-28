@@ -235,16 +235,19 @@ export default function NewOrderModal({
                                 ing.ingredient_uuid === option.value,
                             );
 
+                            // Find supplier-specific unit cost
+                            const supplierInfo = selectedIngredient?.ingredient_suppliers?.find(
+                              (s: any) => s.supplier?.supplier_uuid === selectedSupplier?.supplier_uuid
+                            );
+
                             newItems[index] = {
                               ...newItems[index],
                               ingredient_uuid: option.value,
                               ingredient_name: option.label,
-                              product_code:
-                                selectedIngredient?.product_code || "",
-                              unit_cost: selectedIngredient?.unit_cost || 0,
-                              total_cost:
-                                (selectedIngredient?.unit_cost || 0) *
-                                (newItems[index].quantity || 0),
+                              product_code: selectedIngredient?.product_code || "",
+                              unit_cost: supplierInfo?.unit_cost || 0,
+                              total_cost: (supplierInfo?.unit_cost || 0) * (newItems[index].quantity || 0),
+                              supplier_units: supplierInfo?.units || []
                             };
                           } else {
                             newItems[index] = {
@@ -254,6 +257,7 @@ export default function NewOrderModal({
                               product_code: "",
                               unit_cost: 0,
                               total_cost: 0,
+                              supplier_units: []
                             };
                           }
                           setItems(newItems);
@@ -329,10 +333,23 @@ export default function NewOrderModal({
                         }
                         onChange={(option) => {
                           if (option) {
+                            const selectedUnit = item.supplier_units?.find(
+                              (u: any) => u.unit_uuid === option.value
+                            );
+                            
                             updateItem(index, "unit", {
                               unit_uuid: option.value,
                               unit_name: option.label,
                             });
+
+                            if (selectedUnit?.unit_cost) {
+                              updateItem(index, "unit_cost", selectedUnit.unit_cost);
+                              updateItem(
+                                index, 
+                                "total_cost", 
+                                selectedUnit.unit_cost * (item.quantity || 0)
+                              );
+                            }
                           }
                         }}
                         options={(() => {
