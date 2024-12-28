@@ -188,14 +188,16 @@ export default function NewOrderModal({
                     <TableCell>{item.product_code || "-"}</TableCell>
                     <TableCell>
                       <CreatableSelect
-                        value={{
-                          label: item.ingredient_name || "",
-                          value: item.ingredient_uuid || "",
-                        }}
+                        value={
+                          item.ingredient_uuid && item.ingredient_name
+                            ? {
+                                label: item.ingredient_name,
+                                value: item.ingredient_uuid,
+                              }
+                            : null
+                        }
                         onChange={(option) => {
                           if (option) {
-                            console.log(option);
-                            console.log("ingredients: ", ingredients);
                             const selectedIngredient = ingredients?.find(
                               (ing: any) =>
                                 ing.ingredient_uuid === option.value,
