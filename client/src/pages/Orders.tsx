@@ -19,6 +19,7 @@ import SupplierDialog from "@/components/suppliers/SupplierDialog";
 import SupplierSheet from "@/components/suppliers/SupplierSheet";
 import { orderService } from "@/services/orderService";
 import { supplierService } from "@/services/supplierService";
+import NewOrderModal from "@/components/orders/NewOrderModal";
 
 export default function Orders() {
   const [activeSection, setActiveSection] = useState("orders");
@@ -28,6 +29,7 @@ export default function Orders() {
     null,
   );
   const [isNewSupplier, setIsNewSupplier] = useState(false);
+  const [showNewOrderModal, setShowNewOrderModal] = useState(false);
 
   const { currentRestaurant } = useRestaurantContext();
 
@@ -73,10 +75,22 @@ export default function Orders() {
           {activeSection === "orders" && (
             <>
               <ViewToggle current={viewMode} onChange={setViewMode} />
-              <Button>
+              <Button onClick={() => setShowNewOrderModal(true)}>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 New Order
               </Button>
+              <NewOrderModal
+                open={showNewOrderModal}
+                onOpenChange={setShowNewOrderModal}
+                onSave={async (order, status) => {
+                  try {
+                    // Handle order creation here
+                    setShowNewOrderModal(false);
+                  } catch (error) {
+                    console.error("Failed to create order:", error);
+                  }
+                }}
+              />
             </>
           )}
           {activeSection === "suppliers" && (
