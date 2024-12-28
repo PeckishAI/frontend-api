@@ -202,39 +202,71 @@ export default function NewOrderModal({
                               (ing: any) =>
                                 ing.ingredient_uuid === option.value,
                             );
+                            console.log("Option: ", option);
+                            console.log(
+                              "Selected Ingredient: ",
+                              selectedIngredient,
+                            );
                             updateItem(index, "ingredient_uuid", option.value);
                             updateItem(index, "ingredient_name", option.label);
-                            updateItem(index, "product_code", selectedIngredient?.product_code || "");
-                            updateItem(index, "unit_cost", selectedIngredient?.unit_cost || 0);
-                            updateItem(index, "total_cost", (selectedIngredient?.unit_cost || 0) * (item.quantity || 0));
+                            updateItem(
+                              index,
+                              "product_code",
+                              selectedIngredient?.product_code || "",
+                            );
+                            updateItem(
+                              index,
+                              "unit_cost",
+                              selectedIngredient?.unit_cost || 0,
+                            );
+                            updateItem(
+                              index,
+                              "total_cost",
+                              (selectedIngredient?.unit_cost || 0) *
+                                (item.quantity || 0),
+                            );
                           }
                         }}
                         options={(() => {
-                          if (!selectedSupplier?.supplier_uuid || !ingredients) return [];
-                          
-                          const selectedSupplierIngredients = ingredients.filter((ing: any) => 
-                            ing.ingredient_suppliers?.some((s: any) => s.supplier?.supplier_uuid === selectedSupplier.supplier_uuid)
-                          ).map((ing: any) => ({
-                            label: ing.ingredient_name,
-                            value: ing.ingredient_uuid
-                          }));
+                          if (!selectedSupplier?.supplier_uuid || !ingredients)
+                            return [];
 
-                          const otherIngredients = ingredients.filter((ing: any) => 
-                            !ing.ingredient_suppliers?.some((s: any) => s.supplier?.supplier_uuid === selectedSupplier.supplier_uuid)
-                          ).map((ing: any) => ({
-                            label: ing.ingredient_name,
-                            value: ing.ingredient_uuid
-                          }));
+                          const selectedSupplierIngredients = ingredients
+                            .filter((ing: any) =>
+                              ing.ingredient_suppliers?.some(
+                                (s: any) =>
+                                  s.supplier?.supplier_uuid ===
+                                  selectedSupplier.supplier_uuid,
+                              ),
+                            )
+                            .map((ing: any) => ({
+                              label: ing.ingredient_name,
+                              value: ing.ingredient_uuid,
+                            }));
+
+                          const otherIngredients = ingredients
+                            .filter(
+                              (ing: any) =>
+                                !ing.ingredient_suppliers?.some(
+                                  (s: any) =>
+                                    s.supplier?.supplier_uuid ===
+                                    selectedSupplier.supplier_uuid,
+                                ),
+                            )
+                            .map((ing: any) => ({
+                              label: ing.ingredient_name,
+                              value: ing.ingredient_uuid,
+                            }));
 
                           return [
                             {
                               label: `${selectedSupplier.supplier_name} Ingredients`,
-                              options: selectedSupplierIngredients
+                              options: selectedSupplierIngredients,
                             },
                             {
                               label: "Other Suppliers",
-                              options: otherIngredients
-                            }
+                              options: otherIngredients,
+                            },
                           ];
                         })()}
                         placeholder=""
