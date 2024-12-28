@@ -189,9 +189,9 @@ export default function NewOrderModal({
                     <TableCell>
                       <CreatableSelect
                         value={
-                          item.ingredient_uuid
+                          item.ingredient_uuid && item.ingredient_name
                             ? {
-                                label: item.ingredient_name || "",
+                                label: item.ingredient_name,
                                 value: item.ingredient_uuid,
                               }
                             : null
