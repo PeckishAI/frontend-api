@@ -194,6 +194,8 @@ export default function NewOrderModal({
                         }}
                         onChange={(option) => {
                           if (option) {
+                            console.log(option);
+                            console.log("ingredients: ", ingredients);
                             const selectedIngredient = ingredients?.find(
                               (ing: any) =>
                                 ing.ingredient_uuid === option.value,
@@ -201,13 +203,22 @@ export default function NewOrderModal({
                             const updates = {
                               ingredient_uuid: option.value,
                               ingredient_name: option.label,
-                              product_code: selectedIngredient?.product_code || "",
+                              product_code:
+                                selectedIngredient?.product_code || "",
                               unit_cost: selectedIngredient?.unit_cost || 0,
-                              total_cost: (selectedIngredient?.unit_cost || 0) * (item.quantity || 0)
+                              total_cost:
+                                (selectedIngredient?.unit_cost || 0) *
+                                (item.quantity || 0),
                             };
-                            Object.entries(updates).forEach(([field, value]) => {
-                              updateItem(index, field as keyof OrderItem, value);
-                            });
+                            Object.entries(updates).forEach(
+                              ([field, value]) => {
+                                updateItem(
+                                  index,
+                                  field as keyof OrderItem,
+                                  value,
+                                );
+                              },
+                            );
                           }
                         }}
                         options={ingredients?.map((ing: any) => ({
