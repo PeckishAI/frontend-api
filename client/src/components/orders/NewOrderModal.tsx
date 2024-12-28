@@ -228,35 +228,43 @@ export default function NewOrderModal({
                           setItems(newItems);
                         }}
                         options={(() => {
-                          if (!selectedSupplier?.supplier_uuid || !ingredients || !supplierIngredientUnits) {
+                          if (!selectedSupplier?.supplier_uuid || !ingredients) {
                             return [];
                           }
 
-                          // Get mapped units for this ingredient
-                          const selectedIngredientUuid = form.watch(`items.${index}.ingredient_uuid`);
-                          const mappedUnits = supplierIngredientUnits
-                            .filter(item => item.ingredient_uuid === selectedIngredientUuid)
-                            .map(item => ({
-                              label: item.unit?.unit_name || '',
-                              value: item.unit?.unit_uuid || '',
-                            }));
+                          const selectedIngredient = ingredients.find(
+                            (ing: any) => ing.ingredient_uuid === item.ingredient_uuid
+                          );
 
-                          // Get all units and filter out mapped ones
-                          const allUnits = useUnitOptions(currentRestaurant?.restaurant_uuid)
-                            .filter(unit => !mappedUnits.some(mapped => mapped.value === unit.value))
-                            .map(unit => ({
-                              label: unit.label,
-                              value: unit.value
+                          // Get pack details for this supplier-ingredient combination
+                          const packUnits = selectedIngredient?.pack_details
+                            ?.filter((pack: any) => pack.supplier_uuid === selectedSupplier.supplier_uuid)
+                            ?.map((pack: any) => ({
+                              label: pack.unit_name,
+                              value: pack.unit_uuid,
+                            })) || [];
+
+                          // Get all restaurant units
+                          const { data: restaurantUnits } = useQuery({
+                            queryKey: ["units", currentRestaurant?.restaurant_uuid],
+                            queryFn: () => unitService.getRestaurantUnit(currentRestaurant?.restaurant_uuid || ""),
+                          });
+
+                          const otherUnits = (restaurantUnits || [])
+                            .filter((unit: any) => !packUnits.some(pack => pack.value === unit.unit_uuid))
+                            .map((unit: any) => ({
+                              label: unit.unit_name,
+                              value: unit.unit_uuid,
                             }));
 
                           return [
                             {
-                              label: 'Mapped Units',
-                              options: mappedUnits
+                              label: 'Pack Units',
+                              options: packUnits
                             },
                             {
                               label: 'Other Units',
-                              options: allUnits
+                              options: otherUnits
                             }
                           ].filter(group => group.options.length > 0);
                             return [];
