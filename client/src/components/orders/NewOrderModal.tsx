@@ -228,7 +228,37 @@ export default function NewOrderModal({
                           setItems(newItems);
                         }}
                         options={(() => {
-                          if (!selectedSupplier?.supplier_uuid || !ingredients)
+                          if (!selectedSupplier?.supplier_uuid || !ingredients || !supplierIngredientUnits) {
+                            return [];
+                          }
+
+                          // Get mapped units for this ingredient
+                          const selectedIngredientUuid = form.watch(`items.${index}.ingredient_uuid`);
+                          const mappedUnits = supplierIngredientUnits
+                            .filter(item => item.ingredient_uuid === selectedIngredientUuid)
+                            .map(item => ({
+                              label: item.unit?.unit_name || '',
+                              value: item.unit?.unit_uuid || '',
+                            }));
+
+                          // Get all units and filter out mapped ones
+                          const allUnits = useUnitOptions(currentRestaurant?.restaurant_uuid)
+                            .filter(unit => !mappedUnits.some(mapped => mapped.value === unit.value))
+                            .map(unit => ({
+                              label: unit.label,
+                              value: unit.value
+                            }));
+
+                          return [
+                            {
+                              label: 'Mapped Units',
+                              options: mappedUnits
+                            },
+                            {
+                              label: 'Other Units',
+                              options: allUnits
+                            }
+                          ].filter(group => group.options.length > 0);
                             return [];
 
                           const selectedSupplierIngredients = ingredients
