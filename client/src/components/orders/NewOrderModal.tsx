@@ -202,25 +202,11 @@ export default function NewOrderModal({
                               (ing: any) =>
                                 ing.ingredient_uuid === option.value,
                             );
-                            const updates = {
-                              ingredient_uuid: option.value,
-                              ingredient_name: option.label,
-                              product_code:
-                                selectedIngredient?.product_code || "",
-                              unit_cost: selectedIngredient?.unit_cost || 0,
-                              total_cost:
-                                (selectedIngredient?.unit_cost || 0) *
-                                (item.quantity || 0),
-                            };
-                            Object.entries(updates).forEach(
-                              ([field, value]) => {
-                                updateItem(
-                                  index,
-                                  field as keyof OrderItem,
-                                  value,
-                                );
-                              },
-                            );
+                            updateItem(index, "ingredient_uuid", option.value);
+                            updateItem(index, "ingredient_name", option.label);
+                            updateItem(index, "product_code", selectedIngredient?.product_code || "");
+                            updateItem(index, "unit_cost", selectedIngredient?.unit_cost || 0);
+                            updateItem(index, "total_cost", (selectedIngredient?.unit_cost || 0) * (item.quantity || 0));
                           }
                         }}
                         options={(() => {
