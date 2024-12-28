@@ -223,10 +223,34 @@ export default function NewOrderModal({
                             );
                           }
                         }}
-                        options={ingredients?.map((ing: any) => ({
-                          label: ing.ingredient_name,
-                          value: ing.ingredient_uuid,
-                        }))}
+                        options={(() => {
+                          if (!selectedSupplier?.supplier_uuid || !ingredients) return [];
+                          
+                          const selectedSupplierIngredients = ingredients.filter((ing: any) => 
+                            ing.ingredient_suppliers?.some((s: any) => s.supplier?.supplier_uuid === selectedSupplier.supplier_uuid)
+                          ).map((ing: any) => ({
+                            label: ing.ingredient_name,
+                            value: ing.ingredient_uuid
+                          }));
+
+                          const otherIngredients = ingredients.filter((ing: any) => 
+                            !ing.ingredient_suppliers?.some((s: any) => s.supplier?.supplier_uuid === selectedSupplier.supplier_uuid)
+                          ).map((ing: any) => ({
+                            label: ing.ingredient_name,
+                            value: ing.ingredient_uuid
+                          }));
+
+                          return [
+                            {
+                              label: `${selectedSupplier.supplier_name} Ingredients`,
+                              options: selectedSupplierIngredients
+                            },
+                            {
+                              label: "Other Suppliers",
+                              options: otherIngredients
+                            }
+                          ];
+                        })()}
                         placeholder=""
                       />
                     </TableCell>
