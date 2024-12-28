@@ -244,7 +244,7 @@ export default function NewOrderModal({
                               ...newItems[index],
                               ingredient_uuid: option.value,
                               ingredient_name: option.label,
-                              product_code: selectedIngredient?.product_code || "",
+                              product_code: supplierInfo?.product_code || "",
                               unit_cost: supplierInfo?.unit_cost || 0,
                               total_cost: (supplierInfo?.unit_cost || 0) * (newItems[index].quantity || 0),
                               supplier_units: supplierInfo?.units || []
