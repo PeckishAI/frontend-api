@@ -309,16 +309,15 @@ export default function NewOrderModal({
                             return [];
                           }
 
-                          // Move queries outside the options callback
-                          const supplierIngredientUnits = useQueryData(
-                            ["units", currentRestaurant.restaurant_uuid, selectedSupplier.supplier_uuid, item.ingredient_uuid],
-                            () => unitService.getSupplierIngredientUnits(currentRestaurant.restaurant_uuid, selectedSupplier.supplier_uuid)
-                          );
+                          const { data: supplierIngredientUnits } = useQuery({
+                            queryKey: ["units", currentRestaurant.restaurant_uuid, selectedSupplier.supplier_uuid, item.ingredient_uuid],
+                            queryFn: () => unitService.getSupplierIngredientUnits(currentRestaurant.restaurant_uuid, selectedSupplier.supplier_uuid)
+                          });
 
-                          const allUnits = useQueryData(
-                            ["units", currentRestaurant.restaurant_uuid],
-                            () => unitService.getRestaurantUnit(currentRestaurant.restaurant_uuid)
-                          );
+                          const { data: allUnits } = useQuery({
+                            queryKey: ["units", currentRestaurant.restaurant_uuid],
+                            queryFn: () => unitService.getRestaurantUnit(currentRestaurant.restaurant_uuid)
+                          });
 
                           if (!supplierIngredientUnits || !allUnits) return [];
 
