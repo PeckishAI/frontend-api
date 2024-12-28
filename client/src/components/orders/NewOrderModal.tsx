@@ -100,6 +100,7 @@ export default function NewOrderModal({
       );
     },
   });
+  console.log("ingredients", ingredients);
 
   const addItem = () => {
     setItems([
@@ -259,12 +260,14 @@ export default function NewOrderModal({
                         }}
                         options={(() => {
                           if (!ingredients || !selectedSupplier) return [];
-                          
+
                           const connectedIngredients = ingredients
-                            .filter((ing: any) => 
+                            .filter((ing: any) =>
                               ing.ingredient_suppliers?.some(
-                                (s: any) => s.supplier?.supplier_uuid === selectedSupplier.supplier_uuid
-                              )
+                                (s: any) =>
+                                  s.supplier?.supplier_uuid ===
+                                  selectedSupplier.supplier_uuid,
+                              ),
                             )
                             .map((ing: any) => ({
                               label: ing.ingredient_name,
@@ -272,10 +275,13 @@ export default function NewOrderModal({
                             }));
 
                           const otherIngredients = ingredients
-                            .filter((ing: any) => 
-                              !ing.ingredient_suppliers?.some(
-                                (s: any) => s.supplier?.supplier_uuid === selectedSupplier.supplier_uuid
-                              )
+                            .filter(
+                              (ing: any) =>
+                                !ing.ingredient_suppliers?.some(
+                                  (s: any) =>
+                                    s.supplier?.supplier_uuid ===
+                                    selectedSupplier.supplier_uuid,
+                                ),
                             )
                             .map((ing: any) => ({
                               label: ing.ingredient_name,
@@ -285,13 +291,13 @@ export default function NewOrderModal({
                           return [
                             {
                               label: "Connected Ingredients",
-                              options: connectedIngredients
+                              options: connectedIngredients,
                             },
                             {
                               label: "Other Ingredients",
-                              options: otherIngredients
-                            }
-                          ].filter(group => group.options.length > 0);
+                              options: otherIngredients,
+                            },
+                          ].filter((group) => group.options.length > 0);
                         })()}
                         placeholder=""
                       />
@@ -352,10 +358,13 @@ export default function NewOrderModal({
                               (unit) =>
                                 unit.ingredient_uuid === item.ingredient_uuid,
                             )
-                            .map((item) => ({
-                              label: item.units.unit_name,
-                              value: item.units.unit_uuid,
-                            }));
+                            .map((unit) =>
+                              unit.units.map((item) => ({
+                                label: item.unit_name,
+                                value: item.unit_uuid,
+                              })),
+                            )
+                            .flat();
 
                           const groups = [];
                           console.log("connectedUnits", connectedUnits);
