@@ -188,14 +188,10 @@ export default function NewOrderModal({
                     <TableCell>{item.product_code || "-"}</TableCell>
                     <TableCell>
                       <CreatableSelect
-                        value={
-                          item.ingredient_uuid && item.ingredient_name
-                            ? {
-                                label: item.ingredient_name || "",
-                                value: item.ingredient_uuid || "",
-                              }
-                            : null
-                        }
+                        value={{
+                          label: item.ingredient_name || "",
+                          value: item.ingredient_uuid || "",
+                        }}
                         onChange={(option) => {
                           if (option) {
                             const selectedIngredient = ingredients?.find(
@@ -206,7 +202,8 @@ export default function NewOrderModal({
                               ingredient_uuid: option.value,
                               ingredient_name: option.label,
                               product_code: selectedIngredient?.product_code || "",
-                              unit_cost: selectedIngredient?.unit_cost || 0
+                              unit_cost: selectedIngredient?.unit_cost || 0,
+                              total_cost: (selectedIngredient?.unit_cost || 0) * (item.quantity || 0)
                             };
                             Object.entries(updates).forEach(([field, value]) => {
                               updateItem(index, field as keyof OrderItem, value);
