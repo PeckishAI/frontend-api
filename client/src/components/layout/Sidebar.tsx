@@ -10,6 +10,7 @@ import { RestaurantSelector } from "./RestaurantSelector";
 import { UserProfileSection } from "./UserProfileSection";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 
 const menuItems = [
   { icon: ChartBar, label: "General", href: "/" },
@@ -22,13 +23,13 @@ const menuItems = [
 export default function Sidebar() {
   const { toast } = useToast();
   const { data: user } = useQuery({
-    queryKey: ['profile'],
-    queryFn: () => userService.getUserProfile('current'),
+    queryKey: ["profile"],
+    queryFn: () => userService.getUserProfile("current"),
   });
 
   const userProfile = {
-    name: user?.username || 'Guest',
-    role: user?.role || 'User',
+    name: user?.username || "Guest",
+    role: user?.role || "User",
     avatar: user?.avatar_url,
   };
 
