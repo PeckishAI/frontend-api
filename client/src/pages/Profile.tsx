@@ -35,7 +35,7 @@ export default function Profile() {
   
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile'],
-    queryFn: () => userService.getUserProfile('current'), // You'll need to adjust this based on how you handle the current user
+    queryFn: () => userService.getUserProfile('current'),
   });
 
   const form = useForm<ProfileFormValues>({
