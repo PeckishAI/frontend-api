@@ -1,5 +1,7 @@
 
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import ModifierSheet from "@/components/menu/ModifierSheet";
 import { Button } from "@/components/ui/button";
 import {
   PlusCircle,
@@ -173,6 +175,31 @@ export default function Modifiers() {
           </div>
         )}
       </div>
+
+      {/* Add ModifierSheet */}
+      <ModifierSheet
+        open={!!editingModifier}
+        onOpenChange={(open) => {
+          if (!open) setEditingModifier(null);
+        }}
+        modifier={editingModifier || undefined}
+        onSubmit={async (data) => {
+          if (!currentRestaurant?.restaurant_uuid) return;
+          if (data.modifier_uuid) {
+            await menuService.updateModifier(
+              currentRestaurant.restaurant_uuid,
+              data.modifier_uuid,
+              data,
+            );
+          } else {
+            await menuService.createModifier(
+              currentRestaurant.restaurant_uuid,
+              data,
+            );
+          }
+          queryClient.invalidateQueries(["modifiers"]);
+        }}
+      />
     </div>
   );
 }
