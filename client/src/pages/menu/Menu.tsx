@@ -24,11 +24,7 @@ export default function Menu() {
 
         {activeSection === "products" && <Products />}
 
-        {activeSection === "modifiers" && (
-          <div className="bg-white rounded-lg shadow overflow-hidden p-6">
-            <p className="text-gray-600">Modifiers section coming soon...</p>
-          </div>
-        )}
+        {activeSection === "modifiers" && <Modifiers />}
 
         {activeSection === "preparations" && <Preparations />}
       </div>

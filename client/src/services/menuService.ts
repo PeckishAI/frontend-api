@@ -4,6 +4,88 @@ import { config } from "../config/config";
 const BASE_URL = config.apiBaseUrl;
 
 export const menuService = {
+  async getRestaurantModifiers(restaurantUuid: string): Promise<Modifier[]> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/modifiers`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error("Failed to fetch modifiers");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to fetch restaurant modifiers:", error);
+      throw error;
+    }
+  },
+
+  async createModifier(restaurantUuid: string, modifier: Partial<Modifier>): Promise<Modifier> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/modifiers`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(modifier),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error("Failed to create modifier");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to create modifier:", error);
+      throw error;
+    }
+  },
+
+  async updateModifier(restaurantUuid: string, modifier: Partial<Modifier>): Promise<Modifier> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/modifiers/${modifier.modifier_uuid}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(modifier),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error("Failed to update modifier");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to update modifier:", error);
+      throw error;
+    }
+  },
   async createProduct(
     restaurantUuid: string,
     product: Partial<Product>,

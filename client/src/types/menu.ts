@@ -78,3 +78,13 @@ export interface Preparation {
   preparation_ingredients?: PreparationIngredient[];
   preparation_preparations?: PreparationPreparation[];
 }
+export interface Modifier {
+  modifier_uuid?: string;
+  modifier_name?: string;
+  category?: Category;
+  portion_count?: number;
+  portion_price?: number;
+  portion_cost?: number;
+  modifier_ingredients?: ProductIngredient[];
+  modifier_preparations?: ProductPreparation[];
+}
