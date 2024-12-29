@@ -26,7 +26,15 @@ export const userService = {
     }
   },
 
-  async updateUserProfile(userUuid: string, data: object): Promise<any> {
+  async updateUserProfile(userUuid: string, data: object | FormData): Promise<any> {
+    const headers: HeadersInit = {};
+    
+    if (data instanceof FormData) {
+      // Don't set Content-Type for FormData, browser will set it with boundary
+    } else {
+      headers["Content-Type"] = "application/json";
+      data = JSON.stringify(data);
+    }
     try {
       const response = await fetch(`${BASE_URL}/users/v2/user/${userUuid}`, {
         method: "PUT",

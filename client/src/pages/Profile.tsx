@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,63 +17,84 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Camera } from "lucide-react";
+import { userService } from "@/services/userService";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
-  title: z.string().optional(),
-  bio: z.string().optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
-// Mock profile data
-const mockProfile = {
-  name: "John Doe",
-  email: "john@example.com",
-  phone: "(555) 123-4567",
-  title: "Head Chef",
-  bio: "Passionate about creating exceptional dining experiences",
-  avatar: "",
-};
-
 export default function Profile() {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string>(mockProfile.avatar);
+  
+  const { data: profile, isLoading } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => userService.getUserProfile('current'), // You'll need to adjust this based on how you handle the current user
+  });
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: mockProfile,
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+    },
   });
 
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (profile) {
+      form.reset(profile);
+    }
+  }, [profile, form]);
+
+  const updateProfileMutation = useMutation({
+    mutationFn: (data: ProfileFormValues) => 
+      userService.updateUserProfile('current', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['profile']);
+      toast({
+        title: "Profile Updated",
+        description: "Your profile has been updated successfully.",
+      });
+    },
+  });
+
+  const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setAvatarFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append('avatar', file);
+      try {
+        await userService.updateUserProfile('current', { avatar: formData });
+        queryClient.invalidateQueries(['profile']);
+        toast({
+          title: "Avatar Updated",
+          description: "Your profile picture has been updated successfully.",
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to update profile picture.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
-  const onSubmit = (data: ProfileFormValues) => {
-    // In a real app, we would upload the avatar and save the profile data
-    console.log("Profile data:", data);
-    console.log("Avatar file:", avatarFile);
-
-    toast({
-      title: "Profile Updated",
-      description: "Your profile has been updated successfully.",
-    });
-  };
+  if (isLoading) {
+    return <div className="ml-64 p-8">Loading profile...</div>;
+  }
 
   return (
     <div className="ml-64 p-8 w-full">
-      <Card className="w-full">
+      <Card className="w-full max-w-2xl mx-auto">
         <CardHeader className="px-8">
           <CardTitle>Profile Settings</CardTitle>
         </CardHeader>
@@ -80,10 +102,10 @@ export default function Profile() {
           <div className="mb-8 flex justify-center">
             <div className="relative">
               <Avatar className="h-32 w-32">
-                <AvatarImage src={avatarPreview} />
+                <AvatarImage src={profile?.avatar_url} />
                 <AvatarFallback>
-                  {mockProfile.name
-                    .split(" ")
+                  {profile?.name
+                    ?.split(" ")
                     .map((n) => n[0])
                     .join("")}
                 </AvatarFallback>
@@ -105,7 +127,7 @@ export default function Profile() {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(data => updateProfileMutation.mutate(data))} className="space-y-6">
               <FormField
                 control={form.control}
                 name="name"
@@ -148,36 +170,13 @@ export default function Profile() {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Job Title</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="bio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bio</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <div className="flex justify-end">
-                <Button type="submit">Save Changes</Button>
+                <Button 
+                  type="submit" 
+                  disabled={updateProfileMutation.isPending}
+                >
+                  {updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
+                </Button>
               </div>
             </form>
           </Form>
