@@ -36,7 +36,7 @@ const modifierSchema = z.object({
     .object({
       category_uuid: z.string().optional(),
       category_name: z.string().optional(),
-      emoji: z.string().optional(),
+      emoji: z.string().nullish(),
     })
     .optional(),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
