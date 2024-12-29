@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { useState } from "react";
 import {
@@ -33,52 +32,58 @@ import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
 const modifierSchema = z.object({
   modifier_uuid: z.string().optional(),
   modifier_name: z.string().min(1, "Name is required"),
-  category: z.object({
-    category_uuid: z.string().optional(),
-    category_name: z.string().optional(),
-    emoji: z.string().optional(),
-  }).optional(),
+  category: z
+    .object({
+      category_uuid: z.string().optional(),
+      category_name: z.string().optional(),
+      emoji: z.string().optional(),
+    })
+    .optional(),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
   portion_price: z.number().optional(),
   portion_cost: z.number().optional(),
-  modifier_ingredients: z.array(
-    z.object({
-      uuid: z.string().optional(),
-      ingredient_uuid: z.string().optional(),
-      ingredient_name: z.string().optional(),
-      quantity: z.number().min(0, "Quantity must be positive"),
-      base_unit: z.object({
-        unit_uuid: z.string().optional(),
-        unit_name: z.string().optional(),
+  modifier_ingredients: z
+    .array(
+      z.object({
+        uuid: z.string().optional(),
+        ingredient_uuid: z.string().optional(),
+        ingredient_name: z.string().optional(),
+        quantity: z.number().min(0, "Quantity must be positive"),
+        base_unit: z.object({
+          unit_uuid: z.string().optional(),
+          unit_name: z.string().optional(),
+        }),
+        recipe_unit: z.object({
+          unit_uuid: z.string().optional(),
+          unit_name: z.string().optional(),
+        }),
+        base_to_recipe: z.number().optional(),
+        unit_cost: z.number().optional(),
+        total_cost: z.number().optional(),
       }),
-      recipe_unit: z.object({
-        unit_uuid: z.string().optional(),
-        unit_name: z.string().optional(),
+    )
+    .optional(),
+  modifier_preparations: z
+    .array(
+      z.object({
+        uuid: z.string().optional(),
+        preparation_uuid: z.string().optional(),
+        preparation_name: z.string().optional(),
+        quantity: z.number().min(0, "Quantity must be positive"),
+        base_unit: z.object({
+          unit_uuid: z.string().optional(),
+          unit_name: z.string().optional(),
+        }),
+        recipe_unit: z.object({
+          unit_uuid: z.string().optional(),
+          unit_name: z.string().optional(),
+        }),
+        base_to_recipe: z.number().optional(),
+        unit_cost: z.number().optional(),
+        total_cost: z.number().optional(),
       }),
-      base_to_recipe: z.number().optional(),
-      unit_cost: z.number().optional(),
-      total_cost: z.number().optional(),
-    }),
-  ).optional(),
-  modifier_preparations: z.array(
-    z.object({
-      uuid: z.string().optional(),
-      preparation_uuid: z.string().optional(),
-      preparation_name: z.string().optional(),
-      quantity: z.number().min(0, "Quantity must be positive"),
-      base_unit: z.object({
-        unit_uuid: z.string().optional(),
-        unit_name: z.string().optional(),
-      }),
-      recipe_unit: z.object({
-        unit_uuid: z.string().optional(),
-        unit_name: z.string().optional(),
-      }),
-      base_to_recipe: z.number().optional(),
-      unit_cost: z.number().optional(),
-      total_cost: z.number().optional(),
-    }),
-  ).optional(),
+    )
+    .optional(),
 });
 
 type Modifier = z.infer<typeof modifierSchema>;
@@ -100,7 +105,8 @@ const useIngredientOptions = (restaurantUuid?: string) => {
     queryKey: ["ingredients", restaurantUuid],
     queryFn: async () => {
       if (!restaurantUuid) return [];
-      const data = await inventoryService.getRestaurantIngredients(restaurantUuid);
+      const data =
+        await inventoryService.getRestaurantIngredients(restaurantUuid);
       return data;
     },
     enabled: !!restaurantUuid,
@@ -112,8 +118,12 @@ const useIngredientOptions = (restaurantUuid?: string) => {
         value: ing.ingredient_uuid,
         type: "ingredient",
         unit_cost: ing.ingredient_suppliers?.length
-          ? Math.min(...ing.ingredient_suppliers.map((supplier: any) => 
-              (supplier.unit_cost || 0) / (supplier.pack_size || 1)))
+          ? Math.min(
+              ...ing.ingredient_suppliers.map(
+                (supplier: any) =>
+                  (supplier.unit_cost || 0) / (supplier.pack_size || 1),
+              ),
+            )
           : 0,
       }))
     : [];
@@ -151,13 +161,17 @@ const useUnitOptions = (restaurantUuid?: string) => {
     enabled: !!restaurantUuid,
   });
 
-  return units ? [{
-    label: "All Units",
-    options: units.map((unit: any) => ({
-      label: unit.unit_name,
-      value: unit.unit_uuid,
-    })),
-  }] : [];
+  return units
+    ? [
+        {
+          label: "All Units",
+          options: units.map((unit: any) => ({
+            label: unit.unit_name,
+            value: unit.unit_uuid,
+          })),
+        },
+      ]
+    : [];
 };
 
 export default function ModifierSheet({
@@ -296,7 +310,8 @@ export default function ModifierSheet({
                 control={form.control}
                 name="category"
                 render={({ field }) => {
-                  const [showCategoryModal, setShowCategoryModal] = useState(false);
+                  const [showCategoryModal, setShowCategoryModal] =
+                    useState(false);
                   const [newCategoryName, setNewCategoryName] = useState("");
 
                   return (
@@ -308,10 +323,14 @@ export default function ModifierSheet({
                         </div>
                         <FormControl>
                           <CreatableSelect
-                            value={field.value ? {
-                              value: field.value.category_uuid,
-                              label: field.value.category_name,
-                            } : null}
+                            value={
+                              field.value
+                                ? {
+                                    value: field.value.category_uuid,
+                                    label: field.value.category_name,
+                                  }
+                                : null
+                            }
                             onChange={(option) => {
                               if (option) {
                                 form.setValue("category", {
@@ -319,6 +338,7 @@ export default function ModifierSheet({
                                   category_name: option.label,
                                   emoji: field.value?.emoji,
                                 });
+                                console.log("Form: ", form.getValues());
                               } else {
                                 form.setValue("category", undefined);
                               }
@@ -327,7 +347,9 @@ export default function ModifierSheet({
                               setNewCategoryName(inputValue);
                               setShowCategoryModal(true);
                             }}
-                            options={useCategories(currentRestaurant?.restaurant_uuid).map((cat) => ({
+                            options={useCategories(
+                              currentRestaurant?.restaurant_uuid,
+                            ).map((cat) => ({
                               value: cat.category_uuid,
                               label: cat.category_name,
                             }))}
@@ -343,10 +365,11 @@ export default function ModifierSheet({
                         onSubmit={async (data) => {
                           try {
                             if (!currentRestaurant?.restaurant_uuid) return;
-                            const newCategory = await categoryService.createCategory(
-                              currentRestaurant.restaurant_uuid,
-                              data,
-                            );
+                            const newCategory =
+                              await categoryService.createCategory(
+                                currentRestaurant.restaurant_uuid,
+                                data,
+                              );
                             form.setValue("category", {
                               category_uuid: newCategory.category_uuid,
                               category_name: newCategory.category_name,
@@ -378,7 +401,9 @@ export default function ModifierSheet({
                         type="number"
                         min={1}
                         {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value))}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value))
+                        }
                       />
                     </FormControl>
                   </FormItem>
@@ -399,7 +424,9 @@ export default function ModifierSheet({
                         step="0.01"
                         placeholder="0.00"
                         {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value))
+                        }
                       />
                     </FormControl>
                   </FormItem>
@@ -467,18 +494,32 @@ export default function ModifierSheet({
                       name={`modifier_ingredients.${index}.ingredient_name`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className={index !== 0 ? "sr-only" : undefined}>Name</FormLabel>
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Name
+                          </FormLabel>
                           <FormControl>
                             <CreatableSelect
-                              value={field.value ? {
-                                value: ingredient.ingredient_uuid || "",
-                                label: field.value || "",
-                              } : null}
+                              value={
+                                field.value
+                                  ? {
+                                      value: ingredient.ingredient_uuid || "",
+                                      label: field.value || "",
+                                    }
+                                  : null
+                              }
                               onChange={(option) => {
                                 if (option) {
                                   field.onChange(option.label);
-                                  form.setValue(`modifier_ingredients.${index}.ingredient_uuid`, option.value);
-                                  form.setValue(`modifier_ingredients.${index}.unit_cost`, option.unit_cost || 0);
+                                  form.setValue(
+                                    `modifier_ingredients.${index}.ingredient_uuid`,
+                                    option.value,
+                                  );
+                                  form.setValue(
+                                    `modifier_ingredients.${index}.unit_cost`,
+                                    option.unit_cost || 0,
+                                  );
                                   calculateTotalCost();
                                 }
                               }}
@@ -486,7 +527,9 @@ export default function ModifierSheet({
                                 setNewIngredientName(inputValue);
                                 setShowIngredientDialog(true);
                               }}
-                              options={useIngredientOptions(currentRestaurant?.restaurant_uuid)}
+                              options={useIngredientOptions(
+                                currentRestaurant?.restaurant_uuid,
+                              )}
                               placeholder=""
                             />
                           </FormControl>
@@ -499,7 +542,11 @@ export default function ModifierSheet({
                       name={`modifier_ingredients.${index}.quantity`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className={index !== 0 ? "sr-only" : undefined}>Quantity</FormLabel>
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Quantity
+                          </FormLabel>
                           <FormControl>
                             <Input
                               type="number"
@@ -522,22 +569,35 @@ export default function ModifierSheet({
                       name={`modifier_ingredients.${index}.recipe_unit.unit_uuid`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className={index !== 0 ? "sr-only" : undefined}>Unit</FormLabel>
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Unit
+                          </FormLabel>
                           <FormControl>
                             <CreatableSelect
-                              value={ingredient.recipe_unit?.unit_uuid ? {
-                                value: ingredient.recipe_unit.unit_uuid,
-                                label: ingredient.recipe_unit.unit_name,
-                              } : null}
+                              value={
+                                ingredient.recipe_unit?.unit_uuid
+                                  ? {
+                                      value: ingredient.recipe_unit.unit_uuid,
+                                      label: ingredient.recipe_unit.unit_name,
+                                    }
+                                  : null
+                              }
                               onChange={(option) => {
                                 if (option) {
-                                  form.setValue(`modifier_ingredients.${index}.recipe_unit`, {
-                                    unit_uuid: option.value,
-                                    unit_name: option.label,
-                                  });
+                                  form.setValue(
+                                    `modifier_ingredients.${index}.recipe_unit`,
+                                    {
+                                      unit_uuid: option.value,
+                                      unit_name: option.label,
+                                    },
+                                  );
                                 }
                               }}
-                              options={useUnitOptions(currentRestaurant?.restaurant_uuid)}
+                              options={useUnitOptions(
+                                currentRestaurant?.restaurant_uuid,
+                              )}
                               placeholder=""
                             />
                           </FormControl>
@@ -550,7 +610,11 @@ export default function ModifierSheet({
                       name={`modifier_ingredients.${index}.base_to_recipe`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className={index !== 0 ? "sr-only" : undefined}>Factor</FormLabel>
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Factor
+                          </FormLabel>
                           <FormControl>
                             <Input
                               type="number"
@@ -571,10 +635,17 @@ export default function ModifierSheet({
 
                     <div className="flex items-center">
                       <span className="text-sm text-muted-foreground">
-                        ${(
-                          (form.watch(`modifier_ingredients.${index}.quantity`) || 0) *
-                          (form.watch(`modifier_ingredients.${index}.base_to_recipe`) || 0) *
-                          (form.watch(`modifier_ingredients.${index}.unit_cost`) || 0)
+                        $
+                        {(
+                          (form.watch(
+                            `modifier_ingredients.${index}.quantity`,
+                          ) || 0) *
+                          (form.watch(
+                            `modifier_ingredients.${index}.base_to_recipe`,
+                          ) || 0) *
+                          (form.watch(
+                            `modifier_ingredients.${index}.unit_cost`,
+                          ) || 0)
                         ).toFixed(2)}
                       </span>
                     </div>
@@ -584,7 +655,9 @@ export default function ModifierSheet({
                       variant="ghost"
                       size="icon"
                       onClick={() => {
-                        const currentIngredients = form.getValues("modifier_ingredients");
+                        const currentIngredients = form.getValues(
+                          "modifier_ingredients",
+                        );
                         form.setValue(
                           "modifier_ingredients",
                           currentIngredients.filter((_, i) => i !== index),
@@ -612,7 +685,7 @@ export default function ModifierSheet({
                     Add Preparation
                   </Button>
                 </div>
-                
+
                 {preparations.map((preparation, index) => (
                   <div
                     key={index}
@@ -623,22 +696,38 @@ export default function ModifierSheet({
                       name={`modifier_preparations.${index}.preparation_name`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className={index !== 0 ? "sr-only" : undefined}>Name</FormLabel>
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Name
+                          </FormLabel>
                           <FormControl>
                             <CreatableSelect
-                              value={field.value ? {
-                                value: preparation.preparation_uuid || "",
-                                label: field.value || "",
-                              } : null}
+                              value={
+                                field.value
+                                  ? {
+                                      value: preparation.preparation_uuid || "",
+                                      label: field.value || "",
+                                    }
+                                  : null
+                              }
                               onChange={(option) => {
                                 if (option) {
                                   field.onChange(option.label);
-                                  form.setValue(`modifier_preparations.${index}.preparation_uuid`, option.value);
-                                  form.setValue(`modifier_preparations.${index}.unit_cost`, option.unit_cost || 0);
+                                  form.setValue(
+                                    `modifier_preparations.${index}.preparation_uuid`,
+                                    option.value,
+                                  );
+                                  form.setValue(
+                                    `modifier_preparations.${index}.unit_cost`,
+                                    option.unit_cost || 0,
+                                  );
                                   calculateTotalCost();
                                 }
                               }}
-                              options={usePreparationOptions(currentRestaurant?.restaurant_uuid)}
+                              options={usePreparationOptions(
+                                currentRestaurant?.restaurant_uuid,
+                              )}
                               placeholder=""
                             />
                           </FormControl>
@@ -651,7 +740,11 @@ export default function ModifierSheet({
                       name={`modifier_preparations.${index}.quantity`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className={index !== 0 ? "sr-only" : undefined}>Quantity</FormLabel>
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Quantity
+                          </FormLabel>
                           <FormControl>
                             <Input
                               type="number"
@@ -674,22 +767,35 @@ export default function ModifierSheet({
                       name={`modifier_preparations.${index}.recipe_unit.unit_uuid`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className={index !== 0 ? "sr-only" : undefined}>Unit</FormLabel>
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Unit
+                          </FormLabel>
                           <FormControl>
                             <CreatableSelect
-                              value={preparation.recipe_unit?.unit_uuid ? {
-                                value: preparation.recipe_unit.unit_uuid,
-                                label: preparation.recipe_unit.unit_name,
-                              } : null}
+                              value={
+                                preparation.recipe_unit?.unit_uuid
+                                  ? {
+                                      value: preparation.recipe_unit.unit_uuid,
+                                      label: preparation.recipe_unit.unit_name,
+                                    }
+                                  : null
+                              }
                               onChange={(option) => {
                                 if (option) {
-                                  form.setValue(`modifier_preparations.${index}.recipe_unit`, {
-                                    unit_uuid: option.value,
-                                    unit_name: option.label,
-                                  });
+                                  form.setValue(
+                                    `modifier_preparations.${index}.recipe_unit`,
+                                    {
+                                      unit_uuid: option.value,
+                                      unit_name: option.label,
+                                    },
+                                  );
                                 }
                               }}
-                              options={useUnitOptions(currentRestaurant?.restaurant_uuid)}
+                              options={useUnitOptions(
+                                currentRestaurant?.restaurant_uuid,
+                              )}
                               placeholder=""
                             />
                           </FormControl>
@@ -702,7 +808,11 @@ export default function ModifierSheet({
                       name={`modifier_preparations.${index}.base_to_recipe`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className={index !== 0 ? "sr-only" : undefined}>Factor</FormLabel>
+                          <FormLabel
+                            className={index !== 0 ? "sr-only" : undefined}
+                          >
+                            Factor
+                          </FormLabel>
                           <FormControl>
                             <Input
                               type="number"
@@ -723,10 +833,17 @@ export default function ModifierSheet({
 
                     <div className="flex items-center">
                       <span className="text-sm text-muted-foreground">
-                        ${(
-                          (form.watch(`modifier_preparations.${index}.quantity`) || 0) *
-                          (form.watch(`modifier_preparations.${index}.base_to_recipe`) || 0) *
-                          (form.watch(`modifier_preparations.${index}.unit_cost`) || 0)
+                        $
+                        {(
+                          (form.watch(
+                            `modifier_preparations.${index}.quantity`,
+                          ) || 0) *
+                          (form.watch(
+                            `modifier_preparations.${index}.base_to_recipe`,
+                          ) || 0) *
+                          (form.watch(
+                            `modifier_preparations.${index}.unit_cost`,
+                          ) || 0)
                         ).toFixed(2)}
                       </span>
                     </div>
@@ -736,7 +853,9 @@ export default function ModifierSheet({
                       variant="ghost"
                       size="icon"
                       onClick={() => {
-                        const currentPreparations = form.getValues("modifier_preparations");
+                        const currentPreparations = form.getValues(
+                          "modifier_preparations",
+                        );
                         form.setValue(
                           "modifier_preparations",
                           currentPreparations.filter((_, i) => i !== index),
@@ -776,7 +895,8 @@ export default function ModifierSheet({
                 currentRestaurant.restaurant_uuid,
                 data,
               );
-              const currentIngredients = form.getValues("modifier_ingredients") || [];
+              const currentIngredients =
+                form.getValues("modifier_ingredients") || [];
               form.setValue("modifier_ingredients", [
                 ...currentIngredients,
                 {

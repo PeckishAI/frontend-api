@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import ModifierSheet from "@/components/menu/ModifierSheet";
@@ -55,7 +54,9 @@ export default function Modifiers() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sandwich className="h-5 w-5 text-primary" />
-              <CardTitle className="text-lg">{modifier.modifier_name}</CardTitle>
+              <CardTitle className="text-lg">
+                {modifier.modifier_name}
+              </CardTitle>
             </div>
             <Badge variant="secondary" className="flex items-center gap-1">
               {modifier.category?.emoji}
@@ -185,12 +186,14 @@ export default function Modifiers() {
         modifier={editingModifier || undefined}
         onSubmit={async (data) => {
           if (!currentRestaurant?.restaurant_uuid) return;
+          console.log("Data: ", data);
           if (data.modifier_uuid) {
-            await menuService.updateModifier(
-              currentRestaurant.restaurant_uuid,
-              data.modifier_uuid,
-              data,
-            );
+            //await menuService.updateModifier(
+            //  currentRestaurant.restaurant_uuid,
+            //  data.modifier_uuid,
+            //  data,
+            //);
+            console.log("Sending");
           } else {
             await menuService.createModifier(
               currentRestaurant.restaurant_uuid,
