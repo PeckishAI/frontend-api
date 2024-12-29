@@ -333,7 +333,8 @@ export default function ModifierSheet({
                             }
                             onChange={(option) => {
                               if (option) {
-                                const existingCategory = categories?.find(
+                                const categories = useCategories(currentRestaurant?.restaurant_uuid);
+                                const existingCategory = categories.find(
                                   (cat) => cat.category_uuid === option.value
                                 );
                                 form.setValue("category", {
