@@ -4,6 +4,7 @@ const BASE_URL = config.apiBaseUrl;
 export const userService = {
   async getUserProfile(userUuid: string): Promise<any> {
     try {
+      userUuid = "7d5844cc-74f1-4f50-b63e-7324fdedf57c";
       const response = await fetch(`${BASE_URL}/users/v2/user/${userUuid}`, {
         method: "GET",
         headers: {
@@ -26,9 +27,12 @@ export const userService = {
     }
   },
 
-  async updateUserProfile(userUuid: string, data: object | FormData): Promise<any> {
+  async updateUserProfile(
+    userUuid: string,
+    data: object | FormData,
+  ): Promise<any> {
     const headers: HeadersInit = {};
-    
+
     if (data instanceof FormData) {
       // Don't set Content-Type for FormData, browser will set it with boundary
     } else {
@@ -36,6 +40,7 @@ export const userService = {
       data = JSON.stringify(data);
     }
     try {
+      userUuid = "7d5844cc-74f1-4f50-b63e-7324fdedf57c";
       const response = await fetch(`${BASE_URL}/users/v2/user/${userUuid}`, {
         method: "PUT",
         headers: {
