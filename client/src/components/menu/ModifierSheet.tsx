@@ -333,12 +333,14 @@ export default function ModifierSheet({
                             }
                             onChange={(option) => {
                               if (option) {
+                                const existingCategory = categories?.find(
+                                  (cat) => cat.category_uuid === option.value
+                                );
                                 form.setValue("category", {
                                   category_uuid: option.value,
                                   category_name: option.label,
-                                  emoji: field.value?.emoji,
+                                  emoji: existingCategory?.emoji || "🍽️", // Fallback emoji
                                 });
-                                console.log("Form: ", form.getValues());
                               } else {
                                 form.setValue("category", undefined);
                               }
