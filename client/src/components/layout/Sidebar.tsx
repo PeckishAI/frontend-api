@@ -19,14 +19,18 @@ const menuItems = [
   { icon: Files, label: "Documents", href: "/documents" },
 ];
 
-const mockUser = {
-  name: "John Doe",
-  role: "Restaurant Manager",
-  avatar: undefined, // Will use fallback
-};
-
 export default function Sidebar() {
   const { toast } = useToast();
+  const { data: user } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => userService.getUserProfile('current'),
+  });
+
+  const userProfile = {
+    name: user?.username || 'Guest',
+    role: user?.role || 'User',
+    avatar: user?.avatar_url,
+  };
 
   return (
     <div className="w-64 h-screen bg-white fixed left-0 top-0">
@@ -82,7 +86,7 @@ export default function Sidebar() {
           </nav>
           <div className="border-t border-gray-200 mt-auto">
             <UserProfileSection
-              user={mockUser}
+              user={userProfile}
               onSignOut={() => {
                 toast({
                   title: "Signed out",
