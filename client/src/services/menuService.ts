@@ -1,4 +1,4 @@
-import { Product, Preparation } from "@/types/menu";
+import { Product, Preparation, Modifier } from "@/types/menu";
 
 import { config } from "../config/config";
 const BASE_URL = config.apiBaseUrl;
@@ -31,7 +31,10 @@ export const menuService = {
     }
   },
 
-  async createModifier(restaurantUuid: string, modifier: Partial<Modifier>): Promise<Modifier> {
+  async createModifier(
+    restaurantUuid: string,
+    modifier: Partial<Modifier>,
+  ): Promise<Modifier> {
     try {
       const response = await fetch(
         `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/modifiers`,
@@ -59,7 +62,10 @@ export const menuService = {
     }
   },
 
-  async updateModifier(restaurantUuid: string, modifier: Partial<Modifier>): Promise<Modifier> {
+  async updateModifier(
+    restaurantUuid: string,
+    modifier: Partial<Modifier>,
+  ): Promise<Modifier> {
     try {
       const response = await fetch(
         `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/modifiers/${modifier.modifier_uuid}`,
@@ -203,9 +209,12 @@ export const menuService = {
     }
   },
 
-  async createPreparation(restaurantUuid: string, preparation: any): Promise<Preparation> {
+  async createPreparation(
+    restaurantUuid: string,
+    preparation: any,
+  ): Promise<Preparation> {
     try {
-      console.log('Creating preparation with data:', preparation);
+      console.log("Creating preparation with data:", preparation);
       const response = await fetch(
         `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/preparations`,
         {
@@ -218,13 +227,13 @@ export const menuService = {
       );
 
       if (!response.ok) {
-        console.error('Server response not ok:', response.status);
+        console.error("Server response not ok:", response.status);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('Server response:', data);
-      
+      console.log("Server response:", data);
+
       if (!data.success) {
         throw new Error("Failed to create preparation");
       }
