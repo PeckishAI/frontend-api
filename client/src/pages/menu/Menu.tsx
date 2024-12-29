@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Products from "./Products";
 import Preparations from "./Preparations";
+import Modifiers from "./Modifiers";
 import SubSectionNav from "@/components/layout/SubSectionNav";
 
 export default function Menu() {
