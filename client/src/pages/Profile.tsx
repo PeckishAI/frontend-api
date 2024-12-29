@@ -90,11 +90,11 @@ export default function Profile() {
   };
 
   if (isLoading) {
-    return <div className="ml-64 p-8">Loading profile...</div>;
+    return <div className="p-8">Loading profile...</div>;
   }
 
   return (
-    <div className="ml-64 p-8 w-full">
+    <div className="p-8 w-full">
       <Card className="w-full max-w-2xl mx-auto">
         <CardHeader className="px-8">
           <CardTitle>Profile Settings</CardTitle>
