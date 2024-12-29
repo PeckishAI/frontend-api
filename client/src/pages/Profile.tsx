@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +20,7 @@ import { userService } from "@/services/userService";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const profileSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
+  username: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
 });
@@ -32,18 +31,18 @@ export default function Profile() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  
+
   const { data: profile, isLoading } = useQuery({
-    queryKey: ['profile'],
-    queryFn: () => userService.getUserProfile('current'),
+    queryKey: ["profile"],
+    queryFn: () => userService.getUserProfile("current"),
   });
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      phone: '',
+      username: "",
+      email: "",
+      phone: "",
     },
   });
 
@@ -54,10 +53,10 @@ export default function Profile() {
   }, [profile, form]);
 
   const updateProfileMutation = useMutation({
-    mutationFn: (data: ProfileFormValues) => 
-      userService.updateUserProfile('current', data),
+    mutationFn: (data: ProfileFormValues) =>
+      userService.updateUserProfile("current", data),
     onSuccess: () => {
-      queryClient.invalidateQueries(['profile']);
+      queryClient.invalidateQueries(["profile"]);
       toast({
         title: "Profile Updated",
         description: "Your profile has been updated successfully.",
@@ -65,15 +64,17 @@ export default function Profile() {
     },
   });
 
-  const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       setAvatarFile(file);
       const formData = new FormData();
-      formData.append('avatar', file);
+      formData.append("avatar", file);
       try {
-        await userService.updateUserProfile('current', { avatar: formData });
-        queryClient.invalidateQueries(['profile']);
+        await userService.updateUserProfile("current", { avatar: formData });
+        queryClient.invalidateQueries(["profile"]);
         toast({
           title: "Avatar Updated",
           description: "Your profile picture has been updated successfully.",
@@ -127,10 +128,15 @@ export default function Profile() {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(data => updateProfileMutation.mutate(data))} className="space-y-6">
+            <form
+              onSubmit={form.handleSubmit((data) =>
+                updateProfileMutation.mutate(data),
+              )}
+              className="space-y-6"
+            >
               <FormField
                 control={form.control}
-                name="name"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Name</FormLabel>
@@ -171,11 +177,13 @@ export default function Profile() {
               />
 
               <div className="flex justify-end">
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   disabled={updateProfileMutation.isPending}
                 >
-                  {updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
+                  {updateProfileMutation.isPending
+                    ? "Saving..."
+                    : "Save Changes"}
                 </Button>
               </div>
             </form>

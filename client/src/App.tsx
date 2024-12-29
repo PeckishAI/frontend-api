@@ -11,6 +11,7 @@ import Menu from "@/pages/menu/Menu";
 import Orders from "@/pages/Orders";
 import General from "@/pages/General";
 import RestaurantManagement from "@/pages/RestaurantManagement";
+import Profile from "@/pages/Profile";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/documents" component={Documents} />{" "}
             {/* Updated route */}
             <Route path="/restaurant" component={RestaurantManagement} />
+            <Route path="/profile" component={Profile} />
           </Switch>
         </div>
         <Toaster />
