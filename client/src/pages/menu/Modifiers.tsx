@@ -1,6 +1,4 @@
-
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import ModifierSheet from "@/components/menu/ModifierSheet";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,13 +22,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { menuService } from "@/services/menuService";
 import { type Modifier } from "@/types/menu";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 
 export default function Modifiers() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [editingModifier, setEditingModifier] = useState<Modifier | null>(null);
   const { currentRestaurant } = useRestaurantContext();
+  const queryClient = useQueryClient();
 
   const { data: modifiers = [], isLoading } = useQuery({
     queryKey: ["modifiers", currentRestaurant?.restaurant_uuid],
@@ -55,7 +54,9 @@ export default function Modifiers() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sandwich className="h-5 w-5 text-primary" />
-              <CardTitle className="text-lg">{modifier.modifier_name}</CardTitle>
+              <CardTitle className="text-lg">
+                {modifier.modifier_name}
+              </CardTitle>
             </div>
             <Badge variant="secondary" className="flex items-center gap-1">
               {modifier.category?.emoji}
@@ -68,7 +69,7 @@ export default function Modifiers() {
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Layers className="h-4 w-4" />
               <span>
-                {modifier.modifier_ingredients?.length +
+                {modifier.modifier_ingredients?.length || 0 +
                   modifier.modifier_preparations?.length || 0}{" "}
                 ingredients
               </span>

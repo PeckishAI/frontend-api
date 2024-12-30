@@ -24,6 +24,7 @@ export const menuService = {
       if (!data.success) {
         throw new Error("Failed to fetch modifiers");
       }
+      console.log(data);
       return data.data;
     } catch (error) {
       console.error("Failed to fetch restaurant modifiers:", error);
@@ -64,11 +65,13 @@ export const menuService = {
 
   async updateModifier(
     restaurantUuid: string,
+    modifierUuid: string,
     modifier: Partial<Modifier>,
-  ): Promise<Modifier> {
+  ) {
     try {
+      console.log("Modifier: ", modifier);
       const response = await fetch(
-        `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/modifiers/${modifier.modifier_uuid}`,
+        `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/modifiers/modifier/${modifierUuid}`,
         {
           method: "PUT",
           headers: {
