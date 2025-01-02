@@ -207,25 +207,15 @@ export default function EditIngredientForm({
 
   const removeSupplier = (index: number) => {
     const currentSuppliers = form.getValues("ingredient_suppliers") || [];
-    console.log("Current suppliers before removal:", currentSuppliers);
     const filteredSuppliers = currentSuppliers.filter((_, i) => i !== index);
-    console.log("Suppliers after removal:", filteredSuppliers);
     
-    const currentValues = form.getValues();
-    form.reset({
-      ...currentValues,
-      ingredient_suppliers: filteredSuppliers
-    }, {
-      keepValues: true,
-      keepDirty: true,
-      keepDefaultValues: false,
-      keepErrors: true,
-      keepTouched: true,
-      keepIsValid: false,
-      keepSubmitCount: true
+    form.setValue("ingredient_suppliers", filteredSuppliers, {
+      shouldDirty: true,
+      shouldValidate: true
     });
     
-    console.log("Form state after removal:", form.formState);
+    // Force re-render of the form
+    form.trigger("ingredient_suppliers");
   };
 
   const updateSupplier = (
