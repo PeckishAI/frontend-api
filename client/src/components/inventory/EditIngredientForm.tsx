@@ -148,6 +148,8 @@ export default function EditIngredientForm({
   const queryClient = useQueryClient();
 
   const handleSubmit = async (values: EditIngredientFormValues) => {
+    console.log("Form submission triggered with values:", values);
+    
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
     }
@@ -156,6 +158,7 @@ export default function EditIngredientForm({
     }
     
     try {
+      console.log("Attempting to update ingredient...");
       await inventoryService.updateIngredient(
         currentRestaurant.restaurant_uuid,
         ingredient.ingredient_uuid,
