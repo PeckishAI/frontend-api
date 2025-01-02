@@ -44,22 +44,28 @@ const editIngredientSchema = z.object({
     unit_uuid: z.string(),
     unit_name: z.string(),
   }),
-  ingredient_suppliers: z.array(
-    z.object({
-      uuid: z.string().optional(),
-      supplier: z.object({
-          supplier_uuid: z.string(),
-          supplier_name: z.string(),
-      }).optional(),
-      unit_cost: z.number().min(0).optional(),
-      unit: z.object({
-          unit_uuid: z.string(),
-          unit_name: z.string(),
-      }).optional(),
-      pack_size: z.number().min(0).optional(),
-      product_code: z.string().optional(),
-    }),
-  ).optional().default([]),
+  ingredient_suppliers: z
+    .array(
+      z.object({
+        uuid: z.string().optional(),
+        supplier: z
+          .object({
+            supplier_uuid: z.string(),
+            supplier_name: z.string(),
+          })
+          .optional(),
+        unit_cost: z.number().min(0).optional(),
+        unit: z
+          .object({
+            unit_uuid: z.string(),
+            unit_name: z.string(),
+          })
+          .optional(),
+        pack_size: z.number().min(0).optional(),
+        product_code: z.string().optional(),
+      }),
+    )
+    .default([]),
 });
 
 type EditIngredientFormValues = z.infer<typeof editIngredientSchema>;
@@ -149,14 +155,14 @@ export default function EditIngredientForm({
 
   const handleSubmit = async (values: EditIngredientFormValues) => {
     console.log("Form submission triggered with values:", values);
-    
+
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
     }
     if (!ingredient?.ingredient_uuid) {
       throw new Error("No ingredient selected");
     }
-    
+
     try {
       console.log("Attempting to update ingredient...");
       await inventoryService.updateIngredient(
@@ -164,7 +170,10 @@ export default function EditIngredientForm({
         ingredient.ingredient_uuid,
         values,
       );
-      await queryClient.invalidateQueries(["inventory", currentRestaurant.restaurant_uuid]);
+      await queryClient.invalidateQueries([
+        "inventory",
+        currentRestaurant.restaurant_uuid,
+      ]);
       onSubmit(values);
       onOpenChange(false);
       form.reset(values);
