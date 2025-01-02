@@ -216,6 +216,9 @@ export default function EditIngredientForm({
       shouldValidate: true,
     });
     console.log("Form state after removal:", form.getValues());
+    
+    // Trigger revalidation and mark form as dirty
+    form.trigger();
   };
 
   const updateSupplier = (
