@@ -154,17 +154,21 @@ export default function EditIngredientForm({
     if (!ingredient?.ingredient_uuid) {
       throw new Error("No ingredient selected");
     }
-    await inventoryService.updateIngredient(
-      currentRestaurant?.restaurant_uuid,
-      ingredient.ingredient_uuid,
-      values,
-    );
-    await queryClient.invalidateQueries([
-      "inventory",
-      currentRestaurant.restaurant_uuid,
-    ]);
-    onSubmit(values);
-    onOpenChange(false);
+    
+    try {
+      await inventoryService.updateIngredient(
+        currentRestaurant.restaurant_uuid,
+        ingredient.ingredient_uuid,
+        values,
+      );
+      await queryClient.invalidateQueries(["inventory", currentRestaurant.restaurant_uuid]);
+      onSubmit(values);
+      onOpenChange(false);
+      form.reset(values);
+    } catch (error) {
+      console.error("Failed to update ingredient:", error);
+      throw error;
+    }
   };
 
   const addSupplier = () => {
@@ -182,8 +186,11 @@ export default function EditIngredientForm({
   const removeSupplier = (index: number) => {
     const currentSuppliers = form.getValues("ingredient_suppliers") || [];
     const filteredSuppliers = currentSuppliers.filter((_, i) => i !== index);
-    form.setValue("ingredient_suppliers", filteredSuppliers);
-    form.trigger("ingredient_suppliers");
+    form.setValue("ingredient_suppliers", filteredSuppliers, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
   };
 
   const updateSupplier = (
