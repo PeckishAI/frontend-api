@@ -48,12 +48,10 @@ const editIngredientSchema = z.object({
     .array(
       z.object({
         uuid: z.string().optional(),
-        supplier: z
-          .object({
-            supplier_uuid: z.string(),
-            supplier_name: z.string(),
-          })
-          .optional(),
+        supplier: z.object({
+          supplier_uuid: z.string(),
+          supplier_name: z.string(),
+        }),
         unit_cost: z.number().min(0).optional(),
         unit: z
           .object({
@@ -65,7 +63,7 @@ const editIngredientSchema = z.object({
         product_code: z.string().optional(),
       }),
     )
-    .default([]),
+    .optional(),
 });
 
 type EditIngredientFormValues = z.infer<typeof editIngredientSchema>;
