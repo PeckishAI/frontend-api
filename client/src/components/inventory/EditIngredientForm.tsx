@@ -149,18 +149,21 @@ export default function EditIngredientForm({
     }
   }, [ingredient, form]);
 
-  const handleSubmit = (values: EditIngredientFormValues) => {
+  const queryClient = useQueryClient();
+  
+  const handleSubmit = async (values: EditIngredientFormValues) => {
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
     }
     if (!ingredient?.ingredient_uuid) {
       throw new Error("No ingredient selected");
     }
-    inventoryService.updateIngredient(
+    await inventoryService.updateIngredient(
       currentRestaurant?.restaurant_uuid,
       ingredient.ingredient_uuid,
       values,
     );
+    await queryClient.invalidateQueries(["inventory", currentRestaurant.restaurant_uuid]);
     onSubmit(values);
     onOpenChange(false);
   };
