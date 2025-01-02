@@ -60,7 +60,7 @@ const editIngredientSchema = z.object({
           })
           .optional(),
         pack_size: z.number().min(0).optional(),
-        product_code: z.string().optional(),
+        product_code: z.string().nullable().optional(),
       }),
     )
     .optional(),
@@ -136,13 +136,6 @@ export default function EditIngredientForm({
       base_unit: {},
       ingredient_suppliers: [],
     },
-    onChange: (data) => {
-      console.log("Form changed:", {
-        values: data,
-        isDirty: form.formState.isDirty,
-        errors: form.formState.errors
-      });
-    }
   });
 
   React.useEffect(() => {
@@ -159,13 +152,6 @@ export default function EditIngredientForm({
   const queryClient = useQueryClient();
 
   const handleSubmit = async (values: EditIngredientFormValues) => {
-    console.log("Form submission triggered");
-    console.log("Current form values:", values);
-    console.log("Form validation state:", form.formState);
-    console.log("Errors:", form.formState.errors);
-    console.log("isDirty:", form.formState.isDirty);
-    console.log("isValid:", form.formState.isValid);
-
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
     }
@@ -174,7 +160,6 @@ export default function EditIngredientForm({
     }
 
     try {
-      console.log("Attempting to update ingredient...");
       await inventoryService.updateIngredient(
         currentRestaurant.restaurant_uuid,
         ingredient.ingredient_uuid,
@@ -208,12 +193,12 @@ export default function EditIngredientForm({
   const removeSupplier = (index: number) => {
     const currentSuppliers = form.getValues("ingredient_suppliers") || [];
     const filteredSuppliers = currentSuppliers.filter((_, i) => i !== index);
-    
+
     form.setValue("ingredient_suppliers", filteredSuppliers, {
       shouldDirty: true,
-      shouldValidate: true
+      shouldValidate: true,
     });
-    
+
     // Force re-render of the form
     form.trigger("ingredient_suppliers");
   };
