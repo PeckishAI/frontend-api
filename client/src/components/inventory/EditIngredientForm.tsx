@@ -211,15 +211,14 @@ export default function EditIngredientForm({
     const filteredSuppliers = currentSuppliers.filter((_, i) => i !== index);
     console.log("Suppliers after removal:", filteredSuppliers);
     
-    // Mark entire form as dirty and then set the new value
-    form.reset({
-      ...form.getValues(),
-      ingredient_suppliers: filteredSuppliers
-    }, { 
-      keepDirty: true,
-      keepIsValid: false,
-      keepErrors: false
+    form.setValue("ingredient_suppliers", filteredSuppliers, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true
     });
+
+    // Force revalidation
+    form.trigger();
     
     console.log("Form state after removal:", form.formState);
   };
