@@ -47,20 +47,16 @@ const editIngredientSchema = z.object({
   ingredient_suppliers: z.array(
     z.object({
       uuid: z.string().optional(),
-      supplier: z
-        .object({
+      supplier: z.object({
           supplier_uuid: z.string(),
           supplier_name: z.string(),
-        })
-        .optional(),
-      unit_cost: z.number().min(0).optional(),
-      unit: z
-        .object({
+      }),
+      unit_cost: z.number().min(0),
+      unit: z.object({
           unit_uuid: z.string(),
           unit_name: z.string(),
-        })
-        .optional(),
-      pack_size: z.number().min(0).optional(),
+      }),
+      pack_size: z.number().min(0),
       product_code: z.string().optional(),
     }),
   ).optional().default([]),
@@ -184,11 +180,10 @@ export default function EditIngredientForm({
   };
 
   const removeSupplier = (index: number) => {
-    const currentSuppliers = form.getValues("ingredient_suppliers");
-    form.setValue(
-      "ingredient_suppliers",
-      currentSuppliers.filter((_, i) => i !== index),
-    );
+    const currentSuppliers = form.getValues("ingredient_suppliers") || [];
+    const filteredSuppliers = currentSuppliers.filter((_, i) => i !== index);
+    form.setValue("ingredient_suppliers", filteredSuppliers);
+    form.trigger("ingredient_suppliers");
   };
 
   const updateSupplier = (
