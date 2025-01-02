@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -150,7 +150,7 @@ export default function EditIngredientForm({
   }, [ingredient, form]);
 
   const queryClient = useQueryClient();
-  
+
   const handleSubmit = async (values: EditIngredientFormValues) => {
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
@@ -163,7 +163,10 @@ export default function EditIngredientForm({
       ingredient.ingredient_uuid,
       values,
     );
-    await queryClient.invalidateQueries(["inventory", currentRestaurant.restaurant_uuid]);
+    await queryClient.invalidateQueries([
+      "inventory",
+      currentRestaurant.restaurant_uuid,
+    ]);
     onSubmit(values);
     onOpenChange(false);
   };
