@@ -136,6 +136,13 @@ export default function EditIngredientForm({
       base_unit: {},
       ingredient_suppliers: [],
     },
+    onChange: (data) => {
+      console.log("Form changed:", {
+        values: data,
+        isDirty: form.formState.isDirty,
+        errors: form.formState.errors
+      });
+    }
   });
 
   React.useEffect(() => {
