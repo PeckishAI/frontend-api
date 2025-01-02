@@ -32,13 +32,29 @@ export default function Products() {
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products", currentRestaurant?.restaurant_uuid],
-    queryFn: () => {
+    queryFn: async () => {
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return menuService.getRestaurantProducts(
+      const products = await menuService.getRestaurantProducts(
         currentRestaurant.restaurant_uuid,
       );
+      
+      return products.map(product => {
+        const totalIngredientCost = (product.product_ingredients || []).reduce(
+          (sum, ing) => sum + (ing.total_cost || 0),
+          0
+        );
+        const totalPrepCost = (product.product_preparations || []).reduce(
+          (sum, prep) => sum + (prep.total_cost || 0),
+          0
+        );
+        const portionCount = product.portion_count || 1;
+        return {
+          ...product,
+          portion_cost: (totalIngredientCost + totalPrepCost) / portionCount
+        };
+      });
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
