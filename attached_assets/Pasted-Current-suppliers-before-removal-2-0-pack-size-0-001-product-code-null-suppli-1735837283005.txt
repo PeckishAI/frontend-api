@@ -1,0 +1,168 @@
+Current suppliers before removal: 
+(2) [{…}, {…}]
+0
+: 
+{pack_size: 0.001, product_code: null, supplier: {…}, unit: {…}, unit_cost: 10, …}
+1
+: 
+{pack_size: 1, product_code: null, supplier: {…}, unit: {…}, unit_cost: 22, …}
+length
+: 
+2
+[[Prototype]]
+: 
+Array(0)
+EditIngredientForm.t…t=1735837186150:207 Suppliers after removal: 
+[{…}]
+0
+: 
+{pack_size: 1, product_code: null, supplier: {…}, unit: {…}, unit_cost: 22, …}
+length
+: 
+1
+[[Prototype]]
+: 
+Array(0)
+EditIngredientForm.t…t=1735837186150:213 Form state after removal: 
+{base_unit: {…}, ingredient_name: 'Beef', ingredient_suppliers: Array(1), ingredient_uuid: '5ce4c0ed-0383-4732-8c78-684ec5f92a27', par_level: 15, …}
+base_unit
+: 
+{unit_name: 'kg', unit_uuid: 'a45c2954-b883-4825-8d73-86d6ab80c0ea'}
+ingredient_name
+: 
+"Beef"
+ingredient_suppliers
+: 
+Array(1)
+0
+: 
+{pack_size: 1, product_code: null, supplier: {…}, unit: {…}, unit_cost: 22, …}
+length
+: 
+1
+[[Prototype]]
+: 
+Array(0)
+ingredient_uuid
+: 
+"5ce4c0ed-0383-4732-8c78-684ec5f92a27"
+par_level
+: 
+15
+quantity
+: 
+4
+tags
+: 
+[]
+[[Prototype]]
+: 
+Object
+EditIngredientForm.tsx:210 Current suppliers before removal: 
+(2) [{…}, {…}]
+0
+: 
+{pack_size: 0.001, product_code: null, supplier: {…}, unit: {…}, unit_cost: 10, …}
+1
+: 
+{pack_size: 1, product_code: null, supplier: {…}, unit: {…}, unit_cost: 22, …}
+length
+: 
+2
+[[Prototype]]
+: 
+Array(0)
+EditIngredientForm.tsx:212 Suppliers after removal: 
+[{…}]
+EditIngredientForm.tsx:224 Form state after removal: 
+{defaultValues: {…}, …}
+defaultValues
+: 
+{base_unit: {…}, ingredient_name: 'Beef', ingredient_suppliers: Array(2), ingredient_uuid: '5ce4c0ed-0383-4732-8c78-684ec5f92a27', par_level: 15, …}
+dirtyFields
+: 
+(...)
+disabled
+: 
+(...)
+errors
+: 
+(...)
+isDirty
+: 
+(...)
+isLoading
+: 
+(...)
+isSubmitSuccessful
+: 
+(...)
+isSubmitted
+: 
+(...)
+isSubmitting
+: 
+(...)
+isValid
+: 
+(...)
+isValidating
+: 
+(...)
+name
+: 
+(...)
+submitCount
+: 
+(...)
+touchedFields
+: 
+(...)
+validatingFields
+: 
+(...)
+get dirtyFields
+: 
+() => {…}
+get disabled
+: 
+() => {…}
+get errors
+: 
+() => {…}
+get isDirty
+: 
+() => {…}
+get isLoading
+: 
+() => {…}
+get isSubmitSuccessful
+: 
+() => {…}
+get isSubmitted
+: 
+() => {…}
+get isSubmitting
+: 
+() => {…}
+get isValid
+: 
+() => {…}
+get isValidating
+: 
+() => {…}
+get name
+: 
+() => {…}
+get submitCount
+: 
+() => {…}
+get touchedFields
+: 
+() => {…}
+get validatingFields
+: 
+() => {…}
+[[Prototype]]
+: 
+Object
