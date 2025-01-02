@@ -63,7 +63,7 @@ const editIngredientSchema = z.object({
       pack_size: z.number().min(0).optional(),
       product_code: z.string().optional(),
     }),
-  ),
+  ).optional().default([]),
 });
 
 type EditIngredientFormValues = z.infer<typeof editIngredientSchema>;
