@@ -187,31 +187,23 @@ export default function ReceiveOrderModal({
                 Match Invoice
               </label>
               <Select 
-                value={selectedInvoice || ""}
+                value={selectedInvoice}
                 onValueChange={(value) => {
                   console.log("Selected invoice value:", value);
-                  if (value && value !== "supplier-group" && value !== "other-group") {
-                    setSelectedInvoice(value);
-                    const invoice = invoices.find(
-                      (inv: any) => inv.invoice_uuid === value,
-                    );
-                    console.log("Found invoice:", invoice);
-                  }
+                  setSelectedInvoice(value);
+                  const invoice = invoices.find(
+                    (inv: any) => inv.invoice_uuid === value,
+                  );
+                  console.log("Found invoice:", invoice);
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select an invoice">
-                    {selectedInvoice
-                      ? invoices.find(
-                          (inv: any) => inv.invoice_uuid === selectedInvoice,
-                        )?.invoice_number
-                      : undefined}
-                  </SelectValue>
+                  <SelectValue placeholder="Select an invoice" />
                 </SelectTrigger>
                 <SelectContent>
                   {supplierInvoices.length > 0 && (
-                    <>
-                      <SelectItem value="supplier-group" disabled>
+                    <SelectGroup>
+                      <SelectItem value={order.supplier?.supplier_uuid || ""} disabled>
                         {order.supplier?.supplier_name}
                       </SelectItem>
                       {supplierInvoices.map((inv: any) => (
@@ -222,11 +214,11 @@ export default function ReceiveOrderModal({
                           {inv.invoice_number}
                         </SelectItem>
                       ))}
-                    </>
+                    </SelectGroup>
                   )}
                   {otherInvoices.length > 0 && (
-                    <>
-                      <SelectItem value="other-group" disabled>
+                    <SelectGroup>
+                      <SelectItem value="other" disabled>
                         Other Suppliers
                       </SelectItem>
                       {otherInvoices.map((inv: any) => (
@@ -237,7 +229,7 @@ export default function ReceiveOrderModal({
                           {inv.invoice_number}
                         </SelectItem>
                       ))}
-                    </>
+                    </SelectGroup>
                   )}
                 </SelectContent>
               </Select>
