@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Dialog,
@@ -23,7 +22,7 @@ interface ApproveOrderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   order: Order | null;
-  onConfirm: (sendEmail: boolean) => void;
+  onConfirm: (sendEmail: boolean, payload: any) => void; // Updated to accept payload
 }
 
 export default function ApproveOrderDialog({
@@ -35,6 +34,18 @@ export default function ApproveOrderDialog({
   const [sendEmail, setSendEmail] = useState(true);
 
   if (!order) return null;
+
+  const handleApprove = (sendEmail: boolean) => {
+    const payload = {
+      order_uuid: order.order_uuid,
+      date: order.date || null,
+      delivery_date: order.delivery_date === "" ? null : order.delivery_date,
+      status: "pending",
+      sendEmail,
+    };
+    console.log("Approving order with payload:", payload);
+    onConfirm(sendEmail, payload); // Pass the payload to onConfirm
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -130,7 +141,7 @@ export default function ApproveOrderDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={() => onConfirm(sendEmail)}>Confirm</Button>
+          <Button onClick={() => handleApprove(sendEmail)}>Confirm</Button> {/* Use handleApprove function */}
         </DialogFooter>
       </DialogContent>
     </Dialog>
