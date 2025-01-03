@@ -47,6 +47,7 @@ export default function ReceiveOrderModal({
 }: ReceiveOrderModalProps) {
   const { currentRestaurant } = useRestaurantContext();
   const [selectedInvoice, setSelectedInvoice] = useState<string>("");
+  const [selectedDeliveryNote, setSelectedDeliveryNote] = useState<string>("");
   const [selectedInvoiceData, setSelectedInvoiceData] = useState<any>(null);
   const [mergedItems, setMergedItems] = useState<any[]>([]);
 
@@ -221,12 +222,16 @@ export default function ReceiveOrderModal({
                 Match Delivery Note
               </label>
               <Select
-                value={selectedInvoice}
-                onValueChange={setSelectedInvoice}
+                value={selectedDeliveryNote}
+                onValueChange={(value) => {
+                  if (value !== "supplier-group" && value !== "other-group") {
+                    setSelectedDeliveryNote(value);
+                  }
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a delivery note">
-                    {selectedInvoice ? invoices.find((inv: any) => inv.invoice_uuid === selectedInvoice)?.invoice_number : "Select a delivery note"}
+                    {selectedDeliveryNote ? invoices.find((inv: any) => inv.invoice_uuid === selectedDeliveryNote)?.invoice_number : "Select a delivery note"}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
