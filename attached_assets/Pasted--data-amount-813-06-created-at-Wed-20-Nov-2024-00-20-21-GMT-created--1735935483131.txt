@@ -1,0 +1,78 @@
+{
+  "data": {
+    "amount": 813.06,
+    "created_at": "Wed, 20 Nov 2024 00:20:21 GMT",
+    "created_supplier": true,
+    "date": "2024-04-27T00:00:00.000Z",
+    "document_uuid": "6ffd8485-8368-4c52-95db-8568ff616599",
+    "documents": [
+      {
+        "name": "90e8f4fc-fdd1-4887-b70a-f5f2476fdfac_45e8ca05-3892-48ff-bcf7-1b5c91cda2f1.jpeg"
+      }
+    ],
+    "ingredients": [
+      {
+        "created_ingredient": false,
+        "detected_name": "Delivery Fee - Order Between 250 - 1500",
+        "ingredient_name": "Delivery Fee - Order Between 250 - 1500",
+        "ingredient_uuid": "dbd48536-d08f-4626-9f43-8c0c743bc3bc",
+        "quantity": 1,
+        "total_cost": 5.94,
+        "unit": {
+          "unit_name": "each",
+          "unit_uuid": "e3c62f13-9f12-4f85-b84c-7d42ad6e3632"
+        },
+        "unit_cost": 4.95,
+        "uuid": "772e924a-49a4-4df0-ab02-1029b026c28a"
+      },
+      {
+        "created_ingredient": false,
+        "detected_name": "Little Mixers Strawberry Puree",
+        "ingredient_name": "Little Mixers Strawberry Puree",
+        "ingredient_uuid": "c1e66052-7598-4de3-873c-0295bebe3d0f",
+        "quantity": 1,
+        "total_cost": 7.24,
+        "unit": {
+          "unit_name": "each",
+          "unit_uuid": "e3c62f13-9f12-4f85-b84c-7d42ad6e3632"
+        },
+        "unit_cost": 7.24,
+        "uuid": "e6500835-e1c9-4ca1-a87f-4386a11ebac1"
+      },
+      {
+        "created_ingredient": false,
+        "detected_name": "50ltr Spitfire Lager",
+        "ingredient_name": "Orange Juice",
+        "ingredient_uuid": "53deeaea-fb4d-4001-86ec-f33f877d6f0d",
+        "quantity": 1,
+        "total_cost": 703.08,
+        "unit": {
+          "unit_name": "kg",
+          "unit_uuid": "a45c2954-b883-4825-8d73-86d6ab80c0ea"
+        },
+        "unit_cost": 117.18,
+        "uuid": "b25409a0-6f4e-40cb-a1ef-9733ee1d94f2"
+      },
+      {
+        "created_ingredient": false,
+        "detected_name": "70cl St Germain Elderflower",
+        "ingredient_name": "Tomato",
+        "ingredient_uuid": "79d4ee4f-c916-488d-b0c7-4ea0f370a374",
+        "quantity": 3,
+        "total_cost": 96.8,
+        "unit": {
+          "unit_name": null,
+          "unit_uuid": null
+        },
+        "unit_cost": 26.89,
+        "uuid": "7323362b-07e7-434f-93b7-d9fcd77c25e5"
+      }
+    ],
+    "supplier": {
+      "supplier_name": "My Great Supplier",
+      "supplier_uuid": "84c45f51-930b-4ae0-819c-e1b4e536f2b0"
+    }
+  },
+  "message": "Success",
+  "success": true
+}
