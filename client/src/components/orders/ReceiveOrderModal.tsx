@@ -216,7 +216,7 @@ export default function ReceiveOrderModal({
                 } : null}
                 onChange={(option) => {
                   console.log("Selected invoice:", option);
-                  setSelectedInvoice(option?.value ?? '');
+                  setSelectedInvoice(option?.value);
                 }}
                 options={[
                   {
