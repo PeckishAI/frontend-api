@@ -316,6 +316,8 @@ export default function RecipeSheet({
     return (((price - cost) / price) * 100).toFixed(2);
   };
 
+  console.log("Product: ", product);
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-[800px] sm:max-w-[800px] h-screen overflow-y-auto">
