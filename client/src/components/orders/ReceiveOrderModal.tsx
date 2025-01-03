@@ -175,8 +175,11 @@ export default function ReceiveOrderModal({
               <Select 
                 value={selectedInvoice || ""}
                 onValueChange={(value) => {
+                  console.log("Selected invoice value:", value);
                   if (value !== "supplier-group" && value !== "other-group") {
                     setSelectedInvoice(value);
+                    const invoice = invoices.find((inv: any) => inv.invoice_uuid === value);
+                    console.log("Found invoice:", invoice);
                   }
                 }}
               >
