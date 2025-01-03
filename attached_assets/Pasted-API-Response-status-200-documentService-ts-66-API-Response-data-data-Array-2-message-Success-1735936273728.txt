@@ -1,0 +1,25 @@
+API Response status: 200
+documentService.ts:66 API Response data: {data: Array(2), message: 'Success', success: true}data: Array(2)0: {amount: 813.06, created_at: 'Wed, 20 Nov 2024 00:20:21 GMT', created_supplier: true, date: '2024-04-27T00:00:00.000Z', document_uuid: '6ffd8485-8368-4c52-95db-8568ff616599', …}1: {amount: 813.06, created_at: 'Wed, 20 Nov 2024 01:00:46 GMT', created_supplier: false, date: '2024-04-27T00:00:00.000Z', document_uuid: '70125587-17a3-4310-9072-15a92971e99d', …}length: 2[[Prototype]]: Array(0)message: "Success"success: true[[Prototype]]: Object
+ReceiveOrderModal.tsx:185 Warning: Each child in a list should have a unique "key" prop.
+
+Check the render method of `ReceiveOrderModal`. See https://reactjs.org/link/warning-keys for more information.
+    at _c5 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/ui/select.tsx:108:12)
+    at ReceiveOrderModal (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/orders/ReceiveOrderModal.tsx?t=1735936185512:51:3)
+    at div
+    at div
+    at _c11 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/ui/card.tsx:115:13)
+    at div
+    at _c (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/ui/card.tsx:20:11)
+    at OrderCard (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/orders/OrderCard.tsx?t=1735936185512:32:3)
+    at div
+    at div
+    at div
+    at div
+    at Orders (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/pages/Orders.tsx?t=1735936185512:36:45)
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=b9fa00a7:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=b9fa00a7:247:17)
+    at div
+    at RestaurantProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/contexts/RestaurantContext.tsx:20:38)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/@tanstack_react-query.js?v=b9fa00a7:2805:3)
+    at App
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/@tanstack_react-query.js?v=b9fa00a7:2805:3)
