@@ -186,8 +186,8 @@ export default function ReceiveOrderModal({
               <label className="text-sm text-gray-500 mb-2 block">
                 Match Invoice
               </label>
-              <Select
-                value={selectedInvoice}
+              <Select 
+                value={selectedInvoice || ""}
                 onValueChange={(value) => {
                   console.log("Selected invoice value:", value);
                   if (value && value !== "supplier-group" && value !== "other-group") {
@@ -196,8 +196,6 @@ export default function ReceiveOrderModal({
                       (inv: any) => inv.invoice_uuid === value,
                     );
                     console.log("Found invoice:", invoice);
-                    console.log("Invoice number:", invoice?.invoice_number);
-                    console.log("All available invoices:", invoices);
                   }
                 }}
               >
