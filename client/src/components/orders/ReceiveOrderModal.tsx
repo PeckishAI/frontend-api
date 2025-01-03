@@ -101,7 +101,7 @@ export default function ReceiveOrderModal({
                 <SelectValue placeholder="Select an invoice" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="" disabled>
+                <SelectItem value="select" disabled>
                   Select an invoice
                 </SelectItem>
                 {supplierInvoices.length > 0 && (
