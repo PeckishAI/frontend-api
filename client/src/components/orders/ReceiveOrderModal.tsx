@@ -171,24 +171,20 @@ export default function ReceiveOrderModal({
               <label className="text-sm text-gray-500 mb-2 block">
                 Match Invoice
               </label>
-              <Select
-                value={selectedInvoice}
-                onValueChange={setSelectedInvoice}
-                onOpenChange={(open) => {
-                  if (!open) {
-                    setTimeout(() => {
-                      document.body.click();
-                    }, 0);
+              <Select 
+                value={selectedInvoice || ""}
+                onValueChange={(value) => {
+                  if (value !== "select" && value !== "supplier-group" && value !== "other-group") {
+                    setSelectedInvoice(value);
                   }
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select an invoice" />
+                  <SelectValue placeholder="Select an invoice">
+                    {selectedInvoice ? invoices.find((inv: any) => inv.invoice_uuid === selectedInvoice)?.invoice_number : "Select an invoice"}
+                  </SelectValue>
                 </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="select" disabled>
-                    Select an invoice
-                  </SelectItem>
+                <SelectContent>
                   {supplierInvoices.length > 0 && (
                     <>
                       <SelectItem value="supplier-group" disabled>
