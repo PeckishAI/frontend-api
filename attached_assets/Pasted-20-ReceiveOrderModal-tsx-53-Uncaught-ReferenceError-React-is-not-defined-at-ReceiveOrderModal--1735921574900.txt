@@ -1,0 +1,30 @@
+20
+ReceiveOrderModal.tsx:53 Uncaught ReferenceError: React is not defined
+    at ReceiveOrderModal (ReceiveOrderModal.tsx:53:3)
+20
+hook.js:608 The above error occurred in the <ReceiveOrderModal> component:
+
+    at ReceiveOrderModal (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/orders/ReceiveOrderModal.tsx:41:3)
+    at div
+    at div
+    at _c11 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/ui/card.tsx:115:13)
+    at div
+    at _c (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/ui/card.tsx:20:11)
+    at OrderCard (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/orders/OrderCard.tsx:32:3)
+    at div
+    at div
+    at div
+    at div
+    at Orders (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/pages/Orders.tsx:36:45)
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=b9fa00a7:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=b9fa00a7:247:17)
+    at div
+    at RestaurantProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/contexts/RestaurantContext.tsx:20:38)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=b9fa00a7:2805:3)
+    at App
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=b9fa00a7:2805:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+chunk-C43VWYGG.js?v=b9fa00a7:9129 Uncaught ReferenceError: React is not defined
+    at ReceiveOrderModal (ReceiveOrderModal.tsx:53:3)
