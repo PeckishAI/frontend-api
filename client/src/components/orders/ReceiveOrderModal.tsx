@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {
   Dialog,
@@ -17,7 +16,13 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { type Order } from "@/types/order";
 import { useQuery } from "@tanstack/react-query";
 import { documentService } from "@/services/documentService";
@@ -37,14 +42,18 @@ export default function ReceiveOrderModal({
   onConfirm,
 }: ReceiveOrderModalProps) {
   const [selectedInvoice, setSelectedInvoice] = useState<string>("");
-  const [receivedQuantities, setReceivedQuantities] = useState<Record<string, number>>({});
+  const [receivedQuantities, setReceivedQuantities] = useState<
+    Record<string, number>
+  >({});
   const { currentRestaurant } = useRestaurantContext();
 
   const { data: invoices = [] } = useQuery({
     queryKey: ["invoices", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) return [];
-      return documentService.getRestaurantInvoices(currentRestaurant.restaurant_uuid);
+      return documentService.getRestaurantInvoices(
+        currentRestaurant.restaurant_uuid,
+      );
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
@@ -80,10 +89,10 @@ export default function ReceiveOrderModal({
   };
 
   const supplierInvoices = invoices.filter(
-    (inv: any) => inv.supplier?.supplier_uuid === order.supplier?.supplier_uuid
+    (inv: any) => inv.supplier?.supplier_uuid === order.supplier?.supplier_uuid,
   );
   const otherInvoices = invoices.filter(
-    (inv: any) => inv.supplier?.supplier_uuid !== order.supplier?.supplier_uuid
+    (inv: any) => inv.supplier?.supplier_uuid !== order.supplier?.supplier_uuid,
   );
 
   return (
@@ -95,7 +104,9 @@ export default function ReceiveOrderModal({
 
         <div className="space-y-6">
           <div>
-            <label className="text-sm text-gray-500 mb-2 block">Match Invoice</label>
+            <label className="text-sm text-gray-500 mb-2 block">
+              Match Invoice
+            </label>
             <Select value={selectedInvoice} onValueChange={setSelectedInvoice}>
               <SelectTrigger>
                 <SelectValue placeholder="Select an invoice" />
@@ -110,7 +121,10 @@ export default function ReceiveOrderModal({
                       {order.supplier?.supplier_name}
                     </SelectItem>
                     {supplierInvoices.map((inv: any) => (
-                      <SelectItem key={inv.invoice_uuid} value={inv.invoice_uuid}>
+                      <SelectItem
+                        key={inv.invoice_uuid}
+                        value={inv.invoice_uuid}
+                      >
                         {inv.invoice_number}
                       </SelectItem>
                     ))}
@@ -122,7 +136,53 @@ export default function ReceiveOrderModal({
                       Other Suppliers
                     </SelectItem>
                     {otherInvoices.map((inv: any) => (
-                      <SelectItem key={inv.invoice_uuid} value={inv.invoice_uuid}>
+                      <SelectItem
+                        key={inv.invoice_uuid}
+                        value={inv.invoice_uuid}
+                      >
+                        {inv.invoice_number}
+                      </SelectItem>
+                    ))}
+                  </>
+                )}
+              </SelectContent>
+            </Select>
+            <label className="text-sm text-gray-500 mb-2 block">
+              Match Invoice
+            </label>
+            <Select value={selectedInvoice} onValueChange={setSelectedInvoice}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select an invoice" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="select" disabled>
+                  Select an invoice
+                </SelectItem>
+                {supplierInvoices.length > 0 && (
+                  <>
+                    <SelectItem value="supplier-group" disabled>
+                      {order.supplier?.supplier_name}
+                    </SelectItem>
+                    {supplierInvoices.map((inv: any) => (
+                      <SelectItem
+                        key={inv.invoice_uuid}
+                        value={inv.invoice_uuid}
+                      >
+                        {inv.invoice_number}
+                      </SelectItem>
+                    ))}
+                  </>
+                )}
+                {otherInvoices.length > 0 && (
+                  <>
+                    <SelectItem value="other-group" disabled>
+                      Other Suppliers
+                    </SelectItem>
+                    {otherInvoices.map((inv: any) => (
+                      <SelectItem
+                        key={inv.invoice_uuid}
+                        value={inv.invoice_uuid}
+                      >
                         {inv.invoice_number}
                       </SelectItem>
                     ))}
@@ -149,12 +209,15 @@ export default function ReceiveOrderModal({
                   <TableCell>
                     <Input
                       type="number"
-                      value={receivedQuantities[item.ingredient_uuid || ""] || 0}
+                      value={
+                        receivedQuantities[item.ingredient_uuid || ""] || 0
+                      }
                       onChange={(e) => {
                         if (item.ingredient_uuid) {
                           setReceivedQuantities({
                             ...receivedQuantities,
-                            [item.ingredient_uuid]: parseFloat(e.target.value) || 0,
+                            [item.ingredient_uuid]:
+                              parseFloat(e.target.value) || 0,
                           });
                         }
                       }}

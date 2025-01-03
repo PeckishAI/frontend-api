@@ -1,0 +1,150 @@
+@radix-ui_react-select.js?v=b9fa00a7:1304 Uncaught Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
+    at @radix-ui_react-select.js?v=b9fa00a7:1304:13
+    at renderWithHooks (chunk-C43VWYGG.js?v=b9fa00a7:12151:26)
+    at updateForwardRef (chunk-C43VWYGG.js?v=b9fa00a7:14307:28)
+    at beginWork (chunk-C43VWYGG.js?v=b9fa00a7:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-C43VWYGG.js?v=b9fa00a7:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-C43VWYGG.js?v=b9fa00a7:3699:24)
+    at invokeGuardedCallback (chunk-C43VWYGG.js?v=b9fa00a7:3733:39)
+    at beginWork$1 (chunk-C43VWYGG.js?v=b9fa00a7:19733:15)
+    at performUnitOfWork (chunk-C43VWYGG.js?v=b9fa00a7:19166:20)
+    at workLoopSync (chunk-C43VWYGG.js?v=b9fa00a7:19105:13)
+(anonymous) @ @radix-ui_react-select.js?v=b9fa00a7:1304
+renderWithHooks @ chunk-C43VWYGG.js?v=b9fa00a7:12151
+updateForwardRef @ chunk-C43VWYGG.js?v=b9fa00a7:14307
+beginWork @ chunk-C43VWYGG.js?v=b9fa00a7:15914
+callCallback2 @ chunk-C43VWYGG.js?v=b9fa00a7:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=b9fa00a7:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=b9fa00a7:3733
+beginWork$1 @ chunk-C43VWYGG.js?v=b9fa00a7:19733
+performUnitOfWork @ chunk-C43VWYGG.js?v=b9fa00a7:19166
+workLoopSync @ chunk-C43VWYGG.js?v=b9fa00a7:19105
+renderRootSync @ chunk-C43VWYGG.js?v=b9fa00a7:19084
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=b9fa00a7:18842
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=b9fa00a7:9119
+(anonymous) @ chunk-C43VWYGG.js?v=b9fa00a7:18595Understand this errorAI
+@radix-ui_react-select.js?v=b9fa00a7:1304 Uncaught Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
+    at @radix-ui_react-select.js?v=b9fa00a7:1304:13
+    at renderWithHooks (chunk-C43VWYGG.js?v=b9fa00a7:12151:26)
+    at updateForwardRef (chunk-C43VWYGG.js?v=b9fa00a7:14307:28)
+    at beginWork (chunk-C43VWYGG.js?v=b9fa00a7:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-C43VWYGG.js?v=b9fa00a7:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-C43VWYGG.js?v=b9fa00a7:3699:24)
+    at invokeGuardedCallback (chunk-C43VWYGG.js?v=b9fa00a7:3733:39)
+    at beginWork$1 (chunk-C43VWYGG.js?v=b9fa00a7:19733:15)
+    at performUnitOfWork (chunk-C43VWYGG.js?v=b9fa00a7:19166:20)
+    at workLoopSync (chunk-C43VWYGG.js?v=b9fa00a7:19105:13)
+(anonymous) @ @radix-ui_react-select.js?v=b9fa00a7:1304
+renderWithHooks @ chunk-C43VWYGG.js?v=b9fa00a7:12151
+updateForwardRef @ chunk-C43VWYGG.js?v=b9fa00a7:14307
+beginWork @ chunk-C43VWYGG.js?v=b9fa00a7:15914
+callCallback2 @ chunk-C43VWYGG.js?v=b9fa00a7:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=b9fa00a7:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=b9fa00a7:3733
+beginWork$1 @ chunk-C43VWYGG.js?v=b9fa00a7:19733
+performUnitOfWork @ chunk-C43VWYGG.js?v=b9fa00a7:19166
+workLoopSync @ chunk-C43VWYGG.js?v=b9fa00a7:19105
+renderRootSync @ chunk-C43VWYGG.js?v=b9fa00a7:19084
+recoverFromConcurrentError @ chunk-C43VWYGG.js?v=b9fa00a7:18704
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=b9fa00a7:18847
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=b9fa00a7:9119
+(anonymous) @ chunk-C43VWYGG.js?v=b9fa00a7:18595Understand this errorAI
+hook.js:608 The above error occurred in the <SelectItem> component:
+
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-select.js?v=b9fa00a7:1277:7
+    at _c5 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/ui/select.tsx:108:12)
+    at div
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-3VRZCT36.js?v=b9fa00a7:41:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-VMJEA7HX.js?v=b9fa00a7:52:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-VMJEA7HX.js?v=b9fa00a7:33:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-6KTLRB3I.js?v=b9fa00a7:98:15
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-select.js?v=b9fa00a7:1188:13
+    at div
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-VMJEA7HX.js?v=b9fa00a7:52:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-VMJEA7HX.js?v=b9fa00a7:33:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-6KTLRB3I.js?v=b9fa00a7:98:15
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-XUAN5KW6.js?v=b9fa00a7:38:15)
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-select.js?v=b9fa00a7:732:58
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-VMJEA7HX.js?v=b9fa00a7:52:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-VMJEA7HX.js?v=b9fa00a7:33:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-3VRZCT36.js?v=b9fa00a7:41:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-select.js?v=b9fa00a7:497:22
+    at SelectPortal
+    at _c3 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/ui/select.tsx:61:12)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-XUAN5KW6.js?v=b9fa00a7:38:15)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-6KTLRB3I.js?v=b9fa00a7:28:15)
+    at CollectionProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-6KTLRB3I.js?v=b9fa00a7:89:13)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-XUAN5KW6.js?v=b9fa00a7:38:15)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-GDX7QPUC.js?v=b9fa00a7:356:15)
+    at Popper (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-GDX7QPUC.js?v=b9fa00a7:413:11)
+    at Select (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-select.js?v=b9fa00a7:520:5)
+    at div
+    at div
+    at div
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:254:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:283:7
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:540:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:521:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:618:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:637:5
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:1772:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:1695:58
+    at Presence (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:1012:11)
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:1686:64
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:900:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:881:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:978:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:994:22
+    at Presence (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:1012:11)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-XUAN5KW6.js?v=b9fa00a7:38:15)
+    at DialogPortal (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:1649:11)
+    at _c3 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/ui/dialog.tsx:49:12)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-XUAN5KW6.js?v=b9fa00a7:38:15)
+    at Dialog (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-AMEICOUV.js?v=b9fa00a7:1590:5)
+    at ReceiveOrderModal (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/orders/ReceiveOrderModal.tsx?t=1735921601258:41:3)
+    at div
+    at div
+    at _c11 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/ui/card.tsx:115:13)
+    at div
+    at _c (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/ui/card.tsx:20:11)
+    at OrderCard (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/orders/OrderCard.tsx?t=1735921601258:32:3)
+    at div
+    at div
+    at div
+    at div
+    at Orders (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/pages/Orders.tsx?t=1735921601258:36:45)
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=b9fa00a7:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=b9fa00a7:247:17)
+    at div
+    at RestaurantProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/contexts/RestaurantContext.tsx:20:38)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/@tanstack_react-query.js?v=b9fa00a7:2805:3)
+    at App
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/@fs/home/runner/Frontend/node_modules/.vite/deps/@tanstack_react-query.js?v=b9fa00a7:2805:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+overrideMethod @ hook.js:608
+logCapturedError @ chunk-C43VWYGG.js?v=b9fa00a7:14016
+update.callback @ chunk-C43VWYGG.js?v=b9fa00a7:14036
+callCallback @ chunk-C43VWYGG.js?v=b9fa00a7:10491
+commitUpdateQueue @ chunk-C43VWYGG.js?v=b9fa00a7:10508
+commitLayoutEffectOnFiber @ chunk-C43VWYGG.js?v=b9fa00a7:17061
+commitLayoutMountEffects_complete @ chunk-C43VWYGG.js?v=b9fa00a7:17948
+commitLayoutEffects_begin @ chunk-C43VWYGG.js?v=b9fa00a7:17937
+commitLayoutEffects @ chunk-C43VWYGG.js?v=b9fa00a7:17888
+commitRootImpl @ chunk-C43VWYGG.js?v=b9fa00a7:19321
+commitRoot @ chunk-C43VWYGG.js?v=b9fa00a7:19245
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=b9fa00a7:18863
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=b9fa00a7:9119
+(anonymous) @ chunk-C43VWYGG.js?v=b9fa00a7:18595Understand this errorAI
+chunk-C43VWYGG.js?v=b9fa00a7:9129 Uncaught Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
+    at @radix-ui_react-select.js?v=b9fa00a7:1304:13
+    at renderWithHooks (chunk-C43VWYGG.js?v=b9fa00a7:12151:26)
+    at updateForwardRef (chunk-C43VWYGG.js?v=b9fa00a7:14307:28)
+    at beginWork (chunk-C43VWYGG.js?v=b9fa00a7:15914:22)
+    at beginWork$1 (chunk-C43VWYGG.js?v=b9fa00a7:19721:22)
+    at performUnitOfWork (chunk-C43VWYGG.js?v=b9fa00a7:19166:20)
+    at workLoopSync (chunk-C43VWYGG.js?v=b9fa00a7:19105:13)
+    at renderRootSync (chunk-C43VWYGG.js?v=b9fa00a7:19084:15)
+    at recoverFromConcurrentError (chunk-C43VWYGG.js?v=b9fa00a7:18704:28)
+    at performSyncWorkOnRoot (chunk-C43VWYGG.js?v=b9fa00a7:18847:28)
