@@ -33,6 +33,9 @@ export default function OrderCard({
   const handleApprove = (sendEmail: boolean) => {
     console.log("Approving order with payload:", {
       order_uuid: order.order_uuid,
+      date: order.date || null,
+      delivery_date: order.delivery_date || null,
+      status: "pending",
       sendEmail,
     });
     onApprove?.();
