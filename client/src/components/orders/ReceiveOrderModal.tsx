@@ -214,8 +214,27 @@ export default function ReceiveOrderModal({
             <TableBody>
               {order.items?.map((item) => (
                 <TableRow key={item.ingredient_uuid}>
-                  <TableCell>{item.ingredient_name}</TableCell>
-                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell>
+                    <CreatableSelect
+                      value={item.ingredient_uuid ? {
+                        value: item.ingredient_uuid,
+                        label: item.ingredient_name
+                      } : null}
+                      onChange={(option) => {
+                        // Handle ingredient selection
+                      }}
+                      options={[]} // Add your ingredient options here
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) => {
+                        // Handle quantity change
+                      }}
+                    />
+                  </TableCell>
                   <TableCell>
                     <Input
                       type="number"
@@ -233,11 +252,40 @@ export default function ReceiveOrderModal({
                       }}
                     />
                   </TableCell>
-                  <TableCell>{item.unit?.unit_name}</TableCell>
+                  <TableCell>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder={item.unit?.unit_name || "Select unit"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {/* Add your unit options here */}
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+          <Button 
+            type="button"
+            variant="outline" 
+            size="sm"
+            className="mt-4"
+            onClick={() => {
+              if (order.items) {
+                order.items.push({
+                  ingredient_uuid: "",
+                  ingredient_name: "",
+                  quantity: 0,
+                  unit: { unit_name: "", unit_uuid: "" }
+                });
+                // Force re-render
+                setReceivedQuantities({...receivedQuantities});
+              }
+            }}
+          >
+            Add Row
+          </Button>
         </div>
 
         <DialogFooter>
