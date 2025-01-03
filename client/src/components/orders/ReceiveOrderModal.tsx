@@ -184,8 +184,8 @@ export default function ReceiveOrderModal({
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue>
-                    {selectedInvoice ? invoices.find((inv: any) => inv.invoice_uuid === selectedInvoice)?.invoice_number : "Select an invoice"}
+                  <SelectValue placeholder="Select an invoice">
+                    {selectedInvoice ? invoices.find((inv: any) => inv.invoice_uuid === selectedInvoice)?.invoice_number : undefined}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
