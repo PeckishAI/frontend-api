@@ -214,7 +214,10 @@ export default function ReceiveOrderModal({
                   value: selectedInvoice,
                   label: invoices.find((inv: any) => inv.invoice_uuid === selectedInvoice)?.invoice_number || ''
                 } : null}
-                onChange={(option) => setSelectedInvoice(option?.value || '')}
+                onChange={(option) => {
+                  console.log("Selected invoice:", option);
+                  setSelectedInvoice(option?.value || '');
+                }}
                 options={[
                   {
                     label: order?.supplier?.supplier_name || "Supplier Invoices",
@@ -246,7 +249,10 @@ export default function ReceiveOrderModal({
                   value: selectedDeliveryNote,
                   label: `Delivery Note #${selectedDeliveryNote}`
                 } : null}
-                onChange={(option) => setSelectedDeliveryNote(option?.value || '')}
+                onChange={(option) => {
+                  console.log("Selected delivery note:", option);
+                  setSelectedDeliveryNote(option?.value || '');
+                }}
                 options={[
                   { value: 'DN-1234', label: 'DN-1234' },
                   { value: 'DN-5678', label: 'DN-5678' }
