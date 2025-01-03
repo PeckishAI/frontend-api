@@ -34,7 +34,7 @@ export default function OrderCard({
     console.log("Approving order with payload:", {
       order_uuid: order.order_uuid,
       date: order.date || null,
-      delivery_date: order.delivery_date || null,
+      delivery_date: order.delivery_date === "" ? null : order.delivery_date,
       status: "pending",
       sendEmail,
     });
