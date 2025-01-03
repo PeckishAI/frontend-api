@@ -170,6 +170,7 @@ export default function ReceiveOrderModal({
     (inv: any) =>
       inv.supplier?.supplier_uuid !== order?.supplier?.supplier_uuid,
   );
+  console.log("Supplier invoices:", supplierInvoices);
 
   // On confirm, we always send the mergedItems because
   // if no invoice was selected, mergedItems will be empty,
@@ -180,7 +181,7 @@ export default function ReceiveOrderModal({
 
     const payload = {
       order_uuid: order?.order_uuid,
-      invoice_uuid: selectedInvoice,
+      document_uuid: selectedInvoice,
       items: finalItems.map((item) => ({
         ingredient_uuid: item.ingredient_uuid,
         ordered_quantity: item.quantity || 0,
@@ -210,29 +211,37 @@ export default function ReceiveOrderModal({
                 Match Invoice
               </label>
               <BasicSelect
-                value={selectedInvoice ? {
-                  value: selectedInvoice,
-                  label: invoices.find((inv: any) => inv.invoice_uuid === selectedInvoice)?.invoice_number || ''
-                } : null}
+                value={
+                  selectedInvoice
+                    ? {
+                        value: selectedInvoice,
+                        label:
+                          invoices.find(
+                            (inv: any) => inv.document_uuid === selectedInvoice,
+                          )?.invoice_number || "",
+                      }
+                    : null
+                }
                 onChange={(option) => {
                   console.log("Selected invoice:", option);
                   setSelectedInvoice(option?.value);
                 }}
                 options={[
                   {
-                    label: order?.supplier?.supplier_name || "Supplier Invoices",
+                    label:
+                      order?.supplier?.supplier_name || "Supplier Invoices",
                     options: supplierInvoices.map((inv: any) => ({
-                      value: inv.invoice_uuid,
-                      label: inv.invoice_number
-                    }))
+                      value: inv.document_uuid,
+                      label: inv.invoice_number,
+                    })),
                   },
                   {
                     label: "Other Suppliers",
                     options: otherInvoices.map((inv: any) => ({
-                      value: inv.invoice_uuid,
-                      label: inv.invoice_number
-                    }))
-                  }
+                      value: inv.document_uuid,
+                      label: inv.invoice_number,
+                    })),
+                  },
                 ]}
                 placeholder="Select an invoice"
                 size="large"
@@ -245,17 +254,21 @@ export default function ReceiveOrderModal({
                 Match Delivery Note
               </label>
               <BasicSelect
-                value={selectedDeliveryNote ? {
-                  value: selectedDeliveryNote,
-                  label: `Delivery Note #${selectedDeliveryNote}`
-                } : null}
+                value={
+                  selectedDeliveryNote
+                    ? {
+                        value: selectedDeliveryNote,
+                        label: `Delivery Note #${selectedDeliveryNote}`,
+                      }
+                    : null
+                }
                 onChange={(option) => {
                   console.log("Selected delivery note:", option);
-                  setSelectedDeliveryNote(option?.value || '');
+                  setSelectedDeliveryNote(option?.value || "");
                 }}
                 options={[
-                  { value: 'DN-1234', label: 'DN-1234' },
-                  { value: 'DN-5678', label: 'DN-5678' }
+                  { value: "DN-1234", label: "DN-1234" },
+                  { value: "DN-5678", label: "DN-5678" },
                 ]}
                 placeholder="Select a delivery note"
                 size="large"
