@@ -174,11 +174,18 @@ export default function ReceiveOrderModal({
               <Select
                 value={selectedInvoice}
                 onValueChange={setSelectedInvoice}
+                onOpenChange={(open) => {
+                  if (!open) {
+                    setTimeout(() => {
+                      document.body.click();
+                    }, 0);
+                  }
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select an invoice" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="popper">
                   <SelectItem value="select" disabled>
                     Select an invoice
                   </SelectItem>
