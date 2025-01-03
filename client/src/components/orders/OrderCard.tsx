@@ -19,6 +19,7 @@ interface OrderCardProps {
 }
 
 import ApproveOrderDialog from "./ApproveOrderDialog";
+import ReceiveOrderModal from "./ReceiveOrderModal";
 import { useState } from "react";
 
 export default function OrderCard({
@@ -29,6 +30,7 @@ export default function OrderCard({
   onApprove,
 }: OrderCardProps) {
   const [showApproveDialog, setShowApproveDialog] = useState(false);
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const handleApprove = (sendEmail: boolean) => {
     console.log("Approving order with payload:", {
@@ -77,9 +79,19 @@ export default function OrderCard({
         </p>
         <div className="flex gap-2">
           {order.status === "pending" && (
-            <Button size="sm" onClick={onReceive}>
+            <Button size="sm" onClick={() => setShowReceiveModal(true)}>
               Receive Stock
             </Button>
+            <ReceiveOrderModal 
+              open={showReceiveModal}
+              onOpenChange={setShowReceiveModal}
+              order={order}
+              onConfirm={(data) => {
+                console.log("Order received:", data);
+                onReceive?.();
+                setShowReceiveModal(false);
+              }}
+            />
           )}
           {order.status === "draft" && (
             <>
