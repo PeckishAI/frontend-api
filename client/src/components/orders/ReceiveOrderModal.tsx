@@ -60,31 +60,31 @@ export default function ReceiveOrderModal({
     enabled: !!currentRestaurant?.restaurant_uuid && !!selectedInvoice,
     onSuccess: (data) => {
       if (!data) return;
+      console.log("Invoice data received:", data);
       
-      // Update merged items when invoice is selected
-      const newItems = [...(order?.items || [])];
+      const orderItems = order?.items || [];
+      const invoiceItems = data.ingredients || [];
       
-      // Match existing items with invoice quantities
-      data.ingredients?.forEach((invoiceItem: any) => {
-        const existingItemIndex = newItems.findIndex(item => 
-          item.ingredient_uuid === invoiceItem.ingredient_uuid
-        );
-        
-        if (existingItemIndex >= 0) {
-          newItems[existingItemIndex].invoice_quantity = invoiceItem.quantity;
-        } else {
-          // Add new items from invoice
-          newItems.push({
-            ingredient_uuid: invoiceItem.ingredient_uuid,
-            ingredient_name: invoiceItem.ingredient_name,
-            quantity: 0,
-            invoice_quantity: invoiceItem.quantity,
-            unit: invoiceItem.unit,
-            isNewRow: false
-          });
-        }
+      // Create a map of existing order items
+      const orderItemsMap = new Map(
+        orderItems.map(item => [item.ingredient_uuid, item])
+      );
+      
+      // Merge invoice items with order items
+      const newItems = invoiceItems.map(invoiceItem => {
+        const orderItem = orderItemsMap.get(invoiceItem.ingredient_uuid);
+        return {
+          ...orderItem,
+          ingredient_uuid: invoiceItem.ingredient_uuid,
+          ingredient_name: invoiceItem.ingredient_name,
+          quantity: orderItem?.quantity || 0,
+          invoice_quantity: invoiceItem.quantity,
+          unit: invoiceItem.unit,
+          isNewRow: false
+        };
       });
       
+      console.log("Merged items:", newItems);
       setMergedItems(newItems);
       setSelectedInvoiceData(data);
     }
@@ -184,7 +184,9 @@ export default function ReceiveOrderModal({
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select an invoice" />
+                  <SelectValue>
+                    {selectedInvoice ? invoices.find((inv: any) => inv.invoice_uuid === selectedInvoice)?.invoice_number : "Select an invoice"}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {supplierInvoices.length > 0 && (
