@@ -28,6 +28,8 @@ import { type Order } from "@/types/order";
 import { useQuery } from "@tanstack/react-query";
 import { documentService } from "@/services/documentService";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import { inventoryService } from "@/services/inventoryService";
+import { unitService } from "@/services/unitService";
 import { Trash2 } from "lucide-react";
 
 interface ReceiveOrderModalProps {
@@ -48,6 +50,24 @@ export default function ReceiveOrderModal({
     Record<string, number>
   >({});
   const { currentRestaurant } = useRestaurantContext();
+
+  const { data: ingredients = [] } = useQuery({
+    queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) return [];
+      return inventoryService.getRestaurantIngredients(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+  });
+
+  const { data: units = [] } = useQuery({
+    queryKey: ["units", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) return [];
+      return unitService.getRestaurantUnit(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+  });
 
   const { data: invoices = [] } = useQuery({
     queryKey: ["invoices", currentRestaurant?.restaurant_uuid],
@@ -228,7 +248,34 @@ export default function ReceiveOrderModal({
                         onChange={(option) => {
                           // Handle ingredient selection
                         }}
-                        options={[]} // Add your ingredient options here
+                        options={[
+                          {
+                            label: "Associated Ingredients",
+                            options: Object.values(ingredients)
+                              .filter((ing: any) => 
+                                ing.ingredient_suppliers?.some(
+                                  (s: any) => s.supplier?.supplier_uuid === order?.supplier?.supplier_uuid
+                                )
+                              )
+                              .map((ing: any) => ({
+                                label: ing.ingredient_name,
+                                value: ing.ingredient_uuid,
+                              }))
+                          },
+                          {
+                            label: "Other Ingredients",
+                            options: Object.values(ingredients)
+                              .filter((ing: any) => 
+                                !ing.ingredient_suppliers?.some(
+                                  (s: any) => s.supplier?.supplier_uuid === order?.supplier?.supplier_uuid
+                                )
+                              )
+                              .map((ing: any) => ({
+                                label: ing.ingredient_name,
+                                value: ing.ingredient_uuid,
+                              }))
+                          }
+                        ]}
                       />
                     </TableCell>
                     <TableCell>
@@ -263,7 +310,11 @@ export default function ReceiveOrderModal({
                           <SelectValue placeholder={item.unit?.unit_name || "Select unit"} />
                         </SelectTrigger>
                         <SelectContent>
-                          {/* Add your unit options here */}
+                          {units.map((unit: any) => (
+                            <SelectItem key={unit.unit_uuid} value={unit.unit_uuid}>
+                              {unit.unit_name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </TableCell>
