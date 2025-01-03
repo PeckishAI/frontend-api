@@ -211,6 +211,7 @@ export default function ReceiveOrderModal({
                 <TableHead>Ordered Quantity</TableHead>
                 <TableHead>Received Quantity</TableHead>
                 <TableHead>Unit</TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -219,32 +220,16 @@ export default function ReceiveOrderModal({
                   // New row with all inputs
                   <TableRow key={item.ingredient_uuid || 'new'}>
                     <TableCell>
-                      <div className="flex gap-2 items-center">
-                        <CreatableSelect
-                          className="flex-1"
-                          value={item.ingredient_uuid ? {
-                            value: item.ingredient_uuid,
-                            label: item.ingredient_name
-                          } : null}
-                          onChange={(option) => {
-                            // Handle ingredient selection
-                          }}
-                          options={[]} // Add your ingredient options here
-                        />
-                        <Button 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={() => {
-                            if (order.items) {
-                              const index = order.items.indexOf(item);
-                              order.items.splice(index, 1);
-                              setReceivedQuantities({...receivedQuantities});
-                            }
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <CreatableSelect
+                        value={item.ingredient_uuid ? {
+                          value: item.ingredient_uuid,
+                          label: item.ingredient_name
+                        } : null}
+                        onChange={(option) => {
+                          // Handle ingredient selection
+                        }}
+                        options={[]} // Add your ingredient options here
+                      />
                     </TableCell>
                     <TableCell>
                       <Input
@@ -282,6 +267,21 @@ export default function ReceiveOrderModal({
                         </SelectContent>
                       </Select>
                     </TableCell>
+                    <TableCell>
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={() => {
+                          if (order.items) {
+                            const index = order.items.indexOf(item);
+                            order.items.splice(index, 1);
+                            setReceivedQuantities({...receivedQuantities});
+                          }
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ) : (
                   // Existing row with spans except received quantity
@@ -306,6 +306,7 @@ export default function ReceiveOrderModal({
                       />
                     </TableCell>
                     <TableCell>{item.unit?.unit_name}</TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 )
               )}
