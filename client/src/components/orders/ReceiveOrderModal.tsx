@@ -108,7 +108,10 @@ export default function ReceiveOrderModal({
               <label className="text-sm text-gray-500 mb-2 block">
                 Match Invoice
               </label>
-              <Select value={selectedInvoice} onValueChange={setSelectedInvoice}>
+              <Select
+                value={selectedInvoice}
+                onValueChange={setSelectedInvoice}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select an invoice" />
                 </SelectTrigger>
@@ -151,15 +154,18 @@ export default function ReceiveOrderModal({
             </div>
             <div>
               <label className="text-sm text-gray-500 mb-2 block">
-                Match Invoice
+                Match Delivery Note
               </label>
-              <Select value={selectedInvoice} onValueChange={setSelectedInvoice}>
+              <Select
+                value={selectedInvoice}
+                onValueChange={setSelectedInvoice}
+              >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select an invoice" />
+                  <SelectValue placeholder="Select a delivery note" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="select" disabled>
-                    Select an invoice
+                    Select a delivery note
                   </SelectItem>
                   {supplierInvoices.length > 0 && (
                     <>
