@@ -213,58 +213,85 @@ export default function ReceiveOrderModal({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {order.items?.map((item) => (
-                <TableRow key={item.ingredient_uuid}>
-                  <TableCell>
-                    <CreatableSelect
-                      value={item.ingredient_uuid ? {
-                        value: item.ingredient_uuid,
-                        label: item.ingredient_name
-                      } : null}
-                      onChange={(option) => {
-                        // Handle ingredient selection
-                      }}
-                      options={[]} // Add your ingredient options here
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) => {
-                        // Handle quantity change
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      type="number"
-                      value={
-                        receivedQuantities[item.ingredient_uuid || ""] || 0
-                      }
-                      onChange={(e) => {
-                        if (item.ingredient_uuid) {
-                          setReceivedQuantities({
-                            ...receivedQuantities,
-                            [item.ingredient_uuid]:
-                              parseFloat(e.target.value) || 0,
-                          });
+              {order.items?.map((item) => 
+                item.isNewRow ? (
+                  // New row with all inputs
+                  <TableRow key={item.ingredient_uuid || 'new'}>
+                    <TableCell>
+                      <CreatableSelect
+                        value={item.ingredient_uuid ? {
+                          value: item.ingredient_uuid,
+                          label: item.ingredient_name
+                        } : null}
+                        onChange={(option) => {
+                          // Handle ingredient selection
+                        }}
+                        options={[]} // Add your ingredient options here
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) => {
+                          // Handle quantity change
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        type="number"
+                        value={
+                          receivedQuantities[item.ingredient_uuid || ""] || 0
                         }
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder={item.unit?.unit_name || "Select unit"} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {/* Add your unit options here */}
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                </TableRow>
-              ))}
+                        onChange={(e) => {
+                          if (item.ingredient_uuid) {
+                            setReceivedQuantities({
+                              ...receivedQuantities,
+                              [item.ingredient_uuid]:
+                                parseFloat(e.target.value) || 0,
+                            });
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder={item.unit?.unit_name || "Select unit"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {/* Add your unit options here */}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  // Existing row with spans except received quantity
+                  <TableRow key={item.ingredient_uuid}>
+                    <TableCell>{item.ingredient_name}</TableCell>
+                    <TableCell>{item.quantity}</TableCell>
+                    <TableCell>
+                      <Input
+                        type="number"
+                        value={
+                          receivedQuantities[item.ingredient_uuid || ""] || 0
+                        }
+                        onChange={(e) => {
+                          if (item.ingredient_uuid) {
+                            setReceivedQuantities({
+                              ...receivedQuantities,
+                              [item.ingredient_uuid]:
+                                parseFloat(e.target.value) || 0,
+                            });
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.unit?.unit_name}</TableCell>
+                  </TableRow>
+                )
+              )}
             </TableBody>
           </Table>
           <Button 
@@ -278,7 +305,8 @@ export default function ReceiveOrderModal({
                   ingredient_uuid: "",
                   ingredient_name: "",
                   quantity: 0,
-                  unit: { unit_name: "", unit_uuid: "" }
+                  unit: { unit_name: "", unit_uuid: "" },
+                  isNewRow: true
                 });
                 // Force re-render
                 setReceivedQuantities({...receivedQuantities});
