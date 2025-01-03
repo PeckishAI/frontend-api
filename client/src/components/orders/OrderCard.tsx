@@ -18,6 +18,9 @@ interface OrderCardProps {
   onApprove?: () => void;
 }
 
+import ApproveOrderDialog from "./ApproveOrderDialog";
+import { useState } from "react";
+
 export default function OrderCard({
   order,
   onClick,
@@ -25,6 +28,16 @@ export default function OrderCard({
   onEdit,
   onApprove,
 }: OrderCardProps) {
+  const [showApproveDialog, setShowApproveDialog] = useState(false);
+
+  const handleApprove = (sendEmail: boolean) => {
+    console.log("Approving order with payload:", {
+      order_uuid: order.order_uuid,
+      sendEmail,
+    });
+    onApprove?.();
+    setShowApproveDialog(false);
+  };
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -77,9 +90,15 @@ export default function OrderCard({
               >
                 Edit
               </Button>
-              <Button size="sm" onClick={onApprove}>
+              <Button size="sm" onClick={() => setShowApproveDialog(true)}>
                 Approve
               </Button>
+              <ApproveOrderDialog
+                open={showApproveDialog}
+                onOpenChange={setShowApproveDialog}
+                order={order}
+                onConfirm={handleApprove}
+              />
             </>
           )}
         </div>
