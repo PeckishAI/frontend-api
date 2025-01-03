@@ -28,6 +28,7 @@ import { type Order } from "@/types/order";
 import { useQuery } from "@tanstack/react-query";
 import { documentService } from "@/services/documentService";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import { Trash2 } from "lucide-react";
 
 interface ReceiveOrderModalProps {
   open: boolean;
@@ -218,16 +219,32 @@ export default function ReceiveOrderModal({
                   // New row with all inputs
                   <TableRow key={item.ingredient_uuid || 'new'}>
                     <TableCell>
-                      <CreatableSelect
-                        value={item.ingredient_uuid ? {
-                          value: item.ingredient_uuid,
-                          label: item.ingredient_name
-                        } : null}
-                        onChange={(option) => {
-                          // Handle ingredient selection
-                        }}
-                        options={[]} // Add your ingredient options here
-                      />
+                      <div className="flex gap-2 items-center">
+                        <CreatableSelect
+                          className="flex-1"
+                          value={item.ingredient_uuid ? {
+                            value: item.ingredient_uuid,
+                            label: item.ingredient_name
+                          } : null}
+                          onChange={(option) => {
+                            // Handle ingredient selection
+                          }}
+                          options={[]} // Add your ingredient options here
+                        />
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => {
+                            if (order.items) {
+                              const index = order.items.indexOf(item);
+                              order.items.splice(index, 1);
+                              setReceivedQuantities({...receivedQuantities});
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <Input
