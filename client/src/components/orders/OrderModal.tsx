@@ -497,37 +497,55 @@ export default function OrderModal({
                               return [];
                             }
 
-                            const { data } = useQuery({
+                            const { data: unitOptions } = useQuery({
                               queryKey: [
                                 "units",
                                 currentRestaurant.restaurant_uuid,
                                 editedOrder.supplier.supplier_uuid,
                                 item.ingredient_uuid,
                               ],
-                              queryFn: () =>
-                                getUnitOptions(
+                              queryFn: async () => {
+                                const connectedUnits = await unitService.getSupplierIngredientUnits(
                                   currentRestaurant.restaurant_uuid,
                                   editedOrder.supplier.supplier_uuid,
-                                  item.ingredient_uuid || "",
-                                ),
+                                );
+                                
+                                const allUnits = await unitService.getRestaurantUnit(
+                                  currentRestaurant.restaurant_uuid,
+                                );
+
+                                const connectedIngredientUnits = connectedUnits
+                                  .filter((unit) => unit.ingredient_uuid === item.ingredient_uuid)
+                                  .map((unit) => unit.units)
+                                  .flat()
+                                  .map((unit) => ({
+                                    label: unit.unit_name,
+                                    value: unit.unit_uuid,
+                                  }));
+
+                                const otherUnits = allUnits
+                                  .filter((unit) => !connectedIngredientUnits.some(
+                                    (connected) => connected.value === unit.unit_uuid
+                                  ))
+                                  .map((unit) => ({
+                                    label: unit.unit_name,
+                                    value: unit.unit_uuid,
+                                  }));
+
+                                return [
+                                  {
+                                    label: "Connected Units",
+                                    options: connectedIngredientUnits,
+                                  },
+                                  {
+                                    label: "Other Units",
+                                    options: otherUnits,
+                                  }
+                                ];
+                              }
                             });
 
-                            // Filter out categories with no options and customize labels
-                            const filteredCategories = (data || []).filter(
-                              (category) =>
-                                category.options && category.options.length > 0,
-                            );
-
-                            // Only show categories that actually have options
-                            return filteredCategories
-                              .map((category) => ({
-                                ...category,
-                                label:
-                                  category.options.length > 0
-                                    ? category.label
-                                    : null,
-                              }))
-                              .filter((category) => category.label !== null);
+                            return unitOptions || [];
                           })()}
                           onCreateOption={(value) => {
                             updateItem(index, "unit", {
