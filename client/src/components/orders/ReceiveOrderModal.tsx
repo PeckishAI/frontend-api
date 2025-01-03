@@ -184,37 +184,12 @@ export default function ReceiveOrderModal({
                   <SelectValue placeholder="Select an invoice" />
                 </SelectTrigger>
                 <SelectContent>
-                  {supplierInvoices.length > 0 && (
-                    <>
-                      <SelectItem value="supplier-group" disabled>
-                        {order.supplier?.supplier_name}
-                      </SelectItem>
-                      {supplierInvoices.map((inv: any) => (
-                        <SelectItem
-                          key={inv.invoice_uuid}
-                          value={inv.invoice_uuid}
-                        >
-                          {inv.invoice_number}
-                        </SelectItem>
-                      ))}
-                    </>
-                  )}
-                  {otherInvoices.length > 0 && (
-                    <>
-                      <SelectItem value="other-group" disabled>
-                        Other Suppliers
-                      </SelectItem>
-                      {otherInvoices.map((inv: any) => (
-                        <SelectItem
-                          key={inv.invoice_uuid}
-                          value={inv.invoice_uuid}
-                        >
-                          {inv.invoice_number}
-                        </SelectItem>
-                      ))}
-                    </>
-                  )}
-                </SelectContent>
+                {[].map((note: any) => (
+                  <SelectItem key={note.id} value={note.id}>
+                    {note.number}
+                  </SelectItem>
+                ))}
+              </SelectContent>
               </Select>
             </div>
             <div>
@@ -235,37 +210,12 @@ export default function ReceiveOrderModal({
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  {supplierInvoices.length > 0 && (
-                    <>
-                      <SelectItem value="supplier-group" disabled>
-                        {order.supplier?.supplier_name}
-                      </SelectItem>
-                      {supplierInvoices.map((inv: any) => (
-                        <SelectItem
-                          key={inv.invoice_uuid}
-                          value={inv.invoice_uuid}
-                        >
-                          {inv.invoice_number}
-                        </SelectItem>
-                      ))}
-                    </>
-                  )}
-                  {otherInvoices.length > 0 && (
-                    <>
-                      <SelectItem value="other-group" disabled>
-                        Other Suppliers
-                      </SelectItem>
-                      {otherInvoices.map((inv: any) => (
-                        <SelectItem
-                          key={inv.invoice_uuid}
-                          value={inv.invoice_uuid}
-                        >
-                          {inv.invoice_number}
-                        </SelectItem>
-                      ))}
-                    </>
-                  )}
-                </SelectContent>
+                {[].map((note: any) => (
+                  <SelectItem key={note.id} value={note.id}>
+                    {note.number}
+                  </SelectItem>
+                ))}
+              </SelectContent>
               </Select>
             </div>
           </div>
