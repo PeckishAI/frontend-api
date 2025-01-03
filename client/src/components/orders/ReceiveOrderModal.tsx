@@ -55,23 +55,26 @@ export default function ReceiveOrderModal({
     queryKey: ["invoice", currentRestaurant?.restaurant_uuid, selectedInvoice],
     queryFn: async () => {
       if (!currentRestaurant?.restaurant_uuid || !selectedInvoice) return null;
-      return documentService.getInvoice(currentRestaurant.restaurant_uuid, selectedInvoice);
+      return documentService.getInvoice(
+        currentRestaurant.restaurant_uuid,
+        selectedInvoice,
+      );
     },
     enabled: !!currentRestaurant?.restaurant_uuid && !!selectedInvoice,
     onSuccess: (data) => {
       if (!data) return;
       console.log("Invoice data received:", data);
-      
+
       const orderItems = order?.items || [];
       const invoiceItems = data.ingredients || [];
-      
+
       // Create a map of existing order items
       const orderItemsMap = new Map(
-        orderItems.map(item => [item.ingredient_uuid, item])
+        orderItems.map((item) => [item.ingredient_uuid, item]),
       );
-      
+
       // Merge invoice items with order items
-      const newItems = invoiceItems.map(invoiceItem => {
+      const newItems = invoiceItems.map((invoiceItem) => {
         const orderItem = orderItemsMap.get(invoiceItem.ingredient_uuid);
         return {
           ...orderItem,
@@ -80,14 +83,14 @@ export default function ReceiveOrderModal({
           quantity: orderItem?.quantity || 0,
           invoice_quantity: invoiceItem.quantity,
           unit: invoiceItem.unit,
-          isNewRow: false
+          isNewRow: false,
         };
       });
-      
+
       console.log("Merged items:", newItems);
       setMergedItems(newItems);
       setSelectedInvoiceData(data);
-    }
+    },
   });
   const [receivedQuantities, setReceivedQuantities] = useState<
     Record<string, number>
@@ -97,7 +100,9 @@ export default function ReceiveOrderModal({
     queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) return [];
-      return inventoryService.getRestaurantIngredients(currentRestaurant.restaurant_uuid);
+      return inventoryService.getRestaurantIngredients(
+        currentRestaurant.restaurant_uuid,
+      );
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
@@ -172,20 +177,27 @@ export default function ReceiveOrderModal({
               <label className="text-sm text-gray-500 mb-2 block">
                 Match Invoice
               </label>
-              <Select 
+              <Select
                 value={selectedInvoice || ""}
                 onValueChange={(value) => {
                   console.log("Selected invoice value:", value);
                   if (value !== "supplier-group" && value !== "other-group") {
+                    console.log("Value: ", value);
                     setSelectedInvoice(value);
-                    const invoice = invoices.find((inv: any) => inv.invoice_uuid === value);
+                    const invoice = invoices.find(
+                      (inv: any) => inv.invoice_uuid === value,
+                    );
                     console.log("Found invoice:", invoice);
                   }
                 }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select an invoice">
-                    {selectedInvoice ? invoices.find((inv: any) => inv.invoice_uuid === selectedInvoice)?.invoice_number : undefined}
+                    {selectedInvoice
+                      ? invoices.find(
+                          (inv: any) => inv.invoice_uuid === selectedInvoice,
+                        )?.invoice_number
+                      : undefined}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
@@ -236,16 +248,21 @@ export default function ReceiveOrderModal({
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a delivery note">
-                    {selectedDeliveryNote ? invoices.find((inv: any) => inv.invoice_uuid === selectedDeliveryNote)?.invoice_number : "Select a delivery note"}
+                    {selectedDeliveryNote
+                      ? invoices.find(
+                          (inv: any) =>
+                            inv.invoice_uuid === selectedDeliveryNote,
+                        )?.invoice_number
+                      : "Select a delivery note"}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                {[].map((note: any) => (
-                  <SelectItem key={note.id} value={note.id}>
-                    {note.number}
-                  </SelectItem>
-                ))}
-              </SelectContent>
+                  {[].map((note: any) => (
+                    <SelectItem key={note.id} value={note.id}>
+                      {note.number}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
             </div>
           </div>
@@ -262,170 +279,188 @@ export default function ReceiveOrderModal({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {(mergedItems.length > 0 ? mergedItems : order.items)?.map((item) => 
-                item.isNewRow ? (
-                  // New row with all inputs
-                  <TableRow key={item.ingredient_uuid || 'new'}>
-                    <TableCell>
-                      <CreatableSelect
-                        value={item.ingredient_uuid ? {
-                          value: item.ingredient_uuid,
-                          label: item.ingredient_name
-                        } : null}
-                        onChange={(option) => {
-                          // Handle ingredient selection
-                        }}
-                        options={[
-                          {
-                            label: "Associated Ingredients",
-                            options: Object.values(ingredients)
-                              .filter((ing: any) => 
-                                ing.ingredient_suppliers?.some(
-                                  (s: any) => s.supplier?.supplier_uuid === order?.supplier?.supplier_uuid
+              {(mergedItems.length > 0 ? mergedItems : order.items)?.map(
+                (item) =>
+                  item.isNewRow ? (
+                    // New row with all inputs
+                    <TableRow key={item.ingredient_uuid || "new"}>
+                      <TableCell>
+                        <CreatableSelect
+                          value={
+                            item.ingredient_uuid
+                              ? {
+                                  value: item.ingredient_uuid,
+                                  label: item.ingredient_name,
+                                }
+                              : null
+                          }
+                          onChange={(option) => {
+                            // Handle ingredient selection
+                          }}
+                          options={[
+                            {
+                              label: "Associated Ingredients",
+                              options: Object.values(ingredients)
+                                .filter((ing: any) =>
+                                  ing.ingredient_suppliers?.some(
+                                    (s: any) =>
+                                      s.supplier?.supplier_uuid ===
+                                      order?.supplier?.supplier_uuid,
+                                  ),
                                 )
-                              )
-                              .map((ing: any) => ({
-                                label: ing.ingredient_name,
-                                value: ing.ingredient_uuid,
-                              }))
-                          },
-                          {
-                            label: "Other Ingredients",
-                            options: Object.values(ingredients)
-                              .filter((ing: any) => 
-                                !ing.ingredient_suppliers?.some(
-                                  (s: any) => s.supplier?.supplier_uuid === order?.supplier?.supplier_uuid
+                                .map((ing: any) => ({
+                                  label: ing.ingredient_name,
+                                  value: ing.ingredient_uuid,
+                                })),
+                            },
+                            {
+                              label: "Other Ingredients",
+                              options: Object.values(ingredients)
+                                .filter(
+                                  (ing: any) =>
+                                    !ing.ingredient_suppliers?.some(
+                                      (s: any) =>
+                                        s.supplier?.supplier_uuid ===
+                                        order?.supplier?.supplier_uuid,
+                                    ),
                                 )
-                              )
-                              .map((ing: any) => ({
-                                label: ing.ingredient_name,
-                                value: ing.ingredient_uuid,
-                              }))
+                                .map((ing: any) => ({
+                                  label: ing.ingredient_name,
+                                  value: ing.ingredient_uuid,
+                                })),
+                            },
+                          ]}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          type="number"
+                          value={item.quantity}
+                          onChange={(e) => {
+                            // Handle quantity change
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          type="number"
+                          value={
+                            receivedQuantities[item.ingredient_uuid || ""] || 0
                           }
-                        ]}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) => {
-                          // Handle quantity change
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        value={
-                          receivedQuantities[item.ingredient_uuid || ""] || 0
-                        }
-                        onChange={(e) => {
-                          if (item.ingredient_uuid) {
-                            setReceivedQuantities({
-                              ...receivedQuantities,
-                              [item.ingredient_uuid]:
-                                parseFloat(e.target.value) || 0,
-                            });
-                          }
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <CreatableSelect
-                        value={item.unit?.unit_name ? {
-                          value: item.unit.unit_uuid,
-                          label: item.unit.unit_name
-                        } : null}
-                        onChange={(option) => {
-                          if (option) {
-                            if (order.items) {
-                              const updatedItems = [...order.items];
-                              updatedItems[order.items.indexOf(item)].unit = {
-                                unit_uuid: option.value,
-                                unit_name: option.label
-                              };
-                              order.items = updatedItems;
-                              setReceivedQuantities({...receivedQuantities});
+                          onChange={(e) => {
+                            if (item.ingredient_uuid) {
+                              setReceivedQuantities({
+                                ...receivedQuantities,
+                                [item.ingredient_uuid]:
+                                  parseFloat(e.target.value) || 0,
+                              });
                             }
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <CreatableSelect
+                          value={
+                            item.unit?.unit_name
+                              ? {
+                                  value: item.unit.unit_uuid,
+                                  label: item.unit.unit_name,
+                                }
+                              : null
                           }
-                        }}
-                        onCreateOption={async (value) => {
-                          try {
-                            if (!currentRestaurant?.restaurant_uuid) return;
-                            const newUnit = await unitService.createUnit(
-                              { unit_name: value },
-                              currentRestaurant.restaurant_uuid
-                            );
-                            if (order.items) {
-                              const updatedItems = [...order.items];
-                              updatedItems[order.items.indexOf(item)].unit = {
-                                unit_uuid: newUnit.unit_uuid,
-                                unit_name: newUnit.unit_name
-                              };
-                              order.items = updatedItems;
-                              setReceivedQuantities({...receivedQuantities});
+                          onChange={(option) => {
+                            if (option) {
+                              if (order.items) {
+                                const updatedItems = [...order.items];
+                                updatedItems[order.items.indexOf(item)].unit = {
+                                  unit_uuid: option.value,
+                                  unit_name: option.label,
+                                };
+                                order.items = updatedItems;
+                                setReceivedQuantities({
+                                  ...receivedQuantities,
+                                });
+                              }
                             }
-                          } catch (error) {
-                            console.error("Failed to create unit:", error);
+                          }}
+                          onCreateOption={async (value) => {
+                            try {
+                              if (!currentRestaurant?.restaurant_uuid) return;
+                              const newUnit = await unitService.createUnit(
+                                { unit_name: value },
+                                currentRestaurant.restaurant_uuid,
+                              );
+                              if (order.items) {
+                                const updatedItems = [...order.items];
+                                updatedItems[order.items.indexOf(item)].unit = {
+                                  unit_uuid: newUnit.unit_uuid,
+                                  unit_name: newUnit.unit_name,
+                                };
+                                order.items = updatedItems;
+                                setReceivedQuantities({
+                                  ...receivedQuantities,
+                                });
+                              }
+                            } catch (error) {
+                              console.error("Failed to create unit:", error);
+                            }
+                          }}
+                          options={units.map((unit: any) => ({
+                            label: unit.unit_name,
+                            value: unit.unit_uuid,
+                          }))}
+                          placeholder="Select unit"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            if (order.items) {
+                              const index = order.items.indexOf(item);
+                              order.items.splice(index, 1);
+                              setReceivedQuantities({ ...receivedQuantities });
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    // Existing row with spans except received quantity
+                    <TableRow key={item.ingredient_uuid}>
+                      <TableCell>{item.ingredient_name}</TableCell>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell>{item.invoice_quantity || "-"}</TableCell>
+                      <TableCell>
+                        <Input
+                          type="number"
+                          value={
+                            receivedQuantities[item.ingredient_uuid || ""] || 0
                           }
-                        }}
-                        options={units.map((unit: any) => ({
-                          label: unit.unit_name,
-                          value: unit.unit_uuid,
-                        }))}
-                        placeholder="Select unit"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        onClick={() => {
-                          if (order.items) {
-                            const index = order.items.indexOf(item);
-                            order.items.splice(index, 1);
-                            setReceivedQuantities({...receivedQuantities});
-                          }
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  // Existing row with spans except received quantity
-                  <TableRow key={item.ingredient_uuid}>
-                    <TableCell>{item.ingredient_name}</TableCell>
-                    <TableCell>{item.quantity}</TableCell>
-                    <TableCell>{item.invoice_quantity || '-'}</TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        value={
-                          receivedQuantities[item.ingredient_uuid || ""] || 0
-                        }
-                        onChange={(e) => {
-                          if (item.ingredient_uuid) {
-                            setReceivedQuantities({
-                              ...receivedQuantities,
-                              [item.ingredient_uuid]:
-                                parseFloat(e.target.value) || 0,
-                            });
-                          }
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>{item.unit?.unit_name}</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                )
+                          onChange={(e) => {
+                            if (item.ingredient_uuid) {
+                              setReceivedQuantities({
+                                ...receivedQuantities,
+                                [item.ingredient_uuid]:
+                                  parseFloat(e.target.value) || 0,
+                              });
+                            }
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>{item.unit?.unit_name}</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  ),
               )}
             </TableBody>
           </Table>
-          <Button 
+          <Button
             type="button"
-            variant="outline" 
+            variant="outline"
             size="sm"
             className="mt-4"
             onClick={() => {
@@ -435,10 +470,10 @@ export default function ReceiveOrderModal({
                   ingredient_name: "",
                   quantity: 0,
                   unit: { unit_name: "", unit_uuid: "" },
-                  isNewRow: true
+                  isNewRow: true,
                 });
                 // Force re-render
-                setReceivedQuantities({...receivedQuantities});
+                setReceivedQuantities({ ...receivedQuantities });
               }
             }}
           >
@@ -451,11 +486,15 @@ export default function ReceiveOrderModal({
             <div className="flex justify-between">
               <div>
                 <span className="text-sm text-gray-500">Order Total:</span>
-                <span className="ml-2 font-semibold">${order.amount?.toFixed(2) || '0.00'}</span>
+                <span className="ml-2 font-semibold">
+                  ${order.amount?.toFixed(2) || "0.00"}
+                </span>
               </div>
               <div>
                 <span className="text-sm text-gray-500">Invoice Total:</span>
-                <span className="ml-2 font-semibold">${selectedInvoiceData.amount?.toFixed(2) || '0.00'}</span>
+                <span className="ml-2 font-semibold">
+                  ${selectedInvoiceData.amount?.toFixed(2) || "0.00"}
+                </span>
               </div>
             </div>
           </div>
