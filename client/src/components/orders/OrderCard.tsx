@@ -79,10 +79,11 @@ export default function OrderCard({
         </p>
         <div className="flex gap-2">
           {order.status === "pending" && (
-            <Button size="sm" onClick={() => setShowReceiveModal(true)}>
-              Receive Stock
-            </Button>
-            <ReceiveOrderModal 
+            <>
+              <Button size="sm" onClick={() => setShowReceiveModal(true)}>
+                Receive Stock
+              </Button>
+              <ReceiveOrderModal 
               open={showReceiveModal}
               onOpenChange={setShowReceiveModal}
               order={order}
@@ -92,6 +93,7 @@ export default function OrderCard({
                 setShowReceiveModal(false);
               }}
             />
+            </>
           )}
           {order.status === "draft" && (
             <>
