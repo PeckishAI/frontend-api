@@ -83,44 +83,43 @@ export default function ReceiveOrderModal({
       console.log("Invoice data received:", invoiceData);
       setSelectedInvoiceData(invoiceData);
 
-      // Merge invoice items + existing order items
       const orderItems = order?.items || [];
       const invoiceItems = invoiceData.ingredients || [];
+      const currentItems = mergedItems.length > 0 ? mergedItems : orderItems;
 
-      // Map for quick lookups of order items
-      const orderItemsMap = new Map(
-        orderItems.map((item) => [item.ingredient_uuid, item]),
+      // Create maps for quick lookups
+      const currentItemsMap = new Map(
+        currentItems.map(item => [item.ingredient_uuid, item])
       );
 
-      // 1. Combine all invoice items with any matching order items
-      const newItems = invoiceItems.map((invItem) => {
-        const existingOrderItem = orderItemsMap.get(invItem.ingredient_uuid);
-
-        return {
-          // existing order fields
-          ...(existingOrderItem || {}),
-          // override with invoice data
-          ingredient_uuid: invItem.ingredient_uuid,
-          ingredient_name: invItem.ingredient_name,
-          quantity: existingOrderItem?.quantity || 0,
-          invoice_quantity: invItem.quantity,
-          unit: invItem.unit || existingOrderItem?.unit,
-          isNewRow: false,
-        };
+      // Update existing items and add new ones
+      const updatedItems = currentItems.map(item => {
+        const invoiceItem = invoiceItems.find(inv => inv.ingredient_uuid === item.ingredient_uuid);
+        if (invoiceItem) {
+          return {
+            ...item,
+            invoice_quantity: invoiceItem.quantity,
+            unit: invoiceItem.unit || item.unit,
+          };
+        }
+        return item;
       });
 
-      // 2. Add any order items that aren't in the invoice
-      for (const item of orderItems) {
-        const alreadyInNewItems = newItems.some(
-          (row) => row.ingredient_uuid === item.ingredient_uuid,
-        );
-        if (!alreadyInNewItems) {
-          newItems.push(item);
-        }
-      }
+      // Add new items from invoice that don't exist in current items
+      const newInvoiceItems = invoiceItems
+        .filter(invItem => !currentItemsMap.has(invItem.ingredient_uuid))
+        .map(invItem => ({
+          ingredient_uuid: invItem.ingredient_uuid,
+          ingredient_name: invItem.ingredient_name,
+          quantity: 0,
+          invoice_quantity: invItem.quantity,
+          unit: invItem.unit,
+          isNewRow: false,
+        }));
 
-      console.log("Final merged items:", newItems);
-      setMergedItems(newItems);
+      const finalItems = [...updatedItems, ...newInvoiceItems];
+      console.log("Final merged items:", finalItems);
+      setMergedItems(finalItems);
     },
   });
 
