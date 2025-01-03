@@ -46,6 +46,47 @@ export default function ReceiveOrderModal({
   onConfirm,
 }: ReceiveOrderModalProps) {
   const [selectedInvoice, setSelectedInvoice] = useState<string>("");
+  const [selectedInvoiceData, setSelectedInvoiceData] = useState<any>(null);
+  const [mergedItems, setMergedItems] = useState<any[]>([]);
+
+  const { data: selectedInvoiceDetails } = useQuery({
+    queryKey: ["invoice", currentRestaurant?.restaurant_uuid, selectedInvoice],
+    queryFn: async () => {
+      if (!currentRestaurant?.restaurant_uuid || !selectedInvoice) return null;
+      return documentService.getInvoice(currentRestaurant.restaurant_uuid, selectedInvoice);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid && !!selectedInvoice,
+    onSuccess: (data) => {
+      if (!data) return;
+      
+      // Update merged items when invoice is selected
+      const newItems = [...(order?.items || [])];
+      
+      // Match existing items with invoice quantities
+      data.ingredients?.forEach((invoiceItem: any) => {
+        const existingItemIndex = newItems.findIndex(item => 
+          item.ingredient_uuid === invoiceItem.ingredient_uuid
+        );
+        
+        if (existingItemIndex >= 0) {
+          newItems[existingItemIndex].invoice_quantity = invoiceItem.quantity;
+        } else {
+          // Add new items from invoice
+          newItems.push({
+            ingredient_uuid: invoiceItem.ingredient_uuid,
+            ingredient_name: invoiceItem.ingredient_name,
+            quantity: 0,
+            invoice_quantity: invoiceItem.quantity,
+            unit: invoiceItem.unit,
+            isNewRow: false
+          });
+        }
+      });
+      
+      setMergedItems(newItems);
+      setSelectedInvoiceData(data);
+    }
+  });
   const [receivedQuantities, setReceivedQuantities] = useState<
     Record<string, number>
   >({});
@@ -229,13 +270,14 @@ export default function ReceiveOrderModal({
               <TableRow>
                 <TableHead>Item</TableHead>
                 <TableHead>Ordered Quantity</TableHead>
+                <TableHead>Invoice Quantity</TableHead>
                 <TableHead>Received Quantity</TableHead>
                 <TableHead>Unit</TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {order.items?.map((item) => 
+              {(mergedItems.length > 0 ? mergedItems : order.items)?.map((item) => 
                 item.isNewRow ? (
                   // New row with all inputs
                   <TableRow key={item.ingredient_uuid || 'new'}>
@@ -371,6 +413,7 @@ export default function ReceiveOrderModal({
                   <TableRow key={item.ingredient_uuid}>
                     <TableCell>{item.ingredient_name}</TableCell>
                     <TableCell>{item.quantity}</TableCell>
+                    <TableCell>{item.invoice_quantity || '-'}</TableCell>
                     <TableCell>
                       <Input
                         type="number"
@@ -417,6 +460,21 @@ export default function ReceiveOrderModal({
             Add Row
           </Button>
         </div>
+
+        {selectedInvoiceData && (
+          <div className="mt-4 pt-4 border-t">
+            <div className="flex justify-between">
+              <div>
+                <span className="text-sm text-gray-500">Order Total:</span>
+                <span className="ml-2 font-semibold">${order.amount?.toFixed(2) || '0.00'}</span>
+              </div>
+              <div>
+                <span className="text-sm text-gray-500">Invoice Total:</span>
+                <span className="ml-2 font-semibold">${selectedInvoiceData.amount?.toFixed(2) || '0.00'}</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
