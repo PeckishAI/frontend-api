@@ -73,10 +73,17 @@ export default function ReceiveOrderModal({
         orderItems.map((item) => [item.ingredient_uuid, item]),
       );
 
+      console.log("Order items before merge:", orderItems);
+      console.log("Invoice items before merge:", invoiceItems);
+      console.log("Order items map:", orderItemsMap);
+
       // Merge invoice items with order items
       const newItems = invoiceItems.map((invoiceItem) => {
         const orderItem = orderItemsMap.get(invoiceItem.ingredient_uuid);
-        return {
+        console.log("Processing invoice item:", invoiceItem);
+        console.log("Found matching order item:", orderItem);
+        
+        const mergedItem = {
           ...orderItem,
           ingredient_uuid: invoiceItem.ingredient_uuid,
           ingredient_name: invoiceItem.ingredient_name,
@@ -85,9 +92,11 @@ export default function ReceiveOrderModal({
           unit: invoiceItem.unit,
           isNewRow: false,
         };
+        console.log("Created merged item:", mergedItem);
+        return mergedItem;
       });
 
-      console.log("Merged items:", newItems);
+      console.log("Final merged items:", newItems);
       setMergedItems(newItems);
       setSelectedInvoiceData(data);
     },
@@ -180,12 +189,15 @@ export default function ReceiveOrderModal({
               <Select
                 value={selectedInvoice}
                 onValueChange={(value) => {
+                  console.log("Selected invoice value:", value);
                   if (value && value !== "supplier-group" && value !== "other-group") {
                     setSelectedInvoice(value);
                     const invoice = invoices.find(
                       (inv: any) => inv.invoice_uuid === value,
                     );
                     console.log("Found invoice:", invoice);
+                    console.log("Invoice number:", invoice?.invoice_number);
+                    console.log("All available invoices:", invoices);
                   }
                 }}
               >
