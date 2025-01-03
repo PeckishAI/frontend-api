@@ -305,18 +305,50 @@ export default function ReceiveOrderModal({
                       />
                     </TableCell>
                     <TableCell>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder={item.unit?.unit_name || "Select unit"} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {units.map((unit: any) => (
-                            <SelectItem key={unit.unit_uuid} value={unit.unit_uuid}>
-                              {unit.unit_name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <CreatableSelect
+                        value={item.unit?.unit_name ? {
+                          value: item.unit.unit_uuid,
+                          label: item.unit.unit_name
+                        } : null}
+                        onChange={(option) => {
+                          if (option) {
+                            if (order.items) {
+                              const updatedItems = [...order.items];
+                              updatedItems[order.items.indexOf(item)].unit = {
+                                unit_uuid: option.value,
+                                unit_name: option.label
+                              };
+                              order.items = updatedItems;
+                              setReceivedQuantities({...receivedQuantities});
+                            }
+                          }
+                        }}
+                        onCreateOption={async (value) => {
+                          try {
+                            if (!currentRestaurant?.restaurant_uuid) return;
+                            const newUnit = await unitService.createUnit(
+                              { unit_name: value },
+                              currentRestaurant.restaurant_uuid
+                            );
+                            if (order.items) {
+                              const updatedItems = [...order.items];
+                              updatedItems[order.items.indexOf(item)].unit = {
+                                unit_uuid: newUnit.unit_uuid,
+                                unit_name: newUnit.unit_name
+                              };
+                              order.items = updatedItems;
+                              setReceivedQuantities({...receivedQuantities});
+                            }
+                          } catch (error) {
+                            console.error("Failed to create unit:", error);
+                          }
+                        }}
+                        options={units.map((unit: any) => ({
+                          label: unit.unit_name,
+                          value: unit.unit_uuid,
+                        }))}
+                        placeholder="Select unit"
+                      />
                     </TableCell>
                     <TableCell>
                       <Button 
