@@ -17,14 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CreatableSelect } from "@/components/ui/creatable-select";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { BasicSelect } from "@/components/ui/basic-select";
 import { type Order } from "@/types/order";
 import { useQuery } from "@tanstack/react-query";
 import { documentService } from "@/services/documentService";
@@ -216,55 +209,31 @@ export default function ReceiveOrderModal({
               <label className="text-sm text-gray-500 mb-2 block">
                 Match Invoice
               </label>
-              <Select
-                value={selectedInvoice}
-                onValueChange={(value) => setSelectedInvoice(value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select an invoice">
-                    {selectedInvoice
-                      ? invoices.find(
-                          (inv: any) => inv.invoice_uuid === selectedInvoice,
-                        )?.invoice_number
-                      : "Select an invoice"}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {/* Supplier invoices group */}
-                  {supplierInvoices.length > 0 && (
-                    <SelectGroup>
-                      {/* must not have value="" on disabled item */}
-                      <SelectItem value="supplier-invoices" disabled>
-                        {order?.supplier?.supplier_name || "Supplier Invoices"}
-                      </SelectItem>
-                      {supplierInvoices.map((inv: any) => (
-                        <SelectItem
-                          key={inv.invoice_uuid}
-                          value={inv.invoice_uuid}
-                        >
-                          {inv.invoice_number}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  )}
-                  {/* Other invoices group */}
-                  {otherInvoices.length > 0 && (
-                    <SelectGroup>
-                      <SelectItem value="other-invoices" disabled>
-                        Other Suppliers
-                      </SelectItem>
-                      {otherInvoices.map((inv: any) => (
-                        <SelectItem
-                          key={inv.invoice_uuid}
-                          value={inv.invoice_uuid}
-                        >
-                          {inv.invoice_number}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  )}
-                </SelectContent>
-              </Select>
+              <BasicSelect
+                value={selectedInvoice ? {
+                  value: selectedInvoice,
+                  label: invoices.find((inv: any) => inv.invoice_uuid === selectedInvoice)?.invoice_number || ''
+                } : null}
+                onChange={(option) => setSelectedInvoice(option?.value || '')}
+                options={[
+                  {
+                    label: order?.supplier?.supplier_name || "Supplier Invoices",
+                    options: supplierInvoices.map((inv: any) => ({
+                      value: inv.invoice_uuid,
+                      label: inv.invoice_number
+                    }))
+                  },
+                  {
+                    label: "Other Suppliers",
+                    options: otherInvoices.map((inv: any) => ({
+                      value: inv.invoice_uuid,
+                      label: inv.invoice_number
+                    }))
+                  }
+                ]}
+                placeholder="Select an invoice"
+                size="large"
+              />
             </div>
 
             {/* Delivery Note Select (stubbed for now) */}
@@ -272,23 +241,19 @@ export default function ReceiveOrderModal({
               <label className="text-sm text-gray-500 mb-2 block">
                 Match Delivery Note
               </label>
-              <Select
-                value={selectedDeliveryNote}
-                onValueChange={(value) => setSelectedDeliveryNote(value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a delivery note">
-                    {selectedDeliveryNote
-                      ? `Delivery Note #${selectedDeliveryNote}`
-                      : "Select a delivery note"}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {/* Example placeholder notes */}
-                  <SelectItem value="DN-1234">DN-1234</SelectItem>
-                  <SelectItem value="DN-5678">DN-5678</SelectItem>
-                </SelectContent>
-              </Select>
+              <BasicSelect
+                value={selectedDeliveryNote ? {
+                  value: selectedDeliveryNote,
+                  label: `Delivery Note #${selectedDeliveryNote}`
+                } : null}
+                onChange={(option) => setSelectedDeliveryNote(option?.value || '')}
+                options={[
+                  { value: 'DN-1234', label: 'DN-1234' },
+                  { value: 'DN-5678', label: 'DN-5678' }
+                ]}
+                placeholder="Select a delivery note"
+                size="large"
+              />
             </div>
           </div>
 
