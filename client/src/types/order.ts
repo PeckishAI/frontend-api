@@ -29,8 +29,8 @@ export interface Order {
   order_number?: string;
   supplier?: Supplier;
   status?: OrderStatus;
-  date?: string;
-  delivery_date?: string;
+  date?: string | null;
+  delivery_date?: string | null;
   placed_by?: string;
   items?: OrderItem[];
   amount?: number;
