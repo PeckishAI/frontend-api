@@ -45,6 +45,7 @@ export default function ReceiveOrderModal({
   order,
   onConfirm,
 }: ReceiveOrderModalProps) {
+  const { currentRestaurant } = useRestaurantContext();
   const [selectedInvoice, setSelectedInvoice] = useState<string>("");
   const [selectedInvoiceData, setSelectedInvoiceData] = useState<any>(null);
   const [mergedItems, setMergedItems] = useState<any[]>([]);
@@ -90,7 +91,6 @@ export default function ReceiveOrderModal({
   const [receivedQuantities, setReceivedQuantities] = useState<
     Record<string, number>
   >({});
-  const { currentRestaurant } = useRestaurantContext();
 
   const { data: ingredients = [] } = useQuery({
     queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
