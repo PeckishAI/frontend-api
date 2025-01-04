@@ -78,12 +78,19 @@ export default function ReceiveOrderModal({
     },
     enabled: !!currentRestaurant?.restaurant_uuid && !!selectedInvoice,
     onSuccess: (invoiceData) => {
-      if (!invoiceData) return;
+      if (!invoiceData) {
+        console.log("No invoice data received");
+        return;
+      }
 
+      console.log("Invoice data received:", invoiceData);
       setSelectedInvoiceData(invoiceData);
 
       const orderItems = order?.items || [];
       const invoiceItems = invoiceData.ingredients || [];
+
+      console.log("Order items:", orderItems);
+      console.log("Invoice items:", invoiceItems);
 
       // Create a map of existing items for quick lookup
       const orderItemsMap = new Map(
@@ -120,6 +127,7 @@ export default function ReceiveOrderModal({
       );
 
       const finalItems = [...processedItems, ...remainingOrderItems];
+      console.log("Final merged items:", finalItems);
       setMergedItems(finalItems);
     },
   });
