@@ -80,49 +80,46 @@ export default function ReceiveOrderModal({
     onSuccess: (invoiceData) => {
       if (!invoiceData) return;
 
-      console.log("Invoice data received:", invoiceData);
       setSelectedInvoiceData(invoiceData);
 
-      console.log("Order: ", order);
-      console.log("Invoice: ", invoiceData);
       const orderItems = order?.items || [];
       const invoiceItems = invoiceData.ingredients || [];
-      const currentItems = mergedItems.length > 0 ? mergedItems : orderItems;
 
-      // Create maps for quick lookups
-      const currentItemsMap = new Map(
-        currentItems.map((item) => [item.ingredient_uuid, item]),
+      // Create a map of existing items for quick lookup
+      const orderItemsMap = new Map(
+        orderItems.map((item) => [item.ingredient_uuid, item])
       );
 
-      // Update existing items and add new ones
-      const updatedItems = currentItems.map((item) => {
-        const invoiceItem = invoiceItems.find(
-          (inv) => inv.ingredient_uuid === item.ingredient_uuid,
-        );
-        if (invoiceItem) {
+      // Process each invoice item
+      const processedItems = invoiceItems.map((invoiceItem) => {
+        const existingItem = orderItemsMap.get(invoiceItem.ingredient_uuid);
+        
+        if (existingItem) {
+          // Update existing item with invoice data
           return {
-            ...item,
+            ...existingItem,
             invoice_quantity: invoiceItem.quantity,
-            unit: invoiceItem.unit || item.unit,
+            unit: invoiceItem.unit || existingItem.unit,
+          };
+        } else {
+          // Add new item from invoice
+          return {
+            ingredient_uuid: invoiceItem.ingredient_uuid,
+            ingredient_name: invoiceItem.ingredient_name,
+            quantity: 0,
+            invoice_quantity: invoiceItem.quantity,
+            unit: invoiceItem.unit,
+            isNewRow: false,
           };
         }
-        return item;
       });
 
-      // Add new items from invoice that don't exist in current items
-      const newInvoiceItems = invoiceItems
-        .filter((invItem) => !currentItemsMap.has(invItem.ingredient_uuid))
-        .map((invItem) => ({
-          ingredient_uuid: invItem.ingredient_uuid,
-          ingredient_name: invItem.ingredient_name,
-          quantity: 0,
-          invoice_quantity: invItem.quantity,
-          unit: invItem.unit,
-          isNewRow: false,
-        }));
+      // Add any remaining order items that weren't in the invoice
+      const remainingOrderItems = orderItems.filter(
+        item => !invoiceItems.some(invItem => invItem.ingredient_uuid === item.ingredient_uuid)
+      );
 
-      const finalItems = [...updatedItems, ...newInvoiceItems];
-      console.log("Final merged items:", finalItems);
+      const finalItems = [...processedItems, ...remainingOrderItems];
       setMergedItems(finalItems);
     },
   });
