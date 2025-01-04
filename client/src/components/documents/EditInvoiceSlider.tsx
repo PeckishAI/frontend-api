@@ -287,8 +287,8 @@ export function EditInvoiceSlider({
                     onClick={() =>
                       setActiveImageIndex(
                         (prev) =>
-                          (prev - 1 + invoice.images.length) %
-                          invoice.images.length,
+                          (prev - 1 + invoice.documents.length) %
+                          invoice.documents.length,
                       )
                     }
                   >
@@ -300,7 +300,7 @@ export function EditInvoiceSlider({
                     className="absolute right-2 top-1/2 -translate-y-1/2"
                     onClick={() =>
                       setActiveImageIndex(
-                        (prev) => (prev + 1) % invoice.images.length,
+                        (prev) => (prev + 1) % invoice.documents.length,
                       )
                     }
                   >
