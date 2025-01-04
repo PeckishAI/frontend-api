@@ -87,11 +87,13 @@ export default function ReceiveOrderModal({
       setSelectedInvoiceData(invoiceData);
 
       const orderItems = order?.items || [];
-      const invoiceItems = Array.isArray(invoiceData.ingredients) ? invoiceData.ingredients : [];
+      const invoiceItems = Array.isArray(invoiceData.ingredients)
+        ? invoiceData.ingredients
+        : [];
 
       console.log("Processing order items:", orderItems);
       console.log("Processing invoice items:", invoiceItems);
-      
+
       if (invoiceItems.length === 0) {
         console.warn("No ingredients found in invoice data");
         return;
@@ -99,13 +101,13 @@ export default function ReceiveOrderModal({
 
       // Create a map of existing items for quick lookup
       const orderItemsMap = new Map(
-        orderItems.map((item) => [item.ingredient_uuid, item])
+        orderItems.map((item) => [item.ingredient_uuid, item]),
       );
 
       // Process each invoice item
       const processedItems = invoiceItems.map((invoiceItem) => {
         const existingItem = orderItemsMap.get(invoiceItem.ingredient_uuid);
-        
+
         if (existingItem) {
           // Update existing item with invoice data
           return {
@@ -128,7 +130,10 @@ export default function ReceiveOrderModal({
 
       // Add any remaining order items that weren't in the invoice
       const remainingOrderItems = orderItems.filter(
-        item => !invoiceItems.some(invItem => invItem.ingredient_uuid === item.ingredient_uuid)
+        (item) =>
+          !invoiceItems.some(
+            (invItem) => invItem.ingredient_uuid === item.ingredient_uuid,
+          ),
       );
 
       const finalItems = [...processedItems, ...remainingOrderItems];
@@ -243,43 +248,51 @@ export default function ReceiveOrderModal({
                   }
 
                   setSelectedInvoice(option.value);
-                  const invoice = invoices.find(inv => inv.document_uuid === option.value);
+                  const invoice = invoices.find(
+                    (inv) => inv.document_uuid === option.value,
+                  );
                   if (!invoice?.ingredients || !order?.items) return;
 
                   // Create a map of order items for quick lookup
                   const orderItemsMap = new Map(
-                    order.items.map(item => [item.ingredient_uuid, item])
+                    order.items.map((item) => [item.ingredient_uuid, item]),
                   );
 
                   // Process invoice ingredients
-                  const processedItems = invoice.ingredients.map(invoiceItem => {
-                    const orderItem = orderItemsMap.get(invoiceItem.ingredient_uuid);
-                    
-                    if (orderItem) {
-                      // If item exists in both order and invoice
-                      return {
-                        ...orderItem,
-                        invoice_quantity: invoiceItem.quantity,
-                        unit: invoiceItem.unit || orderItem.unit
-                      };
-                    } else {
-                      // If item only exists in invoice
-                      return {
-                        ingredient_uuid: invoiceItem.ingredient_uuid,
-                        ingredient_name: invoiceItem.ingredient_name,
-                        quantity: 0,
-                        invoice_quantity: invoiceItem.quantity,
-                        unit: invoiceItem.unit,
-                        isNewRow: false
-                      };
-                    }
-                  });
+                  const processedItems = invoice.ingredients.map(
+                    (invoiceItem) => {
+                      const orderItem = orderItemsMap.get(
+                        invoiceItem.ingredient_uuid,
+                      );
+
+                      if (orderItem) {
+                        // If item exists in both order and invoice
+                        return {
+                          ...orderItem,
+                          invoice_quantity: invoiceItem.quantity,
+                          unit: invoiceItem.unit || orderItem.unit,
+                        };
+                      } else {
+                        // If item only exists in invoice
+                        return {
+                          ingredient_uuid: invoiceItem.ingredient_uuid,
+                          ingredient_name: invoiceItem.ingredient_name,
+                          quantity: 0,
+                          invoice_quantity: invoiceItem.quantity,
+                          unit: invoiceItem.unit,
+                          isNewRow: false,
+                        };
+                      }
+                    },
+                  );
 
                   // Add remaining order items that aren't in the invoice
                   const remainingOrderItems = order.items.filter(
-                    orderItem => !invoice.ingredients.some(
-                      invItem => invItem.ingredient_uuid === orderItem.ingredient_uuid
-                    )
+                    (orderItem) =>
+                      !invoice.ingredients.some(
+                        (invItem) =>
+                          invItem.ingredient_uuid === orderItem.ingredient_uuid,
+                      ),
                   );
 
                   setMergedItems([...processedItems, ...remainingOrderItems]);
@@ -324,10 +337,7 @@ export default function ReceiveOrderModal({
                   console.log("Selected delivery note:", option);
                   setSelectedDeliveryNote(option?.value || "");
                 }}
-                options={[
-                  { value: "DN-1234", label: "DN-1234" },
-                  { value: "DN-5678", label: "DN-5678" },
-                ]}
+                options={[]}
                 placeholder="Select a delivery note"
                 size="large"
               />

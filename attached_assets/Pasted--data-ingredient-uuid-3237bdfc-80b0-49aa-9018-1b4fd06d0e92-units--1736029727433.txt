@@ -1,0 +1,96 @@
+{
+  "data": [
+    {
+      "ingredient_uuid": "3237bdfc-80b0-49aa-9018-1b4fd06d0e92",
+      "units": [
+        {
+          "unit_name": "g",
+          "unit_uuid": "4c980834-8679-41d8-80dd-6d89e0c1dd51"
+        }
+      ]
+    },
+    {
+      "ingredient_uuid": "4526c484-877c-44ff-9109-e4547595d472",
+      "units": [
+        {
+          "unit_name": "kg",
+          "unit_uuid": "a45c2954-b883-4825-8d73-86d6ab80c0ea"
+        }
+      ]
+    },
+    {
+      "ingredient_uuid": "53deeaea-fb4d-4001-86ec-f33f877d6f0d",
+      "units": [
+        {
+          "unit_name": "test",
+          "unit_uuid": "94f4bd2e-3ad0-4341-b7cd-59d81d356bce"
+        }
+      ]
+    },
+    {
+      "ingredient_uuid": "5af28f08-51be-42fe-bed3-7616369d8286",
+      "units": [
+        {
+          "unit_name": "g",
+          "unit_uuid": "4c980834-8679-41d8-80dd-6d89e0c1dd51"
+        }
+      ]
+    },
+    {
+      "ingredient_uuid": "5ce4c0ed-0383-4732-8c78-684ec5f92a27",
+      "units": [
+        {
+          "unit_name": "kg",
+          "unit_uuid": "ee219aa6-f1d0-4d7e-9839-3fbc23114342"
+        }
+      ]
+    },
+    {
+      "ingredient_uuid": "7b636173-9c72-4523-b5bd-15920c5cedc6",
+      "units": [
+        {
+          "unit_name": "each",
+          "unit_uuid": "e3c62f13-9f12-4f85-b84c-7d42ad6e3632"
+        }
+      ]
+    },
+    {
+      "ingredient_uuid": "7f05bbca-1408-46c0-be1d-f49128dacf50",
+      "units": [
+        {
+          "unit_name": "each",
+          "unit_uuid": "e3c62f13-9f12-4f85-b84c-7d42ad6e3632"
+        }
+      ]
+    },
+    {
+      "ingredient_uuid": "c1e66052-7598-4de3-873c-0295bebe3d0f",
+      "units": [
+        {
+          "unit_name": "g",
+          "unit_uuid": "4c980834-8679-41d8-80dd-6d89e0c1dd51"
+        }
+      ]
+    },
+    {
+      "ingredient_uuid": "cff515f2-2ad5-4e71-a941-7d0611693596",
+      "units": [
+        {
+          "unit_name": "g",
+          "unit_uuid": "4c980834-8679-41d8-80dd-6d89e0c1dd51"
+        }
+      ]
+    },
+    {
+      "ingredient_uuid": "dbd48536-d08f-4626-9f43-8c0c743bc3bc",
+      "units": [
+        {
+          "unit_name": "g",
+          "unit_uuid": "4c980834-8679-41d8-80dd-6d89e0c1dd51"
+        }
+      ]
+    }
+  ],
+  "message": "Success",
+  "success": true
+}
