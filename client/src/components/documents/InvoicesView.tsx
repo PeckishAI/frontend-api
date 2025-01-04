@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Images, Hash, DollarSign, Package2, User2 } from "lucide-react";
@@ -25,6 +24,8 @@ interface InvoicesViewProps {
 export default function InvoicesView({ viewMode }: InvoicesViewProps) {
   console.log("InvoicesView: Component initialization");
   const [selectedInvoice, setSelectedInvoice] = useState<Invoices | null>(null);
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const { currentRestaurant } = useRestaurantContext();
 
   console.log("Current restaurant context:", currentRestaurant);
@@ -64,6 +65,11 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
     console.error("InvoicesView: Error in query:", error);
   }
 
+  const handleSort = (column: string) => {
+    setSortColumn(column);
+    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+  };
+
   return (
     <>
       {viewMode === "cards" ? (
@@ -89,12 +95,24 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Images</TableHead>
-                <TableHead>Invoice Number</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Supplier</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-                <TableHead className="text-right">Ingredients</TableHead>
+                <TableHead>
+                  <button onClick={() => handleSort('documents')}>Images</button>
+                </TableHead>
+                <TableHead>
+                  <button onClick={() => handleSort('invoice_number')}>Invoice Number</button>
+                </TableHead>
+                <TableHead>
+                  <button onClick={() => handleSort('date')}>Date</button>
+                </TableHead>
+                <TableHead>
+                  <button onClick={() => handleSort('supplier_name')}>Supplier</button>
+                </TableHead>
+                <TableHead className="text-right">
+                  <button onClick={() => handleSort('amount')}>Amount</button>
+                </TableHead>
+                <TableHead className="text-right">
+                  <button onClick={() => handleSort('ingredients')}>Ingredients</button>
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -105,7 +123,50 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
                   </TableCell>
                 </TableRow>
               ) : invoices && invoices.length > 0 ? (
-                invoices.map((invoice) => (
+                [...invoices].sort((a, b) => {
+                  if (!sortColumn) return 0;
+                  
+                  let aValue = a[sortColumn];
+                  let bValue = b[sortColumn];
+                  
+                  if (sortColumn === 'documents') {
+                    aValue = a.documents ? 1 : 0;
+                    bValue = b.documents ? 1 : 0;
+                  }
+                  if (sortColumn === 'ingredients') {
+                    aValue = a.ingredients?.length || 0;
+                    bValue = b.ingredients?.length || 0;
+                  }
+                  
+                  if (sortColumn === 'date') {
+                    aValue = new Date(a.date || '').getTime();
+                    bValue = new Date(b.date || '').getTime();
+                  }
+                  
+                  if (sortColumn === 'supplier_name') {
+                    aValue = a.supplier?.supplier_name || '';
+                    bValue = b.supplier?.supplier_name || '';
+                  }
+
+                  if (sortColumn === 'amount') {
+                    aValue = a.amount || 0;
+                    bValue = b.amount || 0;
+                  }
+
+                  if (sortColumn === 'invoice_number') {
+                    aValue = a.invoice_number || '';
+                    bValue = b.invoice_number || '';
+                  }
+
+                  if (typeof aValue === 'string' && typeof bValue === 'string') {
+                    aValue = aValue.toLowerCase();
+                    bValue = bValue.toLowerCase();
+                  }
+
+                  if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+                  if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+                  return 0;
+                }).map((invoice) => (
                   <TableRow
                     key={invoice.invoice_uuid || `temp-${Math.random()}`}
                     className="cursor-pointer hover:bg-muted/50"
