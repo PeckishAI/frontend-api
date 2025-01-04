@@ -107,6 +107,8 @@ interface StocktakesViewProps {
 
 export default function StocktakesView({ viewMode }: StocktakesViewProps) {
   const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const { currentRestaurant } = useRestaurantContext();
 
   const { data: stocktakes = [], isLoading } = useQuery({
@@ -133,6 +135,50 @@ export default function StocktakesView({ viewMode }: StocktakesViewProps) {
       })),
   });
 
+  const handleSort = (column: string) => {
+    setSortColumn(column);
+    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+  };
+
+  const sortedStocktakes = [...(stocktakes || [])].sort((a, b) => {
+    if (!sortColumn) return 0;
+
+    let aValue, bValue;
+
+    switch (sortColumn) {
+      case 'id':
+        aValue = a.stocktake_uuid;
+        bValue = b.stocktake_uuid;
+        break;
+      case 'date':
+        aValue = new Date(a.created_at).getTime();
+        bValue = new Date(b.created_at).getTime();
+        break;
+      case 'user':
+        aValue = a.created_by.name;
+        bValue = b.created_by.name;
+        break;
+      case 'images':
+        aValue = a.documents.filter(d => d.document_type === 'image').length;
+        bValue = b.documents.filter(d => d.document_type === 'image').length;
+        break;
+      case 'videos':
+        aValue = a.documents.filter(d => d.document_type === 'video').length;
+        bValue = b.documents.filter(d => d.document_type === 'video').length;
+        break;
+      case 'total':
+        aValue = a.documents.length;
+        bValue = b.documents.length;
+        break;
+      default:
+        return 0;
+    }
+
+    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
+
   return (
     <>
       {viewMode === "cards" ? (
@@ -140,7 +186,7 @@ export default function StocktakesView({ viewMode }: StocktakesViewProps) {
           {isLoading ? (
             <div className="col-span-3 text-center py-8">Loading stocktakes...</div>
           ) : (
-            stocktakes.map((stocktake) => (
+            sortedStocktakes.map((stocktake) => (
               <div
                 key={stocktake.stocktake_uuid}
                 onClick={() => setSelectedStocktake(stocktake)}
@@ -156,12 +202,24 @@ export default function StocktakesView({ viewMode }: StocktakesViewProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>User</TableHead>
-                <TableHead>Images</TableHead>
-                <TableHead>Videos</TableHead>
-                <TableHead>Total Documents</TableHead>
+                <TableHead sortable sortKey="id" sortDirection={sortColumn === 'id' ? sortDirection : undefined} onSort={() => handleSort('id')}>
+                  ID
+                </TableHead>
+                <TableHead sortable sortKey="date" sortDirection={sortColumn === 'date' ? sortDirection : undefined} onSort={() => handleSort('date')}>
+                  Date
+                </TableHead>
+                <TableHead sortable sortKey="user" sortDirection={sortColumn === 'user' ? sortDirection : undefined} onSort={() => handleSort('user')}>
+                  User
+                </TableHead>
+                <TableHead sortable sortKey="images" sortDirection={sortColumn === 'images' ? sortDirection : undefined} onSort={() => handleSort('images')}>
+                  Images
+                </TableHead>
+                <TableHead sortable sortKey="videos" sortDirection={sortColumn === 'videos' ? sortDirection : undefined} onSort={() => handleSort('videos')}>
+                  Videos
+                </TableHead>
+                <TableHead sortable sortKey="total" sortDirection={sortColumn === 'total' ? sortDirection : undefined} onSort={() => handleSort('total')}>
+                  Total Documents
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -172,7 +230,7 @@ export default function StocktakesView({ viewMode }: StocktakesViewProps) {
                   </TableCell>
                 </TableRow>
               ) : (
-                stocktakes.map((stocktake) => (
+                sortedStocktakes.map((stocktake) => (
                   <TableRow
                     key={stocktake.stocktake_uuid}
                     className="cursor-pointer hover:bg-muted/50"
