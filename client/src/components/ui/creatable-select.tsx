@@ -27,8 +27,8 @@ const getSizeStyles = (size: "small" | "medium" | "large") => {
     case "small":
       return {
         height: "40px",
-        width: "100px",
-        fontSize: "0.75rem",
+        width: "120px",
+        fontSize: "0.875rem",
         padding: "0 8px",
       };
     case "medium":

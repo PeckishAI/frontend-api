@@ -448,8 +448,10 @@ export function EditInvoiceSlider({
                               <div className="relative z-50">
                                 <CreatableSelect
                                   value={{
-                                    value: invoice.supplier?.supplier_uuid || '',
-                                    label: invoice.supplier?.supplier_name || ''
+                                    value:
+                                      invoice.supplier?.supplier_uuid || "",
+                                    label:
+                                      invoice.supplier?.supplier_name || "",
                                   }}
                                   onChange={(option) => {
                                     if (option) {

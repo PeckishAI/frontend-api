@@ -101,6 +101,8 @@ export const unitService = {
     supplierUuid: string,
   ): Promise<any> {
     try {
+      console.log("Restaurant uuid: ", restaurantUuid);
+      console.log("Supplier uuid: ", supplierUuid);
       const response = await fetch(
         `${BASE_URL}/units/v2/restaurant/${restaurantUuid}/supplier/${supplierUuid}/ingredients`,
         {
@@ -114,6 +116,7 @@ export const unitService = {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      console.log("Response: ", response);
 
       const result = await response.json();
       if (!result.success) {
