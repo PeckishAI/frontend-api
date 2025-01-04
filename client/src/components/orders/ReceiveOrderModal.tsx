@@ -236,8 +236,53 @@ export default function ReceiveOrderModal({
                 }
                 onChange={(option) => {
                   console.log("Selected invoice:", option);
-                  console.log("Current order items:", order?.items);
-                  setSelectedInvoice(option?.value || "");
+                  if (!option?.value) {
+                    setSelectedInvoice("");
+                    setMergedItems([]);
+                    return;
+                  }
+
+                  setSelectedInvoice(option.value);
+                  const invoice = invoices.find(inv => inv.document_uuid === option.value);
+                  if (!invoice?.ingredients || !order?.items) return;
+
+                  // Create a map of order items for quick lookup
+                  const orderItemsMap = new Map(
+                    order.items.map(item => [item.ingredient_uuid, item])
+                  );
+
+                  // Process invoice ingredients
+                  const processedItems = invoice.ingredients.map(invoiceItem => {
+                    const orderItem = orderItemsMap.get(invoiceItem.ingredient_uuid);
+                    
+                    if (orderItem) {
+                      // If item exists in both order and invoice
+                      return {
+                        ...orderItem,
+                        invoice_quantity: invoiceItem.quantity,
+                        unit: invoiceItem.unit || orderItem.unit
+                      };
+                    } else {
+                      // If item only exists in invoice
+                      return {
+                        ingredient_uuid: invoiceItem.ingredient_uuid,
+                        ingredient_name: invoiceItem.ingredient_name,
+                        quantity: 0,
+                        invoice_quantity: invoiceItem.quantity,
+                        unit: invoiceItem.unit,
+                        isNewRow: false
+                      };
+                    }
+                  });
+
+                  // Add remaining order items that aren't in the invoice
+                  const remainingOrderItems = order.items.filter(
+                    orderItem => !invoice.ingredients.some(
+                      invItem => invItem.ingredient_uuid === orderItem.ingredient_uuid
+                    )
+                  );
+
+                  setMergedItems([...processedItems, ...remainingOrderItems]);
                 }}
                 options={[
                   {
