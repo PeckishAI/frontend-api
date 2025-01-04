@@ -100,7 +100,6 @@ export default function NewOrderModal({
       );
     },
   });
-  console.log("ingredients", ingredients);
 
   const addItem = () => {
     setItems([

@@ -83,18 +83,22 @@ export default function ReceiveOrderModal({
       console.log("Invoice data received:", invoiceData);
       setSelectedInvoiceData(invoiceData);
 
+      console.log("Order: ", order);
+      console.log("Invoice: ", invoiceData);
       const orderItems = order?.items || [];
       const invoiceItems = invoiceData.ingredients || [];
       const currentItems = mergedItems.length > 0 ? mergedItems : orderItems;
 
       // Create maps for quick lookups
       const currentItemsMap = new Map(
-        currentItems.map(item => [item.ingredient_uuid, item])
+        currentItems.map((item) => [item.ingredient_uuid, item]),
       );
 
       // Update existing items and add new ones
-      const updatedItems = currentItems.map(item => {
-        const invoiceItem = invoiceItems.find(inv => inv.ingredient_uuid === item.ingredient_uuid);
+      const updatedItems = currentItems.map((item) => {
+        const invoiceItem = invoiceItems.find(
+          (inv) => inv.ingredient_uuid === item.ingredient_uuid,
+        );
         if (invoiceItem) {
           return {
             ...item,
@@ -107,8 +111,8 @@ export default function ReceiveOrderModal({
 
       // Add new items from invoice that don't exist in current items
       const newInvoiceItems = invoiceItems
-        .filter(invItem => !currentItemsMap.has(invItem.ingredient_uuid))
-        .map(invItem => ({
+        .filter((invItem) => !currentItemsMap.has(invItem.ingredient_uuid))
+        .map((invItem) => ({
           ingredient_uuid: invItem.ingredient_uuid,
           ingredient_name: invItem.ingredient_name,
           quantity: 0,
@@ -169,7 +173,6 @@ export default function ReceiveOrderModal({
     (inv: any) =>
       inv.supplier?.supplier_uuid !== order?.supplier?.supplier_uuid,
   );
-  console.log("Supplier invoices:", supplierInvoices);
 
   // On confirm, we always send the mergedItems because
   // if no invoice was selected, mergedItems will be empty,
