@@ -95,23 +95,23 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>
-                  <button onClick={() => handleSort('documents')}>Images</button>
+                <TableHead sortable sortKey="documents" sortDirection={sortColumn === 'documents' ? sortDirection : undefined} onSort={() => handleSort('documents')}>
+                  Images
                 </TableHead>
-                <TableHead>
-                  <button onClick={() => handleSort('invoice_number')}>Invoice Number</button>
+                <TableHead sortable sortKey="invoice_number" sortDirection={sortColumn === 'invoice_number' ? sortDirection : undefined} onSort={() => handleSort('invoice_number')}>
+                  Invoice Number
                 </TableHead>
-                <TableHead>
-                  <button onClick={() => handleSort('date')}>Date</button>
+                <TableHead sortable sortKey="date" sortDirection={sortColumn === 'date' ? sortDirection : undefined} onSort={() => handleSort('date')}>
+                  Date
                 </TableHead>
-                <TableHead>
-                  <button onClick={() => handleSort('supplier_name')}>Supplier</button>
+                <TableHead sortable sortKey="supplier_name" sortDirection={sortColumn === 'supplier_name' ? sortDirection : undefined} onSort={() => handleSort('supplier_name')}>
+                  Supplier
                 </TableHead>
-                <TableHead className="text-right">
-                  <button onClick={() => handleSort('amount')}>Amount</button>
+                <TableHead sortable sortKey="amount" sortDirection={sortColumn === 'amount' ? sortDirection : undefined} onSort={() => handleSort('amount')} className="text-right">
+                  Amount
                 </TableHead>
-                <TableHead className="text-right">
-                  <button onClick={() => handleSort('ingredients')}>Ingredients</button>
+                <TableHead sortable sortKey="ingredients" sortDirection={sortColumn === 'ingredients' ? sortDirection : undefined} onSort={() => handleSort('ingredients')} className="text-right">
+                  Ingredients
                 </TableHead>
               </TableRow>
             </TableHeader>
