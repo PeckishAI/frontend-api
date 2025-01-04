@@ -185,6 +185,7 @@ export function EditInvoiceSlider({
       amount: 0,
       ingredients: [],
       documents: [],
+      supplier: invoice?.supplier || undefined,
     },
   });
 
@@ -446,14 +447,10 @@ export function EditInvoiceSlider({
                             <FormControl>
                               <div className="relative z-50">
                                 <CreatableSelect
-                                  value={
-                                    field.value
-                                      ? {
-                                          value: field.value.supplier_uuid,
-                                          label: field.value.supplier_name,
-                                        }
-                                      : null
-                                  }
+                                  value={{
+                                    value: invoice.supplier?.supplier_uuid || '',
+                                    label: invoice.supplier?.supplier_name || ''
+                                  }}
                                   onChange={(option) => {
                                     if (option) {
                                       field.onChange({
