@@ -549,10 +549,21 @@ export function EditInvoiceSlider({
                               <FormLabel>Mapped Ingredient</FormLabel>
                               <FormControl>
                                 <CreatableSelect
-                                  value={field.value ? [field.value] : []}
-                                  onChange={(values) => {
-                                    if (values[0]) {
-                                      field.onChange(values[0]);
+                                  value={
+                                    field.value
+                                      ? {
+                                          value: restaurantIngredients?.[field.value]?.ingredient_uuid || "",
+                                          label: field.value
+                                        }
+                                      : null
+                                  }
+                                  onChange={(option) => {
+                                    if (option) {
+                                      field.onChange(option.label);
+                                      form.setValue(
+                                        `ingredients.${index}.ingredient_uuid`,
+                                        option.value
+                                      );
                                     }
                                   }}
                                   options={Object.values(
