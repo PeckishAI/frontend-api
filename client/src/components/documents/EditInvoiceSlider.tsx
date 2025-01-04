@@ -460,6 +460,12 @@ export function EditInvoiceSlider({
                                         supplier_uuid: option.value,
                                         supplier_name: option.label,
                                       });
+                                      
+                                      // Reset all ingredient units since supplier changed
+                                      const ingredients = form.getValues("ingredients") || [];
+                                      ingredients.forEach((_, index) => {
+                                        form.setValue(`ingredients.${index}.unit`, undefined);
+                                      });
                                     }
                                   }}
                                   options={suppliers?.map((supplier) => ({
