@@ -119,6 +119,7 @@ export const unitService = {
       if (!result.success) {
         throw new Error("Failed to fetch supplier ingredient units");
       }
+      console.log("Result: ", result);
       return result.data;
     } catch (error) {
       console.error("Failed to fetch supplier ingredient units:", error);

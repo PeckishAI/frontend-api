@@ -460,11 +460,14 @@ export function EditInvoiceSlider({
                                         supplier_uuid: option.value,
                                         supplier_name: option.label,
                                       });
-                                      
-                                      // Reset all ingredient units since supplier changed
-                                      const ingredients = form.getValues("ingredients") || [];
+
+                                      const ingredients =
+                                        form.getValues("ingredients") || [];
                                       ingredients.forEach((_, index) => {
-                                        form.setValue(`ingredients.${index}.unit`, undefined);
+                                        form.setValue(
+                                          `ingredients.${index}.unit`,
+                                          undefined,
+                                        );
                                       });
                                     }
                                   }}
@@ -558,8 +561,10 @@ export function EditInvoiceSlider({
                                   value={
                                     field.value
                                       ? {
-                                          value: restaurantIngredients?.[field.value]?.ingredient_uuid || "",
-                                          label: field.value
+                                          value:
+                                            restaurantIngredients?.[field.value]
+                                              ?.ingredient_uuid || "",
+                                          label: field.value,
                                         }
                                       : null
                                   }
@@ -568,7 +573,7 @@ export function EditInvoiceSlider({
                                       field.onChange(option.label);
                                       form.setValue(
                                         `ingredients.${index}.ingredient_uuid`,
-                                        option.value
+                                        option.value,
                                       );
                                     }
                                   }}
@@ -646,36 +651,46 @@ export function EditInvoiceSlider({
 
                                       // Get associated units for the selected ingredient
                                       if (selectedIngredientUuid) {
-                                        const associatedUnits = supplierIngredientUnits
-                                          ?.find((item) => item.ingredient_uuid === selectedIngredientUuid)
-                                          ?.units || [];
+                                        const associatedUnits =
+                                          supplierIngredientUnits?.find(
+                                            (item) =>
+                                              item.ingredient_uuid ===
+                                              selectedIngredientUuid,
+                                          )?.units || [];
 
                                         if (associatedUnits.length > 0) {
                                           groups.push({
                                             label: "Associated Units",
-                                            options: associatedUnits.map((unit) => ({
-                                              value: unit.unit_uuid,
-                                              label: unit.unit_name,
-                                            })),
+                                            options: associatedUnits.map(
+                                              (unit) => ({
+                                                value: unit.unit_uuid,
+                                                label: unit.unit_name,
+                                              }),
+                                            ),
                                           });
                                         }
                                       }
 
                                       // Add all other units
-                                      const otherUnits = unitsData
-                                        ?.filter((unit) => {
-                                          // Exclude units that are already in associated units
-                                          const associatedUnits = supplierIngredientUnits
-                                            ?.find((item) => item.ingredient_uuid === selectedIngredientUuid)
-                                            ?.units || [];
-                                          return !associatedUnits.some(
-                                            (au) => au.unit_uuid === unit.unit_uuid
-                                          );
-                                        })
-                                        .map((unit) => ({
-                                          value: unit.unit_uuid,
-                                          label: unit.unit_name,
-                                        })) || [];
+                                      const otherUnits =
+                                        unitsData
+                                          ?.filter((unit) => {
+                                            // Exclude units that are already in associated units
+                                            const associatedUnits =
+                                              supplierIngredientUnits?.find(
+                                                (item) =>
+                                                  item.ingredient_uuid ===
+                                                  selectedIngredientUuid,
+                                              )?.units || [];
+                                            return !associatedUnits.some(
+                                              (au) =>
+                                                au.unit_uuid === unit.unit_uuid,
+                                            );
+                                          })
+                                          .map((unit) => ({
+                                            value: unit.unit_uuid,
+                                            label: unit.unit_name,
+                                          })) || [];
 
                                       if (otherUnits.length > 0) {
                                         groups.push({
