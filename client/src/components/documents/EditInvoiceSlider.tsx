@@ -259,7 +259,7 @@ export function EditInvoiceSlider({
                     <img
                       src={
                         "https://storage.cloud.google.com/peckish-datasets/restaurant/" +
-                        invoice.documents[0].name
+                        invoice.documents[activeImageIndex].name
                       }
                       alt={`Invoice ${invoice.invoice_number} - Image ${activeImageIndex + 1}`}
                       className="w-full h-full object-contain transition-transform duration-200"
