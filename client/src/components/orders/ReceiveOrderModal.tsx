@@ -83,14 +83,19 @@ export default function ReceiveOrderModal({
         return;
       }
 
-      console.log("Invoice data received:", invoiceData);
+      console.log("Full invoice data received:", invoiceData);
       setSelectedInvoiceData(invoiceData);
 
       const orderItems = order?.items || [];
-      const invoiceItems = invoiceData.ingredients || [];
+      const invoiceItems = Array.isArray(invoiceData.ingredients) ? invoiceData.ingredients : [];
 
-      console.log("Order items:", orderItems);
-      console.log("Invoice items:", invoiceItems);
+      console.log("Processing order items:", orderItems);
+      console.log("Processing invoice items:", invoiceItems);
+      
+      if (invoiceItems.length === 0) {
+        console.warn("No ingredients found in invoice data");
+        return;
+      }
 
       // Create a map of existing items for quick lookup
       const orderItemsMap = new Map(
@@ -231,7 +236,8 @@ export default function ReceiveOrderModal({
                 }
                 onChange={(option) => {
                   console.log("Selected invoice:", option);
-                  setSelectedInvoice(option?.value);
+                  console.log("Current order items:", order?.items);
+                  setSelectedInvoice(option?.value || "");
                 }}
                 options={[
                   {
