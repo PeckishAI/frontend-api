@@ -444,23 +444,39 @@ export function EditInvoiceSlider({
                           <FormItem className="col-span-2">
                             <FormLabel>Supplier</FormLabel>
                             <FormControl>
-                              <CreatableSelect
-                                value={field.value ? [field.value] : []}
-                                onChange={(values) => {
-                                  if (values[0]) {
-                                    field.onChange(values[0]);
+                              <div className="relative z-50">
+                                <CreatableSelect
+                                  value={
+                                    field.value
+                                      ? {
+                                          value: field.value.supplier_uuid,
+                                          label: field.value.supplier_name,
+                                        }
+                                      : null
                                   }
-                                }}
-                                options={suppliers?.map((supplier) => ({
-                                  value: supplier.supplier_uuid,
-                                  label: supplier.supplier_name,
-                                }))}
-                                onCreateOption={(value) => {
-                                  field.onChange(value);
-                                }}
-                                placeholder=""
-                                size="large"
-                              />
+                                  onChange={(option) => {
+                                    if (option) {
+                                      field.onChange({
+                                        supplier_uuid: option.value,
+                                        supplier_name: option.label,
+                                      });
+                                    }
+                                  }}
+                                  options={suppliers?.map((supplier) => ({
+                                    value: supplier.supplier_uuid,
+                                    label: supplier.supplier_name,
+                                  }))}
+                                  onCreateOption={(value) => {
+                                    field.onChange({
+                                      supplier_uuid: "",
+                                      supplier_name: value,
+                                      created_supplier: true,
+                                    });
+                                  }}
+                                  placeholder=""
+                                  size="large"
+                                />
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -589,91 +605,69 @@ export function EditInvoiceSlider({
                                   <CreatableSelect
                                     size="small"
                                     value={
-                                      field.value?.unit_name
-                                        ? [field.value.unit_name]
-                                        : []
+                                      field.value
+                                        ? {
+                                            value: field.value.unit_uuid,
+                                            label: field.value.unit_name,
+                                          }
+                                        : null
                                     }
-                                    onChange={(values) => {
-                                      if (values[0]) {
-                                        const selectedUnit = unitsData?.find(
-                                          (u) => u.unit_name === values[0],
-                                        ) || {
-                                          unit_uuid: values[0],
-                                          unit_name: values[0],
-                                        };
+                                    onChange={(option) => {
+                                      if (option) {
                                         field.onChange({
-                                          unit_uuid: selectedUnit.unit_uuid,
-                                          unit_name: selectedUnit.unit_name,
+                                          unit_uuid: option.value,
+                                          unit_name: option.label,
                                         });
                                       }
                                     }}
                                     options={(() => {
-                                      // Get units by category
-                                      const allUnits =
-                                        unitsData?.reduce(
-                                          (acc, unit) => {
-                                            // Map unit categories directly - keep custom and reference separate
-                                            const category =
-                                              unit.category === "reference"
-                                                ? "Reference"
-                                                : unit.category === "custom";
-                                            if (category) {
-                                              // Only add reference and custom units here
-                                              acc.push({
-                                                label: unit.unit_name,
-                                                value: unit.unit_name,
-                                                category,
-                                              });
-                                            }
-                                            return acc;
-                                          },
-                                          [] as Array<{
-                                            label: string;
-                                            value: string;
-                                            category: string;
-                                          }>,
-                                        ) || [];
-                                      console.log("allUnits", allUnits);
-
-                                      // Get associated units for the selected ingredient
                                       const selectedIngredientUuid = form.watch(
                                         `ingredients.${index}.ingredient_uuid`,
                                       );
 
-                                      const associatedUnits =
-                                        supplierIngredientUnits?.find(
-                                          (item) =>
-                                            item.ingredient_uuid ===
-                                            selectedIngredientUuid,
-                                        )?.units || [];
+                                      const groups = [];
 
-                                      const associatedOptions =
-                                        associatedUnits.map((unit) => ({
-                                          label: unit.unit_name,
-                                          value: unit.unit_name,
-                                          category: "Associated",
-                                        }));
+                                      // Get associated units for the selected ingredient
+                                      if (selectedIngredientUuid) {
+                                        const associatedUnits = supplierIngredientUnits
+                                          ?.find((item) => item.ingredient_uuid === selectedIngredientUuid)
+                                          ?.units || [];
 
-                                      // Combine and remove duplicates
-                                      const uniqueOptions = [
-                                        ...associatedOptions,
-                                        ...allUnits,
-                                      ];
-
-                                      const uniqueOptionsWithoutDuplicates = [];
-                                      uniqueOptions.forEach((option) => {
-                                        if (
-                                          !uniqueOptionsWithoutDuplicates.some(
-                                            (u) => u.value === option.value,
-                                          )
-                                        ) {
-                                          uniqueOptionsWithoutDuplicates.push(
-                                            option,
-                                          );
+                                        if (associatedUnits.length > 0) {
+                                          groups.push({
+                                            label: "Associated Units",
+                                            options: associatedUnits.map((unit) => ({
+                                              value: unit.unit_uuid,
+                                              label: unit.unit_name,
+                                            })),
+                                          });
                                         }
-                                      });
+                                      }
 
-                                      return uniqueOptionsWithoutDuplicates;
+                                      // Add all other units
+                                      const otherUnits = unitsData
+                                        ?.filter((unit) => {
+                                          // Exclude units that are already in associated units
+                                          const associatedUnits = supplierIngredientUnits
+                                            ?.find((item) => item.ingredient_uuid === selectedIngredientUuid)
+                                            ?.units || [];
+                                          return !associatedUnits.some(
+                                            (au) => au.unit_uuid === unit.unit_uuid
+                                          );
+                                        })
+                                        .map((unit) => ({
+                                          value: unit.unit_uuid,
+                                          label: unit.unit_name,
+                                        })) || [];
+
+                                      if (otherUnits.length > 0) {
+                                        groups.push({
+                                          label: "All Units",
+                                          options: otherUnits,
+                                        });
+                                      }
+
+                                      return groups;
                                     })()}
                                     onCreateOption={async (value) => {
                                       try {
