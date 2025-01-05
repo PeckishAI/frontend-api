@@ -9,6 +9,7 @@ import { Calendar, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type Order } from "@/lib/OrderTypes";
 import { getStatusColor } from "@/lib/data";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
 
 interface OrderCardProps {
   order: Order;
@@ -75,7 +76,8 @@ export default function OrderCard({
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <p className="text-lg font-semibold">
-          {useRestaurantContext().currencyInfo?.currencySymbol}{order.amount ? order.amount.toFixed(2) : "0.00"}
+          {useRestaurantContext().currencyInfo?.currencySymbol}
+          {order.amount ? order.amount.toFixed(2) : "0.00"}
         </p>
         <div className="flex gap-2">
           {order.status === "pending" && (
@@ -83,16 +85,16 @@ export default function OrderCard({
               <Button size="sm" onClick={() => setShowReceiveModal(true)}>
                 Receive Stock
               </Button>
-              <ReceiveOrderModal 
-              open={showReceiveModal}
-              onOpenChange={setShowReceiveModal}
-              order={order}
-              onConfirm={(data) => {
-                console.log("Order received:", data);
-                onReceive?.();
-                setShowReceiveModal(false);
-              }}
-            />
+              <ReceiveOrderModal
+                open={showReceiveModal}
+                onOpenChange={setShowReceiveModal}
+                order={order}
+                onConfirm={(data) => {
+                  console.log("Order received:", data);
+                  onReceive?.();
+                  setShowReceiveModal(false);
+                }}
+              />
             </>
           )}
           {order.status === "draft" && (

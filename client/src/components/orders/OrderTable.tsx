@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { type Order } from "@/lib/OrderTypes";
 import { getStatusColor } from "@/lib/data";
 import { useState } from "react";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
 
 interface OrderTableProps {
   orders: Order[];
