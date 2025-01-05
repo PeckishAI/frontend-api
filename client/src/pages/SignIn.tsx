@@ -19,8 +19,8 @@ export default function SignIn() {
         <source src="/videos/signin-bg.mp4" type="video/mp4" />
       </video>
       
-      <div className="relative flex min-h-screen items-center p-5">
-        <div className="w-full max-w-sm rounded-lg bg-white/95 p-8 shadow-xl backdrop-blur ml-5">
+      <div className="relative flex min-h-screen items-center p-[20px]">
+        <div className="w-full max-w-sm rounded-lg bg-white/95 p-8 shadow-xl backdrop-blur ml-[20px]">
           <div className="flex justify-center">
             <img src="/images/peckish-logo.jpg" alt="Peckish" className="h-12 w-auto" />
           </div>
