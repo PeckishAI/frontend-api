@@ -300,7 +300,7 @@ export function EditInvoiceSlider({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-none h-screen p-0 border-0"
+        className="w-full sm:max-w-none h-screen p-0 border-0 overflow-hidden"
       >
         <div className="flex h-full divide-x divide-border">
           {/* Left side - Images */}
@@ -411,7 +411,7 @@ export function EditInvoiceSlider({
           </div>
 
           {/* Right side - Form */}
-          <div className="w-1/2 bg-white">
+          <div className="w-1/2 bg-white h-full overflow-y-auto">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
