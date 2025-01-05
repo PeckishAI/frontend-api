@@ -181,7 +181,7 @@ export function EditInvoiceSlider({
       invoice_number: "",
       date: "",
       amount: 0,
-      ingredients: [],
+      invoice_ingredients: [],
       documents: [],
       supplier: invoice?.supplier || undefined,
     },
@@ -193,8 +193,9 @@ export function EditInvoiceSlider({
         invoice_number: invoice.invoice_number,
         supplier: invoice.supplier,
         date: invoice.date,
-        ingredients: invoice?.ingredients || [],
+        invoice_ingredients: invoice?.ingredients || [],
         amount: invoice?.amount || 0,
+        documents: invoice?.documents || [],
       });
     }
   }, [invoice, form]);
