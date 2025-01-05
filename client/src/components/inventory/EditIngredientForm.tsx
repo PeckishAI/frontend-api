@@ -58,7 +58,7 @@ const editIngredientSchema = z.object({
             unit_uuid: z.string(),
             unit_name: z.string(),
           })
-          .optional(),
+          .nullish(),
         pack_size: z.number().min(0).optional(),
         product_code: z.string().nullable().optional(),
       }),
