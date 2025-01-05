@@ -1,16 +1,46 @@
-const getBaseUrl = (): string => {
-  const env = process.env.NODE_ENV || "development";
 
-  switch (env) {
-    case "production":
-      return "https://backend-spradier.replit.app";
-    case "development":
-      return "https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev";
-    default:
-      return "http://0.0.0.0:8080";
-  }
+const devConfig = {
+  authentificationUrl: 'http://0.0.0.0:5123',
+  restaurantUrl: 'https://backend-spradier.replit.app',
+
+  cookieDomain: '0.0.0.0',
+
+  apiUrl: 'https://api-gateway-zqjpx7oxsq-ew.a.run.app',
+  apiUrlIntegration: 'https://integrations-api-k2w3p2ptza-ew.a.run.app',
+
+  GOOGLE_CLIENT_ID:
+    '167544806451-lhqrqpn83tje89en5n73af3tiu3sm11o.apps.googleusercontent.com',
 };
 
-export const config = {
-  apiBaseUrl: getBaseUrl(),
+const stagingConfig = {
+  authentificationUrl: 'https://auth-frontend-k2w3p2ptza-ew.a.run.app',
+  restaurantUrl: 'https://backend-spradier.replit.app',
+
+  cookieDomain: 'run.app',
+
+  apiUrl: 'https://api-gateway-k2w3p2ptza-ew.a.run.app',
+  apiUrlIntegration: 'https://integrations-api-k2w3p2ptza-ew.a.run.app',
+
+  GOOGLE_CLIENT_ID:
+    '167544806451-lhqrqpn83tje89en5n73af3tiu3sm11o.apps.googleusercontent.com',
 };
+
+const prodConfig = {
+  authentificationUrl: 'https://platform.iampeckish.com',
+  restaurantUrl: 'https://backend-spradier.replit.app',
+
+  cookieDomain: 'iampeckish.com',
+
+  apiUrl: 'https://api-gateway-zqjpx7oxsq-ew.a.run.app',
+  apiUrlIntegration: 'https://integrations-api-zqjpx7oxsq-ew.a.run.app',
+  
+  GOOGLE_CLIENT_ID:
+    '902125317537-r9ck7q1bi9m01f1ilopjlvi2itrupdut.apps.googleusercontent.com',
+};
+
+export const GLOBAL_CONFIG =
+  import.meta.env.MODE === 'development'
+    ? devConfig
+    : import.meta.env.VITE_CONFIG_MODE === 'staging'
+    ? stagingConfig
+    : prodConfig;
