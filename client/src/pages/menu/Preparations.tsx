@@ -141,7 +141,7 @@ export default function Preparations() {
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <h2 className="text-2xl font-semibold">Preparations</h2>
+        
         <div className="flex items-center gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
           <Button onClick={() => setEditingPreparation(true)}>

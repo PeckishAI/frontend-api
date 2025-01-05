@@ -128,7 +128,7 @@ export default function Products() {
   return (
     <div className="px-8 space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Products</h2>
+        
         <div className="flex items-center gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
           <Button onClick={() => setEditingRecipe({})}>

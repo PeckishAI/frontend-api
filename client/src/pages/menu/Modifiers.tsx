@@ -28,6 +28,7 @@ import { useRestaurantContext } from "@/contexts/RestaurantContext";
 export default function Modifiers() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [editingModifier, setEditingModifier] = useState<Modifier | null>(null);
+  const [searchQuery, setSearchQuery] = useState(""); // Added search state
   const { currentRestaurant, currencyInfo } = useRestaurantContext();
   const queryClient = useQueryClient();
 
@@ -121,8 +122,14 @@ export default function Modifiers() {
   return (
     <div className="px-8 space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Modifiers</h2>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4"> {/*Removed Title */}
+          <input
+            type="text"
+            placeholder="Search modifiers..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="p-2 border rounded"
+          />
           <ViewToggle current={viewMode} onChange={setViewMode} />
           <Button onClick={() => setEditingModifier({})}>
             <PlusCircle className="mr-2 h-4 w-4" />
@@ -134,7 +141,9 @@ export default function Modifiers() {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {viewMode === "cards" ? (
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {modifiers.map((modifier) => (
+            {modifiers.filter((modifier) =>
+              modifier.modifier_name?.toLowerCase().includes(searchQuery.toLowerCase())
+            ).map((modifier) => (
               <ModifierCard key={modifier.modifier_uuid} modifier={modifier} />
             ))}
           </div>
@@ -151,7 +160,9 @@ export default function Modifiers() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {modifiers.map((modifier) => (
+                {modifiers.filter((modifier) =>
+                  modifier.modifier_name?.toLowerCase().includes(searchQuery.toLowerCase())
+                ).map((modifier) => (
                   <TableRow
                     key={modifier.modifier_uuid}
                     className="cursor-pointer hover:bg-gray-50"
