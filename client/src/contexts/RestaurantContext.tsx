@@ -29,11 +29,14 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     async function fetchCurrencyInfo() {
+      console.log("Restaurant Context - Current Restaurant:", currentRestaurant);
       if (currentRestaurant?.restaurant_uuid) {
         try {
+          console.log("Restaurant Context - Fetching currency for UUID:", currentRestaurant.restaurant_uuid);
           const currency = await restaurantService.getRestaurantCurrency(
             currentRestaurant.restaurant_uuid,
           );
+          console.log("Restaurant Context - Received currency data:", currency);
           setCurrencyInfo(currency);
         } catch (error) {
           console.error("Failed to fetch currency info:", error);

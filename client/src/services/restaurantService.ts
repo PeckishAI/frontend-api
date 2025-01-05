@@ -29,6 +29,7 @@ export const restaurantService = {
   },
 
   async getRestaurantCurrency(restaurantUuid: string): Promise<any> {
+    console.log("Restaurant Service - Fetching currency for UUID:", restaurantUuid);
     try {
       const response = await fetch(
         `${BASE_URL}/restaurants/v2/restaurant/${restaurantUuid}/currency`,
