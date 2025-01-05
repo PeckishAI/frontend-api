@@ -48,13 +48,23 @@ export const restaurantService = {
       const currencyISO = data.data.currency;
 
       const getSymbol = (currency: string) => {
-        const symbol = new Intl.NumberFormat(i18n.language, {
-          style: "currency",
-          currency,
-        })
-          .formatToParts(0)
-          .find((x) => x.type === "currency");
-        return symbol && symbol.value;
+        try {
+          const symbol = new Intl.NumberFormat('en-US', {
+            style: "currency",
+            currency,
+          })
+            .formatToParts(0)
+            .find((x) => x.type === "currency");
+          return symbol?.value || currency;
+        } catch {
+          // Fallback symbols for common currencies
+          const symbols: {[key: string]: string} = {
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£'
+          };
+          return symbols[currency] || currency;
+        }
       };
 
       return { currencyISO, currencySymbol: getSymbol(currencyISO) };
