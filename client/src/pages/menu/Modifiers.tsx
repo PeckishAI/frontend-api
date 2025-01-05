@@ -131,6 +131,7 @@ export default function Modifiers() {
             className="pl-9"
           />
         </div>
+        <div className="flex-1" />
         <div className="flex items-center gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
           <Button onClick={() => setEditingModifier({})}>

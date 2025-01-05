@@ -141,6 +141,7 @@ export default function Preparations() {
             className="pl-9"
           />
         </div>
+        <div className="flex-1" />
         <div className="flex items-center gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
           <Button onClick={() => setEditingPreparation(true)}>
