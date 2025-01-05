@@ -28,6 +28,7 @@ import { useRestaurantContext } from "@/contexts/RestaurantContext";
 export default function Products() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [editingRecipe, setEditingRecipe] = useState<Product | null>(null);
+  const [searchQuery, setSearchQuery] = useState(''); // Added search state
   const { currentRestaurant, currencyInfo } = useRestaurantContext();
 
   const { data: products = [], isLoading } = useQuery({
@@ -136,11 +137,19 @@ export default function Products() {
           </Button>
         </div>
       </div>
-
+      <input
+        type="text"
+        placeholder="Search products..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mb-4 p-2 border border-gray-300 rounded"
+      /> {/* Added search input */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {viewMode === "cards" ? (
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product) => (
+            {products.filter(product =>
+              product.product_name?.toLowerCase().includes(searchQuery.toLowerCase())
+            ).map((product) => (
               <ProductCard key={product.product_uuid} product={product} />
             ))}
           </div>
@@ -157,7 +166,9 @@ export default function Products() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {products.map((product) => (
+                {products.filter(product =>
+                  product.product_name?.toLowerCase().includes(searchQuery.toLowerCase())
+                ).map((product) => (
                   <TableRow
                     key={product.product_uuid}
                     className="cursor-pointer hover:bg-gray-50"

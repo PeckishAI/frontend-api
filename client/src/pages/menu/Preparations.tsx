@@ -32,6 +32,7 @@ export default function Preparations() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [editingPreparation, setEditingPreparation] =
     useState<Preparation | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const { currentRestaurant, currencyInfo } = useRestaurantContext();
   const queryClient = useQueryClient();
 
@@ -47,6 +48,12 @@ export default function Preparations() {
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
+
+  const filteredPreparations = preparations.filter((preparation) =>
+    preparation.preparation_name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase()),
+  );
 
   function PreparationCard({ preparation }: { preparation: Preparation }) {
     return (
@@ -125,6 +132,15 @@ export default function Preparations() {
   return (
     <div className="px-8 space-y-6">
       <div className="flex items-center justify-between">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search preparations..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
         <h2 className="text-2xl font-semibold">Preparations</h2>
         <div className="flex items-center gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
@@ -159,7 +175,7 @@ export default function Preparations() {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {viewMode === "cards" ? (
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {preparations.map((preparation) => (
+            {filteredPreparations.map((preparation) => (
               <PreparationCard
                 key={preparation.preparation_uuid}
                 preparation={preparation}
@@ -179,7 +195,7 @@ export default function Preparations() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {preparations.map((preparation) => (
+                {filteredPreparations.map((preparation) => (
                   <TableRow
                     key={preparation.preparation_uuid}
                     className="cursor-pointer hover:bg-gray-50"
