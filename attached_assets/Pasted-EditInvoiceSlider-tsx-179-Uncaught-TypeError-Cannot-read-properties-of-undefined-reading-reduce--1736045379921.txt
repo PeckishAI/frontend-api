@@ -1,0 +1,30 @@
+EditInvoiceSlider.tsx:179 Uncaught TypeError: Cannot read properties of undefined (reading 'reduce')
+    at calculateTotal (EditInvoiceSlider.tsx:179:24)
+    at EditInvoiceSlider (EditInvoiceSlider.tsx:551:31)
+
+EditInvoiceSlider.tsx:179 Uncaught TypeError: Cannot read properties of undefined (reading 'reduce')
+    at calculateTotal (EditInvoiceSlider.tsx:179:24)
+    at EditInvoiceSlider (EditInvoiceSlider.tsx:551:31)
+hook.js:608 The above error occurred in the <EditInvoiceSlider> component:
+
+    at EditInvoiceSlider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/documents/EditInvoiceSlider.tsx?t=1736044442938:99:3)
+    at InvoicesView (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/components/documents/InvoicesView.tsx?t=1736044442938:34:40)
+    at div
+    at div
+    at div
+    at div
+    at div
+    at Documents (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/pages/Documents.tsx?t=1736044442938:26:45)
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=b9fa00a7:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=b9fa00a7:247:17)
+    at div
+    at RestaurantProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co/src/contexts/RestaurantContext.tsx:20:38)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=b9fa00a7:2805:3)
+    at App
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.repl.co…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=b9fa00a7:2805:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+chunk-C43VWYGG.js?v=b9fa00a7:9129 Uncaught TypeError: Cannot read properties of undefined (reading 'reduce')
+    at calculateTotal (EditInvoiceSlider.tsx:179:24)
+    at EditInvoiceSlider (EditInvoiceSlider.tsx:551:31)
