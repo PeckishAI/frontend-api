@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { GLOBAL_CONFIG } from 'shared-config';
+import { GLOBAL_CONFIG } from '../config/config';
 
 const apiClient = axios.create({
   baseURL: GLOBAL_CONFIG.apiUrl + '/auth', 
