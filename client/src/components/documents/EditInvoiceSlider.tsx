@@ -196,6 +196,17 @@ export function EditInvoiceSlider({
   });
 
   React.useEffect(() => {
+    // Reset form with default values first
+    form.reset({
+      invoice_number: "",
+      date: "",
+      amount: 0,
+      invoice_ingredients: [],
+      documents: [],
+      supplier: undefined,
+    });
+    
+    // Then set new values if invoice exists
     if (invoice) {
       form.reset({
         invoice_number: invoice.invoice_number,
