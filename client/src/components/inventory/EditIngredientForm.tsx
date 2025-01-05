@@ -591,9 +591,10 @@ export default function EditIngredientForm({
                               name={`ingredient_suppliers.${index}.unit`}
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Unit</FormLabel>
+                                  <FormLabel>Unit (Required)</FormLabel>
                                   <FormControl>
                                     <CreatableSelect
+                                      required
                                       value={
                                         field.value?.unit_name
                                           ? [field.value.unit_name]
