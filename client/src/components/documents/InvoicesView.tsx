@@ -22,19 +22,18 @@ interface InvoicesViewProps {
 }
 
 export default function InvoicesView({ viewMode }: InvoicesViewProps) {
-  console.log("InvoicesView: Component initialization");
   const [selectedInvoice, setSelectedInvoice] = useState<Invoices | null>(null);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const { currentRestaurant } = useRestaurantContext();
 
-  console.log("Current restaurant context:", currentRestaurant);
-
-  console.log("InvoicesView component mounted");
-  const { data: invoices = [], isLoading, error } = useQuery({
+  const {
+    data: invoices = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["invoices", currentRestaurant?.restaurant_uuid],
     queryFn: async () => {
-      console.log("InvoicesView: Starting fetch for restaurant:", currentRestaurant?.restaurant_uuid);
       if (!currentRestaurant?.restaurant_uuid) {
         console.error("InvoicesView: No restaurant UUID available");
         throw new Error("No restaurant selected");
@@ -44,7 +43,6 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
         const result = await documentService.getRestaurantInvoices(
           currentRestaurant.restaurant_uuid,
         );
-        console.log("InvoicesView: API call successful, received data:", result);
         return result;
       } catch (err) {
         console.error("InvoicesView: API call failed:", err);
@@ -54,20 +52,13 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
-  console.log("InvoicesView render state:", { 
-    loading: isLoading, 
-    error, 
-    invoicesCount: invoices?.length,
-    invoices 
-  });
-
   if (error) {
     console.error("InvoicesView: Error in query:", error);
   }
 
   const handleSort = (column: string) => {
     setSortColumn(column);
-    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
   };
 
   return (
@@ -75,7 +66,9 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
       {viewMode === "cards" ? (
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
-            <div className="col-span-3 text-center py-8">Loading invoices...</div>
+            <div className="col-span-3 text-center py-8">
+              Loading invoices...
+            </div>
           ) : invoices && invoices.length > 0 ? (
             invoices.map((invoice) => (
               <div
@@ -95,22 +88,66 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead sortable sortKey="documents" sortDirection={sortColumn === 'documents' ? sortDirection : undefined} onSort={() => handleSort('documents')}>
+                <TableHead
+                  sortable
+                  sortKey="documents"
+                  sortDirection={
+                    sortColumn === "documents" ? sortDirection : undefined
+                  }
+                  onSort={() => handleSort("documents")}
+                >
                   Images
                 </TableHead>
-                <TableHead sortable sortKey="invoice_number" sortDirection={sortColumn === 'invoice_number' ? sortDirection : undefined} onSort={() => handleSort('invoice_number')}>
+                <TableHead
+                  sortable
+                  sortKey="invoice_number"
+                  sortDirection={
+                    sortColumn === "invoice_number" ? sortDirection : undefined
+                  }
+                  onSort={() => handleSort("invoice_number")}
+                >
                   Invoice Number
                 </TableHead>
-                <TableHead sortable sortKey="date" sortDirection={sortColumn === 'date' ? sortDirection : undefined} onSort={() => handleSort('date')}>
+                <TableHead
+                  sortable
+                  sortKey="date"
+                  sortDirection={
+                    sortColumn === "date" ? sortDirection : undefined
+                  }
+                  onSort={() => handleSort("date")}
+                >
                   Date
                 </TableHead>
-                <TableHead sortable sortKey="supplier_name" sortDirection={sortColumn === 'supplier_name' ? sortDirection : undefined} onSort={() => handleSort('supplier_name')}>
+                <TableHead
+                  sortable
+                  sortKey="supplier_name"
+                  sortDirection={
+                    sortColumn === "supplier_name" ? sortDirection : undefined
+                  }
+                  onSort={() => handleSort("supplier_name")}
+                >
                   Supplier
                 </TableHead>
-                <TableHead sortable sortKey="amount" sortDirection={sortColumn === 'amount' ? sortDirection : undefined} onSort={() => handleSort('amount')} className="text-right">
+                <TableHead
+                  sortable
+                  sortKey="amount"
+                  sortDirection={
+                    sortColumn === "amount" ? sortDirection : undefined
+                  }
+                  onSort={() => handleSort("amount")}
+                  className="text-right"
+                >
                   Amount
                 </TableHead>
-                <TableHead sortable sortKey="ingredients" sortDirection={sortColumn === 'ingredients' ? sortDirection : undefined} onSort={() => handleSort('ingredients')} className="text-right">
+                <TableHead
+                  sortable
+                  sortKey="ingredients"
+                  sortDirection={
+                    sortColumn === "ingredients" ? sortDirection : undefined
+                  }
+                  onSort={() => handleSort("ingredients")}
+                  className="text-right"
+                >
                   Ingredients
                 </TableHead>
               </TableRow>
@@ -123,86 +160,93 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
                   </TableCell>
                 </TableRow>
               ) : invoices && invoices.length > 0 ? (
-                [...invoices].sort((a, b) => {
-                  if (!sortColumn) return 0;
-                  
-                  let aValue = a[sortColumn];
-                  let bValue = b[sortColumn];
-                  
-                  if (sortColumn === 'documents') {
-                    aValue = a.documents ? 1 : 0;
-                    bValue = b.documents ? 1 : 0;
-                  }
-                  if (sortColumn === 'ingredients') {
-                    aValue = a.ingredients?.length || 0;
-                    bValue = b.ingredients?.length || 0;
-                  }
-                  
-                  if (sortColumn === 'date') {
-                    aValue = new Date(a.date || '').getTime();
-                    bValue = new Date(b.date || '').getTime();
-                  }
-                  
-                  if (sortColumn === 'supplier_name') {
-                    aValue = a.supplier?.supplier_name || '';
-                    bValue = b.supplier?.supplier_name || '';
-                  }
+                [...invoices]
+                  .sort((a, b) => {
+                    if (!sortColumn) return 0;
 
-                  if (sortColumn === 'amount') {
-                    aValue = a.amount || 0;
-                    bValue = b.amount || 0;
-                  }
+                    let aValue = a[sortColumn];
+                    let bValue = b[sortColumn];
 
-                  if (sortColumn === 'invoice_number') {
-                    aValue = a.invoice_number || '';
-                    bValue = b.invoice_number || '';
-                  }
+                    if (sortColumn === "documents") {
+                      aValue = a.documents ? 1 : 0;
+                      bValue = b.documents ? 1 : 0;
+                    }
+                    if (sortColumn === "ingredients") {
+                      aValue = a.ingredients?.length || 0;
+                      bValue = b.ingredients?.length || 0;
+                    }
 
-                  if (typeof aValue === 'string' && typeof bValue === 'string') {
-                    aValue = aValue.toLowerCase();
-                    bValue = bValue.toLowerCase();
-                  }
+                    if (sortColumn === "date") {
+                      aValue = new Date(a.date || "").getTime();
+                      bValue = new Date(b.date || "").getTime();
+                    }
 
-                  if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-                  if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-                  return 0;
-                }).map((invoice) => (
-                  <TableRow
-                    key={invoice.invoice_uuid || `temp-${Math.random()}`}
-                    className="cursor-pointer hover:bg-muted/50"
-                    onClick={() => setSelectedInvoice(invoice)}
-                  >
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Images className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm text-gray-500">
-                          {invoice.documents ? 1 : 0}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>{invoice.invoice_number || 'N/A'}</TableCell>
-                    <TableCell>
-                      {invoice.date
-                        ? new Date(invoice.date).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })
-                        : "-"}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">
-                        {invoice.supplier?.supplier_name || "-"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      ${invoice.amount?.toFixed(2) || "0.00"}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {invoice.ingredients?.length || 0}
-                    </TableCell>
-                  </TableRow>
-                ))
+                    if (sortColumn === "supplier_name") {
+                      aValue = a.supplier?.supplier_name || "";
+                      bValue = b.supplier?.supplier_name || "";
+                    }
+
+                    if (sortColumn === "amount") {
+                      aValue = a.amount || 0;
+                      bValue = b.amount || 0;
+                    }
+
+                    if (sortColumn === "invoice_number") {
+                      aValue = a.invoice_number || "";
+                      bValue = b.invoice_number || "";
+                    }
+
+                    if (
+                      typeof aValue === "string" &&
+                      typeof bValue === "string"
+                    ) {
+                      aValue = aValue.toLowerCase();
+                      bValue = bValue.toLowerCase();
+                    }
+
+                    if (aValue < bValue)
+                      return sortDirection === "asc" ? -1 : 1;
+                    if (aValue > bValue)
+                      return sortDirection === "asc" ? 1 : -1;
+                    return 0;
+                  })
+                  .map((invoice) => (
+                    <TableRow
+                      key={invoice.invoice_uuid || `temp-${Math.random()}`}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => setSelectedInvoice(invoice)}
+                    >
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <Images className="h-4 w-4 text-gray-500" />
+                          <span className="text-sm text-gray-500">
+                            {invoice.documents ? 1 : 0}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>{invoice.invoice_number || "N/A"}</TableCell>
+                      <TableCell>
+                        {invoice.date
+                          ? new Date(invoice.date).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })
+                          : "-"}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">
+                          {invoice.supplier?.supplier_name || "-"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        ${invoice.amount?.toFixed(2) || "0.00"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {invoice.ingredients?.length || 0}
+                      </TableCell>
+                    </TableRow>
+                  ))
               ) : (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8">

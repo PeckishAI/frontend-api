@@ -58,36 +58,42 @@ const editInvoiceSchema = z.object({
     .optional(),
   discount: z.number().optional(),
   created_supplier: z.boolean().optional(),
-  documents: z.array(
-    z
-      .object({
-        document_uuid: z.string().optional(),
-        file_path: z.string().optional(),
-        name: z.string().optional(),
-        document_type: z.string().optional(),
-      })
-      .optional(),
-  ).optional().default([]),
-  invoice_ingredients: z.array(
-    z.object({
-      uuid: z.string().optional(),
-      ingredient_uuid: z.string().optional(),
-      ingredient_name: z.string().optional(),
-      detected_name: z.string().optional(),
-      quantity: z.number().optional(),
-      unit_cost: z.number().min(0).optional(),
-      total_cost: z.number().min(0).optional(),
-      unit: z
+  documents: z
+    .array(
+      z
         .object({
-          unit_uuid: z.string().optional().nullable(),
-          unit_name: z.string().optional().nullable(),
+          document_uuid: z.string().optional(),
+          file_path: z.string().optional(),
+          name: z.string().optional(),
+          document_type: z.string().optional(),
         })
-        .optional()
-        .nullable(),
-      document_uuid: z.string().optional(),
-      product_code: z.string().optional(),
-    }),
-  ).optional().default([])
+        .optional(),
+    )
+    .optional()
+    .default([]),
+  invoice_ingredients: z
+    .array(
+      z.object({
+        uuid: z.string().optional(),
+        ingredient_uuid: z.string().optional(),
+        ingredient_name: z.string().optional(),
+        detected_name: z.string().optional(),
+        quantity: z.number().optional(),
+        unit_cost: z.number().min(0).optional(),
+        total_cost: z.number().min(0).optional(),
+        unit: z
+          .object({
+            unit_uuid: z.string().optional().nullable(),
+            unit_name: z.string().optional().nullable(),
+          })
+          .optional()
+          .nullable(),
+        document_uuid: z.string().optional(),
+        product_code: z.string().optional(),
+      }),
+    )
+    .optional()
+    .default([]),
 });
 
 type EditInvoiceFormValues = z.infer<typeof editInvoiceSchema>;
@@ -207,13 +213,13 @@ export function EditInvoiceSlider({
       date: data.date,
       supplier: data.supplier,
       amount: data.amount,
-      ingredients: data.ingredients?.map(ing => ({
+      ingredients: data.ingredients?.map((ing) => ({
         name: ing.ingredient_name,
         quantity: ing.quantity,
         unitCost: ing.unit_cost,
         totalCost: ing.total_cost,
-        vat: ing.vat
-      }))
+        vat: ing.vat,
+      })),
     });
 
     if (Object.keys(form.formState.errors).length > 0) {
@@ -251,7 +257,7 @@ export function EditInvoiceSlider({
 
   React.useEffect(() => {
     if (invoice?.ingredients) {
-      const initializedIngredients = invoice.ingredients.map(ing => ({
+      const initializedIngredients = invoice.ingredients.map((ing) => ({
         ...ing,
         vat: ing.vat || 0,
       }));
@@ -268,7 +274,6 @@ export function EditInvoiceSlider({
     });
     return () => subscription.unsubscribe();
   }, [form]);
-
 
   if (!invoice) return null;
 
