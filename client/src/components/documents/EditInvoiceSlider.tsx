@@ -199,22 +199,28 @@ export function EditInvoiceSlider({
     }
   }, [invoice, form]);
 
-  const onSubmit = async (data: EditInvoiceFormValues) => {
-    try {
-      console.log("Form data:", data);
-      console.log("Form errors:", form.formState.errors);
-      
-      if (Object.keys(form.formState.errors).length > 0) {
-        console.error("Validation errors:", form.formState.errors);
-        return;
-      }
+  const onSubmit = (data: EditInvoiceFormValues) => {
+    console.log("Attempting form submission with data:", {
+      invoiceNumber: data.invoice_number,
+      date: data.date,
+      supplier: data.supplier,
+      amount: data.amount,
+      ingredients: data.ingredients?.map(ing => ({
+        name: ing.ingredient_name,
+        quantity: ing.quantity,
+        unitCost: ing.unit_cost,
+        totalCost: ing.total_cost,
+        vat: ing.vat
+      }))
+    });
 
-      // TODO: Add API call to save changes
-      console.log("Submitting valid data:", data);
-      onOpenChange(false);
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    if (Object.keys(form.formState.errors).length > 0) {
+      console.error("Form validation errors:", form.formState.errors);
+      return;
     }
+
+    console.log("Form is valid, would submit:", data);
+    onOpenChange(false);
   };
 
   const addIngredient = () => {
