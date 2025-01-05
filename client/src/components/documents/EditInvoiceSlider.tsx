@@ -39,6 +39,7 @@ import { supplierService } from "@/services/supplierService";
 import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import { documentService } from "@/services/documentService";
+import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
 
 const editInvoiceSchema = z.object({
   invoice_number: z.string().optional(),
@@ -113,6 +114,8 @@ export function EditInvoiceSlider({
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isDetailsOpen, setIsDetailsOpen] = useState(true);
   const [zoom, setZoom] = useState(100);
+  const [showIngredientDialog, setShowIngredientDialog] = useState(false);
+  const [newIngredientName, setNewIngredientName] = useState("");
   const { currentRestaurant } = useRestaurantContext();
   const { data: suppliers, isLoading } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
@@ -651,8 +654,9 @@ export function EditInvoiceSlider({
                                       value: ingredient.ingredient_uuid,
                                       label: ingredient.ingredient_name,
                                     }))}
-                                    onCreateOption={(value) => {
-                                      field.onChange(value);
+                                    onCreateOption={(inputValue) => {
+                                      setNewIngredientName(inputValue);
+                                      setShowIngredientDialog(true);
                                     }}
                                     placeholder=""
                                   />
@@ -899,6 +903,23 @@ export function EditInvoiceSlider({
             </Form>
           </div>
         </div>
+        <NewIngredientDialog
+          open={showIngredientDialog}
+          onOpenChange={setShowIngredientDialog}
+          onSubmit={async (data) => {
+            try {
+              if (!currentRestaurant?.restaurant_uuid) return;
+              const newIngredient = await inventoryService.createIngredient(
+                currentRestaurant.restaurant_uuid,
+                data,
+              );
+              queryClient.invalidateQueries(["ingredients"]);
+              setShowIngredientDialog(false);
+            } catch (error) {
+              console.error("Failed to create ingredient:", error);
+            }
+          }}
+        />
       </SheetContent>
     </Sheet>
   );
