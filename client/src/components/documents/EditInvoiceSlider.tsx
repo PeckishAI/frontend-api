@@ -913,6 +913,20 @@ export function EditInvoiceSlider({
                 currentRestaurant.restaurant_uuid,
                 data,
               );
+              
+              const currentIngredients = form.getValues("invoice_ingredients") || [];
+              form.setValue("invoice_ingredients", [
+                ...currentIngredients,
+                {
+                  ingredient_uuid: newIngredient.ingredient_uuid,
+                  ingredient_name: newIngredient.ingredient_name,
+                  quantity: 0,
+                  unit_cost: 0,
+                  total_cost: 0,
+                  unit: newIngredient.unit,
+                }
+              ]);
+              
               queryClient.invalidateQueries(["ingredients"]);
               setShowIngredientDialog(false);
             } catch (error) {
