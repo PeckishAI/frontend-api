@@ -116,6 +116,8 @@ export function EditInvoiceSlider({
   const [zoom, setZoom] = useState(100);
   const [showIngredientDialog, setShowIngredientDialog] = useState(false);
   const [newIngredientName, setNewIngredientName] = useState("");
+  const [showSupplierDialog, setShowSupplierDialog] = useState(false); // Added state for supplier dialog
+  const [newSupplierName, setNewSupplierName] = useState(""); // Added state for new supplier name
   const { currentRestaurant } = useRestaurantContext();
   const { data: suppliers, isLoading } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
@@ -484,12 +486,9 @@ export function EditInvoiceSlider({
                                     value: supplier.supplier_uuid,
                                     label: supplier.supplier_name,
                                   }))}
-                                  onCreateOption={(value) => {
-                                    field.onChange({
-                                      supplier_uuid: "",
-                                      supplier_name: value,
-                                      created_supplier: true,
-                                    });
+                                  onCreateOption={(inputValue) => { // Updated onCreateOption
+                                    setNewSupplierName(inputValue);
+                                    setShowSupplierDialog(true);
                                   }}
                                   placeholder=""
                                   size="large"
