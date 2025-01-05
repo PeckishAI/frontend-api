@@ -33,7 +33,7 @@ import { cn } from "@/lib/utils";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import type { Invoice } from "@/pages/Documents";
 import { Slider } from "@/components/ui/slider";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { supplierService } from "@/services/supplierService";
 import { inventoryService } from "@/services/inventoryService";
@@ -209,7 +209,7 @@ export function EditInvoiceSlider({
   }, [invoice, form]);
 
   const queryClient = useQueryClient();
-  
+
   const onSubmit = async (data: EditInvoiceFormValues) => {
     if (!currentRestaurant?.restaurant_uuid || !invoice?.document_uuid) {
       console.error("Missing restaurant or invoice UUID");
@@ -227,7 +227,10 @@ export function EditInvoiceSlider({
         invoice.document_uuid,
         data,
       );
-      await queryClient.invalidateQueries(["invoices", currentRestaurant.restaurant_uuid]);
+      await queryClient.invalidateQueries([
+        "invoices",
+        currentRestaurant.restaurant_uuid,
+      ]);
       onOpenChange(false);
     } catch (error) {
       console.error("Failed to update invoice:", error);
@@ -487,8 +490,12 @@ export function EditInvoiceSlider({
                                   value={
                                     form.watch("supplier")?.supplier_uuid
                                       ? {
-                                          value: form.watch("supplier")?.supplier_uuid,
-                                          label: form.watch("supplier")?.supplier_name
+                                          value:
+                                            form.watch("supplier")
+                                              ?.supplier_uuid,
+                                          label:
+                                            form.watch("supplier")
+                                              ?.supplier_name,
                                         }
                                       : null
                                   }
@@ -496,7 +503,7 @@ export function EditInvoiceSlider({
                                     if (option) {
                                       form.setValue("supplier", {
                                         supplier_uuid: option.value,
-                                        supplier_name: option.label
+                                        supplier_name: option.label,
                                       });
 
                                       const ingredients =
