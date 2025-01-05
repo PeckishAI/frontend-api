@@ -219,7 +219,7 @@ export default function RecipeSheet({
   const [showIngredientDialog, setShowIngredientDialog] = useState(false);
   const [newIngredientName, setNewIngredientName] = useState("");
   const queryClient = useQueryClient();
-  const { currentRestaurant } = useRestaurantContext();
+  const { currentRestaurant, currencyInfo } = useRestaurantContext();
 
   const form = useForm<Product>({
     resolver: zodResolver(productSchema),
@@ -833,7 +833,7 @@ export default function RecipeSheet({
 
                       <div className="flex items-center">
                         <span className="text-sm text-muted-foreground">
-                          $
+                          {currencyInfo?.currencySymbol}
                           {(
                             form.watch(
                               `product_ingredients.${index}.total_cost`,
@@ -1090,7 +1090,7 @@ export default function RecipeSheet({
 
                       <div className="flex items-center">
                         <span className="text-sm text-muted-foreground">
-                          $
+                          {currencyInfo?.currencySymbol}
                           {(
                             (form.watch(
                               `product_preparations.${index}.quantity`,

@@ -1,5 +1,10 @@
-import { useState, useMemo } from 'react';
-import { ChartBar, Package2, ShoppingCart, UtensilsCrossed } from "lucide-react";
+import { useState, useMemo } from "react";
+import {
+  ChartBar,
+  Package2,
+  ShoppingCart,
+  UtensilsCrossed,
+} from "lucide-react";
 import { DateRange } from "react-day-picker";
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,63 +15,99 @@ import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { generalService } from "@/services/generalService";
 
 export default function General() {
-  const [activeSection, setActiveSection] = useState('overview');
+  const [activeSection, setActiveSection] = useState("overview");
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(2024, 0, 1),
-    to: new Date()
+    to: new Date(),
   });
-  
-  const { currentRestaurant } = useRestaurantContext();
-  
+
+  const { currentRestaurant, currencyInfo } = useRestaurantContext();
+
   const dateParams = useMemo(() => {
     if (!date?.from || !date?.to) return {};
     return {
-      start_date: date.from.toISOString().split('T')[0],
-      end_date: date.to.toISOString().split('T')[0]
+      start_date: date.from.toISOString().split("T")[0],
+      end_date: date.to.toISOString().split("T")[0],
     };
   }, [date]);
 
   const { data: sales } = useQuery({
-    queryKey: ['sales', currentRestaurant?.restaurant_uuid, dateParams],
-    queryFn: () => generalService.getRestaurantSales(currentRestaurant?.restaurant_uuid!, dateParams),
-    enabled: !!currentRestaurant?.restaurant_uuid
+    queryKey: ["sales", currentRestaurant?.restaurant_uuid, dateParams],
+    queryFn: () =>
+      generalService.getRestaurantSales(
+        currentRestaurant?.restaurant_uuid!,
+        dateParams,
+      ),
+    enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
   const { data: costOfSales } = useQuery({
-    queryKey: ['costOfSales', currentRestaurant?.restaurant_uuid, dateParams],
-    queryFn: () => generalService.getRestaurantCostOfSales(currentRestaurant?.restaurant_uuid!, dateParams),
-    enabled: !!currentRestaurant?.restaurant_uuid
+    queryKey: ["costOfSales", currentRestaurant?.restaurant_uuid, dateParams],
+    queryFn: () =>
+      generalService.getRestaurantCostOfSales(
+        currentRestaurant?.restaurant_uuid!,
+        dateParams,
+      ),
+    enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
   const { data: inventoryValue } = useQuery({
-    queryKey: ['inventoryValue', currentRestaurant?.restaurant_uuid, dateParams],
-    queryFn: () => generalService.getRestaurantInventoryValue(currentRestaurant?.restaurant_uuid!, dateParams),
-    enabled: !!currentRestaurant?.restaurant_uuid
+    queryKey: [
+      "inventoryValue",
+      currentRestaurant?.restaurant_uuid,
+      dateParams,
+    ],
+    queryFn: () =>
+      generalService.getRestaurantInventoryValue(
+        currentRestaurant?.restaurant_uuid!,
+        dateParams,
+      ),
+    enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
   const { data: procurementCost } = useQuery({
-    queryKey: ['procurementCost', currentRestaurant?.restaurant_uuid, dateParams],
-    queryFn: () => generalService.getRestaurantProcurementCost(currentRestaurant?.restaurant_uuid!, dateParams),
-    enabled: !!currentRestaurant?.restaurant_uuid
+    queryKey: [
+      "procurementCost",
+      currentRestaurant?.restaurant_uuid,
+      dateParams,
+    ],
+    queryFn: () =>
+      generalService.getRestaurantProcurementCost(
+        currentRestaurant?.restaurant_uuid!,
+        dateParams,
+      ),
+    enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
   const { data: salesBreakdown } = useQuery({
-    queryKey: ['salesBreakdown', currentRestaurant?.restaurant_uuid, dateParams],
-    queryFn: () => generalService.getRestaurantSalesBreakdown(currentRestaurant?.restaurant_uuid!, dateParams),
-    enabled: !!currentRestaurant?.restaurant_uuid
+    queryKey: [
+      "salesBreakdown",
+      currentRestaurant?.restaurant_uuid,
+      dateParams,
+    ],
+    queryFn: () =>
+      generalService.getRestaurantSalesBreakdown(
+        currentRestaurant?.restaurant_uuid!,
+        dateParams,
+      ),
+    enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
   const { data: costBreakdown } = useQuery({
-    queryKey: ['costBreakdown', currentRestaurant?.restaurant_uuid, dateParams],
-    queryFn: () => generalService.getRestaurantCostOfSalesBreakdown(currentRestaurant?.restaurant_uuid!, dateParams),
-    enabled: !!currentRestaurant?.restaurant_uuid
+    queryKey: ["costBreakdown", currentRestaurant?.restaurant_uuid, dateParams],
+    queryFn: () =>
+      generalService.getRestaurantCostOfSalesBreakdown(
+        currentRestaurant?.restaurant_uuid!,
+        dateParams,
+      ),
+    enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
   const sections = [
-    { id: 'overview', label: 'Overview', icon: ChartBar },
-    { id: 'inventory', label: 'Inventory', icon: Package2 },
-    { id: 'procurement', label: 'Procurement', icon: ShoppingCart },
-    { id: 'menu', label: 'Menu', icon: UtensilsCrossed },
+    { id: "overview", label: "Overview", icon: ChartBar },
+    { id: "inventory", label: "Inventory", icon: Package2 },
+    { id: "procurement", label: "Procurement", icon: ShoppingCart },
+    { id: "menu", label: "Menu", icon: UtensilsCrossed },
   ];
 
   return (
@@ -83,16 +124,23 @@ export default function General() {
         </div>
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          {activeSection === 'overview' && (
+          {activeSection === "overview" && (
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex flex-col space-y-1">
-                      <span className="text-sm text-muted-foreground">Total Sales</span>
+                      <span className="text-sm text-muted-foreground">
+                        Total Sales
+                      </span>
                       <div className="flex items-center gap-2">
                         <span className="text-2xl font-bold">
-                          ${sales?.net_sales ? (sales.net_sales >= 1000 ? (sales.net_sales / 1000).toFixed(1) + 'K' : sales.net_sales.toFixed(2)) : '0.00'}
+                          {currencyInfo?.currencySymbol}
+                          {sales?.net_sales
+                            ? sales.net_sales >= 1000
+                              ? (sales.net_sales / 1000).toFixed(1) + "K"
+                              : sales.net_sales.toFixed(2)
+                            : "0.00"}
                         </span>
                         {/* <span className="text-sm text-red-500">↓20%</span> */}
                       </div>
@@ -104,10 +152,17 @@ export default function General() {
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex flex-col space-y-1">
-                      <span className="text-sm text-muted-foreground">Cost of Sales</span>
+                      <span className="text-sm text-muted-foreground">
+                        Cost of Sales
+                      </span>
                       <div className="flex items-center gap-2">
                         <span className="text-2xl font-bold">
-                          ${costOfSales?.data ? (costOfSales.data >= 1000 ? (costOfSales.data / 1000).toFixed(1) + 'K' : costOfSales.data.toFixed(2)) : '0.00'}
+                          {currencyInfo?.currencySymbol}
+                          {costOfSales?.data
+                            ? costOfSales.data >= 1000
+                              ? (costOfSales.data / 1000).toFixed(1) + "K"
+                              : costOfSales.data.toFixed(2)
+                            : "0.00"}
                         </span>
                         {/* <span className="text-sm text-green-500">↑600%</span> */}
                       </div>
@@ -119,10 +174,17 @@ export default function General() {
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex flex-col space-y-1">
-                      <span className="text-sm text-muted-foreground">Inventory Value</span>
+                      <span className="text-sm text-muted-foreground">
+                        Inventory Value
+                      </span>
                       <div className="flex items-center gap-2">
                         <span className="text-2xl font-bold">
-                          ${inventoryValue?.data ? (inventoryValue.data >= 1000 ? (inventoryValue.data / 1000).toFixed(1) + 'K' : inventoryValue.data.toFixed(2)) : '0.00'}
+                          {currencyInfo?.currencySymbol}
+                          {inventoryValue?.data
+                            ? inventoryValue.data >= 1000
+                              ? (inventoryValue.data / 1000).toFixed(1) + "K"
+                              : inventoryValue.data.toFixed(2)
+                            : "0.00"}
                         </span>
                         {/* <span className="text-sm text-neutral-500">-</span> */}
                       </div>
@@ -134,9 +196,14 @@ export default function General() {
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex flex-col space-y-1">
-                      <span className="text-sm text-muted-foreground">Procurement Cost</span>
+                      <span className="text-sm text-muted-foreground">
+                        Procurement Cost
+                      </span>
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold">${procurementCost?.data?.toFixed(2) || '0.00'}</span>
+                        <span className="text-2xl font-bold">
+                          {currencyInfo?.currencySymbol}
+                          {procurementCost?.data?.toFixed(2) || "0.00"}
+                        </span>
                         {/* <span className="text-sm text-green-500">↑225%</span> */}
                       </div>
                       {/* <span className="text-xs text-muted-foreground">Last 30 days</span> */}
@@ -148,15 +215,19 @@ export default function General() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="text-lg font-medium mb-4">Sales Over Time</h3>
-                    {console.log('Sales data:', salesBreakdown)}
-<SalesChart data={salesBreakdown || []} />
+                    <h3 className="text-lg font-medium mb-4">
+                      Sales Over Time
+                    </h3>
+                    {console.log("Sales data:", salesBreakdown)}
+                    <SalesChart data={salesBreakdown || []} />
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="text-lg font-medium mb-4">Cost of Sales Over Time</h3>
+                    <h3 className="text-lg font-medium mb-4">
+                      Cost of Sales Over Time
+                    </h3>
                     <SalesChart data={costBreakdown || []} type="cost" />
                   </CardContent>
                 </Card>
@@ -164,19 +235,21 @@ export default function General() {
             </div>
           )}
 
-          {activeSection === 'inventory' && (
+          {activeSection === "inventory" && (
             <div className="p-6">
               <p className="text-gray-600">Inventory section coming soon...</p>
             </div>
           )}
 
-          {activeSection === 'procurement' && (
+          {activeSection === "procurement" && (
             <div className="p-6">
-              <p className="text-gray-600">Procurement section coming soon...</p>
+              <p className="text-gray-600">
+                Procurement section coming soon...
+              </p>
             </div>
           )}
 
-          {activeSection === 'menu' && (
+          {activeSection === "menu" && (
             <div className="p-6">
               <p className="text-gray-600">Menu section coming soon...</p>
             </div>

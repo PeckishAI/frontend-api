@@ -28,7 +28,7 @@ import { useRestaurantContext } from "@/contexts/RestaurantContext";
 export default function Products() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [editingRecipe, setEditingRecipe] = useState<Product | null>(null);
-  const { currentRestaurant } = useRestaurantContext();
+  const { currentRestaurant, currencyInfo } = useRestaurantContext();
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products", currentRestaurant?.restaurant_uuid],
@@ -78,7 +78,8 @@ export default function Products() {
                   <div className="text-sm text-gray-500">Price</div>
                 </div>
                 <div className="font-medium">
-                  ${product.portion_price?.toFixed(2) || "0.00"}
+                  {currencyInfo?.currencySymbol}
+                  {product.portion_price?.toFixed(2) || "0.00"}
                 </div>
               </div>
               <div>
@@ -87,7 +88,8 @@ export default function Products() {
                   <div className="text-sm text-gray-500">Cost</div>
                 </div>
                 <div className="font-medium">
-                  ${product.portion_cost?.toFixed(2) || "0.00"}
+                  {currencyInfo?.currencySymbol}
+                  {product.portion_cost?.toFixed(2) || "0.00"}
                 </div>
               </div>
               <div>
@@ -166,10 +168,12 @@ export default function Products() {
                       {product.product_ingredients?.length || 0}
                     </TableCell>
                     <TableCell className="text-right">
-                      ${product.portion_price?.toFixed(2) || "0.00"}
+                      {currencyInfo?.currencySymbol}
+                      {product.portion_price?.toFixed(2) || "0.00"}
                     </TableCell>
                     <TableCell className="text-right">
-                      ${product.portion_cost?.toFixed(2) || "0.00"}
+                      {currencyInfo?.currencySymbol}
+                      {product.portion_cost?.toFixed(2) || "0.00"}
                     </TableCell>
                     <TableCell className="text-right">
                       {product.portion_price && product.portion_cost

@@ -28,7 +28,7 @@ import { useRestaurantContext } from "@/contexts/RestaurantContext";
 export default function Modifiers() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [editingModifier, setEditingModifier] = useState<Modifier | null>(null);
-  const { currentRestaurant } = useRestaurantContext();
+  const { currentRestaurant, currencyInfo } = useRestaurantContext();
   const queryClient = useQueryClient();
 
   const { data: modifiers = [], isLoading } = useQuery({
@@ -69,8 +69,9 @@ export default function Modifiers() {
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Layers className="h-4 w-4" />
               <span>
-                {modifier.modifier_ingredients?.length || 0 +
-                  modifier.modifier_preparations?.length || 0}{" "}
+                {modifier.modifier_ingredients?.length ||
+                  0 + modifier.modifier_preparations?.length ||
+                  0}{" "}
                 ingredients
               </span>
             </div>
@@ -81,7 +82,8 @@ export default function Modifiers() {
                   <div className="text-sm text-gray-500">Price</div>
                 </div>
                 <div className="font-medium">
-                  ${modifier.portion_price?.toFixed(2) || "0.00"}
+                  {currencyInfo?.currencySymbol}
+                  {modifier.portion_price?.toFixed(2) || "0.00"}
                 </div>
               </div>
               <div>
@@ -90,7 +92,8 @@ export default function Modifiers() {
                   <div className="text-sm text-gray-500">Cost</div>
                 </div>
                 <div className="font-medium">
-                  ${modifier.portion_cost?.toFixed(2) || "0.00"}
+                  {currencyInfo?.currencySymbol}
+                  {modifier.portion_cost?.toFixed(2) || "0.00"}
                 </div>
               </div>
               <div>
@@ -159,10 +162,12 @@ export default function Modifiers() {
                       {modifier.modifier_ingredients?.length || 0}
                     </TableCell>
                     <TableCell className="text-right">
-                      ${modifier.portion_price?.toFixed(2) || "0.00"}
+                      {currencyInfo?.currencySymbol}
+                      {modifier.portion_price?.toFixed(2) || "0.00"}
                     </TableCell>
                     <TableCell className="text-right">
-                      ${modifier.portion_cost?.toFixed(2) || "0.00"}
+                      {currencyInfo?.currencySymbol}
+                      {modifier.portion_cost?.toFixed(2) || "0.00"}
                     </TableCell>
                     <TableCell className="text-right">
                       {modifier.portion_price && modifier.portion_cost

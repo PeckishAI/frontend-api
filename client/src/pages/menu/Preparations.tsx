@@ -32,7 +32,7 @@ export default function Preparations() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [editingPreparation, setEditingPreparation] =
     useState<Preparation | null>(null);
-  const { currentRestaurant } = useRestaurantContext();
+  const { currentRestaurant, currencyInfo } = useRestaurantContext();
   const queryClient = useQueryClient();
 
   const { data: preparations = [], isLoading } = useQuery({
@@ -85,7 +85,8 @@ export default function Preparations() {
                   <div className="text-sm text-gray-500">Cost</div>
                 </div>
                 <div className="font-medium">
-                  ${preparation.portion_cost?.toFixed(2) || "0.00"}
+                  {currencyInfo?.currencySymbol}
+                  {preparation.portion_cost?.toFixed(2) || "0.00"}
                 </div>
               </div>
               <div>
@@ -103,7 +104,7 @@ export default function Preparations() {
                   <div className="text-sm text-gray-500">Per Portion</div>
                 </div>
                 <div className="font-medium">
-                  $
+                  {currencyInfo?.currencySymbol}
                   {(
                     (preparation.portion_cost || 0) /
                     (preparation.portion_count || 1)
@@ -141,7 +142,10 @@ export default function Preparations() {
                 if (!currentRestaurant?.restaurant_uuid) {
                   throw new Error("No restaurant selected");
                 }
-                await menuService.createPreparation(currentRestaurant.restaurant_uuid, data);
+                await menuService.createPreparation(
+                  currentRestaurant.restaurant_uuid,
+                  data,
+                );
                 queryClient.invalidateQueries(["preparations"]);
                 setEditingPreparation(null);
               } catch (error) {
@@ -187,13 +191,14 @@ export default function Preparations() {
                         preparation.preparation_preparations?.length || 0}
                     </TableCell>
                     <TableCell className="text-right">
-                      ${preparation.portion_cost?.toFixed(2) || "0.00"}
+                      {currencyInfo?.currencySymbol}
+                      {preparation.portion_cost?.toFixed(2) || "0.00"}
                     </TableCell>
                     <TableCell className="text-right">
                       {preparation.portion_count || 1}
                     </TableCell>
                     <TableCell className="text-right">
-                      $
+                      {currencyInfo?.currencySymbol}
                       {(
                         (preparation.portion_cost || 0) /
                         (preparation.portion_count || 1)

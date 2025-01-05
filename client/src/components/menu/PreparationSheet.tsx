@@ -180,7 +180,7 @@ export default function PreparationSheet({
   onSubmit: (data: Preparation) => void;
 }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const { currentRestaurant } = useRestaurantContext();
+  const { currentRestaurant, currencyInfo } = useRestaurantContext();
   const queryClient = useQueryClient();
   const [showNewIngredientDialog, setShowNewIngredientDialog] = useState(false);
   const [showNewPreparationDialog, setShowNewPreparationDialog] =
@@ -769,7 +769,7 @@ export default function PreparationSheet({
 
                       <div className="flex items-center">
                         <span className="text-sm text-muted-foreground">
-                          $
+                          {currencyInfo?.currencySymbol}
                           {(
                             form.watch(
                               `preparation_ingredients.${index}.total_cost`,
