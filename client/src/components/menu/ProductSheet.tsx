@@ -333,7 +333,21 @@ export default function RecipeSheet({
                   if (!currentRestaurant?.restaurant_uuid) {
                     throw new Error("No restaurant selected");
                   }
-                  console.log("Form Data:", data);
+                  
+                  if (product?.product_uuid) {
+                    // Update existing product
+                    await menuService.updateProduct(currentRestaurant.restaurant_uuid, {
+                      ...data,
+                      product_uuid: product.product_uuid
+                    });
+                  } else {
+                    // Create new product
+                    await menuService.createProduct(currentRestaurant.restaurant_uuid, data);
+                  }
+                  
+                  // Invalidate products query to refresh the list
+                  queryClient.invalidateQueries(["products"]);
+                  onSubmit(data);
                   onOpenChange(false);
                 } catch (error) {
                   console.error("Failed to save recipe:", error);
