@@ -355,20 +355,9 @@ export function EditInvoiceSlider({
               >
                 <div className="border-b">
                   <div className="p-4">
-                    <div
-                      className="flex items-center justify-between cursor-pointer hover:bg-gray-50"
-                      onClick={() => setIsDetailsOpen(!isDetailsOpen)}
-                    >
-                      <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                        Invoice Details
-                        <ChevronDown
-                          className={cn(
-                            "h-4 w-4 transition-transform",
-                            isDetailsOpen ? "transform rotate-180" : "",
-                          )}
-                        />
-                      </h2>
-                    </div>
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      Invoice Details
+                    </h2>
 
                     <div
                       className={cn(
@@ -518,6 +507,17 @@ export function EditInvoiceSlider({
                           </span>
                         </div>
                       </div>
+                    </div>
+                    <div
+                      className="flex items-center justify-center p-2 cursor-pointer hover:bg-gray-50 border-t mt-4"
+                      onClick={() => setIsDetailsOpen(!isDetailsOpen)}
+                    >
+                      <ChevronDown
+                        className={cn(
+                          "h-4 w-4 transition-transform",
+                          isDetailsOpen ? "transform rotate-180" : "",
+                        )}
+                      />
                     </div>
                   </div>
                 </div>
