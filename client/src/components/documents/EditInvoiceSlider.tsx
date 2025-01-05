@@ -498,15 +498,21 @@ export function EditInvoiceSlider({
                           <FormItem className="col-span-2">
                             <FormLabel>Supplier</FormLabel>
                             <FormControl>
-                              <div className="relative z-[100]">
+                              <div className="relative">
                                 <CreatableSelect
                                   styles={{
                                     menu: (base) => ({
                                       ...base,
-                                      position: 'fixed',
-                                      width: 'calc(100% - 2rem)'
+                                      position: 'absolute',
+                                      width: '100%',
+                                      zIndex: 9999
+                                    }),
+                                    container: (base) => ({
+                                      ...base,
+                                      zIndex: 9999
                                     })
                                   }}
+                                  menuPortalTarget={document.body}
                                   value={
                                     form.watch("supplier")?.supplier_uuid
                                       ? {
