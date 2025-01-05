@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { type Order } from "@/types/order";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
 
 interface ApproveOrderDialogProps {
   open: boolean;
@@ -101,10 +102,10 @@ export default function ApproveOrderDialog({
                   <TableCell>{item.quantity}</TableCell>
                   <TableCell>{item.unit?.unit_name}</TableCell>
                   <TableCell className="text-right">
-                    ${item.unit_cost?.toFixed(2) || "0.00"}
+                    {currencyInfo?.currencySymbol}{item.unit_cost?.toFixed(2) || "0.00"}
                   </TableCell>
                   <TableCell className="text-right">
-                    ${item.total_cost?.toFixed(2) || "0.00"}
+                    {currencyInfo?.currencySymbol}{item.total_cost?.toFixed(2) || "0.00"}
                   </TableCell>
                 </TableRow>
               ))}

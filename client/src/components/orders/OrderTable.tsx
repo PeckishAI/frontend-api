@@ -127,7 +127,7 @@ export default function OrderTable({
                 className="text-right cursor-pointer"
                 onClick={() => onOrderClick(order)}
               >
-                ${order.amount.toFixed(2)}
+                {useRestaurantContext().currencyInfo?.currencySymbol}{order.amount.toFixed(2)}
               </TableCell>
               <TableCell>
                 <div className="flex gap-2">

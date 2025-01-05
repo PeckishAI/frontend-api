@@ -75,7 +75,7 @@ export default function OrderCard({
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <p className="text-lg font-semibold">
-          ${order.amount ? order.amount.toFixed(2) : "0.00"}
+          {useRestaurantContext().currencyInfo?.currencySymbol}{order.amount ? order.amount.toFixed(2) : "0.00"}
         </p>
         <div className="flex gap-2">
           {order.status === "pending" && (

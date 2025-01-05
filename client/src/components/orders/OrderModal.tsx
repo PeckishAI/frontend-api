@@ -598,7 +598,7 @@ export default function OrderModal({
                     Total
                   </TableCell>
                   <TableCell className="text-right font-semibold">
-                    ${editedOrder.amount?.toFixed(2)}
+                    {currencyInfo?.currencySymbol}{editedOrder.amount?.toFixed(2)}
                   </TableCell>
                   {editMode && <TableCell />}
                 </TableRow>

@@ -563,13 +563,13 @@ export default function ReceiveOrderModal({
               <div>
                 <span className="text-sm text-gray-500">Order Total:</span>
                 <span className="ml-2 font-semibold">
-                  ${order?.amount?.toFixed(2) || "0.00"}
+                  {currencyInfo?.currencySymbol}{order?.amount?.toFixed(2) || "0.00"}
                 </span>
               </div>
               <div>
                 <span className="text-sm text-gray-500">Invoice Total:</span>
                 <span className="ml-2 font-semibold">
-                  ${selectedInvoiceData.amount?.toFixed(2) || "0.00"}
+                  {currencyInfo?.currencySymbol}{selectedInvoiceData.amount?.toFixed(2) || "0.00"}
                 </span>
               </div>
             </div>
