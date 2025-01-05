@@ -116,7 +116,6 @@ export const unitService = {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      console.log("Response: ", response);
 
       const result = await response.json();
       if (!result.success) {

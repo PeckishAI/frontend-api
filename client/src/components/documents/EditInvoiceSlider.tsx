@@ -117,7 +117,6 @@ export function EditInvoiceSlider({
       );
     },
   });
-  console.log("suppliers:", suppliers);
 
   const { data: supplierIngredientUnits } = useQuery({
     queryKey: [
@@ -155,7 +154,6 @@ export function EditInvoiceSlider({
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
-  console.log("restaurantIngredients:", restaurantIngredients);
 
   const { data: unitsData } = useQuery({
     //Added unitsData query
