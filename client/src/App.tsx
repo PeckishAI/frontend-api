@@ -12,6 +12,8 @@ import Orders from "@/pages/Orders";
 import General from "@/pages/General";
 import RestaurantManagement from "@/pages/RestaurantManagement";
 import Profile from "@/pages/Profile";
+import SignIn from "@/pages/SignIn"; // Import the SignIn component
+
 
 export default function App() {
   return (
@@ -20,12 +22,12 @@ export default function App() {
         <div className="min-h-screen bg-gray-50">
           <Sidebar />
           <Switch>
+            <Route path="/signin" component={SignIn} />
             <Route path="/" component={General} />
             <Route path="/inventory" component={Inventory} />
             <Route path="/menu" component={Menu} />
             <Route path="/orders" component={Orders} />
-            <Route path="/documents" component={Documents} />{" "}
-            {/* Updated route */}
+            <Route path="/documents" component={Documents} />
             <Route path="/restaurant" component={RestaurantManagement} />
             <Route path="/profile" component={Profile} />
           </Switch>
