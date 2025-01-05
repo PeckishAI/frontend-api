@@ -138,6 +138,17 @@ export default function EditIngredientForm({
     },
   });
 
+  // Debug form state changes
+  React.useEffect(() => {
+    console.log("Form state updated:", {
+      isDirty: form.formState.isDirty,
+      errors: form.formState.errors,
+      isValid: form.formState.isValid,
+      isSubmitting: form.formState.isSubmitting,
+      submitCount: form.formState.submitCount
+    });
+  }, [form.formState]);
+
   React.useEffect(() => {
     if (ingredient) {
       form.reset({
@@ -152,10 +163,20 @@ export default function EditIngredientForm({
   const queryClient = useQueryClient();
 
   const handleSubmit = async (values: EditIngredientFormValues) => {
-    // Log validation state
-    console.log("Form validation state:", form.formState);
-    console.log("Form errors:", form.formState.errors);
-    console.log("Form values:", values);
+    console.log("Attempting form submission");
+    
+    // Pre-submission validation check
+    const isValid = await form.trigger();
+    console.log("Pre-submission validation:", {
+      isValid,
+      values,
+      errors: form.formState.errors
+    });
+
+    if (!isValid) {
+      console.error("Form validation failed:", form.formState.errors);
+      return;
+    }
 
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
