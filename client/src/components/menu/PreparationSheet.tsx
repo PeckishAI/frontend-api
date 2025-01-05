@@ -267,14 +267,14 @@ export default function PreparationSheet({
       const quantity = ing.quantity || 0;
       const unitCost = ing.unit_cost || 0;
       const conversionFactor = ing.base_to_recipe || 1;
-      return sum + quantity * unitCost * conversionFactor;
+      return sum + (quantity * unitCost) / conversionFactor;
     }, 0);
 
     const totalPrepCost = preparations.reduce((sum, prep) => {
       const quantity = prep.quantity || 0;
       const unitCost = prep.unit_cost || 0;
       const conversionFactor = prep.base_to_recipe || 1;
-      return sum + quantity * unitCost * conversionFactor;
+      return sum + (quantity * unitCost) / conversionFactor;
     }, 0);
 
     const totalCost = totalIngredientCost + totalPrepCost;
@@ -552,7 +552,7 @@ export default function PreparationSheet({
 
                                     form.setValue(
                                       `${fieldPrefix}.${index}.total_cost`,
-                                      quantity * conversionFactor * unitCost,
+                                      (quantity / conversionFactor) * unitCost,
                                     );
                                   }
                                 }}
@@ -601,7 +601,7 @@ export default function PreparationSheet({
                                       `${fieldPrefix}.${index}.base_to_recipe`,
                                     ) || 1;
                                   const totalCost =
-                                    newQuantity * conversionFactor * unitCost;
+                                    (newQuantity / conversionFactor) * unitCost;
                                   form.setValue(
                                     `${fieldPrefix}.${index}.total_cost`,
                                     totalCost,
@@ -734,7 +734,7 @@ export default function PreparationSheet({
                                       `${fieldPrefix}.${index}.quantity`,
                                     ) || 1;
                                   const totalCost =
-                                    quantity * newConversionFactor * unitCost;
+                                    (quantity / newConversionFactor) * unitCost;
                                   form.setValue(
                                     `${fieldPrefix}.${index}.total_cost`,
                                     totalCost,

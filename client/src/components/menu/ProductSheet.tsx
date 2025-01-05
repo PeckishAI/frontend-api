@@ -366,9 +366,6 @@ export default function RecipeSheet({
                     <FormItem>
                       <FormLabel>Category</FormLabel>
                       <div className="flex gap-2">
-                        <div className="w-12 flex items-center justify-center">
-                          {field.value?.emoji}
-                        </div>
                         <FormControl>
                           <CreatableSelect
                             value={
@@ -401,7 +398,7 @@ export default function RecipeSheet({
                               value: cat.category_uuid,
                               label: cat.category_name,
                             }))}
-                            placeholder="Choose a category or type to create new"
+                            placeholder=""
                             size="large"
                           />
                         </FormControl>
@@ -618,7 +615,7 @@ export default function RecipeSheet({
 
                                     form.setValue(
                                       `${fieldPrefix}.${index}.total_cost`,
-                                      quantity * conversionFactor * unitCost,
+                                      (quantity / conversionFactor) * unitCost,
                                     );
                                   }
                                 }}
@@ -667,7 +664,7 @@ export default function RecipeSheet({
                                       `${fieldPrefix}.${index}.base_to_recipe`,
                                     ) || 1;
                                   const totalCost =
-                                    newQuantity * conversionFactor * unitCost;
+                                    (newQuantity / conversionFactor) * unitCost;
                                   form.setValue(
                                     `${fieldPrefix}.${index}.total_cost`,
                                     totalCost,
@@ -799,7 +796,7 @@ export default function RecipeSheet({
                                       `${fieldPrefix}.${index}.quantity`,
                                     ) || 1;
                                   const totalCost =
-                                    quantity * newConversionFactor * unitCost;
+                                    (quantity / newConversionFactor) * unitCost;
                                   form.setValue(
                                     `${fieldPrefix}.${index}.total_cost`,
                                     totalCost,
@@ -920,7 +917,7 @@ export default function RecipeSheet({
                                     );
                                     form.setValue(
                                       `product_preparations.${index}.total_cost`,
-                                      quantity * conversionFactor * unitCost,
+                                      (quantity / conversionFactor) * unitCost,
                                     );
                                     calculateTotalCost();
 
@@ -987,7 +984,7 @@ export default function RecipeSheet({
                                       `product_preparations.${index}.base_to_recipe`,
                                     ) || 1;
                                   const totalCost =
-                                    newValue * conversionFactor * unitCost;
+                                    (newValue / conversionFactor) * unitCost;
 
                                   form.setValue(
                                     `product_preparations.${index}.total_cost`,
