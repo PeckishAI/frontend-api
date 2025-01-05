@@ -25,8 +25,8 @@ export default function SignIn() {
             <img src="/images/peckish-logo.jpg" alt="Peckish" className="h-12 w-auto" />
           </div>
           
-          <h2 className="mt-8 text-4xl font-display text-center">Welcome back!</h2>
-          <p className="mt-2 text-sm text-center text-gray-600">
+          <h2 className="mt-8 text-4xl font-display text-center text-white">Welcome back!</h2>
+          <p className="mt-2 text-sm text-center text-white">
             Enter your email and password to log in to Peckish
           </p>
 
