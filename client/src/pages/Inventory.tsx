@@ -31,10 +31,15 @@ export default function Inventory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<FilterType[]>([]);
   const [isNewItemOpen, setIsNewItemOpen] = useState(false);
-  const [selectedIngredient, setSelectedIngredient] = useState<
-    InventoryItem | undefined
-  >();
+  const [selectedIngredient, setSelectedIngredient] = useState<InventoryItem | undefined>();
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const { toast } = useToast();
+
+  const handleSort = (column: string) => {
+    setSortColumn(column);
+    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+  };
 
   const sections = [
     { id: "ingredients", label: "Ingredients" },
@@ -82,7 +87,44 @@ export default function Inventory() {
 
   const filteredInventory = !inventory
     ? []
-    : inventory.filter((item) => {
+    : [...inventory].sort((a, b) => {
+        if (!sortColumn) return 0;
+
+        let aValue, bValue;
+
+        switch (sortColumn) {
+          case 'name':
+            aValue = a.ingredient_name.toLowerCase();
+            bValue = b.ingredient_name.toLowerCase();
+            break;
+          case 'tags':
+            aValue = a.tags.length;
+            bValue = b.tags.length;
+            break;
+          case 'par_level':
+            aValue = a.par_level || 0;
+            bValue = b.par_level || 0;
+            break;
+          case 'quantity':
+            aValue = a.quantity || 0;
+            bValue = b.quantity || 0;
+            break;
+          case 'unit':
+            aValue = a.base_unit?.unit_name?.toLowerCase() || '';
+            bValue = b.base_unit?.unit_name?.toLowerCase() || '';
+            break;
+          case 'suppliers':
+            aValue = a.ingredient_suppliers?.length || 0;
+            bValue = b.ingredient_suppliers?.length || 0;
+            break;
+          default:
+            return 0;
+        }
+
+        if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+        if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      }).filter((item) => {
         const matchesSearch = item.ingredient_name
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
@@ -189,12 +231,24 @@ export default function Inventory() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Tags</TableHead>
-                  <TableHead>Par Level</TableHead>
-                  <TableHead>Quantity</TableHead>
-                  <TableHead>Unit</TableHead>
-                  <TableHead>Suppliers</TableHead>
+                  <TableHead sortable sortKey="name" sortDirection={sortColumn === 'name' ? sortDirection : undefined} onSort={() => handleSort('name')}>
+                    Name
+                  </TableHead>
+                  <TableHead sortable sortKey="tags" sortDirection={sortColumn === 'tags' ? sortDirection : undefined} onSort={() => handleSort('tags')}>
+                    Tags
+                  </TableHead>
+                  <TableHead sortable sortKey="par_level" sortDirection={sortColumn === 'par_level' ? sortDirection : undefined} onSort={() => handleSort('par_level')}>
+                    Par Level
+                  </TableHead>
+                  <TableHead sortable sortKey="quantity" sortDirection={sortColumn === 'quantity' ? sortDirection : undefined} onSort={() => handleSort('quantity')}>
+                    Quantity
+                  </TableHead>
+                  <TableHead sortable sortKey="unit" sortDirection={sortColumn === 'unit' ? sortDirection : undefined} onSort={() => handleSort('unit')}>
+                    Unit
+                  </TableHead>
+                  <TableHead sortable sortKey="suppliers" sortDirection={sortColumn === 'suppliers' ? sortDirection : undefined} onSort={() => handleSort('suppliers')}>
+                    Suppliers
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
