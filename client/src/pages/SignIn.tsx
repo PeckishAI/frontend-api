@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { MdAlternateEmail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
-import { Button, LabeledInput, Checkbox } from "shared-ui";
 import { useForm } from "react-hook-form";
 import { authService } from "@/services/authService";
 import { z } from "zod";
