@@ -68,7 +68,8 @@ export const restaurantService = {
         }
       };
 
-      return { currencyISO, currencySymbol: getSymbol(currencyISO) };
+      const symbol = getSymbol(currencyISO);
+      return { currencyISO, currencySymbol: symbol };
     } catch (error) {
       console.error("Failed to fetch restaurants:", error);
       throw error;
