@@ -152,6 +152,11 @@ export default function EditIngredientForm({
   const queryClient = useQueryClient();
 
   const handleSubmit = async (values: EditIngredientFormValues) => {
+    // Log validation state
+    console.log("Form validation state:", form.formState);
+    console.log("Form errors:", form.formState.errors);
+    console.log("Form values:", values);
+
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
     }
