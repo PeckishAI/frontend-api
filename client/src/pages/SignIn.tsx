@@ -1,11 +1,34 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { config } from "@/config/config";
+import { authService } from "@/services/authService";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    // Load Google API
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    // Load Apple API
+    const appleScript = document.createElement('script');
+    appleScript.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
+    appleScript.async = true;
+    appleScript.defer = true;
+    document.body.appendChild(appleScript);
+
+    return () => {
+      document.body.removeChild(script);
+      document.body.removeChild(appleScript);
+    };
+  }, []);
 
   return (
     <div className="relative min-h-screen">
@@ -32,11 +55,65 @@ export default function SignIn() {
 
           <div className="mt-8 space-y-6">
             <div className="grid gap-2">
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={async () => {
+                  try {
+                    const google = (window as any).google;
+                    if (!google) {
+                      console.error('Google API not loaded');
+                      return;
+                    }
+
+                    const client = google.accounts.oauth2.initTokenClient({
+                      client_id: config.googleClientId,
+                      scope: 'email profile',
+                      callback: async (response: any) => {
+                        if (response.access_token) {
+                          const result = await authService.googleLogIn(response.access_token);
+                          // Handle successful login (redirect, set tokens, etc)
+                          window.location.href = '/';
+                        }
+                      },
+                    });
+                    client.requestAccessToken();
+                  } catch (error) {
+                    console.error('Google login failed:', error);
+                  }
+                }}
+              >
                 <img src="https://www.google.com/favicon.ico" alt="" className="mr-2 h-4 w-4" />
                 Continue with Google
               </Button>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={async () => {
+                  try {
+                    const auth = (window as any).AppleID;
+                    if (!auth) {
+                      console.error('Apple API not loaded');
+                      return;
+                    }
+
+                    const response = await auth.auth.signIn();
+                    if (response.authorization?.id_token) {
+                      const result = await authService.appleLogIn(
+                        response.authorization.id_token,
+                        response.user ? {
+                          firstName: response.user.name.firstName,
+                          lastName: response.user.name.lastName
+                        } : null
+                      );
+                      // Handle successful login (redirect, set tokens, etc)
+                      window.location.href = '/';
+                    }
+                  } catch (error) {
+                    console.error('Apple login failed:', error);
+                  }
+                }}
+              >
                 <img src="https://www.apple.com/favicon.ico" alt="" className="mr-2 h-4 w-4" />
                 Continue with Apple
               </Button>
