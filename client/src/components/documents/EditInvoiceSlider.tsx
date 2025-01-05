@@ -228,6 +228,17 @@ export function EditInvoiceSlider({
     );
   };
 
+  React.useEffect(() => {
+    if (invoice?.ingredients) {
+      const initializedIngredients = invoice.ingredients.map(ing => ({
+        ...ing,
+        vat: ing.vat || 0,
+      }));
+      form.setValue("ingredients", initializedIngredients);
+    }
+  }, [invoice, form]);
+
+
   if (!invoice) return null;
 
   return (
