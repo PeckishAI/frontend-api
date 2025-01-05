@@ -26,7 +26,6 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const { currentRestaurant, currencyInfo } = useRestaurantContext();
-  console.log("currencyISO:", currencyInfo?.currencyISO);
 
   const {
     data: invoices = [],
@@ -241,7 +240,8 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        {currencyInfo?.currencySymbol}{invoice.amount?.toFixed(2) || "0.00"}
+                        {currencyInfo?.currencySymbol}
+                        {invoice.amount?.toFixed(2) || "0.00"}
                       </TableCell>
                       <TableCell className="text-right">
                         {invoice.ingredients?.length || 0}

@@ -119,7 +119,7 @@ export function EditInvoiceSlider({
   const [newIngredientName, setNewIngredientName] = useState("");
   const [showSupplierDialog, setShowSupplierDialog] = useState(false); // Added state for supplier dialog
   const [newSupplierName, setNewSupplierName] = useState(""); // Added state for new supplier name
-  const { currentRestaurant } = useRestaurantContext();
+  const { currentRestaurant, currencyInfo } = useRestaurantContext();
   const { data: suppliers, isLoading } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
@@ -272,7 +272,9 @@ export function EditInvoiceSlider({
 
   const removeIngredient = (index: number) => {
     const currentIngredients = form.getValues("invoice_ingredients") || [];
-    const filteredIngredients = currentIngredients.filter((_, i) => i !== index);
+    const filteredIngredients = currentIngredients.filter(
+      (_, i) => i !== index,
+    );
     form.setValue("invoice_ingredients", filteredIngredients);
     calculateTotalAmount();
   };
@@ -487,7 +489,8 @@ export function EditInvoiceSlider({
                                     value: supplier.supplier_uuid,
                                     label: supplier.supplier_name,
                                   }))}
-                                  onCreateOption={(inputValue) => { // Updated onCreateOption
+                                  onCreateOption={(inputValue) => {
+                                    // Updated onCreateOption
                                     setNewSupplierName(inputValue);
                                     setShowSupplierDialog(true);
                                   }}
@@ -586,7 +589,8 @@ export function EditInvoiceSlider({
                             Calculated Total:
                           </span>
                           <span className="font-medium">
-                            ${calculateTotalAmount().toFixed(2)}
+                            {currencyInfo?.currencySymbol}
+                            {calculateTotalAmount().toFixed(2)}
                           </span>
                         </div>
                       </div>
@@ -792,20 +796,30 @@ export function EditInvoiceSlider({
                                       })()}
                                       onCreateOption={async (value) => {
                                         try {
-                                          if (!currentRestaurant?.restaurant_uuid) {
-                                            throw new Error("No restaurant selected");
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          ) {
+                                            throw new Error(
+                                              "No restaurant selected",
+                                            );
                                           }
-                                          const newUnit = await unitService.createUnit(
-                                            { unit_name: value },
-                                            currentRestaurant.restaurant_uuid,
-                                          );
+                                          const newUnit =
+                                            await unitService.createUnit(
+                                              { unit_name: value },
+                                              currentRestaurant.restaurant_uuid,
+                                            );
                                           field.onChange({
                                             unit_uuid: newUnit.unit_uuid,
                                             unit_name: newUnit.unit_name,
                                           });
-                                          queryClient.invalidateQueries(["units"]);
+                                          queryClient.invalidateQueries([
+                                            "units",
+                                          ]);
                                         } catch (error) {
-                                          console.error("Failed to create unit:", error);
+                                          console.error(
+                                            "Failed to create unit:",
+                                            error,
+                                          );
                                         }
                                       }}
                                     />
@@ -930,7 +944,7 @@ export function EditInvoiceSlider({
               if (!currentRestaurant?.restaurant_uuid) return;
               const newSupplier = await supplierService.createSupplier(
                 currentRestaurant.restaurant_uuid,
-                data
+                data,
               );
               form.setValue("supplier", {
                 supplier_uuid: newSupplier.supplier_uuid,
