@@ -175,7 +175,7 @@ export function EditInvoiceSlider({
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
-  const calculateTotal = () => {
+  const calculateTotalAmount = () => {
     const ingredients = form.watch("invoice_ingredients") || [];
     return ingredients.reduce(
       (sum, ingredient) => sum + (ingredient.total_cost || 0),
@@ -254,11 +254,10 @@ export function EditInvoiceSlider({
   };
 
   const removeIngredient = (index: number) => {
-    const currentIngredients = form.getValues("ingredients");
-    form.setValue(
-      "ingredients",
-      currentIngredients.filter((_, i) => i !== index),
-    );
+    const currentIngredients = form.getValues("invoice_ingredients") || [];
+    const filteredIngredients = currentIngredients.filter((_, i) => i !== index);
+    form.setValue("invoice_ingredients", filteredIngredients);
+    calculateTotalAmount();
   };
 
   React.useEffect(() => {
@@ -267,7 +266,7 @@ export function EditInvoiceSlider({
         ...ing,
         vat: ing.vat || 0,
       }));
-      form.setValue("ingredients", initializedIngredients);
+      form.setValue("invoice_ingredients", initializedIngredients);
     }
   }, [invoice, form]);
 
@@ -560,7 +559,7 @@ export function EditInvoiceSlider({
                             Calculated Total:
                           </span>
                           <span className="font-medium">
-                            ${calculateTotal().toFixed(2)}
+                            ${calculateTotalAmount().toFixed(2)}
                           </span>
                         </div>
                       </div>
@@ -630,7 +629,7 @@ export function EditInvoiceSlider({
                                       if (option) {
                                         field.onChange(option.label);
                                         form.setValue(
-                                          `ingredients.${index}.ingredient_uuid`,
+                                          `invoice_ingredients.${index}.ingredient_uuid`,
                                           option.value,
                                         );
                                       }
@@ -657,7 +656,7 @@ export function EditInvoiceSlider({
                           <div className="flex gap-2">
                             <FormField
                               control={form.control}
-                              name={`ingredients.${index}.quantity`}
+                              name={`invoice_ingredients.${index}.quantity`}
                               render={({ field }) => (
                                 <FormItem className="flex-1">
                                   <FormLabel>Quantity</FormLabel>
@@ -679,7 +678,7 @@ export function EditInvoiceSlider({
                             />
                             <FormField
                               control={form.control}
-                              name={`ingredients.${index}.unit`}
+                              name={`invoice_ingredients.${index}.unit`}
                               render={({ field }) => (
                                 <FormItem className="w-32">
                                   <FormLabel>Unit</FormLabel>
@@ -705,7 +704,7 @@ export function EditInvoiceSlider({
                                       options={(() => {
                                         const selectedIngredientUuid =
                                           form.watch(
-                                            `ingredients.${index}.ingredient_uuid`,
+                                            `invoice_ingredients.${index}.ingredient_uuid`,
                                           );
 
                                         const groups = [];
@@ -804,7 +803,7 @@ export function EditInvoiceSlider({
                           <div className="flex items-center gap-2">
                             <FormField
                               control={form.control}
-                              name={`ingredients.${index}.unit_cost`}
+                              name={`invoice_ingredients.${index}.unit_cost`}
                               render={({ field }) => (
                                 <FormItem className="flex-1">
                                   <FormLabel>Unit Cost</FormLabel>
@@ -827,7 +826,7 @@ export function EditInvoiceSlider({
                             />
                             <FormField
                               control={form.control}
-                              name={`ingredients.${index}.vat`}
+                              name={`invoice_ingredients.${index}.vat`}
                               render={({ field }) => (
                                 <FormItem className="w-24">
                                   <FormLabel>VAT</FormLabel>
