@@ -2,6 +2,7 @@ import { Hash, User2, Images, DollarSign, Package2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Invoices } from "@/lib/DocumentTypes";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
 
 interface InvoiceCardProps {
   invoice: Invoices;
@@ -54,7 +55,7 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
             <div className="flex items-center gap-2">
               <DollarSign className="h-4 w-4 text-gray-600" />
               <span className="font-medium">
-                {invoice.amount?.toFixed(2) || "0.00"}
+                {useRestaurantContext().currencyInfo?.currencySymbol}{invoice.amount?.toFixed(2) || "0.00"}
               </span>
             </div>
             <div className="flex items-center gap-2">
