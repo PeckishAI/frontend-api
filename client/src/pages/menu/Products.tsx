@@ -26,11 +26,14 @@ import { menuService } from "@/services/menuService";
 import { type Product } from "@/types/menu";
 import { useQuery } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import ProductModal from "@/components/menu/ProductModal"; // Added import
 
 export default function Products() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [editingRecipe, setEditingRecipe] = useState<Product | null>(null);
-  const [searchQuery, setSearchQuery] = useState(''); // Added search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isNewProductModalOpen, setIsNewProductModalOpen] = useState(false); // Added state
+  const [isProductSheetOpen, setIsProductSheetOpen] = useState(false); // Added state
   const { currentRestaurant, currencyInfo } = useRestaurantContext();
 
   const { data: products = [], isLoading } = useQuery({
@@ -141,12 +144,12 @@ export default function Products() {
         </div>
         <div className="flex items-center gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
-          <Button onClick={() => setEditingRecipe({})}>
+          <Button onClick={() => setIsNewProductModalOpen(true)}> {/* Changed onClick */}
             <PlusCircle className="mr-2 h-4 w-4" />
             New Product
           </Button>
         </div>
-      </div> {/* Added search input */}
+      </div>
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {viewMode === "cards" ? (
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -202,6 +205,8 @@ export default function Products() {
         )}
       </div>
 
+      <ProductModal open={isNewProductModalOpen} onOpenChange={setIsNewProductModalOpen} onSubmit={handleSubmit} /> {/* Replaced ProductSheet with ProductModal */}
+
       <RecipeSheet
         open={!!editingRecipe}
         onOpenChange={(open) => {
@@ -216,3 +221,8 @@ export default function Products() {
     </div>
   );
 }
+
+// Placeholder -  This function needs to be defined elsewhere
+const handleSubmit = (data: any) => {
+  console.log("Handle Submit called with:", data);
+};
