@@ -175,7 +175,7 @@ export function EditInvoiceSlider({
   });
 
   const calculateTotal = () => {
-    const ingredients = form.watch("ingredients");
+    const ingredients = form.watch("invoice_ingredients") || [];
     return ingredients.reduce(
       (sum, ingredient) => sum + (ingredient.total_cost || 0),
       0,
@@ -232,8 +232,8 @@ export function EditInvoiceSlider({
   };
 
   const addIngredient = () => {
-    const currentIngredients = form.getValues("ingredients") || [];
-    form.setValue("ingredients", [
+    const currentIngredients = form.getValues("invoice_ingredients") || [];
+    form.setValue("invoice_ingredients", [
       ...currentIngredients,
       {
         detected_name: "",
