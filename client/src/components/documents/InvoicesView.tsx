@@ -220,7 +220,7 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
                         <div className="flex items-center gap-1">
                           <Images className="h-4 w-4 text-gray-500" />
                           <span className="text-sm text-gray-500">
-                            {invoice.documents ? 1 : 0}
+                            {invoice.documents?.length || 0}
                           </span>
                         </div>
                       </TableCell>
