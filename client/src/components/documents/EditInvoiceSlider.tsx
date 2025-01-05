@@ -79,10 +79,11 @@ const editInvoiceSchema = z.object({
       total_cost: z.number().min(0).optional(),
       unit: z
         .object({
-          unit_uuid: z.string(),
-          unit_name: z.string(),
+          unit_uuid: z.string().optional().nullable(),
+          unit_name: z.string().optional().nullable(),
         })
-        .optional(),
+        .optional()
+        .nullable(),
       document_uuid: z.string().optional(),
       product_code: z.string().optional(),
     }),
