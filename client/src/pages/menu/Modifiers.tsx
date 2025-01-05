@@ -122,14 +122,14 @@ export default function Modifiers() {
   return (
     <div className="px-8 space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4"> {/*Removed Title */}
-          <input
-            type="text"
-            placeholder="Search modifiers..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="p-2 border rounded"
-          />
+        <input
+          type="text"
+          placeholder="Search modifiers..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="p-2 border rounded w-[300px]"
+        />
+        <div className="flex items-center gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
           <Button onClick={() => setEditingModifier({})}>
             <PlusCircle className="mr-2 h-4 w-4" />

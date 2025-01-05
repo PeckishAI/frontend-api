@@ -128,7 +128,13 @@ export default function Products() {
   return (
     <div className="px-8 space-y-6">
       <div className="flex items-center justify-between">
-        
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="p-2 border border-gray-300 rounded w-[300px]"
+        />
         <div className="flex items-center gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
           <Button onClick={() => setEditingRecipe({})}>
@@ -136,14 +142,7 @@ export default function Products() {
             New Product
           </Button>
         </div>
-      </div>
-      <input
-        type="text"
-        placeholder="Search products..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="mb-4 p-2 border border-gray-300 rounded"
-      /> {/* Added search input */}
+      </div> {/* Added search input */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {viewMode === "cards" ? (
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
