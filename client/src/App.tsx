@@ -1,26 +1,29 @@
+
 import { useState } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Route, Router, Switch } from "wouter";
+import { Route, Router, Switch, useLocation } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 import { queryClient } from "@/lib/queryClient";
 import { RestaurantProvider } from "@/contexts/RestaurantContext";
 import Sidebar from "@/components/layout/Sidebar";
-import Documents from "@/pages/Documents"; // Using the correct path
+import Documents from "@/pages/Documents";
 import Inventory from "@/pages/Inventory";
 import Menu from "@/pages/menu/Menu";
 import Orders from "@/pages/Orders";
 import General from "@/pages/General";
 import RestaurantManagement from "@/pages/RestaurantManagement";
 import Profile from "@/pages/Profile";
-import SignIn from "@/pages/SignIn"; // Import the SignIn component
-
+import SignIn from "@/pages/SignIn";
 
 export default function App() {
+  const [location] = useLocation();
+  const showSidebar = location !== "/signin";
+
   return (
     <QueryClientProvider client={queryClient}>
       <RestaurantProvider>
         <div className="min-h-screen bg-gray-50">
-          <Sidebar />
+          {showSidebar && <Sidebar />}
           <Switch>
             <Route path="/signin" component={SignIn} />
             <Route path="/" component={General} />
