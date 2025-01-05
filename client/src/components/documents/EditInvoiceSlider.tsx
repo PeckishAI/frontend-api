@@ -199,9 +199,22 @@ export function EditInvoiceSlider({
     }
   }, [invoice, form]);
 
-  const onSubmit = (data: EditInvoiceFormValues) => {
-    console.log(data);
-    onOpenChange(false);
+  const onSubmit = async (data: EditInvoiceFormValues) => {
+    try {
+      console.log("Form data:", data);
+      console.log("Form errors:", form.formState.errors);
+      
+      if (Object.keys(form.formState.errors).length > 0) {
+        console.error("Validation errors:", form.formState.errors);
+        return;
+      }
+
+      // TODO: Add API call to save changes
+      console.log("Submitting valid data:", data);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   const addIngredient = () => {
