@@ -207,29 +207,27 @@ export function EditInvoiceSlider({
     }
   }, [invoice, form]);
 
-  const onSubmit = (data: EditInvoiceFormValues) => {
-    console.log("Attempting form submission with data:", {
-      invoiceNumber: data.invoice_number,
-      date: data.date,
-      supplier: data.supplier,
-      amount: data.amount,
-      ingredients: data.ingredients?.map((ing) => ({
-        name: ing.ingredient_name,
-        quantity: ing.quantity,
-        unitCost: ing.unit_cost,
-        totalCost: ing.total_cost,
-        vat: ing.vat,
-      })),
-    });
+  const onSubmit = async (data: EditInvoiceFormValues) => {
+    if (!currentRestaurant?.restaurant_uuid || !invoice?.invoice_uuid) {
+      console.error("Missing restaurant or invoice UUID");
+      return;
+    }
 
     if (Object.keys(form.formState.errors).length > 0) {
       console.error("Form validation errors:", form.formState.errors);
       return;
     }
 
-    console.log("Form is valid, would submit:", data);
-    documentService.updateInvoice()
-    onOpenChange(false);
+    try {
+      await documentService.updateInvoice(
+        currentRestaurant.restaurant_uuid,
+        invoice.invoice_uuid,
+        data
+      );
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Failed to update invoice:", error);
+    }
   };
 
   const addIngredient = () => {
