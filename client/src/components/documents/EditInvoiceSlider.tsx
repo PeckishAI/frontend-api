@@ -491,9 +491,9 @@ export function EditInvoiceSlider({
                                   }}
                                   onChange={(option) => {
                                     if (option) {
-                                      field.onChange({
+                                      form.setValue("supplier", {
                                         supplier_uuid: option.value,
-                                        supplier_name: option.label,
+                                        supplier_name: option.label
                                       });
 
                                       const ingredients =
