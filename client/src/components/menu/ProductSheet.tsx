@@ -327,17 +327,25 @@ export default function RecipeSheet({
 
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(async (data) => {
-              try {
-                if (!currentRestaurant?.restaurant_uuid) {
-                  throw new Error("No restaurant selected");
+            onSubmit={form.handleSubmit(
+              async (data) => {
+                try {
+                  if (!currentRestaurant?.restaurant_uuid) {
+                    throw new Error("No restaurant selected");
+                  }
+                  console.log("Form Data:", data);
+                  onOpenChange(false);
+                } catch (error) {
+                  console.error("Failed to save recipe:", error);
                 }
-                console.log("Submitting", data);
-                onOpenChange(false);
-              } catch (error) {
-                console.error("Failed to save recipe:", error);
+              },
+              (errors) => {
+                console.log("Form Validation Errors:", errors);
+                console.log("Current Form State:", form.getValues());
+                console.log("Form Dirty Fields:", form.formState.dirtyFields);
+                console.log("Form Touched Fields:", form.formState.touchedFields);
               }
-            })}
+            )}
             className="space-y-6 pt-8"
           >
             <FormField
