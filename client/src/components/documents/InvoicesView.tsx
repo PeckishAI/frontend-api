@@ -26,7 +26,7 @@ export default function InvoicesView({ viewMode }: InvoicesViewProps) {
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const { currentRestaurant } = useRestaurantContext();
-  console.log("currencyISO:", currentRestaurant?.currency_iso);
+  console.log("currencyISO:", currentRestaurant?.currencySymbol);
 
   const {
     data: invoices = [],
