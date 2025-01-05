@@ -574,7 +574,7 @@ export function EditInvoiceSlider({
                     </h3>
                   </div>
 
-                  {form.watch("ingredients").map((ingredient, index) => (
+                  {(form.watch("invoice_ingredients") || []).map((ingredient, index) => (
                     <div
                       key={index}
                       className="border rounded-lg p-4 space-y-4"
@@ -582,7 +582,7 @@ export function EditInvoiceSlider({
                       <div className="grid grid-cols-2 gap-4">
                         <FormField
                           control={form.control}
-                          name={`ingredients.${index}.detected_name`}
+                          name={`invoice_ingredients.${index}.detected_name`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Detected</FormLabel>
@@ -596,7 +596,7 @@ export function EditInvoiceSlider({
 
                         <FormField
                           control={form.control}
-                          name={`ingredients.${index}.ingredient_name`}
+                          name={`invoice_ingredients.${index}.ingredient_name`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Mapped Ingredient</FormLabel>
