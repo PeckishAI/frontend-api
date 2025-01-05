@@ -37,7 +37,12 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
             currentRestaurant.restaurant_uuid,
           );
           console.log("Restaurant Context - Received currency data:", currency);
-          setCurrencyInfo(currency);
+          console.log("Restaurant Context - Currency ISO:", currency.currencyISO);
+          console.log("Restaurant Context - Currency Symbol:", currency.currencySymbol);
+          setCurrencyInfo({
+            currencyISO: currency.currencyISO,
+            currencySymbol: currency.currencySymbol
+          });
         } catch (error) {
           console.error("Failed to fetch currency info:", error);
           setCurrencyInfo(null);

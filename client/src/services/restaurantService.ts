@@ -68,8 +68,11 @@ export const restaurantService = {
         }
       };
 
-      const symbol = getSymbol(currencyISO);
-      return { currencyISO, currencySymbol: symbol };
+      const symbol = getSymbol(currencyISO?.currency || 'USD');
+      return { 
+        currencyISO: currencyISO?.currency || 'USD', 
+        currencySymbol: symbol 
+      };
     } catch (error) {
       console.error("Failed to fetch restaurants:", error);
       throw error;
