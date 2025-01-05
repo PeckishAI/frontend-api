@@ -228,6 +228,7 @@ export function EditInvoiceSlider({
     }
 
     console.log("Form is valid, would submit:", data);
+    documentService.updateInvoice()
     onOpenChange(false);
   };
 
