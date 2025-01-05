@@ -1,0 +1,97 @@
+~/Frontend$ npm run dev
+
+> rest-express@1.0.0 dev
+> tsx server/index.ts
+
+7:33:31 PM [express] Server running on port 5000
+Error:   Failed to scan for dependencies from entries:
+  /home/runner/Frontend/client/index.html
+
+  ✘ [ERROR] No matching export in "client/src/config/config.ts" for import "config"
+
+    client/src/lib/queryClient.ts:4:9:
+      4 │ import { config } from '../config/config';
+        ╵          ~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/config/config.ts" for import "config"
+
+    client/src/services/categoryService.ts:1:9:
+      1 │ import { config } from "../config/config";
+        ╵          ~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/config/config.ts" for import "config"
+
+    client/src/services/documentService.ts:9:9:
+      9 │ import { config } from "../config/config";
+        ╵          ~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/config/config.ts" for import "config"
+
+    client/src/services/generalService.ts:1:9:
+      1 │ import { config } from "../config/config";
+        ╵          ~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/config/config.ts" for import "config"
+
+    client/src/services/inventoryService.ts:3:9:
+      3 │ import { config } from "../config/config";
+        ╵          ~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/config/config.ts" for import "config"
+
+    client/src/services/menuService.ts:3:9:
+      3 │ import { config } from "../config/config";
+        ╵          ~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/config/config.ts" for import "config"
+
+    client/src/services/orderService.ts:3:9:
+      3 │ import { config } from "../config/config";
+        ╵          ~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/config/config.ts" for import "config"
+
+    client/src/services/restaurantService.ts:3:9:
+      3 │ import { config } from "../config/config";
+        ╵          ~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/config/config.ts" for import "config"
+
+    client/src/services/tagService.ts:1:9:
+      1 │ import { config } from "../config/config";
+        ╵          ~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/config/config.ts" for import "config"
+
+    client/src/services/unitService.ts:1:9:
+      1 │ import { config } from "../config/config";
+        ╵          ~~~~~~
+
+
+✘ [ERROR] No matching export in "client/src/config/config.ts" for import "config"
+
+    client/src/services/userService.ts:1:9:
+      1 │ import { config } from "../config/config";
+        ╵          ~~~~~~
+
+
+    at failureErrorWithLog (/home/runner/Frontend/node_modules/vite/node_modules/esbuild/lib/main.js:1472:15)
+    at /home/runner/Frontend/node_modules/vite/node_modules/esbuild/lib/main.js:945:25
+    at runOnEndCallbacks (/home/runner/Frontend/node_modules/vite/node_modules/esbuild/lib/main.js:1315:45)
+    at buildResponseToResult (/home/runner/Frontend/node_modules/vite/node_modules/esbuild/lib/main.js:943:7)
+    at /home/runner/Frontend/node_modules/vite/node_modules/esbuild/lib/main.js:955:9
+    at new Promise (<anonymous>)
+    at requestCallbacks.on-end (/home/runner/Frontend/node_modules/vite/node_modules/esbuild/lib/main.js:954:54)
+    at handleRequest (/home/runner/Frontend/node_modules/vite/node_modules/esbuild/lib/main.js:647:17)
+    at handleIncomingPacket (/home/runner/Frontend/node_modules/vite/node_modules/esbuild/lib/main.js:672:7)
+    at Socket.readFromStdout (/home/runner/Frontend/node_modules/vite/node_modules/esbuild/lib/main.js:600:7)
+ Environment updated. Reloading shell...
