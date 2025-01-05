@@ -70,7 +70,7 @@ export default function SignIn() {
               </div>
             </div>
 
-            <Button className="w-full bg-[#0F1916] hover:bg-[#0F1916]/90">
+            <Button className="w-full bg-[#0F1916] hover:bg-[#0F1916]/90 text-white">
               Sign in
             </Button>
 
