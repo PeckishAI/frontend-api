@@ -208,9 +208,9 @@ export function EditInvoiceSlider({
     }
   }, [invoice, form]);
 
+  const queryClient = useQueryClient();
+  
   const onSubmit = async (data: EditInvoiceFormValues) => {
-    console.log(currentRestaurant?.restaurant_uuid);
-    console.log(invoice);
     if (!currentRestaurant?.restaurant_uuid || !invoice?.document_uuid) {
       console.error("Missing restaurant or invoice UUID");
       return;
@@ -227,6 +227,7 @@ export function EditInvoiceSlider({
         invoice.document_uuid,
         data,
       );
+      await queryClient.invalidateQueries(["invoices", currentRestaurant.restaurant_uuid]);
       onOpenChange(false);
     } catch (error) {
       console.error("Failed to update invoice:", error);
