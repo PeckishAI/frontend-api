@@ -40,6 +40,7 @@ import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import { documentService } from "@/services/documentService";
 import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
+import SupplierDialog from "@/components/suppliers/SupplierDialog";
 
 const editInvoiceSchema = z.object({
   invoice_number: z.string().optional(),
@@ -917,6 +918,28 @@ export function EditInvoiceSlider({
               setShowIngredientDialog(false);
             } catch (error) {
               console.error("Failed to create ingredient:", error);
+            }
+          }}
+        />
+        <SupplierDialog
+          open={showSupplierDialog}
+          onOpenChange={setShowSupplierDialog}
+          defaultName={newSupplierName}
+          onSubmit={async (data) => {
+            try {
+              if (!currentRestaurant?.restaurant_uuid) return;
+              const newSupplier = await supplierService.createSupplier(
+                currentRestaurant.restaurant_uuid,
+                data
+              );
+              form.setValue("supplier", {
+                supplier_uuid: newSupplier.supplier_uuid,
+                supplier_name: newSupplier.supplier_name,
+              });
+              queryClient.invalidateQueries(["suppliers"]);
+              setShowSupplierDialog(false);
+            } catch (error) {
+              console.error("Failed to create supplier:", error);
             }
           }}
         />
