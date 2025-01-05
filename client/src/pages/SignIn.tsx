@@ -22,7 +22,7 @@ export default function SignIn() {
       <div className="relative flex min-h-screen items-center p-[20px]">
         <div className="w-full max-w-lg rounded-lg bg-white/95 p-8 shadow-xl backdrop-blur ml-[20px]">
           <div className="flex justify-center">
-            <img src="/images/peckish-logo.jpg" alt="Peckish" className="h-12 w-auto" />
+            <img src="/images/peckish-logo.jpg" alt="Peckish" className="h-12 w-12 rounded-full object-cover" />
           </div>
           
           <h2 className="mt-8 text-4xl font-display text-center">Welcome back!</h2>
