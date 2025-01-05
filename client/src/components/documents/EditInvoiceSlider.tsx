@@ -483,12 +483,14 @@ export function EditInvoiceSlider({
                             <FormControl>
                               <div className="relative z-50">
                                 <CreatableSelect
-                                  value={{
-                                    value:
-                                      invoice.supplier?.supplier_uuid || "",
-                                    label:
-                                      invoice.supplier?.supplier_name || "",
-                                  }}
+                                  value={
+                                    form.watch("supplier")?.supplier_uuid
+                                      ? {
+                                          value: form.watch("supplier")?.supplier_uuid,
+                                          label: form.watch("supplier")?.supplier_name
+                                        }
+                                      : null
+                                  }
                                   onChange={(option) => {
                                     if (option) {
                                       form.setValue("supplier", {
