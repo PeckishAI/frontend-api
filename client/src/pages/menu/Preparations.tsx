@@ -132,13 +132,15 @@ export default function Preparations() {
   return (
     <div className="px-8 space-y-6">
       <div className="flex items-center justify-between">
-        <input
-          type="text"
-          placeholder="Search preparations..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="p-2 border rounded w-[300px]"
-        />
+        <div className="relative w-96">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Search preparations..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9"
+          />
+        </div>
         <div className="flex items-center gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
           <Button onClick={() => setEditingPreparation(true)}>
