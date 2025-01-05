@@ -38,6 +38,7 @@ import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { supplierService } from "@/services/supplierService";
 import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
+import { documentService } from "@/services/documentService";
 
 const editInvoiceSchema = z.object({
   invoice_number: z.string().optional(),
@@ -208,7 +209,9 @@ export function EditInvoiceSlider({
   }, [invoice, form]);
 
   const onSubmit = async (data: EditInvoiceFormValues) => {
-    if (!currentRestaurant?.restaurant_uuid || !invoice?.invoice_uuid) {
+    console.log(currentRestaurant?.restaurant_uuid);
+    console.log(invoice);
+    if (!currentRestaurant?.restaurant_uuid || !invoice?.document_uuid) {
       console.error("Missing restaurant or invoice UUID");
       return;
     }
@@ -221,8 +224,8 @@ export function EditInvoiceSlider({
     try {
       await documentService.updateInvoice(
         currentRestaurant.restaurant_uuid,
-        invoice.invoice_uuid,
-        data
+        invoice.document_uuid,
+        data,
       );
       onOpenChange(false);
     } catch (error) {
@@ -573,207 +576,65 @@ export function EditInvoiceSlider({
                     </h3>
                   </div>
 
-                  {(form.watch("invoice_ingredients") || []).map((ingredient, index) => (
-                    <div
-                      key={index}
-                      className="border rounded-lg p-4 space-y-4"
-                    >
-                      <div className="grid grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name={`invoice_ingredients.${index}.detected_name`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Detected</FormLabel>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name={`invoice_ingredients.${index}.ingredient_name`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Mapped Ingredient</FormLabel>
-                              <FormControl>
-                                <CreatableSelect
-                                  value={
-                                    field.value
-                                      ? {
-                                          value:
-                                            restaurantIngredients?.[field.value]
-                                              ?.ingredient_uuid || "",
-                                          label: field.value,
-                                        }
-                                      : null
-                                  }
-                                  onChange={(option) => {
-                                    if (option) {
-                                      field.onChange(option.label);
-                                      form.setValue(
-                                        `ingredients.${index}.ingredient_uuid`,
-                                        option.value,
-                                      );
-                                    }
-                                  }}
-                                  options={Object.values(
-                                    restaurantIngredients || {},
-                                  ).map((ingredient) => ({
-                                    value: ingredient.ingredient_uuid,
-                                    label: ingredient.ingredient_name,
-                                  }))}
-                                  onCreateOption={(value) => {
-                                    field.onChange(value);
-                                  }}
-                                  placeholder=""
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex gap-2">
+                  {(form.watch("invoice_ingredients") || []).map(
+                    (ingredient, index) => (
+                      <div
+                        key={index}
+                        className="border rounded-lg p-4 space-y-4"
+                      >
+                        <div className="grid grid-cols-2 gap-4">
                           <FormField
                             control={form.control}
-                            name={`ingredients.${index}.quantity`}
+                            name={`invoice_ingredients.${index}.detected_name`}
                             render={({ field }) => (
-                              <FormItem className="flex-1">
-                                <FormLabel>Quantity</FormLabel>
+                              <FormItem>
+                                <FormLabel>Detected</FormLabel>
                                 <FormControl>
-                                  <Input
-                                    type="number"
-                                    step="0.01"
-                                    {...field}
-                                    onChange={(e) =>
-                                      field.onChange(parseFloat(e.target.value))
-                                    }
-                                  />
+                                  <Input {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
+
                           <FormField
                             control={form.control}
-                            name={`ingredients.${index}.unit`}
+                            name={`invoice_ingredients.${index}.ingredient_name`}
                             render={({ field }) => (
-                              <FormItem className="w-32">
-                                <FormLabel>Unit</FormLabel>
+                              <FormItem>
+                                <FormLabel>Mapped Ingredient</FormLabel>
                                 <FormControl>
                                   <CreatableSelect
-                                    size="small"
                                     value={
                                       field.value
                                         ? {
-                                            value: field.value.unit_uuid,
-                                            label: field.value.unit_name,
+                                            value:
+                                              restaurantIngredients?.[
+                                                field.value
+                                              ]?.ingredient_uuid || "",
+                                            label: field.value,
                                           }
                                         : null
                                     }
                                     onChange={(option) => {
                                       if (option) {
-                                        field.onChange({
-                                          unit_uuid: option.value,
-                                          unit_name: option.label,
-                                        });
-                                      }
-                                    }}
-                                    options={(() => {
-                                      const selectedIngredientUuid = form.watch(
-                                        `ingredients.${index}.ingredient_uuid`,
-                                      );
-
-                                      const groups = [];
-
-                                      // Get associated units for the selected ingredient
-                                      if (selectedIngredientUuid) {
-                                        const associatedUnits =
-                                          supplierIngredientUnits?.find(
-                                            (item) =>
-                                              item.ingredient_uuid ===
-                                              selectedIngredientUuid,
-                                          )?.units || [];
-
-                                        if (associatedUnits.length > 0) {
-                                          groups.push({
-                                            label: "Associated Units",
-                                            options: associatedUnits.map(
-                                              (unit) => ({
-                                                value: unit.unit_uuid,
-                                                label: unit.unit_name,
-                                              }),
-                                            ),
-                                          });
-                                        }
-                                      }
-
-                                      // Add all other units
-                                      const otherUnits =
-                                        unitsData
-                                          ?.filter((unit) => {
-                                            // Exclude units that are already in associated units
-                                            const associatedUnits =
-                                              supplierIngredientUnits?.find(
-                                                (item) =>
-                                                  item.ingredient_uuid ===
-                                                  selectedIngredientUuid,
-                                              )?.units || [];
-                                            return !associatedUnits.some(
-                                              (au) =>
-                                                au.unit_uuid === unit.unit_uuid,
-                                            );
-                                          })
-                                          .map((unit) => ({
-                                            value: unit.unit_uuid,
-                                            label: unit.unit_name,
-                                          })) || [];
-
-                                      if (otherUnits.length > 0) {
-                                        groups.push({
-                                          label: "All Units",
-                                          options: otherUnits,
-                                        });
-                                      }
-
-                                      return groups;
-                                    })()}
-                                    onCreateOption={async (value) => {
-                                      try {
-                                        if (
-                                          !currentRestaurant?.restaurant_uuid
-                                        ) {
-                                          throw new Error(
-                                            "No restaurant selected",
-                                          );
-                                        }
-                                        const newUnit =
-                                          await unitService.createUnit(
-                                            { unit_name: value },
-                                            currentRestaurant.restaurant_uuid,
-                                          );
-                                        if (
-                                          newUnit?.unit_uuid &&
-                                          newUnit?.unit_name
-                                        ) {
-                                          field.onChange({
-                                            unit_uuid: newUnit.unit_uuid,
-                                            unit_name: newUnit.unit_name,
-                                          });
-                                        }
-                                      } catch (error) {
-                                        console.error(
-                                          "Failed to create unit:",
-                                          error,
+                                        field.onChange(option.label);
+                                        form.setValue(
+                                          `ingredients.${index}.ingredient_uuid`,
+                                          option.value,
                                         );
                                       }
                                     }}
+                                    options={Object.values(
+                                      restaurantIngredients || {},
+                                    ).map((ingredient) => ({
+                                      value: ingredient.ingredient_uuid,
+                                      label: ingredient.ingredient_name,
+                                    }))}
+                                    onCreateOption={(value) => {
+                                      field.onChange(value);
+                                    }}
+                                    placeholder=""
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -782,62 +643,215 @@ export function EditInvoiceSlider({
                           />
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <FormField
-                            control={form.control}
-                            name={`ingredients.${index}.unit_cost`}
-                            render={({ field }) => (
-                              <FormItem className="flex-1">
-                                <FormLabel>Unit Cost</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    step="0.01"
-                                    {...field}
-                                    onChange={(e) =>
-                                      field.onChange(parseFloat(e.target.value))
-                                    }
-                                    placeholder=""
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name={`ingredients.${index}.vat`}
-                            render={({ field }) => (
-                              <FormItem className="w-24">
-                                <FormLabel>VAT</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    step="0.1"
-                                    {...field}
-                                    onChange={(e) =>
-                                      field.onChange(parseFloat(e.target.value))
-                                    }
-                                    placeholder=""
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="mt-8"
-                            onClick={() => removeIngredient(index)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="flex gap-2">
+                            <FormField
+                              control={form.control}
+                              name={`ingredients.${index}.quantity`}
+                              render={({ field }) => (
+                                <FormItem className="flex-1">
+                                  <FormLabel>Quantity</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      step="0.01"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          parseFloat(e.target.value),
+                                        )
+                                      }
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`ingredients.${index}.unit`}
+                              render={({ field }) => (
+                                <FormItem className="w-32">
+                                  <FormLabel>Unit</FormLabel>
+                                  <FormControl>
+                                    <CreatableSelect
+                                      size="small"
+                                      value={
+                                        field.value
+                                          ? {
+                                              value: field.value.unit_uuid,
+                                              label: field.value.unit_name,
+                                            }
+                                          : null
+                                      }
+                                      onChange={(option) => {
+                                        if (option) {
+                                          field.onChange({
+                                            unit_uuid: option.value,
+                                            unit_name: option.label,
+                                          });
+                                        }
+                                      }}
+                                      options={(() => {
+                                        const selectedIngredientUuid =
+                                          form.watch(
+                                            `ingredients.${index}.ingredient_uuid`,
+                                          );
+
+                                        const groups = [];
+
+                                        // Get associated units for the selected ingredient
+                                        if (selectedIngredientUuid) {
+                                          const associatedUnits =
+                                            supplierIngredientUnits?.find(
+                                              (item) =>
+                                                item.ingredient_uuid ===
+                                                selectedIngredientUuid,
+                                            )?.units || [];
+
+                                          if (associatedUnits.length > 0) {
+                                            groups.push({
+                                              label: "Associated Units",
+                                              options: associatedUnits.map(
+                                                (unit) => ({
+                                                  value: unit.unit_uuid,
+                                                  label: unit.unit_name,
+                                                }),
+                                              ),
+                                            });
+                                          }
+                                        }
+
+                                        // Add all other units
+                                        const otherUnits =
+                                          unitsData
+                                            ?.filter((unit) => {
+                                              // Exclude units that are already in associated units
+                                              const associatedUnits =
+                                                supplierIngredientUnits?.find(
+                                                  (item) =>
+                                                    item.ingredient_uuid ===
+                                                    selectedIngredientUuid,
+                                                )?.units || [];
+                                              return !associatedUnits.some(
+                                                (au) =>
+                                                  au.unit_uuid ===
+                                                  unit.unit_uuid,
+                                              );
+                                            })
+                                            .map((unit) => ({
+                                              value: unit.unit_uuid,
+                                              label: unit.unit_name,
+                                            })) || [];
+
+                                        if (otherUnits.length > 0) {
+                                          groups.push({
+                                            label: "All Units",
+                                            options: otherUnits,
+                                          });
+                                        }
+
+                                        return groups;
+                                      })()}
+                                      onCreateOption={async (value) => {
+                                        try {
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          ) {
+                                            throw new Error(
+                                              "No restaurant selected",
+                                            );
+                                          }
+                                          const newUnit =
+                                            await unitService.createUnit(
+                                              { unit_name: value },
+                                              currentRestaurant.restaurant_uuid,
+                                            );
+                                          if (
+                                            newUnit?.unit_uuid &&
+                                            newUnit?.unit_name
+                                          ) {
+                                            field.onChange({
+                                              unit_uuid: newUnit.unit_uuid,
+                                              unit_name: newUnit.unit_name,
+                                            });
+                                          }
+                                        } catch (error) {
+                                          console.error(
+                                            "Failed to create unit:",
+                                            error,
+                                          );
+                                        }
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <FormField
+                              control={form.control}
+                              name={`ingredients.${index}.unit_cost`}
+                              render={({ field }) => (
+                                <FormItem className="flex-1">
+                                  <FormLabel>Unit Cost</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      step="0.01"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          parseFloat(e.target.value),
+                                        )
+                                      }
+                                      placeholder=""
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`ingredients.${index}.vat`}
+                              render={({ field }) => (
+                                <FormItem className="w-24">
+                                  <FormLabel>VAT</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      step="0.1"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          parseFloat(e.target.value),
+                                        )
+                                      }
+                                      placeholder=""
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="mt-8"
+                              onClick={() => removeIngredient(index)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ),
+                  )}
                   <Button
                     type="button"
                     variant="outline"
