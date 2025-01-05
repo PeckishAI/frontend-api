@@ -208,7 +208,7 @@ export function EditInvoiceSlider({
       documents: [],
       supplier: undefined,
     });
-    
+
     // Then set new values if invoice exists
     if (invoice) {
       form.reset({
@@ -429,7 +429,79 @@ export function EditInvoiceSlider({
                         isDetailsOpen ? "opacity-100" : "h-0 opacity-0",
                       )}
                     >
-                      <div className="grid grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="supplier.supplier_name"
+                        render={({ field }) => (
+                          <FormItem className="mb-6">
+                            <FormLabel>Supplier</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <CreatableSelect
+                                  styles={{
+                                    menu: (base) => ({
+                                      ...base,
+                                      position: "absolute",
+                                      width: "100%",
+                                      zIndex: 9999,
+                                    }),
+                                    container: (base) => ({
+                                      ...base,
+                                      zIndex: 9999,
+                                    }),
+                                  }}
+                                  menuPortalTarget={document.body}
+                                  value={
+                                    form.watch("supplier")?.supplier_uuid
+                                      ? {
+                                          value:
+                                            form.watch("supplier")
+                                              ?.supplier_uuid,
+                                          label:
+                                            form.watch("supplier")
+                                              ?.supplier_name,
+                                        }
+                                      : null
+                                  }
+                                  onChange={(option) => {
+                                    if (option) {
+                                      form.setValue("supplier", {
+                                        supplier_uuid: option.value,
+                                        supplier_name: option.label,
+                                      });
+
+                                      const ingredients =
+                                        form.getValues("ingredients") || [];
+                                      ingredients.forEach((_, index) => {
+                                        form.setValue(
+                                          `ingredients.${index}.unit`,
+                                          undefined,
+                                        );
+                                      });
+                                    }
+                                  }}
+                                  options={suppliers?.map((supplier) => ({
+                                    value: supplier.supplier_uuid,
+                                    label: supplier.supplier_name,
+                                  }))}
+                                  onCreateOption={(value) => {
+                                    field.onChange({
+                                      supplier_uuid: "",
+                                      supplier_name: value,
+                                      created_supplier: true,
+                                    });
+                                  }}
+                                  placeholder=""
+                                  size="large"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-2 gap-4">
                         <FormField
                           control={form.control}
                           name="invoice_number"
@@ -490,78 +562,6 @@ export function EditInvoiceSlider({
                           )}
                         />
                       </div>
-
-                      <FormField
-                        control={form.control}
-                        name="supplier.supplier_name"
-                        render={({ field }) => (
-                          <FormItem className="col-span-2">
-                            <FormLabel>Supplier</FormLabel>
-                            <FormControl>
-                              <div className="relative">
-                                <CreatableSelect
-                                  styles={{
-                                    menu: (base) => ({
-                                      ...base,
-                                      position: 'absolute',
-                                      width: '100%',
-                                      zIndex: 9999
-                                    }),
-                                    container: (base) => ({
-                                      ...base,
-                                      zIndex: 9999
-                                    })
-                                  }}
-                                  menuPortalTarget={document.body}
-                                  value={
-                                    form.watch("supplier")?.supplier_uuid
-                                      ? {
-                                          value:
-                                            form.watch("supplier")
-                                              ?.supplier_uuid,
-                                          label:
-                                            form.watch("supplier")
-                                              ?.supplier_name,
-                                        }
-                                      : null
-                                  }
-                                  onChange={(option) => {
-                                    if (option) {
-                                      form.setValue("supplier", {
-                                        supplier_uuid: option.value,
-                                        supplier_name: option.label,
-                                      });
-
-                                      const ingredients =
-                                        form.getValues("ingredients") || [];
-                                      ingredients.forEach((_, index) => {
-                                        form.setValue(
-                                          `ingredients.${index}.unit`,
-                                          undefined,
-                                        );
-                                      });
-                                    }
-                                  }}
-                                  options={suppliers?.map((supplier) => ({
-                                    value: supplier.supplier_uuid,
-                                    label: supplier.supplier_name,
-                                  }))}
-                                  onCreateOption={(value) => {
-                                    field.onChange({
-                                      supplier_uuid: "",
-                                      supplier_name: value,
-                                      created_supplier: true,
-                                    });
-                                  }}
-                                  placeholder=""
-                                  size="large"
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
 
                       <div className="col-span-2 flex items-center gap-4 justify-end border-t pt-4">
                         <div className="text-sm flex items-center gap-2">
