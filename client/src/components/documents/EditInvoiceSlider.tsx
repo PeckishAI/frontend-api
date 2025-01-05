@@ -251,6 +251,16 @@ export function EditInvoiceSlider({
     }
   }, [invoice, form]);
 
+  // Add validation error logging
+  React.useEffect(() => {
+    const subscription = form.watch(() => {
+      if (Object.keys(form.formState.errors).length > 0) {
+        console.log("Form validation errors:", form.formState.errors);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
 
   if (!invoice) return null;
 
