@@ -1,11 +1,19 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Restaurant } from "@/types/restaurant";
+import { restaurantService } from "@/services/restaurantService";
+
+type CurrencyInfo = {
+  currencyISO: string;
+  currencySymbol: string;
+};
 
 type RestaurantContextType = {
   currentRestaurant: Restaurant | null;
   setCurrentRestaurant: (restaurant: Restaurant | null) => void;
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
+  currencyInfo: CurrencyInfo | null;
 };
 
 const RestaurantContext = createContext<RestaurantContextType | undefined>(
@@ -17,6 +25,27 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
     null,
   );
   const [isLoading, setIsLoading] = useState(true);
+  const [currencyInfo, setCurrencyInfo] = useState<CurrencyInfo | null>(null);
+
+  useEffect(() => {
+    async function fetchCurrencyInfo() {
+      if (currentRestaurant?.restaurant_uuid) {
+        try {
+          const currency = await restaurantService.getRestaurantCurrency(
+            currentRestaurant.restaurant_uuid,
+          );
+          setCurrencyInfo(currency);
+        } catch (error) {
+          console.error("Failed to fetch currency info:", error);
+          setCurrencyInfo(null);
+        }
+      } else {
+        setCurrencyInfo(null);
+      }
+    }
+
+    fetchCurrencyInfo();
+  }, [currentRestaurant?.restaurant_uuid]);
 
   return (
     <RestaurantContext.Provider
@@ -25,6 +54,7 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
         setCurrentRestaurant,
         isLoading,
         setIsLoading,
+        currencyInfo,
       }}
     >
       {children}
