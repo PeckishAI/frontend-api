@@ -67,10 +67,10 @@ const editInvoiceSchema = z.object({
         document_type: z.string().optional(),
       })
       .optional(),
-  ),
+  ).optional().default([]),
   invoice_ingredients: z.array(
     z.object({
-      uuid: z.string().optional().optional(),
+      uuid: z.string().optional(),
       ingredient_uuid: z.string().optional(),
       ingredient_name: z.string().optional(),
       detected_name: z.string().optional(),
@@ -86,7 +86,7 @@ const editInvoiceSchema = z.object({
       document_uuid: z.string().optional(),
       product_code: z.string().optional(),
     }),
-  ),
+  ).optional().default([])
 });
 
 type EditInvoiceFormValues = z.infer<typeof editInvoiceSchema>;
