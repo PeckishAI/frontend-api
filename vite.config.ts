@@ -9,6 +9,7 @@ const __dirname = dirname(__filename);
 export default defineConfig({
   plugins: [react(), themePlugin()],
   server: {
+    host: '0.0.0.0',
     hmr: {
       overlay: false
     }
