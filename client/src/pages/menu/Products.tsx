@@ -7,6 +7,7 @@ import {
   Layers,
   DollarSign,
   Percent,
+  Search,
 } from "lucide-react";
 import ViewToggle from "@/components/orders/ViewToggle";
 import {
