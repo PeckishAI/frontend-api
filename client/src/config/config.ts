@@ -1,46 +1,17 @@
 
-const devConfig = {
-  authentificationUrl: 'http://0.0.0.0:5123',
-  restaurantUrl: 'https://backend-spradier.replit.app',
+const getBaseUrl = (): string => {
+  const env = process.env.NODE_ENV || "development";
 
-  cookieDomain: '0.0.0.0',
-
-  apiUrl: 'https://api-gateway-zqjpx7oxsq-ew.a.run.app',
-  apiUrlIntegration: 'https://integrations-api-k2w3p2ptza-ew.a.run.app',
-
-  GOOGLE_CLIENT_ID:
-    '167544806451-lhqrqpn83tje89en5n73af3tiu3sm11o.apps.googleusercontent.com',
+  switch (env) {
+    case "production":
+      return "https://backend-spradier.replit.app";
+    case "development":
+      return "http://0.0.0.0:5000";
+    default:
+      return "http://0.0.0.0:5000";
+  }
 };
 
-const stagingConfig = {
-  authentificationUrl: 'https://auth-frontend-k2w3p2ptza-ew.a.run.app',
-  restaurantUrl: 'https://backend-spradier.replit.app',
-
-  cookieDomain: 'run.app',
-
-  apiUrl: 'https://api-gateway-k2w3p2ptza-ew.a.run.app',
-  apiUrlIntegration: 'https://integrations-api-k2w3p2ptza-ew.a.run.app',
-
-  GOOGLE_CLIENT_ID:
-    '167544806451-lhqrqpn83tje89en5n73af3tiu3sm11o.apps.googleusercontent.com',
+export const config = {
+  apiBaseUrl: getBaseUrl(),
 };
-
-const prodConfig = {
-  authentificationUrl: 'https://platform.iampeckish.com',
-  restaurantUrl: 'https://backend-spradier.replit.app',
-
-  cookieDomain: 'iampeckish.com',
-
-  apiUrl: 'https://api-gateway-zqjpx7oxsq-ew.a.run.app',
-  apiUrlIntegration: 'https://integrations-api-zqjpx7oxsq-ew.a.run.app',
-  
-  GOOGLE_CLIENT_ID:
-    '902125317537-r9ck7q1bi9m01f1ilopjlvi2itrupdut.apps.googleusercontent.com',
-};
-
-export const GLOBAL_CONFIG =
-  import.meta.env.MODE === 'development'
-    ? devConfig
-    : import.meta.env.VITE_CONFIG_MODE === 'staging'
-    ? stagingConfig
-    : prodConfig;
