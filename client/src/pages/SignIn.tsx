@@ -8,9 +8,19 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="flex min-h-screen">
-      <div className="flex-1 flex flex-col justify-center px-4 py-12 sm:px-6 lg:px-20 xl:px-24 bg-white">
-        <div className="mx-auto w-full max-w-sm">
+    <div className="relative min-h-screen">
+      <video
+        className="absolute inset-0 h-full w-full object-cover"
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        <source src="/videos/signin-bg.mp4" type="video/mp4" />
+      </video>
+      
+      <div className="relative flex min-h-screen items-center justify-center p-4">
+        <div className="w-full max-w-sm rounded-lg bg-white/95 p-8 shadow-xl backdrop-blur">
           <div className="flex justify-center">
             <img src="/images/peckish-logo.jpg" alt="Peckish" className="h-12 w-auto" />
           </div>
@@ -74,18 +84,6 @@ export default function SignIn() {
             </div>
           </div>
         </div>
-      </div>
-      
-      <div className="hidden lg:block relative flex-1">
-        <video
-          className="absolute inset-0 h-full w-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src="/videos/signin-bg.mp4" type="video/mp4" />
-        </video>
       </div>
     </div>
   );
