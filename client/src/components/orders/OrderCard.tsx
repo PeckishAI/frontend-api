@@ -36,7 +36,7 @@ export default function OrderCard({
   const handleApprove = (sendEmail: boolean) => {
     console.log("Approving order with payload:", {
       order_uuid: order.order_uuid,
-      date: order.date || null,
+      date: order.order_date || null,
       delivery_date: order.delivery_date || null,
       status: "pending",
       sendEmail,
@@ -70,14 +70,14 @@ export default function OrderCard({
           </div>
           <div className="flex items-center text-sm text-gray-600">
             <Package className="mr-2 h-4 w-4" />
-            {order.items ? order.items.length : 0} items
+            {order.ingredients ? order.ingredients.length : 0} items
           </div>
         </div>
       </CardContent>
       <CardFooter className="flex justify-between items-center">
         <p className="text-lg font-semibold">
           {useRestaurantContext().currencyInfo?.currencySymbol}
-          {order.amount ? order.amount.toFixed(2) : "0.00"}
+          {order.total_cost ? order.total_cost.toFixed(2) : "0.00"}
         </p>
         <div className="flex gap-2">
           {order.status === "pending" && (
