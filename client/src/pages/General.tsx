@@ -137,9 +137,11 @@ export default function General() {
                         <span className="text-2xl font-bold">
                           {currencyInfo?.currencySymbol}
                           {sales?.net_sales
-                            ? sales.net_sales >= 1000
-                              ? (sales.net_sales / 1000).toFixed(1) + "K"
-                              : sales.net_sales.toFixed(2)
+                            ? sales.net_sales >= 1000000
+                              ? (sales.net_sales / 1000000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "M"
+                              : sales.net_sales >= 1000
+                              ? (sales.net_sales / 1000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "K"
+                              : sales.net_sales.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})
                             : "0.00"}
                         </span>
                         {/* <span className="text-sm text-red-500">↓20%</span> */}
@@ -159,9 +161,11 @@ export default function General() {
                         <span className="text-2xl font-bold">
                           {currencyInfo?.currencySymbol}
                           {costOfSales?.data
-                            ? costOfSales.data >= 1000
-                              ? (costOfSales.data / 1000).toFixed(1) + "K"
-                              : costOfSales.data.toFixed(2)
+                            ? costOfSales.data >= 1000000
+                              ? (costOfSales.data / 1000000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "M"
+                              : costOfSales.data >= 1000
+                              ? (costOfSales.data / 1000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "K"
+                              : costOfSales.data.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})
                             : "0.00"}
                         </span>
                         {/* <span className="text-sm text-green-500">↑600%</span> */}
@@ -181,9 +185,11 @@ export default function General() {
                         <span className="text-2xl font-bold">
                           {currencyInfo?.currencySymbol}
                           {inventoryValue?.data
-                            ? inventoryValue.data >= 1000
-                              ? (inventoryValue.data / 1000).toFixed(1) + "K"
-                              : inventoryValue.data.toFixed(2)
+                            ? inventoryValue.data >= 1000000
+                              ? (inventoryValue.data / 1000000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "M"
+                              : inventoryValue.data >= 1000
+                              ? (inventoryValue.data / 1000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "K"
+                              : inventoryValue.data.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})
                             : "0.00"}
                         </span>
                         {/* <span className="text-sm text-neutral-500">-</span> */}
@@ -202,7 +208,13 @@ export default function General() {
                       <div className="flex items-center gap-2">
                         <span className="text-2xl font-bold">
                           {currencyInfo?.currencySymbol}
-                          {procurementCost?.data?.toFixed(2) || "0.00"}
+                          {procurementCost?.data
+                            ? procurementCost.data >= 1000000
+                              ? (procurementCost.data / 1000000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "M"
+                              : procurementCost.data >= 1000
+                              ? (procurementCost.data / 1000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + "K"
+                              : procurementCost.data.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+                            : "0.00"}
                         </span>
                         {/* <span className="text-sm text-green-500">↑225%</span> */}
                       </div>
