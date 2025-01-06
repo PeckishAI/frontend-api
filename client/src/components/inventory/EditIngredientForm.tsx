@@ -116,25 +116,17 @@ export default function EditIngredientForm({
   const { data: suppliersData } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: async () => {
-      console.log(
-        "Fetching suppliers for restaurant:",
-        currentRestaurant?.restaurant_uuid,
-      );
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
       const response = await supplierService.getRestaurantSuppliers(
         currentRestaurant.restaurant_uuid,
       );
-      console.log("Raw API Response:", response);
       return response;
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
     select: (data) => {
-      console.log("Pre-processed suppliers data:", data);
-      const processedData = data?.data || [];
-      console.log("Post-processed suppliers data:", processedData);
-      return processedData;
+      return data || [];
     },
   });
 
