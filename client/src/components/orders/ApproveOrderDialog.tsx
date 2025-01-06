@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Dialog,
@@ -23,7 +24,7 @@ interface ApproveOrderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   order: Order | null;
-  onConfirm: (sendEmail: boolean, payload: any) => void; // Updated to accept payload
+  onConfirm: (sendEmail: boolean, payload: any) => void;
 }
 
 export default function ApproveOrderDialog({
@@ -39,13 +40,27 @@ export default function ApproveOrderDialog({
   const handleApprove = (sendEmail: boolean) => {
     const payload = {
       order_uuid: order.order_uuid,
-      date: order.date || null,
+      supplier: order.supplier,
       delivery_date: order.delivery_date === "" ? null : order.delivery_date,
+      order_date: new Date().toISOString(),
+      order_number: order.order_number,
+      note: order.note || "",
+      ingredients: order.items?.map(item => ({
+        uuid: item.uuid,
+        ingredient_uuid: item.ingredient_uuid,
+        ingredient_name: item.ingredient_name,
+        quantity: item.quantity,
+        unit: item.unit,
+        unit_cost: item.unit_cost,
+        total_cost: item.total_cost,
+        product_code: item.product_code || ""
+      })),
+      total_cost: order.amount,
       status: "pending",
-      sendEmail,
+      user: order.user || { user_uuid: "", username: "" }
     };
-    console.log("Approving order with payload:", payload);
-    onConfirm(sendEmail, payload); // Pass the payload to onConfirm
+    
+    onConfirm(sendEmail, payload);
   };
 
   return (
@@ -64,7 +79,7 @@ export default function ApproveOrderDialog({
             <div>
               <div className="text-sm text-gray-500">Order Date</div>
               <div className="font-medium">
-                {order.date ? new Date(order.date).toLocaleDateString() : "N/A"}
+                {order.order_date ? new Date(order.order_date).toLocaleDateString() : "N/A"}
               </div>
             </div>
             <div>
@@ -114,7 +129,8 @@ export default function ApproveOrderDialog({
                   Total
                 </TableCell>
                 <TableCell className="text-right font-semibold">
-                  ${order.amount?.toFixed(2) || "0.00"}
+                  {useRestaurantContext().currencyInfo?.currencySymbol}
+                  {order.amount?.toFixed(2) || "0.00"}
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -139,8 +155,7 @@ export default function ApproveOrderDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={() => handleApprove(sendEmail)}>Confirm</Button>{" "}
-          {/* Use handleApprove function */}
+          <Button onClick={() => handleApprove(sendEmail)}>Confirm</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
