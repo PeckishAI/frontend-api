@@ -499,26 +499,31 @@ export default function EditIngredientForm({
                                 <FormControl>
                                   <CreatableSelect
                                     value={
-                                      field.value?.supplier_name
-                                        ? [field.value.supplier_name]
-                                        : []
+                                      field.value?.supplier_uuid
+                                        ? {
+                                            value: field.value.supplier_uuid,
+                                            label: field.value.supplier_name,
+                                          }
+                                        : null
                                     }
                                     onChange={(values) => {
-                                      if (values && values.length > 0) {
+                                      if (values) {
+                                        const selectedSupplier = suppliersData?.find(
+                                          (s) =>
+                                            s.supplier_uuid === values.value,
+                                        );
                                         field.onChange({
-                                          supplier_uuid: values[0],
+                                          supplier_uuid:
+                                            selectedSupplier?.supplier_uuid,
                                           supplier_name:
-                                            suppliersData?.find(
-                                              (s) =>
-                                                s.supplier_uuid === values[0],
-                                            )?.supplier_name || values[0],
+                                            selectedSupplier?.supplier_name,
                                         });
                                       }
                                     }}
                                     options={
-                                      suppliersData?.map((s) => ({
-                                        value: s.supplier_uuid,
-                                        label: s.supplier_name,
+                                      suppliersData?.map((supplier: Supplier) => ({
+                                        label: supplier.supplier_name,
+                                        value: supplier.supplier_uuid,
                                       })) || []
                                     }
                                     onCreateOption={async (inputValue) => {
