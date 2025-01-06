@@ -115,16 +115,22 @@ export default function EditIngredientForm({
 
   const { data: suppliersData } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
-    queryFn: () => {
+    queryFn: async () => {
+      console.log("Fetching suppliers for restaurant:", currentRestaurant?.restaurant_uuid);
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return supplierService.getRestaurantSuppliers(
+      const response = await supplierService.getRestaurantSuppliers(
         currentRestaurant.restaurant_uuid,
       );
+      console.log("Received suppliers data:", response);
+      return response;
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
-    select: (data) => data.data,
+    select: (data) => {
+      console.log("Processing suppliers data:", data);
+      return data.data;
+    },
   });
 
   const form = useForm<EditIngredientFormValues>({
@@ -517,12 +523,14 @@ export default function EditIngredientForm({
                                         });
                                       }
                                     }}
-                                    options={
-                                      suppliersData?.map((s) => ({
+                                    options={(() => {
+                                      const options = suppliersData?.map((s) => ({
                                         value: s.supplier_uuid,
                                         label: s.supplier_name,
-                                      })) || []
-                                    }
+                                      })) || [];
+                                      console.log("Supplier options:", options);
+                                      return options;
+                                    })()}
                                     onCreateOption={async (inputValue) => {
                                       try {
                                         if (
