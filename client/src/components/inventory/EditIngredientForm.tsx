@@ -513,6 +513,7 @@ export default function EditIngredientForm({
                                         : null
                                     }
                                     onChange={(option) => {
+                                      console.log("Selected supplier option:", option);
                                       if (option) {
                                         const selectedSupplier = suppliersData?.find(
                                           (s) => s.supplier_uuid === option.value
@@ -523,12 +524,16 @@ export default function EditIngredientForm({
                                         });
                                       }
                                     }}
-                                    options={
-                                      Array.isArray(suppliersData) ? suppliersData.map((supplier) => ({
-                                        label: supplier.supplier_name,
-                                        value: supplier.supplier_uuid,
-                                      })) : []
-                                    }
+                                    options={(() => {
+                                      const mappedOptions = Array.isArray(suppliersData)
+                                        ? suppliersData.map((supplier) => ({
+                                            label: supplier.supplier_name,
+                                            value: supplier.supplier_uuid,
+                                          }))
+                                        : [];
+                                      console.log("Mapped supplier options:", mappedOptions);
+                                      return mappedOptions;
+                                    })()}
                                     onCreateOption={async (inputValue) => {
                                       try {
                                         if (
