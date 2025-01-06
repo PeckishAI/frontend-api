@@ -41,9 +41,9 @@ const editIngredientSchema = z.object({
   par_level: z.number().min(0, "Par level must be positive"),
   quantity: z.number().min(0, "Quantity must be positive"),
   base_unit: z.object({
-    unit_uuid: z.string(),
-    unit_name: z.string(),
-  }),
+    unit_uuid: z.string({ required_error: "Unit is required" }),
+    unit_name: z.string({ required_error: "Unit name is required" }),
+  }).required({ message: "Unit is required" }),
   ingredient_suppliers: z
     .array(
       z.object({
@@ -144,7 +144,10 @@ export default function EditIngredientForm({
       tags: [],
       par_level: 0,
       quantity: 0,
-      base_unit: {},
+      base_unit: {
+        unit_uuid: "",
+        unit_name: "",
+      },
       ingredient_suppliers: [],
     },
   });
