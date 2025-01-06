@@ -132,7 +132,7 @@ export const menuService = {
   ): Promise<Product> {
     try {
       const response = await fetch(
-        `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/products/${product.product_uuid}`,
+        `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/products/product/${product.product_uuid}`,
         {
           method: "PUT",
           headers: {

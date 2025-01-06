@@ -316,8 +316,6 @@ export default function RecipeSheet({
     return (((price - cost) / price) * 100).toFixed(2);
   };
 
-  console.log("Product: ", product);
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-[800px] sm:max-w-[800px] h-screen overflow-y-auto">
@@ -333,18 +331,24 @@ export default function RecipeSheet({
                   if (!currentRestaurant?.restaurant_uuid) {
                     throw new Error("No restaurant selected");
                   }
-                  
+
                   if (product?.product_uuid) {
                     // Update existing product
-                    await menuService.updateProduct(currentRestaurant.restaurant_uuid, {
-                      ...data,
-                      product_uuid: product.product_uuid
-                    });
+                    await menuService.updateProduct(
+                      currentRestaurant.restaurant_uuid,
+                      {
+                        ...data,
+                        product_uuid: product.product_uuid,
+                      },
+                    );
                   } else {
                     // Create new product
-                    await menuService.createProduct(currentRestaurant.restaurant_uuid, data);
+                    await menuService.createProduct(
+                      currentRestaurant.restaurant_uuid,
+                      data,
+                    );
                   }
-                  
+
                   // Invalidate products query to refresh the list
                   queryClient.invalidateQueries(["products"]);
                   onSubmit(data);
@@ -357,8 +361,11 @@ export default function RecipeSheet({
                 console.log("Form Validation Errors:", errors);
                 console.log("Current Form State:", form.getValues());
                 console.log("Form Dirty Fields:", form.formState.dirtyFields);
-                console.log("Form Touched Fields:", form.formState.touchedFields);
-              }
+                console.log(
+                  "Form Touched Fields:",
+                  form.formState.touchedFields,
+                );
+              },
             )}
             className="space-y-6 pt-8"
           >

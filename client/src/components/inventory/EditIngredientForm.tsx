@@ -146,7 +146,7 @@ export default function EditIngredientForm({
       errors: form.formState.errors,
       isValid: form.formState.isValid,
       isSubmitting: form.formState.isSubmitting,
-      submitCount: form.formState.submitCount
+      submitCount: form.formState.submitCount,
     });
   }, [form.formState]);
 
@@ -165,13 +165,13 @@ export default function EditIngredientForm({
 
   const handleSubmit = async (values: EditIngredientFormValues) => {
     console.log("Attempting form submission");
-    
+
     // Pre-submission validation check
     const isValid = await form.trigger();
     console.log("Pre-submission validation:", {
       isValid,
       values,
-      errors: form.formState.errors
+      errors: form.formState.errors,
     });
 
     if (!isValid) {
@@ -360,7 +360,7 @@ export default function EditIngredientForm({
                             console.error("Failed to create tag:", error);
                           }
                         }}
-                        placeholder="Add a tag..."
+                        placeholder=""
                       />
                     </FormControl>
                   </div>
@@ -469,7 +469,7 @@ export default function EditIngredientForm({
                           console.error("Failed to create unit:", error);
                         }
                       }}
-                      placeholder="Select or create unit"
+                      placeholder=""
                     />
                   </FormControl>
                   <FormMessage />
@@ -553,7 +553,7 @@ export default function EditIngredientForm({
                                         );
                                       }
                                     }}
-                                    placeholder="Select or create supplier"
+                                    placeholder=""
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -651,7 +651,7 @@ export default function EditIngredientForm({
                                           );
                                         }
                                       }}
-                                      placeholder="Select or create unit"
+                                      placeholder=""
                                     />
                                   </FormControl>
                                   <FormMessage />
