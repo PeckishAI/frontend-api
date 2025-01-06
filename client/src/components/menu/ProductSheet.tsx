@@ -150,8 +150,8 @@ const productSchema = z.object({
   product_name: z.string().min(1, "Name is required"),
   category: z
     .object({
-      category_uuid: z.string().optional(),
-      category_name: z.string().optional(),
+      category_uuid: z.string().optional().nullable(),
+      category_name: z.string().optional().nullable(),
       emoji: z.string().nullable().optional(),
     })
     .optional(),
@@ -810,7 +810,15 @@ export default function RecipeSheet({
                             </FormLabel>
                             <FormControl>
                               <Input
-                                suffix="hello"
+                                suffix={
+                                  form.watch(
+                                    `product_ingredients.${index}.base_unit.unit_name`,
+                                  ) +
+                                  " → " +
+                                  form.watch(
+                                    `product_ingredients.${index}.recipe_unit.unit_name`,
+                                  )
+                                }
                                 type="number"
                                 min={0}
                                 step="any"
