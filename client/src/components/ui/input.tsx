@@ -12,7 +12,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="relative">
         {suffix && (
-          <span className="absolute left-2 top-1 -translate-y-1/2 text-[10px] text-muted-foreground">
+          <span className="absolute left-2 top-2 -translate-y-1/2 text-[10px] text-muted-foreground">
             {suffix}
           </span>
         )}
