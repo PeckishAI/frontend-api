@@ -524,10 +524,10 @@ export default function EditIngredientForm({
                                       }
                                     }}
                                     options={
-                                      suppliersData?.map((supplier) => ({
-                                        value: supplier.supplier_uuid,
+                                      Array.isArray(suppliersData) ? suppliersData.map((supplier) => ({
                                         label: supplier.supplier_name,
-                                      })) || []
+                                        value: supplier.supplier_uuid,
+                                      })) : []
                                     }
                                     onCreateOption={async (inputValue) => {
                                       try {
