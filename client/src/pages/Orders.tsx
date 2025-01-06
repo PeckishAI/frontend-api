@@ -95,6 +95,8 @@ export default function Orders() {
                         status,
                       },
                     );
+                    // Invalidate and refetch orders
+                    await queryClient.invalidateQueries(["orders"]);
                     console.log("Order Created : ", order);
                     setShowNewOrderModal(false);
                   } catch (error) {
