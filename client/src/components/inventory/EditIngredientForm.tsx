@@ -126,15 +126,22 @@ export default function EditIngredientForm({
       const response = await supplierService.getRestaurantSuppliers(
         currentRestaurant.restaurant_uuid,
       );
-      console.log("Received suppliers data:", response);
+      console.log("Raw API Response:", response);
       return response;
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
     select: (data) => {
-      console.log("Processing suppliers data:", data);
-      return data.data;
+      console.log("Pre-processed suppliers data:", data);
+      const processedData = data?.data || [];
+      console.log("Post-processed suppliers data:", processedData);
+      return processedData;
     },
   });
+
+  // Debug suppliers data after query
+  React.useEffect(() => {
+    console.log("Current suppliersData:", suppliersData);
+  }, [suppliersData]);
 
   const form = useForm<EditIngredientFormValues>({
     resolver: zodResolver(editIngredientSchema),
