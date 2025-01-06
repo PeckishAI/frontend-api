@@ -40,10 +40,13 @@ const editIngredientSchema = z.object({
   ),
   par_level: z.number().min(0, "Par level must be positive"),
   quantity: z.number().min(0, "Quantity must be positive"),
-  base_unit: z.object({
-    unit_uuid: z.string().optional(),
-    unit_name: z.string().optional(),
-  }).optional(),
+  base_unit: z
+    .object({
+      unit_uuid: z.string().optional(),
+      unit_name: z.string().optional(),
+    })
+    .optional()
+    .nullable(),
   ingredient_suppliers: z
     .array(
       z.object({
