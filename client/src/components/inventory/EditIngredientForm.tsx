@@ -82,10 +82,15 @@ export default function EditIngredientForm({
   ingredient,
   onSubmit,
 }: EditIngredientFormProps) {
-  const [editingSupplier, setEditingSupplier] = React.useState<number | null>(
-    null,
-  );
+  const [editingSupplier, setEditingSupplier] = React.useState<number | null>(null);
   const { currentRestaurant } = useRestaurantContext();
+
+  // Reset editingSupplier when form closes
+  React.useEffect(() => {
+    if (!open) {
+      setEditingSupplier(null);
+    }
+  }, [open]);
 
   const { data: unitsData } = useQuery({
     queryKey: ["units", currentRestaurant?.restaurant_uuid],
