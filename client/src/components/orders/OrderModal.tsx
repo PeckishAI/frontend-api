@@ -505,17 +505,23 @@ export default function OrderModal({
                                 item.ingredient_uuid,
                               ],
                               queryFn: async () => {
-                                const connectedUnits = await unitService.getSupplierIngredientUnits(
-                                  currentRestaurant.restaurant_uuid,
-                                  editedOrder.supplier.supplier_uuid,
-                                );
-                                
-                                const allUnits = await unitService.getRestaurantUnit(
-                                  currentRestaurant.restaurant_uuid,
-                                );
+                                const connectedUnits =
+                                  await unitService.getSupplierIngredientUnits(
+                                    currentRestaurant.restaurant_uuid,
+                                    editedOrder.supplier.supplier_uuid,
+                                  );
+
+                                const allUnits =
+                                  await unitService.getRestaurantUnit(
+                                    currentRestaurant.restaurant_uuid,
+                                  );
 
                                 const connectedIngredientUnits = connectedUnits
-                                  .filter((unit) => unit.ingredient_uuid === item.ingredient_uuid)
+                                  .filter(
+                                    (unit) =>
+                                      unit.ingredient_uuid ===
+                                      item.ingredient_uuid,
+                                  )
                                   .map((unit) => unit.units)
                                   .flat()
                                   .map((unit) => ({
@@ -524,9 +530,13 @@ export default function OrderModal({
                                   }));
 
                                 const otherUnits = allUnits
-                                  .filter((unit) => !connectedIngredientUnits.some(
-                                    (connected) => connected.value === unit.unit_uuid
-                                  ))
+                                  .filter(
+                                    (unit) =>
+                                      !connectedIngredientUnits.some(
+                                        (connected) =>
+                                          connected.value === unit.unit_uuid,
+                                      ),
+                                  )
                                   .map((unit) => ({
                                     label: unit.unit_name,
                                     value: unit.unit_uuid,
@@ -540,9 +550,9 @@ export default function OrderModal({
                                   {
                                     label: "Other Units",
                                     options: otherUnits,
-                                  }
+                                  },
                                 ];
-                              }
+                              },
                             });
 
                             return unitOptions || [];
@@ -598,7 +608,8 @@ export default function OrderModal({
                     Total
                   </TableCell>
                   <TableCell className="text-right font-semibold">
-                    {currencyInfo?.currencySymbol}{editedOrder.amount?.toFixed(2)}
+                    {useRestaurantContext().currencyInfo?.currencySymbol}
+                    {editedOrder.amount?.toFixed(2)}
                   </TableCell>
                   {editMode && <TableCell />}
                 </TableRow>
