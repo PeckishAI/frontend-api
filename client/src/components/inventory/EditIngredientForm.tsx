@@ -116,7 +116,10 @@ export default function EditIngredientForm({
   const { data: suppliersData } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: async () => {
-      console.log("Fetching suppliers for restaurant:", currentRestaurant?.restaurant_uuid);
+      console.log(
+        "Fetching suppliers for restaurant:",
+        currentRestaurant?.restaurant_uuid,
+      );
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
@@ -513,25 +516,40 @@ export default function EditIngredientForm({
                                         : null
                                     }
                                     onChange={(option) => {
-                                      console.log("Selected supplier option:", option);
+                                      console.log(
+                                        "Selected supplier option:",
+                                        option,
+                                      );
                                       if (option) {
-                                        const selectedSupplier = suppliersData?.find(
-                                          (s) => s.supplier_uuid === option.value
-                                        );
+                                        const selectedSupplier =
+                                          suppliersData?.find(
+                                            (s) =>
+                                              s.supplier_uuid === option.value,
+                                          );
                                         field.onChange({
-                                          supplier_uuid: selectedSupplier?.supplier_uuid || option.value,
-                                          supplier_name: selectedSupplier?.supplier_name || option.label,
+                                          supplier_uuid:
+                                            selectedSupplier?.supplier_uuid ||
+                                            option.value,
+                                          supplier_name:
+                                            selectedSupplier?.supplier_name ||
+                                            option.label,
                                         });
                                       }
                                     }}
                                     options={(() => {
-                                      const mappedOptions = Array.isArray(suppliersData)
+                                      console.log("Options:", suppliersData);
+                                      const mappedOptions = Array.isArray(
+                                        suppliersData,
+                                      )
                                         ? suppliersData.map((supplier) => ({
                                             label: supplier.supplier_name,
                                             value: supplier.supplier_uuid,
                                           }))
                                         : [];
-                                      console.log("Mapped supplier options:", mappedOptions);
+                                      console.log(
+                                        "Mapped supplier options:",
+                                        mappedOptions,
+                                      );
                                       return mappedOptions;
                                     })()}
                                     onCreateOption={async (inputValue) => {
