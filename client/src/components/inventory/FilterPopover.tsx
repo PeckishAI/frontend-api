@@ -100,7 +100,7 @@ export function FilterPopover({ tags, suppliers, selectedFilters, onFilterChange
             {activeGroup === 'tags' && (
               <CommandGroup className="pt-0">
                 <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">Select tags</div>
-                {(tags?.map(tag => tag.tag_name) || []).map((tag) => (
+                {tags.map((tag) => (
                   <CommandItem
                     key={tag}
                     onSelect={() => toggleFilter({ type: 'tag', value: tag })}
