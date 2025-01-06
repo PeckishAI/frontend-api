@@ -167,9 +167,28 @@ export default function Orders() {
         order={selectedOrder}
         onClose={() => setSelectedOrder(null)}
         editMode={selectedOrder?.status === "draft"}
-        onSave={(updatedOrder) => {
-          // Handle order update here
-          console.log("Updated order:", updatedOrder);
+        onSave={async (updatedOrder) => {
+          try {
+            if (
+              !currentRestaurant?.restaurant_uuid ||
+              !updatedOrder.order_uuid
+            ) {
+              throw new Error("No restaurant or order selected");
+            }
+            await orderService.updateOrder(
+              currentRestaurant.restaurant_uuid,
+              updatedOrder?.order_uuid,
+              {
+                ...updatedOrder,
+              },
+            );
+            // Invalidate and refetch orders
+            await queryClient.invalidateQueries(["orders"]);
+            console.log("Order Updated : ", updatedOrder);
+            setShowNewOrderModal(false);
+          } catch (error) {
+            console.error("Failed to create order:", error);
+          }
         }}
       />
 
