@@ -68,7 +68,7 @@ export default function Inventory() {
 
   const tags = !inventory
     ? []
-    : Array.from(new Set(inventory.flatMap((item) => item.tags)));
+    : Array.from(new Set(inventory.flatMap((item) => item.tags.map(t => t.tag_name))));
   const suppliers = !inventory
     ? []
     : Array.from(

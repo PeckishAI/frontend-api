@@ -12,7 +12,7 @@ export type FilterType = {
 };
 
 interface FilterPopoverProps {
-  tags: string[];
+  tags: {tag_name:string}[];
   suppliers: string[];
   selectedFilters: FilterType[];
   onFilterChange: (filters: FilterType[]) => void;
@@ -100,9 +100,9 @@ export function FilterPopover({ tags, suppliers, selectedFilters, onFilterChange
             {activeGroup === 'tags' && (
               <CommandGroup className="pt-0">
                 <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">Select tags</div>
-                {tags.map((tag) => (
+                {(tags?.map(tag => tag.tag_name) || []).map((tag) => (
                   <CommandItem
-                    key={`tag-${tag}`}
+                    key={tag}
                     onSelect={() => toggleFilter({ type: 'tag', value: tag })}
                   >
                     <div className={cn(
