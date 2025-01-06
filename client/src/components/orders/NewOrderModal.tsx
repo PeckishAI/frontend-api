@@ -142,7 +142,20 @@ export default function NewOrderModal({
       status,
       items,
       amount: getTotalCost(),
+      date: new Date().toISOString(),
+      order_number: `ORD-${Date.now()}`, // Temporary order number generation
     };
+
+    console.log(`Saving order as ${status}:`, {
+      ...order,
+      items: order.items.map(item => ({
+        ...item,
+        total_cost: Number((item.total_cost || 0).toFixed(2)),
+        unit_cost: Number((item.unit_cost || 0).toFixed(2))
+      })),
+      amount: Number(order.amount.toFixed(2))
+    });
+
     onSave(order, status);
   };
 
