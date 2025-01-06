@@ -38,29 +38,33 @@ export default function ApproveOrderDialog({
   if (!order) return null;
 
   const handleApprove = (sendEmail: boolean) => {
-    const payload = {
-      order_uuid: order.order_uuid,
-      supplier: order.supplier,
-      delivery_date: order.delivery_date === "" ? null : order.delivery_date,
-      order_date: new Date().toISOString(),
-      order_number: order.order_number,
-      note: order.note || "",
+    const formattedOrder = {
+      ...order,
       ingredients: order.items?.map(item => ({
-        uuid: item.uuid,
-        ingredient_uuid: item.ingredient_uuid,
-        ingredient_name: item.ingredient_name,
-        quantity: item.quantity,
-        unit: item.unit,
-        unit_cost: item.unit_cost,
-        total_cost: item.total_cost,
+        uuid: item.uuid || "",
+        ingredient_uuid: item.ingredient_uuid || "",
+        ingredient_name: item.ingredient_name || "",
+        quantity: item.quantity || 0,
+        unit: {
+          unit_uuid: item.unit?.unit_uuid || "",
+          unit_name: item.unit?.unit_name || ""
+        },
+        unit_cost: item.unit_cost || 0,
+        total_cost: item.total_cost || 0,
         product_code: item.product_code || ""
       })),
-      total_cost: order.amount,
-      status: "pending",
+      total_cost: order.amount || 0,
+      delivery_date: order.delivery_date || null,
+      order_date: new Date().toISOString(),
+      note: order.note || "",
+      supplier: {
+        supplier_uuid: order.supplier?.supplier_uuid || "",
+        supplier_name: order.supplier?.supplier_name || ""
+      },
       user: order.user || { user_uuid: "", username: "" }
     };
     
-    onConfirm(sendEmail, payload);
+    onConfirm(sendEmail, formattedOrder);
   };
 
   return (

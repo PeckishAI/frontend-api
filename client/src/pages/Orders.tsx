@@ -128,9 +128,38 @@ export default function Orders() {
                     onEdit={() => {
                       setSelectedOrder(order);
                     }}
-                    onApprove={() => {
-                      // Handle approve action
-                      console.log("Approve order:", order);
+                    onApprove={async (order, sendEmail) => {
+                      try {
+                        if (!currentRestaurant?.restaurant_uuid) {
+                          throw new Error("No restaurant selected");
+                        }
+
+                        // Update order status
+                        const approvedOrder = {
+                          ...order,
+                          status: "pending",
+                          order_date: new Date().toISOString()
+                        };
+                        
+                        await orderService.updateOrder(
+                          currentRestaurant.restaurant_uuid,
+                          order.order_uuid!,
+                          approvedOrder
+                        );
+
+                        // Send email if requested
+                        if (sendEmail) {
+                          await orderService.sendOrderEmail(
+                            currentRestaurant.restaurant_uuid,
+                            order.order_uuid!
+                          );
+                        }
+
+                        // Refresh orders list
+                        await queryClient.invalidateQueries(["orders"]);
+                      } catch (error) {
+                        console.error("Failed to approve order:", error);
+                      }
                     }}
                   />
                 ))}

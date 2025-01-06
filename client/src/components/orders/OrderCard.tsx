@@ -34,14 +34,7 @@ export default function OrderCard({
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const handleApprove = (sendEmail: boolean) => {
-    console.log("Approving order with payload:", {
-      order_uuid: order.order_uuid,
-      date: order.order_date || null,
-      delivery_date: order.delivery_date || null,
-      status: "pending",
-      sendEmail,
-    });
-    onApprove?.();
+    onApprove?.(order, sendEmail);
     setShowApproveDialog(false);
   };
   return (
