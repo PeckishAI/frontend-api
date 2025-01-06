@@ -205,14 +205,25 @@ export default function OrderModal({
   };
 
   const addItem = () => {
-    const newItem: OrderItem = {};
+    const newItem: OrderItem = {
+      ingredient_uuid: "",
+      ingredient_name: "",
+      quantity: 0,
+      unit_cost: 0,
+      total_cost: 0,
+      unit: { unit_uuid: "", unit_name: "" }
+    };
     if (!editedOrder.items) {
-      return;
+      setEditedOrder({
+        ...editedOrder,
+        items: [newItem]
+      });
+    } else {
+      setEditedOrder({
+        ...editedOrder,
+        items: [...editedOrder.items, newItem],
+      });
     }
-    setEditedOrder({
-      ...editedOrder,
-      items: [...editedOrder.items, newItem],
-    });
   };
 
   const removeItem = (index: number) => {
@@ -378,17 +389,24 @@ export default function OrderModal({
               </div>
             </div>
 
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Item</TableHead>
-                  <TableHead>Quantity</TableHead>
-                  <TableHead>Unit</TableHead>
-                  <TableHead className="text-right">Price</TableHead>
-                  <TableHead className="text-right">Total</TableHead>
-                  {editMode && <TableHead></TableHead>}
-                </TableRow>
-              </TableHeader>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Item
+                </Button>
+              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Item</TableHead>
+                    <TableHead>Quantity</TableHead>
+                    <TableHead>Unit</TableHead>
+                    <TableHead className="text-right">Price</TableHead>
+                    <TableHead className="text-right">Total</TableHead>
+                    {editMode && <TableHead></TableHead>}
+                  </TableRow>
+                </TableHeader>
               <TableBody>
                 {editedOrder.items?.map((item, index) => (
                   <TableRow key={item.ingredient_uuid}>
