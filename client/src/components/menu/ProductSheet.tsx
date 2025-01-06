@@ -615,6 +615,7 @@ export default function RecipeSheet({
                             </FormLabel>
                             <FormControl>
                               <CreatableSelect
+                                size="large"
                                 value={
                                   field.value
                                     ? {
@@ -741,6 +742,7 @@ export default function RecipeSheet({
                             </FormLabel>
                             <FormControl>
                               <CreatableSelect
+                                size="small"
                                 value={
                                   field.value
                                     ? {
