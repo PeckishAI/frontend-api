@@ -616,61 +616,38 @@ export default function EditIngredientForm({
                                   <FormControl>
                                     <CreatableSelect
                                       value={
-                                        field.value?.unit_name
-                                          ? [field.value.unit_name]
-                                          : []
+                                        field.value?.unit_uuid
+                                          ? {
+                                              value: field.value.unit_uuid,
+                                              label: field.value.unit_name,
+                                            }
+                                          : null
                                       }
-                                      onChange={(values) => {
-                                        if (values[0]) {
+                                      onChange={(option) => {
+                                        if (option) {
                                           const selectedUnit = unitsData?.find(
-                                            (u) => u.unit_uuid === values[0],
+                                            (unit) =>
+                                              unit.unit_uuid === option.value,
                                           ) || {
-                                            unit_uuid: values[0],
-                                            unit_name: values[0],
+                                            unit_uuid: option.value,
+                                            unit_name: option.label,
                                           };
                                           field.onChange({
-                                            unit_uuid: selectedUnit.unit_uuid,
-                                            unit_name: selectedUnit.unit_name,
+                                            unit_uuid:
+                                              selectedUnit.unit_uuid,
+                                            unit_name:
+                                              selectedUnit.unit_name,
                                           });
+                                        } else {
+                                          field.onChange(null);
                                         }
                                       }}
                                       options={
-                                        unitsData?.map((unit) => ({
+                                        unitsData?.map((unit: any) => ({
                                           label: unit.unit_name,
                                           value: unit.unit_uuid,
-                                          category: unit.category,
                                         })) || []
                                       }
-                                      onCreateOption={async (value) => {
-                                        try {
-                                          if (
-                                            !currentRestaurant?.restaurant_uuid
-                                          ) {
-                                            throw new Error(
-                                              "No restaurant selected",
-                                            );
-                                          }
-                                          const newUnit =
-                                            await unitService.createUnit(
-                                              { unit_name: value },
-                                              currentRestaurant.restaurant_uuid,
-                                            );
-                                          if (
-                                            newUnit?.unit_uuid &&
-                                            newUnit?.unit_name
-                                          ) {
-                                            field.onChange({
-                                              unit_uuid: newUnit.unit_uuid,
-                                              unit_name: newUnit.unit_name,
-                                            });
-                                          }
-                                        } catch (error) {
-                                          console.error(
-                                            "Failed to create unit:",
-                                            error,
-                                          );
-                                        }
-                                      }}
                                       placeholder=""
                                     />
                                   </FormControl>
