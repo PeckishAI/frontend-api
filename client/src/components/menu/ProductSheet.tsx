@@ -810,6 +810,7 @@ export default function RecipeSheet({
                             </FormLabel>
                             <FormControl>
                               <Input
+                                suffix="hello"
                                 type="number"
                                 min={0}
                                 step="any"
