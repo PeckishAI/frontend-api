@@ -40,7 +40,7 @@ import { OrderItem, Order, OrderStatus } from "@/types/order";
 interface NewOrderModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (order: any, status: "draft" | "placed") => void;
+  onSave: (order: any, status: "draft" | "pending") => void;
 }
 
 export default function NewOrderModal({
@@ -135,24 +135,21 @@ export default function NewOrderModal({
     return items.reduce((sum, item) => sum + (item.total_cost || 0), 0);
   };
 
-  const handleSave = (status: "draft" | "placed") => {
+  const handleSave = (status: "draft" | "pending") => {
     const order = {
       supplier: selectedSupplier,
       delivery_date: deliveryDate,
       status,
-      ingredients: items.map(item => ({
+      ingredients: items.map((item) => ({
         ...item,
         total_cost: Number((item.total_cost || 0).toFixed(2)),
-        unit_cost: Number((item.unit_cost || 0).toFixed(2))
+        unit_cost: Number((item.unit_cost || 0).toFixed(2)),
       })),
       total_cost: Number(getTotalCost().toFixed(2)),
-      order_date: new Date().toISOString().split('T')[0],
+      order_date: new Date().toISOString().split("T")[0],
       order_number: `ORD-${Date.now()}`,
-      note: "", // Optional order notes
-      user: {
-        user_uuid: "current-user-uuid", // This should come from your auth context
-        username: "current-username" // This should come from your auth context
-      }
+      note: "",
+      user: {},
     };
 
     console.log(`Saving order as ${status}:`, order);
@@ -482,7 +479,7 @@ export default function NewOrderModal({
             <Button variant="outline" onClick={() => handleSave("draft")}>
               Save as Draft
             </Button>
-            <Button onClick={() => handleSave("placed")}>Place Order</Button>
+            <Button onClick={() => handleSave("pending")}>Place Order</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

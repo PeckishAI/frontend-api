@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import OrderCard from "@/components/orders/OrderCard";
 import OrderTable from "@/components/orders/OrderTable";
@@ -31,6 +31,7 @@ export default function Orders() {
   const [isNewSupplier, setIsNewSupplier] = useState(false);
   const [showNewOrderModal, setShowNewOrderModal] = useState(false);
 
+  const queryClient = useQueryClient();
   const { currentRestaurant } = useRestaurantContext();
 
   const { data: orders = [], isLoading: ordersLoading } = useQuery({
@@ -87,12 +88,14 @@ export default function Orders() {
                     if (!currentRestaurant?.restaurant_uuid) {
                       throw new Error("No restaurant selected");
                     }
-                    //await orderService.createOrder(currentRestaurant.restaurant_uuid, {
-                    //  ...order,
-                    //  status,
-                    //});
+                    await orderService.createOrder(
+                      currentRestaurant.restaurant_uuid,
+                      {
+                        ...order,
+                        status,
+                      },
+                    );
                     console.log("Order Created : ", order);
-                    // queryClient.invalidateQueries(["orders"]);
                     setShowNewOrderModal(false);
                   } catch (error) {
                     console.error("Failed to create order:", error);

@@ -12,6 +12,11 @@ export interface Unit {
   unit_name?: string;
 }
 
+export interface User {
+  user_uuid?: string;
+  user_name?: string;
+}
+
 export interface OrderItem {
   uuid?: string;
   ingredient_uuid?: string;
@@ -20,6 +25,7 @@ export interface OrderItem {
   unit?: Unit;
   unit_cost?: number;
   total_cost?: number;
+  product_code?: string;
 }
 
 export interface Order {
@@ -28,7 +34,8 @@ export interface Order {
   supplier?: Supplier;
   order_date?: string;
   status?: OrderStatus;
-  amount?: number;
-  items?: OrderItem[];
+  total_cost?: number;
+  ingredients?: OrderItem[];
   delivery_date?: string;
+  user?: User;
 }
