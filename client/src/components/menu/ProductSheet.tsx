@@ -318,7 +318,7 @@ export default function RecipeSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[800px] sm:max-w-[800px] h-screen overflow-y-auto">
+      <SheetContent className="w-[1000px] sm:max-w-[1000px] h-screen overflow-y-auto">
         <SheetHeader>
           <SheetTitle>{product ? "Edit" : "New"} Product</SheetTitle>
         </SheetHeader>
