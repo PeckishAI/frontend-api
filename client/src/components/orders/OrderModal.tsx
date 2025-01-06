@@ -1,3 +1,4 @@
+
 import {
   Sheet,
   SheetContent,
@@ -30,60 +31,6 @@ import { supplierService } from "@/services/supplierService";
 import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import { CreatableSelect } from "@/components/ui/creatable-select";
-
-const getUnitOptions = async (
-  restaurantUuid: string,
-  supplierUuid: string,
-  ingredientUuid: string,
-) => {
-  try {
-    // Get connected units for this supplier-ingredient pair
-    const connectedUnits = await unitService.getSupplierIngredientUnits(
-      restaurantUuid,
-      supplierUuid,
-    );
-    console.log("Connected Units : ", connectedUnits);
-
-    // Get all restaurant units
-    const allUnits = await unitService.getRestaurantUnit(restaurantUuid);
-    console.log("All Units : ", allUnits);
-
-    // Filter connected units for this ingredient
-    const connectedIngredientUnits = connectedUnits
-      .filter((unit: any) => unit.ingredient_uuid === ingredientUuid)
-      .map((unit: any) => ({
-        label: unit.unit_name,
-        value: unit.unit_uuid,
-      }));
-
-    // Filter remaining units (not connected to this ingredient)
-    const remainingUnits = allUnits
-      .filter(
-        (unit: any) =>
-          !connectedIngredientUnits.some(
-            (connectedUnit: any) => connectedUnit.value === unit.unit_uuid,
-          ),
-      )
-      .map((unit: any) => ({
-        label: unit.unit_name,
-        value: unit.unit_uuid,
-      }));
-
-    return [
-      {
-        label: "Connected Units",
-        options: connectedIngredientUnits,
-      },
-      {
-        label: "Other Units",
-        options: remainingUnits,
-      },
-    ];
-  } catch (error) {
-    console.error("Error fetching units:", error);
-    return [];
-  }
-};
 
 interface OrderModalProps {
   order: Order | null;
@@ -131,7 +78,6 @@ export default function OrderModal({
     if (!ingredients) return [];
 
     const ingredientsArray = Object.values(ingredients);
-    console.log("Ingredient Array : ", ingredientsArray);
     const categories = {
       Connected: ingredientsArray
         .filter((ing) =>
@@ -182,7 +128,6 @@ export default function OrderModal({
     }
     const newItems = [...editedOrder.items];
     newItems[index] = { ...newItems[index], [field]: value };
-    console.log("Updated item:", newItems);
 
     if (field === "quantity" || field === "unit_cost") {
       const quantity = field === "quantity" ? value : newItems[index].quantity;
@@ -191,7 +136,6 @@ export default function OrderModal({
       newItems[index].total_cost = quantity * unit_cost;
     }
 
-    // Update order total
     const newTotal = newItems.reduce(
       (sum, item) => sum + (item.quantity || 0) * (item.unit_cost || 0),
       0,
@@ -232,7 +176,7 @@ export default function OrderModal({
     }
     const newItems = editedOrder.items.filter((_, i) => i !== index);
     const newTotal = newItems.reduce(
-      (sum, item) => sum + (item.quantity || 9) * (item.unit_cost || 0),
+      (sum, item) => sum + (item.quantity || 0) * (item.unit_cost || 0),
       0,
     );
     setEditedOrder({
@@ -309,7 +253,7 @@ export default function OrderModal({
   );
 
   return (
-    <Sheet open={!!order} onOpenChange={() => onClose()}>
+    <Sheet open={!!order} onOpenChange={onClose}>
       <SheetContent className="w-[800px] sm:max-w-[800px]">
         <SheetHeader>
           <SheetTitle className="flex items-center justify-between">
@@ -363,7 +307,6 @@ export default function OrderModal({
                         });
                       }
                     }}
-                    onCreateOption={console.log("create")}
                   />
                 )}
               </div>
@@ -407,240 +350,168 @@ export default function OrderModal({
                     {editMode && <TableHead></TableHead>}
                   </TableRow>
                 </TableHeader>
-              <TableBody>
-                {editedOrder.items?.map((item, index) => (
-                  <TableRow key={item.ingredient_uuid}>
-                    <TableCell>
-                      <CreatableSelect
-                        value={
-                          item.ingredient_uuid
-                            ? {
-                                label: item.ingredient_name || "",
-                                value: item.ingredient_uuid,
-                              }
-                            : null
-                        }
-                        size="medium"
-                        onChange={(option) => {
-                          try {
-                            const newItems = Array.isArray(editedOrder.items)
-                              ? [...editedOrder.items]
-                              : [];
-                            const selectedId = option?.value || "";
-                            const selectedOption =
-                              selectedId && editedOrder.supplier?.supplier_uuid
-                                ? getIngredientOptions(
-                                    editedOrder.supplier.supplier_uuid,
-                                  ).find((opt) => opt.value === selectedId)
-                                : null;
-
-                            newItems[index] = {
-                              ...newItems[index],
-                              ingredient_uuid: selectedId,
-                              ingredient_name: selectedOption
-                                ? selectedOption.label
-                                : selectedId,
-                              unit_cost: selectedOption?.unit_cost || 0,
-                              unit: selectedOption?.unit || "none",
-                              total_cost:
-                                (selectedOption?.price || 0) *
-                                (newItems[index].quantity || 0),
-                            };
-
-                            const newTotal = newItems.reduce(
-                              (sum, item) =>
-                                sum +
-                                (item.quantity || 0) * (item.unit_cost || 0),
-                              0,
-                            );
-
-                            setEditedOrder((prev) => ({
-                              ...prev,
-                              items: newItems,
-                              total: newTotal,
-                            }));
-                          } catch (error) {
-                            console.error(
-                              "Error in ingredient selection:",
-                              error,
-                            );
-                          }
-                        }}
-                        options={getIngredientOptions(
-                          editedOrder.supplier.supplier_uuid,
-                        )}
-                        placeholder=""
-                        disabled={!editMode}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          updateItem(
-                            index,
-                            "quantity",
-                            parseFloat(e.target.value),
-                          )
-                        }
-                        disabled={!editMode}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {editMode ? (
+                <TableBody>
+                  {editedOrder.items?.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
                         <CreatableSelect
                           value={
-                            item.unit?.unit_name
+                            item.ingredient_uuid
                               ? {
-                                  value: item.unit.unit_uuid,
-                                  label: item.unit.unit_name,
+                                  label: item.ingredient_name || "",
+                                  value: item.ingredient_uuid,
                                 }
                               : null
                           }
+                          size="medium"
                           onChange={(option) => {
-                            if (option) {
-                              updateItem(index, "unit", {
-                                unit_name: option.label,
-                                unit_uuid: option.value,
-                              });
+                            try {
+                              const newItems = Array.isArray(editedOrder.items)
+                                ? [...editedOrder.items]
+                                : [];
+                              const selectedId = option?.value || "";
+                              const selectedOption =
+                                selectedId &&
+                                editedOrder.supplier?.supplier_uuid
+                                  ? getIngredientOptions(
+                                      editedOrder.supplier.supplier_uuid,
+                                    ).find((opt) => opt.value === selectedId)
+                                  : null;
+
+                              newItems[index] = {
+                                ...newItems[index],
+                                ingredient_uuid: selectedId,
+                                ingredient_name: selectedOption
+                                  ? selectedOption.label
+                                  : selectedId,
+                                unit_cost: selectedOption?.unit_cost || 0,
+                                unit: selectedOption?.unit || "none",
+                                total_cost:
+                                  (selectedOption?.price || 0) *
+                                  (newItems[index].quantity || 0),
+                              };
+
+                              const newTotal = newItems.reduce(
+                                (sum, item) =>
+                                  sum +
+                                  (item.quantity || 0) * (item.unit_cost || 0),
+                                0,
+                              );
+
+                              setEditedOrder((prev) => ({
+                                ...prev,
+                                items: newItems,
+                                total: newTotal,
+                              }));
+                            } catch (error) {
+                              console.error(
+                                "Error in ingredient selection:",
+                                error,
+                              );
                             }
                           }}
-                          options={() => {
-                            const { data: unitOptions } = useQuery({
-                              queryKey: [
-                                "units",
-                                currentRestaurant?.restaurant_uuid,
-                                editedOrder.supplier?.supplier_uuid,
-                                item.ingredient_uuid,
-                              ],
-                              queryFn: async () => {
-                                if (!currentRestaurant?.restaurant_uuid || 
-                                    !editedOrder.supplier?.supplier_uuid || 
-                                    !item.ingredient_uuid) {
-                                  return [];
-                                }
-
-                                const [connectedUnits, allUnits] = await Promise.all([
-                                  unitService.getSupplierIngredientUnits(
-                                    currentRestaurant.restaurant_uuid,
-                                    editedOrder.supplier.supplier_uuid,
-                                  ),
-                                  unitService.getRestaurantUnit(
-                                    currentRestaurant.restaurant_uuid,
-                                  ),
-                                ]);
-
-                                const connectedIngredientUnits = connectedUnits
-                                  .filter(
-                                    (unit) =>
-                                      unit.ingredient_uuid === item.ingredient_uuid,
-                                  )
-                                  .map((unit) => unit.units)
-                                  .flat()
-                                  .map((unit) => ({
-                                    label: unit.unit_name,
-                                    value: unit.unit_uuid,
-                                  }));
-
-                                const otherUnits = allUnits
-                                  .filter(
-                                    (unit) =>
-                                      !connectedIngredientUnits.some(
-                                        (connected) =>
-                                          connected.value === unit.unit_uuid,
-                                      ),
-                                  )
-                                  .map((unit) => ({
-                                    label: unit.unit_name,
-                                    value: unit.unit_uuid,
-                                  }));
-
-                                return [
-                                  {
-                                    label: "Connected Units", 
-                                    options: connectedIngredientUnits,
-                                  },
-                                  {
-                                    label: "Other Units",
-                                    options: otherUnits,
-                                  },
-                                ];
-                              },
-                              enabled: !!(currentRestaurant?.restaurant_uuid && 
-                                        editedOrder.supplier?.supplier_uuid && 
-                                        item.ingredient_uuid),
-                            });
-
-                            return unitOptions || [];
-                          }}
-                          onCreateOption={(value) => {
-                            updateItem(index, "unit", {
-                              unit_name: value,
-                              unit_uuid: value,
-                            });
-                          }}
-                          size="small"
+                          options={getIngredientOptions(
+                            editedOrder.supplier?.supplier_uuid || "",
+                          )}
+                          placeholder=""
+                          disabled={!editMode}
                         />
-                      ) : (
-                        <div>{item.unit?.unit_name}</div>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Input
-                        type="number"
-                        value={item.unit_cost}
-                        onChange={(e) =>
-                          updateItem(
-                            index,
-                            "unit_cost",
-                            parseFloat(e.target.value),
-                          )
-                        }
-                        disabled={!editMode}
-                        className="text-right"
-                      />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      $
-                      {((item.quantity || 0) * (item.unit_cost || 0)).toFixed(
-                        2,
-                      )}
-                    </TableCell>
-                    {editMode && (
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeItem(index)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
                       </TableCell>
-                    )}
+                      <TableCell>
+                        <Input
+                          type="number"
+                          value={item.quantity}
+                          onChange={(e) =>
+                            updateItem(
+                              index,
+                              "quantity",
+                              parseFloat(e.target.value),
+                            )
+                          }
+                          disabled={!editMode}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {editMode ? (
+                          <CreatableSelect
+                            value={
+                              item.unit?.unit_name
+                                ? {
+                                    value: item.unit.unit_uuid,
+                                    label: item.unit.unit_name,
+                                  }
+                                : null
+                            }
+                            onChange={(option) => {
+                              if (option) {
+                                updateItem(index, "unit", {
+                                  unit_name: option.label,
+                                  unit_uuid: option.value,
+                                });
+                              }
+                            }}
+                            size="small"
+                          />
+                        ) : (
+                          <div>{item.unit?.unit_name}</div>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Input
+                          type="number"
+                          value={item.unit_cost}
+                          onChange={(e) =>
+                            updateItem(
+                              index,
+                              "unit_cost",
+                              parseFloat(e.target.value),
+                            )
+                          }
+                          disabled={!editMode}
+                          className="text-right"
+                        />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        $
+                        {((item.quantity || 0) * (item.unit_cost || 0)).toFixed(
+                          2,
+                        )}
+                      </TableCell>
+                      {editMode && (
+                        <TableCell>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeItem(index)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))}
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-right font-semibold">
+                      Total
+                    </TableCell>
+                    <TableCell className="text-right font-semibold">
+                      {useRestaurantContext().currencyInfo?.currencySymbol}
+                      {editedOrder.amount?.toFixed(2)}
+                    </TableCell>
+                    {editMode && <TableCell />}
                   </TableRow>
-                ))}
-                <TableRow>
-                  <TableCell colSpan={4} className="text-right font-semibold">
-                    Total
-                  </TableCell>
-                  <TableCell className="text-right font-semibold">
-                    {useRestaurantContext().currencyInfo?.currencySymbol}
-                    {editedOrder.amount?.toFixed(2)}
-                  </TableCell>
-                  {editMode && <TableCell />}
-                </TableRow>
-              </TableBody>
-            </Table>
+                </TableBody>
+              </Table>
 
-            {editMode && (
-              <div className="flex justify-end gap-4">
-                <Button variant="outline" onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button onClick={handleSave}>Save Changes</Button>
-              </div>
-            )}
+              {editMode && (
+                <div className="flex justify-end gap-4">
+                  <Button variant="outline" onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSave}>Save Changes</Button>
+                </div>
+              )}
+            </div>
           </div>
         ) : (
           renderNonDraftLayout()
