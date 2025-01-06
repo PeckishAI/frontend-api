@@ -506,24 +506,21 @@ export default function EditIngredientForm({
                                           }
                                         : null
                                     }
-                                    onChange={(values) => {
-                                      if (values) {
+                                    onChange={(option) => {
+                                      if (option) {
                                         const selectedSupplier = suppliersData?.find(
-                                          (s) =>
-                                            s.supplier_uuid === values.value,
+                                          (s) => s.supplier_uuid === option.value
                                         );
                                         field.onChange({
-                                          supplier_uuid:
-                                            selectedSupplier?.supplier_uuid,
-                                          supplier_name:
-                                            selectedSupplier?.supplier_name,
+                                          supplier_uuid: selectedSupplier?.supplier_uuid || option.value,
+                                          supplier_name: selectedSupplier?.supplier_name || option.label,
                                         });
                                       }
                                     }}
                                     options={
-                                      suppliersData?.map((supplier: Supplier) => ({
-                                        label: supplier.supplier_name,
-                                        value: supplier.supplier_uuid,
+                                      suppliersData?.map((s) => ({
+                                        value: s.supplier_uuid,
+                                        label: s.supplier_name,
                                       })) || []
                                     }
                                     onCreateOption={async (inputValue) => {
