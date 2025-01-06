@@ -81,7 +81,6 @@ export const documentService = {
   async getRestaurantInvoices(restaurantUuid: string): Promise<Invoices[]> {
     try {
       const url = `${BASE_URL}/documents/v2/restaurant/${restaurantUuid}/invoices`;
-      console.log("Fetching invoices from API:", url);
       const response = await fetch(
         `${BASE_URL}/documents/v2/restaurant/${restaurantUuid}/invoices`,
         {
@@ -92,13 +91,11 @@ export const documentService = {
         },
       );
 
-      console.log("API Response status:", response.status);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data: ApiResponse<Invoices[]> = await response.json();
-      console.log("API Response data:", data);
       if (!data.success) {
         throw new Error("Failed to fetch invoices");
       }

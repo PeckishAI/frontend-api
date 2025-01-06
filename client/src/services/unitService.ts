@@ -101,8 +101,6 @@ export const unitService = {
     supplierUuid: string,
   ): Promise<any> {
     try {
-      console.log("Restaurant uuid: ", restaurantUuid);
-      console.log("Supplier uuid: ", supplierUuid);
       const response = await fetch(
         `${BASE_URL}/units/v2/restaurant/${restaurantUuid}/supplier/${supplierUuid}/ingredients`,
         {
@@ -121,7 +119,6 @@ export const unitService = {
       if (!result.success) {
         throw new Error("Failed to fetch supplier ingredient units");
       }
-      console.log("Result: ", result);
       return result.data;
     } catch (error) {
       console.error("Failed to fetch supplier ingredient units:", error);
@@ -150,7 +147,6 @@ export const unitService = {
       }
 
       const result = await response.json();
-      console.log("Conversion factor:", result.data);
       if (!result.success) {
         throw new Error("Failed to create unit");
       }

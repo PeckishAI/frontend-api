@@ -55,7 +55,6 @@ export const tagService = {
       }
 
       const result = await response.json();
-      console.log("Tag Created : ", result.data);
       if (!result.success) {
         throw new Error("Failed to create tag");
       }

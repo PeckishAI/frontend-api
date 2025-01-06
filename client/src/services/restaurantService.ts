@@ -29,7 +29,6 @@ export const restaurantService = {
   },
 
   async getRestaurantCurrency(restaurantUuid: string): Promise<any> {
-    console.log("Restaurant Service - Fetching currency for UUID:", restaurantUuid);
     try {
       const response = await fetch(
         `${BASE_URL}/restaurants/v2/restaurant/${restaurantUuid}/currency`,
@@ -50,7 +49,7 @@ export const restaurantService = {
 
       const getSymbol = (currency: string) => {
         try {
-          const symbol = new Intl.NumberFormat('en-US', {
+          const symbol = new Intl.NumberFormat("en-US", {
             style: "currency",
             currency,
           })
@@ -59,19 +58,19 @@ export const restaurantService = {
           return symbol?.value || currency;
         } catch {
           // Fallback symbols for common currencies
-          const symbols: {[key: string]: string} = {
-            'USD': '$',
-            'EUR': '€',
-            'GBP': '£'
+          const symbols: { [key: string]: string } = {
+            USD: "$",
+            EUR: "€",
+            GBP: "£",
           };
           return symbols[currency] || currency;
         }
       };
 
-      const symbol = getSymbol(currencyISO?.currency || 'USD');
-      return { 
-        currencyISO: currencyISO?.currency || 'USD', 
-        currencySymbol: symbol 
+      const symbol = getSymbol(currencyISO?.currency || "USD");
+      return {
+        currencyISO: currencyISO?.currency || "USD",
+        currencySymbol: symbol,
       };
     } catch (error) {
       console.error("Failed to fetch restaurants:", error);

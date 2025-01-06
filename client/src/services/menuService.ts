@@ -24,7 +24,6 @@ export const menuService = {
       if (!data.success) {
         throw new Error("Failed to fetch modifiers");
       }
-      console.log(data);
       return data.data;
     } catch (error) {
       console.error("Failed to fetch restaurant modifiers:", error);
@@ -69,7 +68,6 @@ export const menuService = {
     modifier: Partial<Modifier>,
   ) {
     try {
-      console.log("Modifier: ", modifier);
       const response = await fetch(
         `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/modifiers/modifier/${modifierUuid}`,
         {
@@ -201,7 +199,6 @@ export const menuService = {
       }
 
       const data = await response.json();
-      console.log("Data: ", data);
       if (!data.success) {
         throw new Error("Failed to fetch preparations");
       }
@@ -217,7 +214,6 @@ export const menuService = {
     preparation: any,
   ): Promise<Preparation> {
     try {
-      console.log("Creating preparation with data:", preparation);
       const response = await fetch(
         `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/preparations`,
         {
@@ -235,7 +231,6 @@ export const menuService = {
       }
 
       const data = await response.json();
-      console.log("Server response:", data);
 
       if (!data.success) {
         throw new Error("Failed to create preparation");

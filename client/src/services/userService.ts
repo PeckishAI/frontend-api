@@ -20,7 +20,6 @@ export const userService = {
       if (!data.success) {
         throw new Error("Failed to fetch categories");
       }
-      console.log("user: ", data);
       return data.data;
     } catch (error) {
       console.error("Failed to fetch restaurant categories:", error);

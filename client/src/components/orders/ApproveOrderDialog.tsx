@@ -64,9 +64,7 @@ export default function ApproveOrderDialog({
             <div>
               <div className="text-sm text-gray-500">Order Date</div>
               <div className="font-medium">
-                {order.date
-                  ? new Date(order.date).toLocaleDateString()
-                  : "N/A"}
+                {order.date ? new Date(order.date).toLocaleDateString() : "N/A"}
               </div>
             </div>
             <div>
@@ -102,18 +100,17 @@ export default function ApproveOrderDialog({
                   <TableCell>{item.quantity}</TableCell>
                   <TableCell>{item.unit?.unit_name}</TableCell>
                   <TableCell className="text-right">
-                    {currencyInfo?.currencySymbol}{item.unit_cost?.toFixed(2) || "0.00"}
+                    {useRestaurantContext().currencyInfo?.currencySymbol}
+                    {item.unit_cost?.toFixed(2) || "0.00"}
                   </TableCell>
                   <TableCell className="text-right">
-                    {currencyInfo?.currencySymbol}{item.total_cost?.toFixed(2) || "0.00"}
+                    {useRestaurantContext().currencyInfo?.currencySymbol}
+                    {item.total_cost?.toFixed(2) || "0.00"}
                   </TableCell>
                 </TableRow>
               ))}
               <TableRow>
-                <TableCell
-                  colSpan={4}
-                  className="text-right font-semibold"
-                >
+                <TableCell colSpan={4} className="text-right font-semibold">
                   Total
                 </TableCell>
                 <TableCell className="text-right font-semibold">
@@ -142,7 +139,8 @@ export default function ApproveOrderDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={() => handleApprove(sendEmail)}>Confirm</Button> {/* Use handleApprove function */}
+          <Button onClick={() => handleApprove(sendEmail)}>Confirm</Button>{" "}
+          {/* Use handleApprove function */}
         </DialogFooter>
       </DialogContent>
     </Dialog>

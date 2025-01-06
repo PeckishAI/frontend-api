@@ -82,7 +82,9 @@ export default function EditIngredientForm({
   ingredient,
   onSubmit,
 }: EditIngredientFormProps) {
-  const [editingSupplier, setEditingSupplier] = React.useState<number | null>(null);
+  const [editingSupplier, setEditingSupplier] = React.useState<number | null>(
+    null,
+  );
   const { currentRestaurant } = useRestaurantContext();
 
   // Reset editingSupplier when form closes
@@ -135,11 +137,6 @@ export default function EditIngredientForm({
     },
   });
 
-  // Debug suppliers data after query
-  React.useEffect(() => {
-    console.log("Current suppliersData:", suppliersData);
-  }, [suppliersData]);
-
   const form = useForm<EditIngredientFormValues>({
     resolver: zodResolver(editIngredientSchema),
     defaultValues: {
@@ -151,17 +148,6 @@ export default function EditIngredientForm({
       ingredient_suppliers: [],
     },
   });
-
-  // Debug form state changes
-  React.useEffect(() => {
-    console.log("Form state updated:", {
-      isDirty: form.formState.isDirty,
-      errors: form.formState.errors,
-      isValid: form.formState.isValid,
-      isSubmitting: form.formState.isSubmitting,
-      submitCount: form.formState.submitCount,
-    });
-  }, [form.formState]);
 
   React.useEffect(() => {
     if (ingredient) {
@@ -177,15 +163,8 @@ export default function EditIngredientForm({
   const queryClient = useQueryClient();
 
   const handleSubmit = async (values: EditIngredientFormValues) => {
-    console.log("Attempting form submission");
-
     // Pre-submission validation check
     const isValid = await form.trigger();
-    console.log("Pre-submission validation:", {
-      isValid,
-      values,
-      errors: form.formState.errors,
-    });
 
     if (!isValid) {
       console.error("Form validation failed:", form.formState.errors);
@@ -520,10 +499,6 @@ export default function EditIngredientForm({
                                         : null
                                     }
                                     onChange={(option) => {
-                                      console.log(
-                                        "Selected supplier option:",
-                                        option,
-                                      );
                                       if (option) {
                                         const selectedSupplier =
                                           suppliersData?.find(
@@ -638,10 +613,8 @@ export default function EditIngredientForm({
                                             unit_name: option.label,
                                           };
                                           field.onChange({
-                                            unit_uuid:
-                                              selectedUnit.unit_uuid,
-                                            unit_name:
-                                              selectedUnit.unit_name,
+                                            unit_uuid: selectedUnit.unit_uuid,
+                                            unit_name: selectedUnit.unit_name,
                                           });
                                         } else {
                                           field.onChange(null);

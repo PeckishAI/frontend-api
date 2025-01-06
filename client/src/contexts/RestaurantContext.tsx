@@ -1,5 +1,10 @@
-
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { Restaurant } from "@/types/restaurant";
 import { restaurantService } from "@/services/restaurantService";
 
@@ -29,19 +34,14 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     async function fetchCurrencyInfo() {
-      console.log("Restaurant Context - Current Restaurant:", currentRestaurant);
       if (currentRestaurant?.restaurant_uuid) {
         try {
-          console.log("Restaurant Context - Fetching currency for UUID:", currentRestaurant.restaurant_uuid);
           const currency = await restaurantService.getRestaurantCurrency(
             currentRestaurant.restaurant_uuid,
           );
-          console.log("Restaurant Context - Received currency data:", currency);
-          console.log("Restaurant Context - Currency ISO:", currency.currencyISO);
-          console.log("Restaurant Context - Currency Symbol:", currency.currencySymbol);
           setCurrencyInfo({
             currencyISO: currency.currencyISO,
-            currencySymbol: currency.currencySymbol
+            currencySymbol: currency.currencySymbol,
           });
         } catch (error) {
           console.error("Failed to fetch currency info:", error);

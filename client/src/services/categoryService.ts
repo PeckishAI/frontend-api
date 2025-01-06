@@ -50,7 +50,6 @@ export const categoryService = {
       }
 
       const data = await response.json();
-      console.log("Category: ", data);
       if (!data.success) {
         throw new Error("Failed to create category");
       }
