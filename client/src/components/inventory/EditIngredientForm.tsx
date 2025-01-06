@@ -155,6 +155,19 @@ export default function EditIngredientForm({
     },
   });
 
+  // Add validation error logging
+  React.useEffect(() => {
+    const subscription = form.watch(() => {
+      if (Object.keys(form.formState.errors).length > 0) {
+        console.log("Form validation errors:", form.formState.errors);
+        console.log("Current form values:", form.getValues());
+        console.log("Dirty fields:", form.formState.dirtyFields);
+        console.log("Touched fields:", form.formState.touchedFields);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
   React.useEffect(() => {
     if (ingredient) {
       form.reset({
