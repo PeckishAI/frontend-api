@@ -333,12 +333,6 @@ export default function OrderModal({
             </div>
 
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <Button type="button" variant="outline" size="sm" onClick={addItem}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Item
-                </Button>
-              </div>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -502,6 +496,11 @@ export default function OrderModal({
                   </TableRow>
                 </TableBody>
               </Table>
+
+              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Item
+              </Button>
 
               {editMode && (
                 <div className="flex justify-end gap-4">
