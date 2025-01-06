@@ -87,11 +87,12 @@ export default function Orders() {
                     if (!currentRestaurant?.restaurant_uuid) {
                       throw new Error("No restaurant selected");
                     }
-                    await orderService.createOrder(currentRestaurant.restaurant_uuid, {
-                      ...order,
-                      status,
-                    });
-                    queryClient.invalidateQueries(["orders"]);
+                    //await orderService.createOrder(currentRestaurant.restaurant_uuid, {
+                    //  ...order,
+                    //  status,
+                    //});
+                    console.log("Order Created : ", order);
+                    // queryClient.invalidateQueries(["orders"]);
                     setShowNewOrderModal(false);
                   } catch (error) {
                     console.error("Failed to create order:", error);
