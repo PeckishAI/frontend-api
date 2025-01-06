@@ -488,75 +488,68 @@ export default function OrderModal({
                               });
                             }
                           }}
-                          options={(() => {
-                            if (
-                              !currentRestaurant?.restaurant_uuid ||
-                              !editedOrder.supplier?.supplier_uuid ||
-                              !item.ingredient_uuid
-                            ) {
-                              return [];
-                            }
-
-                            const { data: unitOptions } = useQuery({
-                              queryKey: [
-                                "units",
-                                currentRestaurant.restaurant_uuid,
-                                editedOrder.supplier.supplier_uuid,
-                                item.ingredient_uuid,
-                              ],
-                              queryFn: async () => {
-                                const connectedUnits =
-                                  await unitService.getSupplierIngredientUnits(
+                          options={
+                            currentRestaurant?.restaurant_uuid &&
+                            editedOrder.supplier?.supplier_uuid &&
+                            item.ingredient_uuid
+                              ? useQuery({
+                                  queryKey: [
+                                    "units",
                                     currentRestaurant.restaurant_uuid,
                                     editedOrder.supplier.supplier_uuid,
-                                  );
-
-                                const allUnits =
-                                  await unitService.getRestaurantUnit(
-                                    currentRestaurant.restaurant_uuid,
-                                  );
-
-                                const connectedIngredientUnits = connectedUnits
-                                  .filter(
-                                    (unit) =>
-                                      unit.ingredient_uuid ===
-                                      item.ingredient_uuid,
-                                  )
-                                  .map((unit) => unit.units)
-                                  .flat()
-                                  .map((unit) => ({
-                                    label: unit.unit_name,
-                                    value: unit.unit_uuid,
-                                  }));
-
-                                const otherUnits = allUnits
-                                  .filter(
-                                    (unit) =>
-                                      !connectedIngredientUnits.some(
-                                        (connected) =>
-                                          connected.value === unit.unit_uuid,
+                                    item.ingredient_uuid,
+                                  ],
+                                  queryFn: async () => {
+                                    const [connectedUnits, allUnits] = await Promise.all([
+                                      unitService.getSupplierIngredientUnits(
+                                        currentRestaurant.restaurant_uuid,
+                                        editedOrder.supplier.supplier_uuid,
                                       ),
-                                  )
-                                  .map((unit) => ({
-                                    label: unit.unit_name,
-                                    value: unit.unit_uuid,
-                                  }));
+                                      unitService.getRestaurantUnit(
+                                        currentRestaurant.restaurant_uuid,
+                                      ),
+                                    ]);
 
-                                return [
-                                  {
-                                    label: "Connected Units",
-                                    options: connectedIngredientUnits,
-                                  },
-                                  {
-                                    label: "Other Units",
-                                    options: otherUnits,
-                                  },
-                                ];
-                              },
-                            });
+                                    const connectedIngredientUnits = connectedUnits
+                                      .filter(
+                                        (unit) =>
+                                          unit.ingredient_uuid ===
+                                          item.ingredient_uuid,
+                                      )
+                                      .map((unit) => unit.units)
+                                      .flat()
+                                      .map((unit) => ({
+                                        label: unit.unit_name,
+                                        value: unit.unit_uuid,
+                                      }));
 
-                            return unitOptions || [];
-                          })()}
+                                    const otherUnits = allUnits
+                                      .filter(
+                                        (unit) =>
+                                          !connectedIngredientUnits.some(
+                                            (connected) =>
+                                              connected.value === unit.unit_uuid,
+                                          ),
+                                      )
+                                      .map((unit) => ({
+                                        label: unit.unit_name,
+                                        value: unit.unit_uuid,
+                                      }));
+
+                                    return [
+                                      {
+                                        label: "Connected Units",
+                                        options: connectedIngredientUnits,
+                                      },
+                                      {
+                                        label: "Other Units",
+                                        options: otherUnits,
+                                      },
+                                    ];
+                                  },
+                                }).data || []
+                              : []
+                          }
                           onCreateOption={(value) => {
                             updateItem(index, "unit", {
                               unit_name: value,
