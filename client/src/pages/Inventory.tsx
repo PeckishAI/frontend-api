@@ -137,11 +137,11 @@ export default function Inventory() {
 
         const matchesTags =
           tagFilters.length === 0 ||
-          tagFilters.some((tag) => item.tags.includes(tag));
+          tagFilters.some((tag) => item.tags.some(t => t.tag_name === tag));
         const matchesSuppliers =
           supplierFilters.length === 0 ||
-          item.suppliers.some((s) =>
-            supplierFilters.includes(s.supplier.supplier_name),
+          item.ingredient_suppliers.some((s) =>
+            supplierFilters.includes(s.supplier?.supplier_name),
           );
 
         return matchesSearch && matchesTags && matchesSuppliers;
