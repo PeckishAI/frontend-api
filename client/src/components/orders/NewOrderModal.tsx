@@ -146,7 +146,7 @@ export default function NewOrderModal({
         unit_cost: Number((item.unit_cost || 0).toFixed(2))
       })),
       total_cost: Number(getTotalCost().toFixed(2)),
-      order_date: new Date().toISOString(),
+      order_date: new Date().toISOString().split('T')[0],
       order_number: `ORD-${Date.now()}`,
       note: "", // Optional order notes
       user: {
