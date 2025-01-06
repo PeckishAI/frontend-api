@@ -536,22 +536,12 @@ export default function EditIngredientForm({
                                         });
                                       }
                                     }}
-                                    options={(() => {
-                                      console.log("Options:", suppliersData);
-                                      const mappedOptions = Array.isArray(
-                                        suppliersData,
-                                      )
-                                        ? suppliersData.map((supplier) => ({
-                                            label: supplier.supplier_name,
-                                            value: supplier.supplier_uuid,
-                                          }))
-                                        : [];
-                                      console.log(
-                                        "Mapped supplier options:",
-                                        mappedOptions,
-                                      );
-                                      return mappedOptions;
-                                    })()}
+                                    options={
+                                      suppliersData?.map((supplier) => ({
+                                        label: supplier.supplier_name,
+                                        value: supplier.supplier_uuid,
+                                      })) || []
+                                    }
                                     onCreateOption={async (inputValue) => {
                                       try {
                                         if (
