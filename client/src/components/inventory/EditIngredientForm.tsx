@@ -523,14 +523,12 @@ export default function EditIngredientForm({
                                         });
                                       }
                                     }}
-                                    options={(() => {
-                                      const options = suppliersData?.map((s) => ({
-                                        value: s.supplier_uuid,
-                                        label: s.supplier_name,
-                                      })) || [];
-                                      console.log("Supplier options:", options);
-                                      return options;
-                                    })()}
+                                    options={
+                                      suppliersData?.map((supplier) => ({
+                                        value: supplier.supplier_uuid,
+                                        label: supplier.supplier_name,
+                                      })) || []
+                                    }
                                     onCreateOption={async (inputValue) => {
                                       try {
                                         if (
