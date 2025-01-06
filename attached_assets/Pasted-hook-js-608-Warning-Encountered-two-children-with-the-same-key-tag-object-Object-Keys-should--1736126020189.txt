@@ -1,0 +1,291 @@
+hook.js:608 Warning: Encountered two children with the same key, `tag-[object Object]`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. Error Component Stack
+    at div (<anonymous>)
+    at div (<anonymous>)
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at cmdk.js?v=9e3b38c1:265:18
+    at _c10 (command.tsx:89:6)
+    at div (<anonymous>)
+    at div (<anonymous>)
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at cmdk.js?v=9e3b38c1:287:19
+    at _c6 (command.tsx:60:6)
+    at div (<anonymous>)
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at cmdk.js?v=9e3b38c1:77:11
+    at _c (command.tsx:12:6)
+    at div (<anonymous>)
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at Provider (chunk-4IT4UJHH.js?v=9e3b38c1:356:15)
+    at div (<anonymous>)
+    at chunk-4IT4UJHH.js?v=9e3b38c1:438:7
+    at chunk-VMJEA7HX.js?v=9e3b38c1:52:11
+    at chunk-VMJEA7HX.js?v=9e3b38c1:33:11
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at @radix-ui_react-popover.js?v=9e3b38c1:82:7
+    at chunk-VMJEA7HX.js?v=9e3b38c1:52:11
+    at chunk-VMJEA7HX.js?v=9e3b38c1:33:11
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at @radix-ui_react-popover.js?v=9e3b38c1:281:5
+    at @radix-ui_react-popover.js?v=9e3b38c1:680:7
+    at @radix-ui_react-popover.js?v=9e3b38c1:637:59
+    at Presence (chunk-PF3VWVG2.js?v=9e3b38c1:24:11)
+    at @radix-ui_react-popover.js?v=9e3b38c1:587:64
+    at chunk-VMJEA7HX.js?v=9e3b38c1:52:11
+    at chunk-VMJEA7HX.js?v=9e3b38c1:33:11
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at @radix-ui_react-popover.js?v=9e3b38c1:484:22
+    at Presence (chunk-PF3VWVG2.js?v=9e3b38c1:24:11)
+    at Provider (chunk-XUAN5KW6.js?v=9e3b38c1:38:15)
+    at PopoverPortal (@radix-ui_react-popover.js?v=9e3b38c1:579:11)
+    at _c (popover.tsx:13:6)
+    at Provider (chunk-XUAN5KW6.js?v=9e3b38c1:38:15)
+    at Provider (chunk-4IT4UJHH.js?v=9e3b38c1:356:15)
+    at Popper (chunk-4IT4UJHH.js?v=9e3b38c1:413:11)
+    at Popover (@radix-ui_react-popover.js?v=9e3b38c1:502:5)
+    at FilterPopover (FilterPopover.tsx:21:33)
+    at div (<anonymous>)
+    at div (<anonymous>)
+    at div (<anonymous>)
+    at Inventory (Inventory.tsx:30:45)
+    at Route (wouter.js?v=9e3b38c1:191:16)
+    at Switch (wouter.js?v=9e3b38c1:247:17)
+    at div (<anonymous>)
+    at RestaurantProvider (RestaurantContext.tsx:23:38)
+    at QueryClientProvider (@tanstack_react-query.js?v=9e3b38c1:2805:3)
+    at App (App.tsx:19:22)
+    at QueryClientProvider (@tanstack_react-query.js?v=9e3b38c1:2805:3)
+overrideMethod @ hook.js:608
+printWarning @ chunk-C43VWYGG.js?v=9e3b38c1:521
+error @ chunk-C43VWYGG.js?v=9e3b38c1:505
+warnOnInvalidKey @ chunk-C43VWYGG.js?v=9e3b38c1:11487
+reconcileChildrenArray @ chunk-C43VWYGG.js?v=9e3b38c1:11503
+reconcileChildFibers2 @ chunk-C43VWYGG.js?v=9e3b38c1:11827
+reconcileChildren @ chunk-C43VWYGG.js?v=9e3b38c1:14272
+updateFragment @ chunk-C43VWYGG.js?v=9e3b38c1:14497
+beginWork @ chunk-C43VWYGG.js?v=9e3b38c1:15917
+beginWork$1 @ chunk-C43VWYGG.js?v=9e3b38c1:19721
+performUnitOfWork @ chunk-C43VWYGG.js?v=9e3b38c1:19166
+workLoopSync @ chunk-C43VWYGG.js?v=9e3b38c1:19105
+renderRootSync @ chunk-C43VWYGG.js?v=9e3b38c1:19084
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=9e3b38c1:18842
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=9e3b38c1:9119
+(anonymous) @ chunk-C43VWYGG.js?v=9e3b38c1:18595Understand this errorAI
+52chunk-C43VWYGG.js?v=9e3b38c1:11202 Uncaught Error: Objects are not valid as a React child (found: object with keys {tag_name, tag_uuid, uuid}). If you meant to render a collection of children, use an array instead.
+    at throwOnInvalidObjectType (chunk-C43VWYGG.js?v=9e3b38c1:11202:17)
+    at createChild (chunk-C43VWYGG.js?v=9e3b38c1:11378:15)
+    at reconcileChildrenArray (chunk-C43VWYGG.js?v=9e3b38c1:11550:33)
+    at reconcileChildFibers2 (chunk-C43VWYGG.js?v=9e3b38c1:11827:24)
+    at reconcileChildren (chunk-C43VWYGG.js?v=9e3b38c1:14272:37)
+    at updateHostComponent (chunk-C43VWYGG.js?v=9e3b38c1:14782:11)
+    at beginWork (chunk-C43VWYGG.js?v=9e3b38c1:15903:22)
+    at HTMLUnknownElement.callCallback2 (chunk-C43VWYGG.js?v=9e3b38c1:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-C43VWYGG.js?v=9e3b38c1:3699:24)
+    at invokeGuardedCallback (chunk-C43VWYGG.js?v=9e3b38c1:3733:39)
+throwOnInvalidObjectType @ chunk-C43VWYGG.js?v=9e3b38c1:11202
+createChild @ chunk-C43VWYGG.js?v=9e3b38c1:11378
+reconcileChildrenArray @ chunk-C43VWYGG.js?v=9e3b38c1:11550
+reconcileChildFibers2 @ chunk-C43VWYGG.js?v=9e3b38c1:11827
+reconcileChildren @ chunk-C43VWYGG.js?v=9e3b38c1:14272
+updateHostComponent @ chunk-C43VWYGG.js?v=9e3b38c1:14782
+beginWork @ chunk-C43VWYGG.js?v=9e3b38c1:15903
+callCallback2 @ chunk-C43VWYGG.js?v=9e3b38c1:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=9e3b38c1:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=9e3b38c1:3733
+beginWork$1 @ chunk-C43VWYGG.js?v=9e3b38c1:19733
+performUnitOfWork @ chunk-C43VWYGG.js?v=9e3b38c1:19166
+workLoopSync @ chunk-C43VWYGG.js?v=9e3b38c1:19105
+renderRootSync @ chunk-C43VWYGG.js?v=9e3b38c1:19084
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=9e3b38c1:18842
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=9e3b38c1:9119
+(anonymous) @ chunk-C43VWYGG.js?v=9e3b38c1:18595Understand this errorAI
+51hook.js:608 Warning: Encountered two children with the same key, `tag-[object Object]`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. Error Component Stack
+    at div (<anonymous>)
+    at div (<anonymous>)
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at cmdk.js?v=9e3b38c1:265:18
+    at _c10 (command.tsx:89:6)
+    at div (<anonymous>)
+    at div (<anonymous>)
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at cmdk.js?v=9e3b38c1:287:19
+    at _c6 (command.tsx:60:6)
+    at div (<anonymous>)
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at cmdk.js?v=9e3b38c1:77:11
+    at _c (command.tsx:12:6)
+    at div (<anonymous>)
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at Provider (chunk-4IT4UJHH.js?v=9e3b38c1:356:15)
+    at div (<anonymous>)
+    at chunk-4IT4UJHH.js?v=9e3b38c1:438:7
+    at chunk-VMJEA7HX.js?v=9e3b38c1:52:11
+    at chunk-VMJEA7HX.js?v=9e3b38c1:33:11
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at @radix-ui_react-popover.js?v=9e3b38c1:82:7
+    at chunk-VMJEA7HX.js?v=9e3b38c1:52:11
+    at chunk-VMJEA7HX.js?v=9e3b38c1:33:11
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at @radix-ui_react-popover.js?v=9e3b38c1:281:5
+    at @radix-ui_react-popover.js?v=9e3b38c1:680:7
+    at @radix-ui_react-popover.js?v=9e3b38c1:637:59
+    at Presence (chunk-PF3VWVG2.js?v=9e3b38c1:24:11)
+    at @radix-ui_react-popover.js?v=9e3b38c1:587:64
+    at chunk-VMJEA7HX.js?v=9e3b38c1:52:11
+    at chunk-VMJEA7HX.js?v=9e3b38c1:33:11
+    at chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at @radix-ui_react-popover.js?v=9e3b38c1:484:22
+    at Presence (chunk-PF3VWVG2.js?v=9e3b38c1:24:11)
+    at Provider (chunk-XUAN5KW6.js?v=9e3b38c1:38:15)
+    at PopoverPortal (@radix-ui_react-popover.js?v=9e3b38c1:579:11)
+    at _c (popover.tsx:13:6)
+    at Provider (chunk-XUAN5KW6.js?v=9e3b38c1:38:15)
+    at Provider (chunk-4IT4UJHH.js?v=9e3b38c1:356:15)
+    at Popper (chunk-4IT4UJHH.js?v=9e3b38c1:413:11)
+    at Popover (@radix-ui_react-popover.js?v=9e3b38c1:502:5)
+    at FilterPopover (FilterPopover.tsx:21:33)
+    at div (<anonymous>)
+    at div (<anonymous>)
+    at div (<anonymous>)
+    at Inventory (Inventory.tsx:30:45)
+    at Route (wouter.js?v=9e3b38c1:191:16)
+    at Switch (wouter.js?v=9e3b38c1:247:17)
+    at div (<anonymous>)
+    at RestaurantProvider (RestaurantContext.tsx:23:38)
+    at QueryClientProvider (@tanstack_react-query.js?v=9e3b38c1:2805:3)
+    at App (App.tsx:19:22)
+    at QueryClientProvider (@tanstack_react-query.js?v=9e3b38c1:2805:3)
+overrideMethod @ hook.js:608
+printWarning @ chunk-C43VWYGG.js?v=9e3b38c1:521
+error @ chunk-C43VWYGG.js?v=9e3b38c1:505
+warnOnInvalidKey @ chunk-C43VWYGG.js?v=9e3b38c1:11487
+reconcileChildrenArray @ chunk-C43VWYGG.js?v=9e3b38c1:11503
+reconcileChildFibers2 @ chunk-C43VWYGG.js?v=9e3b38c1:11827
+reconcileChildren @ chunk-C43VWYGG.js?v=9e3b38c1:14272
+updateFragment @ chunk-C43VWYGG.js?v=9e3b38c1:14497
+beginWork @ chunk-C43VWYGG.js?v=9e3b38c1:15917
+beginWork$1 @ chunk-C43VWYGG.js?v=9e3b38c1:19721
+performUnitOfWork @ chunk-C43VWYGG.js?v=9e3b38c1:19166
+workLoopSync @ chunk-C43VWYGG.js?v=9e3b38c1:19105
+renderRootSync @ chunk-C43VWYGG.js?v=9e3b38c1:19084
+recoverFromConcurrentError @ chunk-C43VWYGG.js?v=9e3b38c1:18704
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=9e3b38c1:18847
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=9e3b38c1:9119
+(anonymous) @ chunk-C43VWYGG.js?v=9e3b38c1:18595Understand this errorAI
+52chunk-C43VWYGG.js?v=9e3b38c1:11202 Uncaught Error: Objects are not valid as a React child (found: object with keys {tag_name, tag_uuid, uuid}). If you meant to render a collection of children, use an array instead.
+    at throwOnInvalidObjectType (chunk-C43VWYGG.js?v=9e3b38c1:11202:17)
+    at createChild (chunk-C43VWYGG.js?v=9e3b38c1:11378:15)
+    at reconcileChildrenArray (chunk-C43VWYGG.js?v=9e3b38c1:11550:33)
+    at reconcileChildFibers2 (chunk-C43VWYGG.js?v=9e3b38c1:11827:24)
+    at reconcileChildren (chunk-C43VWYGG.js?v=9e3b38c1:14272:37)
+    at updateHostComponent (chunk-C43VWYGG.js?v=9e3b38c1:14782:11)
+    at beginWork (chunk-C43VWYGG.js?v=9e3b38c1:15903:22)
+    at HTMLUnknownElement.callCallback2 (chunk-C43VWYGG.js?v=9e3b38c1:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-C43VWYGG.js?v=9e3b38c1:3699:24)
+    at invokeGuardedCallback (chunk-C43VWYGG.js?v=9e3b38c1:3733:39)
+throwOnInvalidObjectType @ chunk-C43VWYGG.js?v=9e3b38c1:11202
+createChild @ chunk-C43VWYGG.js?v=9e3b38c1:11378
+reconcileChildrenArray @ chunk-C43VWYGG.js?v=9e3b38c1:11550
+reconcileChildFibers2 @ chunk-C43VWYGG.js?v=9e3b38c1:11827
+reconcileChildren @ chunk-C43VWYGG.js?v=9e3b38c1:14272
+updateHostComponent @ chunk-C43VWYGG.js?v=9e3b38c1:14782
+beginWork @ chunk-C43VWYGG.js?v=9e3b38c1:15903
+callCallback2 @ chunk-C43VWYGG.js?v=9e3b38c1:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=9e3b38c1:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=9e3b38c1:3733
+beginWork$1 @ chunk-C43VWYGG.js?v=9e3b38c1:19733
+performUnitOfWork @ chunk-C43VWYGG.js?v=9e3b38c1:19166
+workLoopSync @ chunk-C43VWYGG.js?v=9e3b38c1:19105
+renderRootSync @ chunk-C43VWYGG.js?v=9e3b38c1:19084
+recoverFromConcurrentError @ chunk-C43VWYGG.js?v=9e3b38c1:18704
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=9e3b38c1:18847
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=9e3b38c1:9119
+(anonymous) @ chunk-C43VWYGG.js?v=9e3b38c1:18595Understand this errorAI
+52hook.js:608 The above error occurred in the <div> component:
+
+    at div
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/cmdk.js?v=9e3b38c1:244:11
+    at _c14 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/ui/command.tsx:182:13)
+    at div
+    at div
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/cmdk.js?v=9e3b38c1:265:18
+    at _c10 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/ui/command.tsx:139:13)
+    at div
+    at div
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/cmdk.js?v=9e3b38c1:287:19
+    at _c6 (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/ui/command.tsx:96:12)
+    at div
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/cmdk.js?v=9e3b38c1:77:11
+    at _c (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/ui/command.tsx:23:11)
+    at div
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-4IT4UJHH.js?v=9e3b38c1:356:15)
+    at div
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-4IT4UJHH.js?v=9e3b38c1:438:7
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-VMJEA7HX.js?v=9e3b38c1:52:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-VMJEA7HX.js?v=9e3b38c1:33:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-popover.js?v=9e3b38c1:82:7
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-VMJEA7HX.js?v=9e3b38c1:52:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-VMJEA7HX.js?v=9e3b38c1:33:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-popover.js?v=9e3b38c1:281:5
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-popover.js?v=9e3b38c1:680:7
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-popover.js?v=9e3b38c1:637:59
+    at Presence (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-PF3VWVG2.js?v=9e3b38c1:24:11)
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-popover.js?v=9e3b38c1:587:64
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-VMJEA7HX.js?v=9e3b38c1:52:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-VMJEA7HX.js?v=9e3b38c1:33:11
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-3VRZCT36.js?v=9e3b38c1:41:13
+    at https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-popover.js?v=9e3b38c1:484:22
+    at Presence (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-PF3VWVG2.js?v=9e3b38c1:24:11)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-XUAN5KW6.js?v=9e3b38c1:38:15)
+    at PopoverPortal (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-popover.js?v=9e3b38c1:579:11)
+    at _c (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/ui/popover.tsx:23:11)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-XUAN5KW6.js?v=9e3b38c1:38:15)
+    at Provider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-4IT4UJHH.js?v=9e3b38c1:356:15)
+    at Popper (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/chunk-4IT4UJHH.js?v=9e3b38c1:413:11)
+    at Popover (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/@radix-ui_react-popover.js?v=9e3b38c1:502:5)
+    at FilterPopover (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/inventory/FilterPopover.tsx:25:33)
+    at div
+    at div
+    at div
+    at Inventory (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/pages/Inventory.tsx?t=1736125996837:44:45)
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=9e3b38c1:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=9e3b38c1:247:17)
+    at div
+    at RestaurantProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/contexts/RestaurantContext.tsx:23:38)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/@tanstack_react-query.js?v=9e3b38c1:2805:3)
+    at App (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/App.tsx:34:22)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/@tanstack_react-query.js?v=9e3b38c1:2805:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+overrideMethod @ hook.js:608
+logCapturedError @ chunk-C43VWYGG.js?v=9e3b38c1:14016
+update.callback @ chunk-C43VWYGG.js?v=9e3b38c1:14036
+callCallback @ chunk-C43VWYGG.js?v=9e3b38c1:10491
+commitUpdateQueue @ chunk-C43VWYGG.js?v=9e3b38c1:10508
+commitLayoutEffectOnFiber @ chunk-C43VWYGG.js?v=9e3b38c1:17061
+commitLayoutMountEffects_complete @ chunk-C43VWYGG.js?v=9e3b38c1:17948
+commitLayoutEffects_begin @ chunk-C43VWYGG.js?v=9e3b38c1:17937
+commitLayoutEffects @ chunk-C43VWYGG.js?v=9e3b38c1:17888
+commitRootImpl @ chunk-C43VWYGG.js?v=9e3b38c1:19321
+commitRoot @ chunk-C43VWYGG.js?v=9e3b38c1:19245
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=9e3b38c1:18863
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=9e3b38c1:9119
+(anonymous) @ chunk-C43VWYGG.js?v=9e3b38c1:18595Understand this errorAI
+chunk-C43VWYGG.js?v=9e3b38c1:11202 Uncaught Error: Objects are not valid as a React child (found: object with keys {tag_name, tag_uuid, uuid}). If you meant to render a collection of children, use an array instead.
+    at throwOnInvalidObjectType (chunk-C43VWYGG.js?v=9e3b38c1:11202:17)
+    at createChild (chunk-C43VWYGG.js?v=9e3b38c1:11378:15)
+    at reconcileChildrenArray (chunk-C43VWYGG.js?v=9e3b38c1:11550:33)
+    at reconcileChildFibers2 (chunk-C43VWYGG.js?v=9e3b38c1:11827:24)
+    at reconcileChildren (chunk-C43VWYGG.js?v=9e3b38c1:14272:37)
+    at updateHostComponent (chunk-C43VWYGG.js?v=9e3b38c1:14782:11)
+    at beginWork (chunk-C43VWYGG.js?v=9e3b38c1:15903:22)
+    at beginWork$1 (chunk-C43VWYGG.js?v=9e3b38c1:19721:22)
+    at performUnitOfWork (chunk-C43VWYGG.js?v=9e3b38c1:19166:20)
+    at workLoopSync (chunk-C43VWYGG.js?v=9e3b38c1:19105:13)
