@@ -401,7 +401,10 @@ export default function RecipeSheet({
                               field.value
                                 ? {
                                     value: field.value.category_uuid,
-                                    label: field.value.category_name,
+                                    label:
+                                      (field.value.emoji || "") +
+                                      " " +
+                                      (field.value.category_name || ""),
                                   }
                                 : null
                             }

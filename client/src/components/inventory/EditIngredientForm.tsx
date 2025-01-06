@@ -42,8 +42,8 @@ const editIngredientSchema = z.object({
   quantity: z.number().min(0, "Quantity must be positive"),
   base_unit: z
     .object({
-      unit_uuid: z.string().optional(),
-      unit_name: z.string().optional(),
+      unit_uuid: z.string().optional().nullable(),
+      unit_name: z.string().optional().nullable(),
     })
     .optional()
     .nullable(),
@@ -52,8 +52,8 @@ const editIngredientSchema = z.object({
       z.object({
         uuid: z.string().optional(),
         supplier: z.object({
-          supplier_uuid: z.string(),
-          supplier_name: z.string(),
+          supplier_uuid: z.string().nullable(),
+          supplier_name: z.string().nullable(),
         }),
         unit_cost: z.number().min(0).optional(),
         unit: z
