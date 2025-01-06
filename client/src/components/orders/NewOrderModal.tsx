@@ -140,22 +140,22 @@ export default function NewOrderModal({
       supplier: selectedSupplier,
       delivery_date: deliveryDate,
       status,
-      items,
-      amount: getTotalCost(),
-      date: new Date().toISOString(),
-      order_number: `ORD-${Date.now()}`, // Temporary order number generation
-    };
-
-    console.log(`Saving order as ${status}:`, {
-      ...order,
-      items: order.items.map(item => ({
+      ingredients: items.map(item => ({
         ...item,
         total_cost: Number((item.total_cost || 0).toFixed(2)),
         unit_cost: Number((item.unit_cost || 0).toFixed(2))
       })),
-      amount: Number(order.amount.toFixed(2))
-    });
+      total_cost: Number(getTotalCost().toFixed(2)),
+      order_date: new Date().toISOString(),
+      order_number: `ORD-${Date.now()}`,
+      note: "", // Optional order notes
+      user: {
+        user_uuid: "current-user-uuid", // This should come from your auth context
+        username: "current-username" // This should come from your auth context
+      }
+    };
 
+    console.log(`Saving order as ${status}:`, order);
     onSave(order, status);
   };
 
