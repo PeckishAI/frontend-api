@@ -869,9 +869,9 @@ export function EditInvoiceSlider({
                               render={({ field }) => (
                                 <FormItem className="flex-1">
                                   <FormLabel className="flex items-center gap-2">
-  <DollarSign className="h-4 w-4" />
-  Unit Cost
-</FormLabel>
+                                    <DollarSign className="h-4 w-4" />
+                                    Unit Cost
+                                  </FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
@@ -895,9 +895,9 @@ export function EditInvoiceSlider({
                               render={({ field }) => (
                                 <FormItem className="w-24">
                                   <FormLabel className="flex items-center gap-2">
-  <Percent className="h-4 w-4" />
-  VAT
-</FormLabel>
+                                    <Percent className="h-4 w-4" />
+                                    VAT
+                                  </FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
