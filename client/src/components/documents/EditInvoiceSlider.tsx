@@ -311,7 +311,7 @@ export function EditInvoiceSlider({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-none h-screen p-0 border-0 overflow-hidden"
+        className="w-full sm:max-w-none h-screen p-0 border-0 overflow-y-auto"
       >
         <div className="flex h-full divide-x divide-border">
           {/* Left side - Images */}
@@ -620,19 +620,25 @@ export function EditInvoiceSlider({
                                   </FormControl>
                                 </PopoverTrigger>
                                 <PopoverContent
-                                  className="w-auto p-0"
+                                  className="z-[9999] w-auto p-0"
                                   align="start"
                                   side="bottom"
                                   sideOffset={4}
-                                  onInteractOutside={(e) => e.preventDefault()}
                                 >
-                                  <div 
+                                  <div
                                     className="relative bg-popover"
-                                    style={{ zIndex: 99999, position: 'relative' }}
+                                    style={{
+                                      zIndex: 99999,
+                                      position: "relative",
+                                    }}
                                   >
                                     <Calendar
                                       mode="single"
-                                      selected={field.value ? new Date(field.value) : undefined}
+                                      selected={
+                                        field.value
+                                          ? new Date(field.value)
+                                          : undefined
+                                      }
                                       onSelect={(date) => {
                                         if (date) {
                                           field.onChange(date.toISOString());
