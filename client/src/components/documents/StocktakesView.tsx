@@ -100,6 +100,10 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
 
 interface StocktakesViewProps {
   viewMode: "cards" | "table";
+  showDownloadDialog: boolean;
+  setShowDownloadDialog: (show: boolean) => void;
+  showUploadDialog: boolean;
+  setShowUploadDialog: (show: boolean) => void;
 }
 
 export default function StocktakesView({ viewMode }: StocktakesViewProps) {
