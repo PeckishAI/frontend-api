@@ -12,6 +12,7 @@ import { getStatusColor } from "@/lib/data";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { orderService } from "@/services/orderService";
 import { quantityService } from "@/services/quantityService";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface OrderCardProps {
   order: Order;
@@ -37,7 +38,8 @@ export default function OrderCard({
 
   const restaurantUuid =
     useRestaurantContext().currentRestaurant?.restaurant_uuid;
-
+  const queryClient = useQueryClient();
+    
   const handleApprove = (sendEmail: boolean) => {
     onApprove?.(order, sendEmail);
     setShowApproveDialog(false);
@@ -108,9 +110,11 @@ export default function OrderCard({
 
                   console.log("Adding stock quantities");
                   console.log(data.receivedQuantitiy);
-                  quantityService.createReceiveQuantities(restaurantUuid, {
+                  await quantityService.createReceiveQuantities(restaurantUuid, {
                     receivedIngredients: data.receivedQuantitiy,
                   });
+                  await queryClient.invalidateQueries(["orders"]);
+                  await queryClient.invalidateQueries(["inventory"]);
                   onReceive?.();
                   setShowReceiveModal(false);
                 }}
