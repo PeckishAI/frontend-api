@@ -241,7 +241,7 @@ export default function ReceiveOrderModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         {/* -- You can add a DialogDescription here if you want to avoid the missing description warning */}
         <DialogHeader>
           <DialogTitle>Receive Stock</DialogTitle>
