@@ -197,14 +197,29 @@ export default function ReceiveOrderModal({
     const finalItems = selectedInvoice ? mergedItems : order?.items || [];
 
     const payload = {
+      ...order,
       order_uuid: order?.order_uuid,
+      status: "received",
       document_uuid: selectedInvoice,
+      linked_documents: {
+        ...order?.linked_documents,
+        invoice_uuid: selectedInvoice,
+        delivery_note_uuid: selectedDeliveryNote,
+      },
       items: finalItems.map((item) => ({
         ingredient_uuid: item.ingredient_uuid,
+        ingredient_name: item.ingredient_name,
         ordered_quantity: item.quantity || 0,
         received_quantity: receivedQuantities[item.ingredient_uuid || ""] || 0,
         unit: item.unit,
+        unit_cost: item.unit_cost,
+        total_cost: (receivedQuantities[item.ingredient_uuid || ""] || 0) * (item.unit_cost || 0),
+        product_code: item.product_code,
       })),
+      receipt_date: new Date().toISOString(),
+      total_cost: finalItems.reduce((sum, item) => 
+        sum + ((receivedQuantities[item.ingredient_uuid || ""] || 0) * (item.unit_cost || 0)), 0
+      )
     };
     console.log("Receiving stock with payload:", payload);
     onConfirm(payload);
