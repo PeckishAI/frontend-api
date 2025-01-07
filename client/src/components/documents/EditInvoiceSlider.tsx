@@ -632,6 +632,9 @@ export function EditInvoiceSlider({
                                       date < new Date("1900-01-01")
                                     }
                                     initialFocus
+                                    className="rounded-md border"
+                                    fromDate={new Date("1900-01-01")}
+                                    toDate={new Date()}
                                   />
                                 </PopoverContent>
                               </Popover>
