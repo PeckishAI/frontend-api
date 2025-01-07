@@ -711,7 +711,7 @@ export function EditInvoiceSlider({
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                          <div className="grid grid-cols-[2fr,1fr] gap-4">
+                          <div className="grid grid-cols-[2fr,1fr] items-end gap-4">
                             <FormField
                               control={form.control}
                               name={`invoice_ingredients.${index}.quantity`}
@@ -741,7 +741,7 @@ export function EditInvoiceSlider({
                               control={form.control}
                               name={`invoice_ingredients.${index}.unit`}
                               render={({ field }) => (
-                                <FormItem className="w-full flex flex-col justify-end">
+                                <FormItem className="w-full flex-1">
                                   <FormLabel>Unit</FormLabel>
                                   <FormControl>
                                     <CreatableSelect
