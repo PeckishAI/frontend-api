@@ -332,6 +332,7 @@ export function EditInvoiceSlider({
                   </div>
                   <div 
                     className="relative w-full h-full overflow-auto"
+                    style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
                     onMouseDown={(e) => {
                       if (zoom <= 100) return;
                       const ele = e.currentTarget;
