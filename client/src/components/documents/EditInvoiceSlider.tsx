@@ -123,6 +123,7 @@ export function EditInvoiceSlider({
   const [zoom, setZoom] = useState(100);
   const [showIngredientDialog, setShowIngredientDialog] = useState(false);
   const [newIngredientName, setNewIngredientName] = useState("");
+  const [newIngredientIndex, setNewIngredientIndex] = useState<number | null>(null);
   const [showSupplierDialog, setShowSupplierDialog] = useState(false); // Added state for supplier dialog
   const [newSupplierName, setNewSupplierName] = useState(""); // Added state for new supplier name
   const { currentRestaurant, currencyInfo } = useRestaurantContext();
@@ -799,6 +800,7 @@ export function EditInvoiceSlider({
                                     onCreateOption={(inputValue) => {
                                       setNewIngredientName(inputValue);
                                       setShowIngredientDialog(true);
+                                      setNewIngredientIndex(index);
                                     }}
                                     placeholder=""
                                   />
@@ -1072,8 +1074,13 @@ export function EditInvoiceSlider({
                 currentRestaurant.restaurant_uuid,
                 data,
               );
+              if (newIngredientIndex !== null) {
+                form.setValue(`invoice_ingredients.${newIngredientIndex}.ingredient_name`, newIngredient.ingredient_name);
+                form.setValue(`invoice_ingredients.${newIngredientIndex}.ingredient_uuid`, newIngredient.ingredient_uuid);
+              }
               queryClient.invalidateQueries(["ingredients"]);
               setShowIngredientDialog(false);
+              setNewIngredientIndex(null);
             } catch (error) {
               console.error("Failed to create ingredient:", error);
             }
