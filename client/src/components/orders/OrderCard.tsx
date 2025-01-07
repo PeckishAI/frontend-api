@@ -50,34 +50,22 @@ export default function OrderCard({
         <h2 className="font-semibold text-xl">
           {order.order_number || "No Order Number"}
         </h2>
-        <div className="flex items-center gap-2">
-          {order.linked_documents?.invoice_uuid ? (
-            <Badge variant="secondary" className="bg-green-100">
-              <FileText className="h-4 w-4 text-green-600" />
-            </Badge>
-          ) : (
-            <Badge variant="secondary" className="bg-red-100">
-              <FileText className="h-4 w-4 text-red-600" />
-            </Badge>
-          )}
-          {order.linked_documents?.delivery_note_uuid && (
-            <Badge variant="secondary" className="bg-blue-100">
-              <Truck className="h-4 w-4 text-blue-600" />
-            </Badge>
-          )}
-          <Badge
-            className={
-              order.status ? getStatusColor(order.status) : "default-class"
-            }
-          >
-            {order.status
-              ? order.status.charAt(0).toUpperCase() + order.status.slice(1)
-              : "Unknown"}
-          </Badge>
-        </div>
+        <Badge
+          className={
+            order.status ? getStatusColor(order.status) : "default-class"
+          }
+        >
+          {order.status
+            ? order.status.charAt(0).toUpperCase() + order.status.slice(1)
+            : "Unknown"}
+        </Badge>
       </CardHeader>
       <CardContent className="cursor-pointer" onClick={onClick}>
         <div className="flex flex-col space-y-3">
+          <div className="flex items-center text-sm text-gray-600">
+            <Truck className="mr-2 h-4 w-4" />
+            {order.supplier?.supplier_name || "Unknown Supplier"}
+          </div>
           <div className="flex items-center text-sm text-gray-600">
             <Calendar className="mr-2 h-4 w-4" />
             {order.delivery_date
@@ -85,12 +73,24 @@ export default function OrderCard({
               : "Unknown Date"}
           </div>
           <div className="flex items-center text-sm text-gray-600">
-            <Building2 className="mr-2 h-4 w-4" />
-            {order.supplier?.supplier_name || "Unknown Supplier"}
-          </div>
-          <div className="flex items-center text-sm text-gray-600">
             <Package className="mr-2 h-4 w-4" />
             {order.ingredients ? order.ingredients.length : 0} items
+          </div>
+          <div className="flex items-center gap-2">
+            {order.linked_documents?.invoice_uuid ? (
+              <Badge variant="secondary" className="bg-green-100">
+                <FileText className="h-4 w-4 text-green-600" />
+              </Badge>
+            ) : (
+              <Badge variant="secondary" className="bg-red-100">
+                <FileText className="h-4 w-4 text-red-600" />
+              </Badge>
+            )}
+            {order.linked_documents?.delivery_note_uuid && (
+              <Badge variant="secondary" className="bg-blue-100">
+                <Truck className="h-4 w-4 text-blue-600" />
+              </Badge>
+            )}
           </div>
         </div>
       </CardContent>
