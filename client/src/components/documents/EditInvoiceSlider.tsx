@@ -332,7 +332,16 @@ export function EditInvoiceSlider({
                   </div>
                   <div 
                     className="relative w-full h-full overflow-auto"
-                    style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      position: 'absolute', 
+                      top: 0, 
+                      left: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
                     onMouseDown={(e) => {
                       if (zoom <= 100) return;
                       const ele = e.currentTarget;
@@ -366,11 +375,15 @@ export function EditInvoiceSlider({
                         invoice.documents[activeImageIndex].name
                       }
                       alt={`Invoice ${invoice.invoice_number} - Image ${activeImageIndex + 1}`}
-                      className="w-full h-full object-contain transition-transform duration-200"
+                      className="transition-transform duration-200"
                       style={{
                         transform: `scale(${zoom / 100})`,
                         transformOrigin: "center",
                         cursor: zoom > 100 ? "grab" : "default",
+                        maxWidth: '100%',
+                        maxHeight: '100%',
+                        width: 'auto',
+                        height: 'auto'
                       }}
                       draggable={false}
                     />
