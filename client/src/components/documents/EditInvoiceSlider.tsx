@@ -330,14 +330,14 @@ export function EditInvoiceSlider({
                       onValueChange={(value) => setZoom(value[0])}
                     />
                   </div>
-                  <div 
+                  <div
                     className="relative w-full h-full overflow-hidden"
-                    style={{ 
-                      width: '100%', 
-                      height: '100%',
-                      position: 'absolute',
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      position: "absolute",
                       top: 0,
-                      left: 0
+                      left: 0,
                     }}
                   >
                     <div
@@ -354,9 +354,10 @@ export function EditInvoiceSlider({
                         const rect = container.getBoundingClientRect();
                         const startX = e.clientX - rect.left;
                         const startY = e.clientY - rect.top;
-                        
+
                         // Get current transform values
-                        const transform = window.getComputedStyle(img).transform;
+                        const transform =
+                          window.getComputedStyle(img).transform;
                         const matrix = new DOMMatrix(transform);
                         const startTranslateX = matrix.m41;
                         const startTranslateY = matrix.m42;
@@ -374,12 +375,18 @@ export function EditInvoiceSlider({
 
                         const handleMouseUp = () => {
                           container.style.cursor = "grab";
-                          document.removeEventListener('mousemove', handleMouseMove);
-                          document.removeEventListener('mouseup', handleMouseUp);
+                          document.removeEventListener(
+                            "mousemove",
+                            handleMouseMove,
+                          );
+                          document.removeEventListener(
+                            "mouseup",
+                            handleMouseUp,
+                          );
                         };
 
-                        document.addEventListener('mousemove', handleMouseMove);
-                        document.addEventListener('mouseup', handleMouseUp);
+                        document.addEventListener("mousemove", handleMouseMove);
+                        document.addEventListener("mouseup", handleMouseUp);
                       }}
                     >
                       <img
@@ -392,10 +399,10 @@ export function EditInvoiceSlider({
                         style={{
                           transform: `scale(${zoom / 100})`,
                           transformOrigin: "center",
-                          maxWidth: '100%',
-                          maxHeight: '100%',
-                          width: 'auto',
-                          height: 'auto'
+                          maxWidth: "100%",
+                          maxHeight: "100%",
+                          width: "auto",
+                          height: "auto",
                         }}
                         draggable={false}
                       />
@@ -485,11 +492,6 @@ export function EditInvoiceSlider({
                       <h2 className="text-xl font-semibold text-gray-900">
                         Invoice Details
                       </h2>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setIsDetailsOpen(!isDetailsOpen)}
-                      ></Button>
                     </div>
 
                     <div

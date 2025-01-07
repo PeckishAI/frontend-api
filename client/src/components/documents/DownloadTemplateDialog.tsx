@@ -1,5 +1,10 @@
-
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 interface DownloadTemplateDialogProps {
@@ -19,7 +24,9 @@ export default function DownloadTemplateDialog({
         </DialogHeader>
         <div className="py-6">
           <p className="text-sm text-muted-foreground">
-            Download our stocktake template file to get started. This CSV template includes the required columns and format for importing your stocktake data.
+            Download our stocktake template file to get started. This CSV
+            template includes the required columns and format for importing your
+            stocktake data.
           </p>
           <ul className="list-disc list-inside mt-4 text-sm text-muted-foreground">
             <li>Fill in the quantities for each item</li>
@@ -29,16 +36,22 @@ export default function DownloadTemplateDialog({
           </ul>
           <div className="mt-4 p-4 bg-muted rounded-lg">
             <p className="text-xs text-muted-foreground">
-              Note: The template follows a standard CSV format with columns for Item Code, Item Name, Quantity, and Unit. Please do not modify the column headers or structure of the template file.
+              Note: Changing the units of an item from the one we provided will
+              affect the tracking of this item since we won't be able to know
+              how to add it to the stock.
             </p>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={() => {
-            // Download logic will be implemented later
-            onOpenChange(false);
-          }}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              // Download logic will be implemented later
+              onOpenChange(false);
+            }}
+          >
             Download Template
           </Button>
         </DialogFooter>

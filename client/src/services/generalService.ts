@@ -55,11 +55,12 @@ export const generalService = {
 
       const data = await response.json();
       if (!data.success) {
-        throw new Error("Failed to fetch categories");
+        throw new Error("Failed to fetch restaurant inventory value");
       }
+      console.log("Inventory value fetched successfully:", data);
       return data.data;
     } catch (error) {
-      console.error("Failed to fetch restaurant categories:", error);
+      console.error("Failed to fetch restaurant inventory value:", error);
       throw error;
     }
   },
