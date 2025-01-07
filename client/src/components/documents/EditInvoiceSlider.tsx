@@ -482,8 +482,8 @@ export function EditInvoiceSlider({
                     className="absolute top-1 right-1 p-1 rounded-full bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={(e) => {
                       e.stopPropagation();
-                      const updatedDocs = [...invoice.documents];
-                      updatedDocs.splice(index, 1);
+                      const updatedDocs = invoice.documents.filter((_, i) => i !== index);
+                      invoice.documents = updatedDocs;
                       form.setValue("documents", updatedDocs);
                       if (activeImageIndex >= updatedDocs.length) {
                         setActiveImageIndex(Math.max(0, updatedDocs.length - 1));
