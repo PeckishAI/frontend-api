@@ -7,7 +7,7 @@ import {
   ChevronDown,
   Plus,
   Trash2,
-  Building2,
+  Truck,
   FileText,
   Hash,
   Calendar as CalendarIcon,
@@ -448,7 +448,7 @@ export function EditInvoiceSlider({
                         render={({ field }) => (
                           <FormItem className="mb-6">
                             <FormLabel className="flex items-center gap-2">
-  <Building2 className="h-4 w-4" />
+  <Truck className="h-4 w-4" />
   Supplier
 </FormLabel>
                             <FormControl>
@@ -522,9 +522,9 @@ export function EditInvoiceSlider({
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel className="flex items-center gap-2">
-  <FileText className="h-4 w-4" />
-  Invoice Number
-</FormLabel>
+                                <FileText className="h-4 w-4" />
+                                Invoice Number
+                              </FormLabel>
                               <FormControl>
                                 <Input {...field} className="font-mono" />
                               </FormControl>
@@ -538,7 +538,10 @@ export function EditInvoiceSlider({
                           name="date"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Date</FormLabel>
+                              <FormLabel className="flex items-center gap-2">
+                                <CalendarIcon className="h-4 w-4" />
+                                Date
+                              </FormLabel>
                               <Popover>
                                 <PopoverTrigger asChild>
                                   <FormControl>
@@ -708,12 +711,12 @@ export function EditInvoiceSlider({
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                          <div className="flex gap-2">
+                          <div className="grid grid-cols-[2fr,1fr] gap-4">
                             <FormField
                               control={form.control}
                               name={`invoice_ingredients.${index}.quantity`}
                               render={({ field }) => (
-                                <FormItem className="flex-1">
+                                <FormItem>
                                   <FormLabel className="flex items-center gap-2">
   <Hash className="h-4 w-4" />
   Quantity
