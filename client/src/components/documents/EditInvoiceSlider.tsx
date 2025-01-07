@@ -123,7 +123,9 @@ export function EditInvoiceSlider({
   const [zoom, setZoom] = useState(100);
   const [showIngredientDialog, setShowIngredientDialog] = useState(false);
   const [newIngredientName, setNewIngredientName] = useState("");
-  const [newIngredientIndex, setNewIngredientIndex] = useState<number | null>(null);
+  const [newIngredientIndex, setNewIngredientIndex] = useState<number | null>(
+    null,
+  );
   const [showSupplierDialog, setShowSupplierDialog] = useState(false); // Added state for supplier dialog
   const [newSupplierName, setNewSupplierName] = useState(""); // Added state for new supplier name
   const { currentRestaurant, currencyInfo } = useRestaurantContext();
@@ -244,7 +246,7 @@ export function EditInvoiceSlider({
       console.error("Form validation errors:", form.formState.errors);
       return;
     }
-
+    console.log("Form data:", data);
     try {
       await documentService.updateInvoice(
         currentRestaurant.restaurant_uuid,
@@ -452,10 +454,7 @@ export function EditInvoiceSlider({
             {/* Thumbnails */}
             <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
               {invoice.documents?.map((doc, index) => (
-                <div
-                  key={index}
-                  className="relative group"
-                >
+                <div key={index} className="relative group">
                   <div className="relative">
                     <button
                       className={`relative aspect-[3/2] w-20 rounded-md bg-white shadow-sm transition-all overflow-hidden ${
@@ -483,11 +482,15 @@ export function EditInvoiceSlider({
                     <button
                       className="absolute top-1 right-1 p-1 rounded-full bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
                       onClick={() => {
-                        const updatedDocs = invoice.documents.filter((_, i) => i !== index);
+                        const updatedDocs = invoice.documents.filter(
+                          (_, i) => i !== index,
+                        );
                         invoice.documents = updatedDocs;
                         form.setValue("documents", updatedDocs);
                         if (activeImageIndex >= updatedDocs.length) {
-                          setActiveImageIndex(Math.max(0, updatedDocs.length - 1));
+                          setActiveImageIndex(
+                            Math.max(0, updatedDocs.length - 1),
+                          );
                         }
                       }}
                     >
@@ -1075,8 +1078,14 @@ export function EditInvoiceSlider({
                 data,
               );
               if (newIngredientIndex !== null) {
-                form.setValue(`invoice_ingredients.${newIngredientIndex}.ingredient_name`, newIngredient.ingredient_name);
-                form.setValue(`invoice_ingredients.${newIngredientIndex}.ingredient_uuid`, newIngredient.ingredient_uuid);
+                form.setValue(
+                  `invoice_ingredients.${newIngredientIndex}.ingredient_name`,
+                  newIngredient.ingredient_name,
+                );
+                form.setValue(
+                  `invoice_ingredients.${newIngredientIndex}.ingredient_uuid`,
+                  newIngredient.ingredient_uuid,
+                );
               }
               queryClient.invalidateQueries(["ingredients"]);
               setShowIngredientDialog(false);
