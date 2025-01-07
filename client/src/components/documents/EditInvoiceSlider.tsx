@@ -620,16 +620,15 @@ export function EditInvoiceSlider({
                                   </FormControl>
                                 </PopoverTrigger>
                                 <PopoverContent
-                                  className="w-auto p-0"
+                                  className="w-auto p-0 bg-popover"
                                   align="start"
                                   side="bottom"
                                   sideOffset={4}
+                                  style={{ zIndex: 99999 }}
+                                  onPointerDownOutside={(e) => e.preventDefault()}
                                   onInteractOutside={(e) => e.preventDefault()}
+                                  onClick={(e) => e.stopPropagation()}
                                 >
-                                  <div 
-                                    className="relative bg-popover"
-                                    style={{ zIndex: 99999, position: 'relative' }}
-                                  >
                                     <Calendar
                                       mode="single"
                                       selected={field.value ? new Date(field.value) : undefined}
