@@ -921,9 +921,7 @@ export function EditInvoiceSlider({
                             </Button>
                         </div>
                       </div>
-                    ),
-                  )}
-                  <div> {/*Added div here*/}
+                    ))}
                   <div className="space-y-4">
                     <Button
                       type="button"
