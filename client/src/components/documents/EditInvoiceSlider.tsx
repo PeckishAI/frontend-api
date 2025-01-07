@@ -624,7 +624,8 @@ export function EditInvoiceSlider({
                                   align="start"
                                   side="bottom"
                                   sideOffset={4}
-                                  style={{ zIndex: 9999 }}
+                                  style={{ zIndex: 99999, position: 'relative' }}
+                                  onInteractOutside={(e) => e.preventDefault()}
                                 >
                                   <Calendar
                                     mode="single"
