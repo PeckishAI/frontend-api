@@ -32,7 +32,7 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
   return (
     <>
       <Card className="group hover:shadow-lg transition-shadow duration-200">
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-3 relative">
           <div className="flex flex-col gap-1">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -44,7 +44,7 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowDeleteDialog(true);
