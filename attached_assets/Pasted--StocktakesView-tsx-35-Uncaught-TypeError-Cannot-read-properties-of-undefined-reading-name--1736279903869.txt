@@ -1,0 +1,29 @@
+
+StocktakesView.tsx:35 Uncaught TypeError: Cannot read properties of undefined (reading 'name')
+    at StocktakeCard (StocktakesView.tsx:35:37)
+
+12
+hook.js:608 The above error occurred in the <StocktakeCard> component:
+
+    at StocktakeCard (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/documents/StocktakesView.tsx?t=1736279481561:36:26)
+    at div
+    at div
+    at StocktakesView (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/documents/StocktakesView.tsx?t=1736279481561:218:42)
+    at div
+    at Stocktakes (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/pages/documents/Stocktakes.tsx?t=1736279561603:18:38)
+    at div
+    at div
+    at div
+    at Documents (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/pages/Documents.tsx?t=1736279765563:29:45)
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=9e3b38c1:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…s/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=9e3b38c1:247:17)
+    at div
+    at RestaurantProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/contexts/RestaurantContext.tsx:28:38)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=9e3b38c1:2805:3)
+    at App (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/App.tsx?t=1736279765563:34:22)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.…rontend/node_modules/.vite/deps/@tanstack_react-query.js?v=9e3b38c1:2805:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+chunk-C43VWYGG.js?v=9e3b38c1:9129 Uncaught TypeError: Cannot read properties of undefined (reading 'name')
+    at StocktakeCard (StocktakesView.tsx:35:37)
