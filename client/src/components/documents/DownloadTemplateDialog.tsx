@@ -23,8 +23,9 @@ export default function DownloadTemplateDialog({
           </p>
           <ul className="list-disc list-inside mt-4 text-sm text-muted-foreground">
             <li>Fill in the quantities for each item</li>
-            <li>Make sure to use the correct units</li>
+            <li>Make sure to use the units we already provided</li>
             <li>Save the file in CSV format</li>
+            <li>Upload the CSV file on this page</li>
           </ul>
         </div>
         <DialogFooter>
