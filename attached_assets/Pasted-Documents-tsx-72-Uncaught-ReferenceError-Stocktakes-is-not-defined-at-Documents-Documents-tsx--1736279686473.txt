@@ -1,0 +1,134 @@
+Documents.tsx:72 Uncaught ReferenceError: Stocktakes is not defined
+    at Documents (Documents.tsx:72:47)
+    at renderWithHooks (chunk-C43VWYGG.js?v=9e3b38c1:12151:26)
+    at updateFunctionComponent (chunk-C43VWYGG.js?v=9e3b38c1:14557:28)
+    at beginWork (chunk-C43VWYGG.js?v=9e3b38c1:15892:22)
+    at HTMLUnknownElement.callCallback2 (chunk-C43VWYGG.js?v=9e3b38c1:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-C43VWYGG.js?v=9e3b38c1:3699:24)
+    at invokeGuardedCallback (chunk-C43VWYGG.js?v=9e3b38c1:3733:39)
+    at beginWork$1 (chunk-C43VWYGG.js?v=9e3b38c1:19733:15)
+    at performUnitOfWork (chunk-C43VWYGG.js?v=9e3b38c1:19166:20)
+    at workLoopSync (chunk-C43VWYGG.js?v=9e3b38c1:19105:13)
+Documents @ Documents.tsx:72
+renderWithHooks @ chunk-C43VWYGG.js?v=9e3b38c1:12151
+updateFunctionComponent @ chunk-C43VWYGG.js?v=9e3b38c1:14557
+beginWork @ chunk-C43VWYGG.js?v=9e3b38c1:15892
+callCallback2 @ chunk-C43VWYGG.js?v=9e3b38c1:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=9e3b38c1:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=9e3b38c1:3733
+beginWork$1 @ chunk-C43VWYGG.js?v=9e3b38c1:19733
+performUnitOfWork @ chunk-C43VWYGG.js?v=9e3b38c1:19166
+workLoopSync @ chunk-C43VWYGG.js?v=9e3b38c1:19105
+renderRootSync @ chunk-C43VWYGG.js?v=9e3b38c1:19084
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=9e3b38c1:18842
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=9e3b38c1:9119
+(anonymous) @ chunk-C43VWYGG.js?v=9e3b38c1:18595Understand this errorAI
+Documents.tsx:72 Uncaught ReferenceError: Stocktakes is not defined
+    at Documents (Documents.tsx:72:47)
+    at renderWithHooks (chunk-C43VWYGG.js?v=9e3b38c1:12151:26)
+    at updateFunctionComponent (chunk-C43VWYGG.js?v=9e3b38c1:14557:28)
+    at beginWork (chunk-C43VWYGG.js?v=9e3b38c1:15892:22)
+    at HTMLUnknownElement.callCallback2 (chunk-C43VWYGG.js?v=9e3b38c1:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-C43VWYGG.js?v=9e3b38c1:3699:24)
+    at invokeGuardedCallback (chunk-C43VWYGG.js?v=9e3b38c1:3733:39)
+    at beginWork$1 (chunk-C43VWYGG.js?v=9e3b38c1:19733:15)
+    at performUnitOfWork (chunk-C43VWYGG.js?v=9e3b38c1:19166:20)
+    at workLoopSync (chunk-C43VWYGG.js?v=9e3b38c1:19105:13)
+Documents @ Documents.tsx:72
+renderWithHooks @ chunk-C43VWYGG.js?v=9e3b38c1:12151
+updateFunctionComponent @ chunk-C43VWYGG.js?v=9e3b38c1:14557
+beginWork @ chunk-C43VWYGG.js?v=9e3b38c1:15892
+callCallback2 @ chunk-C43VWYGG.js?v=9e3b38c1:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=9e3b38c1:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=9e3b38c1:3733
+beginWork$1 @ chunk-C43VWYGG.js?v=9e3b38c1:19733
+performUnitOfWork @ chunk-C43VWYGG.js?v=9e3b38c1:19166
+workLoopSync @ chunk-C43VWYGG.js?v=9e3b38c1:19105
+renderRootSync @ chunk-C43VWYGG.js?v=9e3b38c1:19084
+recoverFromConcurrentError @ chunk-C43VWYGG.js?v=9e3b38c1:18704
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=9e3b38c1:18847
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=9e3b38c1:9119
+(anonymous) @ chunk-C43VWYGG.js?v=9e3b38c1:18595Understand this errorAI
+hook.js:608 The above error occurred in the <Documents> component:
+
+    at Documents (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/pages/Documents.tsx?t=1736279657145:28:45)
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=9e3b38c1:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/wouter.js?v=9e3b38c1:247:17)
+    at div
+    at RestaurantProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/contexts/RestaurantContext.tsx:28:38)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/@tanstack_react-query.js?v=9e3b38c1:2805:3)
+    at App (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/App.tsx?t=1736279657145:34:22)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/Frontend/node_modules/.vite/deps/@tanstack_react-query.js?v=9e3b38c1:2805:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+overrideMethod @ hook.js:608
+logCapturedError @ chunk-C43VWYGG.js?v=9e3b38c1:14016
+update.callback @ chunk-C43VWYGG.js?v=9e3b38c1:14036
+callCallback @ chunk-C43VWYGG.js?v=9e3b38c1:10491
+commitUpdateQueue @ chunk-C43VWYGG.js?v=9e3b38c1:10508
+commitLayoutEffectOnFiber @ chunk-C43VWYGG.js?v=9e3b38c1:17061
+commitLayoutMountEffects_complete @ chunk-C43VWYGG.js?v=9e3b38c1:17948
+commitLayoutEffects_begin @ chunk-C43VWYGG.js?v=9e3b38c1:17937
+commitLayoutEffects @ chunk-C43VWYGG.js?v=9e3b38c1:17888
+commitRootImpl @ chunk-C43VWYGG.js?v=9e3b38c1:19321
+commitRoot @ chunk-C43VWYGG.js?v=9e3b38c1:19245
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=9e3b38c1:18863
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=9e3b38c1:9119
+(anonymous) @ chunk-C43VWYGG.js?v=9e3b38c1:18595Understand this errorAI
+chunk-C43VWYGG.js?v=9e3b38c1:9129 Uncaught ReferenceError: Stocktakes is not defined
+    at Documents (Documents.tsx:72:47)
+    at renderWithHooks (chunk-C43VWYGG.js?v=9e3b38c1:12151:26)
+    at updateFunctionComponent (chunk-C43VWYGG.js?v=9e3b38c1:14557:28)
+    at beginWork (chunk-C43VWYGG.js?v=9e3b38c1:15892:22)
+    at beginWork$1 (chunk-C43VWYGG.js?v=9e3b38c1:19721:22)
+    at performUnitOfWork (chunk-C43VWYGG.js?v=9e3b38c1:19166:20)
+    at workLoopSync (chunk-C43VWYGG.js?v=9e3b38c1:19105:13)
+    at renderRootSync (chunk-C43VWYGG.js?v=9e3b38c1:19084:15)
+    at recoverFromConcurrentError (chunk-C43VWYGG.js?v=9e3b38c1:18704:28)
+    at performSyncWorkOnRoot (chunk-C43VWYGG.js?v=9e3b38c1:18847:28)
+Documents @ Documents.tsx:72
+renderWithHooks @ chunk-C43VWYGG.js?v=9e3b38c1:12151
+updateFunctionComponent @ chunk-C43VWYGG.js?v=9e3b38c1:14557
+beginWork @ chunk-C43VWYGG.js?v=9e3b38c1:15892
+beginWork$1 @ chunk-C43VWYGG.js?v=9e3b38c1:19721
+performUnitOfWork @ chunk-C43VWYGG.js?v=9e3b38c1:19166
+workLoopSync @ chunk-C43VWYGG.js?v=9e3b38c1:19105
+renderRootSync @ chunk-C43VWYGG.js?v=9e3b38c1:19084
+recoverFromConcurrentError @ chunk-C43VWYGG.js?v=9e3b38c1:18704
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=9e3b38c1:18847
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=9e3b38c1:9119
+(anonymous) @ chunk-C43VWYGG.js?v=9e3b38c1:18595Understand this errorAI
+documentService.ts:104 Failed to fetch restaurant invoices: Error: Failed to fetch invoices
+    at Object.getRestaurantInvoices (documentService.ts:100:15)
+    at async queryFn (InvoicesView.tsx:43:24)
+overrideMethod @ hook.js:608
+getRestaurantInvoices @ documentService.ts:104
+await in getRestaurantInvoices
+queryFn @ InvoicesView.tsx:43
+fetchFn @ @tanstack_react-query.js?v=9e3b38c1:840
+run @ @tanstack_react-query.js?v=9e3b38c1:494
+start @ @tanstack_react-query.js?v=9e3b38c1:536
+fetch @ @tanstack_react-query.js?v=9e3b38c1:926
+executeFetch_fn @ @tanstack_react-query.js?v=9e3b38c1:2211
+setOptions @ @tanstack_react-query.js?v=9e3b38c1:1955
+(anonymous) @ @tanstack_react-query.js?v=9e3b38c1:3032
+commitHookEffectListMount @ chunk-C43VWYGG.js?v=9e3b38c1:16883
+commitPassiveMountOnFiber @ chunk-C43VWYGG.js?v=9e3b38c1:18124
+commitPassiveMountEffects_complete @ chunk-C43VWYGG.js?v=9e3b38c1:18097
+commitPassiveMountEffects_begin @ chunk-C43VWYGG.js?v=9e3b38c1:18087
+commitPassiveMountEffects @ chunk-C43VWYGG.js?v=9e3b38c1:18077
+flushPassiveEffectsImpl @ chunk-C43VWYGG.js?v=9e3b38c1:19458
+flushPassiveEffects @ chunk-C43VWYGG.js?v=9e3b38c1:19415
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=9e3b38c1:18836
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=9e3b38c1:9119
+commitRootImpl @ chunk-C43VWYGG.js?v=9e3b38c1:19400
+commitRoot @ chunk-C43VWYGG.js?v=9e3b38c1:19245
+finishConcurrentRender @ chunk-C43VWYGG.js?v=9e3b38c1:18773
+performConcurrentWorkOnRoot @ chunk-C43VWYGG.js?v=9e3b38c1:18686
+workLoop @ chunk-C43VWYGG.js?v=9e3b38c1:197
+flushWork @ chunk-C43VWYGG.js?v=9e3b38c1:176
+performWorkUntilDeadline @ chunk-C43VWYGG.js?v=9e3b38c1:384Understand this errorAI
+InvoicesView.tsx:48 InvoicesView: API call failed: Error: Failed to fetch invoices
+    at Object.getRestaurantInvoices (documentService.ts:100:15)
+    at async queryFn (InvoicesView.tsx:43:24)
