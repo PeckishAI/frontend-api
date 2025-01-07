@@ -338,7 +338,7 @@ export function EditInvoiceSlider({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      padding: '2rem'
+                      padding: '50%'
                     }}
                     onMouseDown={(e) => {
                       if (zoom <= 100) return;
