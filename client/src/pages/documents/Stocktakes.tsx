@@ -9,7 +9,11 @@ import {
   User2,
   Hash,
   Film,
+  Download,
+  Upload,
 } from "lucide-react";
+import DownloadTemplateDialog from "@/components/documents/DownloadTemplateDialog";
+import UploadStocktakeDialog from "@/components/documents/UploadStocktakeDialog";
 import ViewToggle from "@/components/orders/ViewToggle";
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import {
@@ -127,6 +131,8 @@ export default function Stocktakes() {
   const [activeSection, setActiveSection] = useState("invoices");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
+  const [showDownloadDialog, setShowDownloadDialog] = useState(false);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
   const { currentRestaurant } = useRestaurantContext();
 
   const sections = [
@@ -173,8 +179,32 @@ export default function Stocktakes() {
         />
 
         <div className="px-8 mb-6 flex items-center justify-end gap-4">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setShowDownloadDialog(true)}
+          >
+            <Download className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline" 
+            size="icon"
+            onClick={() => setShowUploadDialog(true)}
+          >
+            <Upload className="h-4 w-4" />
+          </Button>
           <ViewToggle current={viewMode} onChange={setViewMode} />
         </div>
+
+        <DownloadTemplateDialog 
+          open={showDownloadDialog} 
+          onOpenChange={setShowDownloadDialog}
+        />
+
+        <UploadStocktakeDialog
+          open={showUploadDialog}
+          onOpenChange={setShowUploadDialog}
+        />
 
         <div className="px-8 pb-8">
           <div className="bg-white rounded-lg shadow overflow-hidden">
