@@ -179,24 +179,20 @@ export default function Stocktakes() {
         />
 
         <div className="px-8 mb-6 flex items-center justify-end gap-4">
-          {activeSection === "stocktakes" && (
-            <>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setShowDownloadDialog(true)}
-              >
-                <Download className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline" 
-                size="icon"
-                onClick={() => setShowUploadDialog(true)}
-              >
-                <Upload className="h-4 w-4" />
-              </Button>
-            </>
-          )}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setShowDownloadDialog(true)}
+          >
+            <Download className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline" 
+            size="icon"
+            onClick={() => setShowUploadDialog(true)}
+          >
+            <Upload className="h-4 w-4" />
+          </Button>
           <ViewToggle current={viewMode} onChange={setViewMode} />
         </div>
 
