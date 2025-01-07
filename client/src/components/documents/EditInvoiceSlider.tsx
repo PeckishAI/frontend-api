@@ -448,9 +448,9 @@ export function EditInvoiceSlider({
                         render={({ field }) => (
                           <FormItem className="mb-6">
                             <FormLabel className="flex items-center gap-2">
-  <Truck className="h-4 w-4" />
-  Supplier
-</FormLabel>
+                              <Truck className="h-4 w-4" />
+                              Supplier
+                            </FormLabel>
                             <FormControl>
                               <div className="relative">
                                 <CreatableSelect
@@ -717,9 +717,9 @@ export function EditInvoiceSlider({
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel className="flex items-center gap-2">
-  <Hash className="h-4 w-4" />
-  Quantity
-</FormLabel>
+                                    <Hash className="h-4 w-4" />
+                                    Quantity
+                                  </FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
@@ -864,9 +864,9 @@ export function EditInvoiceSlider({
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel className="flex items-center gap-2">
-  <DollarSign className="h-4 w-4" />
-  Unit Cost
-</FormLabel>
+                                    <DollarSign className="h-4 w-4" />
+                                    Unit Cost
+                                  </FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
@@ -890,9 +890,9 @@ export function EditInvoiceSlider({
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel className="flex items-center gap-2">
-  <Percent className="h-4 w-4" />
-  VAT
-</FormLabel>
+                                    <Percent className="h-4 w-4" />
+                                    VAT
+                                  </FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
@@ -923,6 +923,7 @@ export function EditInvoiceSlider({
                       </div>
                     ),
                   )}
+                  <div> {/*Added div here*/}
                   <Button
                     type="button"
                     variant="outline"
@@ -959,6 +960,7 @@ export function EditInvoiceSlider({
                       ? "Saved!"
                       : "Save changes"}
                   </Button>
+                  </div> {/*Added div here*/}
                 </div>
               </form>
             </Form>
