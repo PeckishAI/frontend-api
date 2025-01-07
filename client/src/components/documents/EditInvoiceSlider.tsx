@@ -330,7 +330,35 @@ export function EditInvoiceSlider({
                       onValueChange={(value) => setZoom(value[0])}
                     />
                   </div>
-                  <div className="relative w-full h-full overflow-auto">
+                  <div 
+                    className="relative w-full h-full overflow-auto"
+                    onMouseDown={(e) => {
+                      if (zoom <= 100) return;
+                      const ele = e.currentTarget;
+                      const startX = e.pageX - ele.offsetLeft;
+                      const startY = e.pageY - ele.offsetTop;
+                      const startScrollLeft = ele.scrollLeft;
+                      const startScrollTop = ele.scrollTop;
+
+                      const handleMouseMove = (e: MouseEvent) => {
+                        e.preventDefault();
+                        const x = e.pageX - ele.offsetLeft;
+                        const y = e.pageY - ele.offsetTop;
+                        const walkX = (x - startX);
+                        const walkY = (y - startY);
+                        ele.scrollLeft = startScrollLeft - walkX;
+                        ele.scrollTop = startScrollTop - walkY;
+                      };
+
+                      const handleMouseUp = () => {
+                        document.removeEventListener('mousemove', handleMouseMove);
+                        document.removeEventListener('mouseup', handleMouseUp);
+                      };
+
+                      document.addEventListener('mousemove', handleMouseMove);
+                      document.addEventListener('mouseup', handleMouseUp);
+                    }}
+                  >
                     <img
                       src={
                         "https://storage.cloud.google.com/peckish-datasets/restaurant/" +
@@ -341,8 +369,9 @@ export function EditInvoiceSlider({
                       style={{
                         transform: `scale(${zoom / 100})`,
                         transformOrigin: "center",
-                        cursor: "grab",
+                        cursor: zoom > 100 ? "grab" : "default",
                       }}
+                      draggable={false}
                     />
                   </div>
                 </div>
