@@ -1,7 +1,10 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FileText, FileBox, ClipboardCheck, Images, User2, Hash, Film } from "lucide-react";
+import { FileText, FileBox, ClipboardCheck, Images, User2, Hash, Film, Download, Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import DownloadTemplateDialog from "./DownloadTemplateDialog";
+import UploadStocktakeDialog from "./UploadStocktakeDialog";
 import {
   Table,
   TableBody,
@@ -106,6 +109,8 @@ interface StocktakesViewProps {
 }
 
 export default function StocktakesView({ viewMode }: StocktakesViewProps) {
+  const [showDownloadDialog, setShowDownloadDialog] = useState(false);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -181,6 +186,32 @@ export default function StocktakesView({ viewMode }: StocktakesViewProps) {
 
   return (
     <>
+      <div className="px-8 mb-6 flex items-center justify-end gap-4">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setShowDownloadDialog(true)}
+        >
+          <Download className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline" 
+          size="icon"
+          onClick={() => setShowUploadDialog(true)}
+        >
+          <Upload className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <DownloadTemplateDialog 
+        open={showDownloadDialog} 
+        onOpenChange={setShowDownloadDialog}
+      />
+
+      <UploadStocktakeDialog
+        open={showUploadDialog}
+        onOpenChange={setShowUploadDialog}
+      />
       {viewMode === "cards" ? (
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
