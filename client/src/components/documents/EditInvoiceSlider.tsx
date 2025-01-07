@@ -336,13 +336,13 @@ export function EditInvoiceSlider({
                       width: '100%', 
                       height: '100%',
                       position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
+                      top: 0,
+                      left: 0,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      padding: zoom > 100 ? '50%' : '0'
+                      minWidth: '100%',
+                      minHeight: '100%'
                     }}
                     onMouseDown={(e) => {
                       if (zoom <= 100) return;
