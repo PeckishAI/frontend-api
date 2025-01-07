@@ -34,7 +34,6 @@ export default function Documents() {
         <div className="px-8 mt-6 mb-6 flex items-center justify-end gap-4">
           {(activeSection === "invoices" || activeSection === "stocktakes") && (
             <>
-              <ViewToggle current={viewMode} onChange={setViewMode} />
               {activeSection === "stocktakes" && (
                 <>
                   <Button 
@@ -53,6 +52,7 @@ export default function Documents() {
                   </Button>
                 </>
               )}
+              <ViewToggle current={viewMode} onChange={setViewMode} />
             </>
           )}
         </div>
