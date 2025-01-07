@@ -1,14 +1,19 @@
 
 import { useState } from "react";
-import { FileText, FileBox, ClipboardCheck } from "lucide-react";
+import { FileText, FileBox, ClipboardCheck, Download, Upload } from "lucide-react";
 import ViewToggle from "@/components/orders/ViewToggle";
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import InvoicesView from "@/components/documents/InvoicesView";
 import StocktakesView from "@/components/documents/StocktakesView";
+import DownloadTemplateDialog from "@/components/documents/DownloadTemplateDialog";
+import UploadStocktakeDialog from "@/components/documents/UploadStocktakeDialog";
+import { Button } from "@/components/ui/button";
 
 export default function Documents() {
   const [activeSection, setActiveSection] = useState("invoices");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+  const [showDownloadDialog, setShowDownloadDialog] = useState(false);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
 
   const sections = [
     { id: "invoices", label: "Invoices", icon: FileText },
