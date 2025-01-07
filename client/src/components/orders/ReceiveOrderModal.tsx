@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import { BasicSelect } from "@/components/ui/basic-select";
-import { type Order } from "@/types/order";
+import { type Order } from "@/lib/OrderTypes";
 import { useQuery } from "@tanstack/react-query";
 import { documentService } from "@/services/documentService";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
@@ -41,8 +41,12 @@ export default function ReceiveOrderModal({
 }: ReceiveOrderModalProps) {
   const { currentRestaurant } = useRestaurantContext();
 
-  const [selectedInvoice, setSelectedInvoice] = useState<string>(order?.linked_documents?.invoice_uuid || "");
-  const [selectedDeliveryNote, setSelectedDeliveryNote] = useState<string>(order?.linked_documents?.delivery_note_uuid || "");
+  const [selectedInvoice, setSelectedInvoice] = useState<string>(
+    order?.linked_documents?.invoice_uuid || "",
+  );
+  const [selectedDeliveryNote, setSelectedDeliveryNote] = useState<string>(
+    order?.linked_documents?.delivery_note_uuid || "",
+  );
   const [selectedInvoiceData, setSelectedInvoiceData] = useState<any>(null);
 
   // We'll store a merged list of items here once an invoice is chosen
@@ -213,13 +217,19 @@ export default function ReceiveOrderModal({
         received_quantity: receivedQuantities[item.ingredient_uuid || ""] || 0,
         unit: item.unit,
         unit_cost: item.unit_cost,
-        total_cost: (receivedQuantities[item.ingredient_uuid || ""] || 0) * (item.unit_cost || 0),
+        total_cost:
+          (receivedQuantities[item.ingredient_uuid || ""] || 0) *
+          (item.unit_cost || 0),
         product_code: item.product_code,
       })),
       receipt_date: new Date().toISOString(),
-      total_cost: finalItems.reduce((sum, item) => 
-        sum + ((receivedQuantities[item.ingredient_uuid || ""] || 0) * (item.unit_cost || 0)), 0
-      )
+      total_cost: finalItems.reduce(
+        (sum, item) =>
+          sum +
+          (receivedQuantities[item.ingredient_uuid || ""] || 0) *
+            (item.unit_cost || 0),
+        0,
+      ),
     };
     console.log("Receiving stock with payload:", payload);
     onConfirm(payload);
