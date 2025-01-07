@@ -109,14 +109,14 @@ export default function OrderCard({
                 open={showReceiveModal}
                 onOpenChange={setShowReceiveModal}
                 order={order}
-                onConfirm={(data) => {
+                onConfirm={async (data) => {
                   console.log("Order received:", data);
                   if (!restaurantUuid || !data.order_uuid) {
                     throw new Error("No restaurant or order selected");
                   }
                   console.log("Adding order :", data.order_uuid);
                   console.log(data);
-                  orderService.updateOrder(
+                  await orderService.updateOrder(
                     restaurantUuid,
                     data.order_uuid,
                     data,
