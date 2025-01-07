@@ -41,11 +41,11 @@ export default function ReceiveOrderModal({
 }: ReceiveOrderModalProps) {
   const { currentRestaurant } = useRestaurantContext();
 
-  const [selectedInvoice, setSelectedInvoice] = useState<string>(
-    order?.linked_documents?.invoice_uuid || "",
+  const [selectedInvoice, setSelectedInvoice] = useState<string | null>(
+    order?.linked_documents?.invoice_uuid || null
   );
-  const [selectedDeliveryNote, setSelectedDeliveryNote] = useState<string>(
-    order?.linked_documents?.delivery_note_uuid || "",
+  const [selectedDeliveryNote, setSelectedDeliveryNote] = useState<string | null>(
+    order?.linked_documents?.delivery_note_uuid || null
   );
   const [selectedInvoiceData, setSelectedInvoiceData] = useState<any>(null);
 
@@ -269,7 +269,7 @@ export default function ReceiveOrderModal({
                 onChange={(option) => {
                   console.log("Selected invoice:", option);
                   if (!option?.value) {
-                    setSelectedInvoice("");
+                    setSelectedInvoice(null);
                     setMergedItems([]);
                     return;
                   }
@@ -362,7 +362,7 @@ export default function ReceiveOrderModal({
                 }
                 onChange={(option) => {
                   console.log("Selected delivery note:", option);
-                  setSelectedDeliveryNote(option?.value || "");
+                  setSelectedDeliveryNote(option?.value || null);
                 }}
                 options={[]}
                 placeholder="Select a delivery note"
