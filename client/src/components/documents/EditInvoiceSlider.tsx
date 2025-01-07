@@ -922,8 +922,8 @@ export function EditInvoiceSlider({
                           </div>
                         </div>
                       </div>
-                    ),
-                  )}
+                    ))}
+                  </div>
                   <Button
                     type="button"
                     variant="outline"
