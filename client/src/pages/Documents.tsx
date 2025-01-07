@@ -5,7 +5,7 @@ import ViewToggle from "@/components/orders/ViewToggle";
 import SubSectionNav from "@/components/layout/SubSectionNav";
 import InvoicesView from "@/components/documents/InvoicesView";
 import StocktakesView from "@/components/documents/StocktakesView";
-import Stocktakes from "@/pages/documents/Stocktakes";
+import Stocktakes from "./documents/Stocktakes";
 import DownloadTemplateDialog from "@/components/documents/DownloadTemplateDialog";
 import UploadStocktakeDialog from "@/components/documents/UploadStocktakeDialog";
 import { Button } from "@/components/ui/button";
