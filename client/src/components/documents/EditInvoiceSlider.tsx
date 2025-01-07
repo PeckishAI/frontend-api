@@ -7,6 +7,12 @@ import {
   ChevronDown,
   Plus,
   Trash2,
+  Building2,
+  FileText,
+  Hash,
+  Calendar as CalendarIcon,
+  DollarSign,
+  Percent,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -442,7 +448,10 @@ export function EditInvoiceSlider({
                         name="supplier.supplier_name"
                         render={({ field }) => (
                           <FormItem className="mb-6">
-                            <FormLabel>Supplier</FormLabel>
+                            <FormLabel className="flex items-center gap-2">
+  <Building2 className="h-4 w-4" />
+  Supplier
+</FormLabel>
                             <FormControl>
                               <div className="relative">
                                 <CreatableSelect
@@ -513,7 +522,10 @@ export function EditInvoiceSlider({
                           name="invoice_number"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Invoice Number</FormLabel>
+                              <FormLabel className="flex items-center gap-2">
+  <FileText className="h-4 w-4" />
+  Invoice Number
+</FormLabel>
                               <FormControl>
                                 <Input {...field} className="font-mono" />
                               </FormControl>
@@ -703,7 +715,10 @@ export function EditInvoiceSlider({
                               name={`invoice_ingredients.${index}.quantity`}
                               render={({ field }) => (
                                 <FormItem className="flex-1">
-                                  <FormLabel>Quantity</FormLabel>
+                                  <FormLabel className="flex items-center gap-2">
+  <Hash className="h-4 w-4" />
+  Quantity
+</FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
@@ -848,7 +863,10 @@ export function EditInvoiceSlider({
                               name={`invoice_ingredients.${index}.unit_cost`}
                               render={({ field }) => (
                                 <FormItem className="flex-1">
-                                  <FormLabel>Unit Cost</FormLabel>
+                                  <FormLabel className="flex items-center gap-2">
+  <DollarSign className="h-4 w-4" />
+  Unit Cost
+</FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
@@ -871,7 +889,10 @@ export function EditInvoiceSlider({
                               name={`invoice_ingredients.${index}.vat`}
                               render={({ field }) => (
                                 <FormItem className="w-24">
-                                  <FormLabel>VAT</FormLabel>
+                                  <FormLabel className="flex items-center gap-2">
+  <Percent className="h-4 w-4" />
+  VAT
+</FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
