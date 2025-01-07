@@ -331,64 +331,75 @@ export function EditInvoiceSlider({
                     />
                   </div>
                   <div 
-                    className="relative w-full h-full overflow-auto"
+                    className="relative w-full h-full overflow-hidden"
                     style={{ 
                       width: '100%', 
                       height: '100%',
                       position: 'absolute',
                       top: 0,
-                      left: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      minWidth: '100%',
-                      minHeight: '100%'
-                    }}
-                    onMouseDown={(e) => {
-                      if (zoom <= 100) return;
-                      const ele = e.currentTarget;
-                      const startX = e.pageX - ele.offsetLeft;
-                      const startY = e.pageY - ele.offsetTop;
-                      const startScrollLeft = ele.scrollLeft;
-                      const startScrollTop = ele.scrollTop;
-
-                      const handleMouseMove = (e: MouseEvent) => {
-                        e.preventDefault();
-                        const x = e.pageX - ele.offsetLeft;
-                        const y = e.pageY - ele.offsetTop;
-                        const walkX = (x - startX);
-                        const walkY = (y - startY);
-                        ele.scrollLeft = startScrollLeft - walkX;
-                        ele.scrollTop = startScrollTop - walkY;
-                      };
-
-                      const handleMouseUp = () => {
-                        document.removeEventListener('mousemove', handleMouseMove);
-                        document.removeEventListener('mouseup', handleMouseUp);
-                      };
-
-                      document.addEventListener('mousemove', handleMouseMove);
-                      document.addEventListener('mouseup', handleMouseUp);
+                      left: 0
                     }}
                   >
-                    <img
-                      src={
-                        "https://storage.cloud.google.com/peckish-datasets/restaurant/" +
-                        invoice.documents[activeImageIndex].name
-                      }
-                      alt={`Invoice ${invoice.invoice_number} - Image ${activeImageIndex + 1}`}
-                      className="transition-transform duration-200"
+                    <div
+                      className="absolute inset-0 flex items-center justify-center"
                       style={{
-                        transform: `scale(${zoom / 100})`,
-                        transformOrigin: "center",
                         cursor: zoom > 100 ? "grab" : "default",
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                        width: 'auto',
-                        height: 'auto'
                       }}
-                      draggable={false}
-                    />
+                      onMouseDown={(e) => {
+                        if (zoom <= 100) return;
+                        const container = e.currentTarget;
+                        const img = container.firstElementChild as HTMLElement;
+                        if (!img) return;
+
+                        const rect = container.getBoundingClientRect();
+                        const startX = e.clientX - rect.left;
+                        const startY = e.clientY - rect.top;
+                        
+                        // Get current transform values
+                        const transform = window.getComputedStyle(img).transform;
+                        const matrix = new DOMMatrix(transform);
+                        const startTranslateX = matrix.m41;
+                        const startTranslateY = matrix.m42;
+
+                        container.style.cursor = "grabbing";
+
+                        const handleMouseMove = (e: MouseEvent) => {
+                          const x = e.clientX - rect.left;
+                          const y = e.clientY - rect.top;
+                          const deltaX = x - startX;
+                          const deltaY = y - startY;
+
+                          img.style.transform = `translate(${startTranslateX + deltaX}px, ${startTranslateY + deltaY}px) scale(${zoom / 100})`;
+                        };
+
+                        const handleMouseUp = () => {
+                          container.style.cursor = "grab";
+                          document.removeEventListener('mousemove', handleMouseMove);
+                          document.removeEventListener('mouseup', handleMouseUp);
+                        };
+
+                        document.addEventListener('mousemove', handleMouseMove);
+                        document.addEventListener('mouseup', handleMouseUp);
+                      }}
+                    >
+                      <img
+                        src={
+                          "https://storage.cloud.google.com/peckish-datasets/restaurant/" +
+                          invoice.documents[activeImageIndex].name
+                        }
+                        alt={`Invoice ${invoice.invoice_number} - Image ${activeImageIndex + 1}`}
+                        className="transition-transform duration-75"
+                        style={{
+                          transform: `scale(${zoom / 100})`,
+                          transformOrigin: "center",
+                          maxWidth: '100%',
+                          maxHeight: '100%',
+                          width: 'auto',
+                          height: 'auto'
+                        }}
+                        draggable={false}
+                      />
+                    </div>
                   </div>
                 </div>
               ) : (
