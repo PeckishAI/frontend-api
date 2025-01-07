@@ -419,14 +419,28 @@ export function EditInvoiceSlider({
                 className="h-full flex flex-col"
               >
                 <div className="border-b">
-                  <div className="p-4">
-                    <h2 className="text-lg font-semibold text-gray-900">
-                      Invoice Details
-                    </h2>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-xl font-semibold text-gray-900">
+                        Invoice Details
+                      </h2>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsDetailsOpen(!isDetailsOpen)}
+                      >
+                        <ChevronDown
+                          className={cn(
+                            "h-4 w-4 transition-transform",
+                            isDetailsOpen ? "transform rotate-180" : "",
+                          )}
+                        />
+                      </Button>
+                    </div>
 
                     <div
                       className={cn(
-                        "space-y-8 overflow-hidden transition-all mt-6",
+                        "space-y-6 overflow-hidden transition-all",
                         isDetailsOpen ? "opacity-100" : "h-0 opacity-0",
                       )}
                     >
@@ -562,32 +576,41 @@ export function EditInvoiceSlider({
                         />
                       </div>
 
-                      <div className="col-span-2 flex items-center pt-4">
-                        <div className="text-sm items-center gap-2">
-                          <span className="text-muted-foreground">
-                            Extracted Total:
+                      <div className="grid grid-cols-2 gap-6 pt-6 border-t">
+                        <div className="space-y-2">
+                          <span className="text-sm font-medium text-gray-600">
+                            Extracted Total
                           </span>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            value={form.watch("amount")}
-                            onChange={(e) => {
-                              form.setValue(
-                                "amount",
-                                parseFloat(e.target.value),
-                              );
-                            }}
-                            className="w-32"
-                          />
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-semibold">
+                              {currencyInfo?.currencySymbol}
+                            </span>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              value={form.watch("amount")}
+                              onChange={(e) => {
+                                form.setValue(
+                                  "amount",
+                                  parseFloat(e.target.value),
+                                );
+                              }}
+                              className="w-full font-mono text-right"
+                            />
+                          </div>
                         </div>
-                        <div className="text-sm items-center gap-4">
-                          <span className="text-muted-foreground">
-                            Calculated Total:
+                        <div className="space-y-2">
+                          <span className="text-sm font-medium text-gray-600">
+                            Calculated Total
                           </span>
-                          <span className="font-medium">
-                            {currencyInfo?.currencySymbol}
-                            {calculateTotalAmount().toFixed(2)}
-                          </span>
+                          <div className="flex items-center h-10 px-3 border rounded-md bg-muted">
+                            <span className="text-lg font-semibold">
+                              {currencyInfo?.currencySymbol}
+                            </span>
+                            <span className="flex-1 font-mono text-right">
+                              {calculateTotalAmount().toFixed(2)}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
