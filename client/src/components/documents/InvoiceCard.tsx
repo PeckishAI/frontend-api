@@ -118,8 +118,7 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
               onClick={(e) => {
                 e.stopPropagation();
                 handleDelete();
-              }} 
-              className="bg-red-500 hover:bg-red-600"
+              }}
             >
               Delete
             </AlertDialogAction>
