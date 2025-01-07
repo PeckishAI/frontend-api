@@ -448,9 +448,9 @@ export function EditInvoiceSlider({
                         render={({ field }) => (
                           <FormItem className="mb-6">
                             <FormLabel className="flex items-center gap-2">
-  <Truck className="h-4 w-4" />
-  Supplier
-</FormLabel>
+                              <Truck className="h-4 w-4" />
+                              Supplier
+                            </FormLabel>
                             <FormControl>
                               <div className="relative">
                                 <CreatableSelect
@@ -717,9 +717,7 @@ export function EditInvoiceSlider({
                               name={`invoice_ingredients.${index}.quantity`}
                               render={({ field }) => (
                                 <FormItem className="w-full flex flex-col">
-                                  <FormLabel>
-                                    Quantity
-                                  </FormLabel>
+                                  <FormLabel>Quantity</FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
@@ -741,7 +739,7 @@ export function EditInvoiceSlider({
                               name={`invoice_ingredients.${index}.unit`}
                               render={({ field }) => (
                                 <FormItem className="w-full flex flex-col">
-                                  <FormLabel>
+                                  <FormLabel className="flex items-center gap-2">
                                     Unit
                                   </FormLabel>
                                   <FormControl>
@@ -860,56 +858,53 @@ export function EditInvoiceSlider({
                             />
                           </div>
 
-                          <FormField
-                            control={form.control}
-                            name={`invoice_ingredients.${index}.unit_cost`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>
-                                  Unit Cost
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    step="0.01"
-                                    {...field}
-                                    onChange={(e) =>
-                                      field.onChange(
-                                        parseFloat(e.target.value),
-                                      )
-                                    }
-                                    placeholder=""
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name={`invoice_ingredients.${index}.vat`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>
-                                  VAT
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    step="0.1"
-                                    {...field}
-                                    onChange={(e) =>
-                                      field.onChange(
-                                        parseFloat(e.target.value),
-                                      )
-                                    }
-                                    placeholder=""
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                          <div className="flex items-center gap-2">
+                            <FormField
+                              control={form.control}
+                              name={`invoice_ingredients.${index}.unit_cost`}
+                              render={({ field }) => (
+                                <FormItem className="flex-1">
+                                  <FormLabel>Unit Cost</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      step="0.01"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          parseFloat(e.target.value),
+                                        )
+                                      }
+                                      placeholder=""
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`invoice_ingredients.${index}.vat`}
+                              render={({ field }) => (
+                                <FormItem className="w-24">
+                                  <FormLabel>VAT</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      step="0.1"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          parseFloat(e.target.value),
+                                        )
+                                      }
+                                      placeholder=""
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                             <Button
                               type="button"
                               variant="ghost"
@@ -922,8 +917,8 @@ export function EditInvoiceSlider({
                           </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    ),
+                  )}
                   <Button
                     type="button"
                     variant="outline"
