@@ -5,7 +5,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Package } from "lucide-react";
+import { Calendar, Package, Building2, FileText, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type Order } from "@/lib/OrderTypes";
 import { getStatusColor } from "@/lib/data";
@@ -48,17 +48,33 @@ export default function OrderCard({
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <h2 className="font-semibold text-xl">
-          {order.supplier?.supplier_name}
+          {order.order_number || "No Order Number"}
         </h2>
-        <Badge
-          className={
-            order.status ? getStatusColor(order.status) : "default-class"
-          }
-        >
-          {order.status
-            ? order.status.charAt(0).toUpperCase() + order.status.slice(1)
-            : "Unknown"}
-        </Badge>
+        <div className="flex items-center gap-2">
+          {order.linked_documents?.invoice_uuid ? (
+            <Badge variant="secondary" className="bg-green-100">
+              <FileText className="h-4 w-4 text-green-600" />
+            </Badge>
+          ) : (
+            <Badge variant="secondary" className="bg-red-100">
+              <FileText className="h-4 w-4 text-red-600" />
+            </Badge>
+          )}
+          {order.linked_documents?.delivery_note_uuid && (
+            <Badge variant="secondary" className="bg-blue-100">
+              <Truck className="h-4 w-4 text-blue-600" />
+            </Badge>
+          )}
+          <Badge
+            className={
+              order.status ? getStatusColor(order.status) : "default-class"
+            }
+          >
+            {order.status
+              ? order.status.charAt(0).toUpperCase() + order.status.slice(1)
+              : "Unknown"}
+          </Badge>
+        </div>
       </CardHeader>
       <CardContent className="cursor-pointer" onClick={onClick}>
         <div className="flex flex-col space-y-3">
@@ -69,14 +85,12 @@ export default function OrderCard({
               : "Unknown Date"}
           </div>
           <div className="flex items-center text-sm text-gray-600">
+            <Building2 className="mr-2 h-4 w-4" />
+            {order.supplier?.supplier_name || "Unknown Supplier"}
+          </div>
+          <div className="flex items-center text-sm text-gray-600">
             <Package className="mr-2 h-4 w-4" />
             {order.ingredients ? order.ingredients.length : 0} items
-            {order.linked_documents && (
-              <span className="ml-2 text-xs">
-                {order.linked_documents.invoice_uuid && "📄"}
-                {order.linked_documents.delivery_note_uuid && "📦"}
-              </span>
-            )}
           </div>
         </div>
       </CardContent>
