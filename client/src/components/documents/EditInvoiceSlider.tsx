@@ -628,7 +628,11 @@ export function EditInvoiceSlider({
                                 >
                                   <Calendar
                                     mode="single"
-                                    selected={field.value ? new Date(field.value) : undefined}
+                                    selected={
+                                      field.value
+                                        ? new Date(field.value)
+                                        : undefined
+                                    }
                                     onSelect={(date) => {
                                       field.onChange(date?.toISOString());
                                       setIsDetailsOpen(true);
@@ -986,42 +990,45 @@ export function EditInvoiceSlider({
                       </div>
                     ),
                   )}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addIngredient}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Ingredient
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => onOpenChange(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    className={cn(
-                      "relative",
-                      form.formState.isSubmitting && "text-transparent",
-                      form.formState.isSubmitSuccessful &&
-                        "bg-green-500 hover:bg-green-600",
-                    )}
-                    disabled={form.formState.isSubmitting}
-                  >
-                    {form.formState.isSubmitting && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      </div>
-                    )}
-                    {form.formState.isSubmitSuccessful
-                      ? "Saved!"
-                      : "Save changes"}
-                  </Button>
+                  <div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addIngredient}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Ingredient
+                    </Button>
+                  </div>
+                  <div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => onOpenChange(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      className={cn(
+                        "relative",
+                        form.formState.isSubmitting && "text-transparent",
+                        form.formState.isSubmitSuccessful &&
+                          "bg-green-500 hover:bg-green-600",
+                      )}
+                      disabled={form.formState.isSubmitting}
+                    >
+                      {form.formState.isSubmitting && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        </div>
+                      )}
+                      {form.formState.isSubmitSuccessful
+                        ? "Saved!"
+                        : "Save changes"}
+                    </Button>
+                  </div>
                 </div>
               </form>
             </Form>
