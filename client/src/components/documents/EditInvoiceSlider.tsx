@@ -620,34 +620,35 @@ export function EditInvoiceSlider({
                                   </FormControl>
                                 </PopoverTrigger>
                                 <PopoverContent
-                                  className="relative w-auto p-0 bg-popover"
+                                  className="w-auto p-0"
                                   align="start"
                                   side="bottom"
                                   sideOffset={4}
-                                  style={{ zIndex: 99999 }}
-                                  onClick={(e) => e.stopPropagation()}
-                                  onInteractOutside={(e) => e.preventDefault()}
                                 >
-                                  <Calendar
-                                    mode="single"
-                                    selected={
-                                      field.value
-                                        ? new Date(field.value)
-                                        : undefined
-                                    }
-                                    onSelect={(date) => {
-                                      field.onChange(date?.toISOString());
-                                      setIsDetailsOpen(true);
-                                    }}
-                                    disabled={(date) =>
-                                      date > new Date() ||
-                                      date < new Date("1900-01-01")
-                                    }
-                                    initialFocus
-                                    className="rounded-md border"
-                                    fromDate={new Date("1900-01-01")}
-                                    toDate={new Date()}
-                                  />
+                                  <div 
+                                    className="relative bg-popover"
+                                    style={{ zIndex: 99999 }}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <Calendar
+                                      mode="single"
+                                      selected={field.value ? new Date(field.value) : undefined}
+                                      onSelect={(date) => {
+                                        if (date) {
+                                          field.onChange(date.toISOString());
+                                          setIsDetailsOpen(true);
+                                        }
+                                      }}
+                                      disabled={(date) =>
+                                        date > new Date() ||
+                                        date < new Date("1900-01-01")
+                                      }
+                                      initialFocus
+                                      className="p-3"
+                                      fromDate={new Date("1900-01-01")}
+                                      toDate={new Date()}
+                                    />
+                                  </div>
                                 </PopoverContent>
                               </Popover>
                               <FormMessage />
