@@ -716,7 +716,7 @@ export function EditInvoiceSlider({
                               control={form.control}
                               name={`invoice_ingredients.${index}.quantity`}
                               render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="w-full">
                                   <FormLabel className="flex items-center gap-2">
   <Hash className="h-4 w-4" />
   Quantity
@@ -741,7 +741,7 @@ export function EditInvoiceSlider({
                               control={form.control}
                               name={`invoice_ingredients.${index}.unit`}
                               render={({ field }) => (
-                                <FormItem className="w-32">
+                                <FormItem className="w-full">
                                   <FormLabel>Unit</FormLabel>
                                   <FormControl>
                                     <CreatableSelect
