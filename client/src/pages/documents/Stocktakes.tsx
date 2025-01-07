@@ -128,7 +128,7 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
 }
 
 export default function Stocktakes() {
-  const [activeSection, setActiveSection] = useState("invoices");
+  const [activeSection, setActiveSection] = useState("stocktakes");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
   const [showDownloadDialog, setShowDownloadDialog] = useState(false);
@@ -179,20 +179,24 @@ export default function Stocktakes() {
         />
 
         <div className="px-8 mb-6 flex items-center justify-end gap-4">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setShowDownloadDialog(true)}
-          >
-            <Download className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline" 
-            size="icon"
-            onClick={() => setShowUploadDialog(true)}
-          >
-            <Upload className="h-4 w-4" />
-          </Button>
+          {activeSection === "stocktakes" && (
+            <>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setShowDownloadDialog(true)}
+              >
+                <Download className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline" 
+                size="icon"
+                onClick={() => setShowUploadDialog(true)}
+              >
+                <Upload className="h-4 w-4" />
+              </Button>
+            </>
+          )}
           <ViewToggle current={viewMode} onChange={setViewMode} />
         </div>
 
