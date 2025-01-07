@@ -924,43 +924,46 @@ export function EditInvoiceSlider({
                     ),
                   )}
                   <div> {/*Added div here*/}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addIngredient}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Ingredient
-                  </Button>
+                  <div className="space-y-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addIngredient}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Ingredient
+                    </Button>
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => onOpenChange(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    className={cn(
-                      "relative",
-                      form.formState.isSubmitting && "text-transparent",
-                      form.formState.isSubmitSuccessful &&
-                        "bg-green-500 hover:bg-green-600",
-                    )}
-                    disabled={form.formState.isSubmitting}
-                  >
-                    {form.formState.isSubmitting && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      </div>
-                    )}
-                    {form.formState.isSubmitSuccessful
-                      ? "Saved!"
-                      : "Save changes"}
-                  </Button>
-                  </div> {/*Added div here*/}
+                    <div className="flex gap-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => onOpenChange(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        className={cn(
+                          "relative",
+                          form.formState.isSubmitting && "text-transparent",
+                          form.formState.isSubmitSuccessful &&
+                            "bg-green-500 hover:bg-green-600",
+                        )}
+                        disabled={form.formState.isSubmitting}
+                      >
+                        {form.formState.isSubmitting && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                          </div>
+                        )}
+                        {form.formState.isSubmitSuccessful
+                          ? "Saved!"
+                          : "Save changes"}
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </form>
             </Form>
