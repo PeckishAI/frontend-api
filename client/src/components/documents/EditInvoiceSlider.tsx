@@ -741,7 +741,7 @@ export function EditInvoiceSlider({
                               control={form.control}
                               name={`invoice_ingredients.${index}.unit`}
                               render={({ field }) => (
-                                <FormItem className="w-full">
+                                <FormItem className="w-full flex flex-col justify-end">
                                   <FormLabel>Unit</FormLabel>
                                   <FormControl>
                                     <CreatableSelect
