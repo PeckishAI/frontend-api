@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -15,7 +14,6 @@ import {
 import DownloadTemplateDialog from "@/components/documents/DownloadTemplateDialog";
 import UploadStocktakeDialog from "@/components/documents/UploadStocktakeDialog";
 import ViewToggle from "@/components/orders/ViewToggle";
-import SubSectionNav from "@/components/layout/SubSectionNav";
 import {
   Table,
   TableBody,
@@ -30,12 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { documentService } from "@/services/documentService";
 import StocktakeSlider from "@/components/documents/StocktakeSlider";
-import type {
-  Unit,
-  Stocktake,
-  StocktakeDocument,
-  StocktakeIngredient,
-} from "@/lib/DocumentTypes";
+import type { Stocktake, StocktakeDocument } from "@/lib/DocumentTypes";
 
 function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
   return (
@@ -55,7 +48,7 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
             </span>
           </div>
           <div className="text-sm text-muted-foreground">
-            {stocktake.created_at.toLocaleDateString("en-US", {
+            {new Date(stocktake.created_at).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -103,20 +96,14 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
             <div className="flex items-center gap-2">
               <Images className="h-4 w-4 text-gray-600" />
               <span className="font-medium">
-                {
-                  stocktake.documents.filter((d) => d.document_type === "image")
-                    .length
-                }
+                {stocktake.documents.filter((d) => d.document_type === "image").length}
               </span>
               <span className="text-sm text-gray-500">images</span>
             </div>
             <div className="flex items-center gap-2">
               <Film className="h-4 w-4 text-gray-600" />
               <span className="font-medium">
-                {
-                  stocktake.documents.filter((d) => d.document_type === "video")
-                    .length
-                }
+                {stocktake.documents.filter((d) => d.document_type === "video").length}
               </span>
               <span className="text-sm text-gray-500">videos</span>
             </div>
@@ -128,18 +115,11 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
 }
 
 export default function Stocktakes() {
-  const [activeSection, setActiveSection] = useState("stocktakes");
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
   const [showDownloadDialog, setShowDownloadDialog] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const { currentRestaurant } = useRestaurantContext();
-
-  const sections = [
-    { id: "invoices", label: "Invoices", icon: FileText },
-    { id: "delivery-notes", label: "Delivery Notes", icon: FileBox },
-    { id: "stocktakes", label: "Stocktakes", icon: ClipboardCheck },
-  ];
 
   const { data: stocktakes = [], isLoading } = useQuery({
     queryKey: ["stocktakes", currentRestaurant?.restaurant_uuid],
@@ -147,9 +127,7 @@ export default function Stocktakes() {
       if (!currentRestaurant?.restaurant_uuid) {
         throw new Error("No restaurant selected");
       }
-      return documentService.getRestaurantStocktakes(
-        currentRestaurant.restaurant_uuid,
-      );
+      return documentService.getRestaurantStocktakes(currentRestaurant.restaurant_uuid);
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
     select: (data) =>
@@ -167,143 +145,116 @@ export default function Stocktakes() {
       })),
   });
 
-  const stocktakesList = stocktakes as Stocktake[];
-
   return (
-    <div className="ml-64 w-[calc(100%-16rem)]">
-      <div className="pt-8">
-        <SubSectionNav
-          sections={sections}
-          activeSection={activeSection}
-          onSectionChange={setActiveSection}
-        />
+    <div className="px-8 pt-8 space-y-6">
+      <div className="flex items-center justify-end gap-4">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setShowDownloadDialog(true)}
+        >
+          <Download className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline" 
+          size="icon"
+          onClick={() => setShowUploadDialog(true)}
+        >
+          <Upload className="h-4 w-4" />
+        </Button>
+        <ViewToggle current={viewMode} onChange={setViewMode} />
+      </div>
 
-        <div className="px-8 mb-6 flex items-center justify-end gap-4">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setShowDownloadDialog(true)}
-          >
-            <Download className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline" 
-            size="icon"
-            onClick={() => setShowUploadDialog(true)}
-          >
-            <Upload className="h-4 w-4" />
-          </Button>
-          <ViewToggle current={viewMode} onChange={setViewMode} />
-        </div>
-
-        <DownloadTemplateDialog 
-          open={showDownloadDialog} 
-          onOpenChange={setShowDownloadDialog}
-        />
-
-        <UploadStocktakeDialog
-          open={showUploadDialog}
-          onOpenChange={setShowUploadDialog}
-        />
-
-        <div className="px-8 pb-8">
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            {activeSection === "delivery-notes" && (
-              <div className="p-6">
-                <p className="text-gray-600">Delivery notes section coming soon...</p>
-              </div>
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        {viewMode === "cards" ? (
+          <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {isLoading ? (
+              <div className="col-span-3 text-center py-8">Loading stocktakes...</div>
+            ) : (
+              stocktakes.map((stocktake) => (
+                <div
+                  key={stocktake.stocktake_uuid}
+                  onClick={() => setSelectedStocktake(stocktake)}
+                  className="cursor-pointer"
+                >
+                  <StocktakeCard stocktake={stocktake} />
+                </div>
+              ))
             )}
-            
-            {activeSection === "stocktakes" && (viewMode === "cards" ? (
-              <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          </div>
+        ) : (
+          <div className="p-6">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>User</TableHead>
+                  <TableHead>Images</TableHead>
+                  <TableHead>Videos</TableHead>
+                  <TableHead>Total Documents</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {isLoading ? (
-                  <div className="col-span-3 text-center py-8">
-                    Loading stocktakes...
-                  </div>
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8">
+                      Loading stocktakes...
+                    </TableCell>
+                  </TableRow>
                 ) : (
-                  stocktakesList.map((stocktake) => (
-                    <div
+                  stocktakes.map((stocktake) => (
+                    <TableRow
                       key={stocktake.stocktake_uuid}
+                      className="cursor-pointer hover:bg-muted/50"
                       onClick={() => setSelectedStocktake(stocktake)}
-                      className="cursor-pointer"
                     >
-                      <StocktakeCard stocktake={stocktake} />
-                    </div>
+                      <TableCell>{stocktake.stocktake_uuid}</TableCell>
+                      <TableCell>
+                        {new Date(stocktake.created_at).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <User2 className="h-4 w-4 text-gray-500" />
+                          <span>{stocktake.created_by.name}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">
+                          {stocktake.documents.filter((d) => d.document_type === "image").length}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">
+                          {stocktake.documents.filter((d) => d.document_type === "video").length}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge>{stocktake.documents.length}</Badge>
+                      </TableCell>
+                    </TableRow>
                   ))
                 )}
-              </div>
-            ) : (
-              <div className="p-6">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>User</TableHead>
-                      <TableHead>Images</TableHead>
-                      <TableHead>Videos</TableHead>
-                      <TableHead>Total Documents</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {isLoading ? (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center py-8">
-                          Loading stocktakes...
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      stocktakesList.map((stocktake) => (
-                        <TableRow
-                          key={stocktake.stocktake_uuid}
-                          className="cursor-pointer hover:bg-muted/50"
-                          onClick={() => setSelectedStocktake(stocktake)}
-                        >
-                          <TableCell>{stocktake.stocktake_uuid}</TableCell>
-                          <TableCell>
-                            {stocktake.created_at.toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <User2 className="h-4 w-4 text-gray-500" />
-                              <span>{stocktake.created_by.name}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="secondary">
-                              {
-                                stocktake.documents.filter(
-                                  (d) => d.document_type === "image",
-                                ).length
-                              }
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="secondary">
-                              {
-                                stocktake.documents.filter(
-                                  (d) => d.document_type === "video",
-                                ).length
-                              }
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge>{stocktake.documents.length}</Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            ))}
+              </TableBody>
+            </Table>
           </div>
-        </div>
+        )}
       </div>
+
+      <DownloadTemplateDialog 
+        open={showDownloadDialog} 
+        onOpenChange={setShowDownloadDialog}
+      />
+
+      <UploadStocktakeDialog
+        open={showUploadDialog}
+        onOpenChange={setShowUploadDialog}
+      />
+
       <StocktakeSlider
         stocktake={selectedStocktake}
         open={!!selectedStocktake}
