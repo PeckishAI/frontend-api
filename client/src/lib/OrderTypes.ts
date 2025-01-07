@@ -39,6 +39,7 @@ export interface Order {
   delivery_date?: string;
   user?: User;
   linked_documents?: {
+    uuid?: string;
     invoice_uuid?: string;
     delivery_note_uuid?: string;
   };

@@ -198,36 +198,38 @@ export default function ReceiveOrderModal({
   // but we can fallback to the original order items if needed.
   const handleConfirm = () => {
     // If no invoice is selected, just use order.items for the payload
-    const finalItems = selectedInvoice ? mergedItems : order?.items || [];
+    const finalItems = selectedInvoice ? mergedItems : order?.ingredients || [];
 
     const payload = {
-      ...order,
       order_uuid: order?.order_uuid,
+      order_number: order?.order_number,
+      user: order?.user,
       status: "received",
-      document_uuid: selectedInvoice,
+      supplier: order?.supplier,
+      delivery_date: order?.delivery_date,
+      order_date: order?.order_date,
       linked_documents: {
-        ...order?.linked_documents,
+        uuid: order?.linked_documents?.uuid,
         invoice_uuid: selectedInvoice,
         delivery_note_uuid: selectedDeliveryNote,
       },
-      items: finalItems.map((item) => ({
+      ingredients: finalItems.map((item) => ({
+        uuid: item.uuid,
         ingredient_uuid: item.ingredient_uuid,
         ingredient_name: item.ingredient_name,
-        ordered_quantity: item.quantity || 0,
-        received_quantity: receivedQuantities[item.ingredient_uuid || ""] || 0,
+        quantity: item.quantity || 0,
         unit: item.unit,
         unit_cost: item.unit_cost,
-        total_cost:
-          (receivedQuantities[item.ingredient_uuid || ""] || 0) *
-          (item.unit_cost || 0),
+        total_cost: (item.quantity || 0) * (item.unit_cost || 0),
         product_code: item.product_code,
       })),
-      receipt_date: new Date().toISOString(),
+      receivedQuantity: finalItems.map((item) => ({
+        ingredient_uuid: item.ingredient_uuid,
+        received_quantity: receivedQuantities[item.ingredient_uuid || ""] || 0,
+        unit: item.unit,
+      })),
       total_cost: finalItems.reduce(
-        (sum, item) =>
-          sum +
-          (receivedQuantities[item.ingredient_uuid || ""] || 0) *
-            (item.unit_cost || 0),
+        (sum, item) => sum + (item.quantity || 0) * (item.unit_cost || 0),
         0,
       ),
     };

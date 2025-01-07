@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { type Order } from "@/lib/OrderTypes";
 import { getStatusColor } from "@/lib/data";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import { orderService } from "@/services/orderService";
+import { quantityService } from "@/services/quantityService";
 
 interface OrderCardProps {
   order: Order;
@@ -32,6 +34,9 @@ export default function OrderCard({
 }: OrderCardProps) {
   const [showApproveDialog, setShowApproveDialog] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
+
+  const restaurantUuid =
+    useRestaurantContext().currentRestaurant?.restaurant_uuid;
 
   const handleApprove = (sendEmail: boolean) => {
     onApprove?.(order, sendEmail);
@@ -90,6 +95,23 @@ export default function OrderCard({
                 order={order}
                 onConfirm={(data) => {
                   console.log("Order received:", data);
+                  if (!restaurantUuid || !data.order_uuid) {
+                    throw new Error("No restaurant or order selected");
+                  }
+                  console.log("Adding order :", data.order_uuid);
+                  console.log(data);
+                  orderService.updateOrder(
+                    restaurantUuid,
+                    data.order_uuid,
+                    data,
+                  );
+
+                  console.log("Adding stock quantities");
+                  console.log(data.receivedQuantitiy);
+                  quantityService.createReceiveQuantities(
+                    restaurantUuid,
+                    data.receivedQuantitiy,
+                  );
                   onReceive?.();
                   setShowReceiveModal(false);
                 }}
