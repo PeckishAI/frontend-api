@@ -624,11 +624,11 @@ export function EditInvoiceSlider({
                                   align="start"
                                   side="bottom"
                                   sideOffset={4}
+                                  onInteractOutside={(e) => e.preventDefault()}
                                 >
                                   <div 
                                     className="relative bg-popover"
-                                    style={{ zIndex: 99999 }}
-                                    onClick={(e) => e.stopPropagation()}
+                                    style={{ zIndex: 99999, position: 'relative' }}
                                   >
                                     <Calendar
                                       mode="single"
