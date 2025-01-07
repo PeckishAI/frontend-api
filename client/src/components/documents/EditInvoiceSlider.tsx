@@ -622,11 +622,17 @@ export function EditInvoiceSlider({
                                 <PopoverContent
                                   className="w-auto p-0"
                                   align="start"
+                                  side="bottom"
+                                  sideOffset={4}
+                                  style={{ zIndex: 9999 }}
                                 >
                                   <Calendar
                                     mode="single"
                                     selected={field.value ? new Date(field.value) : undefined}
-                                    onSelect={(date) => field.onChange(date?.toISOString())}
+                                    onSelect={(date) => {
+                                      field.onChange(date?.toISOString());
+                                      setIsDetailsOpen(true);
+                                    }}
                                     disabled={(date) =>
                                       date > new Date() ||
                                       date < new Date("1900-01-01")
