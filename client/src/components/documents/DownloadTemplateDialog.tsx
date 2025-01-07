@@ -27,6 +27,11 @@ export default function DownloadTemplateDialog({
             <li>Save the file in CSV format</li>
             <li>Upload the CSV file on this page</li>
           </ul>
+          <div className="mt-4 p-4 bg-muted rounded-lg">
+            <p className="text-xs text-muted-foreground">
+              Note: The template follows a standard CSV format with columns for Item Code, Item Name, Quantity, and Unit. Please do not modify the column headers or structure of the template file.
+            </p>
+          </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
