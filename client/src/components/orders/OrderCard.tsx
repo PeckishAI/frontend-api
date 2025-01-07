@@ -36,6 +36,7 @@ export default function OrderCard({
   const [showApproveDialog, setShowApproveDialog] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
+  console.log("Order", order);
   const restaurantUuid =
     useRestaurantContext().currentRestaurant?.restaurant_uuid;
   const queryClient = useQueryClient();
@@ -126,9 +127,12 @@ export default function OrderCard({
 
                   console.log("Adding stock quantities");
                   console.log(data.receivedQuantitiy);
-                  await quantityService.createReceiveQuantities(restaurantUuid, {
-                    receivedIngredients: data.receivedQuantitiy,
-                  });
+                  await quantityService.createReceiveQuantities(
+                    restaurantUuid,
+                    {
+                      receivedIngredients: data.receivedQuantitiy,
+                    },
+                  );
                   await queryClient.invalidateQueries(["orders"]);
                   await queryClient.invalidateQueries(["inventory"]);
                   onReceive?.();

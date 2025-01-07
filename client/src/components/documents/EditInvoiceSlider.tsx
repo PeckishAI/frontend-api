@@ -380,11 +380,6 @@ export function EditInvoiceSlider({
               )}
             </div>
 
-            {/* Image count indicator */}
-            <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
-              Image {activeImageIndex + 1} of {invoice.documents?.length || 0}
-            </div>
-
             {/* Thumbnails */}
             <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
               {invoice.documents?.map((doc, index) => (
@@ -567,8 +562,8 @@ export function EditInvoiceSlider({
                         />
                       </div>
 
-                      <div className="col-span-2 flex items-center gap-4 justify-end border-t pt-4">
-                        <div className="text-sm flex items-center gap-2">
+                      <div className="col-span-2 flex items-center pt-4">
+                        <div className="text-sm items-center gap-2">
                           <span className="text-muted-foreground">
                             Extracted Total:
                           </span>
@@ -585,7 +580,7 @@ export function EditInvoiceSlider({
                             className="w-32"
                           />
                         </div>
-                        <div className="text-sm flex items-center gap-2">
+                        <div className="text-sm items-center gap-4">
                           <span className="text-muted-foreground">
                             Calculated Total:
                           </span>
@@ -597,7 +592,7 @@ export function EditInvoiceSlider({
                       </div>
                     </div>
                     <div
-                      className="flex items-center justify-center p-2 cursor-pointer hover:bg-gray-50 border-t mt-4"
+                      className="flex items-center justify-center p-2 cursor-pointer hover:bg-gray-50 mt-4"
                       onClick={() => setIsDetailsOpen(!isDetailsOpen)}
                     >
                       <ChevronDown
@@ -912,22 +907,25 @@ export function EditInvoiceSlider({
                     >
                       Cancel
                     </Button>
-                    <Button 
-    type="submit" 
-    className={cn(
-      "relative",
-      form.formState.isSubmitting && "text-transparent",
-      form.formState.isSubmitSuccessful && "bg-green-500 hover:bg-green-600"
-    )}
-    disabled={form.formState.isSubmitting}
-  >
-    {form.formState.isSubmitting && (
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-      </div>
-    )}
-    {form.formState.isSubmitSuccessful ? "Saved!" : "Save changes"}
-  </Button>
+                    <Button
+                      type="submit"
+                      className={cn(
+                        "relative",
+                        form.formState.isSubmitting && "text-transparent",
+                        form.formState.isSubmitSuccessful &&
+                          "bg-green-500 hover:bg-green-600",
+                      )}
+                      disabled={form.formState.isSubmitting}
+                    >
+                      {form.formState.isSubmitting && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        </div>
+                      )}
+                      {form.formState.isSubmitSuccessful
+                        ? "Saved!"
+                        : "Save changes"}
+                    </Button>
                   </div>
                 </div>
               </form>
