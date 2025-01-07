@@ -1,10 +1,6 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { FileText, FileBox, ClipboardCheck, Images, User2, Hash, Film, Download, Upload } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import DownloadTemplateDialog from "./DownloadTemplateDialog";
-import UploadStocktakeDialog from "./UploadStocktakeDialog";
+import { FileText, FileBox, ClipboardCheck, Images, User2, Hash, Film } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -17,7 +13,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { documentService } from "@/services/documentService";
-import StocktakeSlider from "@/components/documents/StocktakeSlider";
+import StocktakeSlider from "./StocktakeSlider";
+import DownloadTemplateDialog from "./DownloadTemplateDialog";
+import UploadStocktakeDialog from "./UploadStocktakeDialog";
 import type { Stocktake } from "@/lib/DocumentTypes";
 
 function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
@@ -38,11 +36,7 @@ function StocktakeCard({ stocktake }: { stocktake: Stocktake }) {
             </span>
           </div>
           <div className="text-sm text-muted-foreground">
-            {new Date(stocktake.created_at).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
+            {new Date(stocktake.created_at).toLocaleDateString()}
           </div>
         </div>
       </CardHeader>
@@ -109,11 +103,9 @@ interface StocktakesViewProps {
 }
 
 export default function StocktakesView({ viewMode }: StocktakesViewProps) {
+  const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
   const [showDownloadDialog, setShowDownloadDialog] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
-  const [selectedStocktake, setSelectedStocktake] = useState<Stocktake | null>(null);
-  const [sortColumn, setSortColumn] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const { currentRestaurant } = useRestaurantContext();
 
   const { data: stocktakes = [], isLoading } = useQuery({
@@ -125,84 +117,10 @@ export default function StocktakesView({ viewMode }: StocktakesViewProps) {
       return documentService.getRestaurantStocktakes(currentRestaurant.restaurant_uuid);
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
-    select: (data) =>
-      data.map((stocktake: Stocktake) => ({
-        stocktake_uuid: stocktake.stocktake_uuid,
-        created_at: new Date(stocktake.created_at),
-        created_by: {
-          name: "System User",
-        },
-        documents: stocktake.documents.map((doc) => ({
-          document_uuid: doc.document_uuid,
-          document_type: doc.document_type,
-          file_path: doc.file_path,
-        })),
-      })),
-  });
-
-  const handleSort = (column: string) => {
-    setSortColumn(column);
-    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-  };
-
-  const sortedStocktakes = [...(stocktakes || [])].sort((a, b) => {
-    if (!sortColumn) return 0;
-
-    let aValue, bValue;
-
-    switch (sortColumn) {
-      case 'id':
-        aValue = a.stocktake_uuid;
-        bValue = b.stocktake_uuid;
-        break;
-      case 'date':
-        aValue = new Date(a.created_at).getTime();
-        bValue = new Date(b.created_at).getTime();
-        break;
-      case 'user':
-        aValue = a.created_by.name;
-        bValue = b.created_by.name;
-        break;
-      case 'images':
-        aValue = a.documents.filter(d => d.document_type === 'image').length;
-        bValue = b.documents.filter(d => d.document_type === 'image').length;
-        break;
-      case 'videos':
-        aValue = a.documents.filter(d => d.document_type === 'video').length;
-        bValue = b.documents.filter(d => d.document_type === 'video').length;
-        break;
-      case 'total':
-        aValue = a.documents.length;
-        bValue = b.documents.length;
-        break;
-      default:
-        return 0;
-    }
-
-    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-    return 0;
   });
 
   return (
     <>
-      <div className="flex items-center gap-4">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setShowDownloadDialog(true)}
-        >
-          <Download className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline" 
-          size="icon"
-          onClick={() => setShowUploadDialog(true)}
-        >
-          <Upload className="h-4 w-4" />
-        </Button>
-      </div>
-
       <DownloadTemplateDialog 
         open={showDownloadDialog} 
         onOpenChange={setShowDownloadDialog}
@@ -212,12 +130,13 @@ export default function StocktakesView({ viewMode }: StocktakesViewProps) {
         open={showUploadDialog}
         onOpenChange={setShowUploadDialog}
       />
+
       {viewMode === "cards" ? (
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
             <div className="col-span-3 text-center py-8">Loading stocktakes...</div>
           ) : (
-            sortedStocktakes.map((stocktake) => (
+            stocktakes.map((stocktake) => (
               <div
                 key={stocktake.stocktake_uuid}
                 onClick={() => setSelectedStocktake(stocktake)}
@@ -233,24 +152,12 @@ export default function StocktakesView({ viewMode }: StocktakesViewProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead sortable sortKey="id" sortDirection={sortColumn === 'id' ? sortDirection : undefined} onSort={() => handleSort('id')}>
-                  ID
-                </TableHead>
-                <TableHead sortable sortKey="date" sortDirection={sortColumn === 'date' ? sortDirection : undefined} onSort={() => handleSort('date')}>
-                  Date
-                </TableHead>
-                <TableHead sortable sortKey="user" sortDirection={sortColumn === 'user' ? sortDirection : undefined} onSort={() => handleSort('user')}>
-                  User
-                </TableHead>
-                <TableHead sortable sortKey="images" sortDirection={sortColumn === 'images' ? sortDirection : undefined} onSort={() => handleSort('images')}>
-                  Images
-                </TableHead>
-                <TableHead sortable sortKey="videos" sortDirection={sortColumn === 'videos' ? sortDirection : undefined} onSort={() => handleSort('videos')}>
-                  Videos
-                </TableHead>
-                <TableHead sortable sortKey="total" sortDirection={sortColumn === 'total' ? sortDirection : undefined} onSort={() => handleSort('total')}>
-                  Total Documents
-                </TableHead>
+                <TableHead>ID</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>User</TableHead>
+                <TableHead>Images</TableHead>
+                <TableHead>Videos</TableHead>
+                <TableHead>Total Documents</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -261,7 +168,7 @@ export default function StocktakesView({ viewMode }: StocktakesViewProps) {
                   </TableCell>
                 </TableRow>
               ) : (
-                sortedStocktakes.map((stocktake) => (
+                stocktakes.map((stocktake) => (
                   <TableRow
                     key={stocktake.stocktake_uuid}
                     className="cursor-pointer hover:bg-muted/50"
@@ -269,11 +176,7 @@ export default function StocktakesView({ viewMode }: StocktakesViewProps) {
                   >
                     <TableCell>{stocktake.stocktake_uuid}</TableCell>
                     <TableCell>
-                      {new Date(stocktake.created_at).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                      {new Date(stocktake.created_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
@@ -292,7 +195,7 @@ export default function StocktakesView({ viewMode }: StocktakesViewProps) {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge>{stocktake.documents.length}</Badge>
+                      <Badge>{stocktakes.length}</Badge>
                     </TableCell>
                   </TableRow>
                 ))
@@ -301,6 +204,7 @@ export default function StocktakesView({ viewMode }: StocktakesViewProps) {
           </Table>
         </div>
       )}
+
       <StocktakeSlider
         stocktake={selectedStocktake}
         open={!!selectedStocktake}
