@@ -76,21 +76,27 @@ export default function OrderCard({
             <Package className="mr-2 h-4 w-4" />
             {order.ingredients ? order.ingredients.length : 0} items
           </div>
-          <div className="flex items-center gap-2">
-            {order.linked_documents?.invoice_uuid ? (
-              <Badge variant="secondary" className="bg-green-100">
-                <FileText className="h-4 w-4 text-green-600" />
-              </Badge>
-            ) : (
-              <Badge variant="secondary" className="bg-red-100">
-                <FileText className="h-4 w-4 text-red-600" />
-              </Badge>
-            )}
-            {order.linked_documents?.delivery_note_uuid && (
-              <Badge variant="secondary" className="bg-blue-100">
-                <Truck className="h-4 w-4 text-blue-600" />
-              </Badge>
-            )}
+          <div className="flex justify-between items-center">
+            <p className="text-lg font-semibold">
+              {useRestaurantContext().currencyInfo?.currencySymbol}
+              {order.amount?.toFixed(2) || "0.00"}
+            </p>
+            <div className="flex items-center gap-2">
+              {order.linked_documents?.invoice_uuid ? (
+                <Badge variant="secondary" className="bg-green-100">
+                  <FileText className="h-4 w-4 text-green-600" />
+                </Badge>
+              ) : (
+                <Badge variant="secondary" className="bg-red-100">
+                  <FileText className="h-4 w-4 text-red-600" />
+                </Badge>
+              )}
+              {order.linked_documents?.delivery_note_uuid && (
+                <Badge variant="secondary" className="bg-blue-100">
+                  <Truck className="h-4 w-4 text-blue-600" />
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
       </CardContent>
