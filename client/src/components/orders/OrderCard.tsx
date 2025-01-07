@@ -108,10 +108,9 @@ export default function OrderCard({
 
                   console.log("Adding stock quantities");
                   console.log(data.receivedQuantitiy);
-                  quantityService.createReceiveQuantities(
-                    restaurantUuid,
-                    data.receivedQuantitiy,
-                  );
+                  quantityService.createReceiveQuantities(restaurantUuid, {
+                    receivedIngredients: data.receivedQuantitiy,
+                  });
                   onReceive?.();
                   setShowReceiveModal(false);
                 }}

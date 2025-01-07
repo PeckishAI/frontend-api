@@ -15,6 +15,7 @@ export interface ReceiveQuantity {
 }
 
 export interface ReceiveIngredients {
+  receive_uuid?: string;
   receivedIngredients?: ReceiveQuantity[];
 }
 
