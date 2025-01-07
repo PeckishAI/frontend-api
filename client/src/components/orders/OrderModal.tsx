@@ -1,4 +1,3 @@
-
 import {
   Sheet,
   SheetContent,
@@ -197,6 +196,15 @@ export default function OrderModal({
             {editedOrder.supplier?.supplier_name}
           </div>
         </div>
+        {editedOrder.linked_documents && (
+          <div>
+            <label className="text-sm text-gray-600">Linked Documents</label>
+            <div className="font-medium">
+              {editedOrder.linked_documents.invoice_uuid && "Invoice linked"}
+              {editedOrder.linked_documents.delivery_note_uuid && ", Delivery Note linked"}
+            </div>
+          </div>
+        )}
         <div>
           <label className="text-sm text-gray-600">Date</label>
           <div className="font-medium">

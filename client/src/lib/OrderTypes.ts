@@ -38,4 +38,8 @@ export interface Order {
   ingredients?: OrderItem[];
   delivery_date?: string;
   user?: User;
+  linked_documents?: {
+    invoice_uuid?: string;
+    delivery_note_uuid?: string;
+  };
 }

@@ -64,6 +64,12 @@ export default function OrderCard({
           <div className="flex items-center text-sm text-gray-600">
             <Package className="mr-2 h-4 w-4" />
             {order.ingredients ? order.ingredients.length : 0} items
+            {order.linked_documents && (
+              <span className="ml-2 text-xs">
+                {order.linked_documents.invoice_uuid && "📄"}
+                {order.linked_documents.delivery_note_uuid && "📦"}
+              </span>
+            )}
           </div>
         </div>
       </CardContent>

@@ -41,8 +41,8 @@ export default function ReceiveOrderModal({
 }: ReceiveOrderModalProps) {
   const { currentRestaurant } = useRestaurantContext();
 
-  const [selectedInvoice, setSelectedInvoice] = useState<string>("");
-  const [selectedDeliveryNote, setSelectedDeliveryNote] = useState<string>("");
+  const [selectedInvoice, setSelectedInvoice] = useState<string>(order?.linked_documents?.invoice_uuid || "");
+  const [selectedDeliveryNote, setSelectedDeliveryNote] = useState<string>(order?.linked_documents?.delivery_note_uuid || "");
   const [selectedInvoiceData, setSelectedInvoiceData] = useState<any>(null);
 
   // We'll store a merged list of items here once an invoice is chosen
