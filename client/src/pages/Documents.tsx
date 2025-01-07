@@ -27,31 +27,55 @@ export default function Documents() {
 
         <div className="px-8 mt-6 mb-6 flex items-center justify-end gap-4">
           {(activeSection === "invoices" || activeSection === "stocktakes") && (
-            <ViewToggle current={viewMode} onChange={setViewMode} />
+            <>
+              <ViewToggle current={viewMode} onChange={setViewMode} />
+              {activeSection === "stocktakes" && (
+                <>
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => setShowDownloadDialog(true)}
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => setShowUploadDialog(true)}
+                  >
+                    <Upload className="h-4 w-4" />
+                  </Button>
+                </>
+              )}
+            </>
           )}
         </div>
 
         <div className="px-8 pb-8">
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            {activeSection === "invoices" && (() => {
-              console.log("Documents: Rendering invoices section");
-              console.log("Documents: Current view mode:", viewMode);
-              return (
-                <div className="bg-white rounded-lg shadow overflow-hidden">
-                  <InvoicesView viewMode={viewMode} />
-                </div>
-              );
-            })()}
-            
-            {activeSection === "delivery-notes" && (
-              <div className="p-6">
-                <p className="text-gray-600">Delivery notes section coming soon...</p>
-              </div>
-            )}
-            
-            {activeSection === "stocktakes" && <StocktakesView viewMode={viewMode} />}
-          </div>
+          {activeSection === "invoices" && (
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <InvoicesView viewMode={viewMode} />
+            </div>
+          )}
+          
+          {activeSection === "delivery-notes" && (
+            <div className="bg-white rounded-lg shadow overflow-hidden p-6">
+              <p className="text-gray-600">Delivery notes section coming soon...</p>
+            </div>
+          )}
+          
+          {activeSection === "stocktakes" && <Stocktakes viewMode={viewMode} />}
         </div>
+
+        <DownloadTemplateDialog 
+          open={showDownloadDialog}
+          onOpenChange={setShowDownloadDialog}
+        />
+        
+        <UploadStocktakeDialog
+          open={showUploadDialog}
+          onOpenChange={setShowUploadDialog} 
+        />
       </div>
     </div>
   );
