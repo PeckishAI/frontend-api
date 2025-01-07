@@ -39,7 +39,7 @@ export default function OrderCard({
   const restaurantUuid =
     useRestaurantContext().currentRestaurant?.restaurant_uuid;
   const queryClient = useQueryClient();
-    
+
   const handleApprove = (sendEmail: boolean) => {
     onApprove?.(order, sendEmail);
     setShowApproveDialog(false);
@@ -95,10 +95,6 @@ export default function OrderCard({
         </div>
       </CardContent>
       <CardFooter className="flex justify-between items-center">
-        <p className="text-lg font-semibold">
-          {useRestaurantContext().currencyInfo?.currencySymbol}
-          {order.total_cost ? order.total_cost.toFixed(2) : "0.00"}
-        </p>
         <div className="flex gap-2">
           {order.status === "pending" && (
             <>
