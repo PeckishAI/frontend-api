@@ -448,9 +448,9 @@ export function EditInvoiceSlider({
                         render={({ field }) => (
                           <FormItem className="mb-6">
                             <FormLabel className="flex items-center gap-2">
-                              <Truck className="h-4 w-4" />
-                              Supplier
-                            </FormLabel>
+  <Truck className="h-4 w-4" />
+  Supplier
+</FormLabel>
                             <FormControl>
                               <div className="relative">
                                 <CreatableSelect
@@ -710,16 +710,17 @@ export function EditInvoiceSlider({
                           />
                         </div>
 
-                        <div className="grid grid-cols-[2fr,1fr,1fr,1fr] gap-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-[2fr,1fr] gap-4">
                             <FormField
                               control={form.control}
                               name={`invoice_ingredients.${index}.quantity`}
                               render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="w-full">
                                   <FormLabel className="flex items-center gap-2">
-                                    <Hash className="h-4 w-4" />
-                                    Quantity
-                                  </FormLabel>
+  <Hash className="h-4 w-4" />
+  Quantity
+</FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
@@ -740,7 +741,7 @@ export function EditInvoiceSlider({
                               control={form.control}
                               name={`invoice_ingredients.${index}.unit`}
                               render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="w-full">
                                   <FormLabel>Unit</FormLabel>
                                   <FormControl>
                                     <CreatableSelect
@@ -858,15 +859,16 @@ export function EditInvoiceSlider({
                             />
                           </div>
 
-                          <FormField
+                          <div className="flex items-center gap-2">
+                            <FormField
                               control={form.control}
                               name={`invoice_ingredients.${index}.unit_cost`}
                               render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="flex-1">
                                   <FormLabel className="flex items-center gap-2">
-                                    <DollarSign className="h-4 w-4" />
-                                    Unit Cost
-                                  </FormLabel>
+  <DollarSign className="h-4 w-4" />
+  Unit Cost
+</FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
@@ -888,11 +890,11 @@ export function EditInvoiceSlider({
                               control={form.control}
                               name={`invoice_ingredients.${index}.vat`}
                               render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="w-24">
                                   <FormLabel className="flex items-center gap-2">
-                                    <Percent className="h-4 w-4" />
-                                    VAT
-                                  </FormLabel>
+  <Percent className="h-4 w-4" />
+  VAT
+</FormLabel>
                                   <FormControl>
                                     <Input
                                       type="number"
@@ -919,49 +921,47 @@ export function EditInvoiceSlider({
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
+                          </div>
                         </div>
                       </div>
-                    ))}
-                  <div className="space-y-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={addIngredient}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Ingredient
-                    </Button>
+                    ),
+                  )}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addIngredient}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Ingredient
+                  </Button>
 
-                    <div className="flex gap-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => onOpenChange(false)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        type="submit"
-                        className={cn(
-                          "relative",
-                          form.formState.isSubmitting && "text-transparent",
-                          form.formState.isSubmitSuccessful &&
-                            "bg-green-500 hover:bg-green-600",
-                        )}
-                        disabled={form.formState.isSubmitting}
-                      >
-                        {form.formState.isSubmitting && (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                          </div>
-                        )}
-                        {form.formState.isSubmitSuccessful
-                          ? "Saved!"
-                          : "Save changes"}
-                      </Button>
-                    </div>
-                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onOpenChange(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className={cn(
+                      "relative",
+                      form.formState.isSubmitting && "text-transparent",
+                      form.formState.isSubmitSuccessful &&
+                        "bg-green-500 hover:bg-green-600",
+                    )}
+                    disabled={form.formState.isSubmitting}
+                  >
+                    {form.formState.isSubmitting && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      </div>
+                    )}
+                    {form.formState.isSubmitSuccessful
+                      ? "Saved!"
+                      : "Save changes"}
+                  </Button>
                 </div>
               </form>
             </Form>
