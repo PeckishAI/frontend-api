@@ -437,23 +437,26 @@ export default function ProductModal({
                                           "units",
                                           currentRestaurant?.restaurant_uuid,
                                         ],
-                                        queryFn: () => {
-                                          if (
-                                            !currentRestaurant?.restaurant_uuid
-                                          )
+                                        queryFn: async () => {
+                                          if (!currentRestaurant?.restaurant_uuid)
                                             return [];
-                                          return unitService
-                                            .getRestaurantUnit(
-                                              currentRestaurant.restaurant_uuid,
-                                            )
-                                            .then((units) =>
-                                              units.map((unit: any) => ({
+                                          const units = await unitService.getRestaurantUnit(
+                                            currentRestaurant.restaurant_uuid,
+                                          );
+                                          return [
+                                            {
+                                              label: "All Units",
+                                              options: units.map((unit: any) => ({
                                                 label: unit.unit_name,
                                                 value: unit.unit_uuid,
                                               })),
-                                            );
+                                            },
+                                          ];
                                         },
-                                      }).data || []
+                                      }).data || [{
+                                        label: "All Units",
+                                        options: []
+                                      }]
                                     }
                                     placeholder=""
                                   />
@@ -654,23 +657,26 @@ export default function ProductModal({
                                           "units",
                                           currentRestaurant?.restaurant_uuid,
                                         ],
-                                        queryFn: () => {
-                                          if (
-                                            !currentRestaurant?.restaurant_uuid
-                                          )
+                                        queryFn: async () => {
+                                          if (!currentRestaurant?.restaurant_uuid)
                                             return [];
-                                          return unitService
-                                            .getRestaurantUnit(
-                                              currentRestaurant.restaurant_uuid,
-                                            )
-                                            .then((units) =>
-                                              units.map((unit: any) => ({
+                                          const units = await unitService.getRestaurantUnit(
+                                            currentRestaurant.restaurant_uuid,
+                                          );
+                                          return [
+                                            {
+                                              label: "All Units",
+                                              options: units.map((unit: any) => ({
                                                 label: unit.unit_name,
                                                 value: unit.unit_uuid,
                                               })),
-                                            );
+                                            },
+                                          ];
                                         },
-                                      }).data || []
+                                      }).data || [{
+                                        label: "All Units",
+                                        options: []
+                                      }]
                                     }
                                     placeholder=""
                                   />
