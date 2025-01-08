@@ -153,23 +153,23 @@ const useUnitOptions = (restaurantUuid?: string) => {
 
       // Create a map using unit_uuid as key to handle duplicates
       const unitsMap = new Map();
-      
+
       // First add reference units
-      referenceUnits.forEach(unit => {
+      referenceUnits.forEach((unit) => {
         unitsMap.set(unit.unit_uuid, {
           label: unit.unit_name,
           value: unit.unit_uuid,
-          type: "reference"
+          type: "reference",
         });
       });
 
       // Then add restaurant units only if they don't exist
-      restaurantUnits.forEach(unit => {
+      restaurantUnits.forEach((unit) => {
         if (!unitsMap.has(unit.unit_uuid)) {
           unitsMap.set(unit.unit_uuid, {
             label: unit.unit_name,
             value: unit.unit_uuid,
-            type: null
+            type: null,
           });
         }
       });
@@ -179,6 +179,7 @@ const useUnitOptions = (restaurantUuid?: string) => {
     enabled: !!restaurantUuid,
   });
 
+  console.log("unit: ", units);
   return units || [];
 };
 
