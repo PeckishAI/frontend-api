@@ -38,6 +38,7 @@ import { unitService } from "@/services/unitService";
 import { foodEmojis } from "@/lib/emojis";
 import { categoryService } from "@/services/categoryService";
 import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
+import CategoryModal from "./CategoryModal";
 
 const preparationSchema = z.object({
   preparation_name: z.string().min(1, "Name is required"),
@@ -57,6 +58,10 @@ const preparationSchema = z.object({
       ingredient_uuid: z.string(),
       ingredient_name: z.string(),
       quantity: z.number().min(0),
+      base_unit: z.object({
+        unit_uuid: z.string(),
+        unit_name: z.string(),
+      }),
       recipe_unit: z.object({
         unit_uuid: z.string(),
         unit_name: z.string(),
@@ -69,6 +74,10 @@ const preparationSchema = z.object({
       preparation_uuid: z.string(),
       preparation_name: z.string(),
       quantity: z.number().min(0),
+      base_unit: z.object({
+        unit_uuid: z.string(),
+        unit_name: z.string(),
+      }),
       recipe_unit: z.object({
         unit_uuid: z.string(),
         unit_name: z.string(),
@@ -79,26 +88,6 @@ const preparationSchema = z.object({
 });
 
 type PreparationFormData = z.infer<typeof preparationSchema>;
-
-const useIngredientOptions = (restaurantUuid?: string) => {
-  const { data: ingredients } = useQuery({
-    queryKey: ["ingredients", restaurantUuid],
-    queryFn: async () => {
-      if (!restaurantUuid) return [];
-      return inventoryService.getRestaurantIngredients(restaurantUuid);
-    },
-    enabled: !!restaurantUuid,
-  });
-
-  return ingredients
-    ? Object.values(ingredients).map((ing: any) => ({
-        label: ing.ingredient_name,
-        value: ing.ingredient_uuid,
-        type: "ingredient",
-        unit_cost: ing.unit_cost || 0,
-      }))
-    : [];
-};
 
 const usePreparationOptions = (restaurantUuid?: string) => {
   const { data: preparations } = useQuery({
@@ -154,8 +143,31 @@ export default function PreparationModal({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showNewIngredientDialog, setShowNewIngredientDialog] = useState(false);
   const [newItemName, setNewItemName] = useState("");
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
   const { currentRestaurant } = useRestaurantContext();
   const queryClient = useQueryClient();
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories", currentRestaurant?.restaurant_uuid],
+    queryFn: async () => {
+      if (!currentRestaurant?.restaurant_uuid) return [];
+      return categoryService.getRestaurantCategories(
+        currentRestaurant?.restaurant_uuid,
+      );
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+  });
+
+  const { data: ingredients } = useQuery({
+    queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) return [];
+      return inventoryService.getRestaurantIngredients(
+        currentRestaurant?.restaurant_uuid,
+      );
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+  });
 
   const form = useForm<PreparationFormData>({
     resolver: zodResolver(preparationSchema),
@@ -174,6 +186,7 @@ export default function PreparationModal({
         ingredient_uuid: "",
         ingredient_name: "",
         quantity: 0,
+        base_unit: { unit_uuid: "", unit_name: "" },
         recipe_unit: { unit_uuid: "", unit_name: "" },
         base_to_recipe: 1,
       },
@@ -189,6 +202,7 @@ export default function PreparationModal({
         preparation_uuid: "",
         preparation_name: "",
         quantity: 0,
+        base_unit: { unit_uuid: "", unit_name: "" },
         recipe_unit: { unit_uuid: "", unit_name: "" },
         base_to_recipe: 1,
       },
@@ -201,7 +215,6 @@ export default function PreparationModal({
       "preparation_ingredients",
       currentIngredients.filter((_, i) => i !== index),
     );
-    calculateTotalCost();
   };
 
   const removePreparation = (index: number) => {
@@ -209,27 +222,6 @@ export default function PreparationModal({
     form.setValue(
       "preparation_preparations",
       currentPreparations.filter((_, i) => i !== index),
-    );
-    calculateTotalCost();
-  };
-
-  const calculateTotalCost = () => {
-    const ingredients = form.getValues("preparation_ingredients") || [];
-    const preparations = form.getValues("preparation_preparations") || [];
-
-    const totalIngredientCost = ingredients.reduce(
-      (sum, ing) => sum + (ing.total_cost || 0),
-      0,
-    );
-    const totalPrepCost = preparations.reduce(
-      (sum, prep) => sum + (prep.total_cost || 0),
-      0,
-    );
-    const portionCount = form.getValues("portion_count") || 1;
-
-    form.setValue(
-      "portion_cost",
-      (totalIngredientCost + totalPrepCost) / portionCount,
     );
   };
 
@@ -281,70 +273,47 @@ export default function PreparationModal({
                     <FormField
                       control={form.control}
                       name="category"
-                      className="col-span-2"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="col-span-2">
                           <FormLabel>Category</FormLabel>
-                          <div className="flex gap-2">
+                          <FormControl>
                             <CreatableSelect
                               value={
                                 field.value
                                   ? {
-                                      value: field.value.category_uuid,
-                                      label: field.value.category_name,
+                                      value: field.value.category_uuid || "",
+                                      label: `${field.value.emoji} ${field.value.category_name}`,
                                     }
                                   : null
                               }
+                              options={categories.map((cat) => ({
+                                value: cat.category_uuid,
+                                label: `${cat.emoji} ${cat.category_name}`,
+                              }))}
                               onChange={(option) => {
                                 if (option) {
-                                  field.onChange({
-                                    category_uuid: option.value,
-                                    category_name: option.label,
-                                    emoji: "🍽️", // Default emoji
-                                  });
+                                  const selectedCategory = categories.find(
+                                    (cat) => cat.category_uuid === option.value,
+                                  );
+                                  if (selectedCategory) {
+                                    form.setValue("category", {
+                                      category_uuid:
+                                        selectedCategory.category_uuid,
+                                      category_name:
+                                        selectedCategory.category_name,
+                                      emoji: selectedCategory.emoji,
+                                    });
+                                  }
                                 }
                               }}
-                              options={
-                                useQuery({
-                                  queryKey: [
-                                    "categories",
-                                    currentRestaurant?.restaurant_uuid,
-                                  ],
-                                  queryFn: () => {
-                                    if (!currentRestaurant?.restaurant_uuid)
-                                      return [];
-                                    return categoryService
-                                      .getRestaurantCategories(
-                                        currentRestaurant.restaurant_uuid,
-                                      )
-                                      .then((categories) =>
-                                        categories.map((cat: any) => ({
-                                          value: cat.category_uuid,
-                                          label: cat.category_name,
-                                        })),
-                                      );
-                                  },
-                                  enabled: !!currentRestaurant?.restaurant_uuid,
-                                }).data || []
-                              }
-                              onCreateOption={async (inputValue) => {
-                                if (!currentRestaurant?.restaurant_uuid) return;
-                                const newCategory =
-                                  await categoryService.createCategory(
-                                    currentRestaurant.restaurant_uuid,
-                                    { category_name: inputValue, emoji: "🍽️" },
-                                  );
-                                field.onChange({
-                                  category_uuid: newCategory.category_uuid,
-                                  category_name: newCategory.category_name,
-                                  emoji: newCategory.emoji,
-                                });
-                                queryClient.invalidateQueries(["categories"]);
+                              onCreateOption={(inputValue) => {
+                                setNewItemName(inputValue);
+                                setShowCategoryModal(true);
                               }}
                               placeholder=""
                               size="large"
                             />
-                          </div>
+                          </FormControl>
                         </FormItem>
                       )}
                     />
@@ -352,9 +321,8 @@ export default function PreparationModal({
                     <FormField
                       control={form.control}
                       name="portion_count"
-                      classname="col-span-2"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="col-span-2">
                           <FormLabel>Portions</FormLabel>
                           <FormControl>
                             <Input
@@ -373,9 +341,8 @@ export default function PreparationModal({
                     <FormField
                       control={form.control}
                       name="unit"
-                      classname="col-span-1"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="col-span-1">
                           <FormLabel>Unit</FormLabel>
                           <FormControl>
                             <CreatableSelect
@@ -457,18 +424,69 @@ export default function PreparationModal({
                                             }
                                           : null
                                       }
-                                      onChange={(option) => {
+                                      options={
+                                        ingredients?.map((ing: any) => ({
+                                          label: ing.ingredient_name,
+                                          value: ing.ingredient_uuid,
+                                        })) || []
+                                      }
+                                      onChange={async (option) => {
                                         if (option) {
+                                          const selectedIngredient =
+                                            ingredients?.find(
+                                              (ing: any) =>
+                                                ing.ingredient_uuid ===
+                                                option.value,
+                                            );
+
                                           field.onChange(option.label);
                                           form.setValue(
                                             `preparation_ingredients.${index}.ingredient_uuid`,
                                             option.value,
                                           );
+
+                                          if (selectedIngredient?.base_unit) {
+                                            form.setValue(
+                                              `preparation_ingredients.${index}.base_unit`,
+                                              {
+                                                unit_uuid:
+                                                  selectedIngredient.base_unit
+                                                    .unit_uuid,
+                                                unit_name:
+                                                  selectedIngredient.base_unit
+                                                    .unit_name,
+                                              },
+                                            );
+
+                                            // Get conversion factor if recipe unit is already selected
+                                            const recipeUnit = form.watch(
+                                              `preparation_ingredients.${index}.recipe_unit`,
+                                            );
+
+                                            if (recipeUnit?.unit_uuid) {
+                                              try {
+                                                const response =
+                                                  await unitService.getConversionFactor(
+                                                    selectedIngredient.ingredient_uuid,
+                                                    selectedIngredient.base_unit
+                                                      .unit_uuid,
+                                                    recipeUnit.unit_uuid,
+                                                  );
+
+                                                form.setValue(
+                                                  `preparation_ingredients.${index}.base_to_recipe`,
+                                                  response.conversion_factor,
+                                                );
+                                              } catch (error) {
+                                                console.error(
+                                                  "Failed to fetch conversion factor:",
+                                                  error,
+                                                );
+                                              }
+                                            }
+                                          }
                                         }
                                       }}
-                                      options={useIngredientOptions(
-                                        currentRestaurant?.restaurant_uuid,
-                                      )}
                                       onCreateOption={(inputValue) => {
                                         setNewItemName(inputValue);
                                         setShowNewIngredientDialog(true);
@@ -524,16 +542,20 @@ export default function PreparationModal({
                                   <FormControl>
                                     <CreatableSelect
                                       value={
-                                        field.value
+                                        form.watch(
+                                          `preparation_ingredients.${index}.recipe_unit`,
+                                        )
                                           ? {
-                                              value: field.value,
+                                              value: form.watch(
+                                                `preparation_ingredients.${index}.recipe_unit.unit_uuid`,
+                                              ),
                                               label: form.watch(
                                                 `preparation_ingredients.${index}.recipe_unit.unit_name`,
                                               ),
                                             }
                                           : null
                                       }
-                                      onChange={(option) => {
+                                      onChange={async (option) => {
                                         if (option) {
                                           form.setValue(
                                             `preparation_ingredients.${index}.recipe_unit`,
@@ -542,40 +564,79 @@ export default function PreparationModal({
                                               unit_name: option.label,
                                             },
                                           );
-                                        }
-                                      }}
-                                      options={useUnitOptions(
-                                        currentRestaurant?.restaurant_uuid,
-                                      )}
-                                      onCreateOption={async (value) => {
-                                        try {
-                                          if (
-                                            !currentRestaurant?.restaurant_uuid
-                                          )
-                                            return;
-                                          const newUnit =
-                                            await unitService.createUnit(
-                                              { unit_name: value },
-                                              currentRestaurant.restaurant_uuid,
+
+                                          // Get the current ingredient and its base unit
+                                          const ingredientUuid = form.watch(
+                                            `preparation_ingredients.${index}.ingredient_uuid`,
+                                          );
+                                          const selectedIngredient =
+                                            ingredients?.find(
+                                              (ing: any) =>
+                                                ing.ingredient_uuid ===
+                                                ingredientUuid,
                                             );
-                                          form.setValue(
-                                            `preparation_ingredients.${index}.recipe_unit`,
-                                            {
-                                              unit_uuid: newUnit.unit_uuid,
-                                              unit_name: newUnit.unit_name,
-                                            },
-                                          );
-                                          queryClient.invalidateQueries([
-                                            "units",
-                                          ]);
-                                        } catch (error) {
-                                          console.error(
-                                            "Failed to create unit:",
-                                            error,
-                                          );
+
+                                          if (ingredientUuid && option.value) {
+                                            try {
+                                              const response =
+                                                await unitService.getConversionFactor(
+                                                  ingredientUuid,
+                                                  selectedIngredient.base_unit
+                                                    .unit_uuid,
+                                                  option.value,
+                                                );
+
+                                              form.setValue(
+                                                `preparation_ingredients.${index}.base_to_recipe`,
+                                                response.conversion_factor,
+                                              );
+                                            } catch (error) {
+                                              console.error(
+                                                "Failed to fetch conversion factor:",
+                                                error,
+                                              );
+                                            }
+                                          }
                                         }
                                       }}
-                                      placeholder=""
+                                      options={
+                                        useQuery({
+                                          queryKey: [
+                                            "units",
+                                            currentRestaurant?.restaurant_uuid,
+                                          ],
+                                          queryFn: () =>
+                                            unitService.getRestaurantUnit(
+                                              currentRestaurant?.restaurant_uuid ||
+                                                "",
+                                            ),
+                                          enabled:
+                                            !!currentRestaurant?.restaurant_uuid,
+                                        }).data?.map((unit) => ({
+                                          label: unit.unit_name,
+                                          value: unit.unit_uuid,
+                                        })) || []
+                                      }
+                                      onCreateOption={async (inputValue) => {
+                                        if (!currentRestaurant?.restaurant_uuid)
+                                          return;
+                                        const newUnit =
+                                          await unitService.createUnit(
+                                            { unit_name: inputValue },
+                                            currentRestaurant.restaurant_uuid,
+                                          );
+                                        form.setValue(
+                                          `preparation_ingredients.${index}.recipe_unit`,
+                                          {
+                                            unit_uuid: newUnit.unit_uuid,
+                                            unit_name: newUnit.unit_name,
+                                          },
+                                        );
+                                        queryClient.invalidateQueries([
+                                          "units",
+                                        ]);
+                                      }}
+                                      placeholder="Select unit"
                                     />
                                   </FormControl>
                                 </FormItem>
@@ -596,16 +657,26 @@ export default function PreparationModal({
                                   </FormLabel>
                                   <FormControl>
                                     <Input
+                                      suffix={
+                                        form.watch(
+                                          `preparation_ingredients.${index}.base_unit.unit_name`,
+                                        ) +
+                                        " → " +
+                                        form.watch(
+                                          `preparation_ingredients.${index}.recipe_unit.unit_name`,
+                                        )
+                                      }
                                       type="number"
                                       min={0}
                                       step="any"
                                       placeholder="Conv. factor"
                                       {...field}
-                                      onChange={(e) =>
-                                        field.onChange(
-                                          parseFloat(e.target.value),
-                                        )
-                                      }
+                                      onChange={async (e) => {
+                                        const newConversionFactor = parseFloat(
+                                          e.target.value,
+                                        );
+                                        field.onChange(newConversionFactor);
+                                      }}
                                     />
                                   </FormControl>
                                 </FormItem>
@@ -866,6 +937,29 @@ export default function PreparationModal({
           );
           queryClient.invalidateQueries(["ingredients"]);
           setShowNewIngredientDialog(false);
+        }}
+      />
+
+      <CategoryModal
+        open={showCategoryModal}
+        onOpenChange={setShowCategoryModal}
+        defaultValues={{
+          category_name: newItemName,
+          emoji: "🍽️",
+        }}
+        onSubmit={async (data) => {
+          if (!currentRestaurant?.restaurant_uuid) return;
+          const newCategory = await categoryService.createCategory(
+            currentRestaurant.restaurant_uuid,
+            data,
+          );
+          form.setValue("category", {
+            category_uuid: newCategory.category_uuid,
+            category_name: newCategory.category_name,
+            emoji: newCategory.emoji,
+          });
+          queryClient.invalidateQueries(["categories"]);
+          setShowCategoryModal(false);
         }}
       />
     </>
