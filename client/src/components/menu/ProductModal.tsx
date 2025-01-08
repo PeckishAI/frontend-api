@@ -39,6 +39,16 @@ const productSchema = z.object({
     emoji: z.string(),
   }),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
+
+  const { data: ingredients } = useQuery({
+    queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) return [];
+      return inventoryService.getRestaurantIngredients(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+  });
+
   portion_price: z.number().min(0, "Price must be at least 0"),
   product_ingredients: z.array(
     z.object({
@@ -325,39 +335,15 @@ export default function ProductModal({
                                           }
                                         : null
                                     }
-                                    options={
-                                      useQuery({
-                                        queryKey: [
-                                          "ingredients",
-                                          currentRestaurant?.restaurant_uuid,
-                                        ],
-                                        queryFn: async () => {
-                                          if (
-                                            !currentRestaurant?.restaurant_uuid
-                                          )
-                                            return [];
-                                          const ingredients =
-                                            await inventoryService.getRestaurantIngredients(
-                                              currentRestaurant.restaurant_uuid,
-                                            );
-                                          return ingredients.map(
-                                            (ing: any) => ({
-                                              label: ing.ingredient_name,
-                                              value: ing.ingredient_uuid,
-                                            }),
-                                          );
-                                        },
-                                      }).data || []
-                                    }
+                                    options={ingredients?.map((ing: any) => ({
+                                      label: ing.ingredient_name,
+                                      value: ing.ingredient_uuid,
+                                    })) || []}
                                     onChange={(option) => {
                                       if (option) {
-                                        const { data: ingredients = [] } = useQuery({
-                                          queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
-                                          queryFn: () => {
-                                            if (!currentRestaurant?.restaurant_uuid) return [];
-                                            return inventoryService.getRestaurantIngredients(currentRestaurant.restaurant_uuid);
-                                          },
-                                        });
+                                        const selectedIngredient = ingredients?.find(
+                                          (ing: any) => ing.ingredient_uuid === option.value
+                                        );
 
                                         const selectedIngredient = ingredients?.find(
                                           (ing: any) => ing.ingredient_uuid === option.value
