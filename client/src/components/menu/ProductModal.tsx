@@ -344,10 +344,6 @@ export default function ProductModal({
                                               ingredients.map((ing: any) => ({
                                                 label: ing.ingredient_name,
                                                 value: ing.ingredient_uuid,
-                                                data: {
-                                                  base_unit: ing.unit,
-                                                  // Add any other data you need
-                                                }
                                               })),
                                             );
                                         },
@@ -361,16 +357,6 @@ export default function ProductModal({
                                           option.value,
                                         );
                                         console.log("Option: ", option);
-
-                                        if (option.data?.base_unit) {
-                                          form.setValue(
-                                            `product_ingredients.${index}.base_unit`,
-                                            {
-                                              unit_uuid: option.data.base_unit.unit_uuid,
-                                              unit_name: option.data.base_unit.unit_name,
-                                            },
-                                          );
-                                        }
                                       }
                                     }}
                                     onCreateOption={(inputValue) => {
