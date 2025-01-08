@@ -332,6 +332,7 @@ export default function ProductModal({
                                           `product_ingredients.${index}.ingredient_uuid`,
                                           option.value,
                                         );
+                                        console.log("Option: ", option);
                                       }
                                     }}
                                     options={
@@ -411,39 +412,63 @@ export default function ProductModal({
                                 <FormControl>
                                   <CreatableSelect
                                     value={
-                                      form.watch(`product_ingredients.${index}.recipe_unit`)
+                                      form.watch(
+                                        `product_ingredients.${index}.recipe_unit`,
+                                      )
                                         ? {
-                                            value: form.watch(`product_ingredients.${index}.recipe_unit.unit_uuid`),
-                                            label: form.watch(`product_ingredients.${index}.recipe_unit.unit_name`)
+                                            value: form.watch(
+                                              `product_ingredients.${index}.recipe_unit.unit_uuid`,
+                                            ),
+                                            label: form.watch(
+                                              `product_ingredients.${index}.recipe_unit.unit_name`,
+                                            ),
                                           }
                                         : null
                                     }
                                     onChange={(option) => {
                                       if (option) {
-                                        form.setValue(`product_ingredients.${index}.recipe_unit`, {
-                                          unit_uuid: option.value,
-                                          unit_name: option.label
-                                        });
+                                        form.setValue(
+                                          `product_ingredients.${index}.recipe_unit`,
+                                          {
+                                            unit_uuid: option.value,
+                                            unit_name: option.label,
+                                          },
+                                        );
                                       }
                                     }}
-                                    options={useQuery({
-                                      queryKey: ["units", currentRestaurant?.restaurant_uuid],
-                                      queryFn: () => unitService.getRestaurantUnit(currentRestaurant?.restaurant_uuid || ""),
-                                      enabled: !!currentRestaurant?.restaurant_uuid,
-                                    }).data?.map(unit => ({
-                                      label: unit.unit_name,
-                                      value: unit.unit_uuid
-                                    })) || []}
+                                    options={
+                                      useQuery({
+                                        queryKey: [
+                                          "units",
+                                          currentRestaurant?.restaurant_uuid,
+                                        ],
+                                        queryFn: () =>
+                                          unitService.getRestaurantUnit(
+                                            currentRestaurant?.restaurant_uuid ||
+                                              "",
+                                          ),
+                                        enabled:
+                                          !!currentRestaurant?.restaurant_uuid,
+                                      }).data?.map((unit) => ({
+                                        label: unit.unit_name,
+                                        value: unit.unit_uuid,
+                                      })) || []
+                                    }
                                     onCreateOption={async (inputValue) => {
-                                      if (!currentRestaurant?.restaurant_uuid) return;
-                                      const newUnit = await unitService.createUnit(
-                                        { unit_name: inputValue },
-                                        currentRestaurant.restaurant_uuid
+                                      if (!currentRestaurant?.restaurant_uuid)
+                                        return;
+                                      const newUnit =
+                                        await unitService.createUnit(
+                                          { unit_name: inputValue },
+                                          currentRestaurant.restaurant_uuid,
+                                        );
+                                      form.setValue(
+                                        `product_ingredients.${index}.recipe_unit`,
+                                        {
+                                          unit_uuid: newUnit.unit_uuid,
+                                          unit_name: newUnit.unit_name,
+                                        },
                                       );
-                                      form.setValue(`product_ingredients.${index}.recipe_unit`, {
-                                        unit_uuid: newUnit.unit_uuid,
-                                        unit_name: newUnit.unit_name
-                                      });
                                       queryClient.invalidateQueries(["units"]);
                                     }}
                                     placeholder="Select unit"
@@ -467,14 +492,26 @@ export default function ProductModal({
                                 </FormLabel>
                                 <FormControl>
                                   <Input
+                                    suffix={
+                                      form.watch(
+                                        `product_ingredients.${index}.base_unit.unit_name`,
+                                      ) +
+                                      " → " +
+                                      form.watch(
+                                        `product_ingredients.${index}.recipe_unit.unit_name`,
+                                      )
+                                    }
                                     type="number"
                                     min={0}
                                     step="any"
                                     placeholder="Conv. factor"
                                     {...field}
-                                    onChange={(e) =>
-                                      field.onChange(parseFloat(e.target.value))
-                                    }
+                                    onChange={async (e) => {
+                                      const newConversionFactor = parseFloat(
+                                        e.target.value,
+                                      );
+                                      field.onChange(newConversionFactor);
+                                    }}
                                   />
                                 </FormControl>
                               </FormItem>
