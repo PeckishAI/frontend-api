@@ -6,6 +6,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import { inventoryService } from "@/services/inventoryService";
 
 interface DownloadTemplateDialogProps {
   open: boolean;
@@ -16,6 +18,7 @@ export default function DownloadTemplateDialog({
   open,
   onOpenChange,
 }: DownloadTemplateDialogProps) {
+  const { currentRestaurant } = useRestaurantContext();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -47,9 +50,44 @@ export default function DownloadTemplateDialog({
             Cancel
           </Button>
           <Button
-            onClick={() => {
-              // Download logic will be implemented later
-              onOpenChange(false);
+            onClick={async () => {
+              try {
+                if (!currentRestaurant?.restaurant_uuid) {
+                  throw new Error("No restaurant selected");
+                }
+                
+                const inventory = await inventoryService.getRestaurantIngredients(currentRestaurant.restaurant_uuid);
+                
+                // Prepare CSV data
+                const csvData = [
+                  ['ingredient_uuid', 'ingredient_name', 'quantity', 'unit_name', 'unit_uuid'],
+                  ...Object.values(inventory).map((item: any) => [
+                    item.ingredient_uuid,
+                    item.ingredient_name,
+                    '',  // Empty quantity for user to fill
+                    item.unit?.unit_name || '',
+                    item.unit?.unit_uuid || ''
+                  ])
+                ];
+
+                // Convert to CSV string
+                const csvString = csvData.map(row => row.join(',')).join('\n');
+                
+                // Create blob and download
+                const blob = new Blob([csvString], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `stocktake-template-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                onOpenChange(false);
+              } catch (error) {
+                console.error('Failed to download template:', error);
+              }
             }}
           >
             Download Template
