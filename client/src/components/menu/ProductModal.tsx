@@ -327,12 +327,43 @@ export default function ProductModal({
                                     }
                                     onChange={(option) => {
                                       if (option) {
+                                        const selectedIngredient = useQuery({
+                                          queryKey: [
+                                            "ingredients",
+                                            currentRestaurant?.restaurant_uuid,
+                                          ],
+                                          queryFn: () => {
+                                            if (!currentRestaurant?.restaurant_uuid)
+                                              return null;
+                                            return inventoryService
+                                              .getRestaurantIngredients(
+                                                currentRestaurant.restaurant_uuid,
+                                              )
+                                              .then((ingredients) =>
+                                                ingredients.find(
+                                                  (ing: any) =>
+                                                    ing.ingredient_uuid ===
+                                                    option.value,
+                                                ),
+                                              );
+                                          },
+                                        }).data;
+
                                         field.onChange(option.label);
                                         form.setValue(
                                           `product_ingredients.${index}.ingredient_uuid`,
                                           option.value,
                                         );
-                                        console.log("Option: ", option);
+                                        
+                                        if (selectedIngredient?.unit) {
+                                          form.setValue(
+                                            `product_ingredients.${index}.base_unit`,
+                                            {
+                                              unit_uuid: selectedIngredient.unit.unit_uuid,
+                                              unit_name: selectedIngredient.unit.unit_name,
+                                            },
+                                          );
+                                        }
                                       }
                                     }}
                                     options={
