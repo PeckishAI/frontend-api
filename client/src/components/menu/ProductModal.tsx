@@ -505,18 +505,30 @@ export default function ProductModal({
                                               ing.ingredient_uuid ===
                                               ingredientUuid,
                                           );
+                                        console.log(
+                                          "Ingredient UUID: ",
+                                          ingredientUuid,
+                                        );
+                                        console.log(
+                                          "Base Unit UUID: ",
+                                          selectedIngredient?.base_unit
+                                            ?.unit_uuid,
+                                        );
+                                        console.log(
+                                          "Recipe Unit UUID: ",
+                                          option.value,
+                                        );
 
-                                        if (
-                                          ingredientUuid &&
-                                          selectedIngredient?.base_unit?.unit_uuid
-                                        ) {
+                                        if (ingredientUuid && option.value) {
                                           try {
                                             const factor =
                                               await unitService.getConversionFactor(
                                                 ingredientUuid,
-                                                selectedIngredient.base_unit.unit_uuid,
+                                                selectedIngredient.base_unit
+                                                  .unit_uuid,
                                                 option.value,
                                               );
+                                            console.log("Factor: ", factor);
 
                                             form.setValue(
                                               `product_ingredients.${index}.base_to_recipe`,
