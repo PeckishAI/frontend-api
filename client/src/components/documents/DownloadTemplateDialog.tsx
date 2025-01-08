@@ -87,13 +87,35 @@ export default function DownloadTemplateDialog({
                     onClick={() => setActiveFilter(activeFilter === "tags" ? null : "tags")}
                   >
                     Tags
+                    {selectedTags.length > 0 && (
+                      <span className="ml-2 px-2 py-0.5 bg-primary/20 rounded-full text-xs">
+                        {selectedTags.length}
+                      </span>
+                    )}
                   </Button>
                   <Button
                     variant={activeFilter === "suppliers" ? "default" : "outline"}
                     onClick={() => setActiveFilter(activeFilter === "suppliers" ? null : "suppliers")}
                   >
                     Suppliers
+                    {selectedSuppliers.length > 0 && (
+                      <span className="ml-2 px-2 py-0.5 bg-primary/20 rounded-full text-xs">
+                        {selectedSuppliers.length}
+                      </span>
+                    )}
                   </Button>
+                  {(selectedTags.length > 0 || selectedSuppliers.length > 0) && (
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => {
+                        setSelectedTags([]);
+                        setSelectedSuppliers([]);
+                        setActiveFilter(null);
+                      }}
+                    >
+                      Clear
+                    </Button>
+                  )}
                 </div>
 
                 {activeFilter === "tags" && (
