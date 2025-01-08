@@ -332,15 +332,20 @@ export default function ProductModal({
                                           currentRestaurant?.restaurant_uuid,
                                         ],
                                         queryFn: async () => {
-                                          if (!currentRestaurant?.restaurant_uuid) return [];
-                                          const ingredients = await inventoryService.getRestaurantIngredients(
-                                            currentRestaurant.restaurant_uuid,
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          )
+                                            return [];
+                                          const ingredients =
+                                            await inventoryService.getRestaurantIngredients(
+                                              currentRestaurant.restaurant_uuid,
+                                            );
+                                          return ingredients.map(
+                                            (ing: any) => ({
+                                              label: ing.ingredient_name,
+                                              value: ing.ingredient_uuid,
+                                            }),
                                           );
-                                          return ingredients.map((ing: any) => ({
-                                            label: ing.ingredient_name,
-                                            value: ing.ingredient_uuid,
-                                            base_unit: ing.unit,
-                                          }));
                                         },
                                       }).data || []
                                     }
@@ -351,16 +356,6 @@ export default function ProductModal({
                                           `product_ingredients.${index}.ingredient_uuid`,
                                           option.value,
                                         );
-
-                                        if (option.base_unit) {
-                                          form.setValue(
-                                            `product_ingredients.${index}.base_unit`,
-                                            {
-                                              unit_uuid: option.base_unit.unit_uuid,
-                                              unit_name: option.base_unit.unit_name,
-                                            },
-                                          );
-                                        }
                                       }
                                     }}
                                     onCreateOption={(inputValue) => {
