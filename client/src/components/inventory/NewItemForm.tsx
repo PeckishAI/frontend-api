@@ -142,7 +142,9 @@ export default function NewItemForm({ open, onOpenChange, onSubmit }: NewItemFor
                     <CreatableSelect
                       value={field.value ? { value: field.value, label: field.value } : null}
                       onChange={(option) => field.onChange(option?.value || '')}
-                      onCreateOption={(inputValue) => field.onChange(inputValue)}
+                      onCreateOption={async (inputValue) => {
+                        field.onChange(inputValue);
+                      }}
                       options={[
                         { value: 'kg', label: 'kg' },
                         { value: 'L', label: 'L' },
