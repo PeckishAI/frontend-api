@@ -73,13 +73,13 @@ export default function DownloadTemplateDialog({
                   label="Select Tag"
                   value={selectedTag}
                   onChange={(e) => setSelectedTag(e.target.value)}
-                  options={tags.map((tag: any) => ({ label: tag.name, value: tag.tag_uuid }))}
+                  options={(tags || []).map((tag: any) => ({ label: tag.name, value: tag.tag_uuid }))}
                 />
                 <BasicSelect
                   label="Select Supplier"
                   value={selectedSupplier}
                   onChange={(e) => setSelectedSupplier(e.target.value)}
-                  options={suppliers.map((supplier: any) => ({ label: supplier.name, value: supplier.supplier_uuid }))}
+                  options={(suppliers || []).map((supplier: any) => ({ label: supplier.name, value: supplier.supplier_uuid }))}
                 />
               </>
             )}
