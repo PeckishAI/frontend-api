@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -46,6 +45,10 @@ const productSchema = z.object({
       ingredient_uuid: z.string(),
       ingredient_name: z.string(),
       quantity: z.number().min(0),
+      base_unit: z.object({
+        unit_uuid: z.string(),
+        unit_name: z.string(),
+      }),
       recipe_unit: z.object({
         unit_uuid: z.string(),
         unit_name: z.string(),
@@ -58,6 +61,10 @@ const productSchema = z.object({
       preparation_uuid: z.string(),
       preparation_name: z.string(),
       quantity: z.number().min(0),
+      base_unit: z.object({
+        unit_uuid: z.string(),
+        unit_name: z.string(),
+      }),
       recipe_unit: z.object({
         unit_uuid: z.string(),
         unit_name: z.string(),
@@ -102,6 +109,10 @@ export default function ProductModal({
         ingredient_uuid: "",
         ingredient_name: "",
         quantity: 0,
+        base_unit: {
+          unit_uuid: "",
+          unit_name: "",
+        },
         recipe_unit: { unit_uuid: "", unit_name: "" },
         base_to_recipe: 1,
       },
@@ -116,6 +127,10 @@ export default function ProductModal({
         preparation_uuid: "",
         preparation_name: "",
         quantity: 0,
+        base_unit: {
+          unit_uuid: "",
+          unit_name: "",
+        },
         recipe_unit: { unit_uuid: "", unit_name: "" },
         base_to_recipe: 1,
       },
@@ -188,7 +203,6 @@ export default function ProductModal({
                                   field.onChange({
                                     category_uuid: option.value,
                                     category_name: option.label,
-                                    emoji: "🍽️",
                                   });
                                 }
                               }}
@@ -196,24 +210,27 @@ export default function ProductModal({
                                 setNewItemName(inputValue);
                                 setShowCategoryModal(true);
                               }}
-                              options={useQuery({
-                                queryKey: [
-                                  "categories",
-                                  currentRestaurant?.restaurant_uuid,
-                                ],
-                                queryFn: async () => {
-                                  if (!currentRestaurant?.restaurant_uuid)
-                                    return [];
-                                  const categories =
-                                    await categoryService.getRestaurantCategories(
-                                      currentRestaurant.restaurant_uuid,
-                                    );
-                                  return categories.map((cat: any) => ({
-                                    value: cat.category_uuid,
-                                    label: cat.category_name,
-                                  }));
-                                },
-                              }).data || []}
+                              options={
+                                useQuery({
+                                  queryKey: [
+                                    "categories",
+                                    currentRestaurant?.restaurant_uuid,
+                                  ],
+                                  queryFn: async () => {
+                                    if (!currentRestaurant?.restaurant_uuid)
+                                      return [];
+                                    const categories =
+                                      await categoryService.getRestaurantCategories(
+                                        currentRestaurant.restaurant_uuid,
+                                      );
+                                    return categories.map((cat: any) => ({
+                                      value: cat.category_uuid,
+                                      label:
+                                        cat.emoji + " " + cat.category_name,
+                                    }));
+                                  },
+                                }).data || []
+                              }
                               placeholder=""
                             />
                           </FormControl>
@@ -279,53 +296,54 @@ export default function ProductModal({
                         </Button>
                       </div>
 
-                      {form
-                        .watch("product_ingredients")
-                        ?.map((_, index) => (
-                          <div
-                            key={index}
-                            className="grid grid-cols-[2fr,1fr,1fr,1fr,auto] gap-4 items-end"
-                          >
-                            <FormField
-                              control={form.control}
-                              name={`product_ingredients.${index}.ingredient_name`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel
-                                    className={
-                                      index !== 0 ? "sr-only" : undefined
+                      {form.watch("product_ingredients")?.map((_, index) => (
+                        <div
+                          key={index}
+                          className="grid grid-cols-[2fr,1fr,1fr,1fr,auto] gap-4 items-end"
+                        >
+                          <FormField
+                            control={form.control}
+                            name={`product_ingredients.${index}.ingredient_name`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel
+                                  className={
+                                    index !== 0 ? "sr-only" : undefined
+                                  }
+                                >
+                                  Ingredient
+                                </FormLabel>
+                                <FormControl>
+                                  <CreatableSelect
+                                    value={
+                                      field.value
+                                        ? {
+                                            label: field.value,
+                                            value: form.watch(
+                                              `product_ingredients.${index}.ingredient_uuid`,
+                                            ),
+                                          }
+                                        : null
                                     }
-                                  >
-                                    Ingredient
-                                  </FormLabel>
-                                  <FormControl>
-                                    <CreatableSelect
-                                      value={
-                                        field.value
-                                          ? {
-                                              label: field.value,
-                                              value: form.watch(
-                                                `product_ingredients.${index}.ingredient_uuid`,
-                                              ),
-                                            }
-                                          : null
+                                    onChange={(option) => {
+                                      if (option) {
+                                        field.onChange(option.label);
+                                        form.setValue(
+                                          `product_ingredients.${index}.ingredient_uuid`,
+                                          option.value,
+                                        );
                                       }
-                                      onChange={(option) => {
-                                        if (option) {
-                                          field.onChange(option.label);
-                                          form.setValue(
-                                            `product_ingredients.${index}.ingredient_uuid`,
-                                            option.value,
-                                          );
-                                        }
-                                      }}
-                                      options={useQuery({
+                                    }}
+                                    options={
+                                      useQuery({
                                         queryKey: [
                                           "ingredients",
                                           currentRestaurant?.restaurant_uuid,
                                         ],
                                         queryFn: () => {
-                                          if (!currentRestaurant?.restaurant_uuid)
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          )
                                             return [];
                                           return inventoryService
                                             .getRestaurantIngredients(
@@ -338,89 +356,91 @@ export default function ProductModal({
                                               })),
                                             );
                                         },
-                                      }).data || []}
-                                      onCreateOption={(inputValue) => {
-                                        setNewItemName(inputValue);
-                                        setShowNewIngredientDialog(true);
-                                      }}
-                                      placeholder=""
-                                    />
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name={`product_ingredients.${index}.quantity`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel
-                                    className={
-                                      index !== 0 ? "sr-only" : undefined
+                                      }).data || []
                                     }
-                                  >
-                                    Quantity
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      min={0}
-                                      step="any"
-                                      {...field}
-                                      onChange={(e) =>
-                                        field.onChange(
-                                          parseFloat(e.target.value),
-                                        )
-                                      }
-                                    />
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
+                                    onCreateOption={(inputValue) => {
+                                      setNewItemName(inputValue);
+                                      setShowNewIngredientDialog(true);
+                                    }}
+                                    placeholder=""
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
 
-                            <FormField
-                              control={form.control}
-                              name={`product_ingredients.${index}.recipe_unit.unit_uuid`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel
-                                    className={
-                                      index !== 0 ? "sr-only" : undefined
+                          <FormField
+                            control={form.control}
+                            name={`product_ingredients.${index}.quantity`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel
+                                  className={
+                                    index !== 0 ? "sr-only" : undefined
+                                  }
+                                >
+                                  Quantity
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    min={0}
+                                    step="any"
+                                    {...field}
+                                    onChange={(e) =>
+                                      field.onChange(parseFloat(e.target.value))
                                     }
-                                  >
-                                    Unit
-                                  </FormLabel>
-                                  <FormControl>
-                                    <CreatableSelect
-                                      value={
-                                        field.value
-                                          ? {
-                                              value: field.value,
-                                              label: form.watch(
-                                                `product_ingredients.${index}.recipe_unit.unit_name`,
-                                              ),
-                                            }
-                                          : null
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name={`product_ingredients.${index}.recipe_unit.unit_uuid`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel
+                                  className={
+                                    index !== 0 ? "sr-only" : undefined
+                                  }
+                                >
+                                  Unit
+                                </FormLabel>
+                                <FormControl>
+                                  <CreatableSelect
+                                    value={
+                                      field.value
+                                        ? {
+                                            value: field.value,
+                                            label: form.watch(
+                                              `product_ingredients.${index}.recipe_unit.unit_name`,
+                                            ),
+                                          }
+                                        : null
+                                    }
+                                    onChange={(option) => {
+                                      if (option) {
+                                        form.setValue(
+                                          `product_ingredients.${index}.recipe_unit`,
+                                          {
+                                            unit_uuid: option.value,
+                                            unit_name: option.label,
+                                          },
+                                        );
                                       }
-                                      onChange={(option) => {
-                                        if (option) {
-                                          form.setValue(
-                                            `product_ingredients.${index}.recipe_unit`,
-                                            {
-                                              unit_uuid: option.value,
-                                              unit_name: option.label,
-                                            },
-                                          );
-                                        }
-                                      }}
-                                      options={useQuery({
+                                    }}
+                                    options={
+                                      useQuery({
                                         queryKey: [
                                           "units",
                                           currentRestaurant?.restaurant_uuid,
                                         ],
                                         queryFn: () => {
-                                          if (!currentRestaurant?.restaurant_uuid)
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          )
                                             return [];
                                           return unitService
                                             .getRestaurantUnit(
@@ -433,54 +453,53 @@ export default function ProductModal({
                                               })),
                                             );
                                         },
-                                      }).data || []}
-                                      placeholder=""
-                                    />
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name={`product_ingredients.${index}.base_to_recipe`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel
-                                    className={
-                                      index !== 0 ? "sr-only" : undefined
+                                      }).data || []
                                     }
-                                  >
-                                    Factor
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      min={0}
-                                      step="any"
-                                      placeholder="Conv. factor"
-                                      {...field}
-                                      onChange={(e) =>
-                                        field.onChange(
-                                          parseFloat(e.target.value),
-                                        )
-                                      }
-                                    />
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
+                                    placeholder=""
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
 
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => removeIngredient(index)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
+                          <FormField
+                            control={form.control}
+                            name={`product_ingredients.${index}.base_to_recipe`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel
+                                  className={
+                                    index !== 0 ? "sr-only" : undefined
+                                  }
+                                >
+                                  Factor
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    min={0}
+                                    step="any"
+                                    placeholder="Conv. factor"
+                                    {...field}
+                                    onChange={(e) =>
+                                      field.onChange(parseFloat(e.target.value))
+                                    }
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeIngredient(index)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
                     </div>
 
                     {/* Preparations Section */}
@@ -498,53 +517,54 @@ export default function ProductModal({
                         </Button>
                       </div>
 
-                      {form
-                        .watch("product_preparations")
-                        ?.map((_, index) => (
-                          <div
-                            key={index}
-                            className="grid grid-cols-[2fr,1fr,1fr,1fr,auto] gap-4 items-end"
-                          >
-                            <FormField
-                              control={form.control}
-                              name={`product_preparations.${index}.preparation_name`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel
-                                    className={
-                                      index !== 0 ? "sr-only" : undefined
+                      {form.watch("product_preparations")?.map((_, index) => (
+                        <div
+                          key={index}
+                          className="grid grid-cols-[2fr,1fr,1fr,1fr,auto] gap-4 items-end"
+                        >
+                          <FormField
+                            control={form.control}
+                            name={`product_preparations.${index}.preparation_name`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel
+                                  className={
+                                    index !== 0 ? "sr-only" : undefined
+                                  }
+                                >
+                                  Preparation
+                                </FormLabel>
+                                <FormControl>
+                                  <CreatableSelect
+                                    value={
+                                      field.value
+                                        ? {
+                                            label: field.value,
+                                            value: form.watch(
+                                              `product_preparations.${index}.preparation_uuid`,
+                                            ),
+                                          }
+                                        : null
                                     }
-                                  >
-                                    Preparation
-                                  </FormLabel>
-                                  <FormControl>
-                                    <CreatableSelect
-                                      value={
-                                        field.value
-                                          ? {
-                                              label: field.value,
-                                              value: form.watch(
-                                                `product_preparations.${index}.preparation_uuid`,
-                                              ),
-                                            }
-                                          : null
+                                    onChange={(option) => {
+                                      if (option) {
+                                        field.onChange(option.label);
+                                        form.setValue(
+                                          `product_preparations.${index}.preparation_uuid`,
+                                          option.value,
+                                        );
                                       }
-                                      onChange={(option) => {
-                                        if (option) {
-                                          field.onChange(option.label);
-                                          form.setValue(
-                                            `product_preparations.${index}.preparation_uuid`,
-                                            option.value,
-                                          );
-                                        }
-                                      }}
-                                      options={useQuery({
+                                    }}
+                                    options={
+                                      useQuery({
                                         queryKey: [
                                           "preparations",
                                           currentRestaurant?.restaurant_uuid,
                                         ],
                                         queryFn: () => {
-                                          if (!currentRestaurant?.restaurant_uuid)
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          )
                                             return [];
                                           return menuService
                                             .getRestaurantPreparations(
@@ -557,85 +577,87 @@ export default function ProductModal({
                                               })),
                                             );
                                         },
-                                      }).data || []}
-                                      placeholder=""
-                                    />
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name={`product_preparations.${index}.quantity`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel
-                                    className={
-                                      index !== 0 ? "sr-only" : undefined
+                                      }).data || []
                                     }
-                                  >
-                                    Quantity
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      min={0}
-                                      step="any"
-                                      {...field}
-                                      onChange={(e) =>
-                                        field.onChange(
-                                          parseFloat(e.target.value),
-                                        )
-                                      }
-                                    />
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
+                                    placeholder=""
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
 
-                            <FormField
-                              control={form.control}
-                              name={`product_preparations.${index}.recipe_unit.unit_uuid`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel
-                                    className={
-                                      index !== 0 ? "sr-only" : undefined
+                          <FormField
+                            control={form.control}
+                            name={`product_preparations.${index}.quantity`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel
+                                  className={
+                                    index !== 0 ? "sr-only" : undefined
+                                  }
+                                >
+                                  Quantity
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    min={0}
+                                    step="any"
+                                    {...field}
+                                    onChange={(e) =>
+                                      field.onChange(parseFloat(e.target.value))
                                     }
-                                  >
-                                    Unit
-                                  </FormLabel>
-                                  <FormControl>
-                                    <CreatableSelect
-                                      value={
-                                        field.value
-                                          ? {
-                                              value: field.value,
-                                              label: form.watch(
-                                                `product_preparations.${index}.recipe_unit.unit_name`,
-                                              ),
-                                            }
-                                          : null
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name={`product_preparations.${index}.recipe_unit.unit_uuid`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel
+                                  className={
+                                    index !== 0 ? "sr-only" : undefined
+                                  }
+                                >
+                                  Unit
+                                </FormLabel>
+                                <FormControl>
+                                  <CreatableSelect
+                                    value={
+                                      field.value
+                                        ? {
+                                            value: field.value,
+                                            label: form.watch(
+                                              `product_preparations.${index}.recipe_unit.unit_name`,
+                                            ),
+                                          }
+                                        : null
+                                    }
+                                    onChange={(option) => {
+                                      if (option) {
+                                        form.setValue(
+                                          `product_preparations.${index}.recipe_unit`,
+                                          {
+                                            unit_uuid: option.value,
+                                            unit_name: option.label,
+                                          },
+                                        );
                                       }
-                                      onChange={(option) => {
-                                        if (option) {
-                                          form.setValue(
-                                            `product_preparations.${index}.recipe_unit`,
-                                            {
-                                              unit_uuid: option.value,
-                                              unit_name: option.label,
-                                            },
-                                          );
-                                        }
-                                      }}
-                                      options={useQuery({
+                                    }}
+                                    options={
+                                      useQuery({
                                         queryKey: [
                                           "units",
                                           currentRestaurant?.restaurant_uuid,
                                         ],
                                         queryFn: () => {
-                                          if (!currentRestaurant?.restaurant_uuid)
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          )
                                             return [];
                                           return unitService
                                             .getRestaurantUnit(
@@ -648,54 +670,53 @@ export default function ProductModal({
                                               })),
                                             );
                                         },
-                                      }).data || []}
-                                      placeholder=""
-                                    />
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name={`product_preparations.${index}.base_to_recipe`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel
-                                    className={
-                                      index !== 0 ? "sr-only" : undefined
+                                      }).data || []
                                     }
-                                  >
-                                    Factor
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      min={0}
-                                      step="any"
-                                      placeholder="Conv. factor"
-                                      {...field}
-                                      onChange={(e) =>
-                                        field.onChange(
-                                          parseFloat(e.target.value),
-                                        )
-                                      }
-                                    />
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
+                                    placeholder=""
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
 
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => removePreparation(index)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
+                          <FormField
+                            control={form.control}
+                            name={`product_preparations.${index}.base_to_recipe`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel
+                                  className={
+                                    index !== 0 ? "sr-only" : undefined
+                                  }
+                                >
+                                  Factor
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    min={0}
+                                    step="any"
+                                    placeholder="Conv. factor"
+                                    {...field}
+                                    onChange={(e) =>
+                                      field.onChange(parseFloat(e.target.value))
+                                    }
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removePreparation(index)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
