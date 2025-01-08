@@ -37,11 +37,11 @@ export default function Documents() {
               {activeSection === "stocktakes" && (
                 <>
                   <Button 
-                    variant="outline" 
-                    size="icon"
+                    variant="outline"
                     onClick={() => setShowDownloadDialog(true)}
                   >
                     <Download className="h-4 w-4" />
+                    Download Template
                   </Button>
                   <Button 
                     variant="outline" 
