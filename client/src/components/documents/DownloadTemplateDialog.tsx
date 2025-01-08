@@ -147,11 +147,14 @@ export default function DownloadTemplateDialog({
 
                 // Filter inventory based on selected tags and suppliers
                 const filteredInventory = Object.values(inventory).filter((item: any) => {
+                  if (selectedTags.length === 0 && selectedSuppliers.length === 0) {
+                    return true;
+                  }
                   const matchesTags = selectedTags.length === 0 || 
                     item.tags?.some((tag: any) => selectedTags.includes(tag.tag_uuid));
                   const matchesSuppliers = selectedSuppliers.length === 0 ||
                     item.ingredient_suppliers?.some((s: any) => selectedSuppliers.includes(s.supplier?.supplier_uuid));
-                  return matchesTags && matchesSuppliers;
+                  return matchesTags || matchesSuppliers;
                 });
 
                 // Prepare CSV data
