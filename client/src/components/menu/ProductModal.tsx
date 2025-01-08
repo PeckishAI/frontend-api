@@ -411,58 +411,42 @@ export default function ProductModal({
                                 <FormControl>
                                   <CreatableSelect
                                     value={
-                                      field.value
+                                      form.watch(`product_ingredients.${index}.recipe_unit`)
                                         ? {
-                                            value: field.value,
-                                            label: form.watch(
-                                              `product_ingredients.${index}.recipe_unit.unit_name`,
-                                            ),
+                                            value: form.watch(`product_ingredients.${index}.recipe_unit.unit_uuid`),
+                                            label: form.watch(`product_ingredients.${index}.recipe_unit.unit_name`)
                                           }
                                         : null
                                     }
                                     onChange={(option) => {
                                       if (option) {
-                                        form.setValue(
-                                          `product_ingredients.${index}.recipe_unit`,
-                                          {
-                                            unit_uuid: option.value,
-                                            unit_name: option.label,
-                                          },
-                                        );
+                                        form.setValue(`product_ingredients.${index}.recipe_unit`, {
+                                          unit_uuid: option.value,
+                                          unit_name: option.label
+                                        });
                                       }
                                     }}
-                                    options={
-                                      useQuery({
-                                        queryKey: [
-                                          "units",
-                                          currentRestaurant?.restaurant_uuid,
-                                        ],
-                                        queryFn: async () => {
-                                          const units =
-                                            await unitService.getRestaurantUnit(
-                                              currentRestaurant?.restaurant_uuid ||
-                                                "",
-                                            );
-                                          return [
-                                            {
-                                              label: "All Units",
-                                              options: units.map(
-                                                (unit: any) => ({
-                                                  label: unit.unit_name,
-                                                  value: unit.unit_uuid,
-                                                }),
-                                              ),
-                                            },
-                                          ];
-                                        },
-                                      }).data || [
-                                        {
-                                          label: "All Units",
-                                          options: [],
-                                        },
-                                      ]
-                                    }
-                                    placeholder=""
+                                    options={useQuery({
+                                      queryKey: ["units", currentRestaurant?.restaurant_uuid],
+                                      queryFn: () => unitService.getRestaurantUnit(currentRestaurant?.restaurant_uuid || ""),
+                                      enabled: !!currentRestaurant?.restaurant_uuid,
+                                    }).data?.map(unit => ({
+                                      label: unit.unit_name,
+                                      value: unit.unit_uuid
+                                    })) || []}
+                                    onCreateOption={async (inputValue) => {
+                                      if (!currentRestaurant?.restaurant_uuid) return;
+                                      const newUnit = await unitService.createUnit(
+                                        { unit_name: inputValue },
+                                        currentRestaurant.restaurant_uuid
+                                      );
+                                      form.setValue(`product_ingredients.${index}.recipe_unit`, {
+                                        unit_uuid: newUnit.unit_uuid,
+                                        unit_name: newUnit.unit_name
+                                      });
+                                      queryClient.invalidateQueries(["units"]);
+                                    }}
+                                    placeholder="Select unit"
                                   />
                                 </FormControl>
                               </FormItem>
