@@ -327,27 +327,16 @@ export default function ProductModal({
                                     }
                                     onChange={(option) => {
                                       if (option) {
-                                        const selectedIngredient = useQuery({
+                                        const ingredients = useQuery({
                                           queryKey: [
                                             "ingredients",
                                             currentRestaurant?.restaurant_uuid,
                                           ],
-                                          queryFn: () => {
-                                            if (!currentRestaurant?.restaurant_uuid)
-                                              return null;
-                                            return inventoryService
-                                              .getRestaurantIngredients(
-                                                currentRestaurant.restaurant_uuid,
-                                              )
-                                              .then((ingredients) =>
-                                                ingredients.find(
-                                                  (ing: any) =>
-                                                    ing.ingredient_uuid ===
-                                                    option.value,
-                                                ),
-                                              );
-                                          },
-                                        }).data;
+                                        }).data || [];
+
+                                        const selectedIngredient = ingredients.find(
+                                          (ing: any) => ing.ingredient_uuid === option.value
+                                        );
 
                                         field.onChange(option.label);
                                         form.setValue(
