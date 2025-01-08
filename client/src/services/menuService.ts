@@ -182,7 +182,9 @@ export const menuService = {
     }
   },
 
-  async getRestaurantPreparations(restaurantUuid: string): Promise<Product[]> {
+  async getRestaurantPreparations(
+    restaurantUuid: string,
+  ): Promise<Preparation[]> {
     try {
       const response = await fetch(
         `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/preparations`,
@@ -203,6 +205,7 @@ export const menuService = {
       if (!data.success) {
         throw new Error("Failed to fetch preparations");
       }
+      console.log("Preps: ", data.data);
       return data.data;
     } catch (error) {
       console.error("Failed to fetch restaurant preparations:", error);

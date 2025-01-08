@@ -73,6 +73,7 @@ export default function Preparations() {
             </div>
             <Badge variant="secondary" className="flex items-center gap-1">
               {preparation.category?.emoji}
+              {"   "}
               {preparation.category?.category_name}
             </Badge>
           </div>
@@ -104,7 +105,7 @@ export default function Preparations() {
                   <div className="text-sm text-gray-500">Portions</div>
                 </div>
                 <div className="font-medium">
-                  {preparation.portion_count || 1}
+                  {preparation.portion_count || 1} {preparation.unit?.unit_name}
                 </div>
               </div>
               <div>
@@ -160,7 +161,10 @@ export default function Preparations() {
                 if (!currentRestaurant?.restaurant_uuid) {
                   throw new Error("No restaurant selected");
                 }
-                await menuService.createPreparation(currentRestaurant.restaurant_uuid, data);
+                await menuService.createPreparation(
+                  currentRestaurant.restaurant_uuid,
+                  data,
+                );
                 await queryClient.invalidateQueries(["preparations"]);
                 setEditingPreparation(null);
               } catch (error) {

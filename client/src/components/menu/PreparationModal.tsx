@@ -52,7 +52,7 @@ const preparationSchema = z.object({
     unit_name: z.string(),
   }),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
-  portion_cost: z.number().min(0, "Portion cost must be at least 0"),
+  portion_cost: z.number().min(0, "Portion cost must be at least 0").optional(),
   preparation_ingredients: z.array(
     z.object({
       ingredient_uuid: z.string(),
@@ -253,7 +253,7 @@ export default function PreparationModal({
                       if (!data.preparation_name) {
                         form.setError("preparation_name", {
                           type: "required",
-                          message: "Name is required"
+                          message: "Name is required",
                         });
                         return;
                       }
@@ -261,7 +261,7 @@ export default function PreparationModal({
                       if (!data.category) {
                         form.setError("category", {
                           type: "required",
-                          message: "Category is required"
+                          message: "Category is required",
                         });
                         return;
                       }
@@ -269,24 +269,32 @@ export default function PreparationModal({
                       if (!data.unit) {
                         form.setError("unit", {
                           type: "required",
-                          message: "Unit is required"
+                          message: "Unit is required",
                         });
                         return;
                       }
 
                       // Validate ingredients/preparations have required fields
-                      const hasInvalidIngredients = data.preparation_ingredients?.some(
-                        ing => !ing.ingredient_uuid || !ing.quantity || !ing.recipe_unit
-                      );
-                      
+                      const hasInvalidIngredients =
+                        data.preparation_ingredients?.some(
+                          (ing) =>
+                            !ing.ingredient_uuid ||
+                            !ing.quantity ||
+                            !ing.recipe_unit,
+                        );
+
                       if (hasInvalidIngredients) {
                         console.error("Invalid ingredients data");
                         return;
                       }
 
-                      const hasInvalidPreparations = data.preparation_preparations?.some(
-                        prep => !prep.preparation_uuid || !prep.quantity || !prep.recipe_unit
-                      );
+                      const hasInvalidPreparations =
+                        data.preparation_preparations?.some(
+                          (prep) =>
+                            !prep.preparation_uuid ||
+                            !prep.quantity ||
+                            !prep.recipe_unit,
+                        );
 
                       if (hasInvalidPreparations) {
                         console.error("Invalid preparations data");
