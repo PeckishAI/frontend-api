@@ -248,7 +248,11 @@ export default function PreparationModal({
                   onSubmit={form.handleSubmit(async (data) => {
                     console.log("Form data being submitted:", data);
                     try {
-                      if (!data.preparation_name || !data.category || !data.unit) {
+                      if (
+                        !data.preparation_name ||
+                        !data.category ||
+                        !data.unit
+                      ) {
                         console.error("Required fields missing");
                         return;
                       }
@@ -273,7 +277,7 @@ export default function PreparationModal({
                     )}
                   />
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name="category"
@@ -337,6 +341,7 @@ export default function PreparationModal({
                                 queryClient.invalidateQueries(["categories"]);
                               }}
                               placeholder=""
+                              size="large"
                             />
                           </div>
                         </FormItem>
@@ -394,6 +399,7 @@ export default function PreparationModal({
                                 setNewItemName(inputValue);
                               }}
                               placeholder=""
+                              size="small"
                             />
                           </FormControl>
                         </FormItem>

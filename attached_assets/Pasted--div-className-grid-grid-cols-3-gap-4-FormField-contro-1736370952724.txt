@@ -1,0 +1,129 @@
+<div className="grid grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Category</FormLabel>
+                          <div className="flex gap-2">
+                            <CreatableSelect
+                              value={
+                                field.value
+                                  ? {
+                                      value: field.value.category_uuid,
+                                      label: field.value.category_name,
+                                    }
+                                  : null
+                              }
+                              onChange={(option) => {
+                                if (option) {
+                                  field.onChange({
+                                    category_uuid: option.value,
+                                    category_name: option.label,
+                                    emoji: "🍽️", // Default emoji
+                                  });
+                                }
+                              }}
+                              options={
+                                useQuery({
+                                  queryKey: [
+                                    "categories",
+                                    currentRestaurant?.restaurant_uuid,
+                                  ],
+                                  queryFn: () => {
+                                    if (!currentRestaurant?.restaurant_uuid)
+                                      return [];
+                                    return categoryService
+                                      .getRestaurantCategories(
+                                        currentRestaurant.restaurant_uuid,
+                                      )
+                                      .then((categories) =>
+                                        categories.map((cat: any) => ({
+                                          value: cat.category_uuid,
+                                          label: cat.category_name,
+                                        })),
+                                      );
+                                  },
+                                  enabled: !!currentRestaurant?.restaurant_uuid,
+                                }).data || []
+                              }
+                              onCreateOption={async (inputValue) => {
+                                if (!currentRestaurant?.restaurant_uuid) return;
+                                const newCategory =
+                                  await categoryService.createCategory(
+                                    currentRestaurant.restaurant_uuid,
+                                    { category_name: inputValue, emoji: "🍽️" },
+                                  );
+                                field.onChange({
+                                  category_uuid: newCategory.category_uuid,
+                                  category_name: newCategory.category_name,
+                                  emoji: newCategory.emoji,
+                                });
+                                queryClient.invalidateQueries(["categories"]);
+                              }}
+                              placeholder=""
+                              size="large"
+                            />
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="portion_count"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Portions</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min={1}
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(parseInt(e.target.value))
+                              }
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="unit"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Unit</FormLabel>
+                          <FormControl>
+                            <CreatableSelect
+                              value={
+                                field.value
+                                  ? {
+                                      value: field.value.unit_uuid,
+                                      label: field.value.unit_name,
+                                    }
+                                  : null
+                              }
+                              onChange={(option) => {
+                                if (option) {
+                                  field.onChange({
+                                    unit_uuid: option.value,
+                                    unit_name: option.label,
+                                  });
+                                }
+                              }}
+                              options={useUnitOptions(
+                                currentRestaurant?.restaurant_uuid,
+                              )}
+                              onCreateOption={(inputValue) => {
+                                setNewItemName(inputValue);
+                              }}
+                              placeholder=""
+                              size="small"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
