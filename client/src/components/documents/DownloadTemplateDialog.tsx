@@ -73,7 +73,7 @@ export default function DownloadTemplateDialog({
               how to add it to the stock.
             </p>
           </div>
-          <div className="mt-6 space-y-4">
+          <div className="mt-6 space-y-4 max-h-[300px] overflow-y-auto pr-2">
             {tagsLoading || suppliersLoading ? (
               <div className="space-y-4">
                 <div className="h-10 bg-muted animate-pulse rounded" />
@@ -81,7 +81,7 @@ export default function DownloadTemplateDialog({
               </div>
             ) : (
               <>
-                <div className="flex gap-2">
+                <div className="flex gap-2 sticky top-0 bg-background z-10 pb-2">
                   <Button 
                     variant={activeFilter === "tags" ? "default" : "outline"}
                     onClick={() => setActiveFilter(activeFilter === "tags" ? null : "tags")}
