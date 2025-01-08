@@ -431,29 +431,36 @@ export default function ProductModal({
                                         );
                                       }
                                     }}
-                                    options={useQuery({
-                                        queryKey: ["units", currentRestaurant?.restaurant_uuid],
+                                    options={
+                                      useQuery({
+                                        queryKey: [
+                                          "units",
+                                          currentRestaurant?.restaurant_uuid,
+                                        ],
                                         queryFn: async () => {
-                                          const units = await unitService.getRestaurantUnit(
-                                            currentRestaurant?.restaurant_uuid || "",
-                                          );
+                                          const units =
+                                            await unitService.getRestaurantUnit(
+                                              currentRestaurant?.restaurant_uuid ||
+                                                "",
+                                            );
                                           return [
                                             {
                                               label: "All Units",
-                                              options: units.map((unit: any) => ({
-                                                label: unit.unit_name,
-                                                value: unit.unit_uuid,
-                                              })),
+                                              options: units.map(
+                                                (unit: any) => ({
+                                                  label: unit.unit_name,
+                                                  value: unit.unit_uuid,
+                                                }),
+                                              ),
                                             },
                                           ];
                                         },
-                                      }).data || [{
-                                        label: "All Units",
-                                        options: []
-                                      }]
-                                    }
+                                      }).data || [
+                                        {
+                                          label: "All Units",
+                                          options: [],
                                         },
-                                      }).data || []
+                                      ]
                                     }
                                     placeholder=""
                                   />
