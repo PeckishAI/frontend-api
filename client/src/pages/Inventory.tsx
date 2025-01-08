@@ -222,12 +222,12 @@ export default function Inventory() {
             <div className="relative">
               <Button
                 variant="outline"
-                size="default"
-                className="gap-2"
+                size="icon"
+                className="relative"
               >
-                Filters
+                <Filter className="h-4 w-4" />
                 {selectedFilters.length > 0 && (
-                  <span className="ml-2 rounded-full bg-primary/20 px-2 py-0.5 text-xs">
+                  <span className="absolute -top-2 -right-2 rounded-full bg-primary text-primary-foreground w-4 h-4 text-[10px] flex items-center justify-center">
                     {selectedFilters.length}
                   </span>
                 )}
