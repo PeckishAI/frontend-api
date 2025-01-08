@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { Badge } from "@/components/ui/badge";
-import { Filter, Check, Hash, Building2 } from "lucide-react";
+import { Check, Hash, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export type FilterType = {
   type: 'tag' | 'supplier';
@@ -19,7 +18,6 @@ interface FilterPopoverProps {
 }
 
 export function FilterPopover({ tags, suppliers, selectedFilters, onFilterChange }: FilterPopoverProps) {
-  const [open, setOpen] = useState(false);
   const [activeGroup, setActiveGroup] = useState<'tags' | 'suppliers' | null>(null);
 
   const toggleFilter = (filter: FilterType) => {
@@ -38,94 +36,79 @@ export function FilterPopover({ tags, suppliers, selectedFilters, onFilterChange
 
   const clearFilters = () => {
     onFilterChange([]);
-    setOpen(false);
     setActiveGroup(null);
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+    <div className="flex flex-col gap-2">
+      <div className="flex gap-2">
         <Button 
-          variant="outline" 
-          size="icon"
-          className={cn(
-            selectedFilters.length > 0 && "border-solid"
-          )}
+          variant={activeGroup === 'tags' ? 'default' : 'outline'} 
+          size="sm"
+          onClick={() => setActiveGroup(activeGroup === 'tags' ? null : 'tags')}
+          className="flex items-center gap-2"
         >
-          <Filter className="h-4 w-4" />
+          <Hash className="h-4 w-4" />
+          Tags
+          {selectedFilters.filter(f => f.type === 'tag').length > 0 && (
+            <Badge variant="secondary">
+              {selectedFilters.filter(f => f.type === 'tag').length}
+            </Badge>
+          )}
         </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0" align="start">
-        <Command>
-          <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup>
-              <div className="px-2 py-1 text-xs font-medium text-muted-foreground">Filter by</div>
-              <div className="grid grid-cols-2 gap-2">
-                <CommandItem
-                  onSelect={() => setActiveGroup('tags')}
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center">
-                    <div className="mr-2 h-4 w-4 text-muted-foreground">
-                      <Hash className="h-4 w-4" />
-                    </div>
-                    <span>Tags</span>
-                  </div>
-                  {selectedFilters.filter(f => f.type === 'tag').length > 0 && (
-                    <Badge variant="secondary" className="ml-auto">
-                      {selectedFilters.filter(f => f.type === 'tag').length}
-                    </Badge>
-                  )}
-                </CommandItem>
-                <CommandItem
-                  onSelect={() => setActiveGroup('suppliers')}
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center">
-                    <div className="mr-2 h-4 w-4 text-muted-foreground">
-                      <Building2 className="h-4 w-4" />
-                    </div>
-                    <span>Suppliers</span>
-                  </div>
-                  {selectedFilters.filter(f => f.type === 'supplier').length > 0 && (
-                    <Badge variant="secondary" className="ml-auto">
-                      {selectedFilters.filter(f => f.type === 'supplier').length}
-                    </Badge>
-                  )}
-                </CommandItem>
-              </div>
-            </CommandGroup>
+        <Button 
+          variant={activeGroup === 'suppliers' ? 'default' : 'outline'} 
+          size="sm"
+          onClick={() => setActiveGroup(activeGroup === 'suppliers' ? null : 'suppliers')}
+          className="flex items-center gap-2"
+        >
+          <Building2 className="h-4 w-4" />
+          Suppliers
+          {selectedFilters.filter(f => f.type === 'supplier').length > 0 && (
+            <Badge variant="secondary">
+              {selectedFilters.filter(f => f.type === 'supplier').length}
+            </Badge>
+          )}
+        </Button>
+        {selectedFilters.length > 0 && (
+          <Button variant="ghost" size="sm" onClick={clearFilters}>
+            Clear
+          </Button>
+        )}
+      </div>
 
-            {activeGroup === 'tags' && (
-              <CommandGroup className="pt-0">
-                <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">Select tags</div>
-                {tags.map((tag) => (
-                  <CommandItem
-                    key={tag}
-                    onSelect={() => toggleFilter({ type: 'tag', value: tag })}
+      {activeGroup && (
+        <div className="border rounded-lg p-2 mt-1 bg-white shadow-sm">
+          <ScrollArea className="h-[200px]">
+            <div className="space-y-1">
+              {activeGroup === 'tags' ? (
+                tags.map((tag) => (
+                  <Button
+                    key={tag.tag_name}
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => toggleFilter({ type: 'tag', value: tag.tag_name })}
                   >
                     <div className={cn(
                       "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                      selectedFilters.some(f => f.type === 'tag' && f.value === tag)
+                      selectedFilters.some(f => f.type === 'tag' && f.value === tag.tag_name)
                         ? "bg-primary text-primary-foreground"
                         : "opacity-50 [&_svg]:invisible"
                     )}>
                       <Check className="h-3 w-3" />
                     </div>
-                    {tag}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            )}
-
-            {activeGroup === 'suppliers' && (
-              <CommandGroup className="pt-0">
-                <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">Select suppliers</div>
-                {suppliers.map((supplier) => (
-                  <CommandItem
-                    key={`supplier-${supplier}`}
-                    onSelect={() => toggleFilter({ type: 'supplier', value: supplier })}
+                    {tag.tag_name}
+                  </Button>
+                ))
+              ) : (
+                suppliers.map((supplier) => (
+                  <Button
+                    key={supplier}
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => toggleFilter({ type: 'supplier', value: supplier })}
                   >
                     <div className={cn(
                       "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
@@ -136,20 +119,13 @@ export function FilterPopover({ tags, suppliers, selectedFilters, onFilterChange
                       <Check className="h-3 w-3" />
                     </div>
                     {supplier}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            )}
-          </CommandList>
-        </Command>
-        {selectedFilters.length > 0 && (
-          <div className="border-t p-2">
-            <Button variant="ghost" size="sm" onClick={clearFilters} className="w-full">
-              Clear Filters
-            </Button>
-          </div>
-        )}
-      </PopoverContent>
-    </Popover>
+                  </Button>
+                ))
+              )}
+            </div>
+          </ScrollArea>
+        </div>
+      )}
+    </div>
   );
 }
