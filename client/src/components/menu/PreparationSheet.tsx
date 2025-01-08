@@ -151,10 +151,22 @@ const useUnitOptions = (restaurantUuid?: string) => {
         unitService.getRestaurantUnit(restaurantUuid),
       ]);
 
-      // Use a Map to deduplicate units by unit_uuid
+      // Create a map of all units, preferring reference units over others
       const uniqueUnits = new Map();
-      [...referenceUnits, ...restaurantUnits].forEach((unit) => {
-        if (!uniqueUnits.has(unit.unit_uuid)) {
+      
+      // First add reference units
+      referenceUnits.forEach((unit) => {
+        if (unit.category === 'reference') {
+          uniqueUnits.set(unit.unit_uuid, {
+            label: unit.unit_name,
+            value: unit.unit_uuid,
+          });
+        }
+      });
+
+      // Then add restaurant units only if they don't exist and aren't null type
+      restaurantUnits.forEach((unit) => {
+        if (!uniqueUnits.has(unit.unit_uuid) && unit.unit_type !== null) {
           uniqueUnits.set(unit.unit_uuid, {
             label: unit.unit_name,
             value: unit.unit_uuid,
@@ -167,7 +179,6 @@ const useUnitOptions = (restaurantUuid?: string) => {
     enabled: !!restaurantUuid,
   });
 
-  console.log("Units: ", units);
   return units || [];
 };
 
