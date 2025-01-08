@@ -142,10 +142,17 @@ export default function DownloadTemplateDialog({
                 }
 
                 const inventory = await inventoryService.getRestaurantIngredients(
-                  currentRestaurant.restaurant_uuid,
-                  selectedTags,
-                  selectedSuppliers,
+                  currentRestaurant.restaurant_uuid
                 );
+
+                // Filter inventory based on selected tags and suppliers
+                const filteredInventory = Object.values(inventory).filter((item: any) => {
+                  const matchesTags = selectedTags.length === 0 || 
+                    item.tags?.some((tag: any) => selectedTags.includes(tag.tag_uuid));
+                  const matchesSuppliers = selectedSuppliers.length === 0 ||
+                    item.ingredient_suppliers?.some((s: any) => selectedSuppliers.includes(s.supplier?.supplier_uuid));
+                  return matchesTags && matchesSuppliers;
+                });
 
                 // Prepare CSV data
                 const csvData = [
@@ -156,7 +163,7 @@ export default function DownloadTemplateDialog({
                     "unit_name",
                     "unit_uuid",
                   ],
-                  ...Object.values(inventory).map((item: any) => [
+                  ...filteredInventory.map((item: any) => [
                     item.ingredient_uuid,
                     item.ingredient_name,
                     "", // Empty quantity for user to fill
