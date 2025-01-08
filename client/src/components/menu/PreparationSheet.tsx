@@ -167,6 +167,7 @@ const useUnitOptions = (restaurantUuid?: string) => {
     enabled: !!restaurantUuid,
   });
 
+  console.log("Units: ", units);
   return units || [];
 };
 
