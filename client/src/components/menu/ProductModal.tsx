@@ -366,11 +366,6 @@ export default function ProductModal({
                                           `product_ingredients.${index}.ingredient_uuid`,
                                           option.value,
                                         );
-                                        console.log("Form: ", form.getValues());
-                                        console.log(
-                                          "Selected Ingredient: ",
-                                          selectedIngredient,
-                                        );
 
                                         if (selectedIngredient?.base_unit) {
                                           form.setValue(
@@ -389,10 +384,6 @@ export default function ProductModal({
                                           const recipeUnit = form.watch(
                                             `product_ingredients.${index}.recipe_unit`,
                                           );
-                                          console.log(
-                                            "Recipe Unit",
-                                            recipeUnit,
-                                          );
 
                                           if (recipeUnit?.unit_uuid) {
                                             try {
@@ -403,7 +394,6 @@ export default function ProductModal({
                                                     .unit_uuid,
                                                   recipeUnit.unit_uuid,
                                                 );
-                                              console.log("Factor: ", response);
 
                                               form.setValue(
                                                 `product_ingredients.${index}.base_to_recipe`,
@@ -505,19 +495,6 @@ export default function ProductModal({
                                               ing.ingredient_uuid ===
                                               ingredientUuid,
                                           );
-                                        console.log(
-                                          "Ingredient UUID: ",
-                                          ingredientUuid,
-                                        );
-                                        console.log(
-                                          "Base Unit UUID: ",
-                                          selectedIngredient?.base_unit
-                                            ?.unit_uuid,
-                                        );
-                                        console.log(
-                                          "Recipe Unit UUID: ",
-                                          option.value,
-                                        );
 
                                         if (ingredientUuid && option.value) {
                                           try {
@@ -528,7 +505,6 @@ export default function ProductModal({
                                                   .unit_uuid,
                                                 option.value,
                                               );
-                                            console.log("Factor: ", response);
 
                                             form.setValue(
                                               `product_ingredients.${index}.base_to_recipe`,
