@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import type { Invoices } from "@/lib/DocumentTypes";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
+import { documentService} from "@/services/documentService";
 import { useState } from "react";
 
 interface InvoiceCardProps {
@@ -25,6 +26,7 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
 
   const handleDelete = () => {
     console.log("Deleting invoice:", invoice.document_uuid);
+
     setShowDeleteDialog(false);
   };
 
