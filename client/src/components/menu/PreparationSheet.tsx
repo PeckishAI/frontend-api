@@ -151,29 +151,34 @@ const useUnitOptions = (restaurantUuid?: string) => {
         unitService.getRestaurantUnit(restaurantUuid),
       ]);
 
-      // Create a map to store unique units with their types
-      const uniqueUnits = new Map();
-
-      // Create lookup set for reference unit UUIDs
-      const referenceUnitIds = new Set(
-        referenceUnits.map((unit) => unit.unit_uuid),
-      );
-
-      // Process all restaurant units, marking them as reference or null type
-      restaurantUnits.forEach((unit) => {
-        uniqueUnits.set(unit.unit_uuid, {
+      // Create a map using unit_uuid as key to handle duplicates
+      const unitsMap = new Map();
+      
+      // First add reference units
+      referenceUnits.forEach(unit => {
+        unitsMap.set(unit.unit_uuid, {
           label: unit.unit_name,
           value: unit.unit_uuid,
-          type: referenceUnitIds.has(unit.unit_uuid) ? "reference" : null,
+          type: "reference"
         });
       });
 
-      return Array.from(uniqueUnits.values());
+      // Then add restaurant units only if they don't exist
+      restaurantUnits.forEach(unit => {
+        if (!unitsMap.has(unit.unit_uuid)) {
+          unitsMap.set(unit.unit_uuid, {
+            label: unit.unit_name,
+            value: unit.unit_uuid,
+            type: null
+          });
+        }
+      });
+
+      return Array.from(unitsMap.values());
     },
     enabled: !!restaurantUuid,
   });
 
-  console.log("Units: ", units);
   return units || [];
 };
 
