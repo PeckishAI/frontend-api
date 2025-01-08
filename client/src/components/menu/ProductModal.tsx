@@ -351,8 +351,22 @@ export default function ProductModal({
                                     }
                                     onChange={(option) => {
                                       if (option) {
+                                        const { data: ingredients = [] } = useQuery({
+                                          queryKey: [
+                                            "ingredients",
+                                            currentRestaurant?.restaurant_uuid,
+                                          ],
+                                          queryFn: async () => {
+                                            if (!currentRestaurant?.restaurant_uuid)
+                                              return [];
+                                            return inventoryService.getRestaurantIngredients(
+                                              currentRestaurant.restaurant_uuid,
+                                            );
+                                          },
+                                        });
+
                                         // Get full ingredient data from ingredients array
-                                        const selectedIngredient = ingredients?.find(
+                                        const selectedIngredient = ingredients.find(
                                           (ing: any) => ing.ingredient_uuid === option.value
                                         );
 
