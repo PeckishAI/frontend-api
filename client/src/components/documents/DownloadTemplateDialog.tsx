@@ -54,7 +54,7 @@ export default function DownloadTemplateDialog({
         <DialogHeader>
           <DialogTitle>Download Stocktake Template</DialogTitle>
         </DialogHeader>
-        <div className="py-6">
+        <div className="py-4">
           <p className="text-sm text-muted-foreground">
             Download our stocktake template file to get started. This CSV
             template includes the required columns and format for importing your
@@ -73,7 +73,7 @@ export default function DownloadTemplateDialog({
               how to add it to the stock.
             </p>
           </div>
-          <div className="mt-6 space-y-4 max-h-[300px] overflow-y-auto pr-2">
+          <div className="mt-6 space-y-4 max-h-[200px] overflow-y-auto pr-2">
             {tagsLoading || suppliersLoading ? (
               <div className="space-y-4">
                 <div className="h-10 bg-muted animate-pulse rounded" />
