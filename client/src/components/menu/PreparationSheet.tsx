@@ -153,16 +153,18 @@ const useUnitOptions = (restaurantUuid?: string) => {
 
       // Create a map to store unique units with their types
       const uniqueUnits = new Map();
-      
+
       // Create lookup set for reference unit UUIDs
-      const referenceUnitIds = new Set(referenceUnits.map(unit => unit.unit_uuid));
+      const referenceUnitIds = new Set(
+        referenceUnits.map((unit) => unit.unit_uuid),
+      );
 
       // Process all restaurant units, marking them as reference or null type
       restaurantUnits.forEach((unit) => {
         uniqueUnits.set(unit.unit_uuid, {
           label: unit.unit_name,
           value: unit.unit_uuid,
-          type: referenceUnitIds.has(unit.unit_uuid) ? 'reference' : null
+          type: referenceUnitIds.has(unit.unit_uuid) ? "reference" : null,
         });
       });
 
@@ -171,6 +173,7 @@ const useUnitOptions = (restaurantUuid?: string) => {
     enabled: !!restaurantUuid,
   });
 
+  console.log("Units: ", units);
   return units || [];
 };
 
