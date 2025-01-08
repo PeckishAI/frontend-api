@@ -160,15 +160,8 @@ export default function Preparations() {
                 if (!currentRestaurant?.restaurant_uuid) {
                   throw new Error("No restaurant selected");
                 }
-                await menuService.createPreparation(currentRestaurant.restaurant_uuid, {
-                  preparation_name: data.preparation_name,
-                  category: data.category,
-                  unit: data.unit,
-                  portion_count: data.portion_count,
-                  preparation_ingredients: data.preparation_ingredients || [],
-                  preparation_preparations: data.preparation_preparations || []
-                });
-                queryClient.invalidateQueries(["preparations"]);
+                await menuService.createPreparation(currentRestaurant.restaurant_uuid, data);
+                await queryClient.invalidateQueries(["preparations"]);
                 setEditingPreparation(null);
               } catch (error) {
                 console.error("Failed to create preparation:", error);
