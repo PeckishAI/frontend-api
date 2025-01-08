@@ -187,7 +187,15 @@ export default function ProductModal({
 
               <Form {...form}>
                 <form
-                  onSubmit={form.handleSubmit(onSubmit)}
+                  onSubmit={form.handleSubmit(async (data) => {
+    try {
+      await onSubmit(data);
+      form.reset();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  })}
                   className="space-y-6 pt-6"
                 >
                   <FormField

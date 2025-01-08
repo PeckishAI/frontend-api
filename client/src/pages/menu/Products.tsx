@@ -222,7 +222,16 @@ export default function Products() {
   );
 }
 
-// Placeholder -  This function needs to be defined elsewhere
-const handleSubmit = (data: any) => {
-  console.log("Handle Submit called with:", data);
+const handleSubmit = async (data: any) => {
+  try {
+    if (!currentRestaurant?.restaurant_uuid) {
+      throw new Error("No restaurant selected");
+    }
+    
+    await menuService.createProduct(currentRestaurant.restaurant_uuid, data);
+    queryClient.invalidateQueries(["products"]);
+    setIsNewProductModalOpen(false);
+  } catch (error) {
+    console.error("Failed to create product:", error);
+  }
 };
