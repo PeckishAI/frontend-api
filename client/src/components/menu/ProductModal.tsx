@@ -209,20 +209,8 @@ export default function ProductModal({
                                     }
                                   : null
                               }
-                              onChange={(option) => {
-                                if (option) {
-                                  field.onChange({
-                                    category_uuid: option.value,
-                                    category_name: option.label,
-                                  });
-                                }
-                              }}
-                              onCreateOption={(inputValue) => {
-                                setNewItemName(inputValue);
-                                setShowCategoryModal(true);
-                              }}
-                              options={
-                                useQuery({
+                              options={(() => {
+                                const { data: categories = [] } = useQuery({
                                   queryKey: [
                                     "categories",
                                     currentRestaurant?.restaurant_uuid,
@@ -230,17 +218,31 @@ export default function ProductModal({
                                   queryFn: async () => {
                                     if (!currentRestaurant?.restaurant_uuid)
                                       return [];
-                                    const categories =
-                                      await categoryService.getRestaurantCategories(
-                                        currentRestaurant.restaurant_uuid,
-                                      );
-                                    return categories.map((cat: any) => ({
-                                      value: cat.category_uuid,
-                                      label: cat.category_name,
-                                    }));
+                                    return categoryService.getRestaurantCategories(
+                                      currentRestaurant.restaurant_uuid,
+                                    );
                                   },
-                                }).data || []
-                              }
+                                });
+
+                                return categories.map((cat: any) => ({
+                                  value: cat.category_uuid,
+                                  label: `${cat.emoji} ${cat.category_name}`,
+                                  categoryData: cat,
+                                }));
+                              })()}
+                              onChange={(option) => {
+                                if (option) {
+                                  form.setValue("category", {
+                                    category_uuid: option.value,
+                                    category_name: option.categoryData.category_name,
+                                    emoji: option.categoryData.emoji,
+                                  });
+                                }
+                              }}
+                              onCreateOption={(inputValue) => {
+                                setNewItemName(inputValue);
+                                setShowCategoryModal(true);
+                              }}
                               placeholder=""
                             />
                           </FormControl>
