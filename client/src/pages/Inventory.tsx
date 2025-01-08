@@ -219,12 +219,28 @@ export default function Inventory() {
               <Download className="h-4 w-4" />
             </Button>
             <InsertItemDialog />
-            <FilterPopover
-              tags={tags}
-              suppliers={suppliers}
-              selectedFilters={selectedFilters}
-              onFilterChange={setSelectedFilters}
-            />
+            <div className="relative">
+              <Button
+                variant="outline"
+                size="default"
+                className="gap-2"
+              >
+                Filters
+                {selectedFilters.length > 0 && (
+                  <span className="ml-2 rounded-full bg-primary/20 px-2 py-0.5 text-xs">
+                    {selectedFilters.length}
+                  </span>
+                )}
+              </Button>
+              <div className="absolute right-0 top-full z-50 mt-2">
+                <FilterPopover
+                  tags={tags.map(tag => ({ tag_name: tag }))}
+                  suppliers={suppliers}
+                  selectedFilters={selectedFilters}
+                  onFilterChange={setSelectedFilters}
+                />
+              </div>
+            </div>
           </div>
         )}
       </div>
