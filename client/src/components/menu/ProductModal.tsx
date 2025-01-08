@@ -341,21 +341,14 @@ export default function ProductModal({
                                               currentRestaurant.restaurant_uuid,
                                             )
                                             .then((ingredients) =>
-                                              ingredients.map(
-                                                (ing: any) =>
-                                                  ({
-                                                    label: ing.ingredient_name,
-                                                    value: ing.ingredient_uuid,
-                                                    base_unit: ing.unit,
-                                                  }) as {
-                                                    label: string;
-                                                    value: string;
-                                                    base_unit?: {
-                                                      unit_uuid: string;
-                                                      unit_name: string;
-                                                    };
-                                                  },
-                                              ),
+                                              ingredients.map((ing: any) => ({
+                                                label: ing.ingredient_name,
+                                                value: ing.ingredient_uuid,
+                                                data: {
+                                                  base_unit: ing.unit,
+                                                  // Add any other data you need
+                                                }
+                                              })),
                                             );
                                         },
                                       }).data || []
@@ -369,14 +362,12 @@ export default function ProductModal({
                                         );
                                         console.log("Option: ", option);
 
-                                        if (option.base_unit) {
+                                        if (option.data?.base_unit) {
                                           form.setValue(
                                             `product_ingredients.${index}.base_unit`,
                                             {
-                                              unit_uuid:
-                                                option.base_unit.unit_uuid,
-                                              unit_name:
-                                                option.base_unit.unit_name,
+                                              unit_uuid: option.data.base_unit.unit_uuid,
+                                              unit_name: option.data.base_unit.unit_name,
                                             },
                                           );
                                         }
