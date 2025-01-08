@@ -277,10 +277,11 @@ export default function PreparationModal({
                     )}
                   />
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-5 gap-4">
                     <FormField
                       control={form.control}
                       name="category"
+                      className="col-span-2"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Category</FormLabel>
@@ -351,6 +352,7 @@ export default function PreparationModal({
                     <FormField
                       control={form.control}
                       name="portion_count"
+                      classname="col-span-2"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Portions</FormLabel>
@@ -371,6 +373,7 @@ export default function PreparationModal({
                     <FormField
                       control={form.control}
                       name="unit"
+                      classname="col-span-1"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Unit</FormLabel>
