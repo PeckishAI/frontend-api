@@ -188,14 +188,14 @@ export default function ProductModal({
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(async (data) => {
-    try {
-      await onSubmit(data);
-      form.reset();
-      onOpenChange(false);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  })}
+                    try {
+                      await onSubmit(data);
+                      form.reset();
+                      onOpenChange(false);
+                    } catch (error) {
+                      console.error("Error submitting form:", error);
+                    }
+                  })}
                   className="space-y-6 pt-6"
                 >
                   <FormField
@@ -387,23 +387,33 @@ export default function ProductModal({
 
                                           // Get conversion factor if recipe unit is already selected
                                           const recipeUnit = form.watch(
-                                            `product_ingredients.${index}.recipe_unit`
+                                            `product_ingredients.${index}.recipe_unit`,
+                                          );
+                                          console.log(
+                                            "Recipe Unit",
+                                            recipeUnit,
                                           );
 
                                           if (recipeUnit?.unit_uuid) {
                                             try {
-                                              const factor = await unitService.getConversionFactor(
-                                                option.value,
-                                                selectedIngredient.base_unit.unit_uuid,
-                                                recipeUnit.unit_uuid
-                                              );
+                                              const factor =
+                                                await unitService.getConversionFactor(
+                                                  selectedIngredient.ingredient_uuid,
+                                                  selectedIngredient.base_unit
+                                                    .unit_uuid,
+                                                  recipeUnit.unit_uuid,
+                                                );
+                                              console.log("Factor: ", factor);
 
                                               form.setValue(
                                                 `product_ingredients.${index}.base_to_recipe`,
-                                                factor
+                                                factor,
                                               );
                                             } catch (error) {
-                                              console.error('Failed to fetch conversion factor:', error);
+                                              console.error(
+                                                "Failed to fetch conversion factor:",
+                                                error,
+                                              );
                                             }
                                           }
                                         }
@@ -486,23 +496,37 @@ export default function ProductModal({
                                         );
 
                                         // Get the current ingredient and its base unit
-                                        const ingredientUuid = form.watch(`product_ingredients.${index}.ingredient_uuid`);
-                                        const baseUnit = form.watch(`product_ingredients.${index}.base_unit`);
-
-                                        if (ingredientUuid && baseUnit?.unit_uuid) {
-                                          try {
-                                            const factor = await unitService.getConversionFactor(
+                                        const ingredientUuid = form.watch(
+                                          `product_ingredients.${index}.ingredient_uuid`,
+                                        );
+                                        const selectedIngredient =
+                                          ingredients?.find(
+                                            (ing: any) =>
+                                              ing.ingredient_uuid ===
                                               ingredientUuid,
-                                              baseUnit.unit_uuid,
-                                              option.value
-                                            );
+                                          );
+
+                                        if (
+                                          ingredientUuid &&
+                                          baseUnit?.unit_uuid
+                                        ) {
+                                          try {
+                                            const factor =
+                                              await unitService.getConversionFactor(
+                                                ingredientUuid,
+                                                selectedIngredient.base_unit.unit_uuid,
+                                                option.value,
+                                              );
 
                                             form.setValue(
                                               `product_ingredients.${index}.base_to_recipe`,
-                                              factor
+                                              factor,
                                             );
                                           } catch (error) {
-                                            console.error('Failed to fetch conversion factor:', error);
+                                            console.error(
+                                              "Failed to fetch conversion factor:",
+                                              error,
+                                            );
                                           }
                                         }
                                       }
