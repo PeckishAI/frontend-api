@@ -442,15 +442,9 @@ export default function EditIngredientForm({
                       }
                       onChange={(values) => {
                         if (values) {
-                          const selectedUnit = unitsData?.find(
-                            (u) => u.unit_uuid === values.value,
-                          ) || {
+                          field.onChange({
                             unit_uuid: values.value,
                             unit_name: values.label,
-                          };
-                          field.onChange({
-                            unit_uuid: selectedUnit.unit_uuid,
-                            unit_name: selectedUnit.unit_name,
                           });
                         }
                       }}
@@ -461,13 +455,13 @@ export default function EditIngredientForm({
                           category: unit.category,
                         })) || []
                       }
-                      onCreateOption={async (value) => {
+                      onCreateOption={async (inputValue) => {
                         try {
                           if (!currentRestaurant?.restaurant_uuid) {
                             throw new Error("No restaurant selected");
                           }
                           const newUnit = await unitService.createUnit(
-                            { unit_name: value },
+                            { unit_name: inputValue },
                             currentRestaurant.restaurant_uuid,
                           );
                           if (newUnit?.unit_uuid && newUnit?.unit_name) {
@@ -475,6 +469,7 @@ export default function EditIngredientForm({
                               unit_uuid: newUnit.unit_uuid,
                               unit_name: newUnit.unit_name,
                             });
+                            queryClient.invalidateQueries(["units"]);
                           }
                         } catch (error) {
                           console.error("Failed to create unit:", error);
