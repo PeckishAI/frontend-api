@@ -438,11 +438,15 @@ export default function ProductModal({
                                           currentRestaurant?.restaurant_uuid,
                                         ],
                                         queryFn: async () => {
-                                          if (!currentRestaurant?.restaurant_uuid)
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          )
                                             return [];
-                                          const units = await unitService.getRestaurantUnit(
-                                            currentRestaurant.restaurant_uuid,
-                                          );
+                                          const units =
+                                            await unitService.getRestaurantUnit(
+                                              currentRestaurant.restaurant_uuid,
+                                            );
+                                          console.log("Units: ", units);
                                           return units.map((unit: any) => ({
                                             label: unit.unit_name,
                                             value: unit.unit_uuid,
@@ -650,11 +654,14 @@ export default function ProductModal({
                                           currentRestaurant?.restaurant_uuid,
                                         ],
                                         queryFn: async () => {
-                                          if (!currentRestaurant?.restaurant_uuid)
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          )
                                             return [];
-                                          const units = await unitService.getRestaurantUnit(
-                                            currentRestaurant.restaurant_uuid,
-                                          );
+                                          const units =
+                                            await unitService.getRestaurantUnit(
+                                              currentRestaurant.restaurant_uuid,
+                                            );
                                           return units.map((unit: any) => ({
                                             label: unit.unit_name,
                                             value: unit.unit_uuid,
