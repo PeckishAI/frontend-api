@@ -508,7 +508,7 @@ export default function ProductModal({
 
                                         if (
                                           ingredientUuid &&
-                                          baseUnit?.unit_uuid
+                                          selectedIngredient?.base_unit?.unit_uuid
                                         ) {
                                           try {
                                             const factor =
