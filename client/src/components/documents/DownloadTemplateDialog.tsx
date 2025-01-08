@@ -106,19 +106,18 @@ export default function DownloadTemplateDialog({
               }
             }}
             className="relative"
+            disabled={form.formState?.isSubmitting}
           >
-            {({ disabled }) => (
-              <>
-                <span className={disabled ? "opacity-0" : "opacity-100"}>
-                  Download Template
-                </span>
-                {disabled && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  </div>
-                )}
-              </>
-            )}
+            <span className="flex items-center gap-2">
+              {form.formState?.isSubmitting ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  Downloading...
+                </>
+              ) : (
+                "Download Template"
+              )}
+            </span>
           </Button>
         </DialogFooter>
       </DialogContent>
