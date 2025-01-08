@@ -223,6 +223,8 @@ export default function EditIngredientForm({
       {
         unit_cost: 0,
         pack_size: 1,
+        unit: { unit_uuid: null, unit_name: null }, //Added this line to initialize unit
+        supplier: { supplier_uuid: null, supplier_name: null }, //Added this line to initialize supplier
       },
     ]);
     setEditingSupplier(currentSuppliers.length);
@@ -473,26 +475,6 @@ export default function EditIngredientForm({
                           category: unit.category,
                         })) || []
                       }
-                      onCreateOption={async (inputValue) => {
-                        try {
-                          if (!currentRestaurant?.restaurant_uuid) {
-                            throw new Error("No restaurant selected");
-                          }
-                          const newUnit = await unitService.createUnit(
-                            { unit_name: inputValue },
-                            currentRestaurant.restaurant_uuid,
-                          );
-                          if (newUnit?.unit_uuid && newUnit?.unit_name) {
-                            field.onChange({
-                              unit_uuid: newUnit.unit_uuid,
-                              unit_name: newUnit.unit_name,
-                            });
-                            queryClient.invalidateQueries(["units"]);
-                          }
-                        } catch (error) {
-                          console.error("Failed to create unit:", error);
-                        }
-                      }}
                       placeholder=""
                     />
                   </FormControl>
@@ -658,6 +640,35 @@ export default function EditIngredientForm({
                                           value: unit.unit_uuid,
                                         })) || []
                                       }
+                                      onCreateOption={async (value) => {
+                                        try {
+                                          if (!currentRestaurant?.restaurant_uuid) {
+                                            throw new Error(
+                                              "No restaurant selected",
+                                            );
+                                          }
+                                          const newUnit =
+                                            await unitService.createUnit(
+                                              { unit_name: value },
+                                              currentRestaurant.restaurant_uuid,
+                                            );
+                                          form.setValue(
+                                            `ingredient_suppliers.${index}.unit`,
+                                            {
+                                              unit_uuid: newUnit.unit_uuid,
+                                              unit_name: newUnit.unit_name,
+                                            },
+                                          );
+                                          queryClient.invalidateQueries([
+                                            "units",
+                                          ]);
+                                        } catch (error) {
+                                          console.error(
+                                            "Failed to create unit:",
+                                            error,
+                                          );
+                                        }
+                                      }}
                                       placeholder=""
                                     />
                                   </FormControl>
