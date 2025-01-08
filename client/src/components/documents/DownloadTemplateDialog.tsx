@@ -81,7 +81,7 @@ export default function DownloadTemplateDialog({
               </div>
             ) : (
               <>
-                <div className="flex gap-2 sticky top-0 bg-background z-10 pb-2">
+                <div className="flex justify-center gap-2 sticky top-0 bg-background z-10 pb-2">
                   <Button 
                     variant={activeFilter === "tags" ? "default" : "outline"}
                     onClick={() => setActiveFilter(activeFilter === "tags" ? null : "tags")}
@@ -116,10 +116,10 @@ export default function DownloadTemplateDialog({
                     type="single" 
                     value={selectedSupplier} 
                     onValueChange={setSelectedSupplier}
-                    className="flex flex-wrap gap-2"
+                    className="flex flex-col w-full gap-1"
                   >
                     {(suppliers || []).map((supplier: any) => (
-                      <ToggleGroupItem key={supplier.supplier_uuid} value={supplier.supplier_uuid} className="px-3 py-2">
+                      <ToggleGroupItem key={supplier.supplier_uuid} value={supplier.supplier_uuid} className="w-full px-3 py-2 justify-start">
                         {supplier.supplier_name}
                       </ToggleGroupItem>
                     ))}
