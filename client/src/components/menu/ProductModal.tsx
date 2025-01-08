@@ -39,16 +39,6 @@ const productSchema = z.object({
     emoji: z.string(),
   }),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
-
-  const { data: ingredients } = useQuery({
-    queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
-    queryFn: () => {
-      if (!currentRestaurant?.restaurant_uuid) return [];
-      return inventoryService.getRestaurantIngredients(currentRestaurant.restaurant_uuid);
-    },
-    enabled: !!currentRestaurant?.restaurant_uuid,
-  });
-
   portion_price: z.number().min(0, "Price must be at least 0"),
   product_ingredients: z.array(
     z.object({
@@ -100,6 +90,15 @@ export default function ProductModal({
   const [newItemName, setNewItemName] = useState("");
   const { currentRestaurant } = useRestaurantContext();
   const queryClient = useQueryClient();
+
+  const { data: ingredients } = useQuery({
+    queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) return [];
+      return inventoryService.getRestaurantIngredients(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+  });
 
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
