@@ -24,7 +24,7 @@ import RecipeSheet from "@/components/menu/ProductSheet";
 import { Badge } from "@/components/ui/badge";
 import { menuService } from "@/services/menuService";
 import { type Product } from "@/types/menu";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import ProductModal from "@/components/menu/ProductModal"; // Added import
 
@@ -34,6 +34,7 @@ export default function Products() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isNewProductModalOpen, setIsNewProductModalOpen] = useState(false); // Added state
   const [isProductSheetOpen, setIsProductSheetOpen] = useState(false); // Added state
+  const queryClient = useQueryClient();
   const { currentRestaurant, currencyInfo } = useRestaurantContext();
 
   const { data: products = [], isLoading } = useQuery({
