@@ -481,17 +481,25 @@ export function EditInvoiceSlider({
                     </button>
                     <button
                       className="absolute top-1 right-1 p-1 rounded-full bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                      onClick={() => {
-                        const updatedDocs = invoice.documents.filter(
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const updatedDocs = [...(invoice.documents || [])].filter(
                           (_, i) => i !== index,
                         );
+                        
+                        // Update both invoice and form state
                         invoice.documents = updatedDocs;
                         form.setValue("documents", updatedDocs);
+                        
+                        // Adjust active image index if needed
                         if (activeImageIndex >= updatedDocs.length) {
-                          setActiveImageIndex(
-                            Math.max(0, updatedDocs.length - 1),
-                          );
+                          setActiveImageIndex(Math.max(0, updatedDocs.length - 1));
+                        } else if (index === activeImageIndex && updatedDocs.length > 0) {
+                          setActiveImageIndex(Math.max(0, activeImageIndex - 1));
                         }
+                        
+                        // Force re-render
+                        form.trigger("documents");
                       }}
                     >
                       <Trash2 className="h-3 w-3" />
