@@ -328,17 +328,15 @@ export default function EditIngredientForm({
                     <FormControl>
                       <CreatableSelect
                         multiple
-                        value={field.value.map((tag) => tag.tag_uuid)}
-                        onChange={(values) => {
-                          const selectedTags = values.map((value) => {
-                            const tagData = tagsData?.find(
-                              (tag) => tag.tag_uuid === value,
-                            );
-                            return {
-                              tag_uuid: value,
-                              tag_name: tagData?.tag_name || value,
-                            };
-                          });
+                        value={field.value.map((tag) => ({
+                          value: tag.tag_uuid,
+                          label: tag.tag_name
+                        }))}
+                        onChange={(newValue) => {
+                          const selectedTags = (newValue ? [newValue] : []).map((option) => ({
+                            tag_uuid: option.value,
+                            tag_name: option.label,
+                          }));
                           field.onChange(selectedTags);
                         }}
                         options={
