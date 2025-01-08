@@ -490,6 +490,26 @@ export default function NewIngredientDialog({
                               value: unit.unit_uuid,
                             })) || []
                           }
+                          onCreateOption={async (value) => {
+                            try {
+                              if (!currentRestaurant?.restaurant_uuid) {
+                                throw new Error("No restaurant selected");
+                              }
+                              const newUnit = await unitService.createUnit(
+                                { unit_name: value },
+                                currentRestaurant.restaurant_uuid,
+                              );
+                              if (newUnit?.unit_uuid && newUnit?.unit_name) {
+                                field.onChange({
+                                  unit_uuid: newUnit.unit_uuid,
+                                  unit_name: newUnit.unit_name,
+                                });
+                                queryClient.invalidateQueries(["units"]);
+                              }
+                            } catch (error) {
+                              console.error("Failed to create unit:", error);
+                            }
+                          }}
                           placeholder=""
                         />
                       </FormControl>
