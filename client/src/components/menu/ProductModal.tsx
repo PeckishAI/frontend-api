@@ -236,8 +236,7 @@ export default function ProductModal({
                                       );
                                     return categories.map((cat: any) => ({
                                       value: cat.category_uuid,
-                                      label:
-                                        cat.emoji + " " + cat.category_name,
+                                      label: cat.category_name,
                                     }));
                                   },
                                 }).data || []
