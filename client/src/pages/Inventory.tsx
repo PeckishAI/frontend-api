@@ -14,7 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Download, Plus, Search } from "lucide-react";
+import { Download, Plus, Search, Filter } from "lucide-react";
 import { InsertItemDialog } from "@/components/inventory/InsertItemDialog";
 import { useQuery } from "@tanstack/react-query";
 import type { InventoryItem } from "@/lib/types";
