@@ -352,7 +352,7 @@ export default function ProductModal({
                                         value: ing.ingredient_uuid,
                                       })) || []
                                     }
-                                    onChange={(option) => {
+                                    onChange={async (option) => {
                                       if (option) {
                                         const selectedIngredient =
                                           ingredients?.find(
@@ -384,12 +384,12 @@ export default function ProductModal({
                                                   .unit_name,
                                             },
                                           );
-                                          
+
                                           // Get conversion factor if recipe unit is already selected
                                           const recipeUnit = form.watch(
                                             `product_ingredients.${index}.recipe_unit`
                                           );
-                                          
+
                                           if (recipeUnit?.unit_uuid) {
                                             try {
                                               const factor = await unitService.getConversionFactor(
@@ -397,7 +397,7 @@ export default function ProductModal({
                                                 selectedIngredient.base_unit.unit_uuid,
                                                 recipeUnit.unit_uuid
                                               );
-                                              
+
                                               form.setValue(
                                                 `product_ingredients.${index}.base_to_recipe`,
                                                 factor
@@ -484,11 +484,11 @@ export default function ProductModal({
                                             unit_name: option.label,
                                           },
                                         );
-                                        
+
                                         // Get the current ingredient and its base unit
                                         const ingredientUuid = form.watch(`product_ingredients.${index}.ingredient_uuid`);
                                         const baseUnit = form.watch(`product_ingredients.${index}.base_unit`);
-                                        
+
                                         if (ingredientUuid && baseUnit?.unit_uuid) {
                                           try {
                                             const factor = await unitService.getConversionFactor(
@@ -496,7 +496,7 @@ export default function ProductModal({
                                               baseUnit.unit_uuid,
                                               option.value
                                             );
-                                            
+
                                             form.setValue(
                                               `product_ingredients.${index}.base_to_recipe`,
                                               factor
