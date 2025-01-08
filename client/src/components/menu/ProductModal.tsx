@@ -355,13 +355,14 @@ export default function ProductModal({
                                           queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
                                           queryFn: () => {
                                             if (!currentRestaurant?.restaurant_uuid) return [];
-                                            return inventoryService.getRestaurantIngredients(currentRestaurant.restaurant_uuid);
+                                            return inventoryService.getRestaurantIngredients(
+                                              currentRestaurant.restaurant_uuid,
+                                            );
                                           },
-                                          enabled: !!currentRestaurant?.restaurant_uuid,
-                                        });
+                                        }).data || [];
 
-                                        const selectedIngredient = (ingredients as any[]).find(
-                                          (ing) => ing.ingredient_uuid === option.value
+                                        const selectedIngredient = ingredients.find(
+                                          (ing: any) => ing.ingredient_uuid === option.value
                                         );
 
                                         field.onChange(option.label);
