@@ -325,36 +325,6 @@ export default function ProductModal({
                                           }
                                         : null
                                     }
-                                    onChange={(option) => {
-                                      if (option) {
-                                        const ingredients = useQuery({
-                                          queryKey: [
-                                            "ingredients",
-                                            currentRestaurant?.restaurant_uuid,
-                                          ],
-                                        }).data || [];
-
-                                        const selectedIngredient = ingredients.find(
-                                          (ing: any) => ing.ingredient_uuid === option.value
-                                        );
-
-                                        field.onChange(option.label);
-                                        form.setValue(
-                                          `product_ingredients.${index}.ingredient_uuid`,
-                                          option.value,
-                                        );
-                                        
-                                        if (selectedIngredient?.unit) {
-                                          form.setValue(
-                                            `product_ingredients.${index}.base_unit`,
-                                            {
-                                              unit_uuid: selectedIngredient.unit.unit_uuid,
-                                              unit_name: selectedIngredient.unit.unit_name,
-                                            },
-                                          );
-                                        }
-                                      }
-                                    }}
                                     options={
                                       useQuery({
                                         queryKey: [
@@ -374,11 +344,31 @@ export default function ProductModal({
                                               ingredients.map((ing: any) => ({
                                                 label: ing.ingredient_name,
                                                 value: ing.ingredient_uuid,
+                                                base_unit: ing.unit,
                                               })),
                                             );
                                         },
                                       }).data || []
                                     }
+                                    onChange={(option) => {
+                                      if (option) {
+                                        field.onChange(option.label);
+                                        form.setValue(
+                                          `product_ingredients.${index}.ingredient_uuid`,
+                                          option.value,
+                                        );
+
+                                        if (option.base_unit) {
+                                          form.setValue(
+                                            `product_ingredients.${index}.base_unit`,
+                                            {
+                                              unit_uuid: option.base_unit.unit_uuid,
+                                              unit_name: option.base_unit.unit_name,
+                                            },
+                                          );
+                                        }
+                                      }
+                                    }}
                                     onCreateOption={(inputValue) => {
                                       setNewItemName(inputValue);
                                       setShowNewIngredientDialog(true);
