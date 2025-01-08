@@ -344,10 +344,6 @@ export default function ProductModal({
                                           (ing: any) => ing.ingredient_uuid === option.value
                                         );
 
-                                        const selectedIngredient = ingredients?.find(
-                                          (ing: any) => ing.ingredient_uuid === option.value
-                                        );
-
                                         field.onChange(option.label);
                                         form.setValue(
                                           `product_ingredients.${index}.ingredient_uuid`,
