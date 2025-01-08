@@ -345,6 +345,13 @@ export default function ProductModal({
                                                 label: ing.ingredient_name,
                                                 value: ing.ingredient_uuid,
                                                 base_unit: ing.unit,
+                                              } as { 
+                                                label: string;
+                                                value: string;
+                                                base_unit?: { 
+                                                  unit_uuid: string;
+                                                  unit_name: string;
+                                                };
                                               })),
                                             );
                                         },
