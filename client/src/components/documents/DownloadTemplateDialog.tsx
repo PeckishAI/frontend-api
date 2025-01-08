@@ -29,23 +29,24 @@ export default function DownloadTemplateDialog({
   const [selectedSupplier, setSelectedSupplier] = useState("");
 
   const { data: tags, isLoading: tagsLoading } = useQuery({
-    queryKey: ['tags', currentRestaurant?.restaurant_uuid],
+    queryKey: ["tags", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) return [];
       return tagService.getRestaurantTags(currentRestaurant.restaurant_uuid);
     },
-    enabled: !!currentRestaurant?.restaurant_uuid
+    enabled: !!currentRestaurant?.restaurant_uuid,
   });
 
   const { data: suppliers, isLoading: suppliersLoading } = useQuery({
-    queryKey: ['suppliers', currentRestaurant?.restaurant_uuid],
+    queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) return [];
-      return supplierService.getRestaurantSuppliers(currentRestaurant.restaurant_uuid);
+      return supplierService.getRestaurantSuppliers(
+        currentRestaurant.restaurant_uuid,
+      );
     },
-    enabled: !!currentRestaurant?.restaurant_uuid
+    enabled: !!currentRestaurant?.restaurant_uuid,
   });
-
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -73,7 +74,7 @@ export default function DownloadTemplateDialog({
             </p>
           </div>
           <div className="mt-4">
-            {(tagsLoading || suppliersLoading) ? (
+            {tagsLoading || suppliersLoading ? (
               <div className="space-y-4">
                 <div className="h-10 bg-muted animate-pulse rounded" />
                 <div className="h-10 bg-muted animate-pulse rounded" />
@@ -84,18 +85,23 @@ export default function DownloadTemplateDialog({
                   label="Select Tag"
                   value={selectedTag}
                   onChange={(e) => setSelectedTag(e.target.value)}
-                  options={(tags?.data || []).map((tag: any) => ({ label: tag.tag_name, value: tag.tag_uuid }))}
+                  options={(tags?.data || []).map((tag: any) => ({
+                    label: tag.tag_name,
+                    value: tag.tag_uuid,
+                  }))}
                 />
                 <BasicSelect
                   label="Select Supplier"
                   value={selectedSupplier}
                   onChange={(e) => setSelectedSupplier(e.target.value)}
-                  options={(suppliers || []).map((supplier: any) => ({ label: supplier.name, value: supplier.supplier_uuid }))}
+                  options={(suppliers || []).map((supplier: any) => ({
+                    label: supplier.supplier_name,
+                    value: supplier.supplier_uuid,
+                  }))}
                 />
               </>
             )}
           </div>
-
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -109,17 +115,18 @@ export default function DownloadTemplateDialog({
                   throw new Error("No restaurant selected");
                 }
 
-                const inventory = await inventoryService.getRestaurantIngredients(
-                  currentRestaurant.restaurant_uuid,
-                  selectedTag,
-                  selectedSupplier
-                );
+                const inventory =
+                  await inventoryService.getRestaurantIngredients(
+                    currentRestaurant.restaurant_uuid,
+                    selectedTag,
+                    selectedSupplier,
+                  );
 
                 // Prepare CSV data
                 const csvData = [
                   [
                     "ingredient_uuid",
-                    "ingredient_name", 
+                    "ingredient_name",
                     "quantity",
                     "unit_name",
                     "unit_uuid",
