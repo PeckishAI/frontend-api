@@ -39,17 +39,6 @@ const productSchema = z.object({
     emoji: z.string(),
   }),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
-
-  const { data: ingredientsData = [] } = useQuery({
-    queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
-    queryFn: async () => {
-      if (!currentRestaurant?.restaurant_uuid) return [];
-      return inventoryService.getRestaurantIngredients(
-        currentRestaurant.restaurant_uuid,
-      );
-    },
-  });
-
   portion_price: z.number().min(0, "Price must be at least 0"),
   product_ingredients: z.array(
     z.object({
