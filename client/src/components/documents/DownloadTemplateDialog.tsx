@@ -101,10 +101,10 @@ export default function DownloadTemplateDialog({
                     type="single" 
                     value={selectedTag} 
                     onValueChange={setSelectedTag}
-                    className="flex flex-wrap gap-2"
+                    className="flex flex-col w-full gap-1"
                   >
                     {(tags?.data || []).map((tag: any) => (
-                      <ToggleGroupItem key={tag.tag_uuid} value={tag.tag_uuid} className="px-3 py-2">
+                      <ToggleGroupItem key={tag.tag_uuid} value={tag.tag_uuid} className="w-full px-3 py-2 justify-start">
                         {tag.tag_name}
                       </ToggleGroupItem>
                     ))}
