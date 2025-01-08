@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { CreatableSelect } from "@/components/ui/creatable-select";
 import { Badge } from "@/components/ui/badge";
 import { Plus, X } from "lucide-react";
 
@@ -138,7 +139,19 @@ export default function NewItemForm({ open, onOpenChange, onSubmit }: NewItemFor
                 <FormItem>
                   <FormLabel>Unit</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="e.g., kg, L, pieces" />
+                    <CreatableSelect
+                      value={field.value ? { value: field.value, label: field.value } : null}
+                      onChange={(option) => field.onChange(option?.value || '')}
+                      onCreateOption={(inputValue) => field.onChange(inputValue)}
+                      options={[
+                        { value: 'kg', label: 'kg' },
+                        { value: 'L', label: 'L' },
+                        { value: 'pieces', label: 'pieces' },
+                        { value: 'g', label: 'g' },
+                        { value: 'ml', label: 'ml' }
+                      ]}
+                      placeholder="Select or create unit"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
