@@ -1,0 +1,68 @@
+ProductModal.tsx:355 Uncaught ReferenceError: ingredientsData is not defined
+    at onChange (ProductModal.tsx:355:68)
+    at handleChange (creatable-select.tsx:221:5)
+    at chunk-PZCHN4KB.js?v=9e3b38c1:412:7
+    at react-select_creatable.js?v=9e3b38c1:91:5
+    at Select2._this.onChange (chunk-PZCHN4KB.js?v=9e3b38c1:4629:7)
+    at Select2._this.setValue (chunk-PZCHN4KB.js?v=9e3b38c1:4646:13)
+    at Select2._this.selectOption (chunk-PZCHN4KB.js?v=9e3b38c1:4665:17)
+    at onSelect (chunk-PZCHN4KB.js?v=9e3b38c1:5607:25)
+    at HTMLUnknownElement.callCallback2 (chunk-C43VWYGG.js?v=9e3b38c1:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-C43VWYGG.js?v=9e3b38c1:3699:24)
+onChange @ ProductModal.tsx:355
+handleChange @ creatable-select.tsx:221
+(anonymous) @ chunk-PZCHN4KB.js?v=9e3b38c1:412
+(anonymous) @ react-select_creatable.js?v=9e3b38c1:91
+Select2._this.onChange @ chunk-PZCHN4KB.js?v=9e3b38c1:4629
+Select2._this.setValue @ chunk-PZCHN4KB.js?v=9e3b38c1:4646
+Select2._this.selectOption @ chunk-PZCHN4KB.js?v=9e3b38c1:4665
+onSelect @ chunk-PZCHN4KB.js?v=9e3b38c1:5607
+callCallback2 @ chunk-C43VWYGG.js?v=9e3b38c1:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=9e3b38c1:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=9e3b38c1:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-C43VWYGG.js?v=9e3b38c1:3736
+executeDispatch @ chunk-C43VWYGG.js?v=9e3b38c1:7014
+processDispatchQueueItemsInOrder @ chunk-C43VWYGG.js?v=9e3b38c1:7034
+processDispatchQueue @ chunk-C43VWYGG.js?v=9e3b38c1:7043
+dispatchEventsForPlugins @ chunk-C43VWYGG.js?v=9e3b38c1:7051
+(anonymous) @ chunk-C43VWYGG.js?v=9e3b38c1:7174
+batchedUpdates$1 @ chunk-C43VWYGG.js?v=9e3b38c1:18881
+batchedUpdates @ chunk-C43VWYGG.js?v=9e3b38c1:3579
+dispatchEventForPluginEventSystem @ chunk-C43VWYGG.js?v=9e3b38c1:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-C43VWYGG.js?v=9e3b38c1:5478
+dispatchEvent @ chunk-C43VWYGG.js?v=9e3b38c1:5472
+dispatchDiscreteEvent @ chunk-C43VWYGG.js?v=9e3b38c1:5449Understand this errorAI
+chunk-C43VWYGG.js?v=9e3b38c1:3750 Uncaught ReferenceError: ingredientsData is not defined
+    at onChange (ProductModal.tsx:355:68)
+    at handleChange (creatable-select.tsx:221:5)
+    at chunk-PZCHN4KB.js?v=9e3b38c1:412:7
+    at react-select_creatable.js?v=9e3b38c1:91:5
+    at Select2._this.onChange (chunk-PZCHN4KB.js?v=9e3b38c1:4629:7)
+    at Select2._this.setValue (chunk-PZCHN4KB.js?v=9e3b38c1:4646:13)
+    at Select2._this.selectOption (chunk-PZCHN4KB.js?v=9e3b38c1:4665:17)
+    at onSelect (chunk-PZCHN4KB.js?v=9e3b38c1:5607:25)
+    at HTMLUnknownElement.callCallback2 (chunk-C43VWYGG.js?v=9e3b38c1:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-C43VWYGG.js?v=9e3b38c1:3699:24)
+onChange @ ProductModal.tsx:355
+handleChange @ creatable-select.tsx:221
+(anonymous) @ chunk-PZCHN4KB.js?v=9e3b38c1:412
+(anonymous) @ react-select_creatable.js?v=9e3b38c1:91
+Select2._this.onChange @ chunk-PZCHN4KB.js?v=9e3b38c1:4629
+Select2._this.setValue @ chunk-PZCHN4KB.js?v=9e3b38c1:4646
+Select2._this.selectOption @ chunk-PZCHN4KB.js?v=9e3b38c1:4665
+onSelect @ chunk-PZCHN4KB.js?v=9e3b38c1:5607
+callCallback2 @ chunk-C43VWYGG.js?v=9e3b38c1:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=9e3b38c1:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=9e3b38c1:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-C43VWYGG.js?v=9e3b38c1:3736
+executeDispatch @ chunk-C43VWYGG.js?v=9e3b38c1:7014
+processDispatchQueueItemsInOrder @ chunk-C43VWYGG.js?v=9e3b38c1:7034
+processDispatchQueue @ chunk-C43VWYGG.js?v=9e3b38c1:7043
+dispatchEventsForPlugins @ chunk-C43VWYGG.js?v=9e3b38c1:7051
+(anonymous) @ chunk-C43VWYGG.js?v=9e3b38c1:7174
+batchedUpdates$1 @ chunk-C43VWYGG.js?v=9e3b38c1:18881
+batchedUpdates @ chunk-C43VWYGG.js?v=9e3b38c1:3579
+dispatchEventForPluginEventSystem @ chunk-C43VWYGG.js?v=9e3b38c1:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-C43VWYGG.js?v=9e3b38c1:5478
+dispatchEvent @ chunk-C43VWYGG.js?v=9e3b38c1:5472
+dispatchDiscreteEvent @ chunk-C43VWYGG.js?v=9e3b38c1:5449Understand this errorAI
