@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { Hash, User2, Images, DollarSign, Package2, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,13 +30,13 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
 
   const handleDelete = async () => {
     try {
-      if (!currentRestaurant?.restaurant_uuid || !invoice.document_uuid) {
+      if (!currentRestaurant?.restaurant_uuid || !invoice.invoice_uuid) {
         throw new Error("Missing restaurant or invoice UUID");
       }
 
       await documentService.deleteInvoice(
         currentRestaurant.restaurant_uuid,
-        invoice.document_uuid
+        invoice.invoice_uuid
       );
 
       await queryClient.invalidateQueries(["invoices"]);
