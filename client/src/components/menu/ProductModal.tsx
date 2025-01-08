@@ -95,7 +95,9 @@ export default function ProductModal({
     queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) return [];
-      return inventoryService.getRestaurantIngredients(currentRestaurant.restaurant_uuid);
+      return inventoryService.getRestaurantIngredients(
+        currentRestaurant.restaurant_uuid,
+      );
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
@@ -334,57 +336,43 @@ export default function ProductModal({
                                           }
                                         : null
                                     }
-                                    options={ingredients?.map((ing: any) => ({
-                                      label: ing.ingredient_name,
-                                      value: ing.ingredient_uuid,
-                                    })) || []}
+                                    options={
+                                      ingredients?.map((ing: any) => ({
+                                        label: ing.ingredient_name,
+                                        value: ing.ingredient_uuid,
+                                      })) || []
+                                    }
                                     onChange={(option) => {
                                       if (option) {
-                                        const selectedIngredient = ingredients?.find(
-                                          (ing: any) => ing.ingredient_uuid === option.value
-                                        );
+                                        const selectedIngredient =
+                                          ingredients?.find(
+                                            (ing: any) =>
+                                              ing.ingredient_uuid ===
+                                              option.value,
+                                          );
 
                                         field.onChange(option.label);
                                         form.setValue(
                                           `product_ingredients.${index}.ingredient_uuid`,
                                           option.value,
                                         );
+                                        console.log("Form: ", form.getValues());
+                                        console.log(
+                                          "Selected Ingredient: ",
+                                          selectedIngredient,
+                                        );
 
-                                        if (selectedIngredient?.unit) {
+                                        if (selectedIngredient?.base_unit) {
                                           form.setValue(
                                             `product_ingredients.${index}.base_unit`,
                                             {
-                                              unit_uuid: selectedIngredient.unit.unit_uuid,
-                                              unit_name: selectedIngredient.unit.unit_name
-                                            }
-                                          );
-                                          
-                                          form.setValue(
-                                            `product_ingredients.${index}.recipe_unit`,
-                                            {
-                                              unit_uuid: selectedIngredient.unit.unit_uuid,
-                                              unit_name: selectedIngredient.unit.unit_name
-                                            }
-                                          );
-                                        }
-                                        
-                                        // Set the base unit if the ingredient has one
-                                        if (selectedIngredient?.unit) {
-                                          form.setValue(
-                                            `product_ingredients.${index}.base_unit`,
-                                            {
-                                              unit_uuid: selectedIngredient.unit.unit_uuid,
-                                              unit_name: selectedIngredient.unit.unit_name,
-                                            }
-                                          );
-                                          
-                                          // Also set recipe unit to base unit initially
-                                          form.setValue(
-                                            `product_ingredients.${index}.recipe_unit`,
-                                            {
-                                              unit_uuid: selectedIngredient.unit.unit_uuid,
-                                              unit_name: selectedIngredient.unit.unit_name,
-                                            }
+                                              unit_uuid:
+                                                selectedIngredient.base_unit
+                                                  .unit_uuid,
+                                              unit_name:
+                                                selectedIngredient.base_unit
+                                                  .unit_name,
+                                            },
                                           );
                                         }
                                       }
