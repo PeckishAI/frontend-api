@@ -150,7 +150,15 @@ const useUnitOptions = (restaurantUuid?: string) => {
         unitService.getReferenceUnit(),
         unitService.getRestaurantUnit(restaurantUuid),
       ]);
-      return [...referenceUnits, ...restaurantUnits];
+      
+      const uniqueUnits = new Map();
+      [...referenceUnits, ...restaurantUnits].forEach((unit) => {
+        if (!uniqueUnits.has(unit.unit_uuid)) {
+          uniqueUnits.set(unit.unit_uuid, unit);
+        }
+      });
+      
+      return Array.from(uniqueUnits.values());
     },
     enabled: !!restaurantUuid,
   });
