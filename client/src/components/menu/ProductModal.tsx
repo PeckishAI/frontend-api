@@ -443,20 +443,12 @@ export default function ProductModal({
                                           const units = await unitService.getRestaurantUnit(
                                             currentRestaurant.restaurant_uuid,
                                           );
-                                          return [
-                                            {
-                                              label: "All Units",
-                                              options: units.map((unit: any) => ({
-                                                label: unit.unit_name,
-                                                value: unit.unit_uuid,
-                                              })),
-                                            },
-                                          ];
+                                          return units.map((unit: any) => ({
+                                            label: unit.unit_name,
+                                            value: unit.unit_uuid,
+                                          }));
                                         },
-                                      }).data || [{
-                                        label: "All Units",
-                                        options: []
-                                      }]
+                                      }).data || []
                                     }
                                     placeholder=""
                                   />
@@ -663,20 +655,12 @@ export default function ProductModal({
                                           const units = await unitService.getRestaurantUnit(
                                             currentRestaurant.restaurant_uuid,
                                           );
-                                          return [
-                                            {
-                                              label: "All Units",
-                                              options: units.map((unit: any) => ({
-                                                label: unit.unit_name,
-                                                value: unit.unit_uuid,
-                                              })),
-                                            },
-                                          ];
+                                          return units.map((unit: any) => ({
+                                            label: unit.unit_name,
+                                            value: unit.unit_uuid,
+                                          }));
                                         },
-                                      }).data || [{
-                                        label: "All Units",
-                                        options: []
-                                      }]
+                                      }).data || []
                                     }
                                     placeholder=""
                                   />
