@@ -24,10 +24,25 @@ interface InvoiceCardProps {
 export function InvoiceCard({ invoice }: InvoiceCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const handleDelete = () => {
-    console.log("Deleting invoice:", invoice.document_uuid);
+  const { currentRestaurant } = useRestaurantContext();
+  const queryClient = useQueryClient();
 
-    setShowDeleteDialog(false);
+  const handleDelete = async () => {
+    try {
+      if (!currentRestaurant?.restaurant_uuid || !invoice.document_uuid) {
+        throw new Error("Missing restaurant or invoice UUID");
+      }
+
+      await documentService.deleteInvoice(
+        currentRestaurant.restaurant_uuid,
+        invoice.document_uuid
+      );
+
+      await queryClient.invalidateQueries(["invoices"]);
+      setShowDeleteDialog(false);
+    } catch (error) {
+      console.error("Failed to delete invoice:", error);
+    }
   };
 
   return (
