@@ -431,26 +431,27 @@ export default function ProductModal({
                                         );
                                       }
                                     }}
-                                    options={
-                                      useQuery({
-                                        queryKey: [
-                                          "units",
-                                          currentRestaurant?.restaurant_uuid,
-                                        ],
+                                    options={useQuery({
+                                        queryKey: ["units", currentRestaurant?.restaurant_uuid],
                                         queryFn: async () => {
-                                          if (
-                                            !currentRestaurant?.restaurant_uuid
-                                          )
-                                            return [];
-                                          const units =
-                                            await unitService.getRestaurantUnit(
-                                              currentRestaurant.restaurant_uuid,
-                                            );
-                                          console.log("Units: ", units);
-                                          return units.map((unit: any) => ({
-                                            label: unit.unit_name,
-                                            value: unit.unit_uuid,
-                                          }));
+                                          const units = await unitService.getRestaurantUnit(
+                                            currentRestaurant?.restaurant_uuid || "",
+                                          );
+                                          return [
+                                            {
+                                              label: "All Units",
+                                              options: units.map((unit: any) => ({
+                                                label: unit.unit_name,
+                                                value: unit.unit_uuid,
+                                              })),
+                                            },
+                                          ];
+                                        },
+                                      }).data || [{
+                                        label: "All Units",
+                                        options: []
+                                      }]
+                                    }
                                         },
                                       }).data || []
                                     }
