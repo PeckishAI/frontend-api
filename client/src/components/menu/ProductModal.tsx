@@ -39,19 +39,6 @@ const productSchema = z.object({
     emoji: z.string(),
   }),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
-
-  const { data: categories = [] } = useQuery({
-    queryKey: ["categories", currentRestaurant?.restaurant_uuid],
-    queryFn: async () => {
-      if (!currentRestaurant?.restaurant_uuid) return [];
-      return categoryService.getRestaurantCategories(
-        currentRestaurant.restaurant_uuid,
-      );
-    },
-    enabled: !!currentRestaurant?.restaurant_uuid,
-  });
-
-
   portion_price: z.number().min(0, "Price must be at least 0"),
   product_ingredients: z.array(
     z.object({
@@ -109,6 +96,17 @@ export default function ProductModal({
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) return [];
       return inventoryService.getRestaurantIngredients(
+        currentRestaurant.restaurant_uuid,
+      );
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid,
+  });
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories", currentRestaurant?.restaurant_uuid],
+    queryFn: async () => {
+      if (!currentRestaurant?.restaurant_uuid) return [];
+      return categoryService.getRestaurantCategories(
         currentRestaurant.restaurant_uuid,
       );
     },
@@ -225,8 +223,6 @@ export default function ProductModal({
                               options={categories.map((cat) => ({
                                 value: cat.category_uuid,
                                 label: `${cat.emoji} ${cat.category_name}`,
-                                emoji: cat.emoji,
-                                category_name: cat.category_name,
                               }))}
                               onChange={(option) => {
                                 if (option) {
