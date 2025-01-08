@@ -39,6 +39,17 @@ const productSchema = z.object({
     emoji: z.string(),
   }),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
+
+  const { data: ingredientsData = [] } = useQuery({
+    queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
+    queryFn: async () => {
+      if (!currentRestaurant?.restaurant_uuid) return [];
+      return inventoryService.getRestaurantIngredients(
+        currentRestaurant.restaurant_uuid,
+      );
+    },
+  });
+
   portion_price: z.number().min(0, "Price must be at least 0"),
   product_ingredients: z.array(
     z.object({
@@ -351,22 +362,8 @@ export default function ProductModal({
                                     }
                                     onChange={(option) => {
                                       if (option) {
-                                        const { data: ingredients = [] } = useQuery({
-                                          queryKey: [
-                                            "ingredients",
-                                            currentRestaurant?.restaurant_uuid,
-                                          ],
-                                          queryFn: async () => {
-                                            if (!currentRestaurant?.restaurant_uuid)
-                                              return [];
-                                            return inventoryService.getRestaurantIngredients(
-                                              currentRestaurant.restaurant_uuid,
-                                            );
-                                          },
-                                        });
-
-                                        // Get full ingredient data from ingredients array
-                                        const selectedIngredient = ingredients.find(
+                                        // Use ingredients data from parent query
+                                        const selectedIngredient = ingredientsData?.find(
                                           (ing: any) => ing.ingredient_uuid === option.value
                                         );
 
