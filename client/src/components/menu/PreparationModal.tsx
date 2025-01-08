@@ -238,7 +238,14 @@ export default function PreparationModal({
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(async (data) => {
-                    console.log("Form data being submitted:", data);
+                    console.log("Form data being submitted:", {
+                      preparation_name: data.preparation_name,
+                      category: data.category,
+                      unit: data.unit,
+                      portion_count: data.portion_count,
+                      ingredients: data.preparation_ingredients,
+                      preparations: data.preparation_preparations
+                    });
                     try {
                       if (
                         !data.preparation_name ||
@@ -249,7 +256,7 @@ export default function PreparationModal({
                         return;
                       }
                       await onSubmit(data);
-                      console.log("onSubmit called successfully");
+                      console.log("Form submitted successfully");
                     } catch (error) {
                       console.error("Error in form submission:", error);
                     }
