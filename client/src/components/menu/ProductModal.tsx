@@ -226,11 +226,16 @@ export default function ProductModal({
                               }))}
                               onChange={(option) => {
                                 if (option) {
-                                  form.setValue("category", {
-                                    category_uuid: option.value,
-                                    category_name: option.category_name,
-                                    emoji: option.emoji,
-                                  });
+                                  const selectedCategory = categories.find(
+                                    (cat) => cat.category_uuid === option.value
+                                  );
+                                  if (selectedCategory) {
+                                    form.setValue("category", {
+                                      category_uuid: selectedCategory.category_uuid,
+                                      category_name: selectedCategory.category_name,
+                                      emoji: selectedCategory.emoji,
+                                    });
+                                  }
                                 }
                               }}
                               onCreateOption={(inputValue) => {
