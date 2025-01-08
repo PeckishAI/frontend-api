@@ -351,11 +351,36 @@ export default function ProductModal({
                                     }
                                     onChange={(option) => {
                                       if (option) {
+                                        // Get full ingredient data from ingredients array
+                                        const selectedIngredient = ingredients?.find(
+                                          (ing: any) => ing.ingredient_uuid === option.value
+                                        );
+
                                         field.onChange(option.label);
                                         form.setValue(
                                           `product_ingredients.${index}.ingredient_uuid`,
                                           option.value,
                                         );
+                                        
+                                        // Set the base unit if the ingredient has one
+                                        if (selectedIngredient?.unit) {
+                                          form.setValue(
+                                            `product_ingredients.${index}.base_unit`,
+                                            {
+                                              unit_uuid: selectedIngredient.unit.unit_uuid,
+                                              unit_name: selectedIngredient.unit.unit_name,
+                                            }
+                                          );
+                                          
+                                          // Also set recipe unit to base unit initially
+                                          form.setValue(
+                                            `product_ingredients.${index}.recipe_unit`,
+                                            {
+                                              unit_uuid: selectedIngredient.unit.unit_uuid,
+                                              unit_name: selectedIngredient.unit.unit_name,
+                                            }
+                                          );
+                                        }
                                       }
                                     }}
                                     onCreateOption={(inputValue) => {
