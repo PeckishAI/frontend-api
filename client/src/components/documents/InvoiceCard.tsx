@@ -1,5 +1,12 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Hash, User2, Images, DollarSign, Package2, Trash2 } from "lucide-react";
+import {
+  Hash,
+  User2,
+  Images,
+  DollarSign,
+  Package2,
+  Trash2,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -15,7 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import type { Invoices } from "@/lib/DocumentTypes";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
-import { documentService} from "@/services/documentService";
+import { documentService } from "@/services/documentService";
 import { useState } from "react";
 
 interface InvoiceCardProps {
@@ -29,6 +36,7 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
   const queryClient = useQueryClient();
 
   const handleDelete = async () => {
+    console.log(invoice);
     try {
       if (!currentRestaurant?.restaurant_uuid || !invoice.invoice_uuid) {
         throw new Error("Missing restaurant or invoice UUID");
@@ -36,7 +44,7 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
 
       await documentService.deleteInvoice(
         currentRestaurant.restaurant_uuid,
-        invoice.invoice_uuid
+        invoice.invoice_uuid,
       );
 
       await queryClient.invalidateQueries(["invoices"]);
@@ -127,12 +135,15 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Invoice</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete invoice {invoice.invoice_number}? This action cannot be undone.
+              Are you sure you want to delete invoice {invoice.invoice_number}?
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={(e) => e.stopPropagation()}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogCancel onClick={(e) => e.stopPropagation()}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
               onClick={(e) => {
                 e.stopPropagation();
                 handleDelete();
