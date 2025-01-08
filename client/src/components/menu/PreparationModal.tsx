@@ -178,6 +178,16 @@ export default function PreparationModal({
     },
   });
 
+  React.useEffect(() => {
+    const subscription = form.watch(() => {
+      if (Object.keys(form.formState.errors).length > 0) {
+        console.log("Form validation errors:", form.formState.errors);
+        console.log("Current form values:", form.getValues());
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
   const addIngredient = () => {
     const currentIngredients = form.getValues("preparation_ingredients") || [];
     form.setValue("preparation_ingredients", [
