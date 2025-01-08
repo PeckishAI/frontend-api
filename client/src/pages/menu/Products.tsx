@@ -223,15 +223,15 @@ export default function Products() {
 }
 
 const handleSubmit = async (data: any) => {
-  try {
-    if (!currentRestaurant?.restaurant_uuid) {
-      throw new Error("No restaurant selected");
+    try {
+      if (!currentRestaurant?.restaurant_uuid) {
+        throw new Error("No restaurant selected");
+      }
+      
+      await menuService.createProduct(currentRestaurant.restaurant_uuid, data);
+      queryClient.invalidateQueries(["products"]);
+      setIsNewProductModalOpen(false);
+    } catch (error) {
+      console.error("Failed to create product:", error);
     }
-    
-    await menuService.createProduct(currentRestaurant.restaurant_uuid, data);
-    queryClient.invalidateQueries(["products"]);
-    setIsNewProductModalOpen(false);
-  } catch (error) {
-    console.error("Failed to create product:", error);
-  }
-};
+  };
