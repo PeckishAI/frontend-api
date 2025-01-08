@@ -205,7 +205,23 @@ export default function Products() {
         )}
       </div>
 
-      <ProductModal open={isNewProductModalOpen} onOpenChange={setIsNewProductModalOpen} onSubmit={handleSubmit} /> {/* Replaced ProductSheet with ProductModal */}
+      <ProductModal 
+        open={isNewProductModalOpen} 
+        onOpenChange={setIsNewProductModalOpen}
+        onSubmit={async (data) => {
+          try {
+            if (!currentRestaurant?.restaurant_uuid) {
+              throw new Error("No restaurant selected");
+            }
+            
+            await menuService.createProduct(currentRestaurant.restaurant_uuid, data);
+            queryClient.invalidateQueries(["products"]);
+            setIsNewProductModalOpen(false);
+          } catch (error) {
+            console.error("Failed to create product:", error);
+          }
+        }}
+      />
 
       <RecipeSheet
         open={!!editingRecipe}
@@ -221,17 +237,3 @@ export default function Products() {
     </div>
   );
 }
-
-const handleSubmit = async (data: any) => {
-    try {
-      if (!currentRestaurant?.restaurant_uuid) {
-        throw new Error("No restaurant selected");
-      }
-      
-      await menuService.createProduct(currentRestaurant.restaurant_uuid, data);
-      queryClient.invalidateQueries(["products"]);
-      setIsNewProductModalOpen(false);
-    } catch (error) {
-      console.error("Failed to create product:", error);
-    }
-  };
