@@ -73,15 +73,18 @@ export default function DownloadTemplateDialog({
             </p>
           </div>
           <div className="mt-4">
-            {tagsLoading || suppliersLoading ? (
-              <p>Loading filters...</p>
+            {(tagsLoading || suppliersLoading) ? (
+              <div className="space-y-4">
+                <div className="h-10 bg-muted animate-pulse rounded" />
+                <div className="h-10 bg-muted animate-pulse rounded" />
+              </div>
             ) : (
               <>
                 <BasicSelect
                   label="Select Tag"
                   value={selectedTag}
                   onChange={(e) => setSelectedTag(e.target.value)}
-                  options={(tags || []).map((tag: any) => ({ label: tag.name, value: tag.tag_uuid }))}
+                  options={(tags?.data || []).map((tag: any) => ({ label: tag.tag_name, value: tag.tag_uuid }))}
                 />
                 <BasicSelect
                   label="Select Supplier"
