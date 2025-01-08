@@ -151,10 +151,14 @@ const useUnitOptions = (restaurantUuid?: string) => {
         unitService.getRestaurantUnit(restaurantUuid),
       ]);
 
+      // Use a Map to deduplicate units by unit_uuid
       const uniqueUnits = new Map();
       [...referenceUnits, ...restaurantUnits].forEach((unit) => {
         if (!uniqueUnits.has(unit.unit_uuid)) {
-          uniqueUnits.set(unit.unit_uuid, unit);
+          uniqueUnits.set(unit.unit_uuid, {
+            label: unit.unit_name,
+            value: unit.unit_uuid,
+          });
         }
       });
 
@@ -163,16 +167,7 @@ const useUnitOptions = (restaurantUuid?: string) => {
     enabled: !!restaurantUuid,
   });
 
-  if (!units) return [];
-
-  const allUnits = units.map((unit: any) => ({
-    label: unit.unit_name,
-    value: unit.unit_uuid,
-  }));
-
-  console.log("All units : ", allUnits);
-
-  return allUnits;
+  return units || [];
 };
 
 export default function PreparationSheet({
