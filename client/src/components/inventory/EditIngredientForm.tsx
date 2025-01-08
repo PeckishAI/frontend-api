@@ -440,12 +440,30 @@ export default function EditIngredientForm({
                             }
                           : null
                       }
-                      onChange={(values) => {
-                        if (values) {
+                      onChange={(option) => {
+                        if (option) {
                           field.onChange({
-                            unit_uuid: values.value,
-                            unit_name: values.label,
+                            unit_uuid: option.value,
+                            unit_name: option.label,
                           });
+                        }
+                      }}
+                      onCreateOption={async (inputValue) => {
+                        try {
+                          if (!currentRestaurant?.restaurant_uuid) {
+                            throw new Error("No restaurant selected");
+                          }
+                          const newUnit = await unitService.createUnit(
+                            { unit_name: inputValue },
+                            currentRestaurant.restaurant_uuid,
+                          );
+                          field.onChange({
+                            unit_uuid: newUnit.unit_uuid,
+                            unit_name: newUnit.unit_name,
+                          });
+                          queryClient.invalidateQueries(["units"]);
+                        } catch (error) {
+                          console.error("Failed to create unit:", error);
                         }
                       }}
                       options={
