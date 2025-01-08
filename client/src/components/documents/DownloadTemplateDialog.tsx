@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Dialog,
@@ -9,10 +10,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { inventoryService } from "@/services/inventoryService";
-import { BasicSelect } from "@/components/ui/basic-select";
 import { useQuery } from "@tanstack/react-query";
 import { tagService } from "@/services/tagService";
 import { supplierService } from "@/services/supplierService";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface DownloadTemplateDialogProps {
   open: boolean;
@@ -27,6 +28,7 @@ export default function DownloadTemplateDialog({
   const [isDownloading, setIsDownloading] = useState(false);
   const [selectedTag, setSelectedTag] = useState("");
   const [selectedSupplier, setSelectedSupplier] = useState("");
+  const [activeFilter, setActiveFilter] = useState<"tags" | "suppliers" | null>(null);
 
   const { data: tags, isLoading: tagsLoading } = useQuery({
     queryKey: ["tags", currentRestaurant?.restaurant_uuid],
@@ -41,9 +43,7 @@ export default function DownloadTemplateDialog({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
       if (!currentRestaurant?.restaurant_uuid) return [];
-      return supplierService.getRestaurantSuppliers(
-        currentRestaurant.restaurant_uuid,
-      );
+      return supplierService.getRestaurantSuppliers(currentRestaurant.restaurant_uuid);
     },
     enabled: !!currentRestaurant?.restaurant_uuid,
   });
@@ -73,7 +73,7 @@ export default function DownloadTemplateDialog({
               how to add it to the stock.
             </p>
           </div>
-          <div className="mt-4">
+          <div className="mt-6 space-y-4">
             {tagsLoading || suppliersLoading ? (
               <div className="space-y-4">
                 <div className="h-10 bg-muted animate-pulse rounded" />
@@ -81,24 +81,50 @@ export default function DownloadTemplateDialog({
               </div>
             ) : (
               <>
-                <BasicSelect
-                  label="Select Tag"
-                  value={selectedTag}
-                  onChange={(e) => setSelectedTag(e.target.value)}
-                  options={(tags?.data || []).map((tag: any) => ({
-                    label: tag.tag_name,
-                    value: tag.tag_uuid,
-                  }))}
-                />
-                <BasicSelect
-                  label="Select Supplier"
-                  value={selectedSupplier}
-                  onChange={(e) => setSelectedSupplier(e.target.value)}
-                  options={(suppliers || []).map((supplier: any) => ({
-                    label: supplier.supplier_name,
-                    value: supplier.supplier_uuid,
-                  }))}
-                />
+                <div className="flex gap-2">
+                  <Button 
+                    variant={activeFilter === "tags" ? "default" : "outline"}
+                    onClick={() => setActiveFilter(activeFilter === "tags" ? null : "tags")}
+                  >
+                    Tags
+                  </Button>
+                  <Button
+                    variant={activeFilter === "suppliers" ? "default" : "outline"}
+                    onClick={() => setActiveFilter(activeFilter === "suppliers" ? null : "suppliers")}
+                  >
+                    Suppliers
+                  </Button>
+                </div>
+
+                {activeFilter === "tags" && (
+                  <ToggleGroup 
+                    type="single" 
+                    value={selectedTag} 
+                    onValueChange={setSelectedTag}
+                    className="flex flex-wrap gap-2"
+                  >
+                    {(tags?.data || []).map((tag: any) => (
+                      <ToggleGroupItem key={tag.tag_uuid} value={tag.tag_uuid} className="px-3 py-2">
+                        {tag.tag_name}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                )}
+
+                {activeFilter === "suppliers" && (
+                  <ToggleGroup 
+                    type="single" 
+                    value={selectedSupplier} 
+                    onValueChange={setSelectedSupplier}
+                    className="flex flex-wrap gap-2"
+                  >
+                    {(suppliers || []).map((supplier: any) => (
+                      <ToggleGroupItem key={supplier.supplier_uuid} value={supplier.supplier_uuid} className="px-3 py-2">
+                        {supplier.supplier_name}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                )}
               </>
             )}
           </div>
@@ -115,12 +141,11 @@ export default function DownloadTemplateDialog({
                   throw new Error("No restaurant selected");
                 }
 
-                const inventory =
-                  await inventoryService.getRestaurantIngredients(
-                    currentRestaurant.restaurant_uuid,
-                    selectedTag,
-                    selectedSupplier,
-                  );
+                const inventory = await inventoryService.getRestaurantIngredients(
+                  currentRestaurant.restaurant_uuid,
+                  selectedTag,
+                  selectedSupplier,
+                );
 
                 // Prepare CSV data
                 const csvData = [
