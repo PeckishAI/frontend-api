@@ -248,23 +248,12 @@ export default function PreparationModal({
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(async (data) => {
-                    console.log("Form data being submitted:", data);
                     try {
-                      if (!data.preparation_name || !data.category || !data.unit) {
-                        console.error("Required fields missing");
-                        return;
-                      }
-                      await onSubmit({
-                        preparation_name: data.preparation_name,
-                        category: data.category,
-                        unit: data.unit,
-                        portion_count: data.portion_count,
-                        preparation_ingredients: data.preparation_ingredients || [],
-                        preparation_preparations: data.preparation_preparations || []
-                      });
-                      onOpenChange(false); // Close modal after successful submission
+                      await onSubmit(data);
+                      form.reset();
+                      onOpenChange(false);
                     } catch (error) {
-                      console.error("Error in form submission:", error);
+                      console.error("Error submitting form:", error);
                     }
                   })}
                   className="space-y-6 pt-6"
