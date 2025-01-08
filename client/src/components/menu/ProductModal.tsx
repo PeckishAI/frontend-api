@@ -205,7 +205,7 @@ export default function ProductModal({
                                 field.value
                                   ? {
                                       value: field.value.category_uuid || "",
-                                      label: field.value.category_name,
+                                      label: `${field.value.emoji} ${field.value.category_name}`,
                                     }
                                   : null
                               }
@@ -222,20 +222,22 @@ export default function ProductModal({
                                       currentRestaurant.restaurant_uuid,
                                     );
                                   },
+                                  enabled: !!currentRestaurant?.restaurant_uuid,
                                 });
 
-                                return categories.map((cat: any) => ({
+                                return categories.map((cat) => ({
                                   value: cat.category_uuid,
                                   label: `${cat.emoji} ${cat.category_name}`,
-                                  categoryData: cat,
+                                  emoji: cat.emoji,
+                                  category_name: cat.category_name,
                                 }));
                               })()}
                               onChange={(option) => {
                                 if (option) {
                                   form.setValue("category", {
                                     category_uuid: option.value,
-                                    category_name: option.categoryData.category_name,
-                                    emoji: option.categoryData.emoji,
+                                    category_name: option.category_name,
+                                    emoji: option.emoji,
                                   });
                                 }
                               }}
