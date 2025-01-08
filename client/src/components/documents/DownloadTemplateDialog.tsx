@@ -1,3 +1,4 @@
+
 import {
   Dialog,
   DialogContent,
@@ -8,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { inventoryService } from "@/services/inventoryService";
+import { useState } from "react";
 
 interface DownloadTemplateDialogProps {
   open: boolean;
@@ -19,6 +21,8 @@ export default function DownloadTemplateDialog({
   onOpenChange,
 }: DownloadTemplateDialogProps) {
   const { currentRestaurant } = useRestaurantContext();
+  const [isDownloading, setIsDownloading] = useState(false);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -51,24 +55,21 @@ export default function DownloadTemplateDialog({
           </Button>
           <Button
             onClick={async () => {
-              const button = event.currentTarget;
-              button.disabled = true;
+              setIsDownloading(true);
               try {
                 if (!currentRestaurant?.restaurant_uuid) {
                   throw new Error("No restaurant selected");
                 }
 
-                const inventory =
-                  await inventoryService.getRestaurantIngredients(
-                    currentRestaurant.restaurant_uuid,
-                  );
+                const inventory = await inventoryService.getRestaurantIngredients(
+                  currentRestaurant.restaurant_uuid,
+                );
 
                 // Prepare CSV data
-                console.log(inventory);
                 const csvData = [
                   [
                     "ingredient_uuid",
-                    "ingredient_name",
+                    "ingredient_name", 
                     "quantity",
                     "unit_name",
                     "unit_uuid",
@@ -102,14 +103,14 @@ export default function DownloadTemplateDialog({
               } catch (error) {
                 console.error("Failed to download template:", error);
               } finally {
-                button.disabled = false;
+                setIsDownloading(false);
               }
             }}
             className="relative"
-            disabled={form.formState?.isSubmitting}
+            disabled={isDownloading}
           >
             <span className="flex items-center gap-2">
-              {form.formState?.isSubmitting ? (
+              {isDownloading ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                   Downloading...
