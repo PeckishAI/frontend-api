@@ -249,6 +249,51 @@ export default function PreparationModal({
                 <form
                   onSubmit={form.handleSubmit(async (data) => {
                     try {
+                      // Validate required fields
+                      if (!data.preparation_name) {
+                        form.setError("preparation_name", {
+                          type: "required",
+                          message: "Name is required"
+                        });
+                        return;
+                      }
+
+                      if (!data.category) {
+                        form.setError("category", {
+                          type: "required",
+                          message: "Category is required"
+                        });
+                        return;
+                      }
+
+                      if (!data.unit) {
+                        form.setError("unit", {
+                          type: "required",
+                          message: "Unit is required"
+                        });
+                        return;
+                      }
+
+                      // Validate ingredients/preparations have required fields
+                      const hasInvalidIngredients = data.preparation_ingredients?.some(
+                        ing => !ing.ingredient_uuid || !ing.quantity || !ing.recipe_unit
+                      );
+                      
+                      if (hasInvalidIngredients) {
+                        console.error("Invalid ingredients data");
+                        return;
+                      }
+
+                      const hasInvalidPreparations = data.preparation_preparations?.some(
+                        prep => !prep.preparation_uuid || !prep.quantity || !prep.recipe_unit
+                      );
+
+                      if (hasInvalidPreparations) {
+                        console.error("Invalid preparations data");
+                        return;
+                      }
+
+                      console.log("Form data being submitted:", data);
                       await onSubmit(data);
                       form.reset();
                       onOpenChange(false);
