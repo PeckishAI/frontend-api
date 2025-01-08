@@ -26,8 +26,8 @@ export default function DownloadTemplateDialog({
 }: DownloadTemplateDialogProps) {
   const { currentRestaurant } = useRestaurantContext();
   const [isDownloading, setIsDownloading] = useState(false);
-  const [selectedTag, setSelectedTag] = useState("");
-  const [selectedSupplier, setSelectedSupplier] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedSuppliers, setSelectedSuppliers] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState<"tags" | "suppliers" | null>(null);
 
   const { data: tags, isLoading: tagsLoading } = useQuery({
@@ -98,9 +98,9 @@ export default function DownloadTemplateDialog({
 
                 {activeFilter === "tags" && (
                   <ToggleGroup 
-                    type="single" 
-                    value={selectedTag} 
-                    onValueChange={setSelectedTag}
+                    type="multiple" 
+                    value={selectedTags} 
+                    onValueChange={setSelectedTags}
                     className="flex flex-col w-full gap-1"
                   >
                     {(tags?.data || []).map((tag: any) => (
@@ -113,9 +113,9 @@ export default function DownloadTemplateDialog({
 
                 {activeFilter === "suppliers" && (
                   <ToggleGroup 
-                    type="single" 
-                    value={selectedSupplier} 
-                    onValueChange={setSelectedSupplier}
+                    type="multiple" 
+                    value={selectedSuppliers} 
+                    onValueChange={setSelectedSuppliers}
                     className="flex flex-col w-full gap-1"
                   >
                     {(suppliers || []).map((supplier: any) => (
