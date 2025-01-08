@@ -357,13 +357,16 @@ export default function ProductModal({
                                           `product_ingredients.${index}.ingredient_uuid`,
                                           option.value,
                                         );
+                                        console.log("Option: ", option);
 
                                         if (option.base_unit) {
                                           form.setValue(
                                             `product_ingredients.${index}.base_unit`,
                                             {
-                                              unit_uuid: option.base_unit.unit_uuid,
-                                              unit_name: option.base_unit.unit_name,
+                                              unit_uuid:
+                                                option.base_unit.unit_uuid,
+                                              unit_name:
+                                                option.base_unit.unit_name,
                                             },
                                           );
                                         }
