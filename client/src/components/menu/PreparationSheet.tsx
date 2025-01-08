@@ -150,14 +150,14 @@ const useUnitOptions = (restaurantUuid?: string) => {
         unitService.getReferenceUnit(),
         unitService.getRestaurantUnit(restaurantUuid),
       ]);
-      
+
       const uniqueUnits = new Map();
       [...referenceUnits, ...restaurantUnits].forEach((unit) => {
         if (!uniqueUnits.has(unit.unit_uuid)) {
           uniqueUnits.set(unit.unit_uuid, unit);
         }
       });
-      
+
       return Array.from(uniqueUnits.values());
     },
     enabled: !!restaurantUuid,
@@ -169,6 +169,8 @@ const useUnitOptions = (restaurantUuid?: string) => {
     label: unit.unit_name,
     value: unit.unit_uuid,
   }));
+
+  console.log("All units : ", allUnits);
 
   return allUnits;
 };
