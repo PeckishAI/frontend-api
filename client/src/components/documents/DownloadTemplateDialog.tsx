@@ -29,13 +29,21 @@ export default function DownloadTemplateDialog({
   const [selectedSupplier, setSelectedSupplier] = useState("");
 
   const { data: tags, isLoading: tagsLoading } = useQuery({
-    queryKey: ['tags'],
-    queryFn: () => tagService.getAllTags(),
+    queryKey: ['tags', currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) return [];
+      return tagService.getRestaurantTags(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid
   });
 
   const { data: suppliers, isLoading: suppliersLoading } = useQuery({
-    queryKey: ['suppliers'],
-    queryFn: () => supplierService.getAllSuppliers(),
+    queryKey: ['suppliers', currentRestaurant?.restaurant_uuid],
+    queryFn: () => {
+      if (!currentRestaurant?.restaurant_uuid) return [];
+      return supplierService.getRestaurantSuppliers(currentRestaurant.restaurant_uuid);
+    },
+    enabled: !!currentRestaurant?.restaurant_uuid
   });
 
 
