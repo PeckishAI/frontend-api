@@ -51,6 +51,8 @@ export default function DownloadTemplateDialog({
           </Button>
           <Button
             onClick={async () => {
+              const button = event.currentTarget;
+              button.disabled = true;
               try {
                 if (!currentRestaurant?.restaurant_uuid) {
                   throw new Error("No restaurant selected");
@@ -99,10 +101,24 @@ export default function DownloadTemplateDialog({
                 onOpenChange(false);
               } catch (error) {
                 console.error("Failed to download template:", error);
+              } finally {
+                button.disabled = false;
               }
             }}
+            className="relative"
           >
-            Download Template
+            {({ disabled }) => (
+              <>
+                <span className={disabled ? "opacity-0" : "opacity-100"}>
+                  Download Template
+                </span>
+                {disabled && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  </div>
+                )}
+              </>
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
