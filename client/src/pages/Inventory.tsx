@@ -31,14 +31,16 @@ export default function Inventory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<FilterType[]>([]);
   const [isNewItemOpen, setIsNewItemOpen] = useState(false);
-  const [selectedIngredient, setSelectedIngredient] = useState<InventoryItem | undefined>();
+  const [selectedIngredient, setSelectedIngredient] = useState<
+    InventoryItem | undefined
+  >();
   const [sortColumn, setSortColumn] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const { toast } = useToast();
 
   const handleSort = (column: string) => {
     setSortColumn(column);
-    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
   };
 
   const sections = [
@@ -68,7 +70,9 @@ export default function Inventory() {
 
   const tags = !inventory
     ? []
-    : Array.from(new Set(inventory.flatMap((item) => item.tags.map(t => t.tag_name))));
+    : Array.from(
+        new Set(inventory.flatMap((item) => item.tags.map((t) => t.tag_name))),
+      );
   const suppliers = !inventory
     ? []
     : Array.from(
@@ -87,65 +91,67 @@ export default function Inventory() {
 
   const filteredInventory = !inventory
     ? []
-    : [...inventory].sort((a, b) => {
-        if (!sortColumn) return 0;
+    : [...inventory]
+        .sort((a, b) => {
+          if (!sortColumn) return 0;
 
-        let aValue, bValue;
+          let aValue, bValue;
 
-        switch (sortColumn) {
-          case 'name':
-            aValue = a.ingredient_name.toLowerCase();
-            bValue = b.ingredient_name.toLowerCase();
-            break;
-          case 'tags':
-            aValue = a.tags.length;
-            bValue = b.tags.length;
-            break;
-          case 'par_level':
-            aValue = a.par_level || 0;
-            bValue = b.par_level || 0;
-            break;
-          case 'quantity':
-            aValue = a.quantity || 0;
-            bValue = b.quantity || 0;
-            break;
-          case 'unit':
-            aValue = a.base_unit?.unit_name?.toLowerCase() || '';
-            bValue = b.base_unit?.unit_name?.toLowerCase() || '';
-            break;
-          case 'suppliers':
-            aValue = a.ingredient_suppliers?.length || 0;
-            bValue = b.ingredient_suppliers?.length || 0;
-            break;
-          default:
-            return 0;
-        }
+          switch (sortColumn) {
+            case "name":
+              aValue = a.ingredient_name.toLowerCase();
+              bValue = b.ingredient_name.toLowerCase();
+              break;
+            case "tags":
+              aValue = a.tags.length;
+              bValue = b.tags.length;
+              break;
+            case "par_level":
+              aValue = a.par_level || 0;
+              bValue = b.par_level || 0;
+              break;
+            case "quantity":
+              aValue = a.quantity || 0;
+              bValue = b.quantity || 0;
+              break;
+            case "unit":
+              aValue = a.base_unit?.unit_name?.toLowerCase() || "";
+              bValue = b.base_unit?.unit_name?.toLowerCase() || "";
+              break;
+            case "suppliers":
+              aValue = a.ingredient_suppliers?.length || 0;
+              bValue = b.ingredient_suppliers?.length || 0;
+              break;
+            default:
+              return 0;
+          }
 
-        if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-        if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-        return 0;
-      }).filter((item) => {
-        const matchesSearch = item.ingredient_name
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase());
-        const tagFilters = selectedFilters
-          .filter((f) => f.type === "tag")
-          .map((f) => f.value);
-        const supplierFilters = selectedFilters
-          .filter((f) => f.type === "supplier")
-          .map((f) => f.value);
+          if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
+          if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
+          return 0;
+        })
+        .filter((item) => {
+          const matchesSearch = item.ingredient_name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
+          const tagFilters = selectedFilters
+            .filter((f) => f.type === "tag")
+            .map((f) => f.value);
+          const supplierFilters = selectedFilters
+            .filter((f) => f.type === "supplier")
+            .map((f) => f.value);
 
-        const matchesTags =
-          tagFilters.length === 0 ||
-          tagFilters.some((tag) => item.tags.some(t => t.tag_name === tag));
-        const matchesSuppliers =
-          supplierFilters.length === 0 ||
-          item.ingredient_suppliers.some((s) =>
-            supplierFilters.includes(s.supplier?.supplier_name),
-          );
+          const matchesTags =
+            tagFilters.length === 0 ||
+            tagFilters.some((tag) => item.tags.some((t) => t.tag_name === tag));
+          const matchesSuppliers =
+            supplierFilters.length === 0 ||
+            item.ingredient_suppliers.some((s) =>
+              supplierFilters.includes(s.supplier?.supplier_name),
+            );
 
-        return matchesSearch && matchesTags && matchesSuppliers;
-      });
+          return matchesSearch && matchesTags && matchesSuppliers;
+        });
 
   const exportToCsv = () => {
     const headers = [
@@ -231,22 +237,64 @@ export default function Inventory() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead sortable sortKey="name" sortDirection={sortColumn === 'name' ? sortDirection : undefined} onSort={() => handleSort('name')}>
+                  <TableHead
+                    sortable
+                    sortKey="name"
+                    sortDirection={
+                      sortColumn === "name" ? sortDirection : undefined
+                    }
+                    onSort={() => handleSort("name")}
+                  >
                     Name
                   </TableHead>
-                  <TableHead sortable sortKey="tags" sortDirection={sortColumn === 'tags' ? sortDirection : undefined} onSort={() => handleSort('tags')}>
+                  <TableHead
+                    sortable
+                    sortKey="tags"
+                    sortDirection={
+                      sortColumn === "tags" ? sortDirection : undefined
+                    }
+                    onSort={() => handleSort("tags")}
+                  >
                     Tags
                   </TableHead>
-                  <TableHead sortable sortKey="par_level" sortDirection={sortColumn === 'par_level' ? sortDirection : undefined} onSort={() => handleSort('par_level')}>
+                  <TableHead
+                    sortable
+                    sortKey="par_level"
+                    sortDirection={
+                      sortColumn === "par_level" ? sortDirection : undefined
+                    }
+                    onSort={() => handleSort("par_level")}
+                  >
                     Par Level
                   </TableHead>
-                  <TableHead sortable sortKey="quantity" sortDirection={sortColumn === 'quantity' ? sortDirection : undefined} onSort={() => handleSort('quantity')}>
+                  <TableHead
+                    sortable
+                    sortKey="quantity"
+                    sortDirection={
+                      sortColumn === "quantity" ? sortDirection : undefined
+                    }
+                    onSort={() => handleSort("quantity")}
+                  >
                     Quantity
                   </TableHead>
-                  <TableHead sortable sortKey="unit" sortDirection={sortColumn === 'unit' ? sortDirection : undefined} onSort={() => handleSort('unit')}>
+                  <TableHead
+                    sortable
+                    sortKey="unit"
+                    sortDirection={
+                      sortColumn === "unit" ? sortDirection : undefined
+                    }
+                    onSort={() => handleSort("unit")}
+                  >
                     Unit
                   </TableHead>
-                  <TableHead sortable sortKey="suppliers" sortDirection={sortColumn === 'suppliers' ? sortDirection : undefined} onSort={() => handleSort('suppliers')}>
+                  <TableHead
+                    sortable
+                    sortKey="suppliers"
+                    sortDirection={
+                      sortColumn === "suppliers" ? sortDirection : undefined
+                    }
+                    onSort={() => handleSort("suppliers")}
+                  >
                     Suppliers
                   </TableHead>
                 </TableRow>
