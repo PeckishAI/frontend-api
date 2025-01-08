@@ -1,4 +1,4 @@
-
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { inventoryService } from "@/services/inventoryService";
-import { useState } from "react";
+import { BasicSelect } from "@/components/ui/basic-select";
+import { useQuery } from "@tanstack/react-query";
+import { tagService } from "@/services/tagService";
+import { supplierService } from "@/services/supplierService";
 
 interface DownloadTemplateDialogProps {
   open: boolean;
@@ -22,6 +25,19 @@ export default function DownloadTemplateDialog({
 }: DownloadTemplateDialogProps) {
   const { currentRestaurant } = useRestaurantContext();
   const [isDownloading, setIsDownloading] = useState(false);
+  const [selectedTag, setSelectedTag] = useState("");
+  const [selectedSupplier, setSelectedSupplier] = useState("");
+
+  const { data: tags, isLoading: tagsLoading } = useQuery({
+    queryKey: ['tags'],
+    queryFn: () => tagService.getAllTags(),
+  });
+
+  const { data: suppliers, isLoading: suppliersLoading } = useQuery({
+    queryKey: ['suppliers'],
+    queryFn: () => supplierService.getAllSuppliers(),
+  });
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -48,6 +64,27 @@ export default function DownloadTemplateDialog({
               how to add it to the stock.
             </p>
           </div>
+          <div className="mt-4">
+            {tagsLoading || suppliersLoading ? (
+              <p>Loading filters...</p>
+            ) : (
+              <>
+                <BasicSelect
+                  label="Select Tag"
+                  value={selectedTag}
+                  onChange={(e) => setSelectedTag(e.target.value)}
+                  options={tags.map((tag: any) => ({ label: tag.name, value: tag.tag_uuid }))}
+                />
+                <BasicSelect
+                  label="Select Supplier"
+                  value={selectedSupplier}
+                  onChange={(e) => setSelectedSupplier(e.target.value)}
+                  options={suppliers.map((supplier: any) => ({ label: supplier.name, value: supplier.supplier_uuid }))}
+                />
+              </>
+            )}
+          </div>
+
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
@@ -63,6 +100,8 @@ export default function DownloadTemplateDialog({
 
                 const inventory = await inventoryService.getRestaurantIngredients(
                   currentRestaurant.restaurant_uuid,
+                  selectedTag,
+                  selectedSupplier
                 );
 
                 // Prepare CSV data
