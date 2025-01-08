@@ -143,8 +143,8 @@ export default function DownloadTemplateDialog({
 
                 const inventory = await inventoryService.getRestaurantIngredients(
                   currentRestaurant.restaurant_uuid,
-                  selectedTag,
-                  selectedSupplier,
+                  selectedTags,
+                  selectedSuppliers,
                 );
 
                 // Prepare CSV data
