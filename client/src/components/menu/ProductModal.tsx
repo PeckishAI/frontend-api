@@ -355,13 +355,11 @@ export default function ProductModal({
                                           queryKey: ["ingredients", currentRestaurant?.restaurant_uuid],
                                           queryFn: () => {
                                             if (!currentRestaurant?.restaurant_uuid) return [];
-                                            return inventoryService.getRestaurantIngredients(
-                                              currentRestaurant.restaurant_uuid,
-                                            );
+                                            return inventoryService.getRestaurantIngredients(currentRestaurant.restaurant_uuid);
                                           },
-                                        }).data || [];
+                                        });
 
-                                        const selectedIngredient = ingredients.find(
+                                        const selectedIngredient = ingredients?.find(
                                           (ing: any) => ing.ingredient_uuid === option.value
                                         );
 
@@ -370,6 +368,24 @@ export default function ProductModal({
                                           `product_ingredients.${index}.ingredient_uuid`,
                                           option.value,
                                         );
+
+                                        if (selectedIngredient?.unit) {
+                                          form.setValue(
+                                            `product_ingredients.${index}.base_unit`,
+                                            {
+                                              unit_uuid: selectedIngredient.unit.unit_uuid,
+                                              unit_name: selectedIngredient.unit.unit_name
+                                            }
+                                          );
+                                          
+                                          form.setValue(
+                                            `product_ingredients.${index}.recipe_unit`,
+                                            {
+                                              unit_uuid: selectedIngredient.unit.unit_uuid,
+                                              unit_name: selectedIngredient.unit.unit_name
+                                            }
+                                          );
+                                        }
                                         
                                         // Set the base unit if the ingredient has one
                                         if (selectedIngredient?.unit) {
