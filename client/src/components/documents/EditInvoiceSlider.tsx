@@ -237,7 +237,7 @@ export function EditInvoiceSlider({
   const queryClient = useQueryClient();
 
   const onSubmit = async (data: EditInvoiceFormValues) => {
-    if (!currentRestaurant?.restaurant_uuid || !invoice?.document_uuid) {
+    if (!currentRestaurant?.restaurant_uuid || !invoice?.invoice_uuid) {
       console.error("Missing restaurant or invoice UUID");
       return;
     }
@@ -250,7 +250,7 @@ export function EditInvoiceSlider({
     try {
       await documentService.updateInvoice(
         currentRestaurant.restaurant_uuid,
-        invoice.document_uuid,
+        invoice.invoice_uuid,
         data,
       );
       await queryClient.invalidateQueries([
@@ -483,21 +483,28 @@ export function EditInvoiceSlider({
                       className="absolute top-1 right-1 p-1 rounded-full bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
                       onClick={(e) => {
                         e.stopPropagation();
-                        const updatedDocs = [...(invoice.documents || [])].filter(
-                          (_, i) => i !== index,
-                        );
-                        
+                        const updatedDocs = [
+                          ...(invoice.documents || []),
+                        ].filter((_, i) => i !== index);
+
                         // Update both invoice and form state
                         invoice.documents = updatedDocs;
                         form.setValue("documents", updatedDocs);
-                        
+
                         // Adjust active image index if needed
                         if (activeImageIndex >= updatedDocs.length) {
-                          setActiveImageIndex(Math.max(0, updatedDocs.length - 1));
-                        } else if (index === activeImageIndex && updatedDocs.length > 0) {
-                          setActiveImageIndex(Math.max(0, activeImageIndex - 1));
+                          setActiveImageIndex(
+                            Math.max(0, updatedDocs.length - 1),
+                          );
+                        } else if (
+                          index === activeImageIndex &&
+                          updatedDocs.length > 0
+                        ) {
+                          setActiveImageIndex(
+                            Math.max(0, activeImageIndex - 1),
+                          );
                         }
-                        
+
                         // Force re-render
                         form.trigger("documents");
                       }}
