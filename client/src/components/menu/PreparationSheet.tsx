@@ -16,13 +16,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -68,6 +61,10 @@ const preparationSchema = z.object({
     .optional(),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
   portion_cost: z.number().optional(),
+  unit: z.object({
+    unit_uuid: z.string().optional(),
+    unit_name: z.string().optional(),
+  }),
   preparation_ingredients: z
     .array(
       z.object({
@@ -228,6 +225,9 @@ export default function PreparationSheet({
 
   const removeIngredient = (index: number) => {
     const currentIngredients = form.getValues("preparation_ingredients");
+    if (!currentIngredients) {
+      return;
+    }
     form.setValue(
       "preparation_ingredients",
       currentIngredients.filter((_, i) => i !== index),
@@ -238,12 +238,16 @@ export default function PreparationSheet({
   const addPreparation = () => {
     const currentPreparations =
       form.getValues("preparation_preparations") || [];
+    if (!currentPreparations) {
+      return;
+    }
     form.setValue("preparation_preparations", [
       ...currentPreparations,
       {
         preparation_uuid: "",
         preparation_name: "",
         quantity: 0,
+        base_unit: { unit_uuid: "", unit_name: "" },
         recipe_unit: { unit_uuid: "", unit_name: "" },
         base_to_recipe: 1,
       },
@@ -252,6 +256,9 @@ export default function PreparationSheet({
 
   const removePreparation = (index: number) => {
     const currentPreparations = form.getValues("preparation_preparations");
+    if (!currentPreparations) {
+      return;
+    }
     form.setValue(
       "preparation_preparations",
       currentPreparations.filter((_, i) => i !== index),
@@ -350,8 +357,8 @@ export default function PreparationSheet({
                           value={
                             field.value
                               ? {
-                                  value: field.value.category_uuid,
-                                  label: field.value.category_name,
+                                  value: field.value.category_uuid || "",
+                                  label: `${field.value.emoji} ${field.value.category_name}`,
                                 }
                               : null
                           }
@@ -374,7 +381,7 @@ export default function PreparationSheet({
                             currentRestaurant?.restaurant_uuid,
                           ).map((cat) => ({
                             value: cat.category_uuid,
-                            label: cat.category_name,
+                            label: `${cat.emoji} ${cat.category_name}`,
                           }))}
                           placeholder=""
                           size="large"
@@ -500,7 +507,6 @@ export default function PreparationSheet({
                 {ingredients.map((component, index) => {
                   const fieldPrefix = "preparation_ingredients";
                   const nameField = "ingredient_name";
-                  console.log("ingredient: ", component);
                   return (
                     <div
                       key={index}

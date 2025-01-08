@@ -21,13 +21,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import { Plus, Trash2 } from "lucide-react";
@@ -1004,6 +997,7 @@ export default function PreparationModal({
         }}
         onSubmit={async (data) => {
           if (!currentRestaurant?.restaurant_uuid) return;
+          console.log("Category", data);
           const newCategory = await categoryService.createCategory(
             currentRestaurant.restaurant_uuid,
             data,
