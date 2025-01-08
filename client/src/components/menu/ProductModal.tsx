@@ -396,18 +396,18 @@ export default function ProductModal({
 
                                           if (recipeUnit?.unit_uuid) {
                                             try {
-                                              const factor =
+                                              const response =
                                                 await unitService.getConversionFactor(
                                                   selectedIngredient.ingredient_uuid,
                                                   selectedIngredient.base_unit
                                                     .unit_uuid,
                                                   recipeUnit.unit_uuid,
                                                 );
-                                              console.log("Factor: ", factor);
+                                              console.log("Factor: ", response);
 
                                               form.setValue(
                                                 `product_ingredients.${index}.base_to_recipe`,
-                                                factor,
+                                                response.conversion_factor,
                                               );
                                             } catch (error) {
                                               console.error(
@@ -521,18 +521,18 @@ export default function ProductModal({
 
                                         if (ingredientUuid && option.value) {
                                           try {
-                                            const factor =
+                                            const response =
                                               await unitService.getConversionFactor(
                                                 ingredientUuid,
                                                 selectedIngredient.base_unit
                                                   .unit_uuid,
                                                 option.value,
                                               );
-                                            console.log("Factor: ", factor);
+                                            console.log("Factor: ", response);
 
                                             form.setValue(
                                               `product_ingredients.${index}.base_to_recipe`,
-                                              factor,
+                                              response.conversion_factor,
                                             );
                                           } catch (error) {
                                             console.error(
