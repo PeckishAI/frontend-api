@@ -1367,7 +1367,19 @@ export default function PreparationSheet({
               >
                 Cancel
               </Button>
-              <Button type="submit">
+              <Button 
+                type="submit" 
+                className={cn(
+                  "relative",
+                  form.formState.isSubmitting && "text-transparent"
+                )}
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  </div>
+                )}
                 {preparation ? "Save changes" : "Create preparation"}
               </Button>
             </div>
