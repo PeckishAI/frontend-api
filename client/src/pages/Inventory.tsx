@@ -15,7 +15,11 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Download, Plus, Search, Filter, Trash2 } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -176,7 +180,7 @@ export default function Inventory() {
     ];
     const csvData = filteredInventory.map((item) => [
       item.ingredient_name,
-      item.tags.map(t => t.tag_name).join(", "),
+      item.tags.map((t) => t.tag_name).join(", "),
       item.par_level,
       item.quantity,
       item.base_unit.unit_name,
@@ -230,15 +234,12 @@ export default function Inventory() {
             <Button onClick={exportToCsv} variant="outline" size="icon">
               <Download className="h-4 w-4" />
             </Button>
-            <InsertItemDialog />
+            {/* <InsertItemDialog /> */}
+
             <div className="relative">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="relative"
-                  >
+                  <Button variant="outline" size="icon" className="relative">
                     <Filter className="h-4 w-4" />
                     {selectedFilters.length > 0 && (
                       <span className="absolute -top-2 -right-2 rounded-full bg-primary text-primary-foreground w-4 h-4 text-[10px] flex items-center justify-center">
@@ -249,7 +250,7 @@ export default function Inventory() {
                 </PopoverTrigger>
                 <PopoverContent align="end" className="w-[200px] p-0">
                   <FilterPopover
-                    tags={tags.map(tag => ({ tag_name: tag }))}
+                    tags={tags.map((tag) => ({ tag_name: tag }))}
                     suppliers={suppliers}
                     selectedFilters={selectedFilters}
                     onFilterChange={setSelectedFilters}
@@ -383,12 +384,18 @@ export default function Inventory() {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Delete {item.ingredient_name}?</AlertDialogTitle>
+                            <AlertDialogTitle>
+                              Delete {item.ingredient_name}?
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
-                              This will archive the ingredient to avoid impacting your different items related to the ingredient such as:
+                              This will archive the ingredient to avoid
+                              impacting your different items related to the
+                              ingredient such as:
                               <ul className="list-disc ml-6 mt-2">
                                 <li>Your menu</li>
-                                <li>Your invoices / delivery notes / stocktakes</li>
+                                <li>
+                                  Your invoices / delivery notes / stocktakes
+                                </li>
                                 <li>Your previous orders</li>
                                 <li>Your historical sales</li>
                               </ul>
@@ -396,14 +403,18 @@ export default function Inventory() {
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel onClick={(e) => e.stopPropagation()}>Cancel</AlertDialogCancel>
-                            <AlertDialogAction 
+                            <AlertDialogCancel
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction
                               onClick={async (e) => {
                                 e.stopPropagation();
                                 try {
                                   await inventoryService.deleteIngredient(
                                     currentRestaurant?.restaurant_uuid || "",
-                                    item.ingredient_uuid
+                                    item.ingredient_uuid,
                                   );
                                   await refetch();
                                   toast({
@@ -411,7 +422,10 @@ export default function Inventory() {
                                     description: `${item.ingredient_name} has been archived`,
                                   });
                                 } catch (error) {
-                                  console.error("Failed to delete ingredient:", error);
+                                  console.error(
+                                    "Failed to delete ingredient:",
+                                    error,
+                                  );
                                   toast({
                                     title: "Error",
                                     description: "Failed to delete ingredient",
