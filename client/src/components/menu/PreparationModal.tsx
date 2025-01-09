@@ -992,6 +992,15 @@ export default function PreparationModal({
           const preparationIngredients = form.getValues("preparation_ingredients") || [];
           const lastIndex = preparationIngredients.length - 1;
 
+          // Calculate minimum unit cost per unit from suppliers
+          const minUnitCost = newIngredient.ingredient_suppliers.reduce(
+            (min, supplier) => {
+              const costPerUnit = supplier.unit_cost / (supplier.pack_size || 1);
+              return costPerUnit < min ? costPerUnit : min;
+            },
+            Number.MAX_VALUE
+          );
+
           // Update the form with the full ingredient data
           if (lastIndex >= 0) {
             form.setValue(`preparation_ingredients.${lastIndex}.ingredient_uuid`, newIngredient.ingredient_uuid);
@@ -999,6 +1008,7 @@ export default function PreparationModal({
             form.setValue(`preparation_ingredients.${lastIndex}.base_unit`, newIngredient.base_unit);
             form.setValue(`preparation_ingredients.${lastIndex}.recipe_unit`, newIngredient.base_unit);
             form.setValue(`preparation_ingredients.${lastIndex}.base_to_recipe`, 1);
+            form.setValue(`preparation_ingredients.${lastIndex}.unit_cost`, minUnitCost === Number.MAX_VALUE ? 0 : minUnitCost);
           }
 
           queryClient.invalidateQueries(["ingredients"]);
