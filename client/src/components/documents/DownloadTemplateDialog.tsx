@@ -187,6 +187,8 @@ export default function DownloadTemplateDialog({
                     "quantity",
                     "unit_name",
                     "unit_uuid",
+                    "tags",
+                    "suppliers",
                   ],
                   ...filteredInventory.map((item: any) => [
                     item.ingredient_uuid,
@@ -194,6 +196,8 @@ export default function DownloadTemplateDialog({
                     "", // Empty quantity for user to fill
                     item.base_unit?.unit_name || "",
                     item.base_unit?.unit_uuid || "",
+                    item.tags?.map((t: any) => t.tag_name).join(" > ") || "",
+                    item.ingredient_suppliers?.map((s: any) => s.supplier?.supplier_name).join(", ") || "",
                   ]),
                 ];
 
