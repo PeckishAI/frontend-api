@@ -569,9 +569,16 @@ export default function PreparationSheet({
                                       `preparation_ingredients.${index}.ingredient_uuid`,
                                       option.value,
                                     );
+                                    
+                                    // Calculate minimum unit cost per unit from all suppliers
+                                    const minUnitCost = selectedIngredient.ingredient_suppliers.reduce((min, supplier) => {
+                                      const costPerUnit = supplier.unit_cost / (supplier.pack_size || 1);
+                                      return costPerUnit < min ? costPerUnit : min;
+                                    }, Number.MAX_VALUE);
+
                                     form.setValue(
                                       `preparation_ingredients.${index}.unit_cost`,
-                                      selectedIngredient.unit_cost || 0,
+                                      minUnitCost === Number.MAX_VALUE ? 0 : minUnitCost,
                                     );
 
                                     if (selectedIngredient?.base_unit) {
