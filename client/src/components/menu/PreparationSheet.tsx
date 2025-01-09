@@ -223,19 +223,17 @@ export default function PreparationSheet({
 
   const addIngredient = () => {
     const currentIngredients = form.getValues("preparation_ingredients") || [];
-    form.setValue("preparation_ingredients", [
-      ...currentIngredients,
-      {
-        ingredient_uuid: "",
-        ingredient_name: "",
-        quantity: 0,
-        base_unit: { unit_uuid: "", unit_name: "" },
-        recipe_unit: { unit_uuid: "", unit_name: "" },
-        base_to_recipe: 1,
-        unit_cost: 0,
-        total_cost: 0,
-      },
-    ]);
+    const newIngredient = {
+      ingredient_uuid: "",
+      ingredient_name: "",
+      quantity: 0,
+      base_unit: { unit_uuid: "", unit_name: "" },
+      recipe_unit: { unit_uuid: "", unit_name: "" },
+      base_to_recipe: 1,
+      unit_cost: 0,
+      total_cost: 0,
+    };
+    form.setValue("preparation_ingredients", [...currentIngredients, newIngredient]);
     calculateTotalCost();
   };
 
@@ -252,24 +250,19 @@ export default function PreparationSheet({
   };
 
   const addPreparation = () => {
-    const currentPreparations =
-      form.getValues("preparation_preparations") || [];
-    if (!currentPreparations) {
-      return;
-    }
-    form.setValue("preparation_preparations", [
-      ...currentPreparations,
-      {
-        preparation_uuid: "",
-        preparation_name: "",
-        quantity: 0,
-        base_unit: { unit_uuid: "", unit_name: "" },
-        recipe_unit: { unit_uuid: "", unit_name: "" },
-        base_to_recipe: 1,
-        unit_cost: 0,
-        total_cost: 0,
-      },
-    ]);
+    const currentPreparations = form.getValues("preparation_preparations") || [];
+    const newPreparation = {
+      preparation_uuid: "",
+      preparation_name: "",
+      quantity: 0,
+      base_unit: { unit_uuid: "", unit_name: "" },
+      recipe_unit: { unit_uuid: "", unit_name: "" },
+      base_to_recipe: 1,
+      unit_cost: 0,
+      total_cost: 0,
+    };
+    form.setValue("preparation_preparations", [...currentPreparations, newPreparation]);
+    calculateTotalCost();
   };
 
   const removePreparation = (index: number) => {
