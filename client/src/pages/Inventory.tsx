@@ -385,11 +385,12 @@ export default function Inventory() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete {item.ingredient_name}?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              This will permanently delete this ingredient and remove it from:
+                              This will archive the ingredient to avoid impacting your different items related to the ingredient such as:
                               <ul className="list-disc ml-6 mt-2">
-                                <li>All recipes and preparations using it</li>
-                                <li>All purchase orders containing it</li>
-                                <li>Historical inventory data</li>
+                                <li>Your menu</li>
+                                <li>Your invoices / delivery notes / stocktakes</li>
+                                <li>Your previous orders</li>
+                                <li>Your historical sales</li>
                               </ul>
                               This action cannot be undone.
                             </AlertDialogDescription>

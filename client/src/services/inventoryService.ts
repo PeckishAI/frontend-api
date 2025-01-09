@@ -87,4 +87,31 @@ export const inventoryService = {
       throw error;
     }
   },
+
+  async deleteIngredient(
+    restaurantUuid: string,
+    ingredientUuid: string,
+  ): Promise<any> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/ingredients/v2/restaurant/${restaurantUuid}/ingredient/${ingredientUuid}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.message;
+    } catch (error) {
+      console.error("Failed to delete inventory item:", error);
+      throw error;
+    }
+  },
 };
