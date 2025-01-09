@@ -14,7 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Download, Plus, Search, Filter } from "lucide-react";
+import { Download, Plus, Search, Filter, Trash2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { InsertItemDialog } from "@/components/inventory/InsertItemDialog";
 import { useQuery } from "@tanstack/react-query";
