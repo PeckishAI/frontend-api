@@ -983,6 +983,24 @@ export default function PreparationModal({
             currentRestaurant.restaurant_uuid,
             data,
           );
+
+          // Add the new ingredient to the current ingredient index
+          const currentIngredients = ingredients ? [...ingredients] : [];
+          currentIngredients.push(newIngredient);
+
+          // Get the current ingredients array and index
+          const preparationIngredients = form.getValues("preparation_ingredients") || [];
+          const lastIndex = preparationIngredients.length - 1;
+
+          // Update the form with the full ingredient data
+          if (lastIndex >= 0) {
+            form.setValue(`preparation_ingredients.${lastIndex}.ingredient_uuid`, newIngredient.ingredient_uuid);
+            form.setValue(`preparation_ingredients.${lastIndex}.ingredient_name`, newIngredient.ingredient_name);
+            form.setValue(`preparation_ingredients.${lastIndex}.base_unit`, newIngredient.base_unit);
+            form.setValue(`preparation_ingredients.${lastIndex}.recipe_unit`, newIngredient.base_unit);
+            form.setValue(`preparation_ingredients.${lastIndex}.base_to_recipe`, 1);
+          }
+
           queryClient.invalidateQueries(["ingredients"]);
           setShowNewIngredientDialog(false);
         }}
