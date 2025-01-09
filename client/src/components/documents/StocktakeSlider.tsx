@@ -151,7 +151,7 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                   <div className="flex items-center gap-2">
                     <CalendarDays className="h-4 w-4" />
                     <span>
-                      {stocktake.created_at.toLocaleDateString('en-US', {
+                      {new Date(stocktake.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'
