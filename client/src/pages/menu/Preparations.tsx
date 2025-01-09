@@ -254,6 +254,7 @@ export default function Preparations() {
                 data,
               );
             }
+            await queryClient.invalidateQueries(["preparations"]);
             setEditingPreparation(null);
           } catch (error) {
             console.error("Failed to save preparation:", error);

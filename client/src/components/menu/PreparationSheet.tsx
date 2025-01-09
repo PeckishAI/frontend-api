@@ -337,7 +337,8 @@ export default function PreparationSheet({
                 if (!currentRestaurant?.restaurant_uuid) {
                   throw new Error("No restaurant selected");
                 }
-                onSubmit(data);
+                await onSubmit(data);
+                await queryClient.invalidateQueries(["preparations"]);
                 onOpenChange(false);
               } catch (error) {
                 console.error("Failed to save preparation:", error);
