@@ -39,7 +39,7 @@ const preparationSchema = z.object({
     category_uuid: z.string().optional(),
     category_name: z.string(),
     emoji: z.string(),
-  }),
+  }).optional(),
   unit: z.object({
     unit_uuid: z.string(),
     unit_name: z.string(),
