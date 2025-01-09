@@ -16,6 +16,17 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Download, Plus, Search, Filter, Trash2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { InsertItemDialog } from "@/components/inventory/InsertItemDialog";
 import { useQuery } from "@tanstack/react-query";
 import type { InventoryItem } from "@/lib/types";
@@ -360,16 +371,42 @@ export default function Inventory() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log("Delete ingredient:", item.ingredient_uuid);
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete {item.ingredient_name}?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This will permanently delete this ingredient and remove it from:
+                              <ul className="list-disc ml-6 mt-2">
+                                <li>All recipes and preparations using it</li>
+                                <li>All purchase orders containing it</li>
+                                <li>Historical inventory data</li>
+                              </ul>
+                              This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel onClick={(e) => e.stopPropagation()}>Cancel</AlertDialogCancel>
+                            <AlertDialogAction 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                console.log("Delete ingredient:", item.ingredient_uuid);
+                              }}
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </TableCell>
                   </TableRow>
                 ))}
