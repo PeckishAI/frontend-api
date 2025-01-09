@@ -454,7 +454,7 @@ export default function PreparationSheet({
                         step="0.01"
                         {...field}
                         onChange={(e) =>
-                          field.onChange(parseInt(e.target.value))
+                          field.onChange(parseFloat(e.target.value))
                         }
                       />
                     </FormControl>
