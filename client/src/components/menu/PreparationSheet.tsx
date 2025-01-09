@@ -24,6 +24,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import { Plus, Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
