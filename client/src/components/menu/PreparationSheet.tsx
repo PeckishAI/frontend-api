@@ -569,16 +569,26 @@ export default function PreparationSheet({
                                       `preparation_ingredients.${index}.ingredient_uuid`,
                                       option.value,
                                     );
-                                    
+
                                     // Calculate minimum unit cost per unit from all suppliers
-                                    const minUnitCost = selectedIngredient.ingredient_suppliers.reduce((min, supplier) => {
-                                      const costPerUnit = supplier.unit_cost / (supplier.pack_size || 1);
-                                      return costPerUnit < min ? costPerUnit : min;
-                                    }, Number.MAX_VALUE);
+                                    const minUnitCost =
+                                      selectedIngredient.ingredient_suppliers.reduce(
+                                        (min, supplier) => {
+                                          const costPerUnit =
+                                            supplier.unit_cost /
+                                            (supplier.pack_size || 1);
+                                          return costPerUnit < min
+                                            ? costPerUnit
+                                            : min;
+                                        },
+                                        Number.MAX_VALUE,
+                                      );
 
                                     form.setValue(
                                       `preparation_ingredients.${index}.unit_cost`,
-                                      minUnitCost === Number.MAX_VALUE ? 0 : minUnitCost,
+                                      minUnitCost === Number.MAX_VALUE
+                                        ? 0
+                                        : minUnitCost,
                                     );
 
                                     if (selectedIngredient?.base_unit) {
@@ -624,16 +634,19 @@ export default function PreparationSheet({
 
                                     const quantity =
                                       form.watch(
-                                        `${fieldPrefix}.${index}.quantity`,
+                                        `preparation_ingredients.${index}.quantity`,
                                       ) || 0;
                                     const conversionFactor =
                                       form.watch(
-                                        `${fieldPrefix}.${index}.base_to_recipe`,
+                                        `preparation_ingredients.${index}.base_to_recipe`,
                                       ) || 1;
-                                    const unitCost = option.unit_cost || 0;
+                                    const unitCost =
+                                      form.watch(
+                                        `preparation_ingredients.${index}.unit_cost`,
+                                      ) || 0;
 
                                     form.setValue(
-                                      `${fieldPrefix}.${index}.total_cost`,
+                                      `preparation_ingredients.${index}.total_cost`,
                                       (quantity / conversionFactor) * unitCost,
                                     );
                                   }
@@ -977,6 +990,10 @@ export default function PreparationSheet({
                                       (prep: any) =>
                                         prep.preparation_uuid === option.value,
                                     );
+                                  console.log(
+                                    "Selected preparation:",
+                                    selectedPreparation,
+                                  );
 
                                   field.onChange(option.label);
                                   form.setValue(
@@ -1041,7 +1058,10 @@ export default function PreparationSheet({
                                     form.watch(
                                       `preparation_preparations.${index}.base_to_recipe`,
                                     ) || 1;
-                                  const unitCost = option.unit_cost || 0;
+                                  const unitCost =
+                                    form.watch(
+                                      `preparation_preparations.${index}.unit_cost`,
+                                    ) || 0;
 
                                   form.setValue(
                                     `preparation_preparations.${index}.total_cost`,
@@ -1081,9 +1101,45 @@ export default function PreparationSheet({
                               min={0}
                               step="any"
                               {...field}
-                              onChange={(e) =>
-                                field.onChange(parseFloat(e.target.value))
-                              }
+                              onChange={async (e) => {
+                                const newQuantity = parseFloat(e.target.value);
+                                field.onChange(newQuantity);
+
+                                const unitCost =
+                                  form.watch(
+                                    `preparation_preparations.${index}.unit_cost`,
+                                  ) || 0;
+                                const conversionFactor =
+                                  form.watch(
+                                    `preparation_preparations.${index}.base_to_recipe`,
+                                  ) || 1;
+                                const totalCost =
+                                  (newQuantity / conversionFactor) * unitCost;
+                                form.setValue(
+                                  `preparation_preparations.${index}.total_cost`,
+                                  totalCost,
+                                );
+
+                                const ingredients =
+                                  form.watch("preparation_ingredients") || [];
+                                const preparations =
+                                  form.watch("preparation_preparations") || [];
+                                const totalIngredientCost = ingredients.reduce(
+                                  (sum, ing) => sum + (ing.total_cost || 0),
+                                  0,
+                                );
+                                const totalPrepCost = preparations.reduce(
+                                  (sum, prep) => sum + (prep.total_cost || 0),
+                                  0,
+                                );
+                                const portionCount =
+                                  form.watch("portion_count") || 1;
+                                form.setValue(
+                                  "portion_cost",
+                                  (totalIngredientCost + totalPrepCost) /
+                                    portionCount,
+                                );
+                              }}
                             />
                           </FormControl>
                         </FormItem>

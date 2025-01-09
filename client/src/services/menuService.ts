@@ -213,6 +213,39 @@ export const menuService = {
     }
   },
 
+  async updatePreparation(
+    restaurantUuid: string,
+    preparation: Preparation,
+  ): Promise<Preparation> {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/preparations/preparation/${preparation.preparation_uuid}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(preparation),
+        },
+      );
+
+      if (!response.ok) {
+        console.error("Server response not ok:", response.status);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error("Failed to update preparation");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to update preparation:", error);
+      throw error;
+    }
+  },
+
   async createPreparation(
     restaurantUuid: string,
     preparation: any,
