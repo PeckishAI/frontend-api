@@ -451,6 +451,7 @@ export default function PreparationSheet({
                       <Input
                         type="number"
                         min={1}
+                        step="0.01"
                         {...field}
                         onChange={(e) =>
                           field.onChange(parseInt(e.target.value))
@@ -1368,11 +1369,11 @@ export default function PreparationSheet({
               >
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className={cn(
                   "relative",
-                  form.formState.isSubmitting && "text-transparent"
+                  form.formState.isSubmitting && "text-transparent",
                 )}
                 disabled={form.formState.isSubmitting}
               >
