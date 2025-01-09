@@ -111,7 +111,7 @@ const preparationSchema = z.object({
 
 type Preparation = z.infer<typeof preparationSchema>;
 
-const useIngredientOptions = (restaurantUuid?: string) => {
+const useIngredients = (restaurantUuid?: string) => {
   const { data: ingredients } = useQuery({
     queryKey: ["ingredients", restaurantUuid],
     queryFn: async () => {
@@ -121,6 +121,10 @@ const useIngredientOptions = (restaurantUuid?: string) => {
     enabled: !!restaurantUuid,
   });
 
+  return ingredients || [];
+};
+
+const useIngredientOptions = (ingredients?: any) => {
   return ingredients
     ? Object.values(ingredients).map((ing: any) => ({
         label: ing.ingredient_name,
@@ -130,15 +134,26 @@ const useIngredientOptions = (restaurantUuid?: string) => {
     : [];
 };
 
-const usePreparationOptions = (restaurantUuid?: string) => {
+const usePreparations = (restaurantUuid?: string) => {
   const { data: preparations } = useQuery({
     queryKey: ["preparations", restaurantUuid],
     queryFn: () => {
       if (!restaurantUuid) return [];
       return menuService.getRestaurantPreparations(restaurantUuid);
     },
+    enabled: !!restaurantUuid,
   });
   return preparations || [];
+};
+
+const usePreparationOptions = (preparations?: any) => {
+  return preparations
+    ? Object.values(preparations).map((prep: any) => ({
+        label: prep.preparation_name,
+        value: prep.preparation_uuid,
+        type: "preparation",
+      }))
+    : [];
 };
 
 const useUnitOptions = (restaurantUuid?: string) => {
@@ -150,23 +165,17 @@ const useUnitOptions = (restaurantUuid?: string) => {
         unitService.getReferenceUnit(),
         unitService.getRestaurantUnit(restaurantUuid),
       ]);
-
-      // Create a map of reference units for lookup
-      const referenceUnitIds = new Set(
-        referenceUnits.map((unit) => unit.unit_uuid)
-      );
-
-      // Map restaurant units and mark reference ones
-      return restaurantUnits.map((unit) => ({
-        unit_name: unit.unit_name,
-        unit_uuid: unit.unit_uuid,
-        unit_type: referenceUnitIds.has(unit.unit_uuid) ? "reference" : null
-      }));
+      return [...referenceUnits, ...restaurantUnits];
     },
     enabled: !!restaurantUuid,
   });
 
-  return units || [];
+  return units
+    ? units.map((unit: any) => ({
+        label: unit.unit_name,
+        value: unit.unit_uuid,
+      }))
+    : [];
 };
 
 export default function PreparationSheet({
@@ -187,6 +196,9 @@ export default function PreparationSheet({
   const [showNewPreparationDialog, setShowNewPreparationDialog] =
     useState(false);
   const [newItemName, setNewItemName] = useState("");
+
+  const ingredientList = useIngredients(currentRestaurant?.restaurant_uuid);
+  const preparationList = usePreparations(currentRestaurant?.restaurant_uuid);
 
   const form = useForm<Preparation>({
     resolver: zodResolver(preparationSchema),
@@ -254,6 +266,8 @@ export default function PreparationSheet({
         base_unit: { unit_uuid: "", unit_name: "" },
         recipe_unit: { unit_uuid: "", unit_name: "" },
         base_to_recipe: 1,
+        unit_cost: 0,
+        total_cost: 0,
       },
     ]);
   };
@@ -540,15 +554,62 @@ export default function PreparationSheet({
                                 }
                                 onChange={async (option) => {
                                   if (option) {
+                                    const selectedIngredient =
+                                      ingredientList.find(
+                                        (ing: any) =>
+                                          ing.ingredient_uuid === option.value,
+                                      );
+
                                     field.onChange(option.label);
                                     form.setValue(
-                                      `${fieldPrefix}.${index}.ingredient_uuid`,
+                                      `preparation_ingredients.${index}.ingredient_uuid`,
                                       option.value,
                                     );
                                     form.setValue(
-                                      `${fieldPrefix}.${index}.unit_cost`,
+                                      `preparation_ingredients.${index}.unit_cost`,
                                       option.unit_cost || 0,
                                     );
+
+                                    if (selectedIngredient?.base_unit) {
+                                      form.setValue(
+                                        `preparation_ingredients.${index}.base_unit`,
+                                        {
+                                          unit_uuid:
+                                            selectedIngredient.base_unit
+                                              .unit_uuid,
+                                          unit_name:
+                                            selectedIngredient.base_unit
+                                              .unit_name,
+                                        },
+                                      );
+
+                                      // Get conversion factor if recipe unit is already selected
+                                      const recipeUnit = form.watch(
+                                        `preparation_ingredients.${index}.recipe_unit`,
+                                      );
+
+                                      if (recipeUnit?.unit_uuid) {
+                                        try {
+                                          const response =
+                                            await unitService.getConversionFactor(
+                                              selectedIngredient.ingredient_uuid,
+                                              selectedIngredient.base_unit
+                                                .unit_uuid,
+                                              recipeUnit.unit_uuid,
+                                            );
+
+                                          form.setValue(
+                                            `preparation_ingredients.${index}.base_to_recipe`,
+                                            response.conversion_factor,
+                                          );
+                                        } catch (error) {
+                                          console.error(
+                                            "Failed to fetch conversion factor:",
+                                            error,
+                                          );
+                                        }
+                                      }
+                                    }
 
                                     const quantity =
                                       form.watch(
@@ -567,7 +628,9 @@ export default function PreparationSheet({
                                   }
                                 }}
                                 options={useIngredientOptions(
-                                  currentRestaurant?.restaurant_uuid,
+                                  useIngredients(
+                                    currentRestaurant?.restaurant_uuid,
+                                  ),
                                 )}
                                 onCreateOption={(inputValue) => {
                                   setNewItemName(inputValue);
@@ -608,12 +671,12 @@ export default function PreparationSheet({
                                     ) || 0;
                                   const conversionFactor =
                                     form.watch(
-                                      `${fieldPrefix}.${index}.base_to_recipe`,
+                                      `preparation_ingredients.${index}.base_to_recipe`,
                                     ) || 1;
                                   const totalCost =
                                     (newQuantity / conversionFactor) * unitCost;
                                   form.setValue(
-                                    `${fieldPrefix}.${index}.total_cost`,
+                                    `preparation_ingredients.${index}.total_cost`,
                                     totalCost,
                                   );
 
@@ -658,54 +721,98 @@ export default function PreparationSheet({
                             <FormControl>
                               <CreatableSelect
                                 value={
-                                  field.value
+                                  form.watch(
+                                    `preparation_ingredients.${index}.recipe_unit`,
+                                  )
                                     ? {
-                                        value: field.value,
+                                        value: form.watch(
+                                          `preparation_ingredients.${index}.recipe_unit.unit_uuid`,
+                                        ),
                                         label: form.watch(
                                           `preparation_ingredients.${index}.recipe_unit.unit_name`,
                                         ),
                                       }
                                     : null
                                 }
-                                onChange={(option) => {
+                                onChange={async (option) => {
                                   if (option) {
                                     form.setValue(
-                                      `${fieldPrefix}.${index}.recipe_unit`,
+                                      `preparation_ingredients.${index}.recipe_unit`,
                                       {
                                         unit_uuid: option.value,
                                         unit_name: option.label,
                                       },
                                     );
-                                  }
-                                }}
-                                options={useUnitOptions(
-                                  currentRestaurant?.restaurant_uuid,
-                                )}
-                                onCreateOption={async (value) => {
-                                  try {
-                                    if (!currentRestaurant?.restaurant_uuid)
-                                      return;
-                                    const newUnit =
-                                      await unitService.createUnit(
-                                        { unit_name: value },
-                                        currentRestaurant.restaurant_uuid,
+
+                                    // Get the current ingredient and its base unit
+                                    const ingredientUuid = form.watch(
+                                      `preparation_ingredients.${index}.ingredient_uuid`,
+                                    );
+                                    const selectedIngredient =
+                                      ingredients?.find(
+                                        (ing: any) =>
+                                          ing.ingredient_uuid ===
+                                          ingredientUuid,
                                       );
-                                    form.setValue(
-                                      `preparation_ingredients.${index}.recipe_unit`,
-                                      {
-                                        unit_uuid: newUnit.unit_uuid,
-                                        unit_name: newUnit.unit_name,
-                                      },
-                                    );
-                                    queryClient.invalidateQueries(["units"]);
-                                  } catch (error) {
-                                    console.error(
-                                      "Failed to create unit:",
-                                      error,
-                                    );
+
+                                    if (ingredientUuid && option.value) {
+                                      try {
+                                        const response =
+                                          await unitService.getConversionFactor(
+                                            ingredientUuid,
+                                            selectedIngredient.base_unit
+                                              .unit_uuid,
+                                            option.value,
+                                          );
+
+                                        form.setValue(
+                                          `preparation_ingredients.${index}.base_to_recipe`,
+                                          response.conversion_factor,
+                                        );
+                                      } catch (error) {
+                                        console.error(
+                                          "Failed to fetch conversion factor:",
+                                          error,
+                                        );
+                                      }
+                                    }
                                   }
                                 }}
-                                placeholder=""
+                                options={
+                                  useQuery({
+                                    queryKey: [
+                                      "units",
+                                      currentRestaurant?.restaurant_uuid,
+                                    ],
+                                    queryFn: () =>
+                                      unitService.getRestaurantUnit(
+                                        currentRestaurant?.restaurant_uuid ||
+                                          "",
+                                      ),
+                                    enabled:
+                                      !!currentRestaurant?.restaurant_uuid,
+                                  }).data?.map((unit) => ({
+                                    label: unit.unit_name,
+                                    value: unit.unit_uuid,
+                                  })) || []
+                                }
+                                onCreateOption={async (inputValue) => {
+                                  if (!currentRestaurant?.restaurant_uuid)
+                                    return;
+                                  const newUnit = await unitService.createUnit(
+                                    { unit_name: inputValue },
+                                    currentRestaurant.restaurant_uuid,
+                                  );
+                                  form.setValue(
+                                    `preparation_ingredients.${index}.recipe_unit`,
+                                    {
+                                      unit_uuid: newUnit.unit_uuid,
+                                      unit_name: newUnit.unit_name,
+                                    },
+                                  );
+                                  queryClient.invalidateQueries(["units"]);
+                                }}
+                                placeholder="Select unit"
                               />
                             </FormControl>
                           </FormItem>
@@ -720,11 +827,20 @@ export default function PreparationSheet({
                             <FormLabel
                               className={index !== 0 ? "sr-only" : undefined}
                             >
-                              Factor
+                              Conversion
                             </FormLabel>
                             <FormControl>
                               <Input
                                 type="number"
+                                suffix={
+                                  form.watch(
+                                    `preparation_ingredients.${index}.base_unit.unit_name`,
+                                  ) +
+                                  " → " +
+                                  form.watch(
+                                    `preparation_ingredients.${index}.recipe_unit.unit_name`,
+                                  )
+                                }
                                 min={0}
                                 step="any"
                                 placeholder="Conv. factor"
@@ -737,16 +853,16 @@ export default function PreparationSheet({
 
                                   const unitCost =
                                     form.watch(
-                                      `${fieldPrefix}.${index}.unit_cost`,
+                                      `preparation_ingredients.${index}.unit_cost`,
                                     ) || 0;
                                   const quantity =
                                     form.watch(
-                                      `${fieldPrefix}.${index}.quantity`,
+                                      `preparation_ingredients.${index}.quantity`,
                                     ) || 1;
                                   const totalCost =
                                     (quantity / newConversionFactor) * unitCost;
                                   form.setValue(
-                                    `${fieldPrefix}.${index}.total_cost`,
+                                    `preparation_ingredients.${index}.total_cost`,
                                     totalCost,
                                   );
                                   const ingredients =
@@ -819,7 +935,7 @@ export default function PreparationSheet({
                 {form.watch("preparation_preparations")?.map((_, index) => (
                   <div
                     key={index}
-                    className="grid grid-cols-[2fr,1fr,1fr,1fr,auto] gap-4 items-end"
+                    className="grid grid-cols-[2fr,1fr,1fr,1fr,1fr,auto] gap-4 items-end"
                   >
                     <FormField
                       control={form.control}
@@ -829,7 +945,7 @@ export default function PreparationSheet({
                           <FormLabel
                             className={index !== 0 ? "sr-only" : undefined}
                           >
-                            Preparation
+                            Ingredient
                           </FormLabel>
                           <FormControl>
                             <CreatableSelect
@@ -843,20 +959,93 @@ export default function PreparationSheet({
                                     }
                                   : null
                               }
-                              onChange={(option) => {
+                              onChange={async (option) => {
                                 if (option) {
+                                  const selectedPreparation =
+                                    preparationList?.find(
+                                      (prep: any) =>
+                                        prep.preparation_uuid === option.value,
+                                    );
+
                                   field.onChange(option.label);
                                   form.setValue(
                                     `preparation_preparations.${index}.preparation_uuid`,
                                     option.value,
                                   );
+                                  form.setValue(
+                                    `preparation_preparations.${index}.unit_cost`,
+                                    selectedPreparation.portion_cost || 0,
+                                  );
+                                  console.log("Preparations: ", preparations);
+                                  console.log(
+                                    "Selected Preparation: ",
+                                    selectedPreparation,
+                                  );
+
+                                  if (selectedPreparation?.unit) {
+                                    form.setValue(
+                                      `preparation_preparations.${index}.base_unit`,
+                                      {
+                                        unit_uuid:
+                                          selectedPreparation.unit.unit_uuid,
+                                        unit_name:
+                                          selectedPreparation.unit.unit_name,
+                                      },
+                                    );
+
+                                    // Get conversion factor if recipe unit is already selected
+                                    const recipeUnit = form.watch(
+                                      `preparation_preparations.${index}.recipe_unit`,
+                                    );
+
+                                    console.log("Form: ", form.getValues());
+
+                                    if (recipeUnit?.unit_uuid) {
+                                      try {
+                                        const response =
+                                          await unitService.getPreparationConversionFactor(
+                                            selectedPreparation.preparation_uuid,
+                                            selectedPreparation.unit.unit_uuid,
+                                            recipeUnit.unit_uuid,
+                                          );
+
+                                        form.setValue(
+                                          `preparation_preparations.${index}.base_to_recipe`,
+                                          response.conversion_factor,
+                                        );
+                                      } catch (error) {
+                                        console.error(
+                                          "Failed to fetch conversion factor:",
+                                          error,
+                                        );
+                                      }
+                                    }
+                                  }
+
+                                  const quantity =
+                                    form.watch(
+                                      `preparation_preparations.${index}.quantity`,
+                                    ) || 0;
+                                  const conversionFactor =
+                                    form.watch(
+                                      `preparation_preparations.${index}.base_to_recipe`,
+                                    ) || 1;
+                                  const unitCost = option.unit_cost || 0;
+
+                                  form.setValue(
+                                    `preparation_preparations.${index}.total_cost`,
+                                    (quantity / conversionFactor) * unitCost,
+                                  );
                                 }
                               }}
                               options={usePreparationOptions(
-                                currentRestaurant?.restaurant_uuid,
+                                usePreparations(
+                                  currentRestaurant?.restaurant_uuid,
+                                ),
                               )}
                               onCreateOption={(inputValue) => {
                                 setNewItemName(inputValue);
+                                //setShowNewIngredientDialog(true);
                               }}
                               placeholder=""
                             />
@@ -903,16 +1092,20 @@ export default function PreparationSheet({
                           <FormControl>
                             <CreatableSelect
                               value={
-                                field.value
+                                form.watch(
+                                  `preparation_preparations.${index}.recipe_unit`,
+                                )
                                   ? {
-                                      value: field.value,
+                                      value: form.watch(
+                                        `preparation_preparations.${index}.recipe_unit.unit_uuid`,
+                                      ),
                                       label: form.watch(
                                         `preparation_preparations.${index}.recipe_unit.unit_name`,
                                       ),
                                     }
                                   : null
                               }
-                              onChange={(option) => {
+                              onChange={async (option) => {
                                 if (option) {
                                   form.setValue(
                                     `preparation_preparations.${index}.recipe_unit`,
@@ -921,35 +1114,73 @@ export default function PreparationSheet({
                                       unit_name: option.label,
                                     },
                                   );
+
+                                  // Get the current ingredient and its base unit
+                                  const preparationUuid = form.watch(
+                                    `preparation_preparations.${index}.preparation_uuid`,
+                                  );
+                                  const preparationUnit = form.watch(
+                                    `preparation_preparations.${index}.base_unit`,
+                                  );
+
+                                  if (
+                                    preparationUuid &&
+                                    option.value &&
+                                    preparationUnit.unit_uuid
+                                  ) {
+                                    try {
+                                      const response =
+                                        await unitService.getPreparationConversionFactor(
+                                          preparationUuid,
+                                          preparationUnit.unit_uuid,
+                                          option.value,
+                                        );
+
+                                      form.setValue(
+                                        `preparation_preparations.${index}.base_to_recipe`,
+                                        response.conversion_factor,
+                                      );
+                                    } catch (error) {
+                                      console.error(
+                                        "Failed to fetch conversion factor:",
+                                        error,
+                                      );
+                                    }
+                                  }
                                 }
                               }}
-                              options={useUnitOptions(
-                                currentRestaurant?.restaurant_uuid,
-                              )}
-                              onCreateOption={async (value) => {
-                                try {
-                                  if (!currentRestaurant?.restaurant_uuid)
-                                    return;
-                                  const newUnit = await unitService.createUnit(
-                                    { unit_name: value },
-                                    currentRestaurant.restaurant_uuid,
-                                  );
-                                  form.setValue(
-                                    `preparation_preparations.${index}.recipe_unit`,
-                                    {
-                                      unit_uuid: newUnit.unit_uuid,
-                                      unit_name: newUnit.unit_name,
-                                    },
-                                  );
-                                  queryClient.invalidateQueries(["units"]);
-                                } catch (error) {
-                                  console.error(
-                                    "Failed to create unit:",
-                                    error,
-                                  );
-                                }
+                              options={
+                                useQuery({
+                                  queryKey: [
+                                    "units",
+                                    currentRestaurant?.restaurant_uuid,
+                                  ],
+                                  queryFn: () =>
+                                    unitService.getRestaurantUnit(
+                                      currentRestaurant?.restaurant_uuid || "",
+                                    ),
+                                  enabled: !!currentRestaurant?.restaurant_uuid,
+                                }).data?.map((unit) => ({
+                                  label: unit.unit_name,
+                                  value: unit.unit_uuid,
+                                })) || []
+                              }
+                              onCreateOption={async (inputValue) => {
+                                if (!currentRestaurant?.restaurant_uuid) return;
+                                const newUnit = await unitService.createUnit(
+                                  { unit_name: inputValue },
+                                  currentRestaurant.restaurant_uuid,
+                                );
+                                form.setValue(
+                                  `preparation_preparations.${index}.recipe_unit`,
+                                  {
+                                    unit_uuid: newUnit.unit_uuid,
+                                    unit_name: newUnit.unit_name,
+                                  },
+                                );
+                                queryClient.invalidateQueries(["units"]);
                               }}
-                              placeholder=""
+                              placeholder="Select unit"
                             />
                           </FormControl>
                         </FormItem>
@@ -964,23 +1195,80 @@ export default function PreparationSheet({
                           <FormLabel
                             className={index !== 0 ? "sr-only" : undefined}
                           >
-                            Factor
+                            Conversion
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="number"
+                              suffix={
+                                form.watch(
+                                  `preparation_preparations.${index}.base_unit.unit_name`,
+                                ) +
+                                " → " +
+                                form.watch(
+                                  `preparation_preparations.${index}.recipe_unit.unit_name`,
+                                )
+                              }
                               min={0}
                               step="any"
-                              placeholder="Conv. factor"
+                              placeholder=""
                               {...field}
-                              onChange={(e) =>
-                                field.onChange(parseFloat(e.target.value))
-                              }
+                              onChange={async (e) => {
+                                const newConversionFactor = parseFloat(
+                                  e.target.value,
+                                );
+                                field.onChange(newConversionFactor);
+
+                                const unitCost =
+                                  form.watch(
+                                    `preparation_preparations.${index}.unit_cost`,
+                                  ) || 0;
+                                const quantity =
+                                  form.watch(
+                                    `preparation_preparations.${index}.quantity`,
+                                  ) || 1;
+                                const totalCost =
+                                  (quantity / newConversionFactor) * unitCost;
+                                form.setValue(
+                                  `preparation_preparations.${index}.total_cost`,
+                                  totalCost,
+                                );
+                                const ingredients =
+                                  form.watch("preparation_ingredients") || [];
+                                const preparations =
+                                  form.watch("preparation_preparations") || [];
+                                const totalIngredientCost = ingredients.reduce(
+                                  (sum, ing) => sum + (ing.total_cost || 0),
+                                  0,
+                                );
+                                const totalPrepCost = preparations.reduce(
+                                  (sum, prep) => sum + (prep.total_cost || 0),
+                                  0,
+                                );
+                                const portionCount =
+                                  form.watch("portion_count") || 1;
+                                form.setValue(
+                                  "portion_cost",
+                                  (totalIngredientCost + totalPrepCost) /
+                                    portionCount,
+                                );
+                              }}
                             />
                           </FormControl>
                         </FormItem>
                       )}
                     />
+
+                    <div className="flex items-center">
+                      <span className="text-sm text-muted-foreground">
+                        {currencyInfo?.currencySymbol}
+                        {(
+                          form.watch(
+                            `preparation_preparations.${index}.total_cost`,
+                          ) || 0
+                        ).toFixed(2)}
+                      </span>
+                    </div>
 
                     <Button
                       type="button"
