@@ -398,9 +398,26 @@ export default function Inventory() {
                           <AlertDialogFooter>
                             <AlertDialogCancel onClick={(e) => e.stopPropagation()}>Cancel</AlertDialogCancel>
                             <AlertDialogAction 
-                              onClick={(e) => {
+                              onClick={async (e) => {
                                 e.stopPropagation();
-                                console.log("Delete ingredient:", item.ingredient_uuid);
+                                try {
+                                  await inventoryService.deleteIngredient(
+                                    currentRestaurant?.restaurant_uuid || "",
+                                    item.ingredient_uuid
+                                  );
+                                  await refetch();
+                                  toast({
+                                    title: "Ingredient deleted",
+                                    description: `${item.ingredient_name} has been archived`,
+                                  });
+                                } catch (error) {
+                                  console.error("Failed to delete ingredient:", error);
+                                  toast({
+                                    title: "Error",
+                                    description: "Failed to delete ingredient",
+                                    variant: "destructive",
+                                  });
+                                }
                               }}
                             >
                               Delete
