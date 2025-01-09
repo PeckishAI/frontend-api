@@ -90,7 +90,7 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
             </div>
 
             {/* Thumbnails */}
-            <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
+            <div className="mt-4 flex flex-wrap gap-2 overflow-y-auto max-h-40 pb-2">
               {stocktake.documents.map((doc, index) => (
                 <button
                   key={doc.document_uuid}
@@ -164,7 +164,8 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-medium">Inventory Items</h3>
-                  <div className="flex gap-2">
+                  <div className="flex-1 overflow-x-auto">
+                    <div className="flex gap-2 justify-end min-w-max px-4">
                     <button
                       onClick={() => setSelectedDocIndex(-1)}
                       className={`px-3 py-1.5 rounded-full text-sm transition-all ${
@@ -193,6 +194,7 @@ export default function StocktakeSlider({ stocktake, open, onOpenChange }: Stock
                         Doc {index + 1}
                       </button>
                     ))}
+                    </div>
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground">
