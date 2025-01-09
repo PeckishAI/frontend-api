@@ -63,7 +63,7 @@ export default function SupplierSheet({
   React.useEffect(() => {
     if (supplier) {
       form.reset({
-        name: supplier.name,
+        name: supplier.supplier_name,
         category: supplier.category,
         email: supplier.email || "",
         phone: supplier.phone || "",
@@ -72,8 +72,8 @@ export default function SupplierSheet({
       });
 
       // Find all inventory items associated with this supplier
-      const items = mockInventory.filter(item =>
-        item.suppliers.some(s => s.supplierId === supplier.id)
+      const items = mockInventory.filter((item) =>
+        item.suppliers.some((s) => s.supplierId === supplier.id),
       );
       setSupplierItems(items);
     } else {
@@ -103,12 +103,17 @@ export default function SupplierSheet({
         <SheetHeader>
           <SheetTitle>{supplier ? "Edit" : "New"} Supplier</SheetTitle>
           <SheetDescription>
-            {supplier ? "Make changes to the supplier here." : "Add a new supplier to your system."}
+            {supplier
+              ? "Make changes to the supplier here."
+              : "Add a new supplier to your system."}
           </SheetDescription>
         </SheetHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-8">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 pt-8"
+          >
             <FormField
               control={form.control}
               name="name"
@@ -201,7 +206,7 @@ export default function SupplierSheet({
                 <div className="space-y-2">
                   {supplierItems.map((item) => {
                     const supplierInfo = item.suppliers.find(
-                      s => s.supplierId === supplier.id
+                      (s) => s.supplierId === supplier.id,
                     );
                     return (
                       <div
@@ -225,7 +230,11 @@ export default function SupplierSheet({
             )}
 
             <div className="flex justify-end gap-4 pt-6">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
                 Cancel
               </Button>
               <Button type="submit">

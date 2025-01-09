@@ -233,7 +233,10 @@ export default function PreparationSheet({
       unit_cost: 0,
       total_cost: 0,
     };
-    form.setValue("preparation_ingredients", [...currentIngredients, newIngredient]);
+    form.setValue("preparation_ingredients", [
+      ...currentIngredients,
+      newIngredient,
+    ]);
     calculateTotalCost();
   };
 
@@ -250,7 +253,8 @@ export default function PreparationSheet({
   };
 
   const addPreparation = () => {
-    const currentPreparations = form.getValues("preparation_preparations") || [];
+    const currentPreparations =
+      form.getValues("preparation_preparations") || [];
     const newPreparation = {
       preparation_uuid: "",
       preparation_name: "",
@@ -261,7 +265,10 @@ export default function PreparationSheet({
       unit_cost: 0,
       total_cost: 0,
     };
-    form.setValue("preparation_preparations", [...currentPreparations, newPreparation]);
+    form.setValue("preparation_preparations", [
+      ...currentPreparations,
+      newPreparation,
+    ]);
     calculateTotalCost();
   };
 
@@ -552,6 +559,10 @@ export default function PreparationSheet({
                                         (ing: any) =>
                                           ing.ingredient_uuid === option.value,
                                       );
+                                    console.log(
+                                      "Selected Ingredient:",
+                                      selectedIngredient,
+                                    );
 
                                     field.onChange(option.label);
                                     form.setValue(
@@ -560,7 +571,7 @@ export default function PreparationSheet({
                                     );
                                     form.setValue(
                                       `preparation_ingredients.${index}.unit_cost`,
-                                      option.unit_cost || 0,
+                                      selectedIngredient.unit_cost || 0,
                                     );
 
                                     if (selectedIngredient?.base_unit) {
