@@ -180,15 +180,13 @@ export default function Inventory() {
     ];
     const csvData = filteredInventory.map((item) => [
       item.ingredient_name,
-      item.tags.map((t) => t.tag_name).join(", "),
+      item.tags.map((t) => t.tag_name).join(" > "),
       item.par_level,
       item.quantity,
       item.base_unit.unit_name,
       item.ingredient_suppliers
-        .map(
-          (s) => `${s.supplier.supplier_name} ($${s.unit_cost}/${s.pack_size})`,
-        )
-        .join("; "),
+        .map((s) => s.supplier.supplier_name)
+        .join(", "),
     ]);
 
     const csvContent = [headers, ...csvData]
