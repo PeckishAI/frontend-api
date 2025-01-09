@@ -318,6 +318,7 @@ export default function Inventory() {
                   >
                     Suppliers
                   </TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -357,6 +358,18 @@ export default function Inventory() {
                         {item.ingredient_suppliers.length > 0 &&
                           `${item.ingredient_suppliers.length} supplier${item.ingredient_suppliers.length > 1 ? "s" : ""}`}
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          console.log("Delete ingredient:", item.ingredient_uuid);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
