@@ -15,6 +15,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import { Plus, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -22,23 +29,35 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { menuService } from "@/services/menuService";
+import { categoryService } from "@/services/categoryService";
 import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
-import { categoryService } from "@/services/categoryService";
+import { foodEmojis } from "@/lib/emojis";
 import CategoryModal from "./CategoryModal";
-import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
+import NewIngredientDialog from "../inventory/NewIngredientDialog";
+
+const useCategories = (restaurantUuid?: string) => {
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories", restaurantUuid],
+    queryFn: async () => {
+      if (!restaurantUuid) return [];
+      return categoryService.getRestaurantCategories(restaurantUuid);
+    },
+  });
+  return categories;
+};
 
 const modifierSchema = z.object({
   modifier_uuid: z.string().optional(),
   modifier_name: z.string().min(1, "Name is required"),
   category: z
     .object({
-      category_uuid: z.string().optional(),
-      category_name: z.string().optional(),
-      emoji: z.string().nullish(),
+      category_uuid: z.string().optional().nullable(),
+      category_name: z.string().optional().nullable(),
+      emoji: z.string().nullable().optional(),
     })
-    .nullish(),
+    .optional(),
   portion_count: z.number().min(1, "Portion count must be at least 1"),
   portion_price: z.number().optional(),
   portion_cost: z.number().optional(),
@@ -88,64 +107,47 @@ const modifierSchema = z.object({
 
 type Modifier = z.infer<typeof modifierSchema>;
 
-const useCategories = (restaurantUuid?: string) => {
-  const { data: categories = [] } = useQuery({
-    queryKey: ["categories", restaurantUuid],
-    queryFn: async () => {
-      if (!restaurantUuid) return [];
-      return categoryService.getRestaurantCategories(restaurantUuid);
-    },
-    enabled: !!restaurantUuid,
-  });
-  return categories;
-};
-
-const useIngredientOptions = (restaurantUuid?: string) => {
+const useIngredients = (restaurantUuid?: string) => {
   const { data: ingredients } = useQuery({
     queryKey: ["ingredients", restaurantUuid],
     queryFn: async () => {
       if (!restaurantUuid) return [];
-      const data =
-        await inventoryService.getRestaurantIngredients(restaurantUuid);
-      return data;
+      return inventoryService.getRestaurantIngredients(restaurantUuid);
     },
     enabled: !!restaurantUuid,
   });
 
+  return ingredients || [];
+};
+
+const useIngredientOptions = (ingredients?: any) => {
   return ingredients
     ? Object.values(ingredients).map((ing: any) => ({
         label: ing.ingredient_name,
         value: ing.ingredient_uuid,
         type: "ingredient",
-        unit_cost: ing.ingredient_suppliers?.length
-          ? Math.min(
-              ...ing.ingredient_suppliers.map(
-                (supplier: any) =>
-                  (supplier.unit_cost || 0) / (supplier.pack_size || 1),
-              ),
-            )
-          : 0,
       }))
     : [];
 };
 
-const usePreparationOptions = (restaurantUuid?: string) => {
+const usePreparations = (restaurantUuid?: string) => {
   const { data: preparations } = useQuery({
     queryKey: ["preparations", restaurantUuid],
-    queryFn: async () => {
+    queryFn: () => {
       if (!restaurantUuid) return [];
-      const data = await menuService.getRestaurantPreparations(restaurantUuid);
-      return data;
+      return menuService.getRestaurantPreparations(restaurantUuid);
     },
     enabled: !!restaurantUuid,
   });
+  return preparations || [];
+};
 
+const usePreparationOptions = (preparations?: any) => {
   return preparations
-    ? preparations.map((prep: any) => ({
+    ? Object.values(preparations).map((prep: any) => ({
         label: prep.preparation_name,
         value: prep.preparation_uuid,
         type: "preparation",
-        unit_cost: prep.portion_cost,
       }))
     : [];
 };
@@ -155,22 +157,20 @@ const useUnitOptions = (restaurantUuid?: string) => {
     queryKey: ["units", restaurantUuid],
     queryFn: async () => {
       if (!restaurantUuid) return [];
-      const data = await unitService.getRestaurantUnit(restaurantUuid);
-      return data;
+      const [referenceUnits, restaurantUnits] = await Promise.all([
+        unitService.getReferenceUnit(),
+        unitService.getRestaurantUnit(restaurantUuid),
+      ]);
+      return [...referenceUnits, ...restaurantUnits];
     },
     enabled: !!restaurantUuid,
   });
 
   return units
-    ? [
-        {
-          label: "All Units",
-          options: units.map((unit: any) => ({
-            label: unit.unit_name,
-            value: unit.unit_uuid,
-          })),
-        },
-      ]
+    ? units.map((unit: any) => ({
+        label: unit.unit_name,
+        value: unit.unit_uuid,
+      }))
     : [];
 };
 
@@ -185,10 +185,16 @@ export default function ModifierSheet({
   modifier?: Modifier;
   onSubmit: (data: Modifier) => void;
 }) {
-  const [showIngredientDialog, setShowIngredientDialog] = useState(false);
-  const [newIngredientName, setNewIngredientName] = useState("");
-  const queryClient = useQueryClient();
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { currentRestaurant, currencyInfo } = useRestaurantContext();
+  const queryClient = useQueryClient();
+  const [showNewIngredientDialog, setShowNewIngredientDialog] = useState(false);
+  const [showNewPreparationDialog, setShowNewPreparationDialog] =
+    useState(false);
+  const [newItemName, setNewItemName] = useState("");
+
+  const ingredientList = useIngredients(currentRestaurant?.restaurant_uuid);
+  const preparationList = usePreparations(currentRestaurant?.restaurant_uuid);
 
   const form = useForm<Modifier>({
     resolver: zodResolver(modifierSchema),
@@ -209,24 +215,105 @@ export default function ModifierSheet({
   const ingredients = form.watch("modifier_ingredients") || [];
   const preparations = form.watch("modifier_preparations") || [];
 
+  const addIngredient = () => {
+    const currentIngredients = form.getValues("modifier_ingredients") || [];
+    const newIngredient = {
+      ingredient_uuid: "",
+      ingredient_name: "",
+      quantity: 0,
+      base_unit: { unit_uuid: "", unit_name: "" },
+      recipe_unit: { unit_uuid: "", unit_name: "" },
+      base_to_recipe: 1,
+      unit_cost: 0,
+      total_cost: 0,
+    };
+    form.setValue("modifier_ingredients", [
+      ...currentIngredients,
+      newIngredient,
+    ]);
+    calculateTotalCost();
+  };
+
+  const removeIngredient = (index: number) => {
+    const currentIngredients = form.getValues("modifier_ingredients");
+    if (!currentIngredients) {
+      return;
+    }
+    form.setValue(
+      "modifier_ingredients",
+      currentIngredients.filter((_, i) => i !== index),
+    );
+    calculateTotalCost();
+  };
+
+  const addPreparation = () => {
+    const currentPreparations = form.getValues("modifier_preparations") || [];
+    const newPreparation = {
+      preparation_uuid: "",
+      preparation_name: "",
+      quantity: 0,
+      base_unit: { unit_uuid: "", unit_name: "" },
+      recipe_unit: { unit_uuid: "", unit_name: "" },
+      base_to_recipe: 1,
+      unit_cost: 0,
+      total_cost: 0,
+    };
+    form.setValue("modifier_preparations", [
+      ...currentPreparations,
+      newPreparation,
+    ]);
+    calculateTotalCost();
+  };
+
+  const removePreparation = (index: number) => {
+    const currentPreparations = form.getValues("modifier_preparations");
+    if (!currentPreparations) {
+      return;
+    }
+    form.setValue(
+      "modifier_preparations",
+      currentPreparations.filter((_, i) => i !== index),
+    );
+    calculateTotalCost();
+  };
+
   const calculateTotalCost = () => {
     const ingredients = form.getValues("modifier_ingredients") || [];
     const preparations = form.getValues("modifier_preparations") || [];
 
-    const totalIngredientCost = ingredients.reduce(
-      (sum, ing) => sum + (ing.total_cost || 0),
-      0,
-    );
-    const totalPrepCost = preparations.reduce(
-      (sum, prep) => sum + (prep.total_cost || 0),
-      0,
-    );
+    const totalIngredientCost = ingredients.reduce((sum, ing) => {
+      const quantity = ing.quantity || 0;
+      const unitCost = ing.unit_cost || 0;
+      const conversionFactor = ing.base_to_recipe || 1;
+      return sum + (quantity * unitCost) / conversionFactor;
+    }, 0);
+
+    const totalPrepCost = preparations.reduce((sum, prep) => {
+      const quantity = prep.quantity || 0;
+      const unitCost = prep.unit_cost || 0;
+      const conversionFactor = prep.base_to_recipe || 1;
+      return sum + (quantity * unitCost) / conversionFactor;
+    }, 0);
+
+    const totalCost = totalIngredientCost + totalPrepCost;
     const portionCount = form.getValues("portion_count") || 1;
 
-    form.setValue(
-      "portion_cost",
-      (totalIngredientCost + totalPrepCost) / portionCount,
-    );
+    form.setValue("portion_cost", totalCost / portionCount);
+
+    // Update individual total costs
+    ingredients.forEach((ing, index) => {
+      const totalCost =
+        (ing.quantity || 0) * (ing.unit_cost || 0) * (ing.base_to_recipe || 1);
+      form.setValue(`modifier_ingredients.${index}.total_cost`, totalCost);
+    });
+
+    preparations.forEach((prep, index) => {
+      const totalCost =
+        (prep.quantity || 0) *
+        (prep.unit_cost || 0) *
+        (prep.base_to_recipe || 1);
+      form.setValue(`modifier_preparations.${index}.total_cost`, totalCost);
+    });
   };
 
   const getMarginPercentage = () => {
@@ -234,40 +321,6 @@ export default function ModifierSheet({
     const cost = form.watch("portion_cost") || 0;
     if (price === 0) return 0;
     return (((price - cost) / price) * 100).toFixed(2);
-  };
-
-  const addIngredient = () => {
-    const currentIngredients = form.getValues("modifier_ingredients") || [];
-    form.setValue("modifier_ingredients", [
-      ...currentIngredients,
-      {
-        ingredient_uuid: "",
-        ingredient_name: "",
-        quantity: 1,
-        base_unit: { unit_uuid: "", unit_name: "" },
-        recipe_unit: { unit_uuid: "", unit_name: "" },
-        base_to_recipe: 1,
-        unit_cost: 0,
-        total_cost: 0,
-      },
-    ]);
-  };
-
-  const addPreparation = () => {
-    const currentPreparations = form.getValues("modifier_preparations") || [];
-    form.setValue("modifier_preparations", [
-      ...currentPreparations,
-      {
-        preparation_uuid: "",
-        preparation_name: "",
-        quantity: 1,
-        base_unit: { unit_uuid: "", unit_name: "" },
-        recipe_unit: { unit_uuid: "", unit_name: "" },
-        base_to_recipe: 1,
-        unit_cost: 0,
-        total_cost: 0,
-      },
-    ]);
   };
 
   return (
@@ -279,17 +332,45 @@ export default function ModifierSheet({
 
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(async (data) => {
-              try {
-                if (!currentRestaurant?.restaurant_uuid) {
-                  throw new Error("No restaurant selected");
+            onSubmit={form.handleSubmit(
+              async (data) => {
+                try {
+                  if (!currentRestaurant?.restaurant_uuid) {
+                    throw new Error("No restaurant selected");
+                  }
+
+                  if (data?.modifier_uuid) {
+                    // Update existing product
+                    await menuService.updateModifier(
+                      currentRestaurant.restaurant_uuid,
+                      data,
+                    );
+                  } else {
+                    // Create new product
+                    await menuService.createModifier(
+                      currentRestaurant.restaurant_uuid,
+                      data,
+                    );
+                  }
+
+                  // Invalidate products query to refresh the list
+                  queryClient.invalidateQueries(["modifiers"]);
+                  onSubmit(data);
+                  onOpenChange(false);
+                } catch (error) {
+                  console.error("Failed to save modifier:", error);
                 }
-                onSubmit(data);
-                onOpenChange(false);
-              } catch (error) {
-                console.error("Failed to save modifier:", error);
-              }
-            })}
+              },
+              (errors) => {
+                console.log("Form Validation Errors:", errors);
+                console.log("Current Form State:", form.getValues());
+                console.log("Form Dirty Fields:", form.formState.dirtyFields);
+                console.log(
+                  "Form Touched Fields:",
+                  form.formState.touchedFields,
+                );
+              },
+            )}
             className="space-y-6 pt-8"
           >
             <FormField
@@ -318,16 +399,13 @@ export default function ModifierSheet({
                     <FormItem>
                       <FormLabel>Category</FormLabel>
                       <div className="flex gap-2">
-                        <div className="w-12 flex items-center justify-center">
-                          {field.value?.emoji}
-                        </div>
                         <FormControl>
                           <CreatableSelect
                             value={
                               field.value
                                 ? {
-                                    value: field.value.category_uuid,
-                                    label: field.value.category_name,
+                                    value: field.value.category_uuid || "",
+                                    label: `${field.value.emoji} ${field.value.category_name}`,
                                   }
                                 : null
                             }
@@ -350,9 +428,9 @@ export default function ModifierSheet({
                               currentRestaurant?.restaurant_uuid,
                             ).map((cat) => ({
                               value: cat.category_uuid,
-                              label: cat.category_name,
+                              label: `${cat.emoji} ${cat.category_name}`,
                             }))}
-                            placeholder="Choose a category or type to create new"
+                            placeholder=""
                             size="large"
                           />
                         </FormControl>
@@ -503,32 +581,121 @@ export default function ModifierSheet({
                               value={
                                 field.value
                                   ? {
-                                      value: ingredient.ingredient_uuid || "",
-                                      label: field.value || "",
+                                      label: field.value,
+                                      value: form.watch(
+                                        `modifier_ingredients.${index}.ingredient_uuid`,
+                                      ),
                                     }
                                   : null
                               }
-                              onChange={(option) => {
+                              onChange={async (option) => {
                                 if (option) {
+                                  const selectedIngredient =
+                                    ingredientList.find(
+                                      (ing: any) =>
+                                        ing.ingredient_uuid === option.value,
+                                    );
+                                  console.log(
+                                    "Selected Ingredient:",
+                                    selectedIngredient,
+                                  );
+
                                   field.onChange(option.label);
                                   form.setValue(
                                     `modifier_ingredients.${index}.ingredient_uuid`,
                                     option.value,
                                   );
+
+                                  // Calculate minimum unit cost per unit from all suppliers
+                                  const minUnitCost =
+                                    selectedIngredient.ingredient_suppliers.reduce(
+                                      (min, supplier) => {
+                                        const costPerUnit =
+                                          supplier.unit_cost /
+                                          (supplier.pack_size || 1);
+                                        return costPerUnit < min
+                                          ? costPerUnit
+                                          : min;
+                                      },
+                                      Number.MAX_VALUE,
+                                    );
+
                                   form.setValue(
                                     `modifier_ingredients.${index}.unit_cost`,
-                                    option.unit_cost || 0,
+                                    minUnitCost === Number.MAX_VALUE
+                                      ? 0
+                                      : minUnitCost,
                                   );
-                                  calculateTotalCost();
+
+                                  if (selectedIngredient?.base_unit) {
+                                    form.setValue(
+                                      `modifier_ingredients.${index}.base_unit`,
+                                      {
+                                        unit_uuid:
+                                          selectedIngredient.base_unit
+                                            .unit_uuid,
+                                        unit_name:
+                                          selectedIngredient.base_unit
+                                            .unit_name,
+                                      },
+                                    );
+
+                                    // Get conversion factor if recipe unit is already selected
+                                    const recipeUnit = form.watch(
+                                      `modifier_ingredients.${index}.recipe_unit`,
+                                    );
+
+                                    if (recipeUnit?.unit_uuid) {
+                                      try {
+                                        const response =
+                                          await unitService.getConversionFactor(
+                                            selectedIngredient.ingredient_uuid,
+                                            selectedIngredient.base_unit
+                                              .unit_uuid,
+                                            recipeUnit.unit_uuid,
+                                          );
+
+                                        form.setValue(
+                                          `modifier_ingredients.${index}.base_to_recipe`,
+                                          response.conversion_factor,
+                                        );
+                                      } catch (error) {
+                                        console.error(
+                                          "Failed to fetch conversion factor:",
+                                          error,
+                                        );
+                                      }
+                                    }
+                                  }
+
+                                  const quantity =
+                                    form.watch(
+                                      `modifier_ingredients.${index}.quantity`,
+                                    ) || 0;
+                                  const conversionFactor =
+                                    form.watch(
+                                      `modifier_ingredients.${index}.base_to_recipe`,
+                                    ) || 1;
+                                  const unitCost =
+                                    form.watch(
+                                      `modifier_ingredients.${index}.unit_cost`,
+                                    ) || 0;
+
+                                  form.setValue(
+                                    `modifier_ingredients.${index}.total_cost`,
+                                    (quantity / conversionFactor) * unitCost,
+                                  );
                                 }
                               }}
-                              onCreateOption={(inputValue) => {
-                                setNewIngredientName(inputValue);
-                                setShowIngredientDialog(true);
-                              }}
                               options={useIngredientOptions(
-                                currentRestaurant?.restaurant_uuid,
+                                useIngredients(
+                                  currentRestaurant?.restaurant_uuid,
+                                ),
                               )}
+                              onCreateOption={(inputValue) => {
+                                setNewItemName(inputValue);
+                                setShowNewIngredientDialog(true);
+                              }}
                               placeholder=""
                             />
                           </FormControl>
@@ -552,10 +719,44 @@ export default function ModifierSheet({
                               min={0}
                               step="any"
                               {...field}
-                              onChange={(e) => {
-                                const newValue = parseFloat(e.target.value);
-                                field.onChange(newValue);
-                                calculateTotalCost();
+                              onChange={async (e) => {
+                                const newQuantity = parseFloat(e.target.value);
+                                field.onChange(newQuantity);
+
+                                const unitCost =
+                                  form.watch(
+                                    `modifier_ingredients.${index}.unit_cost`,
+                                  ) || 0;
+                                const conversionFactor =
+                                  form.watch(
+                                    `modifier_ingredients.${index}.base_to_recipe`,
+                                  ) || 1;
+                                const totalCost =
+                                  (newQuantity / conversionFactor) * unitCost;
+                                form.setValue(
+                                  `modifier_ingredients.${index}.total_cost`,
+                                  totalCost,
+                                );
+
+                                const ingredients =
+                                  form.watch("modifier_ingredients") || [];
+                                const preparations =
+                                  form.watch("modifier_preparations") || [];
+                                const totalIngredientCost = ingredients.reduce(
+                                  (sum, ing) => sum + (ing.total_cost || 0),
+                                  0,
+                                );
+                                const totalPrepCost = preparations.reduce(
+                                  (sum, prep) => sum + (prep.total_cost || 0),
+                                  0,
+                                );
+                                const portionCount =
+                                  form.watch("portion_count") || 1;
+                                form.setValue(
+                                  "portion_cost",
+                                  (totalIngredientCost + totalPrepCost) /
+                                    portionCount,
+                                );
                               }}
                             />
                           </FormControl>
@@ -576,14 +777,20 @@ export default function ModifierSheet({
                           <FormControl>
                             <CreatableSelect
                               value={
-                                ingredient.recipe_unit?.unit_uuid
+                                form.watch(
+                                  `modifier_ingredients.${index}.recipe_unit`,
+                                )
                                   ? {
-                                      value: ingredient.recipe_unit.unit_uuid,
-                                      label: ingredient.recipe_unit.unit_name,
+                                      value: form.watch(
+                                        `modifier_ingredients.${index}.recipe_unit.unit_uuid`,
+                                      ),
+                                      label: form.watch(
+                                        `modifier_ingredients.${index}.recipe_unit.unit_name`,
+                                      ),
                                     }
                                   : null
                               }
-                              onChange={(option) => {
+                              onChange={async (option) => {
                                 if (option) {
                                   form.setValue(
                                     `modifier_ingredients.${index}.recipe_unit`,
@@ -592,11 +799,70 @@ export default function ModifierSheet({
                                       unit_name: option.label,
                                     },
                                   );
+
+                                  // Get the current ingredient and its base unit
+                                  const ingredientUuid = form.watch(
+                                    `modifier_ingredients.${index}.ingredient_uuid`,
+                                  );
+                                  const selectedIngredient = ingredients?.find(
+                                    (ing: any) =>
+                                      ing.ingredient_uuid === ingredientUuid,
+                                  );
+
+                                  if (ingredientUuid && option.value) {
+                                    try {
+                                      const response =
+                                        await unitService.getConversionFactor(
+                                          ingredientUuid,
+                                          selectedIngredient.base_unit
+                                            .unit_uuid,
+                                          option.value,
+                                        );
+
+                                      form.setValue(
+                                        `modifier_ingredients.${index}.base_to_recipe`,
+                                        response.conversion_factor,
+                                      );
+                                    } catch (error) {
+                                      console.error(
+                                        "Failed to fetch conversion factor:",
+                                        error,
+                                      );
+                                    }
+                                  }
                                 }
                               }}
-                              options={useUnitOptions(
-                                currentRestaurant?.restaurant_uuid,
-                              )}
+                              options={
+                                useQuery({
+                                  queryKey: [
+                                    "units",
+                                    currentRestaurant?.restaurant_uuid,
+                                  ],
+                                  queryFn: () =>
+                                    unitService.getRestaurantUnit(
+                                      currentRestaurant?.restaurant_uuid || "",
+                                    ),
+                                  enabled: !!currentRestaurant?.restaurant_uuid,
+                                }).data?.map((unit) => ({
+                                  label: unit.unit_name,
+                                  value: unit.unit_uuid,
+                                })) || []
+                              }
+                              onCreateOption={async (inputValue) => {
+                                if (!currentRestaurant?.restaurant_uuid) return;
+                                const newUnit = await unitService.createUnit(
+                                  { unit_name: inputValue },
+                                  currentRestaurant.restaurant_uuid,
+                                );
+                                form.setValue(
+                                  `modifier_ingredients.${index}.recipe_unit`,
+                                  {
+                                    unit_uuid: newUnit.unit_uuid,
+                                    unit_name: newUnit.unit_name,
+                                  },
+                                );
+                                queryClient.invalidateQueries(["units"]);
+                              }}
                               placeholder=""
                             />
                           </FormControl>
@@ -617,14 +883,58 @@ export default function ModifierSheet({
                           <FormControl>
                             <Input
                               type="number"
+                              suffix={
+                                form.watch(
+                                  `modifier_ingredients.${index}.base_unit.unit_name`,
+                                ) +
+                                " → " +
+                                form.watch(
+                                  `modifier_ingredients.${index}.recipe_unit.unit_name`,
+                                )
+                              }
                               min={0}
                               step="any"
-                              placeholder="Conv. factor"
+                              placeholder=""
                               {...field}
-                              onChange={(e) => {
-                                const newValue = parseFloat(e.target.value);
-                                field.onChange(newValue);
-                                calculateTotalCost();
+                              onChange={async (e) => {
+                                const newConversionFactor = parseFloat(
+                                  e.target.value,
+                                );
+                                field.onChange(newConversionFactor);
+
+                                const unitCost =
+                                  form.watch(
+                                    `modifier_ingredients.${index}.unit_cost`,
+                                  ) || 0;
+                                const quantity =
+                                  form.watch(
+                                    `modifier_ingredients.${index}.quantity`,
+                                  ) || 1;
+                                const totalCost =
+                                  (quantity / newConversionFactor) * unitCost;
+                                form.setValue(
+                                  `modifier_ingredients.${index}.total_cost`,
+                                  totalCost,
+                                );
+                                const ingredients =
+                                  form.watch("modifier_ingredients") || [];
+                                const preparations =
+                                  form.watch("modifier_preparations") || [];
+                                const totalIngredientCost = ingredients.reduce(
+                                  (sum, ing) => sum + (ing.total_cost || 0),
+                                  0,
+                                );
+                                const totalPrepCost = preparations.reduce(
+                                  (sum, prep) => sum + (prep.total_cost || 0),
+                                  0,
+                                );
+                                const portionCount =
+                                  form.watch("portion_count") || 1;
+                                form.setValue(
+                                  "portion_cost",
+                                  (totalIngredientCost + totalPrepCost) /
+                                    portionCount,
+                                );
                               }}
                             />
                           </FormControl>
@@ -636,15 +946,9 @@ export default function ModifierSheet({
                       <span className="text-sm text-muted-foreground">
                         {currencyInfo?.currencySymbol}
                         {(
-                          (form.watch(
-                            `modifier_ingredients.${index}.quantity`,
-                          ) || 0) *
-                          (form.watch(
-                            `modifier_ingredients.${index}.base_to_recipe`,
-                          ) || 0) *
-                          (form.watch(
-                            `modifier_ingredients.${index}.unit_cost`,
-                          ) || 0)
+                          form.watch(
+                            `modifier_ingredients.${index}.total_cost`,
+                          ) || 0
                         ).toFixed(2)}
                       </span>
                     </div>
@@ -653,16 +957,7 @@ export default function ModifierSheet({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      onClick={() => {
-                        const currentIngredients = form.getValues(
-                          "modifier_ingredients",
-                        );
-                        form.setValue(
-                          "modifier_ingredients",
-                          currentIngredients.filter((_, i) => i !== index),
-                        );
-                        calculateTotalCost();
-                      }}
+                      onClick={() => removeIngredient(index)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -705,13 +1000,25 @@ export default function ModifierSheet({
                               value={
                                 field.value
                                   ? {
-                                      value: preparation.preparation_uuid || "",
-                                      label: field.value || "",
+                                      label: field.value,
+                                      value: form.watch(
+                                        `modifier_preparations.${index}.preparation_uuid`,
+                                      ),
                                     }
                                   : null
                               }
-                              onChange={(option) => {
+                              onChange={async (option) => {
                                 if (option) {
+                                  const selectedPreparation =
+                                    preparationList?.find(
+                                      (prep: any) =>
+                                        prep.preparation_uuid === option.value,
+                                    );
+                                  console.log(
+                                    "Selected preparation:",
+                                    selectedPreparation,
+                                  );
+
                                   field.onChange(option.label);
                                   form.setValue(
                                     `modifier_preparations.${index}.preparation_uuid`,
@@ -719,14 +1026,82 @@ export default function ModifierSheet({
                                   );
                                   form.setValue(
                                     `modifier_preparations.${index}.unit_cost`,
-                                    option.unit_cost || 0,
+                                    selectedPreparation.portion_cost || 0,
                                   );
-                                  calculateTotalCost();
+                                  console.log("Preparations: ", preparations);
+                                  console.log(
+                                    "Selected Preparation: ",
+                                    selectedPreparation,
+                                  );
+
+                                  if (selectedPreparation?.unit) {
+                                    form.setValue(
+                                      `modifier_preparations.${index}.base_unit`,
+                                      {
+                                        unit_uuid:
+                                          selectedPreparation.unit.unit_uuid,
+                                        unit_name:
+                                          selectedPreparation.unit.unit_name,
+                                      },
+                                    );
+
+                                    // Get conversion factor if recipe unit is already selected
+                                    const recipeUnit = form.watch(
+                                      `modifier_preparations.${index}.recipe_unit`,
+                                    );
+
+                                    console.log("Form: ", form.getValues());
+
+                                    if (recipeUnit?.unit_uuid) {
+                                      try {
+                                        const response =
+                                          await unitService.getPreparationConversionFactor(
+                                            selectedPreparation.preparation_uuid,
+                                            selectedPreparation.unit.unit_uuid,
+                                            recipeUnit.unit_uuid,
+                                          );
+
+                                        form.setValue(
+                                          `modifier_preparations.${index}.base_to_recipe`,
+                                          response.conversion_factor,
+                                        );
+                                      } catch (error) {
+                                        console.error(
+                                          "Failed to fetch conversion factor:",
+                                          error,
+                                        );
+                                      }
+                                    }
+                                  }
+
+                                  const quantity =
+                                    form.watch(
+                                      `modifier_preparations.${index}.quantity`,
+                                    ) || 0;
+                                  const conversionFactor =
+                                    form.watch(
+                                      `modifier_preparations.${index}.base_to_recipe`,
+                                    ) || 1;
+                                  const unitCost =
+                                    form.watch(
+                                      `modifier_preparations.${index}.unit_cost`,
+                                    ) || 0;
+
+                                  form.setValue(
+                                    `modifier_preparations.${index}.total_cost`,
+                                    (quantity / conversionFactor) * unitCost,
+                                  );
                                 }
                               }}
                               options={usePreparationOptions(
-                                currentRestaurant?.restaurant_uuid,
+                                usePreparations(
+                                  currentRestaurant?.restaurant_uuid,
+                                ),
                               )}
+                              onCreateOption={(inputValue) => {
+                                setNewItemName(inputValue);
+                                //setShowNewIngredientDialog(true);
+                              }}
                               placeholder=""
                             />
                           </FormControl>
@@ -750,10 +1125,44 @@ export default function ModifierSheet({
                               min={0}
                               step="any"
                               {...field}
-                              onChange={(e) => {
-                                const newValue = parseFloat(e.target.value);
-                                field.onChange(newValue);
-                                calculateTotalCost();
+                              onChange={async (e) => {
+                                const newQuantity = parseFloat(e.target.value);
+                                field.onChange(newQuantity);
+
+                                const unitCost =
+                                  form.watch(
+                                    `modifier_preparations.${index}.unit_cost`,
+                                  ) || 0;
+                                const conversionFactor =
+                                  form.watch(
+                                    `modifier_preparations.${index}.base_to_recipe`,
+                                  ) || 1;
+                                const totalCost =
+                                  (newQuantity / conversionFactor) * unitCost;
+                                form.setValue(
+                                  `modifier_preparations.${index}.total_cost`,
+                                  totalCost,
+                                );
+
+                                const ingredients =
+                                  form.watch("modifier_ingredients") || [];
+                                const preparations =
+                                  form.watch("modifier_preparations") || [];
+                                const totalIngredientCost = ingredients.reduce(
+                                  (sum, ing) => sum + (ing.total_cost || 0),
+                                  0,
+                                );
+                                const totalPrepCost = preparations.reduce(
+                                  (sum, prep) => sum + (prep.total_cost || 0),
+                                  0,
+                                );
+                                const portionCount =
+                                  form.watch("portion_count") || 1;
+                                form.setValue(
+                                  "portion_cost",
+                                  (totalIngredientCost + totalPrepCost) /
+                                    portionCount,
+                                );
                               }}
                             />
                           </FormControl>
@@ -774,14 +1183,20 @@ export default function ModifierSheet({
                           <FormControl>
                             <CreatableSelect
                               value={
-                                preparation.recipe_unit?.unit_uuid
+                                form.watch(
+                                  `modifier_preparations.${index}.recipe_unit`,
+                                )
                                   ? {
-                                      value: preparation.recipe_unit.unit_uuid,
-                                      label: preparation.recipe_unit.unit_name,
+                                      value: form.watch(
+                                        `modifier_preparations.${index}.recipe_unit.unit_uuid`,
+                                      ),
+                                      label: form.watch(
+                                        `modifier_preparations.${index}.recipe_unit.unit_name`,
+                                      ),
                                     }
                                   : null
                               }
-                              onChange={(option) => {
+                              onChange={async (option) => {
                                 if (option) {
                                   form.setValue(
                                     `modifier_preparations.${index}.recipe_unit`,
@@ -790,11 +1205,72 @@ export default function ModifierSheet({
                                       unit_name: option.label,
                                     },
                                   );
+
+                                  // Get the current ingredient and its base unit
+                                  const preparationUuid = form.watch(
+                                    `modifier_preparations.${index}.preparation_uuid`,
+                                  );
+                                  const preparationUnit = form.watch(
+                                    `modifier_preparations.${index}.base_unit`,
+                                  );
+
+                                  if (
+                                    preparationUuid &&
+                                    option.value &&
+                                    preparationUnit.unit_uuid
+                                  ) {
+                                    try {
+                                      const response =
+                                        await unitService.getPreparationConversionFactor(
+                                          preparationUuid,
+                                          preparationUnit.unit_uuid,
+                                          option.value,
+                                        );
+
+                                      form.setValue(
+                                        `modifier_preparations.${index}.base_to_recipe`,
+                                        response.conversion_factor,
+                                      );
+                                    } catch (error) {
+                                      console.error(
+                                        "Failed to fetch conversion factor:",
+                                        error,
+                                      );
+                                    }
+                                  }
                                 }
                               }}
-                              options={useUnitOptions(
-                                currentRestaurant?.restaurant_uuid,
-                              )}
+                              options={
+                                useQuery({
+                                  queryKey: [
+                                    "units",
+                                    currentRestaurant?.restaurant_uuid,
+                                  ],
+                                  queryFn: () =>
+                                    unitService.getRestaurantUnit(
+                                      currentRestaurant?.restaurant_uuid || "",
+                                    ),
+                                  enabled: !!currentRestaurant?.restaurant_uuid,
+                                }).data?.map((unit) => ({
+                                  label: unit.unit_name,
+                                  value: unit.unit_uuid,
+                                })) || []
+                              }
+                              onCreateOption={async (inputValue) => {
+                                if (!currentRestaurant?.restaurant_uuid) return;
+                                const newUnit = await unitService.createUnit(
+                                  { unit_name: inputValue },
+                                  currentRestaurant.restaurant_uuid,
+                                );
+                                form.setValue(
+                                  `modifier_preparations.${index}.recipe_unit`,
+                                  {
+                                    unit_uuid: newUnit.unit_uuid,
+                                    unit_name: newUnit.unit_name,
+                                  },
+                                );
+                                queryClient.invalidateQueries(["units"]);
+                              }}
                               placeholder=""
                             />
                           </FormControl>
@@ -810,19 +1286,63 @@ export default function ModifierSheet({
                           <FormLabel
                             className={index !== 0 ? "sr-only" : undefined}
                           >
-                            Factor
+                            Conversion
                           </FormLabel>
                           <FormControl>
                             <Input
                               type="number"
+                              suffix={
+                                form.watch(
+                                  `modifier_preparations.${index}.base_unit.unit_name`,
+                                ) +
+                                " → " +
+                                form.watch(
+                                  `modifier_preparations.${index}.recipe_unit.unit_name`,
+                                )
+                              }
                               min={0}
                               step="any"
                               placeholder="Conv. factor"
                               {...field}
-                              onChange={(e) => {
-                                const newValue = parseFloat(e.target.value);
-                                field.onChange(newValue);
-                                calculateTotalCost();
+                              onChange={async (e) => {
+                                const newConversionFactor = parseFloat(
+                                  e.target.value,
+                                );
+                                field.onChange(newConversionFactor);
+
+                                const unitCost =
+                                  form.watch(
+                                    `modifier_preparations.${index}.unit_cost`,
+                                  ) || 0;
+                                const quantity =
+                                  form.watch(
+                                    `modifier_preparations.${index}.quantity`,
+                                  ) || 1;
+                                const totalCost =
+                                  (quantity / newConversionFactor) * unitCost;
+                                form.setValue(
+                                  `modifier_preparations.${index}.total_cost`,
+                                  totalCost,
+                                );
+                                const ingredients =
+                                  form.watch("modifier_ingredients") || [];
+                                const preparations =
+                                  form.watch("modifier_preparations") || [];
+                                const totalIngredientCost = ingredients.reduce(
+                                  (sum, ing) => sum + (ing.total_cost || 0),
+                                  0,
+                                );
+                                const totalPrepCost = preparations.reduce(
+                                  (sum, prep) => sum + (prep.total_cost || 0),
+                                  0,
+                                );
+                                const portionCount =
+                                  form.watch("portion_count") || 1;
+                                form.setValue(
+                                  "portion_cost",
+                                  (totalIngredientCost + totalPrepCost) /
+                                    portionCount,
+                                );
                               }}
                             />
                           </FormControl>
@@ -834,15 +1354,9 @@ export default function ModifierSheet({
                       <span className="text-sm text-muted-foreground">
                         {currencyInfo?.currencySymbol}
                         {(
-                          (form.watch(
-                            `modifier_preparations.${index}.quantity`,
-                          ) || 0) *
-                          (form.watch(
-                            `modifier_preparations.${index}.base_to_recipe`,
-                          ) || 0) *
-                          (form.watch(
-                            `modifier_preparations.${index}.unit_cost`,
-                          ) || 0)
+                          form.watch(
+                            `modifier_preparations.${index}.total_cost`,
+                          ) || 0
                         ).toFixed(2)}
                       </span>
                     </div>
@@ -851,16 +1365,7 @@ export default function ModifierSheet({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      onClick={() => {
-                        const currentPreparations = form.getValues(
-                          "modifier_preparations",
-                        );
-                        form.setValue(
-                          "modifier_preparations",
-                          currentPreparations.filter((_, i) => i !== index),
-                        );
-                        calculateTotalCost();
-                      }}
+                      onClick={() => removePreparation(index)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -877,16 +1382,70 @@ export default function ModifierSheet({
               >
                 Cancel
               </Button>
-              <Button type="submit">
-                {modifier ? "Save changes" : "Create modifier"}
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? (
+                  <div className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    <span>Saving...</span>
+                  </div>
+                ) : modifier ? (
+                  "Save changes"
+                ) : (
+                  "Create modifier"
+                )}
               </Button>
             </div>
           </form>
         </Form>
 
+        <Dialog open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Select an Emoji</DialogTitle>
+            </DialogHeader>
+            <ScrollArea className="h-[400px] pr-4">
+              <div className="grid grid-cols-8 gap-2">
+                {foodEmojis.map((emoji, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    className="h-10 w-10 p-0 text-lg"
+                    onClick={() => {
+                      const currentCategory = form.getValues("category");
+                      form.setValue("category", {
+                        ...currentCategory,
+                        emoji,
+                      });
+                      setShowEmojiPicker(false);
+                    }}
+                  >
+                    {emoji}
+                  </Button>
+                ))}
+              </div>
+            </ScrollArea>
+          </DialogContent>
+        </Dialog>
+
         <NewIngredientDialog
-          open={showIngredientDialog}
-          onOpenChange={setShowIngredientDialog}
+          open={showNewIngredientDialog}
+          onOpenChange={setShowNewIngredientDialog}
+          defaultName={newItemName}
           onSubmit={async (data) => {
             try {
               if (!currentRestaurant?.restaurant_uuid) return;
@@ -894,23 +1453,8 @@ export default function ModifierSheet({
                 currentRestaurant.restaurant_uuid,
                 data,
               );
-              const currentIngredients =
-                form.getValues("modifier_ingredients") || [];
-              form.setValue("modifier_ingredients", [
-                ...currentIngredients,
-                {
-                  ingredient_uuid: newIngredient.ingredient_uuid,
-                  ingredient_name: newIngredient.ingredient_name,
-                  quantity: 1,
-                  base_unit: newIngredient.unit,
-                  recipe_unit: newIngredient.unit,
-                  base_to_recipe: 1,
-                  unit_cost: 0,
-                  total_cost: 0,
-                },
-              ]);
               queryClient.invalidateQueries(["ingredients"]);
-              setShowIngredientDialog(false);
+              setShowNewIngredientDialog(false);
             } catch (error) {
               console.error("Failed to create ingredient:", error);
             }

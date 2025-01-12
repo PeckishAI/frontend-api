@@ -16,13 +16,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -223,11 +216,6 @@ export default function RecipeSheet({
 
   const ingredients = form.watch("product_ingredients") || [];
   const preparations = form.watch("product_preparations") || [];
-  const recipeComponents = [...ingredients, ...preparations];
-
-  const handleCreateCategory = (inputValue: string) => {
-    console.log("User wants to create a new category:", inputValue);
-  };
 
   const addIngredient = () => {
     const currentIngredients = form.getValues("product_ingredients") || [];

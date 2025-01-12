@@ -62,14 +62,10 @@ export const menuService = {
     }
   },
 
-  async updateModifier(
-    restaurantUuid: string,
-    modifierUuid: string,
-    modifier: Partial<Modifier>,
-  ) {
+  async updateModifier(restaurantUuid: string, modifier: Partial<Modifier>) {
     try {
       const response = await fetch(
-        `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/modifiers/modifier/${modifierUuid}`,
+        `${BASE_URL}/menu/v2/restaurant/${restaurantUuid}/modifiers/modifier/${modifier.modifier_uuid}`,
         {
           method: "PUT",
           headers: {

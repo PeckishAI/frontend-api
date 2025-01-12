@@ -1,0 +1,285 @@
+from flask import jsonify, request
+from flask_restx import Namespace, Resource, fields
+from database.supabase_db import db
+from modules.response_handler import APIResponse
+import uuid
+import logging
+
+# Configure detailed logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler()])
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+restaurants_bp = Namespace('Restaurants',
+                           description='Restaurant management operations')
+
+restaurant_model = restaurants_bp.model(
+    'Restaurant', {
+        'restaurant_uuid': fields.String(description='Restaurant UUID'),
+        'restaurant_name': fields.String(description='Restaurant name'),
+        'address': fields.String(description='Restaurant address'),
+        'city': fields.String(description='Restaurant city'),
+        'country': fields.String(description='Restaurant country'),
+        'postcode': fields.String(description='Restaurant postcode'),
+        'country_code': fields.String(description='Restaurant country code'),
+        'currency': fields.String(description='Restaurant currency'),
+        'phone': fields.String(description='Restaurant phone'),
+        'email': fields.String(description='Restaurant email'),
+        'latitude': fields.Float(description='Restaurant latitude'),
+        'longitude': fields.Float(description='Restaurant longitude'),
+        'logo_url': fields.String(description='Restaurant logo URL')
+    })
+
+
+@restaurants_bp.route("/v2")
+class Restaurants(Resource):
+
+    @restaurants_bp.doc('get_restaurants')
+    def get(self):
+        query = """
+            SELECT
+                restaurant_uuid,
+                name,
+                address,
+                city,
+                country,
+                postcode,
+                country_code,
+                currency,
+                phone,
+                email,
+                latitude,
+                longitude,
+                logo_url
+            FROM
+                dim_restaurant
+            ORDER BY name ASC
+        """
+        db_response = db.get(query)
+        formatted_response = [dict(row) for row in db_response]
+        return jsonify(
+            APIResponse.success(data=formatted_response,
+                                message="Restaurants retrieved successfully"))
+
+    @restaurants_bp.doc('create_restaurant')
+    @restaurants_bp.expect(restaurant_model)
+    def post(self):
+        data = request.get_json()
+        if not data:
+            return jsonify(
+                APIResponse.error(message="No data received!",
+                                  status_code=400))
+
+        restaurant_uuid = data.get('restaurant_uuid', str(uuid.uuid4()))
+        query = """
+            INSERT INTO dim_restaurant (
+                restaurant_uuid,
+                name,
+                address,
+                city,
+                postcode,
+                country,
+                country_code,
+                currency,
+                phone,
+                email,
+                latitude,
+                longitude,
+                logo_url
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        db.insert(
+            query,
+            (restaurant_uuid, data.get('restaurant_name'), data.get('address'),
+             data.get('city'), data.get('postcode'), data.get('country'),
+             data.get('country_code'), data.get('currency'), data.get('phone'),
+             data.get('email'), data.get('latitude'), data.get('longitude'),
+             data.get('logo_url')))
+        return jsonify(
+            APIResponse.success(data={"restaurant_uuid": restaurant_uuid},
+                                message="Restaurant created successfully",
+                                status_code=200))
+
+
+@restaurants_bp.route("/v2/restaurant/<string:r_uuid>")
+class Restaurant(Resource):
+
+    @restaurants_bp.doc('get_restaurant')
+    def get(self, r_uuid):
+        query = """
+            SELECT
+                restaurant_uuid,
+                name,
+                address,
+                city,
+                postcode,
+                country,
+                country_code,
+                currency,
+                phone,
+                email,
+                latitude,
+                longitude,
+                logo_url
+            FROM dim_restaurant
+            WHERE restaurant_uuid = %s
+        """
+        restaurant = db.get_one(query, (r_uuid, ))
+        return jsonify(
+            APIResponse.success(data=restaurant,
+                                message="Restaurant retrieved successfully"))
+
+    @restaurants_bp.doc('update_restaurant')
+    @restaurants_bp.expect(restaurant_model)
+    def put(self, r_uuid):
+        data = request.get_json()
+        if not data:
+            return jsonify(
+                APIResponse.error(message="No data received!",
+                                  status_code=400))
+
+        query = """
+            UPDATE dim_restaurant
+            SET 
+                name = %s,
+                address = %s,
+                city = %s,
+                postcode = %s,
+                country = %s,
+                country_code = %s,
+                currency = %s,
+                phone = %s,
+                email = %s,
+                latitude = %s,
+                longitude = %s,
+                logo_url = %s
+            WHERE restaurant_uuid = %s
+        """
+        db.update(query,
+                  (data.get('restaurant_name'), data.get('address'),
+                   data.get('city'), data.get('postcode'), data.get('country'),
+                   data.get('country_code'), data.get('currency'),
+                   data.get('phone'), data.get('email'), data.get('latitude'),
+                   data.get('longitude'), data.get('logo_url'), r_uuid))
+        return jsonify(
+            APIResponse.success(data=r_uuid,
+                                message="Restaurant updated successfully"))
+
+    @restaurants_bp.doc('delete_restaurant')
+    def delete(self, r_uuid):
+        query = """
+            DELETE FROM dim_restaurant
+            WHERE restaurant_uuid = %s
+        """
+        db.delete(query, (r_uuid, ))
+        return jsonify(
+            APIResponse.success(message="Restaurant deleted successfully"))
+
+
+@restaurants_bp.route("/v2/user/<string:user_uuid>")
+class UserRestaurants(Resource):
+
+    @restaurants_bp.doc('get_user_restaurants')
+    def get(self, user_uuid):
+        query = """
+            SELECT
+                dr.restaurant_uuid,
+                dr.name,
+                dr.address,
+                dr.city,
+                dr.postcode,
+                dr.country,
+                dr.country_code,
+                dr.currency,
+                dr.phone,
+                dr.email,
+                dr.latitude,
+                dr.longitude,
+                dr.logo_url
+            FROM dim_restaurant dr
+            LEFT JOIN dim_user_restaurant  dur ON dr.restaurant_uuid = dur.restaurant_uuid
+            WHERE dur.user_uuid = %s
+        """
+        restaurants = db.get(query, (user_uuid, ))
+        return jsonify(
+            APIResponse.success(data=restaurants,
+                                message="Restaurant updated successfully",
+                                status_code=200))
+
+    @restaurants_bp.doc('remove_user_from_restaurants')
+    def delete(self, r_uuid, user_uuid):
+        query = """
+            DELETE FROM dim_user_restaurant
+            WHERE user_uuid = %s
+        """
+        db.delete(query, (r_uuid, user_uuid))
+        return jsonify(
+            APIResponse.success(
+                message="User removed from Restaurant successfully",
+                status_code=200))
+
+
+@restaurants_bp.route("/v2/restaurant/<string:r_uuid>/user/<string:user_uuid>")
+class UserRestaurant(Resource):
+
+    @restaurants_bp.doc('connect_user_to_restaurant')
+    def post(self, r_uuid, user_uuid):
+        try:
+            query = """
+                INSERT INTO dim_user_restaurant (
+                    restaurant_uuid,
+                    user_uuid
+                ) VALUES (%s, %s)
+            """
+            db.insert(query, (r_uuid, user_uuid))
+            return jsonify(
+                APIResponse.success(
+                    data={
+                        "restaurant_uuid": r_uuid,
+                        "user_uuid": user_uuid
+                    },
+                    message="Restaurant <> User connected successfully",
+                    status_code=200))
+        except Exception as e:
+            logger.error(f"Failed to connect user to restaurant: {str(e)}")
+            return jsonify(APIResponse.error(message="Error", status_code=500))
+
+    @restaurants_bp.doc('remove_user_from_restaurant')
+    def delete(self, r_uuid, user_uuid):
+        query = """
+            DELETE FROM dim_user_restaurant
+            WHERE restaurant_uuid = %s AND user_uuid = %s
+        """
+        db.delete(query, (r_uuid, user_uuid))
+        return jsonify(
+            APIResponse.success(
+                message="User removed successfully from Restaurant",
+                status_code=200))
+
+
+@restaurants_bp.route("/v2/restaurant/<string:r_uuid>/currency")
+class RestaurantCurrency(Resource):
+
+    @restaurants_bp.doc('get_restaurant_currency')
+    def get(self, r_uuid):
+        try:
+            query = """
+                SELECT currency
+                FROM dim_restaurant
+                WHERE restaurant_uuid = %s
+            """
+            currency = db.get_one(query, (r_uuid,))
+            logger.info("Currency: %s", currency)
+            return jsonify(
+                APIResponse.success(
+                    data={
+                        "currency": currency
+                    },
+                    message="Restaurant <> User connected successfully",
+                    status_code=200))
+        except Exception as e:
+            logger.error(f"Failed to connect user to restaurant: {str(e)}")
+            return jsonify(APIResponse.error(message="Error", status_code=500))
