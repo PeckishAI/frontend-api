@@ -2,6 +2,14 @@ import { Restaurant } from "../types/restaurant";
 import { config } from "../config/config";
 const BASE_URL = config.apiBaseUrl;
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('accessToken');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': token ? `Bearer ${token}` : '',
+  };
+};
+
 export const restaurantService = {
   async getRestaurants(): Promise<Restaurant[]> {
     try {
@@ -14,10 +22,7 @@ export const restaurantService = {
         `${BASE_URL}/auth/v2/restaurants`,
         {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
+          headers: getAuthHeaders(),
           credentials: 'include',
         },
       );

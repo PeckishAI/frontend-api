@@ -27,10 +27,12 @@ const signIn = async (
       },
       body: JSON.stringify(credentials),
     });
-    if (!response.data.success) {
-      throw new Error(response.data.message || "Failed to sign in");
+    const data = await response.json();
+    if (!data.success) {
+      throw new Error(data.message || "Failed to sign in");
     }
-    return response.data.data;
+    localStorage.setItem('accessToken', data.data.accessToken);
+    return data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error("Sign in error:", error.response?.data);
