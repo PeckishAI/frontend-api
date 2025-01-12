@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -23,6 +23,8 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Restaurant } from "@/types/restaurant";
 import { restaurantService } from "@/services/restaurantService";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const restaurantSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -43,10 +45,36 @@ const restaurantSchema = z.object({
 export default function RestaurantManagement() {
   const { toast } = useToast();
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
+  const queryClient = useQueryClient();
 
   const { data: restaurants = [], isLoading, error } = useQuery({
-    queryKey: ['/api/restaurants/v2'],
+    queryKey: ['/auth/v2/restaurants'],
     queryFn: restaurantService.getRestaurants,
+  });
+
+  const updateRestaurantMutation = useMutation({
+    mutationFn: (data: z.infer<typeof restaurantSchema>) => {
+      if (data.restaurant_uuid) {
+        return restaurantService.updateRestaurant(data.restaurant_uuid, data);
+      } else {
+        return restaurantService.createRestaurant(data);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/auth/v2/restaurants'] });
+      toast({
+        title: "Success",
+        description: "Restaurant information has been updated successfully.",
+      });
+      setSelectedRestaurant(null);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   const form = useForm<z.infer<typeof restaurantSchema>>({
@@ -67,7 +95,6 @@ export default function RestaurantManagement() {
     }
   });
 
-  // Reset form when a restaurant is selected
   useEffect(() => {
     if (selectedRestaurant) {
       form.reset({
@@ -103,18 +130,26 @@ export default function RestaurantManagement() {
     }
   }, [selectedRestaurant, form]);
 
-  const onSubmit = (data: z.infer<typeof restaurantSchema>) => {
-    console.log("Restaurant data:", data);
-    toast({
-      title: "Restaurant Updated",
-      description: "Your restaurant information has been updated successfully.",
-    });
-    setSelectedRestaurant(null);
-    form.reset();
+  const onSubmit = async (data: z.infer<typeof restaurantSchema>) => {
+    try {
+      await updateRestaurantMutation.mutateAsync(data);
+    } catch (error) {
+      console.error("Error updating restaurant:", error);
+    }
   };
 
   if (error) {
-    return <div className="text-red-500">Error loading restaurants: {error.message}</div>;
+    return (
+      <div className="p-8">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            {error instanceof Error ? error.message : "Failed to load restaurants"}
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
   }
 
   return (
@@ -133,6 +168,7 @@ export default function RestaurantManagement() {
 
             <div className="mt-4">
               <Select
+                disabled={isLoading}
                 onValueChange={(value) => {
                   const restaurant = restaurants.find(r => r.restaurant_uuid === value);
                   setSelectedRestaurant(restaurant || null);
@@ -141,7 +177,7 @@ export default function RestaurantManagement() {
               >
                 <FormControl>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a restaurant" />
+                    <SelectValue placeholder={isLoading ? "Loading restaurants..." : "Select a restaurant"} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -232,7 +268,12 @@ export default function RestaurantManagement() {
                   >
                     Cancel
                   </Button>
-                  <Button type="submit">Save Changes</Button>
+                  <Button 
+                    type="submit"
+                    disabled={updateRestaurantMutation.isPending}
+                  >
+                    {updateRestaurantMutation.isPending ? "Saving..." : "Save Changes"}
+                  </Button>
                 </div>
               </form>
             </Form>

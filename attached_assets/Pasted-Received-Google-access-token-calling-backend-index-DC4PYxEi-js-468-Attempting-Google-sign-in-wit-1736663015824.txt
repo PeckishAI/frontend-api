@@ -1,0 +1,39 @@
+Received Google access token, calling backend...
+index-DC4PYxEi.js:468 Attempting Google sign in with token
+index-DC4PYxEi.js:468 Google sign in response: Response {type: 'cors', url: 'https://backend-spradier.replit.app/auth/v2/google/signin', redirected: false, status: 200, ok: true, …}
+index-DC4PYxEi.js:468 Backend response: Response {type: 'cors', url: 'https://backend-spradier.replit.app/auth/v2/google/signin', redirected: false, status: 200, ok: true, …}
+index-DC4PYxEi.js:463 Sales data: undefined
+frontend-peckish.replit.app/:1 Access to fetch at 'https://backend-spradier.replit.app/api/restaurants/v2' from origin 'https://frontend-peckish.replit.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'.Understand this errorAI
+index-DC4PYxEi.js:308 
+        
+        
+       GET https://backend-spradier.replit.app/api/restaurants/v2 net::ERR_FAILED
+getRestaurants @ index-DC4PYxEi.js:308
+queryFn @ index-DC4PYxEi.js:355
+a @ index-DC4PYxEi.js:40
+y @ index-DC4PYxEi.js:40
+start @ index-DC4PYxEi.js:40
+fetch @ index-DC4PYxEi.js:40
+nf @ index-DC4PYxEi.js:40
+onSubscribe @ index-DC4PYxEi.js:40
+subscribe @ index-DC4PYxEi.js:40
+(anonymous) @ index-DC4PYxEi.js:40
+aR @ index-DC4PYxEi.js:38
+zy @ index-DC4PYxEi.js:40
+Iu @ index-DC4PYxEi.js:40
+t7 @ index-DC4PYxEi.js:40
+$s @ index-DC4PYxEi.js:40
+IN @ index-DC4PYxEi.js:40
+gs @ index-DC4PYxEi.js:38
+(anonymous) @ index-DC4PYxEi.js:40Understand this errorAI
+index-DC4PYxEi.js:308 Failed to fetch restaurants: TypeError: Failed to fetch
+    at Object.getRestaurants (index-DC4PYxEi.js:308:4269)
+    at queryFn (index-DC4PYxEi.js:355:11168)
+    at Object.a [as fn] (index-DC4PYxEi.js:40:67959)
+    at y (index-DC4PYxEi.js:40:63552)
+    at Object.start (index-DC4PYxEi.js:40:64011)
+    at OI.fetch (index-DC4PYxEi.js:40:69295)
+    at $I.nf (index-DC4PYxEi.js:40:89691)
+    at $I.onSubscribe (index-DC4PYxEi.js:40:84225)
+    at $I.subscribe (index-DC4PYxEi.js:40:57911)
+    at index-DC4PYxEi.js:40:95215

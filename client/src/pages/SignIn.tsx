@@ -40,10 +40,10 @@ export default function SignIn() {
   const onSubmit = async (data: SignInForm) => {
     try {
       const result = await authService.signIn(data);
-      localStorage.setItem('accessToken', result.accessToken);
-      setLocation('/');
+      localStorage.setItem("accessToken", result.accessToken);
+      setLocation("/");
     } catch (error: any) {
-      console.error('Sign in error:', error);
+      console.error("Sign in error:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to sign in",
@@ -53,14 +53,15 @@ export default function SignIn() {
   };
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
 
-    const appleScript = document.createElement('script');
-    appleScript.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
+    const appleScript = document.createElement("script");
+    appleScript.src =
+      "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
     appleScript.async = true;
     appleScript.defer = true;
     document.body.appendChild(appleScript);
@@ -85,17 +86,19 @@ export default function SignIn() {
 
       const client = google.accounts.oauth2.initTokenClient({
         client_id: config.googleClientId,
-        scope: 'email profile',
+        scope: "email profile",
         callback: async (response: any) => {
           if (response.access_token) {
             try {
-              console.log('Received Google access token, calling backend...');
-              const result = await authService.googleSignIn(response.access_token);
-              console.log('Backend response:', result);
-              localStorage.setItem('accessToken', result.accessToken);
-              setLocation('/');
+              console.log("Received Google access token, calling backend...");
+              const result = await authService.googleSignIn(
+                response.access_token,
+              );
+              console.log("Backend response:", result);
+              localStorage.setItem("accessToken", result.accessToken);
+              setLocation("/");
             } catch (error: any) {
-              console.error('Google signin error:', error);
+              console.error("Google signin error:", error);
               toast({
                 title: "Error",
                 description: error.message || "Failed to sign in with Google",
@@ -107,7 +110,7 @@ export default function SignIn() {
       });
       client.requestAccessToken();
     } catch (error: any) {
-      console.error('Google signin error:', error);
+      console.error("Google signin error:", error);
       toast({
         title: "Error",
         description: error.message || "Google login failed",
@@ -133,17 +136,20 @@ export default function SignIn() {
         try {
           const result = await authService.appleSignIn(
             response.authorization.id_token,
-            response.user ? {
-              firstName: response.user.name.firstName,
-              lastName: response.user.name.lastName
-            } : null
+            response.user
+              ? {
+                  firstName: response.user.name.firstName,
+                  lastName: response.user.name.lastName,
+                }
+              : null,
           );
-          localStorage.setItem('accessToken', result.accessToken);
-          setLocation('/');
+          localStorage.setItem("accessToken", result.accessToken);
+          setLocation("/");
         } catch (error: any) {
           toast({
             title: "Error",
-            description: error.response?.data?.message || "Failed to sign in with Apple",
+            description:
+              error.response?.data?.message || "Failed to sign in with Apple",
             variant: "destructive",
           });
         }
@@ -172,10 +178,16 @@ export default function SignIn() {
       <div className="relative flex min-h-screen items-center p-[20px]">
         <div className="w-full max-w-lg rounded-lg bg-white/95 p-8 shadow-xl backdrop-blur ml-[20px]">
           <div className="flex justify-center">
-            <img src="/images/peckish-logo.jpg" alt="Peckish" className="h-12 w-12 rounded-full object-cover" />
+            <img
+              src="/images/peckish-logo.jpg"
+              alt="Peckish"
+              className="h-12 w-12 rounded-full object-cover"
+            />
           </div>
 
-          <h2 className="mt-8 text-4xl font-display text-center">Welcome back!</h2>
+          <h2 className="mt-8 text-4xl font-display text-center">
+            Welcome back!
+          </h2>
           <p className="mt-2 text-sm text-center text-gray-600">
             Enter your email and password to log in to Peckish
           </p>
@@ -187,7 +199,11 @@ export default function SignIn() {
                 className="w-full"
                 onClick={handleGoogleSignIn}
               >
-                <img src="https://www.google.com/favicon.ico" alt="" className="mr-2 h-4 w-4" />
+                <img
+                  src="https://www.google.com/favicon.ico"
+                  alt=""
+                  className="mr-2 h-4 w-4"
+                />
                 Continue with Google
               </Button>
               <Button
@@ -195,7 +211,11 @@ export default function SignIn() {
                 className="w-full"
                 onClick={handleAppleSignIn}
               >
-                <img src="https://www.apple.com/favicon.ico" alt="" className="mr-2 h-4 w-4" />
+                <img
+                  src="https://www.apple.com/favicon.ico"
+                  alt=""
+                  className="mr-2 h-4 w-4"
+                />
                 Continue with Apple
               </Button>
             </div>
@@ -210,7 +230,10 @@ export default function SignIn() {
             </div>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <FormField
                   control={form.control}
                   name="email"
@@ -244,7 +267,11 @@ export default function SignIn() {
                           className="absolute right-2 top-1/2 -translate-y-1/2"
                           onClick={() => setShowPassword(!showPassword)}
                         >
-                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
                         </Button>
                       </div>
                       <FormMessage />
@@ -252,7 +279,10 @@ export default function SignIn() {
                   )}
                 />
 
-                <Button type="submit" className="w-full bg-[#0F1916] hover:bg-[#0F1916]/90 text-white">
+                <Button
+                  type="submit"
+                  className="w-full bg-[#0F1916] hover:bg-[#0F1916]/90 text-white"
+                >
                   Sign in
                 </Button>
               </form>
@@ -262,14 +292,14 @@ export default function SignIn() {
               <Button
                 variant="link"
                 className="text-gray-600 hover:text-gray-900 px-0"
-                onClick={() => setLocation('/signup')}
+                onClick={() => setLocation("/signup")}
               >
                 Create an account
               </Button>
               <Button
                 variant="link"
                 className="text-gray-600 hover:text-gray-900 px-0"
-                onClick={() => setLocation('/reset-password')}
+                onClick={() => setLocation("/reset-password")}
               >
                 Restore password
               </Button>

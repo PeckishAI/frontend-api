@@ -5,18 +5,27 @@ const BASE_URL = config.apiBaseUrl;
 export const restaurantService = {
   async getRestaurants(): Promise<Restaurant[]> {
     try {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+
       const response = await fetch(
-        `${BASE_URL}/restaurants/v2`,
+        `${BASE_URL}/auth/v2/restaurants`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
-          credentials: 'include', // Important for sending authentication cookies
+          credentials: 'include',
         },
       );
 
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Unauthorized access to restaurants");
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -31,20 +40,102 @@ export const restaurantService = {
     }
   },
 
-  async getRestaurantCurrency(restaurantUuid: string): Promise<any> {
+  async createRestaurant(restaurant: Omit<Restaurant, "restaurant_uuid">): Promise<Restaurant> {
     try {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+
+      const response = await fetch(`${BASE_URL}/auth/v2/restaurants`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(restaurant),
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Unauthorized to create restaurant");
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.message || "Failed to create restaurant");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to create restaurant:", error);
+      throw error;
+    }
+  },
+
+  async updateRestaurant(restaurantUuid: string, restaurant: Partial<Restaurant>): Promise<Restaurant> {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+
       const response = await fetch(
-        `${BASE_URL}/restaurants/v2/restaurant/${restaurantUuid}/currency`,
+        `${BASE_URL}/auth/v2/restaurants/${restaurantUuid}`,
         {
-          method: "GET",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
-          credentials: 'include', // Important for sending authentication cookies
+          body: JSON.stringify(restaurant),
+          credentials: 'include',
         },
       );
 
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Unauthorized to update restaurant");
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.message || "Failed to update restaurant");
+      }
+      return data.data;
+    } catch (error) {
+      console.error("Failed to update restaurant:", error);
+      throw error;
+    }
+  },
+
+  async getRestaurantCurrency(restaurantUuid: string): Promise<any> {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+
+      const response = await fetch(
+        `${BASE_URL}/auth/v2/restaurants/${restaurantUuid}/currency`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          credentials: 'include',
+        },
+      );
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Unauthorized to access restaurant currency");
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -54,7 +145,6 @@ export const restaurantService = {
       }
 
       const currencyISO = data.data.currency;
-
       const getSymbol = (currency: string) => {
         try {
           const symbol = new Intl.NumberFormat("en-US", {
@@ -65,7 +155,6 @@ export const restaurantService = {
             .find((x) => x.type === "currency");
           return symbol?.value || currency;
         } catch {
-          // Fallback symbols for common currencies
           const symbols: { [key: string]: string } = {
             USD: "$",
             EUR: "€",

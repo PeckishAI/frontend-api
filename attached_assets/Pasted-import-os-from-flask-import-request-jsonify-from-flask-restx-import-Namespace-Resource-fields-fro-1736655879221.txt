@@ -11,6 +11,7 @@ import requests
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from werkzeug.security import check_password_hash, generate_password_hash
+from functools import wraps
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s [%(levelname)s] %(message)s')
@@ -18,6 +19,29 @@ logger = logging.getLogger(__name__)
 
 auth_bp = Namespace('Authentication',
                     description='Authentication management operations')
+
+# Token verification decorator
+def require_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return APIResponse.error("No authentication token provided", 401)
+
+        try:
+            token = auth_header.split(' ')[1]
+            payload = verify_token(token)
+            if not payload:
+                return APIResponse.error("Invalid token", 401)
+
+            # Add user info to request context
+            request.user = payload
+            return f(*args, **kwargs)
+        except Exception as e:
+            logger.error(f"Authentication error: {e}")
+            return APIResponse.error("Authentication failed", 401)
+
+    return decorated
 
 user_model = auth_bp.model(
     'User', {
@@ -255,7 +279,7 @@ class GoogleSignIn(Resource):
                         VALUES (%s, %s, %s, %s, %s)
                         RETURNING *
                     """
-                    db.insert(query, (user_uuid, email, None, name, picture))
+                    user = db.insert(query, (user_uuid, email, None, name, picture))
                 else:
                     logger.info(f"Found existing user for email: {email}")
 
@@ -270,8 +294,11 @@ class GoogleSignIn(Resource):
                 restaurants = db.get(query, (user['user_uuid'],)) or []
                 logger.info(f"Retrieved {len(restaurants)} restaurants for user")
 
-                # Generate JWT token
-                token = generate_token(user)
+                # Generate JWT token with user_uuid
+                token = generate_token({
+                    'user_uuid': user['user_uuid'],
+                    'email': user['email']
+                })
                 logger.info("Generated JWT token successfully")
 
                 response_data = {
@@ -434,6 +461,159 @@ class SignOut(Resource):
         # The client should just remove the token
         return jsonify(
             APIResponse.success({"message": "Signed out successfully"}))
+
+
+@auth_bp.route("/restaurants/v2")
+class Restaurants(Resource):
+    @require_auth
+    def get(self):
+        """Get restaurants for authenticated user"""
+        try:
+            user_uuid = request.user['user_uuid']
+
+            # Get user's restaurants
+            query = """
+                SELECT dr.*
+                FROM dim_restaurant dr
+                JOIN dim_user_restaurant dur ON dr.restaurant_uuid = dur.restaurant_uuid
+                WHERE dur.user_uuid = %s
+            """
+            restaurants = db.get(query, (user_uuid,)) or []
+
+            return APIResponse.success(restaurants)
+        except Exception as e:
+            logger.error(f"Failed to get restaurants: {e}")
+            return APIResponse.error("Failed to get restaurants", 500)
+
+    @require_auth
+    def post(self):
+        """Create a new restaurant for authenticated user"""
+        try:
+            user_uuid = request.user['user_uuid']
+            data = request.get_json()
+
+            if not data:
+                return APIResponse.error("No data provided", 400)
+
+            restaurant_uuid = str(uuid.uuid4())
+
+            # Insert restaurant
+            query = """
+                INSERT INTO dim_restaurant (
+                    restaurant_uuid, name, address, city, country,
+                    country_code, currency, email, latitude, longitude,
+                    logo_url, phone, postcode
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING *
+            """
+
+            restaurant = db.insert(query, (
+                restaurant_uuid,
+                data.get('name'),
+                data.get('address'),
+                data.get('city'),
+                data.get('country'),
+                data.get('country_code'),
+                data.get('currency'),
+                data.get('email'),
+                data.get('latitude'),
+                data.get('longitude'),
+                data.get('logo_url'),
+                data.get('phone'),
+                data.get('postcode')
+            ))
+
+            # Link restaurant to user
+            query = """
+                INSERT INTO dim_user_restaurant (user_uuid, restaurant_uuid)
+                VALUES (%s, %s)
+            """
+            db.insert(query, (user_uuid, restaurant_uuid))
+
+            return APIResponse.success(restaurant)
+        except Exception as e:
+            logger.error(f"Failed to create restaurant: {e}")
+            return APIResponse.error("Failed to create restaurant", 500)
+
+
+@auth_bp.route("/restaurants/v2/<restaurant_uuid>")
+class RestaurantDetail(Resource):
+    @require_auth
+    def get(self, restaurant_uuid):
+        """Get specific restaurant details"""
+        try:
+            user_uuid = request.user['user_uuid']
+
+            # Verify user has access to this restaurant
+            query = """
+                SELECT dr.*
+                FROM dim_restaurant dr
+                JOIN dim_user_restaurant dur ON dr.restaurant_uuid = dur.restaurant_uuid
+                WHERE dur.user_uuid = %s AND dr.restaurant_uuid = %s
+            """
+            restaurant = db.get(query, (user_uuid, restaurant_uuid))
+
+            if not restaurant:
+                return APIResponse.error("Restaurant not found or access denied", 404)
+
+            return APIResponse.success(restaurant)
+        except Exception as e:
+            logger.error(f"Failed to get restaurant: {e}")
+            return APIResponse.error("Failed to get restaurant details", 500)
+
+    @require_auth
+    def put(self, restaurant_uuid):
+        """Update restaurant details"""
+        try:
+            user_uuid = request.user['user_uuid']
+            data = request.get_json()
+
+            if not data:
+                return APIResponse.error("No data provided", 400)
+
+            # Verify user has access to this restaurant
+            access_query = """
+                SELECT 1
+                FROM dim_user_restaurant
+                WHERE user_uuid = %s AND restaurant_uuid = %s
+            """
+            has_access = db.get(access_query, (user_uuid, restaurant_uuid))
+
+            if not has_access:
+                return APIResponse.error("Access denied", 403)
+
+            # Update restaurant
+            update_query = """
+                UPDATE dim_restaurant
+                SET name = %s, address = %s, city = %s, country = %s,
+                    country_code = %s, currency = %s, email = %s,
+                    latitude = %s, longitude = %s, logo_url = %s,
+                    phone = %s, postcode = %s
+                WHERE restaurant_uuid = %s
+                RETURNING *
+            """
+
+            updated_restaurant = db.execute(update_query, (
+                data.get('name'),
+                data.get('address'),
+                data.get('city'),
+                data.get('country'),
+                data.get('country_code'),
+                data.get('currency'),
+                data.get('email'),
+                data.get('latitude'),
+                data.get('longitude'),
+                data.get('logo_url'),
+                data.get('phone'),
+                data.get('postcode'),
+                restaurant_uuid
+            ))
+
+            return APIResponse.success(updated_restaurant)
+        except Exception as e:
+            logger.error(f"Failed to update restaurant: {e}")
+            return APIResponse.error("Failed to update restaurant", 500)
 
 
 # Helper functions
