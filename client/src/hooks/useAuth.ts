@@ -16,17 +16,19 @@ export function useAuth() {
     staleTime: 1000 * 60 * 30, // Cache for 30 minutes
     cacheTime: 1000 * 60 * 35, // Keep in cache for 35 minutes
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
     refetchInterval: false,
     enabled: !!localStorage.getItem("accessToken"), // Only run if we have a token
   });
 
-  // Query for user's restaurants
+  // Query for user's restaurants 
   const { data: restaurants = [] } = useQuery({
     queryKey: ["restaurants"],
     queryFn: authService.getUserRestaurants,
-    enabled: !!user,
+    enabled: !!localStorage.getItem("accessToken"), // Enable if token exists
+    staleTime: 1000 * 60 * 30, // Cache for 30 minutes
+    retry: 2,
   });
 
   // Sign in mutation
