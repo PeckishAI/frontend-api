@@ -34,7 +34,6 @@ import { inventoryService } from "@/services/inventoryService";
 import { unitService } from "@/services/unitService";
 import { useRestaurantContext } from "@/contexts/RestaurantContext";
 import { foodEmojis } from "@/lib/emojis";
-import { defaultCategories } from "./ProductSheet";
 import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
 import { categoryService } from "@/services/categoryService";
 import CategoryModal from "./CategoryModal";
@@ -43,7 +42,7 @@ const useCategories = (restaurantUuid?: string) => {
   const { data: categories = [] } = useQuery({
     queryKey: ["categories", restaurantUuid],
     queryFn: async () => {
-      if (!restaurantUuid) return defaultCategories;
+      if (!restaurantUuid) return [];
       return categoryService.getRestaurantCategories(restaurantUuid);
     },
   });
