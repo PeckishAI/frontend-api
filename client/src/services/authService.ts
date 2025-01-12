@@ -1,48 +1,80 @@
-
 import axios from 'axios';
 import { config } from '@/config/config';
+import { type User, type Restaurant } from '@/types';
 
 const apiClient = axios.create({
-  baseURL: config.apiGateway + '/auth'
+  baseURL: '/api/auth',
+  withCredentials: true
 });
 
-export type LogInResult = {
-  data: {
-    access_token: string;
-    user: {
-      client_type?: 'supplier' | 'restaurant'
-    }
-  }
+export type SignInResult = {
+  user: User;
+  restaurants: Restaurant[];
+  accessToken: string;
 }
 
-const logIn = async (email: string, password: string): Promise<LogInResult> => {
-  const res = await apiClient.post('/sign-in', {
-    email,
-    password,
-  });
-  return res.data;
+export type SignInCredentials = {
+  email: string;
+  password: string;
+}
+
+export type SignUpCredentials = SignInCredentials & {
+  name: string;
+}
+
+const signIn = async (credentials: SignInCredentials): Promise<SignInResult> => {
+  const response = await apiClient.post('/signin', credentials);
+  return response.data;
 };
 
-const googleLogIn = async (accessToken: string): Promise<LogInResult> => {
-  const res = await apiClient.post('/google/sign-in', {
-    access_token: accessToken,
-  });
-  return res.data;
+const signUp = async (credentials: SignUpCredentials): Promise<SignInResult> => {
+  const response = await apiClient.post('/signup', credentials);
+  return response.data;
 };
 
-const appleLogIn = async (
+const googleSignIn = async (accessToken: string): Promise<SignInResult> => {
+  const response = await apiClient.post('/google/signin', { accessToken });
+  return response.data;
+};
+
+const appleSignIn = async (
   identityToken: string,
   name: {firstName: string, lastName: string} | null
-): Promise<LogInResult> => {
-  const res = await apiClient.post('/apple/sign-in', {
-    identity_token: identityToken,
+): Promise<SignInResult> => {
+  const response = await apiClient.post('/apple/signin', {
+    identityToken,
     name: name ? `${name.firstName} ${name.lastName}` : null,
   });
-  return res.data;
+  return response.data;
+};
+
+const signOut = async (): Promise<void> => {
+  await apiClient.post('/signout');
+};
+
+const getCurrentUser = async (): Promise<User | null> => {
+  try {
+    const response = await apiClient.get('/me');
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+    throw error;
+  }
+};
+
+const getUserRestaurants = async (): Promise<Restaurant[]> => {
+  const response = await apiClient.get('/restaurants');
+  return response.data;
 };
 
 export const authService = {
-  logIn,
-  googleLogIn, 
-  appleLogIn
+  signIn,
+  signUp,
+  googleSignIn,
+  appleSignIn,
+  signOut,
+  getCurrentUser,
+  getUserRestaurants
 };
