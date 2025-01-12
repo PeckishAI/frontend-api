@@ -4,7 +4,6 @@ const BASE_URL = config.apiBaseUrl;
 export const userService = {
   async getUserProfile(userUuid: string): Promise<any> {
     try {
-      userUuid = "7d5844cc-74f1-4f50-b63e-7324fdedf57c";
       const response = await fetch(`${BASE_URL}/users/v2/user/${userUuid}`, {
         method: "GET",
         headers: {
@@ -40,7 +39,6 @@ export const userService = {
       data = JSON.stringify(data);
     }
     try {
-      userUuid = "7d5844cc-74f1-4f50-b63e-7324fdedf57c";
       const response = await fetch(`${BASE_URL}/users/v2/user/${userUuid}`, {
         method: "PUT",
         headers: {

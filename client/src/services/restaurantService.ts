@@ -6,9 +6,14 @@ const BASE_URL = config.apiBaseUrl;
 export const restaurantService = {
   async getRestaurants(): Promise<Restaurant[]> {
     try {
+      const accessToken = localStorage.getItem("accessToken");
       const response = await fetch(
-        `${BASE_URL}/restaurants/v2/user/7d5844cc-74f1-4f50-b63e-7324fdedf57c`,
+        `${BASE_URL}/restaurants/v2/user`,
         {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`
+          },
           method: "GET",
           headers: {
             "Content-Type": "application/json",
