@@ -19,7 +19,7 @@ export const restaurantService = {
       }
 
       const response = await fetch(
-        `${BASE_URL}/v2/restaurants`,
+        `${BASE_URL}/auth/v2/me/restaurants`,
         {
           method: "GET",
           headers: getAuthHeaders(),
