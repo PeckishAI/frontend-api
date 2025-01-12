@@ -16,12 +16,13 @@ export const userService = {
       }
 
       const data = await response.json();
+      console.log("Data: ", data);
       if (!data.success) {
         throw new Error("Failed to fetch categories");
       }
       return data.data;
     } catch (error) {
-      console.error("Failed to fetch restaurant categories:", error);
+      console.error("Failed to fetch user:", error);
       throw error;
     }
   },
