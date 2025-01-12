@@ -40,42 +40,29 @@ function ProtectedRoute({ component: Component, ...rest }: { component: React.Co
     return null;
   }
 
-  return <Component />;
+  return <Component {...rest} />;
 }
 
 export default function App() {
   const [location] = useLocation();
   const showSidebar = !location.startsWith("/signin") && !location.startsWith("/signup");
-  const { user, isLoadingUser } = useAuth();
-
-  // Global loading state
-  if (isLoadingUser) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
+  const { user } = useAuth();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <RestaurantProvider>
-        <div className="min-h-screen bg-gray-50">
-          {showSidebar && user && <Sidebar />}
-          <Switch>
-            <Route path="/signin" component={SignIn} />
-            <Route path="/signup" component={SignUp} />
-            <Route path="/" component={() => <ProtectedRoute component={General} />} />
-            <Route path="/inventory" component={() => <ProtectedRoute component={Inventory} />} />
-            <Route path="/menu" component={() => <ProtectedRoute component={Menu} />} />
-            <Route path="/orders" component={() => <ProtectedRoute component={Orders} />} />
-            <Route path="/documents" component={() => <ProtectedRoute component={Documents} />} />
-            <Route path="/restaurant" component={() => <ProtectedRoute component={RestaurantManagement} />} />
-            <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
-          </Switch>
-        </div>
-        <Toaster />
-      </RestaurantProvider>
-    </QueryClientProvider>
+    <div className="min-h-screen bg-gray-50">
+      {showSidebar && user && <Sidebar />}
+      <Switch>
+        <Route path="/signin" component={SignIn} />
+        <Route path="/signup" component={SignUp} />
+        <Route path="/" component={() => <ProtectedRoute component={General} />} />
+        <Route path="/inventory" component={() => <ProtectedRoute component={Inventory} />} />
+        <Route path="/menu" component={() => <ProtectedRoute component={Menu} />} />
+        <Route path="/orders" component={() => <ProtectedRoute component={Orders} />} />
+        <Route path="/documents" component={() => <ProtectedRoute component={Documents} />} />
+        <Route path="/restaurant" component={() => <ProtectedRoute component={RestaurantManagement} />} />
+        <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
+      </Switch>
+      <Toaster />
+    </div>
   );
 }

@@ -1,0 +1,73 @@
+Access to fetch at 'https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev/auth/v2/signup' from origin 'https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'.Understand this errorAI
+authService.ts:34 
+        
+        
+       POST https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev/auth/v2/signup net::ERR_FAILED
+signUp @ authService.ts:34
+onSubmit @ SignUp.tsx:56
+(anonymous) @ chunk-3KW2JEPU.js?v=b8b25ac8:1683
+await in (anonymous)
+callCallback2 @ chunk-C43VWYGG.js?v=b8b25ac8:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=b8b25ac8:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=b8b25ac8:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-C43VWYGG.js?v=b8b25ac8:3736
+executeDispatch @ chunk-C43VWYGG.js?v=b8b25ac8:7014
+processDispatchQueueItemsInOrder @ chunk-C43VWYGG.js?v=b8b25ac8:7034
+processDispatchQueue @ chunk-C43VWYGG.js?v=b8b25ac8:7043
+dispatchEventsForPlugins @ chunk-C43VWYGG.js?v=b8b25ac8:7051
+(anonymous) @ chunk-C43VWYGG.js?v=b8b25ac8:7174
+batchedUpdates$1 @ chunk-C43VWYGG.js?v=b8b25ac8:18881
+batchedUpdates @ chunk-C43VWYGG.js?v=b8b25ac8:3579
+dispatchEventForPluginEventSystem @ chunk-C43VWYGG.js?v=b8b25ac8:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-C43VWYGG.js?v=b8b25ac8:5478
+dispatchEvent @ chunk-C43VWYGG.js?v=b8b25ac8:5472
+dispatchDiscreteEvent @ chunk-C43VWYGG.js?v=b8b25ac8:5449Understand this errorAI
+signup:1 Access to fetch at 'https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev/auth/v2/me' from origin 'https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'.Understand this errorAI
+authService.ts:144 
+        
+        
+       GET https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev/auth/v2/me net::ERR_FAILED 200 (OK)
+getCurrentUser @ authService.ts:144
+fetchFn @ @tanstack_react-query.js?v=3bc634d1:839
+run @ @tanstack_react-query.js?v=3bc634d1:493
+start @ @tanstack_react-query.js?v=3bc634d1:535
+fetch @ @tanstack_react-query.js?v=3bc634d1:925
+executeFetch_fn @ @tanstack_react-query.js?v=3bc634d1:2237
+onSubscribe @ @tanstack_react-query.js?v=3bc634d1:1924
+subscribe @ @tanstack_react-query.js?v=3bc634d1:24
+(anonymous) @ @tanstack_react-query.js?v=3bc634d1:3047
+subscribeToStore @ chunk-C43VWYGG.js?v=b8b25ac8:12587
+commitHookEffectListMount @ chunk-C43VWYGG.js?v=b8b25ac8:16883
+commitPassiveMountOnFiber @ chunk-C43VWYGG.js?v=b8b25ac8:18124
+commitPassiveMountEffects_complete @ chunk-C43VWYGG.js?v=b8b25ac8:18097
+commitPassiveMountEffects_begin @ chunk-C43VWYGG.js?v=b8b25ac8:18087
+commitPassiveMountEffects @ chunk-C43VWYGG.js?v=b8b25ac8:18077
+flushPassiveEffectsImpl @ chunk-C43VWYGG.js?v=b8b25ac8:19458
+flushPassiveEffects @ chunk-C43VWYGG.js?v=b8b25ac8:19415
+commitRootImpl @ chunk-C43VWYGG.js?v=b8b25ac8:19384
+commitRoot @ chunk-C43VWYGG.js?v=b8b25ac8:19245
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=b8b25ac8:18863
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=b8b25ac8:9119
+flushSync @ chunk-C43VWYGG.js?v=b8b25ac8:18927
+scheduleRefresh @ chunk-C43VWYGG.js?v=b8b25ac8:19972
+p.scheduleRefresh @ renderer.js:953
+(anonymous) @ @react-refresh:267
+performReactRefresh @ @react-refresh:256
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ SignIn.tsx:27
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:638
+handleMessage @ client:636
+(anonymous) @ client:546Understand this errorAI
+signup:1 Access to fetch at 'https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev/auth/v2/me' from origin 'https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'.Understand this errorAI
+authService.ts?t=1736702474841:143 
+        
+        
+       GET https://76032c8e-3d86-413b-9c48-7b818a8ffaa3-00-9k9j5uta5z7r.janeway.replit.dev/auth/v2/me net::ERR_FAILED 200 (OK)

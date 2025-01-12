@@ -17,7 +17,9 @@ export type SignInResult = {
   accessToken: string;
 };
 
-const signIn = async (credentials: SignInCredentials): Promise<SignInResult> => {
+const signIn = async (
+  credentials: SignInCredentials,
+): Promise<SignInResult> => {
   try {
     const response = await fetch(`${BASE_URL}/auth/v2/signin`, {
       method: "POST",
@@ -25,7 +27,7 @@ const signIn = async (credentials: SignInCredentials): Promise<SignInResult> => 
         "Content-Type": "application/json",
       },
       body: JSON.stringify(credentials),
-      credentials: 'include'
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -38,8 +40,8 @@ const signIn = async (credentials: SignInCredentials): Promise<SignInResult> => 
       throw new Error(data.message || "Failed to sign in");
     }
 
-    localStorage.setItem('accessToken', data.data.accessToken);
-    localStorage.setItem('user', JSON.stringify(data.data.user));
+    localStorage.setItem("accessToken", data.data.accessToken);
+    localStorage.setItem("user", JSON.stringify(data.data.user));
     return data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -50,15 +52,17 @@ const signIn = async (credentials: SignInCredentials): Promise<SignInResult> => 
   }
 };
 
-const signUp = async (credentials: SignUpCredentials): Promise<SignInResult> => {
+const signUp = async (
+  credentials: SignUpCredentials,
+): Promise<SignInResult> => {
   try {
+    console.log("Credentials: ", credentials);
     const response = await fetch(`${BASE_URL}/auth/v2/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(credentials),
-      credentials: 'include'
     });
 
     if (!response.ok) {
@@ -71,8 +75,8 @@ const signUp = async (credentials: SignUpCredentials): Promise<SignInResult> => 
       throw new Error(data.message || "Failed to sign up");
     }
 
-    localStorage.setItem('accessToken', data.data.accessToken);
-    localStorage.setItem('user', JSON.stringify(data.data.user));
+    localStorage.setItem("accessToken", data.data.accessToken);
+    localStorage.setItem("user", JSON.stringify(data.data.user));
     return data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -91,7 +95,7 @@ const googleSignIn = async (accessToken: string): Promise<SignInResult> => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ access_token: accessToken }),
-      credentials: 'include'
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -104,13 +108,15 @@ const googleSignIn = async (accessToken: string): Promise<SignInResult> => {
       throw new Error(data.message || "Failed to sign in with Google");
     }
 
-    localStorage.setItem('accessToken', data.data.accessToken);
-    localStorage.setItem('user', JSON.stringify(data.data.user));
+    localStorage.setItem("accessToken", data.data.accessToken);
+    localStorage.setItem("user", JSON.stringify(data.data.user));
     return data.data;
   } catch (error) {
     console.error("Google sign in error:", error);
     if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data?.message || "Failed to sign in with Google");
+      throw new Error(
+        error.response?.data?.message || "Failed to sign in with Google",
+      );
     }
     throw error;
   }
@@ -128,9 +134,11 @@ const appleSignIn = async (
       },
       body: JSON.stringify({
         identity_token: identityToken,
-        name: name ? { firstName: name.firstName, lastName: name.lastName } : null,
+        name: name
+          ? { firstName: name.firstName, lastName: name.lastName }
+          : null,
       }),
-      credentials: 'include'
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -143,13 +151,15 @@ const appleSignIn = async (
       throw new Error(data.message || "Failed to sign in with Apple");
     }
 
-    localStorage.setItem('accessToken', data.data.accessToken);
-    localStorage.setItem('user', JSON.stringify(data.data.user));
+    localStorage.setItem("accessToken", data.data.accessToken);
+    localStorage.setItem("user", JSON.stringify(data.data.user));
     return data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error("Apple sign in error:", error.response?.data);
-      throw new Error(error.response?.data?.message || "Failed to sign in with Apple");
+      throw new Error(
+        error.response?.data?.message || "Failed to sign in with Apple",
+      );
     }
     throw error;
   }
@@ -159,7 +169,7 @@ const signOut = async (): Promise<void> => {
   try {
     const response = await fetch(`${BASE_URL}/auth/v2/signout`, {
       method: "POST",
-      credentials: 'include'
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -172,8 +182,8 @@ const signOut = async (): Promise<void> => {
       throw new Error(data.message || "Failed to sign out");
     }
 
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('user');
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error("Sign out error:", error.response?.data);
@@ -187,7 +197,7 @@ const getCurrentUser = async (): Promise<User | null> => {
   try {
     const response = await fetch(`${BASE_URL}/auth/v2/me`, {
       method: "GET",
-      credentials: 'include'
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -215,7 +225,7 @@ const getCurrentUser = async (): Promise<User | null> => {
 const getUserRestaurants = async (): Promise<Restaurant[]> => {
   const response = await fetch(`${BASE_URL}/auth/v2/me/restaurants`, {
     method: "GET",
-    credentials: 'include'
+    credentials: "include",
   });
 
   if (!response.ok) {

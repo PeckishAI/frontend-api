@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { authService, type SignInCredentials, type SignUpCredentials } from '@/services/authService';
+import { authService } from '@/services/authService';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
 
@@ -12,6 +12,8 @@ export function useAuth() {
   const { data: user, isLoading: isLoadingUser } = useQuery({
     queryKey: ['user'],
     queryFn: authService.getCurrentUser,
+    retry: false,
+    staleTime: 0 // Always fetch fresh data on mount
   });
 
   // Query for user's restaurants
@@ -25,6 +27,7 @@ export function useAuth() {
   const signInMutation = useMutation({
     mutationFn: authService.signIn,
     onSuccess: (data) => {
+      // Update the cache immediately
       queryClient.setQueryData(['user'], data.user);
       queryClient.setQueryData(['restaurants'], data.restaurants);
       setLocation('/');
@@ -32,7 +35,7 @@ export function useAuth() {
     onError: (error: any) => {
       toast({
         title: 'Error',
-        description: error.response?.data?.message || 'Failed to sign in',
+        description: error.message || 'Failed to sign in',
         variant: 'destructive',
       });
     },
@@ -42,14 +45,17 @@ export function useAuth() {
   const signUpMutation = useMutation({
     mutationFn: authService.signUp,
     onSuccess: (data) => {
+      // Update the cache immediately
       queryClient.setQueryData(['user'], data.user);
       queryClient.setQueryData(['restaurants'], data.restaurants);
+      // Force refetch user data to ensure we have the latest
+      queryClient.invalidateQueries({ queryKey: ['user'] });
       setLocation('/');
     },
     onError: (error: any) => {
       toast({
         title: 'Error',
-        description: error.response?.data?.message || 'Failed to sign up',
+        description: error.message || 'Failed to sign up',
         variant: 'destructive',
       });
     },
@@ -66,7 +72,7 @@ export function useAuth() {
     onError: (error: any) => {
       toast({
         title: 'Error',
-        description: error.response?.data?.message || 'Failed to sign in with Google',
+        description: error.message || 'Failed to sign in with Google',
         variant: 'destructive',
       });
     },
@@ -84,7 +90,7 @@ export function useAuth() {
     onError: (error: any) => {
       toast({
         title: 'Error',
-        description: error.response?.data?.message || 'Failed to sign in with Apple',
+        description: error.message || 'Failed to sign in with Apple',
         variant: 'destructive',
       });
     },
@@ -94,13 +100,14 @@ export function useAuth() {
   const signOutMutation = useMutation({
     mutationFn: authService.signOut,
     onSuccess: () => {
+      // Clear all queries from the cache on logout
       queryClient.clear();
       setLocation('/signin');
     },
     onError: (error: any) => {
       toast({
         title: 'Error',
-        description: error.response?.data?.message || 'Failed to sign out',
+        description: error.message || 'Failed to sign out',
         variant: 'destructive',
       });
     },

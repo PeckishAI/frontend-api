@@ -1,11 +1,21 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { setupAuth } from "./auth";
+import cors from "cors";
 
 const app = express();
+
+// CORS configuration
+app.use(cors({
+  origin: true, // Allows all origins
+  credentials: true // Allow credentials
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -38,6 +48,9 @@ app.use((req, res, next) => {
 
 const startServer = async () => {
   try {
+    // Set up authentication
+    setupAuth(app);
+
     const server = registerRoutes(app);
 
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

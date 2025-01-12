@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { config } from "@/config/config";
-import { authService } from "@/services/authService";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
@@ -9,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useAuth } from "@/hooks/useAuth";
 import {
   Form,
   FormControl,
@@ -18,8 +18,7 @@ import {
 } from "@/components/ui/form";
 
 const signUpSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
+  username: z.string().min(2, "Username must be at least 2 characters"),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
@@ -40,12 +39,12 @@ export default function SignUp() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { signUp, googleSignIn, appleSignIn } = useAuth();
 
   const form = useForm<SignUpForm>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      username: "",
       password: "",
       confirmPassword: "",
     },
@@ -53,32 +52,27 @@ export default function SignUp() {
 
   const onSubmit = async (data: SignUpForm) => {
     try {
-      const result = await authService.signUp({
-        name: data.name,
-        email: data.email,
+      await signUp({
+        username: data.username,
         password: data.password,
       });
-      // Store the access token
-      localStorage.setItem('accessToken', result.accessToken);
       setLocation('/');
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.response?.data?.message || "Failed to sign up",
+        description: error.message || "Failed to sign up",
         variant: "destructive",
       });
     }
   };
 
   useEffect(() => {
-    // Load Google API
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
 
-    // Load Apple API
     const appleScript = document.createElement('script');
     appleScript.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
     appleScript.async = true;
@@ -90,6 +84,86 @@ export default function SignUp() {
       document.body.removeChild(appleScript);
     };
   }, []);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const google = (window as any).google;
+      if (!google) {
+        toast({
+          title: "Error",
+          description: "Google API not loaded",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: config.googleClientId,
+        scope: 'email profile',
+        callback: async (response: any) => {
+          if (response.access_token) {
+            try {
+              await googleSignIn(response.access_token);
+              setLocation('/');
+            } catch (error: any) {
+              toast({
+                title: "Error",
+                description: error.message || "Failed to sign in with Google",
+                variant: "destructive",
+              });
+            }
+          }
+        },
+      });
+      client.requestAccessToken();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Google signup failed",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    try {
+      const auth = (window as any).AppleID;
+      if (!auth) {
+        toast({
+          title: "Error",
+          description: "Apple API not loaded",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const response = await auth.auth.signIn();
+      if (response.authorization?.id_token) {
+        try {
+          await appleSignIn({
+            identityToken: response.authorization.id_token,
+            name: response.user ? {
+              firstName: response.user.name.firstName,
+              lastName: response.user.name.lastName
+            } : null,
+          });
+          setLocation('/');
+        } catch (error: any) {
+          toast({
+            title: "Error",
+            description: error.message || "Failed to sign up with Apple",
+            variant: "destructive",
+          });
+        }
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Apple signup failed",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="relative min-h-screen">
@@ -111,7 +185,7 @@ export default function SignUp() {
 
           <h2 className="mt-8 text-4xl font-display text-center">Create an Account</h2>
           <p className="mt-2 text-sm text-center text-gray-600">
-            Sign up for Peckish to start managing your restaurant
+            Sign up for an account to get started
           </p>
 
           <div className="mt-8 space-y-6">
@@ -119,95 +193,15 @@ export default function SignUp() {
               <Button 
                 variant="outline" 
                 className="w-full"
-                onClick={async () => {
-                  try {
-                    const google = (window as any).google;
-                    if (!google) {
-                      toast({
-                        title: "Error",
-                        description: "Google API not loaded",
-                        variant: "destructive",
-                      });
-                      return;
-                    }
-
-                    const client = google.accounts.oauth2.initTokenClient({
-                      client_id: config.googleClientId,
-                      scope: 'email profile',
-                      callback: async (response: any) => {
-                        if (response.access_token) {
-                          try {
-                            const result = await authService.googleSignIn(response.access_token);
-                            localStorage.setItem('accessToken', result.accessToken);
-                            setLocation('/');
-                          } catch (error: any) {
-                            toast({
-                              title: "Error",
-                              description: error.response?.data?.message || "Failed to sign up with Google",
-                              variant: "destructive",
-                            });
-                          }
-                        }
-                      },
-                    });
-                    client.requestAccessToken();
-                  } catch (error: any) {
-                    toast({
-                      title: "Error",
-                      description: "Google signup failed",
-                      variant: "destructive",
-                    });
-                  }
-                }}
+                onClick={handleGoogleSignIn}
               >
-                <img src="https://www.google.com/favicon.ico" alt="" className="mr-2 h-4 w-4" />
                 Continue with Google
               </Button>
               <Button 
                 variant="outline" 
                 className="w-full"
-                onClick={async () => {
-                  try {
-                    const auth = (window as any).AppleID;
-                    if (!auth) {
-                      toast({
-                        title: "Error",
-                        description: "Apple API not loaded",
-                        variant: "destructive",
-                      });
-                      return;
-                    }
-
-                    const response = await auth.auth.signIn();
-                    if (response.authorization?.id_token) {
-                      try {
-                        const result = await authService.appleSignIn(
-                          response.authorization.id_token,
-                          response.user ? {
-                            firstName: response.user.name.firstName,
-                            lastName: response.user.name.lastName
-                          } : null
-                        );
-                        localStorage.setItem('accessToken', result.accessToken);
-                        setLocation('/');
-                      } catch (error: any) {
-                        toast({
-                          title: "Error",
-                          description: error.response?.data?.message || "Failed to sign up with Apple",
-                          variant: "destructive",
-                        });
-                      }
-                    }
-                  } catch (error: any) {
-                    toast({
-                      title: "Error",
-                      description: "Apple signup failed",
-                      variant: "destructive",
-                    });
-                  }
-                }}
+                onClick={handleAppleSignIn}
               >
-                <img src="https://www.apple.com/favicon.ico" alt="" className="mr-2 h-4 w-4" />
                 Continue with Apple
               </Button>
             </div>
@@ -225,24 +219,11 @@ export default function SignUp() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="name"
+                  name="username"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="Full Name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input type="email" placeholder="Email" {...field} />
+                        <Input placeholder="Username" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
