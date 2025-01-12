@@ -96,7 +96,7 @@ const productSchema = z.object({
         uuid: z.string().optional(),
         preparation_uuid: z.string().optional(),
         preparation_name: z.string().optional(),
-        quanity: z.number().min(0, "Quantity must be positive"),
+        quantity: z.number().min(0, "Quantity must be positive"),
         base_unit: z.object({
           unit_uuid: z.string().optional(),
           unit_name: z.string().optional(),
