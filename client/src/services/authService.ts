@@ -185,7 +185,10 @@ const getCurrentUser = async () => {
 const getUserRestaurants = async () => {
   try {
     const accessToken = localStorage.getItem("accessToken");
-    const response = await fetch(`${BASE_URL}/restaurants/v2/user`, {
+    const user = await getCurrentUser();
+    if (!user?.user_uuid) return [];
+    
+    const response = await fetch(`${BASE_URL}/restaurants/v2/user/${user.user_uuid}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,
