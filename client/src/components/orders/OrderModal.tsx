@@ -154,12 +154,12 @@ export default function OrderModal({
       quantity: 0,
       unit_cost: 0,
       total_cost: 0,
-      unit: { unit_uuid: "", unit_name: "" }
+      unit: { unit_uuid: "", unit_name: "" },
     };
     if (!editedOrder.items) {
       setEditedOrder({
         ...editedOrder,
-        items: [newItem]
+        items: [newItem],
       });
     } else {
       setEditedOrder({
@@ -201,7 +201,8 @@ export default function OrderModal({
             <label className="text-sm text-gray-600">Linked Documents</label>
             <div className="font-medium">
               {editedOrder.linked_documents.invoice_uuid && "Invoice linked"}
-              {editedOrder.linked_documents.delivery_note_uuid && ", Delivery Note linked"}
+              {editedOrder.linked_documents.delivery_note_uuid &&
+                ", Delivery Note linked"}
             </div>
           </div>
         )}
@@ -244,7 +245,8 @@ export default function OrderModal({
                   Total
                 </TableCell>
                 <TableCell className="text-right font-semibold">
-                  ${editedOrder.amount ? editedOrder.amount.toFixed(2) : "N/A"}
+                  {useRestaurantContext().currencyInfo?.currencySymbol}
+                  {editedOrder.amount ? editedOrder.amount.toFixed(2) : "N/A"}
                 </TableCell>
               </TableRow>
             </>
@@ -474,7 +476,7 @@ export default function OrderModal({
                         />
                       </TableCell>
                       <TableCell className="text-right">
-                        $
+                        {useRestaurantContext().currencyInfo?.currencySymbol}
                         {((item.quantity || 0) * (item.unit_cost || 0)).toFixed(
                           2,
                         )}
@@ -505,7 +507,12 @@ export default function OrderModal({
                 </TableBody>
               </Table>
 
-              <Button type="button" variant="outline" size="sm" onClick={addItem}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addItem}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Item
               </Button>

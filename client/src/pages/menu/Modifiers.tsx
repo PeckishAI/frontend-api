@@ -104,10 +104,20 @@ export default function Modifiers() {
                   <Percent className="h-4 w-4 text-primary" />
                   <div className="text-sm text-gray-500">Margin</div>
                 </div>
-                <div className="font-medium">
-                  {modifier.portion_price && modifier.portion_cost
-                    ? `${((1 - modifier.portion_cost / modifier.portion_price) * 100).toFixed(1)}%`
-                    : "N/A"}
+                <div className="font-semibold text-base">
+                  {modifier.portion_price && modifier.portion_cost ? (
+                    <>
+                      <span className="text-2xl font-bold text-blue-600">
+                        {(
+                          (1 - modifier.portion_cost / modifier.portion_price) *
+                          100
+                        ).toFixed(1)}
+                      </span>
+                      <span className="text-sm ml-0.5 text-blue-600">%</span>
+                    </>
+                  ) : (
+                    "N/A"
+                  )}
                 </div>
               </div>
             </div>
@@ -146,11 +156,18 @@ export default function Modifiers() {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {viewMode === "cards" ? (
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {modifiers.filter((modifier) =>
-              modifier.modifier_name?.toLowerCase().includes(searchQuery.toLowerCase())
-            ).map((modifier) => (
-              <ModifierCard key={modifier.modifier_uuid} modifier={modifier} />
-            ))}
+            {modifiers
+              .filter((modifier) =>
+                modifier.modifier_name
+                  ?.toLowerCase()
+                  .includes(searchQuery.toLowerCase()),
+              )
+              .map((modifier) => (
+                <ModifierCard
+                  key={modifier.modifier_uuid}
+                  modifier={modifier}
+                />
+              ))}
           </div>
         ) : (
           <div className="p-6">
@@ -165,33 +182,37 @@ export default function Modifiers() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {modifiers.filter((modifier) =>
-                  modifier.modifier_name?.toLowerCase().includes(searchQuery.toLowerCase())
-                ).map((modifier) => (
-                  <TableRow
-                    key={modifier.modifier_uuid}
-                    className="cursor-pointer hover:bg-gray-50"
-                    onClick={() => setEditingModifier(modifier)}
-                  >
-                    <TableCell>{modifier.modifier_name}</TableCell>
-                    <TableCell>
-                      {modifier.modifier_ingredients?.length || 0}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {currencyInfo?.currencySymbol}
-                      {modifier.portion_price?.toFixed(2) || "0.00"}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {currencyInfo?.currencySymbol}
-                      {modifier.portion_cost?.toFixed(2) || "0.00"}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {modifier.portion_price && modifier.portion_cost
-                        ? `${((1 - modifier.portion_cost / modifier.portion_price) * 100).toFixed(1)}%`
-                        : "N/A"}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {modifiers
+                  .filter((modifier) =>
+                    modifier.modifier_name
+                      ?.toLowerCase()
+                      .includes(searchQuery.toLowerCase()),
+                  )
+                  .map((modifier) => (
+                    <TableRow
+                      key={modifier.modifier_uuid}
+                      className="cursor-pointer hover:bg-gray-50"
+                      onClick={() => setEditingModifier(modifier)}
+                    >
+                      <TableCell>{modifier.modifier_name}</TableCell>
+                      <TableCell>
+                        {modifier.modifier_ingredients?.length || 0}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {currencyInfo?.currencySymbol}
+                        {modifier.portion_price?.toFixed(2) || "0.00"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {currencyInfo?.currencySymbol}
+                        {modifier.portion_cost?.toFixed(2) || "0.00"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {modifier.portion_price && modifier.portion_cost
+                          ? `${((1 - modifier.portion_cost / modifier.portion_price) * 100).toFixed(1)}%`
+                          : "N/A"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </div>

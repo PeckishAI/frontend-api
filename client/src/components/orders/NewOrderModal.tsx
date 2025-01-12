@@ -456,7 +456,8 @@ export default function NewOrderModal({
                     Total
                   </TableCell>
                   <TableCell className="text-right font-semibold">
-                    ${getTotalCost().toFixed(2)}
+                    {useRestaurantContext().currencyInfo?.currencySymbol}
+                    {getTotalCost().toFixed(2)}
                   </TableCell>
                   <TableCell />
                 </TableRow>
