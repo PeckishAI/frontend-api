@@ -182,6 +182,31 @@ const getCurrentUser = async () => {
   }
 };
 
+const getUserRestaurants = async () => {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+    const response = await fetch(`${BASE_URL}/restaurants/v2/user`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        return [];
+      }
+      throw new Error(await response.text());
+    }
+
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error("Get user restaurants error:", error);
+    return [];
+  }
+};
+
 export const authService = {
   signIn,
   signUp,
@@ -189,4 +214,5 @@ export const authService = {
   appleSignIn,
   signOut,
   getCurrentUser,
+  getUserRestaurants,
 };
