@@ -22,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Restaurant } from "@/types/restaurant";
+import { authService } from "@/services/authService";
 import { restaurantService } from "@/services/restaurantService";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -49,7 +50,7 @@ export default function RestaurantManagement() {
 
   const { data: restaurants = [], isLoading, error } = useQuery({
     queryKey: ["restaurants"],
-    queryFn: restaurantService.getRestaurants,
+    queryFn: authService.getUserRestaurants,
   });
 
   const updateRestaurantMutation = useMutation({
