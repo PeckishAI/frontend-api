@@ -1,4 +1,5 @@
 import { Route, Switch, useLocation } from "wouter";
+import { RestaurantProvider } from "@/contexts/RestaurantContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -59,8 +60,9 @@ export default function App() {
   const showSidebar = !location.startsWith("/signin") && !location.startsWith("/signup");
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {showSidebar && user && <Sidebar />}
+    <RestaurantProvider>
+      <div className="min-h-screen bg-gray-50">
+        {showSidebar && user && <Sidebar />}
       <Switch>
         <Route path="/signin" component={SignIn} />
         <Route path="/signup" component={SignUp} />
@@ -74,5 +76,6 @@ export default function App() {
         <Route component={NotFound} />
       </Switch>
     </div>
+    </RestaurantProvider>
   );
 }
