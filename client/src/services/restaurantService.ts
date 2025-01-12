@@ -18,10 +18,17 @@ export const restaurantService = {
         throw new Error("No authentication token found");
       }
 
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const user_uuid = user?.user_uuid;
+      
+      if (!user_uuid) {
+        throw new Error("No user UUID found");
+      }
+
       const response = await fetch(
-        `${BASE_URL}/auth/v2/me/restaurants`,
+        `${BASE_URL}/restaurants/v2/restaurant/${user_uuid}`,
         {
-          method: "GET",
+          method: "GET", 
           headers: getAuthHeaders(),
           credentials: 'include',
         },

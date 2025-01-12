@@ -32,6 +32,7 @@ const signIn = async (
       throw new Error(data.message || "Failed to sign in");
     }
     localStorage.setItem('accessToken', data.data.accessToken);
+    localStorage.setItem('user', JSON.stringify(data.data.user));
     return data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
