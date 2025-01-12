@@ -23,15 +23,17 @@ const menuItems = [
 
 export default function Sidebar() {
   const { toast } = useToast();
-  const { data: user } = useQuery({
+  const { data: data } = useQuery({
     queryKey: ["profile"],
     queryFn: () => userService.getUserProfile("current"),
   });
 
+  console.log("Sidebar: ", data.user);
+
   const userProfile = {
-    name: user?.username || "Guest",
-    role: user?.role || "User",
-    avatar: user?.avatar_url,
+    name: data.user?.name || "Guest",
+    role: data.user?.role || "User",
+    avatar: data.user?.picture,
   };
 
   return (

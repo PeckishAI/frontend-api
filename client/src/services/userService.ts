@@ -5,11 +5,11 @@ export const userService = {
   async getUserProfile(userUuid: string): Promise<any> {
     try {
       const accessToken = localStorage.getItem("accessToken");
-      const response = await fetch(`${BASE_URL}/users/v2/me`, {
+      const response = await fetch(`${BASE_URL}/auth/v2/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
