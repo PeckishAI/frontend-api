@@ -31,9 +31,9 @@ export default function Sidebar() {
   console.log("Sidebar: ", data);
 
   const userProfile = {
-    name: data.user?.name || "Guest",
-    role: data.user?.role || "User",
-    avatar: data.user?.picture,
+    name: data?.user?.name || "Guest",
+    role: data?.user?.role || "User", 
+    avatar: data?.user?.picture,
   };
 
   return (
