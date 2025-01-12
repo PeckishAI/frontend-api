@@ -1,7 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { authService } from '@/services/authService';
-import { useToast } from '@/hooks/use-toast';
-import { useLocation } from 'wouter';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { authService } from "@/services/authService";
+import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 
 export function useAuth() {
   const queryClient = useQueryClient();
@@ -10,34 +10,36 @@ export function useAuth() {
 
   // Query for current user
   const { data: user, isLoading: isLoadingUser } = useQuery({
-    queryKey: ['user'],
+    queryKey: ["user"],
     queryFn: authService.getCurrentUser,
     retry: false,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
+  console.log("USER", user);
 
   // Query for user's restaurants
   const { data: restaurants = [] } = useQuery({
-    queryKey: ['restaurants'],
+    queryKey: ["restaurants"],
     queryFn: authService.getUserRestaurants,
     enabled: !!user,
   });
+  console.log("RESTAURANTS", restaurants);
 
   // Sign in mutation
   const signInMutation = useMutation({
     mutationFn: authService.signIn,
     onSuccess: (data) => {
       // Update the cache immediately
-      queryClient.setQueryData(['user'], data.user);
-      queryClient.setQueryData(['restaurants'], data.restaurants);
-      setLocation('/');
+      queryClient.setQueryData(["user"], data.user);
+      queryClient.setQueryData(["restaurants"], data.restaurants);
+      setLocation("/");
     },
     onError: (error: any) => {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to sign in',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to sign in",
+        variant: "destructive",
       });
     },
   });
@@ -47,17 +49,17 @@ export function useAuth() {
     mutationFn: authService.signUp,
     onSuccess: (data) => {
       // Update the cache immediately
-      queryClient.setQueryData(['user'], data.user);
-      queryClient.setQueryData(['restaurants'], data.restaurants);
+      queryClient.setQueryData(["user"], data.user);
+      queryClient.setQueryData(["restaurants"], data.restaurants);
       // Force refetch user data to ensure we have the latest
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-      setLocation('/');
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      setLocation("/");
     },
     onError: (error: any) => {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to sign up',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to sign up",
+        variant: "destructive",
       });
     },
   });
@@ -66,33 +68,38 @@ export function useAuth() {
   const googleSignInMutation = useMutation({
     mutationFn: authService.googleSignIn,
     onSuccess: (data) => {
-      queryClient.setQueryData(['user'], data.user);
-      queryClient.setQueryData(['restaurants'], data.restaurants);
-      setLocation('/');
+      queryClient.setQueryData(["user"], data.user);
+      queryClient.setQueryData(["restaurants"], data.restaurants);
+      setLocation("/");
     },
     onError: (error: any) => {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to sign in with Google',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to sign in with Google",
+        variant: "destructive",
       });
     },
   });
 
   // Apple sign in mutation
   const appleSignInMutation = useMutation({
-    mutationFn: ({ identityToken, name }: { identityToken: string; name: any }) => 
-      authService.appleSignIn(identityToken, name),
+    mutationFn: ({
+      identityToken,
+      name,
+    }: {
+      identityToken: string;
+      name: any;
+    }) => authService.appleSignIn(identityToken, name),
     onSuccess: (data) => {
-      queryClient.setQueryData(['user'], data.user);
-      queryClient.setQueryData(['restaurants'], data.restaurants);
-      setLocation('/');
+      queryClient.setQueryData(["user"], data.user);
+      queryClient.setQueryData(["restaurants"], data.restaurants);
+      setLocation("/");
     },
     onError: (error: any) => {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to sign in with Apple',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to sign in with Apple",
+        variant: "destructive",
       });
     },
   });
@@ -103,13 +110,13 @@ export function useAuth() {
     onSuccess: () => {
       // Clear all queries from the cache on logout
       queryClient.clear();
-      setLocation('/signin');
+      setLocation("/signin");
     },
     onError: (error: any) => {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to sign out',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to sign out",
+        variant: "destructive",
       });
     },
   });
