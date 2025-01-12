@@ -22,10 +22,20 @@ export interface SocialSignInResult {
   picture: string | null;
 }
 
-interface Restaurant {
-  // Placeholder for Restaurant interface - needs to be defined based on backend model.
-  id: number;
+export interface Restaurant {
+  restaurant_uuid: string;
   name: string;
+  address: string | null;
+  city: string | null;
+  country: string | null;
+  country_code: string | null;
+  currency: string;
+  email: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  logo_url: string | null;
+  phone: string | null;
+  postcode: string | null;
 }
 
 export interface AuthResult {

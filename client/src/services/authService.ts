@@ -8,6 +8,7 @@ import {
 } from "@/types/user";
 import { type Restaurant } from "@/types/restaurant";
 import { config } from "../config/config";
+
 const BASE_URL = config.apiBaseUrl;
 
 export type SignInResult = {
@@ -16,42 +17,40 @@ export type SignInResult = {
   accessToken: string;
 };
 
-const signIn = async (
-  credentials: SignInCredentials,
-): Promise<SignInResult> => {
-  // Hardcoded successful response
-  const mockResponse = {
-    user: {
-      user_uuid: "test-user-uuid",
-      email: "test@example.com",
-      name: "Test User"
-    },
-    restaurants: [{
-      restaurant_uuid: "7d5844cc-74f1-4f50-b63e-7324fdedf57c",
-      name: "Test Restaurant",
-      address: "123 Test St",
-      city: "Test City",
-      country: "Test Country",
-      country_code: "TC",
-      currency: "USD",
-      email: "test@restaurant.com",
-      latitude: 0,
-      longitude: 0,
-      logo_url: null,
-      phone: null,
-      postcode: null
-    }],
-    accessToken: "mock-token"
-  };
+const signIn = async (credentials: SignInCredentials): Promise<SignInResult> => {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/v2/signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+      credentials: 'include'
+    });
 
-  localStorage.setItem('accessToken', mockResponse.accessToken);
-  localStorage.setItem('user', JSON.stringify(mockResponse.user));
-  return mockResponse;
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message || "Failed to sign in");
+    }
+
+    localStorage.setItem('accessToken', data.data.accessToken);
+    localStorage.setItem('user', JSON.stringify(data.data.user));
+    return data.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("Sign in error:", error.response?.data);
+      throw new Error(error.response?.data?.message || "Failed to sign in");
+    }
+    throw error;
+  }
 };
 
-const signUp = async (
-  credentials: SignUpCredentials,
-): Promise<SignInResult> => {
+const signUp = async (credentials: SignUpCredentials): Promise<SignInResult> => {
   try {
     const response = await fetch(`${BASE_URL}/auth/v2/signup`, {
       method: "POST",
@@ -59,11 +58,22 @@ const signUp = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify(credentials),
+      credentials: 'include'
     });
-    if (!response.data.success) {
-      throw new Error(response.data.message || "Failed to sign up");
+
+    if (!response.ok) {
+      throw new Error(await response.text());
     }
-    return response.data.data;
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message || "Failed to sign up");
+    }
+
+    localStorage.setItem('accessToken', data.data.accessToken);
+    localStorage.setItem('user', JSON.stringify(data.data.user));
+    return data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error("Sign up error:", error.response?.data);
@@ -75,30 +85,32 @@ const signUp = async (
 
 const googleSignIn = async (accessToken: string): Promise<SignInResult> => {
   try {
-    console.log("Attempting Google sign in with token");
     const response = await fetch(`${BASE_URL}/auth/v2/google/signin`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        access_token: accessToken,
-      }),
+      body: JSON.stringify({ access_token: accessToken }),
+      credentials: 'include'
     });
 
-    console.log("Google sign in response:", response);
-
-    if (!response) {
-      throw new Error(response.data.message || "Failed to sign in with Google");
+    if (!response.ok) {
+      throw new Error(await response.text());
     }
 
-    return response;
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message || "Failed to sign in with Google");
+    }
+
+    localStorage.setItem('accessToken', data.data.accessToken);
+    localStorage.setItem('user', JSON.stringify(data.data.user));
+    return data.data;
   } catch (error) {
     console.error("Google sign in error:", error);
     if (axios.isAxiosError(error)) {
-      throw new Error(
-        error.response?.data?.message || "Failed to sign in with Google",
-      );
+      throw new Error(error.response?.data?.message || "Failed to sign in with Google");
     }
     throw error;
   }
@@ -116,21 +128,28 @@ const appleSignIn = async (
       },
       body: JSON.stringify({
         identity_token: identityToken,
-        name: name
-          ? { firstName: name.firstName, lastName: name.lastName }
-          : null,
+        name: name ? { firstName: name.firstName, lastName: name.lastName } : null,
       }),
+      credentials: 'include'
     });
-    if (!response.data.success) {
-      throw new Error(response.data.message || "Failed to sign in with Apple");
+
+    if (!response.ok) {
+      throw new Error(await response.text());
     }
-    return response.data.data;
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message || "Failed to sign in with Apple");
+    }
+
+    localStorage.setItem('accessToken', data.data.accessToken);
+    localStorage.setItem('user', JSON.stringify(data.data.user));
+    return data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error("Apple sign in error:", error.response?.data);
-      throw new Error(
-        error.response?.data?.message || "Failed to sign in with Apple",
-      );
+      throw new Error(error.response?.data?.message || "Failed to sign in with Apple");
     }
     throw error;
   }
@@ -138,21 +157,23 @@ const appleSignIn = async (
 
 const signOut = async (): Promise<void> => {
   try {
-    const response = await fetch(`${BASE_URL}/auth/v2/apple/signin`, {
+    const response = await fetch(`${BASE_URL}/auth/v2/signout`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        identity_token: identityToken,
-        name: name
-          ? { firstName: name.firstName, lastName: name.lastName }
-          : null,
-      }),
+      credentials: 'include'
     });
-    if (!response.data.success) {
-      throw new Error(response.data.message || "Failed to sign out");
+
+    if (!response.ok) {
+      throw new Error(await response.text());
     }
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message || "Failed to sign out");
+    }
+
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('user');
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error("Sign out error:", error.response?.data);
@@ -166,11 +187,23 @@ const getCurrentUser = async (): Promise<User | null> => {
   try {
     const response = await fetch(`${BASE_URL}/auth/v2/me`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      credentials: 'include'
     });
-    return response.data.data.user;
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        return null;
+      }
+      throw new Error(await response.text());
+    }
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message || "Failed to get current user");
+    }
+
+    return data.data.user;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
       return null;
@@ -180,18 +213,22 @@ const getCurrentUser = async (): Promise<User | null> => {
 };
 
 const getUserRestaurants = async (): Promise<Restaurant[]> => {
-  const response = await fetch(`${BASE_URL}/auth/v2/me`, {
+  const response = await fetch(`${BASE_URL}/auth/v2/me/restaurants`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    credentials: 'include'
   });
-  if (!response.data.success) {
-    throw new Error(
-      response.data.message || "Failed to fetch user restaurants",
-    );
+
+  if (!response.ok) {
+    throw new Error(await response.text());
   }
-  return response.data.data.restaurants;
+
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error(data.message || "Failed to fetch user restaurants");
+  }
+
+  return data.data.restaurants;
 };
 
 export const authService = {
