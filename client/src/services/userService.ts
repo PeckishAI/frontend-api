@@ -4,10 +4,12 @@ const BASE_URL = config.apiBaseUrl;
 export const userService = {
   async getUserProfile(userUuid: string): Promise<any> {
     try {
-      const response = await fetch(`${BASE_URL}/users/v2/user/${userUuid}`, {
+      const accessToken = localStorage.getItem("accessToken");
+      const response = await fetch(`${BASE_URL}/users/v2/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
         },
       });
 
