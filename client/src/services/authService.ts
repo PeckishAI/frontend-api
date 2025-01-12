@@ -1,10 +1,15 @@
 import axios from 'axios';
 import { type User, type SignInCredentials, type SignUpCredentials, type AuthResult, type SocialSignInResult } from '@/types/user';
 import { type Restaurant } from '@/types/restaurant';
+import { config } from '@/config/config';
 
 const apiClient = axios.create({
-  baseURL: '/api/auth',
-  withCredentials: true
+  baseURL: config.apiBaseUrl,
+  withCredentials: true, // Important for sending authentication cookies
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  }
 });
 
 export type SignInResult = {
@@ -14,33 +19,112 @@ export type SignInResult = {
 }
 
 const signIn = async (credentials: SignInCredentials): Promise<SignInResult> => {
-  const response = await apiClient.post('/v2/signin', credentials);
-  return response.data.data; // Extract data from APIResponse wrapper
+  try {
+    const response = await apiClient.post('/v2/signin', credentials);
+    if (!response.data.success) {
+      throw new Error(response.data.message || 'Failed to sign in');
+    }
+    return response.data.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Sign in error:', error.response?.data);
+      throw new Error(error.response?.data?.message || 'Failed to sign in');
+    }
+    throw error;
+  }
 };
 
 const signUp = async (credentials: SignUpCredentials): Promise<SignInResult> => {
-  const response = await apiClient.post('/v2/signup', credentials);
-  return response.data.data;
+  try {
+    const response = await apiClient.post('/v2/signup', credentials);
+    if (!response.data.success) {
+      throw new Error(response.data.message || 'Failed to sign up');
+    }
+    return response.data.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Sign up error:', error.response?.data);
+      throw new Error(error.response?.data?.message || 'Failed to sign up');
+    }
+    throw error;
+  }
 };
 
 const googleSignIn = async (accessToken: string): Promise<SignInResult> => {
-  const response = await apiClient.post('/v2/google/signin', { access_token: accessToken });
-  return response.data.data;
+  try {
+    console.log('Attempting Google sign in with token');
+
+    // Using fetch instead of axios for more control over CORS and headers
+    const response = await fetch(`${config.apiBaseUrl}/v2/google`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ token: accessToken }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Google sign in failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorText,
+        headers: Object.fromEntries([...response.headers]),
+      });
+      throw new Error(errorText || `Failed to sign in with Google: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('Google sign in response:', data);
+
+    if (!data.success) {
+      throw new Error(data.message || 'Failed to sign in with Google');
+    }
+
+    return data.data;
+  } catch (error) {
+    console.error('Google sign in error:', error);
+    throw error;
+  }
 };
 
 const appleSignIn = async (
   identityToken: string,
   name: {firstName: string, lastName: string} | null
 ): Promise<SignInResult> => {
-  const response = await apiClient.post('/v2/apple/signin', {
-    identity_token: identityToken,
-    name: name ? `${name.firstName} ${name.lastName}` : null,
-  });
-  return response.data.data;
+  try {
+    const response = await apiClient.post('/v2/apple', {
+      identity_token: identityToken,
+      name: name ? `${name.firstName} ${name.lastName}` : null,
+    });
+    if (!response.data.success) {
+      throw new Error(response.data.message || 'Failed to sign in with Apple');
+    }
+    return response.data.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Apple sign in error:', error.response?.data);
+      throw new Error(error.response?.data?.message || 'Failed to sign in with Apple');
+    }
+    throw error;
+  }
 };
 
 const signOut = async (): Promise<void> => {
-  await apiClient.post('/v2/signout');
+  try {
+    const response = await apiClient.post('/v2/signout');
+    if (!response.data.success) {
+      throw new Error(response.data.message || 'Failed to sign out');
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Sign out error:', error.response?.data);
+      throw new Error(error.response?.data?.message || 'Failed to sign out');
+    }
+    throw error;
+  }
 };
 
 const getCurrentUser = async (): Promise<User | null> => {
@@ -55,18 +139,12 @@ const getCurrentUser = async (): Promise<User | null> => {
   }
 };
 
-const getUserRestaurants = async (userUuid: string): Promise<Restaurant[]> => {
-  const response = await apiClient.get(`/v2/me`);
-  return response.data.data.restaurants;
-};
-
-// Helper function to validate auth state and throw if not authenticated
-const requireAuth = async () => {
-  const user = await getCurrentUser();
-  if (!user) {
-    throw new Error('Not authenticated');
+const getUserRestaurants = async (): Promise<Restaurant[]> => {
+  const response = await apiClient.get('/v2/me');
+  if (!response.data.success) {
+    throw new Error(response.data.message || 'Failed to fetch user restaurants');
   }
-  return user;
+  return response.data.data.restaurants;
 };
 
 export const authService = {
@@ -77,5 +155,4 @@ export const authService = {
   signOut,
   getCurrentUser,
   getUserRestaurants,
-  requireAuth
 };

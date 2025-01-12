@@ -1,5 +1,4 @@
 import { Restaurant } from "../types/restaurant";
-
 import { config } from "../config/config";
 const BASE_URL = config.apiBaseUrl;
 
@@ -7,12 +6,13 @@ export const restaurantService = {
   async getRestaurants(): Promise<Restaurant[]> {
     try {
       const response = await fetch(
-        `${BASE_URL}/restaurants/v2/user/7d5844cc-74f1-4f50-b63e-7324fdedf57c`,
+        `${BASE_URL}/restaurants/v2`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: 'include', // Important for sending authentication cookies
         },
       );
 
@@ -21,7 +21,10 @@ export const restaurantService = {
       }
 
       const data = await response.json();
-      return data.data as Restaurant[];
+      if (!data.success) {
+        throw new Error(data.message || "Failed to fetch restaurants");
+      }
+      return data.data;
     } catch (error) {
       console.error("Failed to fetch restaurants:", error);
       throw error;
@@ -37,6 +40,7 @@ export const restaurantService = {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: 'include', // Important for sending authentication cookies
         },
       );
 
@@ -45,6 +49,10 @@ export const restaurantService = {
       }
 
       const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.message || "Failed to fetch restaurant currency");
+      }
+
       const currencyISO = data.data.currency;
 
       const getSymbol = (currency: string) => {
@@ -73,7 +81,7 @@ export const restaurantService = {
         currencySymbol: symbol,
       };
     } catch (error) {
-      console.error("Failed to fetch restaurants:", error);
+      console.error("Failed to fetch restaurant currency:", error);
       throw error;
     }
   },

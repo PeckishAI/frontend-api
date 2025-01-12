@@ -40,28 +40,25 @@ export default function SignIn() {
   const onSubmit = async (data: SignInForm) => {
     try {
       const result = await authService.signIn(data);
-      // Store the access token if needed
       localStorage.setItem('accessToken', result.accessToken);
-      // On successful login, redirect to home page
       setLocation('/');
     } catch (error: any) {
+      console.error('Sign in error:', error);
       toast({
         title: "Error",
-        description: error.response?.data?.message || "Failed to sign in",
+        description: error.message || "Failed to sign in",
         variant: "destructive",
       });
     }
   };
 
   useEffect(() => {
-    // Load Google API
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
 
-    // Load Apple API
     const appleScript = document.createElement('script');
     appleScript.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
     appleScript.async = true;
@@ -92,13 +89,16 @@ export default function SignIn() {
         callback: async (response: any) => {
           if (response.access_token) {
             try {
+              console.log('Received Google access token, calling backend...');
               const result = await authService.googleSignIn(response.access_token);
+              console.log('Backend response:', result);
               localStorage.setItem('accessToken', result.accessToken);
               setLocation('/');
             } catch (error: any) {
+              console.error('Google signin error:', error);
               toast({
                 title: "Error",
-                description: error.response?.data?.message || "Failed to sign in with Google",
+                description: error.message || "Failed to sign in with Google",
                 variant: "destructive",
               });
             }
@@ -107,9 +107,10 @@ export default function SignIn() {
       });
       client.requestAccessToken();
     } catch (error: any) {
+      console.error('Google signin error:', error);
       toast({
         title: "Error",
-        description: "Google login failed",
+        description: error.message || "Google login failed",
         variant: "destructive",
       });
     }
@@ -181,16 +182,16 @@ export default function SignIn() {
 
           <div className="mt-8 space-y-6">
             <div className="grid gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="w-full"
                 onClick={handleGoogleSignIn}
               >
                 <img src="https://www.google.com/favicon.ico" alt="" className="mr-2 h-4 w-4" />
                 Continue with Google
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="w-full"
                 onClick={handleAppleSignIn}
               >
@@ -230,9 +231,9 @@ export default function SignIn() {
                     <FormItem>
                       <div className="relative">
                         <FormControl>
-                          <Input 
-                            type={showPassword ? "text" : "password"} 
-                            placeholder="Password" 
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
                             {...field}
                           />
                         </FormControl>
