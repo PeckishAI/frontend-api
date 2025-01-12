@@ -7,7 +7,7 @@ import { useState } from "react";
 
 export function InsertItemDialog() {
   const [open, setOpen] = useState(false);
-  
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -23,31 +23,28 @@ export function InsertItemDialog() {
           </TabsList>
           <TabsContent value="manual" className="mt-0">
             <p className="text-sm text-muted-foreground mb-4">
-              Enter data manually or paste from a spreadsheet (one row per ingredient).
+              Enter data manually or paste from a spreadsheet (one row per
+              ingredient).
             </p>
             <div className="h-[calc(60vh-100px)] mb-4">
-              <GridDataInput
-                onChange={(data) => {
-                  console.log('Grid data:', data);
-                }}
-              />
+              <GridDataInput onChange={(data) => {}} />
             </div>
             <div className="flex justify-end">
-              <Button onClick={() => setOpen(false)}>
-                Add Items
-              </Button>
+              <Button onClick={() => setOpen(false)}>Add Items</Button>
             </div>
           </TabsContent>
           <TabsContent value="file" className="mt-0">
             <h3 className="text-lg font-medium mb-4">Import from File</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Upload a CSV file with your inventory items. The file should include columns for name, quantity, unit, and tags.
+              Upload a CSV file with your inventory items. The file should
+              include columns for name, quantity, unit, and tags.
             </p>
             <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                 <Plus className="w-8 h-8 mb-2 text-gray-400" />
                 <p className="mb-2 text-sm text-gray-500">
-                  <span className="font-semibold">Click to upload</span> or drag and drop
+                  <span className="font-semibold">Click to upload</span> or drag
+                  and drop
                 </p>
                 <p className="text-xs text-gray-500">CSV files only</p>
               </div>

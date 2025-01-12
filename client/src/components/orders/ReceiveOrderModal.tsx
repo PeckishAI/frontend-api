@@ -42,11 +42,11 @@ export default function ReceiveOrderModal({
   const { currentRestaurant } = useRestaurantContext();
 
   const [selectedInvoice, setSelectedInvoice] = useState<string | null>(
-    order?.linked_documents?.invoice_uuid || null
+    order?.linked_documents?.invoice_uuid || null,
   );
-  const [selectedDeliveryNote, setSelectedDeliveryNote] = useState<string | null>(
-    order?.linked_documents?.delivery_note_uuid || null
-  );
+  const [selectedDeliveryNote, setSelectedDeliveryNote] = useState<
+    string | null
+  >(order?.linked_documents?.delivery_note_uuid || null);
   const [selectedInvoiceData, setSelectedInvoiceData] = useState<any>(null);
 
   // We'll store a merged list of items here once an invoice is chosen
@@ -83,20 +83,15 @@ export default function ReceiveOrderModal({
     enabled: !!currentRestaurant?.restaurant_uuid && !!selectedInvoice,
     onSuccess: (invoiceData) => {
       if (!invoiceData) {
-        console.log("No invoice data received");
         return;
       }
 
-      console.log("Full invoice data received:", invoiceData);
       setSelectedInvoiceData(invoiceData);
 
       const orderItems = order?.items || [];
       const invoiceItems = Array.isArray(invoiceData.ingredients)
         ? invoiceData.ingredients
         : [];
-
-      console.log("Processing order items:", orderItems);
-      console.log("Processing invoice items:", invoiceItems);
 
       if (invoiceItems.length === 0) {
         console.warn("No ingredients found in invoice data");
@@ -141,7 +136,6 @@ export default function ReceiveOrderModal({
       );
 
       const finalItems = [...processedItems, ...remainingOrderItems];
-      console.log("Final merged items:", finalItems);
       setMergedItems(finalItems);
     },
   });
@@ -233,7 +227,6 @@ export default function ReceiveOrderModal({
         0,
       ),
     };
-    console.log("Receiving stock with payload:", payload);
     onConfirm(payload);
   };
 
@@ -267,7 +260,6 @@ export default function ReceiveOrderModal({
                     : null
                 }
                 onChange={(option) => {
-                  console.log("Selected invoice:", option);
                   if (!option?.value) {
                     setSelectedInvoice(null);
                     setMergedItems([]);
@@ -361,7 +353,6 @@ export default function ReceiveOrderModal({
                     : null
                 }
                 onChange={(option) => {
-                  console.log("Selected delivery note:", option);
                   setSelectedDeliveryNote(option?.value || null);
                 }}
                 options={[]}

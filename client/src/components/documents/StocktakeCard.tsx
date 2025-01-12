@@ -13,10 +13,13 @@ interface StocktakeCardProps {
 }
 
 export function StocktakeCard({ stocktake }: StocktakeCardProps) {
-  const firstImage = stocktake.documents.find(d => d.document_type === 'image');
-  const firstVideo = stocktake.documents.find(d => d.document_type === 'video');
+  const firstImage = stocktake.documents.find(
+    (d) => d.document_type === "image",
+  );
+  const firstVideo = stocktake.documents.find(
+    (d) => d.document_type === "video",
+  );
   const firstDoc = firstImage || firstVideo;
-  console.log('First document:', firstDoc);
 
   return (
     <Card className="group cursor-pointer hover:bg-muted/50">
@@ -30,7 +33,7 @@ export function StocktakeCard({ stocktake }: StocktakeCardProps) {
             <div className="flex items-center gap-2">
               <User2 className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
-                {stocktake.created_by?.name || 'Unknown user'}
+                {stocktake.created_by?.name || "Unknown user"}
               </span>
             </div>
           </div>
@@ -50,14 +53,17 @@ export function StocktakeCard({ stocktake }: StocktakeCardProps) {
             <div className="flex items-center gap-2">
               <Film className="h-4 w-4 text-gray-600" />
               <Badge variant="secondary">
-                {stocktake.documents.filter(d => d.document_type === 'video').length}
+                {
+                  stocktake.documents.filter((d) => d.document_type === "video")
+                    .length
+                }
               </Badge>
             </div>
           </div>
           <div className="relative aspect-[3/2] bg-gray-100 rounded-md overflow-hidden">
             {firstDoc ? (
               <>
-                {firstDoc.document_type === 'video' ? (
+                {firstDoc.document_type === "video" ? (
                   <>
                     <video
                       src={firstDoc.file_path}
@@ -81,7 +87,7 @@ export function StocktakeCard({ stocktake }: StocktakeCardProps) {
                     </div>
                   </>
                 ) : (
-                  <img 
+                  <img
                     src={firstDoc.file_path}
                     alt=""
                     className="absolute inset-0 w-full h-full object-cover"

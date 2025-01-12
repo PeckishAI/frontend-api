@@ -57,7 +57,6 @@ export const generalService = {
       if (!data.success) {
         throw new Error("Failed to fetch restaurant inventory value");
       }
-      console.log("Inventory value fetched successfully:", data);
       return data.data;
     } catch (error) {
       console.error("Failed to fetch restaurant inventory value:", error);

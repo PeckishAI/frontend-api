@@ -152,7 +152,6 @@ export default function NewOrderModal({
       user: {},
     };
 
-    console.log(`Saving order as ${status}:`, order);
     onSave(order, status);
   };
 
@@ -373,7 +372,6 @@ export default function NewOrderModal({
                         options={(() => {
                           const allUnits = restaurantUnits || [];
                           const supplierUnits = supplierIngredientUnits || [];
-                          console.log("suppliernunits", supplierUnits);
 
                           if (!item.ingredient_uuid) {
                             return [
@@ -402,7 +400,6 @@ export default function NewOrderModal({
                             .flat();
 
                           const groups = [];
-                          console.log("connectedUnits", connectedUnits);
                           if (connectedUnits.length > 0) {
                             groups.push({
                               label: "Connected Units",

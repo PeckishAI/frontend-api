@@ -31,7 +31,7 @@ import ProductModal from "@/components/menu/ProductModal"; // Added import
 export default function Products() {
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
   const [editingRecipe, setEditingRecipe] = useState<Product | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [isNewProductModalOpen, setIsNewProductModalOpen] = useState(false); // Added state
   const [isProductSheetOpen, setIsProductSheetOpen] = useState(false); // Added state
   const queryClient = useQueryClient();
@@ -145,7 +145,9 @@ export default function Products() {
         </div>
         <div className="flex items-center gap-4">
           <ViewToggle current={viewMode} onChange={setViewMode} />
-          <Button onClick={() => setIsNewProductModalOpen(true)}> {/* Changed onClick */}
+          <Button onClick={() => setIsNewProductModalOpen(true)}>
+            {" "}
+            {/* Changed onClick */}
             <PlusCircle className="mr-2 h-4 w-4" />
             New Product
           </Button>
@@ -154,11 +156,15 @@ export default function Products() {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {viewMode === "cards" ? (
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.filter(product =>
-              product.product_name?.toLowerCase().includes(searchQuery.toLowerCase())
-            ).map((product) => (
-              <ProductCard key={product.product_uuid} product={product} />
-            ))}
+            {products
+              .filter((product) =>
+                product.product_name
+                  ?.toLowerCase()
+                  .includes(searchQuery.toLowerCase()),
+              )
+              .map((product) => (
+                <ProductCard key={product.product_uuid} product={product} />
+              ))}
           </div>
         ) : (
           <div className="p-6">
@@ -173,49 +179,56 @@ export default function Products() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {products.filter(product =>
-                  product.product_name?.toLowerCase().includes(searchQuery.toLowerCase())
-                ).map((product) => (
-                  <TableRow
-                    key={product.product_uuid}
-                    className="cursor-pointer hover:bg-gray-50"
-                    onClick={() => setEditingRecipe(product)}
-                  >
-                    <TableCell>{product.product_name}</TableCell>
-                    <TableCell>
-                      {product.product_ingredients?.length || 0}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {currencyInfo?.currencySymbol}
-                      {product.portion_price?.toFixed(2) || "0.00"}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {currencyInfo?.currencySymbol}
-                      {product.portion_cost?.toFixed(2) || "0.00"}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {product.portion_price && product.portion_cost
-                        ? `${((1 - product.portion_cost / product.portion_price) * 100).toFixed(1)}%`
-                        : "N/A"}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {products
+                  .filter((product) =>
+                    product.product_name
+                      ?.toLowerCase()
+                      .includes(searchQuery.toLowerCase()),
+                  )
+                  .map((product) => (
+                    <TableRow
+                      key={product.product_uuid}
+                      className="cursor-pointer hover:bg-gray-50"
+                      onClick={() => setEditingRecipe(product)}
+                    >
+                      <TableCell>{product.product_name}</TableCell>
+                      <TableCell>
+                        {product.product_ingredients?.length || 0}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {currencyInfo?.currencySymbol}
+                        {product.portion_price?.toFixed(2) || "0.00"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {currencyInfo?.currencySymbol}
+                        {product.portion_cost?.toFixed(2) || "0.00"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {product.portion_price && product.portion_cost
+                          ? `${((1 - product.portion_cost / product.portion_price) * 100).toFixed(1)}%`
+                          : "N/A"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </div>
         )}
       </div>
 
-      <ProductModal 
-        open={isNewProductModalOpen} 
+      <ProductModal
+        open={isNewProductModalOpen}
         onOpenChange={setIsNewProductModalOpen}
         onSubmit={async (data) => {
           try {
             if (!currentRestaurant?.restaurant_uuid) {
               throw new Error("No restaurant selected");
             }
-            
-            await menuService.createProduct(currentRestaurant.restaurant_uuid, data);
+
+            await menuService.createProduct(
+              currentRestaurant.restaurant_uuid,
+              data,
+            );
             queryClient.invalidateQueries(["products"]);
             setIsNewProductModalOpen(false);
           } catch (error) {
@@ -231,7 +244,6 @@ export default function Products() {
         }}
         product={editingRecipe ? editingRecipe : undefined}
         onSubmit={(data) => {
-          console.log("Updated recipe:", data);
           setEditingRecipe(null);
         }}
       />

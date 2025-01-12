@@ -18,7 +18,6 @@ export const userService = {
       }
 
       const data = await response.json();
-      console.log("Data: ", data);
       if (!data.success) {
         throw new Error("Failed to fetch categories");
       }

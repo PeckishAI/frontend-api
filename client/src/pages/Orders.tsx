@@ -97,7 +97,6 @@ export default function Orders() {
                     );
                     // Invalidate and refetch orders
                     await queryClient.invalidateQueries(["orders"]);
-                    console.log("Order Created : ", order);
                     setShowNewOrderModal(false);
                   } catch (error) {
                     console.error("Failed to create order:", error);
@@ -138,20 +137,20 @@ export default function Orders() {
                         const approvedOrder = {
                           ...order,
                           status: "pending",
-                          order_date: new Date().toISOString()
+                          order_date: new Date().toISOString(),
                         };
-                        
+
                         await orderService.updateOrder(
                           currentRestaurant.restaurant_uuid,
                           order.order_uuid!,
-                          approvedOrder
+                          approvedOrder,
                         );
 
                         // Send email if requested
                         if (sendEmail) {
                           await orderService.sendOrderEmail(
                             currentRestaurant.restaurant_uuid,
-                            order.order_uuid!
+                            order.order_uuid!,
                           );
                         }
 
@@ -213,7 +212,6 @@ export default function Orders() {
             );
             // Invalidate and refetch orders
             await queryClient.invalidateQueries(["orders"]);
-            console.log("Order Updated : ", updatedOrder);
             setShowNewOrderModal(false);
           } catch (error) {
             console.error("Failed to create order:", error);

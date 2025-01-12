@@ -91,11 +91,9 @@ export default function SignIn() {
         callback: async (response: any) => {
           if (response.access_token) {
             try {
-              console.log("Received Google access token, calling backend...");
               const result = await authService.googleSignIn(
                 response.access_token,
               );
-              console.log("Backend response:", result);
               localStorage.setItem("accessToken", result.accessToken);
               setLocation("/");
             } catch (error: any) {

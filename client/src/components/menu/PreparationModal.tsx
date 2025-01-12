@@ -202,16 +202,6 @@ export default function PreparationModal({
     },
   });
 
-  React.useEffect(() => {
-    const subscription = form.watch(() => {
-      if (Object.keys(form.formState.errors).length > 0) {
-        console.log("Form validation errors:", form.formState.errors);
-        console.log("Current form values:", form.getValues());
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
-
   const addIngredient = () => {
     const currentIngredients = form.getValues("preparation_ingredients") || [];
     form.setValue("preparation_ingredients", [
@@ -774,10 +764,6 @@ export default function PreparationModal({
                                                 prep.preparation_uuid ===
                                                 option.value,
                                             );
-                                          console.log(
-                                            "Preparation: ",
-                                            selectedPreparation,
-                                          );
 
                                           field.onChange(option.label);
                                           form.setValue(
@@ -1024,7 +1010,6 @@ export default function PreparationModal({
             currentRestaurant.restaurant_uuid,
             data,
           );
-          console.log("New Ingredient: ", newIngredient);
 
           // Add the new ingredient to the current ingredient index
           const currentIngredients = ingredients ? [...ingredients] : [];
@@ -1064,7 +1049,6 @@ export default function PreparationModal({
               minUnitCost === Number.MAX_VALUE ? 0 : minUnitCost,
             );
           }
-          console.log("Form: ", form.getValues());
           queryClient.invalidateQueries(["ingredients"]);
           setShowNewIngredientDialog(false);
         }}
@@ -1079,7 +1063,6 @@ export default function PreparationModal({
         }}
         onSubmit={async (data) => {
           if (!currentRestaurant?.restaurant_uuid) return;
-          console.log("Category", data);
           const newCategory = await categoryService.createCategory(
             currentRestaurant.restaurant_uuid,
             data,

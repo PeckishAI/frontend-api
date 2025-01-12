@@ -155,19 +155,6 @@ export default function EditIngredientForm({
     },
   });
 
-  // Add validation error logging
-  React.useEffect(() => {
-    const subscription = form.watch(() => {
-      if (Object.keys(form.formState.errors).length > 0) {
-        console.log("Form validation errors:", form.formState.errors);
-        console.log("Current form values:", form.getValues());
-        console.log("Dirty fields:", form.formState.dirtyFields);
-        console.log("Touched fields:", form.formState.touchedFields);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
-
   React.useEffect(() => {
     if (ingredient) {
       form.reset({
@@ -330,13 +317,15 @@ export default function EditIngredientForm({
                         multiple
                         value={field.value.map((tag) => ({
                           value: tag.tag_uuid,
-                          label: tag.tag_name
+                          label: tag.tag_name,
                         }))}
                         onChange={(newValue) => {
-                          const selectedTags = (newValue ? [newValue] : []).map((option) => ({
-                            tag_uuid: option.value,
-                            tag_name: option.label,
-                          }));
+                          const selectedTags = (newValue ? [newValue] : []).map(
+                            (option) => ({
+                              tag_uuid: option.value,
+                              tag_name: option.label,
+                            }),
+                          );
                           field.onChange(selectedTags);
                         }}
                         options={
@@ -640,7 +629,9 @@ export default function EditIngredientForm({
                                       }
                                       onCreateOption={async (value) => {
                                         try {
-                                          if (!currentRestaurant?.restaurant_uuid) {
+                                          if (
+                                            !currentRestaurant?.restaurant_uuid
+                                          ) {
                                             throw new Error(
                                               "No restaurant selected",
                                             );

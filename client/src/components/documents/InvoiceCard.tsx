@@ -36,7 +36,6 @@ export function InvoiceCard({ invoice }: InvoiceCardProps) {
   const queryClient = useQueryClient();
 
   const handleDelete = async () => {
-    console.log(invoice);
     try {
       if (!currentRestaurant?.restaurant_uuid || !invoice.invoice_uuid) {
         throw new Error("Missing restaurant or invoice UUID");

@@ -42,10 +42,15 @@ const restaurantSchema = z.object({
 
 export default function RestaurantManagement() {
   const { toast } = useToast();
-  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
+  const [selectedRestaurant, setSelectedRestaurant] =
+    useState<Restaurant | null>(null);
 
-  const { data: restaurants = [], isLoading, error } = useQuery({
-    queryKey: ['/api/restaurants/v2'],
+  const {
+    data: restaurants = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["/api/restaurants/v2"],
     queryFn: restaurantService.getRestaurants,
   });
 
@@ -64,7 +69,7 @@ export default function RestaurantManagement() {
       logo_url: null,
       phone: null,
       postcode: null,
-    }
+    },
   });
 
   // Reset form when a restaurant is selected
@@ -104,7 +109,6 @@ export default function RestaurantManagement() {
   }, [selectedRestaurant, form]);
 
   const onSubmit = (data: z.infer<typeof restaurantSchema>) => {
-    console.log("Restaurant data:", data);
     toast({
       title: "Restaurant Updated",
       description: "Your restaurant information has been updated successfully.",
@@ -114,13 +118,19 @@ export default function RestaurantManagement() {
   };
 
   if (error) {
-    return <div className="text-red-500">Error loading restaurants: {error.message}</div>;
+    return (
+      <div className="text-red-500">
+        Error loading restaurants: {error.message}
+      </div>
+    );
   }
 
   return (
     <div className="flex-1 space-y-4 p-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Restaurant Management</h1>
+        <h1 className="text-3xl font-bold tracking-tight">
+          Restaurant Management
+        </h1>
       </div>
 
       <div className="space-y-4">
@@ -134,7 +144,9 @@ export default function RestaurantManagement() {
             <div className="mt-4">
               <Select
                 onValueChange={(value) => {
-                  const restaurant = restaurants.find(r => r.restaurant_uuid === value);
+                  const restaurant = restaurants.find(
+                    (r) => r.restaurant_uuid === value,
+                  );
                   setSelectedRestaurant(restaurant || null);
                 }}
                 value={selectedRestaurant?.restaurant_uuid || ""}
@@ -164,7 +176,10 @@ export default function RestaurantManagement() {
           <div className="rounded-lg border bg-card p-6">
             <h3 className="text-lg font-medium mb-4">Restaurant Details</h3>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <FormField
                   control={form.control}
                   name="name"

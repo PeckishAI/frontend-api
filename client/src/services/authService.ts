@@ -17,7 +17,6 @@ const signIn = async (credentials: SignInCredentials): Promise<AuthResult> => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(credentials),
-      credentials: "include",
     });
 
     if (!response.ok) {
@@ -107,7 +106,6 @@ const appleSignIn = async (
           ? { firstName: name.firstName, lastName: name.lastName }
           : null,
       }),
-      credentials: "include",
     });
 
     if (!response.ok) {
@@ -151,7 +149,6 @@ const signOut = async (): Promise<void> => {
 const getCurrentUser = async () => {
   try {
     const accessToken = localStorage.getItem("accessToken");
-    console.log("ACCESS TOKEN", accessToken);
     const response = await fetch(`${BASE_URL}/auth/v2/me`, {
       method: "GET",
       headers: {
@@ -187,13 +184,16 @@ const getUserRestaurants = async () => {
     const accessToken = localStorage.getItem("accessToken");
     const user = await getCurrentUser();
     if (!user?.user_uuid) return [];
-    
-    const response = await fetch(`${BASE_URL}/restaurants/v2/user/${user.user_uuid}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+
+    const response = await fetch(
+      `${BASE_URL}/restaurants/v2/user/${user.user_uuid}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       if (response.status === 401) {

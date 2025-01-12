@@ -366,15 +366,7 @@ export default function RecipeSheet({
                   console.error("Failed to save recipe:", error);
                 }
               },
-              (errors) => {
-                console.log("Form Validation Errors:", errors);
-                console.log("Current Form State:", form.getValues());
-                console.log("Form Dirty Fields:", form.formState.dirtyFields);
-                console.log(
-                  "Form Touched Fields:",
-                  form.formState.touchedFields,
-                );
-              },
+              (errors) => {},
             )}
             className="space-y-6 pt-8"
           >
@@ -602,10 +594,6 @@ export default function RecipeSheet({
                                         (ing: any) =>
                                           ing.ingredient_uuid === option.value,
                                       );
-                                    console.log(
-                                      "Selected Ingredient:",
-                                      selectedIngredient,
-                                    );
 
                                     field.onChange(option.label);
                                     form.setValue(
@@ -1033,10 +1021,6 @@ export default function RecipeSheet({
                                           prep.preparation_uuid ===
                                           option.value,
                                       );
-                                    console.log(
-                                      "Selected preparation:",
-                                      selectedPreparation,
-                                    );
 
                                     field.onChange(option.label);
                                     form.setValue(
@@ -1046,11 +1030,6 @@ export default function RecipeSheet({
                                     form.setValue(
                                       `product_preparations.${index}.unit_cost`,
                                       selectedPreparation.portion_cost || 0,
-                                    );
-                                    console.log("Preparations: ", preparations);
-                                    console.log(
-                                      "Selected Preparation: ",
-                                      selectedPreparation,
                                     );
 
                                     if (selectedPreparation?.unit) {
@@ -1068,8 +1047,6 @@ export default function RecipeSheet({
                                       const recipeUnit = form.watch(
                                         `product_preparations.${index}.recipe_unit`,
                                       );
-
-                                      console.log("Form: ", form.getValues());
 
                                       if (recipeUnit?.unit_uuid) {
                                         try {

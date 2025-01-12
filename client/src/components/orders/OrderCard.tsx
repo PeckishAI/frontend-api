@@ -36,7 +36,6 @@ export default function OrderCard({
   const [showApproveDialog, setShowApproveDialog] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  console.log("Order", order);
   const restaurantUuid =
     useRestaurantContext().currentRestaurant?.restaurant_uuid;
   const queryClient = useQueryClient();
@@ -113,20 +112,15 @@ export default function OrderCard({
                 onOpenChange={setShowReceiveModal}
                 order={order}
                 onConfirm={async (data) => {
-                  console.log("Order received:", data);
                   if (!restaurantUuid || !data.order_uuid) {
                     throw new Error("No restaurant or order selected");
                   }
-                  console.log("Adding order :", data.order_uuid);
-                  console.log(data);
                   await orderService.updateOrder(
                     restaurantUuid,
                     data.order_uuid,
                     data,
                   );
 
-                  console.log("Adding stock quantities");
-                  console.log(data.receivedQuantitiy);
                   await quantityService.createReceiveQuantities(
                     restaurantUuid,
                     {

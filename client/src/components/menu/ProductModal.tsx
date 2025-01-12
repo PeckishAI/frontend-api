@@ -722,10 +722,6 @@ export default function ProductModal({
                                               prep.preparation_uuid ===
                                               option.value,
                                           );
-                                        console.log(
-                                          "Preparation: ",
-                                          selectedPreparation,
-                                        );
 
                                         field.onChange(option.label);
                                         form.setValue(
@@ -966,7 +962,6 @@ export default function ProductModal({
             currentRestaurant.restaurant_uuid,
             data,
           );
-          console.log("New Ingredient: ", newIngredient);
 
           // Add the new ingredient to the current ingredient index
           const currentIngredients = ingredients ? [...ingredients] : [];
@@ -1006,7 +1001,6 @@ export default function ProductModal({
               minUnitCost === Number.MAX_VALUE ? 0 : minUnitCost,
             );
           }
-          console.log("Form: ", form.getValues());
           queryClient.invalidateQueries(["ingredients"]);
           setShowNewIngredientDialog(false);
         }}

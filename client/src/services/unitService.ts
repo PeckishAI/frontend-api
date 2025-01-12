@@ -40,7 +40,6 @@ export const unitService = {
 
   async getRestaurantUnit(restaurantUuid: string): Promise<any> {
     try {
-      console.log("Fetching restaurant units for:", restaurantUuid);
       const response = await fetch(
         `${BASE_URL}/units/v2/restaurant/${restaurantUuid}`,
         {
@@ -57,8 +56,7 @@ export const unitService = {
       }
 
       const result = await response.json();
-      console.log("Units fetch result:", result);
-      
+
       if (!result.success) {
         throw new Error("Failed to fetch units");
       }

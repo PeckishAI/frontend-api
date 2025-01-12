@@ -23,20 +23,27 @@ interface UserProfileSectionProps {
   onSettings: () => void;
 }
 
-export function UserProfileSection({ user, onViewProfile, onSettings }: UserProfileSectionProps) {
+export function UserProfileSection({
+  user,
+  onViewProfile,
+  onSettings,
+}: UserProfileSectionProps) {
   const { signOut } = useAuth();
 
   const handleSignOut = async () => {
     try {
       await signOut();
     } catch (error) {
-      console.error('Sign out error:', error);
+      console.error("Sign out error:", error);
     }
   };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="w-full justify-start gap-2 px-3 py-6 hover:bg-accent">
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-2 px-3 py-6 hover:bg-accent"
+        >
           <Avatar className="h-8 w-8">
             {user.avatar ? (
               <AvatarImage src={user.avatar} alt={user.name} />
@@ -53,8 +60,8 @@ export function UserProfileSection({ user, onViewProfile, onSettings }: UserProf
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" alignOffset={-12}>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuItem onClick={onViewProfile}>View Profile</DropdownMenuItem>
-        <DropdownMenuItem onClick={onSettings}>Settings</DropdownMenuItem>
+        {/*<DropdownMenuItem onClick={onViewProfile}>View Profile</DropdownMenuItem>
+        <DropdownMenuItem onClick={onSettings}>Settings</DropdownMenuItem>*/}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>Sign Out</DropdownMenuItem>
       </DropdownMenuContent>

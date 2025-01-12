@@ -561,10 +561,6 @@ export default function PreparationSheet({
                                         (ing: any) =>
                                           ing.ingredient_uuid === option.value,
                                       );
-                                    console.log(
-                                      "Selected Ingredient:",
-                                      selectedIngredient,
-                                    );
 
                                     field.onChange(option.label);
                                     form.setValue(
@@ -992,10 +988,6 @@ export default function PreparationSheet({
                                       (prep: any) =>
                                         prep.preparation_uuid === option.value,
                                     );
-                                  console.log(
-                                    "Selected preparation:",
-                                    selectedPreparation,
-                                  );
 
                                   field.onChange(option.label);
                                   form.setValue(
@@ -1005,11 +997,6 @@ export default function PreparationSheet({
                                   form.setValue(
                                     `preparation_preparations.${index}.unit_cost`,
                                     selectedPreparation.portion_cost || 0,
-                                  );
-                                  console.log("Preparations: ", preparations);
-                                  console.log(
-                                    "Selected Preparation: ",
-                                    selectedPreparation,
                                   );
 
                                   if (selectedPreparation?.unit) {
@@ -1027,8 +1014,6 @@ export default function PreparationSheet({
                                     const recipeUnit = form.watch(
                                       `preparation_preparations.${index}.recipe_unit`,
                                     );
-
-                                    console.log("Form: ", form.getValues());
 
                                     if (recipeUnit?.unit_uuid) {
                                       try {

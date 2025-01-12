@@ -19,9 +19,8 @@ export function useAuth() {
     refetchOnMount: false,
     refetchOnReconnect: false,
     refetchInterval: false,
-    enabled: !!localStorage.getItem("accessToken") // Only run if we have a token
+    enabled: !!localStorage.getItem("accessToken"), // Only run if we have a token
   });
-  console.log("USER", user);
 
   // Query for user's restaurants
   const { data: restaurants = [] } = useQuery({
@@ -29,7 +28,6 @@ export function useAuth() {
     queryFn: authService.getUserRestaurants,
     enabled: !!user,
   });
-  console.log("RESTAURANTS", restaurants);
 
   // Sign in mutation
   const signInMutation = useMutation({

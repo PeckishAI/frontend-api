@@ -246,7 +246,6 @@ export function EditInvoiceSlider({
       console.error("Form validation errors:", form.formState.errors);
       return;
     }
-    console.log("Form data:", data);
     try {
       await documentService.updateInvoice(
         currentRestaurant.restaurant_uuid,
@@ -297,16 +296,6 @@ export function EditInvoiceSlider({
       form.setValue("invoice_ingredients", initializedIngredients);
     }
   }, [invoice, form]);
-
-  // Add validation error logging
-  React.useEffect(() => {
-    const subscription = form.watch(() => {
-      if (Object.keys(form.formState.errors).length > 0) {
-        console.log("Form validation errors:", form.formState.errors);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
 
   if (!invoice) return null;
 
