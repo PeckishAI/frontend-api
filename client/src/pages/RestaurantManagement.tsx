@@ -48,7 +48,7 @@ export default function RestaurantManagement() {
   const queryClient = useQueryClient();
 
   const { data: restaurants = [], isLoading, error } = useQuery({
-    queryKey: ['/auth/v2/restaurants'],
+    queryKey: ["restaurants"],
     queryFn: restaurantService.getRestaurants,
   });
 
