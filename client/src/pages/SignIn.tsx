@@ -41,6 +41,7 @@ export default function SignIn() {
     try {
       const result = await authService.signIn(data);
       localStorage.setItem("accessToken", result.accessToken);
+      localStorage.setItem("user", JSON.stringify(result.user));
       setLocation("/");
     } catch (error: any) {
       console.error("Sign in error:", error);
