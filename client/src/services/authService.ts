@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { config } from '@/config/config';
-import { type User, type Restaurant } from '@/types';
+import { type User, type SignInCredentials, type SignUpCredentials, type AuthResult, type SocialSignInResult } from '@/types/user';
+import { type Restaurant } from '@/types/restaurant';
 
 const apiClient = axios.create({
   baseURL: '/api/auth',
@@ -11,15 +11,6 @@ export type SignInResult = {
   user: User;
   restaurants: Restaurant[];
   accessToken: string;
-}
-
-export type SignInCredentials = {
-  email: string;
-  password: string;
-}
-
-export type SignUpCredentials = SignInCredentials & {
-  name: string;
 }
 
 const signIn = async (credentials: SignInCredentials): Promise<SignInResult> => {
@@ -69,6 +60,15 @@ const getUserRestaurants = async (): Promise<Restaurant[]> => {
   return response.data;
 };
 
+// Helper function to validate auth state and throw if not authenticated
+const requireAuth = async () => {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error('Not authenticated');
+  }
+  return user;
+};
+
 export const authService = {
   signIn,
   signUp,
@@ -76,5 +76,6 @@ export const authService = {
   appleSignIn,
   signOut,
   getCurrentUser,
-  getUserRestaurants
+  getUserRestaurants,
+  requireAuth
 };

@@ -18,35 +18,52 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-const signInSchema = z.object({
+const signUpSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+    ),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
-type SignInForm = z.infer<typeof signInSchema>;
+type SignUpForm = z.infer<typeof signUpSchema>;
 
-export default function SignIn() {
+export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  const form = useForm<SignInForm>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<SignUpForm>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = async (data: SignInForm) => {
+  const onSubmit = async (data: SignUpForm) => {
     try {
-      const result = await authService.signIn(data);
-      // On successful login, redirect to home page
+      const result = await authService.signUp({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      });
       setLocation('/');
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.response?.data?.message || "Failed to sign in",
+        description: error.response?.data?.message || "Failed to sign up",
         variant: "destructive",
       });
     }
@@ -84,16 +101,16 @@ export default function SignIn() {
       >
         <source src="/videos/signin-bg.mp4" type="video/mp4" />
       </video>
-
+      
       <div className="relative flex min-h-screen items-center p-[20px]">
         <div className="w-full max-w-lg rounded-lg bg-white/95 p-8 shadow-xl backdrop-blur ml-[20px]">
           <div className="flex justify-center">
             <img src="/images/peckish-logo.jpg" alt="Peckish" className="h-12 w-12 rounded-full object-cover" />
           </div>
-
-          <h2 className="mt-8 text-4xl font-display text-center">Welcome back!</h2>
+          
+          <h2 className="mt-8 text-4xl font-display text-center">Create an Account</h2>
           <p className="mt-2 text-sm text-center text-gray-600">
-            Enter your email and password to log in to Peckish
+            Sign up for Peckish to start managing your restaurant
           </p>
 
           <div className="mt-8 space-y-6">
@@ -124,7 +141,7 @@ export default function SignIn() {
                           } catch (error: any) {
                             toast({
                               title: "Error",
-                              description: error.response?.data?.message || "Failed to sign in with Google",
+                              description: error.response?.data?.message || "Failed to sign up with Google",
                               variant: "destructive",
                             });
                           }
@@ -135,7 +152,7 @@ export default function SignIn() {
                   } catch (error: any) {
                     toast({
                       title: "Error",
-                      description: "Google login failed",
+                      description: "Google signup failed",
                       variant: "destructive",
                     });
                   }
@@ -173,7 +190,7 @@ export default function SignIn() {
                       } catch (error: any) {
                         toast({
                           title: "Error",
-                          description: error.response?.data?.message || "Failed to sign in with Apple",
+                          description: error.response?.data?.message || "Failed to sign up with Apple",
                           variant: "destructive",
                         });
                       }
@@ -181,7 +198,7 @@ export default function SignIn() {
                   } catch (error: any) {
                     toast({
                       title: "Error",
-                      description: "Apple login failed",
+                      description: "Apple signup failed",
                       variant: "destructive",
                     });
                   }
@@ -205,6 +222,19 @@ export default function SignIn() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Full Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
@@ -215,7 +245,7 @@ export default function SignIn() {
                     </FormItem>
                   )}
                 />
-
+                
                 <FormField
                   control={form.control}
                   name="password"
@@ -244,26 +274,48 @@ export default function SignIn() {
                   )}
                 />
 
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="relative">
+                        <FormControl>
+                          <Input 
+                            type={showConfirmPassword ? "text" : "password"} 
+                            placeholder="Confirm Password" 
+                            {...field}
+                          />
+                        </FormControl>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-2 top-1/2 -translate-y-1/2"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                          {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <Button type="submit" className="w-full bg-[#0F1916] hover:bg-[#0F1916]/90 text-white">
-                  Sign in
+                  Sign up
                 </Button>
               </form>
             </Form>
 
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center justify-center text-sm">
+              <span className="text-gray-600">Already have an account?</span>
               <Button
                 variant="link"
-                className="text-gray-600 hover:text-gray-900 px-0"
-                onClick={() => setLocation('/signup')}
+                className="text-gray-900 hover:text-gray-900"
+                onClick={() => setLocation('/signin')}
               >
-                Create an account
-              </Button>
-              <Button
-                variant="link"
-                className="text-gray-600 hover:text-gray-900 px-0"
-                onClick={() => setLocation('/reset-password')}
-              >
-                Restore password
+                Sign in
               </Button>
             </div>
           </div>
