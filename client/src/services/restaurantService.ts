@@ -10,13 +10,10 @@ export const restaurantService = {
       const response = await fetch(
         `${BASE_URL}/restaurants/v2/user`,
         {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`
-          },
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`
           },
         },
       );
