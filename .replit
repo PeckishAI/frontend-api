@@ -1,4 +1,4 @@
-modules = ["nodejs-20", "web", "postgresql-16", "go", "go-1.21", "go-1.22", "go-1.19"]
+modules = ["nodejs-20", "web", "postgresql-16", "go", "go-1.21", "go-1.22", "go-1.19", "python-3.11"]
 run = "npm run dev"
 hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 

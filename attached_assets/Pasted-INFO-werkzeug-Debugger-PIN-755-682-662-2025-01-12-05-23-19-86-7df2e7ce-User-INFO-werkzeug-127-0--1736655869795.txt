@@ -1,0 +1,124 @@
+INFO:werkzeug: * Debugger PIN: 755-682-662
+2025-01-12 05:23:19.86
+7df2e7ce
+User
+INFO:werkzeug:127.0.0.1 - - [12/Jan/2025 04:23:19] "GET / HTTP/1.1" 200 -
+2025-01-12 05:23:50.27
+7df2e7ce
+User
+INFO:werkzeug:127.0.0.1 - - [12/Jan/2025 04:23:50] "OPTIONS /auth/v2/google/signin HTTP/1.1" 200 -
+2025-01-12 05:23:50.45
+7df2e7ce
+User
+INFO:views.auth:Heyyy
+2025-01-12 05:23:50.45
+7df2e7ce
+User
+DEBUG:root:Debug message
+2025-01-12 05:23:50.45
+7df2e7ce
+User
+INFO:root:Signing in: {'access_token': 'ya29.a0ARW5m74uFDd2Xgkev0QJOByoet3OLcpunYQ3tTY4HVjZqY0W9_kG-nGLtdUWTh7dLjwXNsZLVa1tZAqOtoG1gvgBEjxh0mGjtAIr5bxjvXmNCOmMNC8AKfMdo3bziBj-OIQuumu6JpoMoDPOsmEZD52JRegQkVfRkuaDaCgYKAX4SARESFQHGX2Mi5nkFCQJ5fD0J5d2S-PRgIA0171'}
+2025-01-12 05:23:50.45
+7df2e7ce
+User
+INFO:root:Token: ya29.a0ARW5m74uFDd2Xgkev0QJOByoet3OLcpunYQ3tTY4HVjZqY0W9_kG-nGLtdUWTh7dLjwXNsZLVa1tZAqOtoG1gvgBEjxh0mGjtAIr5bxjvXmNCOmMNC8AKfMdo3bziBj-OIQuumu6JpoMoDPOsmEZD52JRegQkVfRkuaDaCgYKAX4SARESFQHGX2Mi5nkFCQJ5fD0J5d2S-PRgIA0171
+2025-01-12 05:23:50.45
+7df2e7ce
+User
+DEBUG:google.auth.transport.requests:Making request: GET https://www.googleapis.com/oauth2/v1/certs
+2025-01-12 05:23:50.47
+7df2e7ce
+User
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): www.googleapis.com:443
+2025-01-12 05:23:50.50
+7df2e7ce
+User
+DEBUG:urllib3.connectionpool:https://www.googleapis.com:443 "GET /oauth2/v1/certs HTTP/11" 200 1573
+2025-01-12 05:23:50.50
+7df2e7ce
+User
+ERROR:views.auth:Google sign in error: Wrong number of segments in token: b'ya29.a0ARW5m74uFDd2Xgkev0QJOByoet3OLcpunYQ3tTY4HVjZqY0W9_kG-nGLtdUWTh7dLjwXNsZLVa1tZAqOtoG1gvgBEjxh0mGjtAIr5bxjvXmNCOmMNC8AKfMdo3bziBj-OIQuumu6JpoMoDPOsmEZD52JRegQkVfRkuaDaCgYKAX4SARESFQHGX2Mi5nkFCQJ5fD0J5d2S-PRgIA0171'
+2025-01-12 05:23:50.50
+7df2e7ce
+User
+INFO:werkzeug:127.0.0.1 - - [12/Jan/2025 04:23:50] "POST /auth/v2/google/signin HTTP/1.1" 200 -
+
+Wrap
+
+Colors
+Enable "Accessible Terminal" in Workspace Settings to use a screen reader with the shell.
+Port :8080 opened on
+signin
+1 / 10
+current match. @auth_bp.route("/v2/google/signin") on line 190.
+        fields.String(required=True, description='Google OAuth access token')
+    })
+
+apple_auth = auth_bp.model(
+    'AppleAuth', {
+        'identity_token':
+        fields.String(required=True, description='Apple identity token'),
+        'name':
+        fields.Raw(description='User name from Apple')
+    })
+
+
+@auth_bp.route("/v2/signin")
+class SignIn(Resource):
+
+    @auth_bp.expect(auth_credentials)
+    @auth_bp.doc('signin_user')
+    def post(self):
+        """Sign in a user with email and password"""
+        try:
+            data = request.get_json()
+
+            if not data:
+                return jsonify(
+                    APIResponse.error(message="No data received!",
+                                      status_code=400))
+
+            email = data.get('email')
+            password = data.get('password')
+
+            # Query user from database
+            query = """
+                SELECT *
+                FROM dim_user
+                WHERE email = %s
+            """
+            user = db.get(query, (email, ))
+            if not user or not check_password_hash(password, user['password']):
+                return APIResponse.error("Invalid email or password", 401)
+
+            # Get user's restaurants
+            query = """
+                SELECT *
+                FROM dim_restaurant dr
+                LEFT JOIN dim_user_restaurant dur
+                    ON dr.restaurant_uuid = dur.restaurant_uuid
+                WHERE dur.user_uuid = %s
+            """
+            restaurants = db.get(query, (user['user_uuid'], ))
+
+            # Generate JWT token
+            token = generate_token(user)
+
+            return jsonify(
+                APIResponse.success({
+                    'user': sanitize_user(user),
+                    'restaurants': restaurants,
+                    'accessToken': token
+                }))
+        except Exception as e:
+            logger.error(f"Sign in error: {str(e)}")
+            return jsonify(APIResponse.error("Sign in failed", 500))
+
+
+@auth_bp.route("/signup")
+class SignUp(Resource):
+
+    @auth_bp.expect(signup_credentials)
+    @auth_bp.doc('signup_user')
+            if not data:

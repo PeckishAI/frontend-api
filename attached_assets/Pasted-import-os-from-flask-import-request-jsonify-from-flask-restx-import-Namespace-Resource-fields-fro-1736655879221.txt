@@ -1,0 +1,474 @@
+import os
+from flask import request, jsonify
+from flask_restx import Namespace, Resource, fields
+from database.supabase_db import db
+import uuid
+import logging
+from modules.response_handler import APIResponse
+import jwt
+from datetime import datetime, timedelta
+import requests
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+from werkzeug.security import check_password_hash, generate_password_hash
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s [%(levelname)s] %(message)s')
+logger = logging.getLogger(__name__)
+
+auth_bp = Namespace('Authentication',
+                    description='Authentication management operations')
+
+user_model = auth_bp.model(
+    'User', {
+        'user_uuid': fields.String(description='User UUID'),
+        'username': fields.String(description='User name'),
+        'phone': fields.String(description='User phone'),
+        'email': fields.String(description='User email'),
+        'password': fields.Raw(description='User password'),
+        'picture': fields.String(description='User picture')
+    })
+
+restaurant_model = auth_bp.model(
+    'Restaurant', {
+        'restaurant_uuid': fields.String(description='Restaurant UUID'),
+        'restaurant_name': fields.String(description='Restaurant name'),
+        'address': fields.String(description='Restaurant address'),
+        'city': fields.String(description='Restaurant city'),
+        'country': fields.String(description='Restaurant country'),
+        'postcode': fields.String(description='Restaurant postcode'),
+        'country_code': fields.String(description='Restaurant country code'),
+        'currency': fields.String(description='Restaurant currency'),
+        'phone': fields.String(description='Restaurant phone'),
+        'email': fields.String(description='Restaurant email'),
+        'latitude': fields.Float(description='Restaurant latitude'),
+        'longitude': fields.Float(description='Restaurant longitude'),
+        'logo_url': fields.String(description='Restaurant logo URL')
+    })
+
+auth_credentials = auth_bp.model(
+    'AuthCredentials', {
+        'email': fields.String(required=True, description='User email'),
+        'password': fields.String(required=True, description='User password')
+    })
+
+signup_credentials = auth_bp.model(
+    'SignUpCredentials', {
+        'name': fields.String(required=True, description='User full name'),
+        'email': fields.String(required=True, description='User email'),
+        'password': fields.String(required=True, description='User password')
+    })
+
+google_auth = auth_bp.model(
+    'GoogleAuth', {
+        'access_token':
+        fields.String(required=True, description='Google OAuth access token')
+    })
+
+apple_auth = auth_bp.model(
+    'AppleAuth', {
+        'identity_token':
+        fields.String(required=True, description='Apple identity token'),
+        'name':
+        fields.Raw(description='User name from Apple')
+    })
+
+
+@auth_bp.route("/v2/signin")
+class SignIn(Resource):
+
+    @auth_bp.expect(auth_credentials)
+    @auth_bp.doc('signin_user')
+    def post(self):
+        """Sign in a user with email and password"""
+        try:
+            data = request.get_json()
+
+            if not data:
+                return jsonify(
+                    APIResponse.error(message="No data received!",
+                                      status_code=400))
+
+            email = data.get('email')
+            password = data.get('password')
+
+            # Query user from database
+            query = """
+                SELECT *
+                FROM dim_user
+                WHERE email = %s
+            """
+            user = db.get(query, (email, ))
+            if not user or not check_password_hash(password, user['password']):
+                return APIResponse.error("Invalid email or password", 401)
+
+            # Get user's restaurants
+            query = """
+                SELECT *
+                FROM dim_restaurant dr
+                LEFT JOIN dim_user_restaurant dur
+                    ON dr.restaurant_uuid = dur.restaurant_uuid
+                WHERE dur.user_uuid = %s
+            """
+            restaurants = db.get(query, (user['user_uuid'], ))
+
+            # Generate JWT token
+            token = generate_token(user)
+
+            return jsonify(
+                APIResponse.success({
+                    'user': sanitize_user(user),
+                    'restaurants': restaurants,
+                    'accessToken': token
+                }))
+        except Exception as e:
+            logger.error(f"Sign in error: {str(e)}")
+            return jsonify(APIResponse.error("Sign in failed", 500))
+
+
+@auth_bp.route("/signup")
+class SignUp(Resource):
+
+    @auth_bp.expect(signup_credentials)
+    @auth_bp.doc('signup_user')
+    def post(self):
+        """Create a new user account"""
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify(
+                    APIResponse.error(message="No data received!",
+                                      status_code=400))
+
+            email = data.get('email')
+            password = data.get('password')
+            name = data.get('name')
+
+            # Check if user exists
+            query = """
+                SELECT *
+                FROM dim_user
+                WHERE email = %s
+            """
+            existing_user = db.get(query, (email, ))
+            if existing_user:
+                return jsonify(
+                    APIResponse.error(message="Email already registered!",
+                                      status_code=400))
+
+            # Create new user
+            user_uuid = str(uuid.uuid4())
+            hashed_password = generate_password_hash(password)
+
+            user = {
+                'user_uuid': user_uuid,
+                'email': email,
+                'password': hashed_password,
+                'name': name,
+                'picture': None
+            }
+
+            query = """
+                INSERT INTO dim_user (user_uuid, email, password, name, picture)
+                VALUES (%s, %s, %s, %s, %s)
+            """
+            db.insert(query, (user_uuid, email, hashed_password, name, None))
+
+            # Generate JWT token
+            token = generate_token(user)
+
+            return jsonify(
+                APIResponse.success({
+                    'user': sanitize_user(user),
+                    'restaurants': [],
+                    'accessToken': token
+                }))
+        except Exception as e:
+            logger.error(f"Sign up error: {str(e)}")
+            return jsonify(APIResponse.error("Sign up failed", 500))
+
+
+@auth_bp.route("/v2/google/signin")
+class GoogleSignIn(Resource):
+
+    @auth_bp.expect(google_auth)
+    @auth_bp.doc('google_signin')
+    def post(self):
+        """Sign in or sign up with Google"""
+        try:
+            data = request.get_json()
+            logger.info(f"Received Google sign-in request: {data}")
+
+            if not data:
+                return APIResponse.error(message="No data received!", status_code=400)
+
+            access_token = data.get('access_token')
+            if not access_token:
+                return APIResponse.error(message="No access token provided!", status_code=400)
+
+            try:
+                # Get user info from Google using the access token
+                userinfo_response = requests.get(
+                    'https://www.googleapis.com/oauth2/v3/userinfo',
+                    headers={'Authorization': f'Bearer {access_token}'}
+                )
+
+                logger.info(f"Google userinfo response status: {userinfo_response.status_code}")
+
+                if not userinfo_response.ok:
+                    logger.error(f"Failed to get user info from Google: {userinfo_response.text}")
+                    return APIResponse.error(message="Failed to verify Google token", status_code=401)
+
+                google_data = userinfo_response.json()
+                logger.info(f"Retrieved user info from Google: {google_data}")
+
+                if 'email' not in google_data:
+                    logger.error("Email not found in Google response")
+                    return APIResponse.error(message="Email not found in Google response", status_code=400)
+
+                email = google_data['email']
+                name = google_data.get('name')
+                picture = google_data.get('picture')
+
+                # Check if user exists
+                query = """
+                    SELECT *
+                    FROM dim_user
+                    WHERE email = %s
+                """
+                user = db.get(query, (email,))
+
+                if not user:
+                    logger.info(f"Creating new user for email: {email}")
+                    # Create new user
+                    user_uuid = str(uuid.uuid4())
+                    user = {
+                        'user_uuid': user_uuid,
+                        'email': email,
+                        'name': name,
+                        'picture': picture,
+                        'password': None
+                    }
+
+                    query = """
+                        INSERT INTO dim_user (user_uuid, email, password, name, picture)
+                        VALUES (%s, %s, %s, %s, %s)
+                        RETURNING *
+                    """
+                    db.insert(query, (user_uuid, email, None, name, picture))
+                else:
+                    logger.info(f"Found existing user for email: {email}")
+
+                # Get user's restaurants
+                query = """
+                    SELECT *
+                    FROM dim_restaurant dr
+                    LEFT JOIN dim_user_restaurant dur
+                        ON dr.restaurant_uuid = dur.restaurant_uuid
+                    WHERE dur.user_uuid = %s
+                """
+                restaurants = db.get(query, (user['user_uuid'],)) or []
+                logger.info(f"Retrieved {len(restaurants)} restaurants for user")
+
+                # Generate JWT token
+                token = generate_token(user)
+                logger.info("Generated JWT token successfully")
+
+                response_data = {
+                    'user': sanitize_user(user),
+                    'restaurants': restaurants,
+                    'accessToken': token
+                }
+
+                logger.info("Sending successful response")
+                return APIResponse.success(response_data)
+
+            except requests.RequestException as e:
+                logger.error(f"Failed to communicate with Google API: {str(e)}")
+                return APIResponse.error(message="Failed to verify with Google", status_code=500)
+
+        except Exception as e:
+            logger.error(f"Google sign in error: {str(e)}")
+            return APIResponse.error("Google sign in failed", 500)
+
+
+@auth_bp.route("/v2/apple/signin")
+class AppleSignIn(Resource):
+
+    @auth_bp.expect(apple_auth)
+    @auth_bp.doc('apple_signin')
+    def post(self):
+        """Sign in or sign up with Apple"""
+        try:
+            data = request.get_json()
+            if not data:
+                return jsonify(
+                    APIResponse.error(message="No data received!",
+                                      status_code=400))
+
+            identity_token = data.get('identity_token')
+            user_identity = decode_token(identity_token)
+            name_data = data.get('name')
+
+            name = None
+            if name_data:
+                name = f"{name_data.get('firstName', '')} {name_data.get('lastName', '')}".strip(
+                )
+
+            if user_identity is None:
+                return (
+                    jsonify({
+                        "error": "Apple Auth Failed",
+                        "message": "Failed to retrieve user informations",
+                    }),
+                    400,
+                )
+
+            query = """
+                SELECT *
+                FROM dim_user
+                WHERE email = %s
+            """
+            user = db.get(query, (user_identity['email'], ))
+
+            if not user:
+                # Create new user
+                user_uuid = str(uuid.uuid4())
+                user = {
+                    'user_uuid': user_uuid,
+                    'email': user_identity['email'],
+                    'name': name,
+                    'picture': None,
+                    'password': None
+                }
+                query = """
+                    INSERT INTO dim_user (user_uuid, email, password, name, picture)
+                    VALUES (%s, %s, %s, %s, %s)
+                """
+                db.insert(
+                    query,
+                    (user_uuid, user_identity['email'], None, name, None))
+
+            # Verify Apple token and get user info
+            # Note: You'll need to implement Apple token verification
+            query = """
+                SELECT *
+                FROM dim_restaurant dr
+                LEFT JOIN dim_user_restaurant dur
+                    ON dr.restaurant_uuid = dur.restaurant_uuid
+                WHERE dur.user_uuid = %s
+            """
+            restaurants = db.get(query, (user['user_uuid'], ))
+
+            # Generate JWT token
+            token = generate_token(user)
+
+            return jsonify(
+                APIResponse.success({
+                    'user': sanitize_user(user),
+                    'restaurants': restaurants,
+                    'accessToken': token
+                }))
+        except Exception as e:
+            logger.error(f"Apple sign in error: {str(e)}")
+            return jsonify(APIResponse.error("Apple sign in failed", 500))
+
+
+@auth_bp.route("/v2/me")
+class CurrentUser(Resource):
+
+    @auth_bp.doc('get_current_user')
+    def get(self):
+        """Get current user information"""
+        try:
+            # Get token from header
+            auth_header = request.headers.get('Authorization')
+            if not auth_header or not auth_header.startswith('Bearer '):
+                return APIResponse.error("No token provided", 401)
+
+            token = auth_header.split(' ')[1]
+
+            # Verify token
+            payload = verify_token(token)
+            if not payload:
+                return APIResponse.error("Invalid token", 401)
+
+            # Get user from database
+            query = """
+                SELECT *
+                FROM dim_user
+                WHERE user_uuid = %s
+            """
+            user = db.get(query, (payload['user_uuid'], ))
+            if not user:
+                return jsonify(APIResponse.error("User not found", 404))
+
+            # Get user's restaurants
+            query = """
+                SELECT *
+                FROM dim_restaurant dr
+                LEFT JOIN dim_user_restaurant dur
+                    ON dr.restaurant_uuid = dur.restaurant_uuid
+                WHERE dur.user_uuid = %s
+            """
+            restaurants = db.get(query, (user['user_uuid'], ))
+
+            return jsonify(
+                APIResponse.success({
+                    'user': sanitize_user(user),
+                    'restaurants': restaurants
+                }))
+        except Exception as e:
+            logger.error(f"Get current user error: {str(e)}")
+            return jsonify(
+                APIResponse.error("Failed to get user information", 500))
+
+
+@auth_bp.route("/signout")
+class SignOut(Resource):
+
+    @auth_bp.doc('signout_user')
+    def post(self):
+        """Sign out current user"""
+        # Since we're using JWT tokens, we don't need to do anything server-side
+        # The client should just remove the token
+        return jsonify(
+            APIResponse.success({"message": "Signed out successfully"}))
+
+
+# Helper functions
+def generate_token(user):
+    """Generate JWT token for user"""
+    payload = {
+        'user_uuid': user['user_uuid'],
+        'exp':
+        datetime.utcnow() + timedelta(days=30)  # Token expires in 30 days
+    }
+    return jwt.encode(payload, os.getenv('JWT_SECRET', 'your-secret-key'), algorithm='HS256')
+
+
+def verify_token(token):
+    """Verify JWT token and return payload"""
+    try:
+        return jwt.decode(token,
+                          os.getenv('JWT_SECRET', 'your-secret-key'),
+                          algorithms=['HS256'])
+    except Exception as e:
+        logger.error(f"Token verification error: {e}")
+        return None
+
+
+def sanitize_user(user):
+    """Remove sensitive information from user object"""
+    user_copy = user.copy()
+    user_copy.pop('password', None)
+    return user_copy
+
+
+def decode_token(token):
+    #This function was not present in original code, added to make the code runnable.  Replace with actual Apple token decoding logic
+    try:
+        # Replace with your actual Apple token decoding logic
+        return {"email":"test@example.com"}
+    except:
+        return None
