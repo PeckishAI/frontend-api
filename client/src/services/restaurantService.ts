@@ -13,44 +13,8 @@ const getAuthHeaders = () => {
 export const restaurantService = {
   async getRestaurants(): Promise<Restaurant[]> {
     try {
-      const token = localStorage.getItem('accessToken');
-      if (!token) {
-        throw new Error("No authentication token found");
-      }
-
-      const userStr = localStorage.getItem('user');
-      if (!userStr) {
-        throw new Error("User not found in local storage");
-      }
-
-      const user = JSON.parse(userStr);
-      const user_uuid = user?.user_uuid;
-      
-      if (!user_uuid) {
-        throw new Error("Invalid user data - missing UUID");
-      }
-
-      const response = await fetch(
-        `${BASE_URL}/restaurants/v2/restaurant/${user_uuid}`,
-        {
-          method: "GET", 
-          headers: getAuthHeaders(),
-          credentials: 'include',
-        },
-      );
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Unauthorized access to restaurants");
-        }
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      if (!data.success) {
-        throw new Error(data.message || "Failed to fetch restaurants");
-      }
-      return data.data;
+      const restaurants = await authService.getUserRestaurants();
+      return restaurants;
     } catch (error) {
       console.error("Failed to fetch restaurants:", error);
       throw error;
