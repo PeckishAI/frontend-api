@@ -1,0 +1,202 @@
+Form Validation Errors: 
+{product_preparations: Array(1)}
+product_preparations
+: 
+Array(1)
+0
+: 
+quanity
+: 
+message
+: 
+"Required"
+ref
+: 
+undefined
+type
+: 
+"invalid_type"
+[[Prototype]]
+: 
+Object
+[[Prototype]]
+: 
+Object
+length
+: 
+1
+[[Prototype]]
+: 
+Array(0)
+[[Prototype]]
+: 
+Object
+ProductSheet.tsx?t=1736644267512:375 Current Form State: 
+{portion_count: 1, product_ingredients: Array(3), product_uuid: '291e4003-8e03-484f-8efe-823a79981d6e', product_name: 'Margarita', category: {…}, …}
+category
+: 
+{category_uuid: '8cef0a4f-cde0-46fc-8151-c2c5510664cb', category_name: 'Cocktails', emoji: '🧂'}
+portion_cost
+: 
+2.8683571428571426
+portion_count
+: 
+1
+portion_price
+: 
+7.5
+product_ingredients
+: 
+Array(3)
+0
+: 
+base_to_recipe
+: 
+70
+base_unit
+: 
+{unit_uuid: 'ea452f8b-b81e-4912-bc3f-0b5d30843483', unit_name: 'Bottle'}
+ingredient_name
+: 
+"Tequila"
+ingredient_uuid
+: 
+"fae2123a-bd94-404c-b901-b40a6d1499fe"
+quantity
+: 
+5
+recipe_unit
+: 
+{unit_uuid: 'ab35150f-18ee-4053-b7ea-40029a6f0afa', unit_name: 'cL'}
+total_cost
+: 
+1.857142857142857
+unit_cost
+: 
+26
+uuid
+: 
+"044beb6b-feda-49bd-ba02-5b0532b58dd1"
+[[Prototype]]
+: 
+Object
+1
+: 
+{uuid: 'd488d157-132a-4cfe-9e85-9ab23fba5be6', ingredient_uuid: 'ed45669e-806b-48f5-b076-4a590d9f6b75', ingredient_name: 'Triple Sec', quantity: 3, base_unit: {…}, …}
+2
+: 
+{uuid: '80c143cb-4efa-4dc6-80e0-adfce20a4f58', ingredient_uuid: '0ef75756-1a25-44a8-80cd-417e9e02db10', ingredient_name: 'Lime Juice', quantity: 2, base_unit: {…}, …}
+length
+: 
+3
+[[Prototype]]
+: 
+Array(0)
+product_name
+: 
+"Margarita"
+product_preparations
+: 
+Array(1)
+0
+: 
+base_to_recipe
+: 
+1
+base_unit
+: 
+{unit_uuid: '4c980834-8679-41d8-80dd-6d89e0c1dd51', unit_name: 'g'}
+preparation_name
+: 
+"Sugar Cocktail"
+preparation_uuid
+: 
+"4f67ee19-d5a8-416b-8036-646b36966f98"
+quantity
+: 
+3
+recipe_unit
+: 
+{unit_uuid: '4c980834-8679-41d8-80dd-6d89e0c1dd51', unit_name: 'g'}
+total_cost
+: 
+0.013499999999999998
+unit_cost
+: 
+0.0045
+uuid
+: 
+"d3bf41db-7080-4263-a1a2-aa680ce832a0"
+[[Prototype]]
+: 
+Object
+length
+: 
+1
+[[Prototype]]
+: 
+Array(0)
+product_uuid
+: 
+"291e4003-8e03-484f-8efe-823a79981d6e"
+[[Prototype]]
+: 
+Object
+ProductSheet.tsx?t=1736644267512:376 Form Dirty Fields: 
+{product_ingredients: Array(3)}
+product_ingredients
+: 
+Array(3)
+0
+: 
+{base_to_recipe: true}
+1
+: 
+{base_to_recipe: true}
+2
+: 
+{base_to_recipe: true}
+length
+: 
+3
+[[Prototype]]
+: 
+Array(0)
+[[Prototype]]
+: 
+Object
+ProductSheet.tsx?t=1736644267512:377 Form Touched Fields: 
+{product_ingredients: Array(3), product_preparations: Array(1)}
+product_ingredients
+: 
+Array(3)
+0
+: 
+{base_to_recipe: true}
+1
+: 
+{base_to_recipe: true}
+2
+: 
+{base_to_recipe: true}
+length
+: 
+3
+[[Prototype]]
+: 
+Array(0)
+product_preparations
+: 
+Array(1)
+0
+: 
+{base_to_recipe: true}
+length
+: 
+1
+[[Prototype]]
+: 
+Array(0)
+[[Prototype]]
+: 
+Object

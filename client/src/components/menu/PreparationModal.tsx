@@ -24,22 +24,22 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CreatableSelect } from "@/components/ui/creatable-select";
 import { Plus, Trash2 } from "lucide-react";
-import { type Preparation } from "@/types/menu";
 import { inventoryService } from "@/services/inventoryService";
 import { menuService } from "@/services/menuService";
 import { unitService } from "@/services/unitService";
-import { foodEmojis } from "@/lib/emojis";
 import { categoryService } from "@/services/categoryService";
 import NewIngredientDialog from "@/components/inventory/NewIngredientDialog";
 import CategoryModal from "./CategoryModal";
 
 const preparationSchema = z.object({
   preparation_name: z.string().min(1, "Name is required"),
-  category: z.object({
-    category_uuid: z.string().optional(),
-    category_name: z.string(),
-    emoji: z.string(),
-  }).optional(),
+  category: z
+    .object({
+      category_uuid: z.string().optional(),
+      category_name: z.string(),
+      emoji: z.string(),
+    })
+    .optional(),
   unit: z.object({
     unit_uuid: z.string(),
     unit_name: z.string(),
@@ -59,6 +59,8 @@ const preparationSchema = z.object({
         unit_uuid: z.string(),
         unit_name: z.string(),
       }),
+      unit_cost: z.number().min(0).optional(),
+      total_cost: z.number().min(0).optional(),
       base_to_recipe: z.number(),
     }),
   ),
@@ -75,6 +77,8 @@ const preparationSchema = z.object({
         unit_uuid: z.string(),
         unit_name: z.string(),
       }),
+      unit_cost: z.number().min(0).optional(),
+      total_cost: z.number().min(0).optional(),
       base_to_recipe: z.number(),
     }),
   ),
@@ -82,22 +86,47 @@ const preparationSchema = z.object({
 
 type PreparationFormData = z.infer<typeof preparationSchema>;
 
-const usePreparationOptions = (restaurantUuid?: string) => {
+const useIngredients = (restaurantUuid?: string) => {
+  const { data: ingredients } = useQuery({
+    queryKey: ["ingredients", restaurantUuid],
+    queryFn: async () => {
+      if (!restaurantUuid) return [];
+      return inventoryService.getRestaurantIngredients(restaurantUuid);
+    },
+    enabled: !!restaurantUuid,
+  });
+
+  return ingredients || [];
+};
+
+const useIngredientOptions = (ingredients?: any) => {
+  return ingredients
+    ? Object.values(ingredients).map((ing: any) => ({
+        label: ing.ingredient_name,
+        value: ing.ingredient_uuid,
+        type: "ingredient",
+      }))
+    : [];
+};
+
+const usePreparations = (restaurantUuid?: string) => {
   const { data: preparations } = useQuery({
     queryKey: ["preparations", restaurantUuid],
-    queryFn: async () => {
+    queryFn: () => {
       if (!restaurantUuid) return [];
       return menuService.getRestaurantPreparations(restaurantUuid);
     },
     enabled: !!restaurantUuid,
   });
+  return preparations || [];
+};
 
+const usePreparationOptions = (preparations?: any) => {
   return preparations
-    ? preparations.map((prep: any) => ({
+    ? Object.values(preparations).map((prep: any) => ({
         label: prep.preparation_name,
         value: prep.preparation_uuid,
         type: "preparation",
-        unit_cost: prep.portion_cost || 0,
       }))
     : [];
 };
@@ -133,12 +162,14 @@ export default function PreparationModal({
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: PreparationFormData) => void;
 }) {
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showNewIngredientDialog, setShowNewIngredientDialog] = useState(false);
   const [newItemName, setNewItemName] = useState("");
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const { currentRestaurant } = useRestaurantContext();
   const queryClient = useQueryClient();
+
+  const ingredientList = useIngredients(currentRestaurant?.restaurant_uuid);
+  const preparationList = usePreparations(currentRestaurant?.restaurant_uuid);
 
   const { data: categories = [] } = useQuery({
     queryKey: ["categories", currentRestaurant?.restaurant_uuid],
@@ -242,59 +273,6 @@ export default function PreparationModal({
                 <form
                   onSubmit={form.handleSubmit(async (data) => {
                     try {
-                      // Validate required fields
-                      if (!data.preparation_name) {
-                        form.setError("preparation_name", {
-                          type: "required",
-                          message: "Name is required",
-                        });
-                        return;
-                      }
-
-                      if (!data.category) {
-                        form.setError("category", {
-                          type: "required",
-                          message: "Category is required",
-                        });
-                        return;
-                      }
-
-                      if (!data.unit) {
-                        form.setError("unit", {
-                          type: "required",
-                          message: "Unit is required",
-                        });
-                        return;
-                      }
-
-                      // Validate ingredients/preparations have required fields
-                      const hasInvalidIngredients =
-                        data.preparation_ingredients?.some(
-                          (ing) =>
-                            !ing.ingredient_uuid ||
-                            !ing.quantity ||
-                            !ing.recipe_unit,
-                        );
-
-                      if (hasInvalidIngredients) {
-                        console.error("Invalid ingredients data");
-                        return;
-                      }
-
-                      const hasInvalidPreparations =
-                        data.preparation_preparations?.some(
-                          (prep) =>
-                            !prep.preparation_uuid ||
-                            !prep.quantity ||
-                            !prep.recipe_unit,
-                        );
-
-                      if (hasInvalidPreparations) {
-                        console.error("Invalid preparations data");
-                        return;
-                      }
-
-                      console.log("Form data being submitted:", data);
                       await onSubmit(data);
                       form.reset();
                       onOpenChange(false);
@@ -472,12 +450,6 @@ export default function PreparationModal({
                                             }
                                           : null
                                       }
-                                      options={
-                                        ingredients?.map((ing: any) => ({
-                                          label: ing.ingredient_name,
-                                          value: ing.ingredient_uuid,
-                                        })) || []
-                                      }
                                       onChange={async (option) => {
                                         if (option) {
                                           const selectedIngredient =
@@ -535,6 +507,11 @@ export default function PreparationModal({
                                           }
                                         }
                                       }}
+                                      options={useIngredientOptions(
+                                        useIngredients(
+                                          currentRestaurant?.restaurant_uuid,
+                                        ),
+                                      )}
                                       onCreateOption={(inputValue) => {
                                         setNewItemName(inputValue);
                                         setShowNewIngredientDialog(true);
@@ -618,7 +595,7 @@ export default function PreparationModal({
                                             `preparation_ingredients.${index}.ingredient_uuid`,
                                           );
                                           const selectedIngredient =
-                                            ingredients?.find(
+                                            ingredientList?.find(
                                               (ing: any) =>
                                                 ing.ingredient_uuid ===
                                                 ingredientUuid,
@@ -701,7 +678,7 @@ export default function PreparationModal({
                                       index !== 0 ? "sr-only" : undefined
                                     }
                                   >
-                                    Factor
+                                    Conversion
                                   </FormLabel>
                                   <FormControl>
                                     <Input
@@ -717,7 +694,7 @@ export default function PreparationModal({
                                       type="number"
                                       min={0}
                                       step="any"
-                                      placeholder="Conv. factor"
+                                      placeholder=""
                                       {...field}
                                       onChange={async (e) => {
                                         const newConversionFactor = parseFloat(
@@ -789,17 +766,71 @@ export default function PreparationModal({
                                             }
                                           : null
                                       }
-                                      onChange={(option) => {
+                                      onChange={async (option) => {
                                         if (option) {
+                                          const selectedPreparation =
+                                            preparationList?.find(
+                                              (prep: any) =>
+                                                prep.preparation_uuid ===
+                                                option.value,
+                                            );
+                                          console.log(
+                                            "Preparation: ",
+                                            selectedPreparation,
+                                          );
+
                                           field.onChange(option.label);
                                           form.setValue(
                                             `preparation_preparations.${index}.preparation_uuid`,
                                             option.value,
                                           );
+
+                                          if (selectedPreparation?.unit) {
+                                            form.setValue(
+                                              `preparation_preparations.${index}.base_unit`,
+                                              {
+                                                unit_uuid:
+                                                  selectedPreparation.unit
+                                                    .unit_uuid,
+                                                unit_name:
+                                                  selectedPreparation.unit
+                                                    .unit_name,
+                                              },
+                                            );
+
+                                            // Get conversion factor if recipe unit is already selected
+                                            const recipeUnit = form.watch(
+                                              `preparation_preparations.${index}.recipe_unit`,
+                                            );
+
+                                            if (recipeUnit?.unit_uuid) {
+                                              try {
+                                                const response =
+                                                  await unitService.getPreparationConversionFactor(
+                                                    selectedPreparation.preparation_uuid,
+                                                    selectedPreparation.unit
+                                                      .unit_uuid,
+                                                    recipeUnit.unit_uuid,
+                                                  );
+
+                                                form.setValue(
+                                                  `preparation_preparations.${index}.base_to_recipe`,
+                                                  response.conversion_factor,
+                                                );
+                                              } catch (error) {
+                                                console.error(
+                                                  "Failed to fetch conversion factor:",
+                                                  error,
+                                                );
+                                              }
+                                            }
+                                          }
                                         }
                                       }}
                                       options={usePreparationOptions(
-                                        currentRestaurant?.restaurant_uuid,
+                                        usePreparations(
+                                          currentRestaurant?.restaurant_uuid,
+                                        ),
                                       )}
                                       onCreateOption={(inputValue) => {
                                         setNewItemName(inputValue);
@@ -923,20 +954,30 @@ export default function PreparationModal({
                                       index !== 0 ? "sr-only" : undefined
                                     }
                                   >
-                                    Factor
+                                    Conversion
                                   </FormLabel>
                                   <FormControl>
                                     <Input
+                                      suffix={
+                                        form.watch(
+                                          `preparation_preparations.${index}.base_unit.unit_name`,
+                                        ) +
+                                        " → " +
+                                        form.watch(
+                                          `preparation_preparations.${index}.recipe_unit.unit_name`,
+                                        )
+                                      }
                                       type="number"
                                       min={0}
                                       step="any"
-                                      placeholder="Conv. factor"
+                                      placeholder=""
                                       {...field}
-                                      onChange={(e) =>
-                                        field.onChange(
-                                          parseFloat(e.target.value),
-                                        )
-                                      }
+                                      onChange={async (e) => {
+                                        const newConversionFactor = parseFloat(
+                                          e.target.value,
+                                        );
+                                        field.onChange(newConversionFactor);
+                                      }}
                                     />
                                   </FormControl>
                                 </FormItem>
@@ -983,34 +1024,47 @@ export default function PreparationModal({
             currentRestaurant.restaurant_uuid,
             data,
           );
+          console.log("New Ingredient: ", newIngredient);
 
           // Add the new ingredient to the current ingredient index
           const currentIngredients = ingredients ? [...ingredients] : [];
           currentIngredients.push(newIngredient);
 
           // Get the current ingredients array and index
-          const preparationIngredients = form.getValues("preparation_ingredients") || [];
+          const preparationIngredients =
+            form.getValues("preparation_ingredients") || [];
           const lastIndex = preparationIngredients.length - 1;
 
           // Calculate minimum unit cost per unit from suppliers
           const minUnitCost = newIngredient.ingredient_suppliers.reduce(
             (min, supplier) => {
-              const costPerUnit = supplier.unit_cost / (supplier.pack_size || 1);
+              const costPerUnit =
+                supplier.unit_cost / (supplier.pack_size || 1);
               return costPerUnit < min ? costPerUnit : min;
             },
-            Number.MAX_VALUE
+            Number.MAX_VALUE,
           );
 
           // Update the form with the full ingredient data
           if (lastIndex >= 0) {
-            form.setValue(`preparation_ingredients.${lastIndex}.ingredient_uuid`, newIngredient.ingredient_uuid);
-            form.setValue(`preparation_ingredients.${lastIndex}.ingredient_name`, newIngredient.ingredient_name);
-            form.setValue(`preparation_ingredients.${lastIndex}.base_unit`, newIngredient.base_unit);
-            form.setValue(`preparation_ingredients.${lastIndex}.recipe_unit`, newIngredient.base_unit);
-            form.setValue(`preparation_ingredients.${lastIndex}.base_to_recipe`, 1);
-            form.setValue(`preparation_ingredients.${lastIndex}.unit_cost`, minUnitCost === Number.MAX_VALUE ? 0 : minUnitCost);
+            form.setValue(
+              `preparation_ingredients.${lastIndex}.ingredient_uuid`,
+              newIngredient.ingredient_uuid,
+            );
+            form.setValue(
+              `preparation_ingredients.${lastIndex}.ingredient_name`,
+              newIngredient.ingredient_name,
+            );
+            form.setValue(
+              `preparation_ingredients.${lastIndex}.base_unit`,
+              newIngredient.unit,
+            );
+            form.setValue(
+              `preparation_ingredients.${lastIndex}.unit_cost`,
+              minUnitCost === Number.MAX_VALUE ? 0 : minUnitCost,
+            );
           }
-
+          console.log("Form: ", form.getValues());
           queryClient.invalidateQueries(["ingredients"]);
           setShowNewIngredientDialog(false);
         }}
