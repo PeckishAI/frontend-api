@@ -151,11 +151,12 @@ const signOut = async (): Promise<void> => {
 const getCurrentUser = async () => {
   try {
     const accessToken = localStorage.getItem("accessToken");
+    console.log("ACCESS TOKEN", accessToken);
     const response = await fetch(`${BASE_URL}/auth/v2/me`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${accessToken}`
-      }
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
 
     if (!response.ok) {

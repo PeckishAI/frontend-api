@@ -1,0 +1,226 @@
+ACCESS TOKEN eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3V1aWQiOiIxYTkxZmY0ZS1jNmQwLTQ4ZTktOTUyYS03MWU1M2RkZWNmOTYiLCJleHAiOjE3MzkyOTY0OTV9.UkEeHsegj0jX6ZhBu_y7IIrP6FBqrRtRTJS4cGvh_8w
+www.apple.com/favicon.ico:1 
+        
+        
+       
+        
+       Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.Understand this warningAI
+authService.ts:177 Get current user error: Error: User not found
+    at getCurrentUser (authService.ts:172:13)
+overrideMethod @ hook.js:608
+getCurrentUser @ authService.ts:177
+await in getCurrentUser
+fetchFn @ @tanstack_react-query.js?v=bbe808f9:839
+run @ @tanstack_react-query.js?v=bbe808f9:493
+start @ @tanstack_react-query.js?v=bbe808f9:535
+fetch @ @tanstack_react-query.js?v=bbe808f9:925
+executeFetch_fn @ @tanstack_react-query.js?v=bbe808f9:2237
+onSubscribe @ @tanstack_react-query.js?v=bbe808f9:1924
+subscribe @ @tanstack_react-query.js?v=bbe808f9:24
+(anonymous) @ @tanstack_react-query.js?v=bbe808f9:3047
+subscribeToStore @ chunk-C43VWYGG.js?v=bbe808f9:12587
+commitHookEffectListMount @ chunk-C43VWYGG.js?v=bbe808f9:16883
+commitPassiveMountOnFiber @ chunk-C43VWYGG.js?v=bbe808f9:18124
+commitPassiveMountEffects_complete @ chunk-C43VWYGG.js?v=bbe808f9:18097
+commitPassiveMountEffects_begin @ chunk-C43VWYGG.js?v=bbe808f9:18087
+commitPassiveMountEffects @ chunk-C43VWYGG.js?v=bbe808f9:18077
+flushPassiveEffectsImpl @ chunk-C43VWYGG.js?v=bbe808f9:19458
+flushPassiveEffects @ chunk-C43VWYGG.js?v=bbe808f9:19415
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=bbe808f9:18836
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=bbe808f9:9119
+commitRootImpl @ chunk-C43VWYGG.js?v=bbe808f9:19400
+commitRoot @ chunk-C43VWYGG.js?v=bbe808f9:19245
+finishConcurrentRender @ chunk-C43VWYGG.js?v=bbe808f9:18773
+performConcurrentWorkOnRoot @ chunk-C43VWYGG.js?v=bbe808f9:18686
+workLoop @ chunk-C43VWYGG.js?v=bbe808f9:197
+flushWork @ chunk-C43VWYGG.js?v=bbe808f9:176
+performWorkUntilDeadline @ chunk-C43VWYGG.js?v=bbe808f9:384Understand this errorAI
+authService.ts:154 ACCESS TOKEN eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3V1aWQiOiIxYTkxZmY0ZS1jNmQwLTQ4ZTktOTUyYS03MWU1M2RkZWNmOTYiLCJleHAiOjE3MzkyOTY0OTV9.UkEeHsegj0jX6ZhBu_y7IIrP6FBqrRtRTJS4cGvh_8w
+RestaurantContext.tsx:76 Uncaught Error: useRestaurantContext must be used within a RestaurantProvider
+    at useRestaurantContext (RestaurantContext.tsx:76:11)
+    at RestaurantSelector (RestaurantSelector.tsx:35:5)
+    at renderWithHooks (chunk-C43VWYGG.js?v=bbe808f9:12151:26)
+    at mountIndeterminateComponent (chunk-C43VWYGG.js?v=bbe808f9:14901:21)
+    at beginWork (chunk-C43VWYGG.js?v=bbe808f9:15882:22)
+    at HTMLUnknownElement.callCallback2 (chunk-C43VWYGG.js?v=bbe808f9:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-C43VWYGG.js?v=bbe808f9:3699:24)
+    at invokeGuardedCallback (chunk-C43VWYGG.js?v=bbe808f9:3733:39)
+    at beginWork$1 (chunk-C43VWYGG.js?v=bbe808f9:19733:15)
+    at performUnitOfWork (chunk-C43VWYGG.js?v=bbe808f9:19166:20)
+useRestaurantContext @ RestaurantContext.tsx:76
+RestaurantSelector @ RestaurantSelector.tsx:35
+renderWithHooks @ chunk-C43VWYGG.js?v=bbe808f9:12151
+mountIndeterminateComponent @ chunk-C43VWYGG.js?v=bbe808f9:14901
+beginWork @ chunk-C43VWYGG.js?v=bbe808f9:15882
+callCallback2 @ chunk-C43VWYGG.js?v=bbe808f9:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=bbe808f9:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=bbe808f9:3733
+beginWork$1 @ chunk-C43VWYGG.js?v=bbe808f9:19733
+performUnitOfWork @ chunk-C43VWYGG.js?v=bbe808f9:19166
+workLoopSync @ chunk-C43VWYGG.js?v=bbe808f9:19105
+renderRootSync @ chunk-C43VWYGG.js?v=bbe808f9:19084
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=bbe808f9:18842
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=bbe808f9:9119
+(anonymous) @ chunk-C43VWYGG.js?v=bbe808f9:18595Understand this errorAI
+RestaurantContext.tsx:76 Uncaught Error: useRestaurantContext must be used within a RestaurantProvider
+    at useRestaurantContext (RestaurantContext.tsx:76:11)
+    at General (General.tsx:24:47)
+    at renderWithHooks (chunk-C43VWYGG.js?v=bbe808f9:12151:26)
+    at mountIndeterminateComponent (chunk-C43VWYGG.js?v=bbe808f9:14901:21)
+    at beginWork (chunk-C43VWYGG.js?v=bbe808f9:15882:22)
+    at HTMLUnknownElement.callCallback2 (chunk-C43VWYGG.js?v=bbe808f9:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-C43VWYGG.js?v=bbe808f9:3699:24)
+    at invokeGuardedCallback (chunk-C43VWYGG.js?v=bbe808f9:3733:39)
+    at beginWork$1 (chunk-C43VWYGG.js?v=bbe808f9:19733:15)
+    at performUnitOfWork (chunk-C43VWYGG.js?v=bbe808f9:19166:20)
+useRestaurantContext @ RestaurantContext.tsx:76
+General @ General.tsx:24
+renderWithHooks @ chunk-C43VWYGG.js?v=bbe808f9:12151
+mountIndeterminateComponent @ chunk-C43VWYGG.js?v=bbe808f9:14901
+beginWork @ chunk-C43VWYGG.js?v=bbe808f9:15882
+callCallback2 @ chunk-C43VWYGG.js?v=bbe808f9:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=bbe808f9:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=bbe808f9:3733
+beginWork$1 @ chunk-C43VWYGG.js?v=bbe808f9:19733
+performUnitOfWork @ chunk-C43VWYGG.js?v=bbe808f9:19166
+workLoopSync @ chunk-C43VWYGG.js?v=bbe808f9:19105
+renderRootSync @ chunk-C43VWYGG.js?v=bbe808f9:19084
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=bbe808f9:18842
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=bbe808f9:9119
+(anonymous) @ chunk-C43VWYGG.js?v=bbe808f9:18595Understand this errorAI
+RestaurantContext.tsx:76 Uncaught Error: useRestaurantContext must be used within a RestaurantProvider
+    at useRestaurantContext (RestaurantContext.tsx:76:11)
+    at RestaurantSelector (RestaurantSelector.tsx:35:5)
+    at renderWithHooks (chunk-C43VWYGG.js?v=bbe808f9:12151:26)
+    at mountIndeterminateComponent (chunk-C43VWYGG.js?v=bbe808f9:14901:21)
+    at beginWork (chunk-C43VWYGG.js?v=bbe808f9:15882:22)
+    at HTMLUnknownElement.callCallback2 (chunk-C43VWYGG.js?v=bbe808f9:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-C43VWYGG.js?v=bbe808f9:3699:24)
+    at invokeGuardedCallback (chunk-C43VWYGG.js?v=bbe808f9:3733:39)
+    at beginWork$1 (chunk-C43VWYGG.js?v=bbe808f9:19733:15)
+    at performUnitOfWork (chunk-C43VWYGG.js?v=bbe808f9:19166:20)
+useRestaurantContext @ RestaurantContext.tsx:76
+RestaurantSelector @ RestaurantSelector.tsx:35
+renderWithHooks @ chunk-C43VWYGG.js?v=bbe808f9:12151
+mountIndeterminateComponent @ chunk-C43VWYGG.js?v=bbe808f9:14901
+beginWork @ chunk-C43VWYGG.js?v=bbe808f9:15882
+callCallback2 @ chunk-C43VWYGG.js?v=bbe808f9:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=bbe808f9:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=bbe808f9:3733
+beginWork$1 @ chunk-C43VWYGG.js?v=bbe808f9:19733
+performUnitOfWork @ chunk-C43VWYGG.js?v=bbe808f9:19166
+workLoopSync @ chunk-C43VWYGG.js?v=bbe808f9:19105
+renderRootSync @ chunk-C43VWYGG.js?v=bbe808f9:19084
+recoverFromConcurrentError @ chunk-C43VWYGG.js?v=bbe808f9:18704
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=bbe808f9:18847
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=bbe808f9:9119
+(anonymous) @ chunk-C43VWYGG.js?v=bbe808f9:18595Understand this errorAI
+RestaurantContext.tsx:76 Uncaught Error: useRestaurantContext must be used within a RestaurantProvider
+    at useRestaurantContext (RestaurantContext.tsx:76:11)
+    at General (General.tsx:24:47)
+    at renderWithHooks (chunk-C43VWYGG.js?v=bbe808f9:12151:26)
+    at mountIndeterminateComponent (chunk-C43VWYGG.js?v=bbe808f9:14901:21)
+    at beginWork (chunk-C43VWYGG.js?v=bbe808f9:15882:22)
+    at HTMLUnknownElement.callCallback2 (chunk-C43VWYGG.js?v=bbe808f9:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-C43VWYGG.js?v=bbe808f9:3699:24)
+    at invokeGuardedCallback (chunk-C43VWYGG.js?v=bbe808f9:3733:39)
+    at beginWork$1 (chunk-C43VWYGG.js?v=bbe808f9:19733:15)
+    at performUnitOfWork (chunk-C43VWYGG.js?v=bbe808f9:19166:20)
+useRestaurantContext @ RestaurantContext.tsx:76
+General @ General.tsx:24
+renderWithHooks @ chunk-C43VWYGG.js?v=bbe808f9:12151
+mountIndeterminateComponent @ chunk-C43VWYGG.js?v=bbe808f9:14901
+beginWork @ chunk-C43VWYGG.js?v=bbe808f9:15882
+callCallback2 @ chunk-C43VWYGG.js?v=bbe808f9:3674
+invokeGuardedCallbackDev @ chunk-C43VWYGG.js?v=bbe808f9:3699
+invokeGuardedCallback @ chunk-C43VWYGG.js?v=bbe808f9:3733
+beginWork$1 @ chunk-C43VWYGG.js?v=bbe808f9:19733
+performUnitOfWork @ chunk-C43VWYGG.js?v=bbe808f9:19166
+workLoopSync @ chunk-C43VWYGG.js?v=bbe808f9:19105
+renderRootSync @ chunk-C43VWYGG.js?v=bbe808f9:19084
+recoverFromConcurrentError @ chunk-C43VWYGG.js?v=bbe808f9:18704
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=bbe808f9:18847
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=bbe808f9:9119
+(anonymous) @ chunk-C43VWYGG.js?v=bbe808f9:18595Understand this errorAI
+hook.js:608 The above error occurred in the <RestaurantSelector> component:
+
+    at RestaurantSelector (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/layout/RestaurantSelector.tsx:40:3)
+    at div
+    at nav
+    at div
+    at div
+    at div
+    at Sidebar (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/components/layout/Sidebar.tsx:41:21)
+    at div
+    at App (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/App.tsx?t=1736715377768:101:22)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=bbe808f9:2829:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+overrideMethod @ hook.js:608
+logCapturedError @ chunk-C43VWYGG.js?v=bbe808f9:14016
+update.callback @ chunk-C43VWYGG.js?v=bbe808f9:14036
+callCallback @ chunk-C43VWYGG.js?v=bbe808f9:10491
+commitUpdateQueue @ chunk-C43VWYGG.js?v=bbe808f9:10508
+commitLayoutEffectOnFiber @ chunk-C43VWYGG.js?v=bbe808f9:17061
+commitLayoutMountEffects_complete @ chunk-C43VWYGG.js?v=bbe808f9:17948
+commitLayoutEffects_begin @ chunk-C43VWYGG.js?v=bbe808f9:17937
+commitLayoutEffects @ chunk-C43VWYGG.js?v=bbe808f9:17888
+commitRootImpl @ chunk-C43VWYGG.js?v=bbe808f9:19321
+commitRoot @ chunk-C43VWYGG.js?v=bbe808f9:19245
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=bbe808f9:18863
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=bbe808f9:9119
+(anonymous) @ chunk-C43VWYGG.js?v=bbe808f9:18595Understand this errorAI
+hook.js:608 The above error occurred in the <General> component:
+
+    at General (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/pages/General.tsx:34:45)
+    at ProtectedRoute (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/App.tsx?t=1736715377768:32:38)
+    at component
+    at Route (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=bbe808f9:191:16)
+    at Switch (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=bbe808f9:247:17)
+    at div
+    at App (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/src/App.tsx?t=1736715377768:101:22)
+    at QueryClientProvider (https://65ee73bc-3475-4814-a9fd-a93a35da3b9b-00-1f0uxbfcmu3si.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=bbe808f9:2829:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+overrideMethod @ hook.js:608
+logCapturedError @ chunk-C43VWYGG.js?v=bbe808f9:14016
+update.callback @ chunk-C43VWYGG.js?v=bbe808f9:14036
+callCallback @ chunk-C43VWYGG.js?v=bbe808f9:10491
+commitUpdateQueue @ chunk-C43VWYGG.js?v=bbe808f9:10508
+commitLayoutEffectOnFiber @ chunk-C43VWYGG.js?v=bbe808f9:17061
+commitLayoutMountEffects_complete @ chunk-C43VWYGG.js?v=bbe808f9:17948
+commitLayoutEffects_begin @ chunk-C43VWYGG.js?v=bbe808f9:17937
+commitLayoutEffects @ chunk-C43VWYGG.js?v=bbe808f9:17888
+commitRootImpl @ chunk-C43VWYGG.js?v=bbe808f9:19321
+commitRoot @ chunk-C43VWYGG.js?v=bbe808f9:19245
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=bbe808f9:18863
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=bbe808f9:9119
+(anonymous) @ chunk-C43VWYGG.js?v=bbe808f9:18595Understand this errorAI
+chunk-C43VWYGG.js?v=bbe808f9:9129 Uncaught Error: useRestaurantContext must be used within a RestaurantProvider
+    at useRestaurantContext (RestaurantContext.tsx:76:11)
+    at RestaurantSelector (RestaurantSelector.tsx:35:5)
+    at renderWithHooks (chunk-C43VWYGG.js?v=bbe808f9:12151:26)
+    at mountIndeterminateComponent (chunk-C43VWYGG.js?v=bbe808f9:14901:21)
+    at beginWork (chunk-C43VWYGG.js?v=bbe808f9:15882:22)
+    at beginWork$1 (chunk-C43VWYGG.js?v=bbe808f9:19721:22)
+    at performUnitOfWork (chunk-C43VWYGG.js?v=bbe808f9:19166:20)
+    at workLoopSync (chunk-C43VWYGG.js?v=bbe808f9:19105:13)
+    at renderRootSync (chunk-C43VWYGG.js?v=bbe808f9:19084:15)
+    at recoverFromConcurrentError (chunk-C43VWYGG.js?v=bbe808f9:18704:28)
+useRestaurantContext @ RestaurantContext.tsx:76
+RestaurantSelector @ RestaurantSelector.tsx:35
+renderWithHooks @ chunk-C43VWYGG.js?v=bbe808f9:12151
+mountIndeterminateComponent @ chunk-C43VWYGG.js?v=bbe808f9:14901
+beginWork @ chunk-C43VWYGG.js?v=bbe808f9:15882
+beginWork$1 @ chunk-C43VWYGG.js?v=bbe808f9:19721
+performUnitOfWork @ chunk-C43VWYGG.js?v=bbe808f9:19166
+workLoopSync @ chunk-C43VWYGG.js?v=bbe808f9:19105
+renderRootSync @ chunk-C43VWYGG.js?v=bbe808f9:19084
+recoverFromConcurrentError @ chunk-C43VWYGG.js?v=bbe808f9:18704
+performSyncWorkOnRoot @ chunk-C43VWYGG.js?v=bbe808f9:18847
+flushSyncCallbacks @ chunk-C43VWYGG.js?v=bbe808f9:9119
+(anonymous) @ chunk-C43VWYGG.js?v=bbe808f9:18595Understand this errorAI
+authService.ts:177 Get current user error: Error: User not found
+    at getCurrentUser (authService.ts:172:13)
