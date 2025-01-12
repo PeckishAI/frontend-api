@@ -13,11 +13,13 @@ export function useAuth() {
     queryKey: ["user"],
     queryFn: authService.getCurrentUser,
     retry: false,
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    staleTime: 1000 * 60 * 30, // Cache for 30 minutes
+    cacheTime: 1000 * 60 * 35, // Keep in cache for 35 minutes
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    refetchInterval: false
+    refetchInterval: false,
+    enabled: !!localStorage.getItem("accessToken") // Only run if we have a token
   });
   console.log("USER", user);
 
