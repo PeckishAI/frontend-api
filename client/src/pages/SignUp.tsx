@@ -7,7 +7,6 @@ import { Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useAuth } from "@/hooks/useAuth";
 import {
   Form,
@@ -16,23 +15,14 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { signUpSchema, type SignUpCredentials } from "@/types/user";
 
-const signUpSchema = z.object({
-  username: z.string().min(2, "Username must be at least 2 characters"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
-    ),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
-
-type SignUpForm = z.infer<typeof signUpSchema>;
+type SignUpForm = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -44,7 +34,8 @@ export default function SignUp() {
   const form = useForm<SignUpForm>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      username: "",
+      name: "",
+      email: "",
       password: "",
       confirmPassword: "",
     },
@@ -52,10 +43,13 @@ export default function SignUp() {
 
   const onSubmit = async (data: SignUpForm) => {
     try {
-      await signUp({
-        username: data.username,
+      const credentials: SignUpCredentials = {
+        name: data.name,
+        email: data.email,
         password: data.password,
-      });
+      };
+
+      await signUp(credentials);
       setLocation('/');
     } catch (error: any) {
       toast({
@@ -65,25 +59,6 @@ export default function SignUp() {
       });
     }
   };
-
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-
-    const appleScript = document.createElement('script');
-    appleScript.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
-    appleScript.async = true;
-    appleScript.defer = true;
-    document.body.appendChild(appleScript);
-
-    return () => {
-      document.body.removeChild(script);
-      document.body.removeChild(appleScript);
-    };
-  }, []);
 
   const handleGoogleSignIn = async () => {
     try {
@@ -99,7 +74,7 @@ export default function SignUp() {
 
       const client = google.accounts.oauth2.initTokenClient({
         client_id: config.googleClientId,
-        scope: 'email profile',
+        scope: "email profile",
         callback: async (response: any) => {
           if (response.access_token) {
             try {
@@ -165,6 +140,25 @@ export default function SignUp() {
     }
   };
 
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    const appleScript = document.createElement('script');
+    appleScript.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
+    appleScript.async = true;
+    appleScript.defer = true;
+    document.body.appendChild(appleScript);
+
+    return () => {
+      document.body.removeChild(script);
+      document.body.removeChild(appleScript);
+    };
+  }, []);
+
   return (
     <div className="relative min-h-screen">
       <video
@@ -195,6 +189,11 @@ export default function SignUp() {
                 className="w-full"
                 onClick={handleGoogleSignIn}
               >
+                <img
+                  src="https://www.google.com/favicon.ico"
+                  alt=""
+                  className="mr-2 h-4 w-4"
+                />
                 Continue with Google
               </Button>
               <Button 
@@ -202,6 +201,11 @@ export default function SignUp() {
                 className="w-full"
                 onClick={handleAppleSignIn}
               >
+                <img
+                  src="https://www.apple.com/favicon.ico"
+                  alt=""
+                  className="mr-2 h-4 w-4"
+                />
                 Continue with Apple
               </Button>
             </div>
@@ -219,11 +223,24 @@ export default function SignUp() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="username"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input placeholder="Username" {...field} />
+                        <Input placeholder="Full Name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input type="email" placeholder="Email" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
