@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ChevronUp } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,12 +19,20 @@ interface User {
 
 interface UserProfileSectionProps {
   user: User;
-  onSignOut: () => void;
   onViewProfile: () => void;
   onSettings: () => void;
 }
 
-export function UserProfileSection({ user, onSignOut, onViewProfile, onSettings }: UserProfileSectionProps) {
+export function UserProfileSection({ user, onViewProfile, onSettings }: UserProfileSectionProps) {
+  const { signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -47,7 +56,7 @@ export function UserProfileSection({ user, onSignOut, onViewProfile, onSettings 
         <DropdownMenuItem onClick={onViewProfile}>View Profile</DropdownMenuItem>
         <DropdownMenuItem onClick={onSettings}>Settings</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onSignOut}>Sign Out</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleSignOut}>Sign Out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
