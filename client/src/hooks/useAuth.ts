@@ -13,7 +13,8 @@ export function useAuth() {
     queryKey: ['user'],
     queryFn: authService.getCurrentUser,
     retry: false,
-    staleTime: 0 // Always fetch fresh data on mount
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    refetchOnWindowFocus: false
   });
 
   // Query for user's restaurants
