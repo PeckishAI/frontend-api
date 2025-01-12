@@ -14,7 +14,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 
@@ -59,6 +58,8 @@ export default function SignUp() {
         email: data.email,
         password: data.password,
       });
+      // Store the access token
+      localStorage.setItem('accessToken', result.accessToken);
       setLocation('/');
     } catch (error: any) {
       toast({
@@ -101,13 +102,13 @@ export default function SignUp() {
       >
         <source src="/videos/signin-bg.mp4" type="video/mp4" />
       </video>
-      
+
       <div className="relative flex min-h-screen items-center p-[20px]">
         <div className="w-full max-w-lg rounded-lg bg-white/95 p-8 shadow-xl backdrop-blur ml-[20px]">
           <div className="flex justify-center">
             <img src="/images/peckish-logo.jpg" alt="Peckish" className="h-12 w-12 rounded-full object-cover" />
           </div>
-          
+
           <h2 className="mt-8 text-4xl font-display text-center">Create an Account</h2>
           <p className="mt-2 text-sm text-center text-gray-600">
             Sign up for Peckish to start managing your restaurant
@@ -137,6 +138,7 @@ export default function SignUp() {
                         if (response.access_token) {
                           try {
                             const result = await authService.googleSignIn(response.access_token);
+                            localStorage.setItem('accessToken', result.accessToken);
                             setLocation('/');
                           } catch (error: any) {
                             toast({
@@ -186,6 +188,7 @@ export default function SignUp() {
                             lastName: response.user.name.lastName
                           } : null
                         );
+                        localStorage.setItem('accessToken', result.accessToken);
                         setLocation('/');
                       } catch (error: any) {
                         toast({
@@ -245,7 +248,7 @@ export default function SignUp() {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="password"

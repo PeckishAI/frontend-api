@@ -14,7 +14,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 
@@ -41,6 +40,8 @@ export default function SignIn() {
   const onSubmit = async (data: SignInForm) => {
     try {
       const result = await authService.signIn(data);
+      // Store the access token if needed
+      localStorage.setItem('accessToken', result.accessToken);
       // On successful login, redirect to home page
       setLocation('/');
     } catch (error: any) {
@@ -73,6 +74,88 @@ export default function SignIn() {
     };
   }, []);
 
+  const handleGoogleSignIn = async () => {
+    try {
+      const google = (window as any).google;
+      if (!google) {
+        toast({
+          title: "Error",
+          description: "Google API not loaded",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: config.googleClientId,
+        scope: 'email profile',
+        callback: async (response: any) => {
+          if (response.access_token) {
+            try {
+              const result = await authService.googleSignIn(response.access_token);
+              localStorage.setItem('accessToken', result.accessToken);
+              setLocation('/');
+            } catch (error: any) {
+              toast({
+                title: "Error",
+                description: error.response?.data?.message || "Failed to sign in with Google",
+                variant: "destructive",
+              });
+            }
+          }
+        },
+      });
+      client.requestAccessToken();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Google login failed",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    try {
+      const auth = (window as any).AppleID;
+      if (!auth) {
+        toast({
+          title: "Error",
+          description: "Apple API not loaded",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const response = await auth.auth.signIn();
+      if (response.authorization?.id_token) {
+        try {
+          const result = await authService.appleSignIn(
+            response.authorization.id_token,
+            response.user ? {
+              firstName: response.user.name.firstName,
+              lastName: response.user.name.lastName
+            } : null
+          );
+          localStorage.setItem('accessToken', result.accessToken);
+          setLocation('/');
+        } catch (error: any) {
+          toast({
+            title: "Error",
+            description: error.response?.data?.message || "Failed to sign in with Apple",
+            variant: "destructive",
+          });
+        }
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Apple login failed",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="relative min-h-screen">
       <video
@@ -101,45 +184,7 @@ export default function SignIn() {
               <Button 
                 variant="outline" 
                 className="w-full"
-                onClick={async () => {
-                  try {
-                    const google = (window as any).google;
-                    if (!google) {
-                      toast({
-                        title: "Error",
-                        description: "Google API not loaded",
-                        variant: "destructive",
-                      });
-                      return;
-                    }
-
-                    const client = google.accounts.oauth2.initTokenClient({
-                      client_id: config.googleClientId,
-                      scope: 'email profile',
-                      callback: async (response: any) => {
-                        if (response.access_token) {
-                          try {
-                            const result = await authService.googleSignIn(response.access_token);
-                            setLocation('/');
-                          } catch (error: any) {
-                            toast({
-                              title: "Error",
-                              description: error.response?.data?.message || "Failed to sign in with Google",
-                              variant: "destructive",
-                            });
-                          }
-                        }
-                      },
-                    });
-                    client.requestAccessToken();
-                  } catch (error: any) {
-                    toast({
-                      title: "Error",
-                      description: "Google login failed",
-                      variant: "destructive",
-                    });
-                  }
-                }}
+                onClick={handleGoogleSignIn}
               >
                 <img src="https://www.google.com/favicon.ico" alt="" className="mr-2 h-4 w-4" />
                 Continue with Google
@@ -147,45 +192,7 @@ export default function SignIn() {
               <Button 
                 variant="outline" 
                 className="w-full"
-                onClick={async () => {
-                  try {
-                    const auth = (window as any).AppleID;
-                    if (!auth) {
-                      toast({
-                        title: "Error",
-                        description: "Apple API not loaded",
-                        variant: "destructive",
-                      });
-                      return;
-                    }
-
-                    const response = await auth.auth.signIn();
-                    if (response.authorization?.id_token) {
-                      try {
-                        const result = await authService.appleSignIn(
-                          response.authorization.id_token,
-                          response.user ? {
-                            firstName: response.user.name.firstName,
-                            lastName: response.user.name.lastName
-                          } : null
-                        );
-                        setLocation('/');
-                      } catch (error: any) {
-                        toast({
-                          title: "Error",
-                          description: error.response?.data?.message || "Failed to sign in with Apple",
-                          variant: "destructive",
-                        });
-                      }
-                    }
-                  } catch (error: any) {
-                    toast({
-                      title: "Error",
-                      description: "Apple login failed",
-                      variant: "destructive",
-                    });
-                  }
-                }}
+                onClick={handleAppleSignIn}
               >
                 <img src="https://www.apple.com/favicon.ico" alt="" className="mr-2 h-4 w-4" />
                 Continue with Apple
