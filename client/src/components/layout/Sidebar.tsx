@@ -28,7 +28,7 @@ export default function Sidebar() {
     queryFn: () => userService.getUserProfile("current"),
   });
 
-  console.log("Sidebar: ", data.user);
+  console.log("Sidebar: ", data);
 
   const userProfile = {
     name: data.user?.name || "Guest",
