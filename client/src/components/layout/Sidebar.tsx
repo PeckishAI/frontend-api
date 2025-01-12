@@ -11,6 +11,7 @@ import { UserProfileSection } from "./UserProfileSection";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
+import { userService } from "@/services/userService";
 
 const menuItems = [
   { icon: ChartBar, label: "General", href: "/" },
