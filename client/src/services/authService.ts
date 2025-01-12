@@ -45,7 +45,6 @@ const signUp = async (credentials: SignUpCredentials): Promise<AuthResult> => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(credentials),
-      credentials: "include",
     });
 
     if (!response.ok) {
@@ -73,7 +72,6 @@ const googleSignIn = async (accessToken: string): Promise<AuthResult> => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ access_token: accessToken }),
-      credentials: "include",
     });
 
     if (!response.ok) {
@@ -105,7 +103,9 @@ const appleSignIn = async (
       },
       body: JSON.stringify({
         identity_token: identityToken,
-        name: name ? { firstName: name.firstName, lastName: name.lastName } : null,
+        name: name
+          ? { firstName: name.firstName, lastName: name.lastName }
+          : null,
       }),
       credentials: "include",
     });
@@ -131,7 +131,6 @@ const signOut = async (): Promise<void> => {
   try {
     const response = await fetch(`${BASE_URL}/auth/v2/signout`, {
       method: "POST",
-      credentials: "include",
     });
 
     if (!response.ok) {
@@ -153,7 +152,9 @@ const getCurrentUser = async () => {
   try {
     const response = await fetch(`${BASE_URL}/auth/v2/me`, {
       method: "GET",
-      credentials: "include",
+      headers: {
+        
+      }
     });
 
     if (!response.ok) {
