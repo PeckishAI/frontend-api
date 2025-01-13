@@ -49,6 +49,8 @@ export default function OrderModal({
   const [editedOrder, setEditedOrder] = useState<Order>(order);
   const { currentRestaurant } = useRestaurantContext();
 
+  console.log("OrderModal", order);
+
   const { data: suppliers, isLoading: suppliersLoading } = useQuery({
     queryKey: ["suppliers", currentRestaurant?.restaurant_uuid],
     queryFn: () => {
@@ -122,10 +124,10 @@ export default function OrderModal({
   };
 
   const updateItem = (index: number, field: keyof OrderItem, value: any) => {
-    if (!editedOrder.items) {
+    if (!editedOrder.ingredients) {
       return;
     }
-    const newItems = [...editedOrder.items];
+    const newItems = [...editedOrder.ingredients];
     newItems[index] = { ...newItems[index], [field]: value };
 
     if (field === "quantity" || field === "unit_cost") {
@@ -142,8 +144,8 @@ export default function OrderModal({
 
     setEditedOrder({
       ...editedOrder,
-      items: newItems,
-      amount: newTotal,
+      ingredients: newItems,
+      total_cost: newTotal,
     });
   };
 
@@ -156,32 +158,32 @@ export default function OrderModal({
       total_cost: 0,
       unit: { unit_uuid: "", unit_name: "" },
     };
-    if (!editedOrder.items) {
+    if (!editedOrder.ingredients) {
       setEditedOrder({
         ...editedOrder,
-        items: [newItem],
+        ingredients: [newItem],
       });
     } else {
       setEditedOrder({
         ...editedOrder,
-        items: [...editedOrder.items, newItem],
+        ingredients: [...editedOrder.ingredients, newItem],
       });
     }
   };
 
   const removeItem = (index: number) => {
-    if (!editedOrder.items) {
+    if (!editedOrder.ingredients) {
       return;
     }
-    const newItems = editedOrder.items.filter((_, i) => i !== index);
+    const newItems = editedOrder.ingredients.filter((_, i) => i !== index);
     const newTotal = newItems.reduce(
       (sum, item) => sum + (item.quantity || 0) * (item.unit_cost || 0),
       0,
     );
     setEditedOrder({
       ...editedOrder,
-      items: newItems,
-      amount: newTotal,
+      ingredients: newItems,
+      total_cost: newTotal,
     });
   };
 
@@ -225,9 +227,9 @@ export default function OrderModal({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {editedOrder.items ? (
+          {editedOrder.ingredients ? (
             <>
-              {editedOrder.items.map((item) => (
+              {editedOrder.ingredients.map((item) => (
                 <TableRow key={item.ingredient_uuid}>
                   <TableCell>{item.ingredient_name}</TableCell>
                   <TableCell>{item.quantity}</TableCell>
@@ -246,7 +248,9 @@ export default function OrderModal({
                 </TableCell>
                 <TableCell className="text-right font-semibold">
                   {useRestaurantContext().currencyInfo?.currencySymbol}
-                  {editedOrder.amount ? editedOrder.amount.toFixed(2) : "N/A"}
+                  {editedOrder.total_cost
+                    ? editedOrder.total_cost.toFixed(2)
+                    : "N/A"}
                 </TableCell>
               </TableRow>
             </>
@@ -355,7 +359,7 @@ export default function OrderModal({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {editedOrder.items?.map((item, index) => (
+                  {editedOrder.ingredients?.map((item, index) => (
                     <TableRow key={index}>
                       <TableCell>
                         <CreatableSelect
@@ -370,8 +374,10 @@ export default function OrderModal({
                           size="medium"
                           onChange={(option) => {
                             try {
-                              const newItems = Array.isArray(editedOrder.items)
-                                ? [...editedOrder.items]
+                              const newItems = Array.isArray(
+                                editedOrder.ingredients,
+                              )
+                                ? [...editedOrder.ingredients]
                                 : [];
                               const selectedId = option?.value || "";
                               const selectedOption =
@@ -418,7 +424,6 @@ export default function OrderModal({
                             editedOrder.supplier?.supplier_uuid || "",
                           )}
                           placeholder=""
-                          disabled={!editMode}
                         />
                       </TableCell>
                       <TableCell>
@@ -500,7 +505,7 @@ export default function OrderModal({
                     </TableCell>
                     <TableCell className="text-right font-semibold">
                       {useRestaurantContext().currencyInfo?.currencySymbol}
-                      {editedOrder.amount?.toFixed(2)}
+                      {editedOrder.total_cost?.toFixed(2)}
                     </TableCell>
                     {editMode && <TableCell />}
                   </TableRow>

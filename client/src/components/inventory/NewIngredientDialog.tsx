@@ -56,6 +56,7 @@ const newIngredientSchema = z.object({
         unit_uuid: z.string(),
         unit_name: z.string(),
       }),
+      product_code: z.string().nullable().optional(),
     }),
   ),
 });
@@ -139,7 +140,7 @@ export default function NewIngredientDialog({
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const queryClient = useQueryClient();
-  
+
   const handleSubmit = async (values: NewIngredientFormValues) => {
     if (!currentRestaurant?.restaurant_uuid) {
       throw new Error("No restaurant selected");
@@ -150,7 +151,10 @@ export default function NewIngredientDialog({
         currentRestaurant?.restaurant_uuid,
         values,
       );
-      await queryClient.invalidateQueries(["inventory", currentRestaurant?.restaurant_uuid]);
+      await queryClient.invalidateQueries([
+        "inventory",
+        currentRestaurant?.restaurant_uuid,
+      ]);
       onSubmit(values);
       onOpenChange(false);
     } catch (error) {
