@@ -79,7 +79,7 @@ export default function OrderCard({
           <div className="flex justify-between items-center">
             <p className="text-lg font-semibold">
               {useRestaurantContext().currencyInfo?.currencySymbol}
-              {order.amount?.toFixed(2) || "0.00"}
+              {order.total_cost?.toFixed(2) || "0.00"}
             </p>
             <div className="flex items-center gap-2">
               {order.linked_documents?.invoice_uuid ? (
