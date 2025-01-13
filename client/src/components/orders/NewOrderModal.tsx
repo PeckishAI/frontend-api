@@ -52,6 +52,7 @@ export default function NewOrderModal({
   const [selectedSupplier, setSelectedSupplier] = useState<any>(null);
   const [deliveryDate, setDeliveryDate] = useState<string>("");
   const [items, setItems] = useState<OrderItem[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { currentRestaurant } = useRestaurantContext();
 
   const { data: restaurantUnits = [] } = useQuery({
@@ -135,8 +136,10 @@ export default function NewOrderModal({
     return items.reduce((sum, item) => sum + (item.total_cost || 0), 0);
   };
 
-  const handleSave = (status: "draft" | "pending") => {
-    const order = {
+  const handleSave = async (status: "draft" | "pending") => {
+    setIsSubmitting(true);
+    try {
+      const order = {
       supplier: selectedSupplier,
       delivery_date: deliveryDate,
       status,
@@ -152,7 +155,12 @@ export default function NewOrderModal({
       user: {},
     };
 
-    onSave(order, status);
+    await onSave(order, status);
+    } catch (error) {
+      console.error("Error saving order:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -474,10 +482,65 @@ export default function NewOrderModal({
             <Button variant="outline" onClick={() => setShowCancelAlert(true)}>
               Cancel
             </Button>
-            <Button variant="outline" onClick={() => handleSave("draft")}>
-              Save as Draft
+            <Button 
+              variant="outline" 
+              onClick={() => handleSave("draft")}
+              disabled={isSubmitting}
+              className="transition-all duration-200 ease-in-out hover:scale-105"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center gap-2">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  <span>Saving...</span>
+                </div>
+              ) : (
+                "Save as Draft"
+              )}
             </Button>
-            <Button onClick={() => handleSave("pending")}>Place Order</Button>
+            <Button 
+              onClick={() => handleSave("pending")}
+              disabled={isSubmitting}
+              className="transition-all duration-200 ease-in-out hover:scale-105"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center gap-2">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  <span>Placing Order...</span>
+                </div>
+              ) : (
+                "Place Order"
+              )}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
